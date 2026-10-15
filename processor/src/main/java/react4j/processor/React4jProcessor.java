@@ -422,7 +422,14 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                 }
                 final boolean mismatchedNullability =
                         Nullability.requireSpecified(parameter, parameterTypes.get(i), descriptor.getElement())
-                                != input.getNullness();
+                                        != input.getNullness()
+                                || !Nullability.isAssignable(
+                                        typeUtils,
+                                        input.getElement(),
+                                        input.getType(),
+                                        parameter,
+                                        parameterTypes.get(i),
+                                        descriptor.getElement());
 
                 if (mismatchedNullability) {
                     throw new ProcessorException(
@@ -503,8 +510,15 @@ public final class React4jProcessor extends AbstractStandardProcessor {
 
             final VariableElement param = method.getParameters().get(0);
             final boolean mismatchedNullability = Nullability.requireSpecified(
-                            param, methodType.getParameterTypes().get(0), descriptor.getElement())
-                    != input.getNullness();
+                                    param, methodType.getParameterTypes().get(0), descriptor.getElement())
+                            != input.getNullness()
+                    || !Nullability.isAssignable(
+                            processingEnv.getTypeUtils(),
+                            input.getElement(),
+                            input.getType(),
+                            param,
+                            methodType.getParameterTypes().get(0),
+                            descriptor.getElement());
 
             if (mismatchedNullability) {
                 throw new ProcessorException(
@@ -549,10 +563,14 @@ public final class React4jProcessor extends AbstractStandardProcessor {
 
     private void validateDefaultNullness(
             InputDescriptor input, Element declaration, TypeMirror type, ViewDescriptor descriptor) {
-        var contract = Nullability.requireSpecified(declaration, type, descriptor.getElement());
-        if ((input.isNonNull() && contract != Nullability.Nullness.NONNULL)
-                || (input.getNullness() == Nullability.Nullness.PARAMETRIC
-                        && contract == Nullability.Nullness.NULLABLE)) {
+        Nullability.requireSpecified(declaration, type, descriptor.getElement());
+        if (!Nullability.isAssignable(
+                processingEnv.getTypeUtils(),
+                declaration,
+                type,
+                input.getElement(),
+                input.getType(),
+                descriptor.getElement())) {
             throw new ProcessorException(
                     "@InputDefault nullness is incompatible with the associated @Input '" + input.getName() + "'",
                     declaration);
@@ -804,6 +822,13 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         final String requiredValue = input.getRequiredValue();
         if ("ENABLE".equals(requiredValue)) {
             return true;
+        } else if (input.getNullness() == Nullability.Nullness.PARAMETRIC
+                && !input.isFromTreeContext()
+                && !input.hasDefaultMethod()
+                && !input.hasDefaultField()) {
+            throw new ProcessorException(
+                    "Parametric @Input nullness requires require=ENABLE, a valid default or a tree-context source",
+                    input.getElement());
         } else if ("DISABLE".equals(requiredValue)) {
             return false;
         } else if (input.isFromTreeContext()) {
@@ -811,11 +836,6 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         } else {
             if (input.hasDefaultMethod() || input.hasDefaultField()) {
                 return false;
-            }
-            if (input.getNullness() == Nullability.Nullness.PARAMETRIC) {
-                throw new ProcessorException(
-                        "Parametric @Input nullness requires an explicit requiredness or a valid default",
-                        input.getElement());
             }
             return !input.getNullness().equals(Nullability.Nullness.NULLABLE);
         }

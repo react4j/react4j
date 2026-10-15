@@ -2,6 +2,7 @@ package com.example.jspecify;
 
 import java.util.List;
 import javax.annotation.processing.Generated;
+import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
@@ -53,28 +54,27 @@ final class NestedContractBuilder {
     @Contract(
         pure = true
     )
-    Step5 nullableElements(@Nullable String... nullableElements);
-  }
+    Step4 nullableArray(String @Nullable ... nullableArray);
 
-  interface Step5 {
     @Contract(
         pure = true
     )
-    Step6 wildcard(List<? extends @Nullable String> wildcard);
-  }
+    Step4 nullableElements(@Nullable String... nullableElements);
 
-  interface Step6 {
     @Contract(
         pure = true
     )
-    Step7 lowerWildcard(List<? super @Nullable String> lowerWildcard);
-  }
+    Step4 wildcard(List<? extends @Nullable String> wildcard);
 
-  interface Step7 {
     @Contract(
         pure = true
     )
-    ReactNode nullableArray(String @Nullable ... nullableArray);
+    Step4 lowerWildcard(List<? super @Nullable String> lowerWildcard);
+
+    @Contract(
+        pure = true
+    )
+    Step4 defaulted(List<List<@Nullable String>> defaulted);
 
     @Contract(
         pure = true
@@ -85,11 +85,17 @@ final class NestedContractBuilder {
   private static class Builder implements Step1,
       Step2,
       Step3,
-      Step4,
-      Step5,
-      Step6,
-      Step7 {
-    private final ReactElement _element = ReactElement.createViewElement( React4j_NestedContractView.Factory.TYPE );
+      Step4 {
+    private final ReactElement _element;
+
+    Builder() {
+      _element = ReactElement.createViewElement( React4j_NestedContractView.Factory.TYPE );
+      final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
+      inputs.set( React4j_NestedContractView.Inputs.nullableElements, NestedContractView.DEFAULT_NULLABLE_ELEMENTS );
+      inputs.set( React4j_NestedContractView.Inputs.wildcard, NestedContractView.getWildcardDefault() );
+      inputs.set( React4j_NestedContractView.Inputs.lowerWildcard, NestedContractView.getLowerWildcardDefault() );
+      inputs.set( React4j_NestedContractView.Inputs.defaulted, NestedContractView.getDefaultedDefault() );
+    }
 
     @Override
     @Contract(
@@ -124,7 +130,16 @@ final class NestedContractBuilder {
     @Contract(
         pure = true
     )
-    public final Step5 nullableElements(final @Nullable String... nullableElements) {
+    public final Step4 nullableArray(final String @Nullable ... nullableArray) {
+      _element.input( React4j_NestedContractView.Inputs.nullableArray, nullableArray );
+      return this;
+    }
+
+    @Override
+    @Contract(
+        pure = true
+    )
+    public final Step4 nullableElements(final @Nullable String... nullableElements) {
       _element.input( React4j_NestedContractView.Inputs.nullableElements, nullableElements );
       return this;
     }
@@ -133,7 +148,7 @@ final class NestedContractBuilder {
     @Contract(
         pure = true
     )
-    public final Step6 wildcard(final List<? extends @Nullable String> wildcard) {
+    public final Step4 wildcard(final List<? extends @Nullable String> wildcard) {
       _element.input( React4j_NestedContractView.Inputs.wildcard, wildcard );
       return this;
     }
@@ -142,7 +157,7 @@ final class NestedContractBuilder {
     @Contract(
         pure = true
     )
-    public final Step7 lowerWildcard(final List<? super @Nullable String> lowerWildcard) {
+    public final Step4 lowerWildcard(final List<? super @Nullable String> lowerWildcard) {
       _element.input( React4j_NestedContractView.Inputs.lowerWildcard, lowerWildcard );
       return this;
     }
@@ -151,9 +166,9 @@ final class NestedContractBuilder {
     @Contract(
         pure = true
     )
-    public final ReactNode nullableArray(final String @Nullable ... nullableArray) {
-      _element.input( React4j_NestedContractView.Inputs.nullableArray, nullableArray );
-      return build();
+    public final Step4 defaulted(final List<List<@Nullable String>> defaulted) {
+      _element.input( React4j_NestedContractView.Inputs.defaulted, defaulted );
+      return this;
     }
 
     @Override

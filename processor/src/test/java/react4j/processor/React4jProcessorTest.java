@@ -1364,6 +1364,15 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         assertFailedCompile("com.example.jspecify.OptionalNonNullView", "Optional non-null @Input requires");
         assertFailedCompile("com.example.jspecify.NullableDefaultView", "@InputDefault nullness is incompatible");
         assertFailedCompile("com.example.jspecify.ParametricOmissionView", "Parametric @Input nullness requires");
+        assertFailedCompile(
+                "com.example.jspecify.ParametricOptionalConstructorView", "Parametric @Input nullness requires");
+        assertFailedCompile("com.example.jspecify.ParametricOptionalView", "Parametric @Input nullness requires");
+        assertFailedCompile(
+                "com.example.jspecify.BoundedNullableDefaultView", "@InputDefault nullness is incompatible");
+        assertFailedCompile("com.example.jspecify.NestedNullableDefaultView", "@InputDefault nullness is incompatible");
+        assertFailedCompile("com.example.jspecify.ArrayNullableDefaultView", "@InputDefault nullness is incompatible");
+        assertFailedCompile("com.example.jspecify.NestedValidatorView", "incompatible with the associated @Input");
+        assertFailedCompile("com.example.jspecify.NestedChangeView", "incompatible with the associated @Input");
         assertFailedCompile("com.example.jspecify.UnknownContractView", "Unspecified JSpecify nullness");
         assertFailedCompile(
                 "com.example.jspecify.UnknownConstructorView",

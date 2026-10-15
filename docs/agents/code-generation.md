@@ -17,6 +17,10 @@
 
 `Nullability.java` resolves declaration scopes and substituted inherited types, including compiled generic bounds, nested/enclosing arguments, wildcards and arrays. Emitted type names must retain type-use annotations. Unmarked injected types stored in generated fields need specified nullness throughout their type tree; generated marked scopes must not silently strengthen unknown contracts.
 
+Input defaults and handlers must match the complete effective type tree, including generic upper bounds, invariant arguments, wildcard bounds, enclosing arguments and array elements. Optional parametric inputs need a valid default or tree-context source even with `require=DISABLE`. Keep nested qualifiers in generated validator locals; root local-variable nullness annotations have no JSpecify meaning.
+
+The pinned javac's `Types.directSupertypes` drops substituted type-use annotations. The contract matcher binds the original declared parent arguments instead. Preserve this behavior in both source and compiled-declaration regressions.
+
 Javac needs `-XDaddTypeAnnotationsToSymbol=true` to retain compiled JSpecify type annotations. The strict generated-code pass compiles every emitted Java body, including Arez/Sting integration files; golden comparisons maintain the React4j output set in both formatting modes. Keep the deliberate invalid-body NullAway control, no-Sting classpath regression and formatter subprocess export regression.
 
 The golden updater operates in an isolated runfiles/temporary compilation tree. Its baseline comparison preserves unrelated maintained edits and rejects conflicts before copying. Naming changes must account for both `deriveExpectedOutputs()` and dedicated nested/inheritance output names in `React4jProcessorTest.java`.

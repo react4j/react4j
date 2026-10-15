@@ -17,6 +17,7 @@ import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
@@ -62,6 +63,21 @@ abstract class React4j_NestedContractView extends NestedContractView {
   }
 
   @Override
+  String @Nullable [] nullableArray() {
+    if (React.shouldCheckInvariants()) {
+      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.nullableArray)
+          ? $$react4j$$_nativeView
+              .requireInputs()
+              .getAsAny(Inputs.nullableArray)
+              .cast()
+          : null;
+    } else {
+      return Js.uncheckedCast(
+          $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.nullableArray));
+    }
+  }
+
+  @Override
   @Nullable
   String[] nullableElements() {
     return $$react4j$$_nativeView
@@ -81,28 +97,21 @@ abstract class React4j_NestedContractView extends NestedContractView {
   }
 
   @Override
-  String @Nullable [] nullableArray() {
-    if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.nullableArray)
-          ? $$react4j$$_nativeView
-              .requireInputs()
-              .getAsAny(Inputs.nullableArray)
-              .cast()
-          : null;
-    } else {
-      return Js.uncheckedCast(
-          $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.nullableArray));
-    }
+  List<List<@Nullable String>> defaulted() {
+    return $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.defaulted).cast();
   }
 
-  private static void $$react4j$$_validateInputValues(
-      final JsPropertyMap<@Nullable Object> inputs) {
+  private void $$react4j$$_validateInputValues(final JsPropertyMap<@Nullable Object> inputs) {
     final Object raw$data = inputs.get(Inputs.data);
     if (React.shouldCheckInvariants()) {
       Guards.apiInvariant(
           () -> null != raw$data,
           () ->
               "Required input named 'data' is missing from view named 'NestedContractView' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+    }
+    if (null != raw$data) {
+      final List<@Nullable String> typed$data = Js.cast(raw$data);
+      validateData(typed$data);
     }
     final Object raw$nested = inputs.get(Inputs.nested);
     if (React.shouldCheckInvariants()) {
@@ -117,27 +126,6 @@ abstract class React4j_NestedContractView extends NestedContractView {
           () -> null != raw$unmarked,
           () ->
               "Required input named 'unmarked' is missing from view named 'NestedContractView' so it was either incorrectly omitted or a null value has been incorrectly specified.");
-    }
-    final Object raw$nullableElements = inputs.get(Inputs.nullableElements);
-    if (React.shouldCheckInvariants()) {
-      Guards.apiInvariant(
-          () -> null != raw$nullableElements,
-          () ->
-              "Required input named 'nullableElements' is missing from view named 'NestedContractView' so it was either incorrectly omitted or a null value has been incorrectly specified.");
-    }
-    final Object raw$wildcard = inputs.get(Inputs.wildcard);
-    if (React.shouldCheckInvariants()) {
-      Guards.apiInvariant(
-          () -> null != raw$wildcard,
-          () ->
-              "Required input named 'wildcard' is missing from view named 'NestedContractView' so it was either incorrectly omitted or a null value has been incorrectly specified.");
-    }
-    final Object raw$lowerWildcard = inputs.get(Inputs.lowerWildcard);
-    if (React.shouldCheckInvariants()) {
-      Guards.apiInvariant(
-          () -> null != raw$lowerWildcard,
-          () ->
-              "Required input named 'lowerWildcard' is missing from view named 'NestedContractView' so it was either incorrectly omitted or a null value has been incorrectly specified.");
     }
   }
 
@@ -157,6 +145,9 @@ abstract class React4j_NestedContractView extends NestedContractView {
     if (!Js.isTripleEqual(inputs.get(Inputs.unmarked), nextInputs.get(Inputs.unmarked))) {
       return true;
     }
+    if (!Js.isTripleEqual(inputs.get(Inputs.nullableArray), nextInputs.get(Inputs.nullableArray))) {
+      return true;
+    }
     if (!Js.isTripleEqual(
         inputs.get(Inputs.nullableElements), nextInputs.get(Inputs.nullableElements))) {
       return true;
@@ -167,10 +158,21 @@ abstract class React4j_NestedContractView extends NestedContractView {
     if (!Js.isTripleEqual(inputs.get(Inputs.lowerWildcard), nextInputs.get(Inputs.lowerWildcard))) {
       return true;
     }
-    if (!Js.isTripleEqual(inputs.get(Inputs.nullableArray), nextInputs.get(Inputs.nullableArray))) {
+    if (!Js.isTripleEqual(inputs.get(Inputs.defaulted), nextInputs.get(Inputs.defaulted))) {
       return true;
     }
     return false;
+  }
+
+  private void $$react4j$$_componentPreUpdate(
+      @Nullable final JsPropertyMap<@Nullable Object> prevInputs) {
+    if (null != prevInputs) {
+      final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
+      final boolean data = !Js.isTripleEqual(inputs.get(Inputs.data), prevInputs.get(Inputs.data));
+      if (data) {
+        changed(inputs.getAsAny(Inputs.data).cast());
+      }
+    }
   }
 
   private void $$react4j$$_componentWillUnmount() {
@@ -196,20 +198,22 @@ abstract class React4j_NestedContractView extends NestedContractView {
 
     static final String unmarked = React.shouldMinimizeInputKeys() ? "c" : "unmarked";
 
+    static final String nullableArray = React.shouldMinimizeInputKeys() ? "d" : "nullableArray";
+
     static final String nullableElements =
-        React.shouldMinimizeInputKeys() ? "d" : "nullableElements";
+        React.shouldMinimizeInputKeys() ? "e" : "nullableElements";
 
-    static final String wildcard = React.shouldMinimizeInputKeys() ? "e" : "wildcard";
+    static final String wildcard = React.shouldMinimizeInputKeys() ? "f" : "wildcard";
 
-    static final String lowerWildcard = React.shouldMinimizeInputKeys() ? "f" : "lowerWildcard";
+    static final String lowerWildcard = React.shouldMinimizeInputKeys() ? "g" : "lowerWildcard";
 
-    static final String nullableArray = React.shouldMinimizeInputKeys() ? "g" : "nullableArray";
+    static final String defaulted = React.shouldMinimizeInputKeys() ? "h" : "defaulted";
 
     private Inputs() {}
   }
 
   private static final class NativeView extends react4j.internal.NativeView
-      implements OnShouldComponentUpdate, OnComponentWillUnmount {
+      implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
     @NonNull
     private final React4j_NestedContractView view;
 
@@ -219,13 +223,22 @@ abstract class React4j_NestedContractView extends NestedContractView {
       view = new Arez_React4j_NestedContractView(this);
       if (React.shouldValidateInputValues()) {
         assert null != inputs;
-        React4j_NestedContractView.$$react4j$$_validateInputValues(inputs);
+        view.$$react4j$$_validateInputValues(inputs);
       }
     }
 
     @Override
     public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
       return view.$$react4j$$_shouldComponentUpdate(nextInputs);
+    }
+
+    @Override
+    @Nullable
+    public final Object getSnapshotBeforeUpdate(
+        final JsPropertyMap<@Nullable Object> prevInputs,
+        final JsPropertyMap<@Nullable Object> prevState) {
+      view.$$react4j$$_componentPreUpdate(prevInputs);
+      return null;
     }
 
     @Override

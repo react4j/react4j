@@ -990,7 +990,7 @@ final class ViewGenerator {
                     final TypeMirror returnType = input.getType();
                     block.addStatement(
                             "final $T $N = $T.$N( $N )",
-                            returnType,
+                            input.getTypeName().withoutAnnotations(),
                             typedName,
                             JS_CLASSNAME,
                             getConverter(returnType, input.getElement()),

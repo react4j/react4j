@@ -135,6 +135,41 @@ public final class NullabilityTest extends AbstractProcessorTest {
         assertTrue(Nullability.isNonNull(method(model, "intersection")));
         assertTrue(Nullability.isNonNull(method(model, "markedIntersection")));
 
+        for (var pair : List.of(
+                List.of("strings", "strings"),
+                List.of("boundedStrings", "strings"),
+                List.of("boundedNullableStrings", "nullableStrings"),
+                List.of("nullableStrings", "upperNullableStrings"),
+                List.of("strings", "upperNullableStrings"),
+                List.of("nullableArrayList", "nullableStrings"),
+                List.of("ownerSubclass", "strings"),
+                List.of("nullableOwnerSubclass", "nullableStrings"),
+                List.of("upperStrings", "upperNullableStrings"),
+                List.of("lowerNullableStrings", "lowerStrings"),
+                List.of("nestedUpperStrings", "nestedUpperStrings"),
+                List.of("stringArray", "nullableArray"),
+                List.of("stringArray", "nullableElementArray"),
+                List.of("unbounded", "upperObject"))) {
+            assertAssignable(environment, model, pair.get(0), pair.get(1), true);
+        }
+        for (var pair : List.of(
+                List.of("nullableStrings", "strings"),
+                List.of("boundedNullableStrings", "strings"),
+                List.of("boundedIntersection", "strings"),
+                List.of("strings", "nullableStrings"),
+                List.of("nullableArrayList", "strings"),
+                List.of("nullableOwnerSubclass", "strings"),
+                List.of("nestedNullableStrings", "nestedStrings"),
+                List.of("nullableElementArray", "stringArray"),
+                List.of("nullableArray", "stringArray"),
+                List.of("upperNullableStrings", "upperStrings"),
+                List.of("lowerStrings", "lowerNullableStrings"),
+                List.of("nestedUpperStrings", "nestedUpperNullableStrings"),
+                List.of("nestedUpperNullableStrings", "nestedUpperStrings"),
+                List.of("nullableOwnerStrings", "ownerStrings"))) {
+            assertAssignable(environment, model, pair.get(0), pair.get(1), false);
+        }
+
         final TypeElement unmarked = elements.getTypeElement(name + ".Unmarked");
         assertFalse(Nullability.hasNonNullBound(
                 (TypeVariable) unmarked.getTypeParameters().get(0).asType()));
@@ -164,6 +199,26 @@ public final class NullabilityTest extends AbstractProcessorTest {
                 (ExecutableType) environment.getTypeUtils().asMemberOf((DeclaredType) unmarkedChild.asType(), value);
         assertThrows(
                 ProcessorException.class, () -> Nullability.isNonNull(value, resolved.getReturnType(), unmarkedChild));
+    }
+
+    private static void assertAssignable(
+            ProcessingEnvironment environment,
+            TypeElement model,
+            String sourceName,
+            String targetName,
+            boolean expected) {
+        var source = method(model, sourceName);
+        var target = method(model, targetName);
+        assertEquals(
+                Nullability.isAssignable(
+                        environment.getTypeUtils(),
+                        source,
+                        source.getReturnType(),
+                        target,
+                        target.getReturnType(),
+                        model),
+                expected,
+                sourceName + " -> " + targetName);
     }
 
     private static ExecutableElement method(final TypeElement type, final String name) {

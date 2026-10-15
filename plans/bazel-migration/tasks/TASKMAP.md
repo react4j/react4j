@@ -6,7 +6,7 @@
 - Current frontier: `implementation-review`
 - Planning reviewer: `/root/planning_reviewer` (`2/3` rounds; Findings: none)
 - Plan checkpoint: `automatic` (user-confirmed grill-me understanding and passing planning review)
-- Implementation reviewer: `pending` (`0/5` rounds)
+- Implementation reviewer: `/root/implementation_reviewer` (`1/5` rounds; two P2 findings corrected; confirmation pending)
 
 ## Full-scope validation
 
@@ -53,3 +53,7 @@
 
 - Source: user replacement AGENTS.md instructions supplied during T09 on 2026-10-15. Scope: all remaining implementation, review and closeout. Retain verification/support documents only for a concrete continuing use; remove completed experiments, task logs/scratch and migration scaffolding, including tests/build wiring. Execution authority remains the previously authorized migration outcome; the correction does not expand it.
 - Application: the T09 compile smoke is temporary validation. T10 must retire it after permanent development/production browser tests exercise the same packaged-library/configuration behavior. Keep the real archive/consumer checks and strict processor controls because they protect continuing distribution/compiler contracts. T13 and final review audit every retained support surface against this rule. Needed run evidence remains in exact task evidence commits, and lasting conclusions go in canonical contributor/agent guidance.
+
+## Implementation review evidence
+
+- Round 1: two P2 findings. Explicit `require=DISABLE` bypassed the parametric omission diagnostic, including constructor inputs. Default/validator/change-callback matching compared only root nullness, allowing unsafe nested contracts through generated map casts. Both are valid R4/R5 corrections within T06/T07; no significant decision or scope changed. The primary agent corrected both findings, including bounded/intersection type variables and preserving declared supertype substitutions; the complete shared gate passed after the final correction. The same reviewer will confirm them in round 2.
