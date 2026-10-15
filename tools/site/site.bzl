@@ -1,4 +1,5 @@
 load("@rules_java//java/common:java_info.bzl", "JavaInfo")
+load("//tools/browser:rules.bzl", "BrowserApplicationInfo")
 
 def _site_impl(ctx):
     out = ctx.actions.declare_directory(ctx.label.name)
@@ -21,13 +22,16 @@ def _site_impl(ctx):
             fail("Each site asset must contain exactly one file: %s" % target.label)
         args.add("--asset", "%s=%s" % (files[0].path, destination))
 
-    for file in ctx.files.browser_example:
-        args.add("--asset", "%s=examples/hello_world/%s" % (file.path, file.basename))
+    browser_files = []
+    for application, destination in ctx.attr.browser_examples.items():
+        for file, path in application[BrowserApplicationInfo].assets.items():
+            browser_files.append(file)
+            args.add("--asset", "%s=%s/%s" % (file.path, destination, path))
 
     ctx.actions.run(
         executable = ctx.executable._builder,
         arguments = [args],
-        inputs = sources + ctx.files.docs + ctx.files.assets + ctx.files.browser_example + [ctx.file.layout, ctx.file.home, ctx.file.document, ctx.file.navigation, ctx.file.api],
+        inputs = sources + ctx.files.docs + ctx.files.assets + browser_files + [ctx.file.layout, ctx.file.home, ctx.file.document, ctx.file.navigation, ctx.file.api],
         outputs = [out],
         mnemonic = "React4jSite",
         progress_message = "Rendering and checking React4j documentation",
@@ -39,7 +43,7 @@ react4j_site = rule(
     attrs = {
         "api": attr.label(mandatory = True, allow_single_file = [".jar"]),
         "assets": attr.label_keyed_string_dict(allow_files = True),
-        "browser_example": attr.label(mandatory = True),
+        "browser_examples": attr.label_keyed_string_dict(providers = [BrowserApplicationInfo]),
         "docs": attr.label_list(allow_files = [".md"]),
         "document": attr.label(mandatory = True, allow_single_file = [".html"]),
         "examples": attr.label(mandatory = True, providers = [JavaInfo]),

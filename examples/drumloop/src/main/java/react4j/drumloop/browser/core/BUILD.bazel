@@ -1,0 +1,9 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "ArrayBuffer.java",
+        "package-info.java",
+    ],
+)

@@ -153,6 +153,8 @@ public final class SiteTest {
                     .contains("external asset"));
             Files.writeString(root.resolve("index.html"), "<a href=\"/todomvc/raw/app\">External example</a>");
             SiteLinks.check(root);
+            Files.writeString(root.resolve("index.html"), "<a href=\"/drumloop/\">Missing owned example</a>");
+            Assert.expectThrows(IOException.class, () -> SiteLinks.check(root));
             Files.writeString(root.resolve("index.html"), "<a href=\"/todomvc/../../outside.html\">Escapes</a>");
             Assert.expectThrows(IOException.class, () -> SiteLinks.check(root));
             Files.writeString(root.resolve("index.html"), "<a href=\"../outside.html\">Escapes</a>");
@@ -179,8 +181,17 @@ public final class SiteTest {
 
     @Test
     public void preservesExternalDeploymentsAndRejectsOwnershipCollisions() throws IOException {
-        final var source =
-                site(Map.of("index.html", "<main>New site</main>", "docs/overview.html", "<h1>Overview</h1>"));
+        final var source = site(Map.of(
+                "index.html",
+                "<main>New site</main>",
+                "docs/overview.html",
+                "<h1>Overview</h1>",
+                "drumloop/index.html",
+                "Owned drumloop",
+                "drumloop/drumloop/index.html",
+                "Production drumloop",
+                "drumloop/drumloop_dev/index.html",
+                "Development drumloop"));
         final var destination = site(Map.of(
                 "index.html",
                 "Old site",
@@ -202,10 +213,14 @@ public final class SiteTest {
             Assert.assertFalse(Files.exists(destination.resolve("stale")));
             Assert.assertEquals(Files.readString(destination.resolve(".git/config")), "git metadata");
             Assert.assertEquals(Files.readString(destination.resolve("todomvc/raw/index.html")), "external app");
-            Assert.assertEquals(Files.readString(destination.resolve("drumloop/index.html")), "external drumloop");
+            Assert.assertEquals(Files.readString(destination.resolve("drumloop/index.html")), "Owned drumloop");
             Assert.assertEquals(Files.readString(destination.resolve("webspeechdemo/index.html")), "external speech");
             Assert.assertEquals(
                     Files.readString(destination.resolve("heart-rate-monitor/index.html")), "external monitor");
+            Assert.assertEquals(
+                    Files.readString(destination.resolve("drumloop/drumloop/index.html")), "Production drumloop");
+            Assert.assertEquals(
+                    Files.readString(destination.resolve("drumloop/drumloop_dev/index.html")), "Development drumloop");
             Files.createDirectories(source.resolve("todomvc"));
             Files.writeString(source.resolve("todomvc/index.html"), "collision");
             Assert.expectThrows(IOException.class, () -> SiteDeploy.prepare(source, destination));

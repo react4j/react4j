@@ -1,0 +1,16 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "BpmInput.java",
+        "DrumMachineView.java",
+        "FxButton.java",
+        "IndicatorView.java",
+        "PlayButton.java",
+        "StepButton.java",
+        "TrackView.java",
+        "ViewsFragment.java",
+        "package-info.java",
+    ],
+)

@@ -16,9 +16,10 @@ to this page.
 There is also a few sample projects that you can look at to see how different types of applications can be
 built using React4j.
 
-* [react-drumploop](https://github.com/react4j/react4j-drumloop) A rewrite of the [hooks-drum-machine](https://github.com/kenwheeler/hooks-drum-machine)
-  project presented as part of a talk. It was originally written in `react.js` using hooks and suspense. This
-  was ported to react4j and continues to use the experimental suspense support and `react-cache`.
+* [Drumloop](/drumloop/) is a drum machine example included in this repository under
+  `examples/drumloop`. It uses React4j, Arez, Sting, Web Audio, and experimental Suspense with a Java
+  audio cache. Run `tools/examples.sh serve drumloop development` or try the
+  [production app](/drumloop/drumloop/) and [development app](/drumloop/drumloop_dev/).
 * [react-sithtracker](https://github.com/react4j/react4j-flux-challenge) A solution for the problem presented
   in the [flux challenge](https://github.com/staltz/flux-challenge) using Arez and React4j.
 * [react-todomvc](https://github.com/react4j/react4j-todomvc) Several implementations of the [TodoMVC](todomvc.md)

@@ -66,6 +66,8 @@ public final class Preview {
                             case "ico" -> "image/x-icon";
                             case "json" -> "application/json";
                             case "xml" -> "application/xml";
+                            case "wav" -> "audio/wav";
+                            case "ttf" -> "font/ttf";
                             default -> "application/octet-stream";
                         };
                 exchange.getResponseHeaders().set("Content-Type", contentType);
