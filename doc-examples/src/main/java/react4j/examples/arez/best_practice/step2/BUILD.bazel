@@ -1,0 +1,11 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "EmployeeDataLoader.java",
+        "EmployeeService.java",
+        "RemoteServiceAPI.java",
+        "package-info.java",
+    ],
+)

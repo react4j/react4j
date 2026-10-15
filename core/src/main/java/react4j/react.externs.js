@@ -543,7 +543,11 @@ var topVolumeChange;
 var topWaiting;
 var topWheel;
 
-React.createContext = function() {};
+/**
+ * @param {*} defaultValue
+ * @return {!Object}
+ */
+React.createContext = function(defaultValue) {};
 
 React.Context = function() {};
 React.Context.prototype.Provider = function() {};
@@ -608,14 +612,14 @@ var ReactDOM = {};
 
 /**
  * @param {React.Component} container
- * @param {Element} mountPoint
+ * @param {*} mountPoint
  * @param {(function(): void)=} opt_callback
  * @return {React.Component}
  */
 ReactDOM.render = function(container, mountPoint, opt_callback) {};
 
 /**
- * @param {Element} container
+ * @param {*} container
  * @return {boolean}
  */
 ReactDOM.unmountComponentAtNode = function(container) {};
@@ -647,7 +651,7 @@ React.ReactRoot.prototype.render = function(child, opt_callback) {};
 React.ReactRoot.prototype.unmount = function(opt_callback) {};
 
 /**
- * @param {Element} container
+ * @param {*} container
  * @return {React.ReactRoot}
  */
 ReactDOM.unstable_createRoot = function(container) {};

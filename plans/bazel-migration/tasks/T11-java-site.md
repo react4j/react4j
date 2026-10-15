@@ -1,6 +1,6 @@
 # T11 — Java documentation site
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: `T10`
 - Spec coverage: `R10`, `AC6`
 

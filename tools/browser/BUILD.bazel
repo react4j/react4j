@@ -1,48 +1,23 @@
-load("@j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
-load("//third_party/java:rules.bzl", "java_library")
-load("//tools/release:release.bzl", "release_source_jar")
-load(":rules.bzl", "browser_compile_smoke")
+load("//third_party/java:rules.bzl", "java_binary")
 
 package(default_visibility = ["//visibility:public"])
 
 exports_files(["rules.bzl"])
 
-java_library(
-    name = "smoke_java",
-    srcs = ["//tools/browser/src/main/java/react4j/browser:sources"],
-    deps = [
-        "//:core",
-        "//:dom",
-    ],
-)
-
-release_source_jar(
-    name = "smoke_sources",
-    out = "smoke-sources.jar",
-    java_targets = [":smoke_java"],
-)
-
-j2cl_library(
-    name = "smoke",
-    srcs = [":smoke_sources"],
-    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
-    deps = [
-        "//:core-j2cl",
-        "//:dom-j2cl",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jspecify-j2cl",
-    ],
+config_setting(
+    name = "production",
+    values = {"compilation_mode": "opt"},
 )
 
 closure_js_library(
-    name = "smoke_entry",
-    srcs = ["//tools/browser/src/main/java/react4j/browser:CompileSmoke.entry.js"],
-    deps = [":smoke"],
+    name = "mode",
+    testonly = True,
+    srcs = ["mode.js"],
 )
 
-browser_compile_smoke(
-    name = "compile_smoke",
-    entry_point = "react4j.browser.CompileSmokeEntry",
-    deps = [":smoke_entry"],
+java_binary(
+    name = "preview",
+    srcs = ["//tools/browser/src/main/java/react4j/browser:preview_sources"],
+    main_class = "react4j.browser.Preview",
 )

@@ -5,8 +5,6 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
 import arez.annotations.PostConstruct;
 import arez.annotations.PreDispose;
-import java.util.Objects;
-import javax.annotation.Nonnull;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
@@ -28,238 +26,202 @@ import jsinterop.annotations.JsType;
  * route should be updated.</p>
  */
 @ArezComponent
-public abstract class BrowserLocation
-{
-  @JsFunction
-  private interface HashChangeEventListener
-  {
-    void handleEvent( HashChangeEvent event );
-  }
-
-  @JsType( isNative = true, name = "HashChangeEvent", namespace = JsPackage.GLOBAL )
-  private static class HashChangeEvent
-  {
-    @JsMethod
-    native void preventDefault();
-  }
-
-  @JsType( isNative = true, name = "Location", namespace = JsPackage.GLOBAL )
-  private static class Location
-  {
-    @JsProperty( name = "hash" )
-    native String hash();
-
-    @JsProperty
-    native void setHash( String hash );
-
-    @JsProperty( name = "pathname" )
-    native String pathname();
-
-    @JsProperty( name = "search" )
-    native String search();
-  }
-
-  @JsType( isNative = true, name = "History", namespace = JsPackage.GLOBAL )
-  private static class History
-  {
-    @JsMethod
-    native void pushState( Object data, String unused, String url );
-  }
-
-  @JsType( isNative = true, name = "Document", namespace = JsPackage.GLOBAL )
-  private static class Document
-  {
-    @JsProperty( name = "title" )
-    native String title();
-  }
-
-  @Nonnull
-  private final HashChangeEventListener _listener = this::onHashChangeEvent;
-
-  /**
-   * The location according to the application.
-   */
-  @Nonnull
-  private String _location = "";
-  /**
-   * The location according to the browser.
-   */
-  @Nonnull
-  private String _browserLocation = "";
-  /**
-   * The location that the application is attempting to update the browser to.
-   */
-  @Nonnull
-  private String _targetLocation = "";
-  /**
-   * Should we prevent the default action associated with hash change?
-   */
-  private boolean _preventDefault = true;
-
-  /**
-   * Create the model object.
-   *
-   * @return the BrowserLocation instance.
-   */
-  public static BrowserLocation create()
-  {
-    return new Arez_BrowserLocation();
-  }
-
-  BrowserLocation()
-  {
-  }
-
-  @PostConstruct
-  void postConstruct()
-  {
-    addEventListener( "hashchange", _listener, false );
-    _targetLocation = _browserLocation = _location = getHash();
-  }
-
-  @PreDispose
-  void preDispose()
-  {
-    removeEventListener( "hashchange", _listener, false );
-  }
-
-  /**
-   * Return true if component will prevent default actions when hash.
-   *
-   * @return true if component will prevent default actions when hash.
-   */
-  public boolean shouldPreventDefault()
-  {
-    return _preventDefault;
-  }
-
-  /**
-   * Set a flag to determine whether events default action will be prevented.
-   *
-   * @param preventDefault true to prevent default action.
-   */
-  public void setPreventDefault( final boolean preventDefault )
-  {
-    _preventDefault = preventDefault;
-  }
-
-  /**
-   * Change the target location to the specified parameter.
-   * This will ultimately result in a side-effect that updates the browsers location.
-   * This location parameter should not include "#" as the first character.
-   *
-   * @param targetLocation the location to change to.
-   */
-  @Action
-  public void changeLocation( @Nonnull final String targetLocation )
-  {
-    _targetLocation = targetLocation;
-    if ( targetLocation.equals( getBrowserLocation() ) )
-    {
-      setLocation( targetLocation );
+public abstract class BrowserLocation {
+    @JsFunction
+    private interface HashChangeEventListener {
+        void handleEvent(HashChangeEvent event);
     }
-    setHash( targetLocation );
-    /*
-     * setHash does not trigger a "hashchange" event so explicitly call the hook here
+
+    @JsType(isNative = true, name = "HashChangeEvent", namespace = JsPackage.GLOBAL)
+    private static class HashChangeEvent {
+        @JsMethod
+        native void preventDefault();
+    }
+
+    @JsType(isNative = true, name = "Location", namespace = JsPackage.GLOBAL)
+    private static class Location {
+        @JsProperty(name = "hash")
+        native String hash();
+
+        @JsProperty
+        native void setHash(String hash);
+
+        @JsProperty(name = "pathname")
+        native String pathname();
+
+        @JsProperty(name = "search")
+        native String search();
+    }
+
+    @JsType(isNative = true, name = "History", namespace = JsPackage.GLOBAL)
+    private static class History {
+        @JsMethod
+        native void pushState(Object data, String unused, String url);
+    }
+
+    @JsType(isNative = true, name = "Document", namespace = JsPackage.GLOBAL)
+    private static class Document {
+        @JsProperty(name = "title")
+        native String title();
+    }
+
+    private final HashChangeEventListener _listener = this::onHashChangeEvent;
+
+    /**
+     * The location according to the application.
      */
-    updateBrowserLocation();
-  }
+    private String _location = "";
+    /**
+     * The location according to the browser.
+     */
+    private String _browserLocation = "";
+    /**
+     * The location that the application is attempting to update the browser to.
+     */
+    private String _targetLocation = "";
+    /**
+     * Should we prevent the default action associated with hash change?
+     */
+    private boolean _preventDefault = true;
 
-  /**
-   * Revert the browsers location to the application location.
-   */
-  @Action
-  public void resetBrowserLocation()
-  {
-    changeLocation( getLocation() );
-  }
-
-  /**
-   * Return the location as the application sees it.
-   * This return value does not include a "#" as the first character.
-   *
-   * @return the location.
-   */
-  @Observable
-  @Nonnull
-  public String getLocation()
-  {
-    return _location;
-  }
-
-  @Observable
-  void setLocation( @Nonnull final String location )
-  {
-    _location = Objects.requireNonNull( location );
-  }
-
-  @Observable
-  @Nonnull
-  public String getBrowserLocation()
-  {
-    return _browserLocation;
-  }
-
-  void setBrowserLocation( @Nonnull final String browserLocation )
-  {
-    _browserLocation = Objects.requireNonNull( browserLocation );
-  }
-
-  @Action
-  void updateBrowserLocation()
-  {
-    final String location = getHash();
-    setBrowserLocation( location );
-    if ( _targetLocation.equals( location ) )
-    {
-      setLocation( location );
+    /**
+     * Create the model object.
+     *
+     * @return the BrowserLocation instance.
+     */
+    public static BrowserLocation create() {
+        return new Arez_BrowserLocation();
     }
-  }
 
-  private void onHashChangeEvent( @Nonnull final HashChangeEvent e )
-  {
-    if ( _preventDefault )
-    {
-      e.preventDefault();
+    BrowserLocation() {}
+
+    @PostConstruct
+    void postConstruct() {
+        addEventListener("hashchange", _listener, false);
+        _targetLocation = _browserLocation = _location = getHash();
     }
-    updateBrowserLocation();
-  }
 
-  @Nonnull
-  private String getHash()
-  {
-    return location().hash().substring( 1 );
-  }
-
-  private void setHash( @Nonnull final String hash )
-  {
-    final Location location = location();
-    if ( 0 == hash.length() )
-    {
-      /*
-       * This code is needed to remove the stray #.
-       * See https://stackoverflow.com/questions/1397329/how-to-remove-the-hash-from-window-location-url-with-javascript-without-page-r/5298684#5298684
-       */
-      history().pushState( "", document().title(), location.pathname() + location.search() );
+    @PreDispose
+    void preDispose() {
+        removeEventListener("hashchange", _listener, false);
     }
-    else
-    {
-      location.setHash( hash );
+
+    /**
+     * Return true if component will prevent default actions when hash.
+     *
+     * @return true if component will prevent default actions when hash.
+     */
+    public boolean shouldPreventDefault() {
+        return _preventDefault;
     }
-  }
 
-  @JsMethod( name = "addEventListener", namespace = JsPackage.GLOBAL )
-  private static native void addEventListener( String type, HashChangeEventListener listener, boolean capture );
+    /**
+     * Set a flag to determine whether events default action will be prevented.
+     *
+     * @param preventDefault true to prevent default action.
+     */
+    public void setPreventDefault(final boolean preventDefault) {
+        _preventDefault = preventDefault;
+    }
 
-  @JsMethod( name = "removeEventListener", namespace = JsPackage.GLOBAL )
-  private static native void removeEventListener( String type, HashChangeEventListener listener, boolean capture );
+    /**
+     * Change the target location to the specified parameter.
+     * This will ultimately result in a side-effect that updates the browsers location.
+     * This location parameter should not include "#" as the first character.
+     *
+     * @param targetLocation the location to change to.
+     */
+    @Action
+    public void changeLocation(final String targetLocation) {
+        _targetLocation = targetLocation;
+        if (targetLocation.equals(getBrowserLocation())) {
+            setLocation(targetLocation);
+        }
+        setHash(targetLocation);
+        /*
+         * setHash does not trigger a "hashchange" event so explicitly call the hook here
+         */
+        updateBrowserLocation();
+    }
 
-  @JsProperty( name = "location", namespace = JsPackage.GLOBAL )
-  private static native Location location();
+    /**
+     * Revert the browsers location to the application location.
+     */
+    @Action
+    public void resetBrowserLocation() {
+        changeLocation(getLocation());
+    }
 
-  @JsProperty( name = "history", namespace = JsPackage.GLOBAL )
-  private static native History history();
+    /**
+     * Return the location as the application sees it.
+     * This return value does not include a "#" as the first character.
+     *
+     * @return the location.
+     */
+    @Observable
+    public String getLocation() {
+        return _location;
+    }
 
-  @JsProperty( name = "document", namespace = JsPackage.GLOBAL )
-  private static native Document document();
+    @Observable
+    void setLocation(final String location) {
+        _location = location;
+    }
+
+    @Observable
+    public String getBrowserLocation() {
+        return _browserLocation;
+    }
+
+    void setBrowserLocation(final String browserLocation) {
+        _browserLocation = browserLocation;
+    }
+
+    @Action
+    void updateBrowserLocation() {
+        final var location = getHash();
+        setBrowserLocation(location);
+        if (_targetLocation.equals(location)) {
+            setLocation(location);
+        }
+    }
+
+    private void onHashChangeEvent(final HashChangeEvent e) {
+        if (_preventDefault) {
+            e.preventDefault();
+        }
+        updateBrowserLocation();
+    }
+
+    private String getHash() {
+        return location().hash().substring(1);
+    }
+
+    private void setHash(final String hash) {
+        final var location = location();
+        if (0 == hash.length()) {
+            /*
+             * This code is needed to remove the stray #.
+             * See https://stackoverflow.com/questions/1397329/how-to-remove-the-hash-from-window-location-url-with-javascript-without-page-r/5298684#5298684
+             */
+            history().pushState("", document().title(), location.pathname() + location.search());
+        } else {
+            location.setHash(hash);
+        }
+    }
+
+    @JsMethod(name = "addEventListener", namespace = JsPackage.GLOBAL)
+    private static native void addEventListener(String type, HashChangeEventListener listener, boolean capture);
+
+    @JsMethod(name = "removeEventListener", namespace = JsPackage.GLOBAL)
+    private static native void removeEventListener(String type, HashChangeEventListener listener, boolean capture);
+
+    @JsProperty(name = "location", namespace = JsPackage.GLOBAL)
+    private static native Location location();
+
+    @JsProperty(name = "history", namespace = JsPackage.GLOBAL)
+    private static native History history();
+
+    @JsProperty(name = "document", namespace = JsPackage.GLOBAL)
+    private static native Document document();
 }

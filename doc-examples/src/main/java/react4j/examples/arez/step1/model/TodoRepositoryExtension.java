@@ -4,25 +4,22 @@ import arez.annotations.ArezComponentLike;
 import arez.annotations.Memoize;
 
 @ArezComponentLike
-public interface TodoRepositoryExtension
-{
-  @Memoize
-  default int totalCount()
-  {
-    return self().findAll().size();
-  }
+public interface TodoRepositoryExtension {
+    @Memoize
+    default int totalCount() {
+        return self().findAll().size();
+    }
 
-  @Memoize
-  default int activeCount()
-  {
-    return (int) self().findAll().stream().filter( todo -> !todo.isCompleted() ).count();
-  }
+    @Memoize
+    default int activeCount() {
+        return (int)
+                self().findAll().stream().filter(todo -> !todo.isCompleted()).count();
+    }
 
-  @Memoize
-  default int completedCount()
-  {
-    return totalCount() - activeCount();
-  }
+    @Memoize
+    default int completedCount() {
+        return totalCount() - activeCount();
+    }
 
-  TodoRepository self();
+    TodoRepository self();
 }

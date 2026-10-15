@@ -18,7 +18,8 @@ java_format_check(
         "//processor",
         "//processor/src/test/java/react4j/processor:test_classes",
         "//tools/testing/src/main/java/react4j/testing:golden_updater",
-        "//tools/browser:smoke_java",
+        "//tools/browser:preview",
+        "//doc-examples:java",
         "//tools/release:artifact_check",
         "//tools/release/consumer/src/main/java/isolated:packaged_consumer",
         "//tools/release:jar_builder",
@@ -98,4 +99,9 @@ j2cl_library(
         "//third_party/java:zemeckis_core-j2cl",
         "@arez//:core-j2cl",
     ],
+)
+
+test_suite(
+    name = "browser_tests",
+    tests = ["//doc-examples:browser_tests"],
 )

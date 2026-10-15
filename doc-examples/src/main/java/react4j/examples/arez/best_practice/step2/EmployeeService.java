@@ -3,63 +3,54 @@ package react4j.examples.arez.best_practice.step2;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
+import org.jspecify.annotations.Nullable;
 
 @ArezComponent
-public abstract class EmployeeService
-{
-  private boolean _loading;
-  private String _employeeData;
-  private String _errorMessage;
-  private boolean _loadEmployeeData;
+public abstract class EmployeeService {
+    private boolean _loading;
+    private @Nullable String _employeeData;
+    private @Nullable String _errorMessage;
+    private boolean _loadEmployeeData;
 
-  @Observable( name = "loadEmployeeData" )
-  public boolean shouldLoadEmployeeData()
-  {
-    return _loadEmployeeData;
-  }
+    @Observable(name = "loadEmployeeData")
+    public boolean shouldLoadEmployeeData() {
+        return _loadEmployeeData;
+    }
 
-  public void setLoadEmployeeData( final boolean loadEmployeeData )
-  {
-    _loadEmployeeData = loadEmployeeData;
-  }
+    public void setLoadEmployeeData(final boolean loadEmployeeData) {
+        _loadEmployeeData = loadEmployeeData;
+    }
 
-  @Action
-  public void changeToEmployeeView()
-  {
-    setLoadEmployeeData( true );
-  }
+    @Action
+    public void changeToEmployeeView() {
+        setLoadEmployeeData(true);
+    }
 
-  //EXAMPLE ENDS HERE
-  @Observable
-  public boolean isLoading()
-  {
-    return _loading;
-  }
+    // EXAMPLE ENDS HERE
+    @Observable
+    public boolean isLoading() {
+        return _loading;
+    }
 
-  public void setLoading( final boolean loading )
-  {
-    _loading = loading;
-  }
+    public void setLoading(final boolean loading) {
+        _loading = loading;
+    }
 
-  @Observable
-  public String getEmployeeData()
-  {
-    return _employeeData;
-  }
+    @Observable
+    public @Nullable String getEmployeeData() {
+        return _employeeData;
+    }
 
-  public void setEmployeeData( final String employeeData )
-  {
-    _employeeData = employeeData;
-  }
+    public void setEmployeeData(final String employeeData) {
+        _employeeData = employeeData;
+    }
 
-  @Observable
-  public String getErrorMessage()
-  {
-    return _errorMessage;
-  }
+    @Observable
+    public @Nullable String getErrorMessage() {
+        return _errorMessage;
+    }
 
-  public void setErrorMessage( final String errorMessage )
-  {
-    _errorMessage = errorMessage;
-  }
+    public void setErrorMessage(final String errorMessage) {
+        _errorMessage = errorMessage;
+    }
 }

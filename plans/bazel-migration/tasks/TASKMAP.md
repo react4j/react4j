@@ -3,7 +3,7 @@
 - Spec: [SPEC.md](../SPEC.md)
 - Active tree: `plans/bazel-migration/`
 - Status: `implementing`
-- Current frontier: `T10`
+- Current frontier: `T11`
 - Planning reviewer: `/root/planning_reviewer` (`2/3` rounds; Findings: none)
 - Plan checkpoint: `automatic` (user-confirmed grill-me understanding and passing planning review)
 - Implementation reviewer: `pending` (`0/5` rounds)
@@ -26,8 +26,8 @@
 | T07 | [Complete strict golden verification](T07-strict-goldens.md) | complete | T06 |
 | T08 | [Maven-equivalent publication archives](T08-publication.md) | complete | T07 |
 | T09 | [J2CL libraries from publication sources](T09-j2cl-libraries.md) | complete | T08 |
-| T10 | [J2CL examples and browser verification](T10-browser-examples.md) | in_progress | T09 |
-| T11 | [Java documentation site](T11-java-site.md) | pending | T10 |
+| T10 | [J2CL examples and browser verification](T10-browser-examples.md) | complete | T09 |
+| T11 | [Java documentation site](T11-java-site.md) | in_progress | T10 |
 | T12 | [Explicit release operations](T12-release-tools.md) | pending | T11 |
 | T13 | [Contributor guidance and obsolete infrastructure removal](T13-docs-cleanup.md) | pending | T12 |
 | T14 | [Shared CI gate and full verification](T14-ci-gate.md) | pending | T13 |
