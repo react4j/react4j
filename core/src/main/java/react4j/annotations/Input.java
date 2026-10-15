@@ -35,9 +35,9 @@ import java.lang.annotation.Target;
  *   {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a key "React4j:ProtectedMethod".
  * </li>
  * <li>
- *   Should be annotated with either {@link javax.annotation.Nonnull} or {@link javax.annotation.Nullable} if the
- *   return type is not a primitive. A warning will be generated but can be suppressed by the {@link SuppressWarnings}
- *   or {@link SuppressReact4jWarnings} annotations with a key "React4j:MissingInputNullability".
+ *   Nullness follows the declaring JSpecify scope. Use {@link org.jspecify.annotations.Nullable}
+ *   for nullable input values, or declare a {@link org.jspecify.annotations.NullMarked} scope for
+ *   non-null defaults. Legacy nullability annotations are ignored.
  * </li>
  * </ul>
  */
@@ -76,8 +76,11 @@ public @interface Input {
      * If set to {@link Feature#ENABLE} then the user MUST supply the input and the builder will require the user
      * to specify the value. If set to {@link Feature#DISABLE} then the user can optionally supply the input.
      * If set to {@link Feature#AUTODETECT} then the annotation processor will treat it as {@link Feature#DISABLE}
-     * if there is a corresponding {@link InputDefault} for the input or {@link #fromTreeContext()} is
-     * {@code true}, otherwise it will be treated as {@link Feature#ENABLE}. The value of this setting must not
+     * if the input is nullable, has a corresponding {@link InputDefault}, or {@link #fromTreeContext()}
+     * is {@code true}; otherwise it is treated as {@link Feature#ENABLE}. A required nullable input still
+     * requires a builder call and permits a null value. An optional non-null reference input requires
+     * a non-null default or a tree-context source. Parametric nullness requires explicit requiredness
+     * or a valid default. The value of this setting must not
      * be {@link Feature#ENABLE} when {@link #fromTreeContext()} is {@code true}.
      *
      * @return the flag indicating whether the input needs to be supplied.

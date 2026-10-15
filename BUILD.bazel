@@ -1,3 +1,4 @@
+load("@rules_java//java:defs.bzl", "java_import", "java_plugin")
 load("@rules_palantir_java_format//:defs.bzl", "java_format_check")
 
 package(default_visibility = ["//visibility:public"])
@@ -16,7 +17,50 @@ java_format_check(
         "//processor",
         "//processor/src/test/java/react4j/processor:test_classes",
         "//tools/testing/src/main/java/react4j/testing:golden_updater",
+        "//tools/release:artifact_check",
+        "//tools/release/consumer/src/main/java/isolated:packaged_consumer",
+        "//tools/release:jar_builder",
+        "//tools/release:javadoc_jar_builder",
         "//tools/generation:dom_generator",
         "//tools/generation:react_asset_patcher",
     ],
+)
+
+_RUNTIME = [
+    "//third_party/java:arez_core",
+    "//third_party/java:base",
+    "//third_party/java:braincheck_core",
+    "//third_party/java:grim_annotations",
+    "//third_party/java:javaemul_internal_annotations",
+    "//third_party/java:jsinterop_annotations",
+    "//third_party/java:jspecify",
+    "//third_party/java:org_jetbrains_annotations",
+    "//third_party/java:zemeckis_core",
+]
+
+java_import(
+    name = "core",
+    jars = ["//tools/release:core_jar"],
+    srcjar = "//tools/release:core_sources",
+    exports = _RUNTIME,
+)
+
+java_import(
+    name = "dom",
+    jars = ["//tools/release:dom_jar"],
+    srcjar = "//tools/release:dom_sources",
+    exports = [":core"] + _RUNTIME,
+)
+
+java_import(
+    name = "processor",
+    jars = ["//tools/release:processor_jar"],
+    srcjar = "//tools/release:processor_sources",
+)
+
+java_plugin(
+    name = "react4j_processor_plugin",
+    generates_api = True,
+    processor_class = "react4j.processor.React4jProcessor",
+    deps = [":processor"],
 )

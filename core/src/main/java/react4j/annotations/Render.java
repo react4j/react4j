@@ -29,9 +29,8 @@ import java.lang.annotation.Target;
  *   {@link SuppressWarnings} or {@link SuppressReact4jWarnings} annotations with a key "React4j:ProtectedMethod".
  * </li>
  * <li>
- *   Should be annotated with either {@link javax.annotation.Nonnull} or {@link javax.annotation.Nullable}. If neither
- *   annoation is present then a warning will be generated but can be suppressed by the {@link SuppressWarnings} or
- *   {@link SuppressReact4jWarnings} annotations with a key "React4j:MissingRenderNullability".
+ *   Nullness follows the declaring JSpecify scope. Annotate a method that can return no content with
+ *   {@link org.jspecify.annotations.Nullable}. Legacy nullability annotations are ignored.
  * </li>
  * </ul>
  */

@@ -1,0 +1,35 @@
+load("//third_party/java:rules.bzl", "java_binary", "java_library")
+
+package(default_visibility = ["//tools/release:__pkg__"])
+
+java_binary(
+    name = "jar_builder",
+    srcs = [
+        "JarBuilder.java",
+        "package-info.java",
+    ],
+    main_class = "react4j.release.JarBuilder",
+)
+
+java_binary(
+    name = "javadoc_jar_builder",
+    srcs = [
+        "JavadocJarBuilder.java",
+        "package-info.java",
+    ],
+    main_class = "react4j.release.JavadocJarBuilder",
+)
+
+java_library(
+    name = "artifact_check_classes",
+    srcs = [
+        "ArtifactCheck.java",
+        "package-info.java",
+    ],
+)
+
+java_binary(
+    name = "artifact_check",
+    main_class = "react4j.release.ArtifactCheck",
+    runtime_deps = [":artifact_check_classes"],
+)

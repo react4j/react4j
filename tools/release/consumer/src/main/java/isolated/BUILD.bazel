@@ -1,0 +1,46 @@
+load("//third_party/java:rules.bzl", "java_test")
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "Consumer.java",
+        "Parent.java",
+        "SampleView.java",
+    ],
+    visibility = ["//tools/release:__pkg__"],
+)
+
+java_test(
+    name = "packaged_consumer",
+    srcs = [
+        "Consumer.java",
+        "Parent.java",
+        "SampleView.java",
+    ],
+    jvm_flags = [
+        "-Dreact4j.environment=development",
+        "-Dbraincheck.environment=development",
+    ],
+    main_class = "isolated.Consumer",
+    plugins = [
+        "//:react4j_processor_plugin",
+        "@arez//:arez_processor_plugin",
+        "@sting//:sting_processor_plugin",
+    ],
+    use_testrunner = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//third_party/java:sting_core",
+    ],
+)
+
+exports_files(
+    [
+        "Consumer.java",
+        "Parent.java",
+        "SampleView.java",
+    ],
+    visibility = ["//tools/release:__pkg__"],
+)

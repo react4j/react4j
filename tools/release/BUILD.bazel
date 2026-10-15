@@ -1,0 +1,452 @@
+load("//third_party/java:rules.bzl", "java_test")
+load(":release.bzl", "release_jar", "release_javadoc_jar", "release_pom", "release_source_inputs", "release_source_jar", "release_version", "release_version_file")
+
+package(default_visibility = ["//visibility:public"])
+
+release_version(
+    name = "version",
+    build_setting_default = "0.0.0-SNAPSHOT",
+)
+
+# This must name a release containing the pinned migrated Arez revision before publishing.
+release_version(
+    name = "arez_version",
+    build_setting_default = "0.0.0-SNAPSHOT",
+)
+
+release_version_file(
+    name = "version_file",
+    out = "version.txt",
+)
+
+release_version_file(
+    name = "arez_version_file",
+    out = "arez-version.txt",
+    version = ":arez_version",
+)
+
+alias(
+    name = "jar_builder",
+    actual = "//tools/release/src/main/java/react4j/release:jar_builder",
+)
+
+alias(
+    name = "javadoc_jar_builder",
+    actual = "//tools/release/src/main/java/react4j/release:javadoc_jar_builder",
+)
+
+release_jar(
+    name = "core_jar",
+    out = "react4j-core.jar",
+    exclude_prefixes = ["react4j/react4j.js"],
+    java_targets = ["//core/src/main/java/react4j"],
+    resource_entries = ["META-INF/LICENSE"],
+    resource_files = ["//:LICENSE"],
+)
+
+release_source_jar(
+    name = "core_sources",
+    out = "react4j-core-sources.jar",
+    java_targets = ["//core/src/main/java/react4j"],
+    resource_entries = [
+        "META-INF/LICENSE",
+        "react4j/react4j.js",
+        "react4j/react.externs.js",
+        "react4j/public/dev/react.js",
+        "react4j/public/react.js",
+    ],
+    resource_files = [
+        "//:LICENSE",
+        "//core/src/main/java/react4j:react4j.js",
+        "//core/src/main/java/react4j:react.externs.js",
+        "//tools/generation:react_dev",
+        "//tools/generation:react_prod",
+    ],
+)
+
+release_javadoc_jar(
+    name = "core_javadoc",
+    out = "react4j-core-javadoc.jar",
+    classpath = [
+        "//core/src/main/java/react4j",
+        "//dom/src/main/java/react4j/dom",
+        "//processor/src/main/java/react4j/processor",
+        "//third_party/java:arez_core",
+        "//third_party/java:base",
+        "//third_party/java:braincheck_core",
+        "//third_party/java:grim_annotations",
+        "//third_party/java:javaemul_internal_annotations",
+        "//third_party/java:jsinterop_annotations",
+        "//third_party/java:jspecify",
+        "//third_party/java:org_jetbrains_annotations",
+        "//third_party/java:zemeckis_core",
+        "//third_party/java:proton_core",
+        "//third_party/java:javapoet",
+    ],
+    java_targets = ["//core/src/main/java/react4j"],
+)
+
+release_pom(
+    name = "core_pom",
+    out = "react4j-core.pom",
+    artifact_id = "react4j-core",
+    dependencies = [
+        "org.jspecify:jspecify:1.0.0",
+        "org.realityforge.arez:arez-core:{arez_version}",
+        "org.realityforge.braincheck:braincheck-core:1.35.0",
+        "org.realityforge.grim:grim-annotations:0.09",
+        "com.google.jsinterop:jsinterop-annotations:2.0.0",
+        "com.google.jsinterop:base:1.0.0",
+        "org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:1.7.0",
+        "org.realityforge.zemeckis:zemeckis-core:0.18",
+        "org.realityforge.javaemul.internal.annotations:javaemul.internal.annotations:0.01",
+    ],
+    description = "React4j core binding and infrastructure",
+    display_name = "React4j Core",
+)
+
+release_jar(
+    name = "dom_jar",
+    out = "react4j-dom.jar",
+    java_targets = ["//dom/src/main/java/react4j/dom"],
+    resource_entries = ["META-INF/LICENSE"],
+    resource_files = ["//:LICENSE"],
+)
+
+release_source_jar(
+    name = "dom_sources",
+    out = "react4j-dom-sources.jar",
+    java_targets = ["//dom/src/main/java/react4j/dom"],
+    resource_entries = [
+        "META-INF/LICENSE",
+        "react4j/dom/public/dev/react-dom.js",
+        "react4j/dom/public/react-dom.js",
+    ],
+    resource_files = [
+        "//:LICENSE",
+        "//tools/generation:react_dom_dev",
+        "//tools/generation:react_dom_prod",
+    ],
+)
+
+release_javadoc_jar(
+    name = "dom_javadoc",
+    out = "react4j-dom-javadoc.jar",
+    classpath = [
+        "//core/src/main/java/react4j",
+        "//dom/src/main/java/react4j/dom",
+        "//processor/src/main/java/react4j/processor",
+        "//third_party/java:arez_core",
+        "//third_party/java:base",
+        "//third_party/java:braincheck_core",
+        "//third_party/java:grim_annotations",
+        "//third_party/java:javaemul_internal_annotations",
+        "//third_party/java:jsinterop_annotations",
+        "//third_party/java:jspecify",
+        "//third_party/java:org_jetbrains_annotations",
+        "//third_party/java:zemeckis_core",
+        "//third_party/java:proton_core",
+        "//third_party/java:javapoet",
+    ],
+    java_targets = ["//dom/src/main/java/react4j/dom"],
+)
+
+release_pom(
+    name = "dom_pom",
+    out = "react4j-dom.pom",
+    artifact_id = "react4j-dom",
+    dependencies = [
+        "org.jspecify:jspecify:1.0.0",
+        "org.realityforge.arez:arez-core:{arez_version}",
+        "org.realityforge.braincheck:braincheck-core:1.35.0",
+        "org.realityforge.grim:grim-annotations:0.09",
+        "com.google.jsinterop:jsinterop-annotations:2.0.0",
+        "com.google.jsinterop:base:1.0.0",
+        "org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:1.7.0",
+        "org.realityforge.zemeckis:zemeckis-core:0.18",
+        "org.realityforge.javaemul.internal.annotations:javaemul.internal.annotations:0.01",
+        "org.realityforge.react4j:react4j-core:{version}",
+    ],
+    description = "React4j dom binding and infrastructure",
+    display_name = "React4j Dom",
+)
+
+release_jar(
+    name = "processor_jar",
+    out = "react4j-processor.jar",
+    exclude_prefixes = [
+        "META-INF/maven/com.fasterxml.jackson",
+        "META-INF/maven/com.google.code.findbugs/jsr305/",
+        "META-INF/maven/com.google.errorprone/error_prone_annotations/",
+        "META-INF/maven/com.google.j2objc/j2objc-annotations/",
+        "META-INF/versions/",
+        "javax/annotation/",
+        "react4j/processor/vendor/proton/vendor/google/errorprone/",
+        "react4j/processor/vendor/proton/vendor/google/j2objc/",
+        "react4j/processor/vendor/proton/vendor/jackson/",
+        "react4j/processor/vendor/proton/vendor/jspecify/",
+        "META-INF/services/react4j.processor.vendor.proton.vendor.jackson.",
+    ],
+    jars = [
+        "@javapoet//file",
+        "@proton//:core",
+    ],
+    java_targets = ["//processor/src/main/java/react4j/processor"],
+    relocations = [
+        "com.palantir.javapoet=react4j.processor.vendor.javapoet",
+        "org.realityforge.proton=react4j.processor.vendor.proton",
+    ],
+    resource_entries = ["META-INF/LICENSE"],
+    resource_files = ["//:LICENSE"],
+)
+
+release_source_jar(
+    name = "processor_sources",
+    out = "react4j-processor-sources.jar",
+    java_targets = ["//processor/src/main/java/react4j/processor"],
+    resource_entries = [
+        "META-INF/LICENSE",
+        "META-INF/services/javax.annotation.processing.Processor",
+    ],
+    resource_files = [
+        "//:LICENSE",
+        "//processor/src/main/resources/META-INF/services:javax.annotation.processing.Processor",
+    ],
+)
+
+release_javadoc_jar(
+    name = "processor_javadoc",
+    out = "react4j-processor-javadoc.jar",
+    classpath = [
+        "//core/src/main/java/react4j",
+        "//dom/src/main/java/react4j/dom",
+        "//processor/src/main/java/react4j/processor",
+        "//third_party/java:arez_core",
+        "//third_party/java:base",
+        "//third_party/java:braincheck_core",
+        "//third_party/java:grim_annotations",
+        "//third_party/java:javaemul_internal_annotations",
+        "//third_party/java:jsinterop_annotations",
+        "//third_party/java:jspecify",
+        "//third_party/java:org_jetbrains_annotations",
+        "//third_party/java:zemeckis_core",
+        "//third_party/java:proton_core",
+        "//third_party/java:javapoet",
+    ],
+    java_targets = ["//processor/src/main/java/react4j/processor"],
+)
+
+release_pom(
+    name = "processor_pom",
+    out = "react4j-processor.pom",
+    artifact_id = "react4j-processor",
+    dependencies = [],
+    description = "React4j processor binding and infrastructure",
+    display_name = "React4j Processor",
+)
+
+release_javadoc_jar(
+    name = "site_javadoc",
+    out = "react4j-api-javadoc.jar",
+    classpath = [
+        "//core/src/main/java/react4j",
+        "//dom/src/main/java/react4j/dom",
+        "//processor/src/main/java/react4j/processor",
+        "//third_party/java:arez_core",
+        "//third_party/java:base",
+        "//third_party/java:braincheck_core",
+        "//third_party/java:grim_annotations",
+        "//third_party/java:javaemul_internal_annotations",
+        "//third_party/java:jsinterop_annotations",
+        "//third_party/java:jspecify",
+        "//third_party/java:org_jetbrains_annotations",
+        "//third_party/java:zemeckis_core",
+        "//third_party/java:proton_core",
+        "//third_party/java:javapoet",
+    ],
+    java_targets = [
+        "//core/src/main/java/react4j",
+        "//dom/src/main/java/react4j/dom",
+        "//processor/src/main/java/react4j/processor",
+    ],
+)
+
+filegroup(
+    name = "binary_and_sources",
+    srcs = [
+        ":core_jar",
+        ":core_sources",
+        ":dom_jar",
+        ":dom_sources",
+        ":processor_jar",
+        ":processor_sources",
+    ],
+)
+
+filegroup(
+    name = "maven_artifacts",
+    srcs = [
+        ":core_jar",
+        ":core_javadoc",
+        ":core_pom",
+        ":core_sources",
+        ":dom_jar",
+        ":dom_javadoc",
+        ":dom_pom",
+        ":dom_sources",
+        ":processor_jar",
+        ":processor_javadoc",
+        ":processor_pom",
+        ":processor_sources",
+    ],
+)
+
+alias(
+    name = "artifact_check",
+    actual = "//tools/release/src/main/java/react4j/release:artifact_check",
+)
+
+release_source_inputs(
+    name = "core_source_inputs",
+    java_targets = ["//core/src/main/java/react4j"],
+)
+
+release_source_inputs(
+    name = "dom_source_inputs",
+    java_targets = ["//dom/src/main/java/react4j/dom"],
+)
+
+release_source_inputs(
+    name = "processor_source_inputs",
+    java_targets = ["//processor/src/main/java/react4j/processor"],
+)
+
+java_test(
+    name = "archive_checks",
+    size = "medium",
+    srcs = [],
+    args = [
+        "--version",
+        "$(rootpath :version_file)",
+        "--arez-version",
+        "$(rootpath :arez_version_file)",
+        "--site-javadoc",
+        "$(rootpath :site_javadoc)",
+        "--core-jar",
+        "$(rootpath :core_jar)",
+        "--core-sources",
+        "$(rootpath :core_sources)",
+        "--core-javadoc",
+        "$(rootpath :core_javadoc)",
+        "--core-pom",
+        "$(rootpath :core_pom)",
+        "--core-raw-sources",
+        "$(rootpath :core_source_inputs)",
+        "--dom-jar",
+        "$(rootpath :dom_jar)",
+        "--dom-sources",
+        "$(rootpath :dom_sources)",
+        "--dom-javadoc",
+        "$(rootpath :dom_javadoc)",
+        "--dom-pom",
+        "$(rootpath :dom_pom)",
+        "--dom-raw-sources",
+        "$(rootpath :dom_source_inputs)",
+        "--processor-jar",
+        "$(rootpath :processor_jar)",
+        "--processor-sources",
+        "$(rootpath :processor_sources)",
+        "--processor-javadoc",
+        "$(rootpath :processor_javadoc)",
+        "--processor-pom",
+        "$(rootpath :processor_pom)",
+        "--processor-raw-sources",
+        "$(rootpath :processor_source_inputs)",
+        "--core-resource",
+        "react4j/react4j.js=$(rootpath //core/src/main/java/react4j:react4j.js)",
+        "--core-resource",
+        "react4j/react.externs.js=$(rootpath //core/src/main/java/react4j:react.externs.js)",
+        "--core-resource",
+        "react4j/public/dev/react.js=$(rootpath //tools/generation:react_dev)",
+        "--core-resource",
+        "react4j/public/react.js=$(rootpath //tools/generation:react_prod)",
+        "--dom-resource",
+        "react4j/dom/public/dev/react-dom.js=$(rootpath //tools/generation:react_dom_dev)",
+        "--dom-resource",
+        "react4j/dom/public/react-dom.js=$(rootpath //tools/generation:react_dom_prod)",
+        "--dependency",
+        "$(rootpath //third_party/java:arez_core)",
+        "--dependency",
+        "$(rootpath //third_party/java:base)",
+        "--dependency",
+        "$(rootpath //third_party/java:braincheck_core)",
+        "--dependency",
+        "$(rootpath //third_party/java:grim_annotations)",
+        "--dependency",
+        "$(rootpath //third_party/java:javaemul_internal_annotations)",
+        "--dependency",
+        "$(rootpath //third_party/java:jsinterop_annotations)",
+        "--dependency",
+        "$(rootpath //third_party/java:jspecify)",
+        "--dependency",
+        "$(rootpath //third_party/java:org_jetbrains_annotations)",
+        "--dependency",
+        "$(rootpath //third_party/java:zemeckis_core)",
+        "--dependency",
+        "$(rootpath //third_party/java:sting_core)",
+        "--arez-processor",
+        "$(rootpath @arez//tools/release:processor_jar)",
+        "--sting-processor",
+        "$(rootpath @sting//tools/release:processor_jar)",
+        "--consumer-source",
+        "$(rootpath //tools/release/consumer/src/main/java/isolated:Consumer.java)",
+        "--consumer-source",
+        "$(rootpath //tools/release/consumer/src/main/java/isolated:Parent.java)",
+        "--consumer-source",
+        "$(rootpath //tools/release/consumer/src/main/java/isolated:SampleView.java)",
+    ],
+    data = [
+        ":arez_version_file",
+        ":core_jar",
+        ":core_javadoc",
+        ":core_pom",
+        ":core_source_inputs",
+        ":core_sources",
+        ":dom_jar",
+        ":dom_javadoc",
+        ":dom_pom",
+        ":dom_source_inputs",
+        ":dom_sources",
+        ":processor_jar",
+        ":processor_javadoc",
+        ":processor_pom",
+        ":processor_source_inputs",
+        ":processor_sources",
+        ":site_javadoc",
+        ":version_file",
+        "//core/src/main/java/react4j:react.externs.js",
+        "//core/src/main/java/react4j:react4j.js",
+        "//third_party/java:arez_core",
+        "//third_party/java:base",
+        "//third_party/java:braincheck_core",
+        "//third_party/java:grim_annotations",
+        "//third_party/java:javaemul_internal_annotations",
+        "//third_party/java:jsinterop_annotations",
+        "//third_party/java:jspecify",
+        "//third_party/java:org_jetbrains_annotations",
+        "//third_party/java:sting_core",
+        "//third_party/java:zemeckis_core",
+        "//tools/generation:react_dev",
+        "//tools/generation:react_dom_dev",
+        "//tools/generation:react_dom_prod",
+        "//tools/generation:react_prod",
+        "//tools/release/consumer/src/main/java/isolated:Consumer.java",
+        "//tools/release/consumer/src/main/java/isolated:Parent.java",
+        "//tools/release/consumer/src/main/java/isolated:SampleView.java",
+        "@arez//tools/release:processor_jar",
+        "@sting//tools/release:processor_jar",
+    ],
+    main_class = "react4j.release.ArtifactCheck",
+    use_testrunner = False,
+    runtime_deps = ["//tools/release/src/main/java/react4j/release:artifact_check_classes"],
+)

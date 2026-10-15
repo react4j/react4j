@@ -14,6 +14,16 @@
       "spec": {
         "reproducibility": "always"
       }
+    },
+    "//tools/release/src/main/java/react4j/release/jar_builder": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//tools/release/src/main/java/react4j/release/javadoc_jar_builder": {
+      "spec": {
+        "reproducibility": "always"
+      }
     }
   }
 }
