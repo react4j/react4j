@@ -1,28 +1,26 @@
 # Web Speech Demo
 
-A browser speech synthesis example built with React4j and Arez, inspired by
-[eeejay/webspeechdemos](https://github.com/eeejay/webspeechdemos).
+A browser speech synthesis example built with React4j and Arez.
 
-Run from the repository root:
+[Try Web Speech Demo](https://react4j.github.io/webspeechdemo/), or run it locally from the
+repository root:
 
 ```sh
 tools/examples.sh serve webspeechdemo development
-tools/examples.sh build webspeechdemo production
-bazel test //examples/webspeechdemo:browser_tests
-bazel test -c opt //examples/webspeechdemo:browser_tests
 ```
 
-The preview serves at http://localhost:3000. Edit the text, adjust pitch, rate and volume,
-select a voice, and use Speak, Pause/Resume and Stop. Reset buttons restore each setting.
-The demo highlights word boundaries reported by the speech engine. Voice availability,
-boundary events and audible playback depend on the browser and operating system.
+Open [localhost:3000](http://localhost:3000). See [CONTRIBUTING.md](../../CONTRIBUTING.md)
+for build setup and other commands.
 
-The generated site serves the production app at `/webspeechdemo/` and the development app
-at `/webspeechdemo_dev/`. Build or preview it with `tools/site.sh build` or `tools/site.sh serve`.
+Available voices and word highlighting depend on the browser and operating system. If the
+page is blank, check the browser console for `Speech API not present`.
 
-Browser tests load the packaged page and exercise the native speech API with a silent
-utterance. Separate deterministic tests control the speech engine and voice inventory while
-retaining native utterances, events and DOM ranges. They cover voice changes, settings,
-speech lifecycle, highlighting and the unsupported-API path; they do not verify audible output.
+To explore the code:
 
-Application code uses the repository's [Apache 2.0 license](../../LICENSE).
+- [Application.java](src/main/java/react4j/webspeechdemo/Application.java) connects the
+  speech controls to the model and positions the word highlight using a DOM range.
+- [SpeechData.java](src/main/java/react4j/webspeechdemo/SpeechData.java) connects browser
+  speech events and voice-list changes to Arez state.
+
+Inspired by [eeejay/webspeechdemos](https://github.com/eeejay/webspeechdemos).
+Code uses the repository's [Apache 2.0 license](../../LICENSE).

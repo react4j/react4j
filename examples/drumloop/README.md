@@ -1,24 +1,28 @@
 # Drumloop
 
-A drum machine built with React4j, Arez, Sting, Web Audio, and experimental React Suspense.
+A Web Audio drum machine with React4j views and Arez state.
 
-Run from the repository root:
+[Try Drumloop](https://react4j.github.io/drumloop/), or run it locally from the repository root:
 
 ```sh
 tools/examples.sh serve drumloop development
-tools/examples.sh build drumloop production
-bazel test //examples/drumloop:browser_tests
-bazel test -c opt //examples/drumloop:browser_tests
 ```
 
-The preview serves at http://localhost:3000. Use Play/Stop and the BPM input to control the
-sequencer. Click a step to toggle it; Shift-click selects a doubled hit. Hold an effect button
-for momentary playback, or Shift-click to loop it and click again to stop.
+Open [localhost:3000](http://localhost:3000). See [CONTRIBUTING.md](../../CONTRIBUTING.md)
+for build setup and other commands.
 
-The generated documentation site includes `/drumloop/`, `/drumloop/drumloop/` (production),
-and `/drumloop/drumloop_dev/` (development). Build or preview it with `tools/site.sh build`
-or `tools/site.sh serve`.
+Shift-click a step for a doubled hit. Hold an effect button for momentary playback, or
+Shift-click to loop it and click again to stop.
 
-The application uses local sound samples and the Righteous font. The font's license is in
-[public/fonts/OFL.txt](public/fonts/OFL.txt); application code uses the repository's
-[Apache 2.0 license](../../LICENSE).
+To explore the code:
+
+- [DrumMachine.java](src/main/java/react4j/drumloop/model/DrumMachine.java) owns tempo,
+  sequencing and audio playback.
+- [DrumMachineView.java](src/main/java/react4j/drumloop/views/DrumMachineView.java) and
+  [ReactCache.java](src/main/java/react4j/drumloop/cache/ReactCache.java) use experimental
+  React Suspense to wait for sound samples to load.
+- [DrumLoopInjector.java](src/main/java/react4j/drumloop/ioc/DrumLoopInjector.java) wires the
+  model and views with Sting.
+
+Code uses the repository's [Apache 2.0 license](../../LICENSE). The Righteous font has its
+own [license](public/fonts/OFL.txt).
