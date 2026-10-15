@@ -1,5 +1,6 @@
 package com.example.jspecify;
 
+import java.util.ArrayList;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
@@ -10,6 +11,10 @@ import react4j.ReactNode;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
+@SuppressWarnings({
+    "NonApiType",
+    "deprecation"
+})
 final class PresenceBuilder {
   private PresenceBuilder() {
   }
@@ -42,6 +47,12 @@ final class PresenceBuilder {
         pure = true
     )
     Step2 defaulted(String defaulted);
+
+    @Contract(
+        pure = true
+    )
+    @Deprecated
+    Step2 collection(@Nullable ArrayList<String> collection);
 
     @Contract(
         pure = true
@@ -82,6 +93,16 @@ final class PresenceBuilder {
     )
     public final Step2 defaulted(final String defaulted) {
       _element.input( React4j_PresenceView.Inputs.defaulted, defaulted );
+      return this;
+    }
+
+    @Override
+    @Contract(
+        pure = true
+    )
+    @Deprecated
+    public final Step2 collection(final @Nullable ArrayList<String> collection) {
+      _element.input( React4j_PresenceView.Inputs.collection, collection );
       return this;
     }
 

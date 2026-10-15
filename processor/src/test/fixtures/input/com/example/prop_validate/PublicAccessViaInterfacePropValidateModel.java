@@ -13,7 +13,7 @@ abstract class PublicAccessViaInterfacePropValidateModel
   implements PropValidateInterface
 {
   @InputValidate
-  public void validateMyProp( String prop )
+  public void validateMyProp( @Nullable String prop )
   {
   }
 

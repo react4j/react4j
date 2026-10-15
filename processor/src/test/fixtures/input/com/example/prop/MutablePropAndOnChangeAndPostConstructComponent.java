@@ -22,7 +22,7 @@ abstract class MutablePropAndOnChangeAndPostConstructComponent
   }
 
   @OnInputChange
-  void onMyPropChange( String myProp )
+  void onMyPropChange( @Nullable String myProp )
   {
   }
 

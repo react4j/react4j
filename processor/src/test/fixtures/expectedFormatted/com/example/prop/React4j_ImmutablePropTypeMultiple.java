@@ -4,13 +4,12 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
@@ -18,6 +17,7 @@ import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
+@NullMarked
 @SuppressArezWarnings({"Arez:UnnecessaryDefault", "Arez:UnnecessaryAllowEmpty"})
 @ArezComponent(
     name = "com_example_prop_ImmutablePropTypeMultiple",
@@ -27,11 +27,8 @@ import react4j.internal.ViewConstructorFunction;
     allowEmpty = true)
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultiple {
-  @Nonnull
-  private final react4j.internal.NativeView $$react4j$$_nativeView;
-
   React4j_ImmutablePropTypeMultiple(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
+      final react4j.internal.NativeView $$react4j$$_nativeView,
       final boolean booleanProp,
       final byte byteProp,
       final char charProp,
@@ -40,32 +37,30 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
       final int intProp,
       final long longProp,
       final short shortProp,
-      @Nonnull final ImmutablePropTypeMultiple.MyEnum enumProp,
-      @Nonnull final ImmutablePropTypeMultiple.KeyedComponent keyedComponentProp,
-      @Nonnull final ImmutablePropTypeMultiple.IdentifiableComponent identifiableProp,
-      @Nonnull final Object objectProp,
-      @Nonnull final ImmutablePropTypeMultiple.ArezComponentLikeComponent arezComponentLikeProp,
-      @Nonnull final ImmutablePropTypeMultiple.ArezComponentComponent arezComponentProp,
-      @Nonnull
-          final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent
-              arezComponentWithExplicitRequireIdProp,
-      @Nullable final ImmutablePropTypeMultiple.MyEnum nullableEnumProp,
-      @Nullable final ImmutablePropTypeMultiple.KeyedComponent nullableKeyedComponentProp,
-      @Nullable final ImmutablePropTypeMultiple.IdentifiableComponent nullableIdentifiableProp,
-      @Nullable final Boolean nullableBoxedBooleanProp,
-      @Nullable final Byte nullableBoxedByteProp,
-      @Nullable final Double nullableBoxedDoubleProp,
-      @Nullable final Float nullableBoxedFloatProp,
-      @Nullable final Integer nullableBoxedIntProp,
-      @Nullable final Long nullableBoxedLongProp,
-      @Nullable final Short nullableBoxedShortProp,
-      @Nullable final Object nullableObjectProp,
-      @Nullable
-          final ImmutablePropTypeMultiple.ArezComponentLikeComponent nullableArezComponentLikeProp,
-      @Nullable final ImmutablePropTypeMultiple.ArezComponentComponent nullableArezComponentProp,
-      @Nullable
-          final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent
-              nullableArezComponentWithExplicitRequireIdProp) {
+      final ImmutablePropTypeMultiple.MyEnum enumProp,
+      final ImmutablePropTypeMultiple.KeyedComponent keyedComponentProp,
+      final ImmutablePropTypeMultiple.IdentifiableComponent identifiableProp,
+      final Object objectProp,
+      final ImmutablePropTypeMultiple.ArezComponentLikeComponent arezComponentLikeProp,
+      final ImmutablePropTypeMultiple.ArezComponentComponent arezComponentProp,
+      final ImmutablePropTypeMultiple.ArezComponentWithExplicitRequireIdComponent
+          arezComponentWithExplicitRequireIdProp,
+      final ImmutablePropTypeMultiple.@Nullable MyEnum nullableEnumProp,
+      final ImmutablePropTypeMultiple.@Nullable KeyedComponent nullableKeyedComponentProp,
+      final ImmutablePropTypeMultiple.@Nullable IdentifiableComponent nullableIdentifiableProp,
+      final @Nullable Boolean nullableBoxedBooleanProp,
+      final @Nullable Byte nullableBoxedByteProp,
+      final @Nullable Double nullableBoxedDoubleProp,
+      final @Nullable Float nullableBoxedFloatProp,
+      final @Nullable Integer nullableBoxedIntProp,
+      final @Nullable Long nullableBoxedLongProp,
+      final @Nullable Short nullableBoxedShortProp,
+      final @Nullable Object nullableObjectProp,
+      final ImmutablePropTypeMultiple.@Nullable ArezComponentLikeComponent
+          nullableArezComponentLikeProp,
+      final ImmutablePropTypeMultiple.@Nullable ArezComponentComponent nullableArezComponentProp,
+      final ImmutablePropTypeMultiple.@Nullable ArezComponentWithExplicitRequireIdComponent
+          nullableArezComponentWithExplicitRequireIdProp) {
     super(
         booleanProp,
         byteProp,
@@ -96,10 +91,8 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
         nullableArezComponentLikeProp,
         nullableArezComponentProp,
         nullableArezComponentWithExplicitRequireIdProp);
-    this.$$react4j$$_nativeView = Objects.requireNonNull($$react4j$$_nativeView);
   }
 
-  @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
@@ -108,7 +101,64 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
     return viewConstructor;
   }
 
-  private static void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
+  private static void $$react4j$$_validateInputValues(
+      final JsPropertyMap<@Nullable Object> inputs) {
+    final Object raw$booleanProp = inputs.get(Inputs.booleanProp);
+    if (React.shouldCheckInvariants()) {
+      Guards.apiInvariant(
+          () -> null != raw$booleanProp,
+          () ->
+              "Required input named 'booleanProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+    }
+    final Object raw$byteProp = inputs.get(Inputs.byteProp);
+    if (React.shouldCheckInvariants()) {
+      Guards.apiInvariant(
+          () -> null != raw$byteProp,
+          () ->
+              "Required input named 'byteProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+    }
+    final Object raw$charProp = inputs.get(Inputs.charProp);
+    if (React.shouldCheckInvariants()) {
+      Guards.apiInvariant(
+          () -> null != raw$charProp,
+          () ->
+              "Required input named 'charProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+    }
+    final Object raw$doubleProp = inputs.get(Inputs.doubleProp);
+    if (React.shouldCheckInvariants()) {
+      Guards.apiInvariant(
+          () -> null != raw$doubleProp,
+          () ->
+              "Required input named 'doubleProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+    }
+    final Object raw$floatProp = inputs.get(Inputs.floatProp);
+    if (React.shouldCheckInvariants()) {
+      Guards.apiInvariant(
+          () -> null != raw$floatProp,
+          () ->
+              "Required input named 'floatProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+    }
+    final Object raw$intProp = inputs.get(Inputs.intProp);
+    if (React.shouldCheckInvariants()) {
+      Guards.apiInvariant(
+          () -> null != raw$intProp,
+          () ->
+              "Required input named 'intProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+    }
+    final Object raw$longProp = inputs.get(Inputs.longProp);
+    if (React.shouldCheckInvariants()) {
+      Guards.apiInvariant(
+          () -> null != raw$longProp,
+          () ->
+              "Required input named 'longProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+    }
+    final Object raw$shortProp = inputs.get(Inputs.shortProp);
+    if (React.shouldCheckInvariants()) {
+      Guards.apiInvariant(
+          () -> null != raw$shortProp,
+          () ->
+              "Required input named 'shortProp' is missing from view named 'ImmutablePropTypeMultiple' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+    }
     final Object raw$enumProp = inputs.get(Inputs.enumProp);
     if (React.shouldCheckInvariants()) {
       Guards.apiInvariant(
@@ -162,7 +212,7 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextInputs) {
+      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if (React.shouldValidateInputValues()) {
       $$react4j$$_validateInputValues(nextInputs);
@@ -181,7 +231,6 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
   }
 
   static final class Factory {
-    @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
 
     private Factory() {}
@@ -274,8 +323,9 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
     private final React4j_ImmutablePropTypeMultiple view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
+      assert null != inputs;
       final boolean booleanProp = inputs.getAsAny(Inputs.booleanProp).asBoolean();
       final byte byteProp = inputs.getAsAny(Inputs.byteProp).asByte();
       final char charProp = inputs.getAsAny(Inputs.charProp).asChar();
@@ -470,8 +520,8 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      if (Disposable.isNotDisposed(view)) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
+      if (null != view && Disposable.isNotDisposed(view)) {
         return view.$$react4j$$_shouldComponentUpdate(nextInputs);
       } else {
         return false;
@@ -480,7 +530,7 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
 
     @Override
     public final void componentWillUnmount() {
-      if (Disposable.isNotDisposed(view)) {
+      if (null != view && Disposable.isNotDisposed(view)) {
         view.$$react4j$$_componentWillUnmount();
       }
     }
@@ -488,7 +538,7 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
     @Override
     @Nullable
     public final ReactNode render() {
-      if (Disposable.isNotDisposed(view)) {
+      if (null != view && Disposable.isNotDisposed(view)) {
         return view.$$react4j$$_render();
       } else {
         return null;

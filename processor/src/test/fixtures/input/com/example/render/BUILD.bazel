@@ -12,8 +12,6 @@ filegroup(
         "NoRenderWithPreRenderView.java",
         "NoRenderWithPreUpdateView.java",
         "RenderFromParentComponent.java",
-        "SuppressedNullabilityRenderView.java",
-        "UnspecifiedNullabilityRenderView.java",
     ],
     visibility = ["//processor/src/test/fixtures:__pkg__"],
 )

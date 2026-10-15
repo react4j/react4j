@@ -10,7 +10,7 @@ import react4j.annotations.Render;
 public abstract class BaseProtectedAccessPropValidateModel
 {
   @InputValidate
-  protected void validateMyProp( String prop )
+  protected void validateMyProp( @Nullable String prop )
   {
   }
 

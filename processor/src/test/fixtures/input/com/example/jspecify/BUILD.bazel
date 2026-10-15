@@ -1,12 +1,15 @@
 filegroup(
     name = "files",
     srcs = [
+        "ConstructorContractView.java",
         "NestedContractBase.java",
         "NestedContractView.java",
         "NullabilityCases.java",
         "NullabilityProbe.java",
+        "ParametricConstructorView.java",
         "ParametricRequiredView.java",
         "PresenceView.java",
+        "UnmarkedConstructorView.java",
     ],
     visibility = ["//processor/src/test/fixtures:__pkg__"],
 )

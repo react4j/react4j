@@ -3,7 +3,7 @@
 - Spec: [SPEC.md](../SPEC.md)
 - Active tree: `plans/bazel-migration/`
 - Status: `implementing`
-- Current frontier: `T07`
+- Current frontier: `T08`
 - Planning reviewer: `/root/planning_reviewer` (`2/3` rounds; Findings: none)
 - Plan checkpoint: `automatic` (user-confirmed grill-me understanding and passing planning review)
 - Implementation reviewer: `pending` (`0/5` rounds)
@@ -23,7 +23,7 @@
 | T04 | [DOM JVM contracts and tests](T04-dom.md) | complete | T03 |
 | T05 | [Processor Proton and golden baseline](T05-processor-foundation.md) | complete | T04 |
 | T06 | [Effective processor nullness and input rules](T06-processor-nullness.md) | complete | T05 |
-| T07 | [Complete strict golden verification](T07-strict-goldens.md) | pending | T06 |
+| T07 | [Complete strict golden verification](T07-strict-goldens.md) | complete | T06 |
 | T08 | [Maven-equivalent publication archives](T08-publication.md) | pending | T07 |
 | T09 | [J2CL libraries from publication sources](T09-j2cl-libraries.md) | pending | T08 |
 | T10 | [J2CL examples and browser verification](T10-browser-examples.md) | pending | T09 |

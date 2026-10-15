@@ -4,7 +4,6 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
-import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
@@ -32,10 +31,7 @@ import react4j.internal.ViewConstructorFunction;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_BasicView extends BasicView {
-  private final react4j.internal.NativeView $$react4j$$_nativeView;
-
   React4j_BasicView(final react4j.internal.NativeView $$react4j$$_nativeView) {
-    this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
 
   private static ViewConstructorFunction getConstructorFunction() {
@@ -68,13 +64,13 @@ abstract class React4j_BasicView extends BasicView {
     private final React4j_BasicView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_BasicView( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(final JsPropertyMap<Object> nextInputs) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
       return false;
     }
 

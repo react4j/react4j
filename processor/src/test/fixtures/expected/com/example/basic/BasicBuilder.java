@@ -33,6 +33,7 @@ final class BasicBuilder {
   private static class Builder implements Step1 {
     private final ReactElement _element = ReactElement.createViewElement( React4j_BasicView.Factory.TYPE );
 
+    @Override
     @Contract(
         pure = true
     )

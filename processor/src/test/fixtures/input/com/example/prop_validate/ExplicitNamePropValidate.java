@@ -12,7 +12,7 @@ import react4j.annotations.View;
 abstract class ExplicitNamePropValidate
 {
   @InputValidate( name = "myProp" )
-  void zapzap( String prop )
+  void zapzap( @Nullable String prop )
   {
   }
 

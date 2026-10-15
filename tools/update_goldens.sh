@@ -21,7 +21,13 @@ fixture=processor/src/test/fixtures
 scratch="$(mktemp -d "${TMPDIR:-/tmp}/react4j-goldens.XXXXXX")"
 trap 'rm -rf "$scratch"' EXIT
 cp -RL "$binary.runfiles/_main/$fixture" "$scratch/fixtures"
-bazel run "$target" -- "--wrapper_script_flag=--jvm_flag=-Dreact4j.fixture_dir=$scratch/fixtures"   "--wrapper_script_flag=--jvm_flag=-Dreact4j.output_fixture_data=true" -d "$scratch/test-output"
-bazel run //tools/testing/src/main/java/react4j/testing:golden_updater -- "$scratch/fixtures" "$root/$fixture"
+mkdir "$scratch/compilations" "$scratch/baseline"
+cp -R "$scratch/fixtures/expected" "$scratch/baseline/expected"
+cp -R "$scratch/fixtures/expectedFormatted" "$scratch/baseline/expectedFormatted"
+bazel run "$target" -- \
+  "--wrapper_script_flag=--jvm_flag=-Djava.io.tmpdir=$scratch/compilations" \
+  "--wrapper_script_flag=--jvm_flag=-Dreact4j.fixture_dir=$scratch/fixtures" \
+  "--wrapper_script_flag=--jvm_flag=-Dreact4j.output_fixture_data=true" -d "$scratch/test-output"
+bazel run //tools/testing/src/main/java/react4j/testing:golden_updater -- "$scratch/fixtures" "$scratch/baseline" "$root/$fixture"
 bazel test "$target" --test_output=errors
 git diff --stat -- "$fixture/expected" "$fixture/expectedFormatted"

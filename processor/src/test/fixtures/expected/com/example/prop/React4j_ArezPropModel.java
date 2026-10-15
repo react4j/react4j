@@ -13,13 +13,13 @@ import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
 import arez.annotations.SuppressArezWarnings;
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
@@ -32,6 +32,7 @@ import react4j.internal.SchedulerUtil;
 import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
+@NullMarked
 @SuppressArezWarnings("Arez:UnnecessaryDefault")
 @ArezComponent(
     name = "com_example_prop_ArezPropModel",
@@ -41,18 +42,16 @@ import react4j.internal.ViewState;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ArezPropModel extends ArezPropModel {
-  @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   private int $$react4j$$_state;
 
   private boolean $$react4j$$_scheduledDebugStateUpdate;
 
-  React4j_ArezPropModel(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
-    this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
+  React4j_ArezPropModel(final react4j.internal.NativeView $$react4j$$_nativeView) {
+    this.$$react4j$$_nativeView = $$react4j$$_nativeView;
   }
 
-  @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
@@ -61,30 +60,28 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
     return viewConstructor;
   }
 
-  @Nullable
   @Override
-  String getValue() {
+  @Nullable String getValue() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ).asString() : null;
+      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.value ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.value ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.value ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.value ) );
     }
   }
 
-  @Nullable
   @Override
-  ArezPropModel.Model getModel() {
+  ArezPropModel. @Nullable Model getModel() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ).cast() : null;
+      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.model ).cast() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.model ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.model ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextInputs) {
+      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
-    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     if ( !Js.isTripleEqual( inputs.get( Inputs.value ), nextInputs.get( Inputs.value ) ) ) {
       return true;
     }
@@ -138,7 +135,6 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
     }
   }
 
-  @Nonnull
   @ObserverRef(
       name = "render"
   )
@@ -154,7 +150,7 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
     if ( $$react4j$$_scheduledDebugStateUpdate ) {
       $$react4j$$_scheduledDebugStateUpdate = false;
     } else {
-      final JsPropertyMap<Object> newState = JsPropertyMap.of();
+      final var newState = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( JsPropertyMap.of() );
       newState.set( "Arez.id", $$react4j$$_getComponentId() );
       newState.set( "Arez.name", $$react4j$$_getComponentName() );
       IntrospectUtil.collectDependencyDebugData( $$react4j$$_getRenderObserver(), newState );
@@ -167,7 +163,6 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
   }
 
   static final class Factory {
-    @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
 
     private Factory() {
@@ -184,18 +179,18 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
+    @NonNull
     private final React4j_ArezPropModel view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    LiteNativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_ArezPropModel( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      if ( Disposable.isNotDisposed( view ) ) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
+      if ( null != view && Disposable.isNotDisposed( view ) ) {
         return view.$$react4j$$_shouldComponentUpdate( nextInputs );
       } else {
         return false;
@@ -204,7 +199,7 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
 
     @Override
     public final void componentWillUnmount() {
-      if ( Disposable.isNotDisposed( view ) ) {
+      if ( null != view && Disposable.isNotDisposed( view ) ) {
         view.$$react4j$$_componentWillUnmount();
       }
     }
@@ -212,7 +207,7 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
     @Override
     @Nullable
     public final ReactNode render() {
-      if ( Disposable.isNotDisposed( view ) ) {
+      if ( null != view && Disposable.isNotDisposed( view ) ) {
         return view.$$react4j$$_render();
       } else {
         return null;
@@ -224,25 +219,25 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
       OnComponentDidUpdate,
       OnShouldComponentUpdate,
       OnComponentWillUnmount {
-    @Nonnull
+    @NonNull
     private final React4j_ArezPropModel view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_ArezPropModel( this );
     }
 
     @Override
     public final void componentDidMount() {
-      if ( Disposable.isNotDisposed( view ) ) {
+      if ( null != view && Disposable.isNotDisposed( view ) ) {
         view.$$react4j$$_componentDidMount();
       }
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      if ( Disposable.isNotDisposed( view ) ) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
+      if ( null != view && Disposable.isNotDisposed( view ) ) {
         return view.$$react4j$$_shouldComponentUpdate( nextInputs );
       } else {
         return false;
@@ -250,15 +245,15 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
-      if ( Disposable.isNotDisposed( view ) ) {
+    public final void componentDidUpdate(final JsPropertyMap<@Nullable Object> prevInputs) {
+      if ( null != view && Disposable.isNotDisposed( view ) ) {
         view.$$react4j$$_componentDidUpdate();
       }
     }
 
     @Override
     public final void componentWillUnmount() {
-      if ( Disposable.isNotDisposed( view ) ) {
+      if ( null != view && Disposable.isNotDisposed( view ) ) {
         view.$$react4j$$_componentWillUnmount();
       }
     }
@@ -266,7 +261,7 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
     @Override
     @Nullable
     public final ReactNode render() {
-      if ( Disposable.isNotDisposed( view ) ) {
+      if ( null != view && Disposable.isNotDisposed( view ) ) {
         return view.$$react4j$$_render();
       } else {
         return null;

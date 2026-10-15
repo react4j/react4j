@@ -1,94 +1,81 @@
 package com.example.inheritance.simple;
 
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class LeafBuilder {
   private LeafBuilder() {}
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(pure = true)
   static Step2 zzField1InRootInterface(final boolean zzField1InRootInterface) {
     return newBuilder().zzField1InRootInterface(zzField1InRootInterface);
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(pure = true)
     Step2 zzField1InRootInterface(boolean zzField1InRootInterface);
   }
 
   interface Step2 {
-    @Nonnull
     @Contract(pure = true)
     Step3 aaField2InRootInterface(boolean aaField2InRootInterface);
   }
 
   interface Step3 {
-    @Nonnull
     @Contract(pure = true)
     Step4 field1InRoot(boolean field1InRoot);
   }
 
   interface Step4 {
-    @Nonnull
     @Contract(pure = true)
     Step5 field2InRoot(boolean field2InRoot);
   }
 
   interface Step5 {
-    @Nonnull
     @Contract(pure = true)
     Step6 zzField1InInnerInterface(boolean zzField1InInnerInterface);
   }
 
   interface Step6 {
-    @Nonnull
     @Contract(pure = true)
     Step7 aaField2InInnerInterface(boolean aaField2InInnerInterface);
   }
 
   interface Step7 {
-    @Nonnull
     @Contract(pure = true)
     Step8 field1InInner(boolean field1InInner);
   }
 
   interface Step8 {
-    @Nonnull
     @Contract(pure = true)
     Step9 field2InInner(boolean field2InInner);
   }
 
   interface Step9 {
-    @Nonnull
     @Contract(pure = true)
     Step10 zzField1InLeafInterface(boolean zzField1InLeafInterface);
   }
 
   interface Step10 {
-    @Nonnull
     @Contract(pure = true)
     Step11 aaField2InLeafInterface(boolean aaField2InLeafInterface);
   }
 
   interface Step11 {
-    @Nonnull
     @Contract(pure = true)
     Step12 field1InLeaf(boolean field1InLeaf);
   }
 
   interface Step12 {
-    @Nonnull
     @Contract(pure = true)
     ReactNode field2InLeaf(boolean field2InLeaf);
   }
@@ -106,12 +93,10 @@ final class LeafBuilder {
           Step10,
           Step11,
           Step12 {
-    @Nonnull
     private final ReactElement _element =
         ReactElement.createViewElement(React4j_LeafView.Factory.TYPE);
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final Step2 zzField1InRootInterface(final boolean zzField1InRootInterface) {
       _element.input(React4j_LeafView.Inputs.zzField1InRootInterface, zzField1InRootInterface);
@@ -119,7 +104,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final Step3 aaField2InRootInterface(final boolean aaField2InRootInterface) {
       _element.input(React4j_LeafView.Inputs.aaField2InRootInterface, aaField2InRootInterface);
@@ -127,7 +111,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final Step4 field1InRoot(final boolean field1InRoot) {
       _element.input(React4j_LeafView.Inputs.field1InRoot, field1InRoot);
@@ -135,7 +118,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final Step5 field2InRoot(final boolean field2InRoot) {
       _element.input(React4j_LeafView.Inputs.field2InRoot, field2InRoot);
@@ -143,7 +125,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final Step6 zzField1InInnerInterface(final boolean zzField1InInnerInterface) {
       _element.input(React4j_LeafView.Inputs.zzField1InInnerInterface, zzField1InInnerInterface);
@@ -151,7 +132,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final Step7 aaField2InInnerInterface(final boolean aaField2InInnerInterface) {
       _element.input(React4j_LeafView.Inputs.aaField2InInnerInterface, aaField2InInnerInterface);
@@ -159,7 +139,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final Step8 field1InInner(final boolean field1InInner) {
       _element.input(React4j_LeafView.Inputs.field1InInner, field1InInner);
@@ -167,7 +146,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final Step9 field2InInner(final boolean field2InInner) {
       _element.input(React4j_LeafView.Inputs.field2InInner, field2InInner);
@@ -175,7 +153,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final Step10 zzField1InLeafInterface(final boolean zzField1InLeafInterface) {
       _element.input(React4j_LeafView.Inputs.zzField1InLeafInterface, zzField1InLeafInterface);
@@ -183,7 +160,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final Step11 aaField2InLeafInterface(final boolean aaField2InLeafInterface) {
       _element.input(React4j_LeafView.Inputs.aaField2InLeafInterface, aaField2InLeafInterface);
@@ -191,7 +167,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final Step12 field1InLeaf(final boolean field1InLeaf) {
       _element.input(React4j_LeafView.Inputs.field1InLeaf, field1InLeaf);
@@ -199,16 +174,14 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final ReactNode field2InLeaf(final boolean field2InLeaf) {
       _element.input(React4j_LeafView.Inputs.field2InLeaf, field2InLeaf);
       return build();
     }
 
-    @Nonnull
     @Contract(pure = true)
-    public final ReactNode build() {
+    private final ReactNode build() {
       return _element;
     }
   }

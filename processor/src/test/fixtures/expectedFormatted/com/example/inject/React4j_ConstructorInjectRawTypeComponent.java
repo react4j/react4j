@@ -4,7 +4,6 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
-import java.util.Objects;
 import java.util.function.Consumer;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
@@ -29,13 +28,10 @@ import react4j.internal.ViewConstructorFunction;
     allowEmpty = true)
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ConstructorInjectRawTypeComponent extends ConstructorInjectRawTypeComponent {
-  private final react4j.internal.NativeView $$react4j$$_nativeView;
-
   @SuppressWarnings("rawtypes")
   React4j_ConstructorInjectRawTypeComponent(
       final react4j.internal.NativeView $$react4j$$_nativeView, final Consumer someParam) {
     super(someParam);
-    this.$$react4j$$_nativeView = Objects.requireNonNull($$react4j$$_nativeView);
   }
 
   private static ViewConstructorFunction getConstructorFunction() {
@@ -68,13 +64,13 @@ abstract class React4j_ConstructorInjectRawTypeComponent extends ConstructorInje
     private final React4j_ConstructorInjectRawTypeComponent view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = React4j_ConstructorInjectRawTypeComponentFactory.create(this);
     }
 
     @Override
-    public final boolean shouldComponentUpdate(final JsPropertyMap<Object> nextInputs) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
       return false;
     }
 

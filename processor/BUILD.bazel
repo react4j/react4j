@@ -17,8 +17,12 @@ java_plugin(
 test_suite(
     name = "all_tests",
     tests = [
+        "//processor/src/test/java/react4j/processor:checker_negative_control",
         "//processor/src/test/java/react4j/processor:diagnostics",
         "//processor/src/test/java/react4j/processor:generated_goldens",
+        "//processor/src/test/java/react4j/processor:jspecify_diagnostics",
+        "//processor/src/test/java/react4j/processor:jspecify_goldens",
+        "//processor/src/test/java/react4j/processor:nullness_contracts",
         "//processor/src/test/java/react4j/processor:regressions",
     ],
 )

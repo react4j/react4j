@@ -13,7 +13,7 @@ import react4j.annotations.View;
 abstract class ParameterizedOnPropChange
 {
   @OnInputChange
-  void onMyPropChange( ArrayList<String> myProp )
+  void onMyPropChange( @Nullable ArrayList<String> myProp )
   {
   }
 

@@ -1,58 +1,51 @@
 package com.example.on_prop_change;
 
-import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class NonnullOnPropChangeBuilder {
   private NonnullOnPropChangeBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static ReactNode myProp(@Nonnull final String myProp) {
+  static ReactNode myProp(final String myProp) {
     return newBuilder().myProp( myProp );
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode myProp(@Nonnull String myProp);
+    ReactNode myProp(String myProp);
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_NonnullOnPropChange.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(@Nonnull final String myProp) {
-      Objects.requireNonNull( myProp );
+    public final ReactNode myProp(final String myProp) {
       _element.input( React4j_NonnullOnPropChange.Inputs.myProp, myProp );
       return build();
     }
 
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode build() {
+    private final ReactNode build() {
       return _element;
     }
   }

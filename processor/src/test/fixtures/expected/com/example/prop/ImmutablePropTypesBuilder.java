@@ -2,27 +2,26 @@ package com.example.prop;
 
 import arez.Disposable;
 import arez.component.Identifiable;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class ImmutablePropTypesBuilder {
   private ImmutablePropTypesBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -31,7 +30,6 @@ final class ImmutablePropTypesBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -39,37 +37,31 @@ final class ImmutablePropTypesBuilder {
   }
 
   interface Step2 {
-    @Nonnull
     @Contract(
         pure = true
     )
-    Step2 myProp(@Nullable ImmutablePropTypes.MyComponent myProp);
+    Step2 myProp(ImmutablePropTypes. @Nullable MyComponent myProp);
 
-    @Nonnull
     @Contract(
         pure = true
     )
     Step2 myOtherProp(@Nullable String myOtherProp);
 
-    @Nonnull
     @Contract(
         pure = true
     )
-    Step2 bobsProp(@Nullable ImmutablePropTypes.KeyedComponent bobsProp);
+    Step2 bobsProp(ImmutablePropTypes. @Nullable KeyedComponent bobsProp);
 
-    @Nonnull
     @Contract(
         pure = true
     )
-    Step2 someProp(@Nullable ImmutablePropTypes.Foo someProp);
+    Step2 someProp(ImmutablePropTypes. @Nullable Foo someProp);
 
-    @Nonnull
     @Contract(
         pure = true
     )
     Step2 object(@Nullable Object object);
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -77,11 +69,9 @@ final class ImmutablePropTypesBuilder {
   }
 
   private static class Builder implements Step1, Step2 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypes.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -91,62 +81,57 @@ final class ImmutablePropTypesBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final Step2 myProp(@Nullable final ImmutablePropTypes.MyComponent myProp) {
+    public final Step2 myProp(final ImmutablePropTypes. @Nullable MyComponent myProp) {
       assert Disposable.isNotDisposed( myProp );
       _element.input( React4j_ImmutablePropTypes.Inputs.myProp, myProp );
       return this;
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final Step2 myOtherProp(@Nullable final String myOtherProp) {
+    public final Step2 myOtherProp(final @Nullable String myOtherProp) {
       _element.input( React4j_ImmutablePropTypes.Inputs.myOtherProp, myOtherProp );
       return this;
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final Step2 bobsProp(@Nullable final ImmutablePropTypes.KeyedComponent bobsProp) {
+    public final Step2 bobsProp(final ImmutablePropTypes. @Nullable KeyedComponent bobsProp) {
       _element.input( React4j_ImmutablePropTypes.Inputs.bobsProp, bobsProp );
       return this;
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final Step2 someProp(@Nullable final ImmutablePropTypes.Foo someProp) {
+    public final Step2 someProp(final ImmutablePropTypes. @Nullable Foo someProp) {
       _element.input( React4j_ImmutablePropTypes.Inputs.someProp, someProp );
       return this;
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final Step2 object(@Nullable final Object object) {
+    public final Step2 object(final @Nullable Object object) {
       _element.input( React4j_ImmutablePropTypes.Inputs.object, object );
       return this;
     }
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )
     public final ReactNode build() {
-      final JsPropertyMap<Object> inputs = _element.inputs();
+      final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
       final Object $object$ = inputs.get( React4j_ImmutablePropTypes.Inputs.object );
       _element.setKey( String.valueOf( (int) (double) inputs.get( React4j_ImmutablePropTypes.Inputs.stillAnotherProp ) ) + "-" + String.valueOf( Identifiable.<Object>getArezId( (ImmutablePropTypes.MyComponent) inputs.get( React4j_ImmutablePropTypes.Inputs.myProp ) ) ) + "-" + ( (String) inputs.get( React4j_ImmutablePropTypes.Inputs.myOtherProp ) ) + "-" + Keyed.getKey( (ImmutablePropTypes.KeyedComponent) inputs.get( React4j_ImmutablePropTypes.Inputs.bobsProp ) ) + "-" + ( (ImmutablePropTypes.Foo) inputs.get( React4j_ImmutablePropTypes.Inputs.someProp ) ) + "-" + ( $object$ instanceof Keyed ? Keyed.getKey( $object$ ) : $object$ instanceof Identifiable ? Identifiable.<Object>getArezId( $object$ ) : String.valueOf( $object$ ) ) + ( React.enableViewNames() ? "_ImmutablePropTypes_108bb2eb" : ImmutablePropTypes.class.getName() ) );
       return _element;

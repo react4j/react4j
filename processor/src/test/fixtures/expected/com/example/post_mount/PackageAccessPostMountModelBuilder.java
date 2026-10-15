@@ -1,22 +1,21 @@
 package com.example.post_mount;
 
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class PackageAccessPostMountModelBuilder {
   private PackageAccessPostMountModelBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -25,7 +24,6 @@ final class PackageAccessPostMountModelBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -33,10 +31,9 @@ final class PackageAccessPostMountModelBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_PackageAccessPostMountModel.Factory.TYPE );
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

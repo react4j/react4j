@@ -13,7 +13,7 @@ import react4j.annotations.View;
 abstract class OtherPropValidate
 {
   @InputValidate
-  void validateMyProp( BitSet prop )
+  void validateMyProp( @Nullable BitSet prop )
   {
   }
 

@@ -4,19 +4,19 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
+@NullMarked
 @SuppressArezWarnings({
     "Arez:UnnecessaryDefault",
     "Arez:UnnecessaryAllowEmpty"
@@ -30,17 +30,12 @@ import react4j.internal.ViewConstructorFunction;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ImmutablePropTypeArezComponentLikeAndKeyed extends ImmutablePropTypeArezComponentLikeAndKeyed {
-  @Nonnull
-  private final react4j.internal.NativeView $$react4j$$_nativeView;
-
   React4j_ImmutablePropTypeArezComponentLikeAndKeyed(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
-      @Nullable final ImmutablePropTypeArezComponentLikeAndKeyed.MyComponent myProp) {
+      final react4j.internal.NativeView $$react4j$$_nativeView,
+      final ImmutablePropTypeArezComponentLikeAndKeyed. @Nullable MyComponent myProp) {
     super( myProp );
-    this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
   }
 
-  @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
@@ -60,7 +55,6 @@ abstract class React4j_ImmutablePropTypeArezComponentLikeAndKeyed extends Immuta
   }
 
   static final class Factory {
-    @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
 
     private Factory() {
@@ -79,8 +73,9 @@ abstract class React4j_ImmutablePropTypeArezComponentLikeAndKeyed extends Immuta
     private final React4j_ImmutablePropTypeArezComponentLikeAndKeyed view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
+      assert null != inputs;
       ImmutablePropTypeArezComponentLikeAndKeyed.MyComponent myProp;
       if ( React.shouldCheckInvariants() ) {
         myProp = null != inputs.getAsAny( Inputs.myProp ) ? inputs.getAsAny( Inputs.myProp ).cast() : null;
@@ -91,13 +86,13 @@ abstract class React4j_ImmutablePropTypeArezComponentLikeAndKeyed extends Immuta
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
       return false;
     }
 
     @Override
     public final void componentWillUnmount() {
-      if ( Disposable.isNotDisposed( view ) ) {
+      if ( null != view && Disposable.isNotDisposed( view ) ) {
         view.$$react4j$$_componentWillUnmount();
       }
     }
@@ -105,7 +100,7 @@ abstract class React4j_ImmutablePropTypeArezComponentLikeAndKeyed extends Immuta
     @Override
     @Nullable
     public final ReactNode render() {
-      if ( Disposable.isNotDisposed( view ) ) {
+      if ( null != view && Disposable.isNotDisposed( view ) ) {
         return view.$$react4j$$_render();
       } else {
         return null;

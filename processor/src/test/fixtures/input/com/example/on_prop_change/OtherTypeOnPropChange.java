@@ -13,7 +13,7 @@ import react4j.annotations.View;
 abstract class OtherTypeOnPropChange
 {
   @OnInputChange
-  void onMyPropChange( BitSet myProp )
+  void onMyPropChange( @Nullable BitSet myProp )
   {
   }
 

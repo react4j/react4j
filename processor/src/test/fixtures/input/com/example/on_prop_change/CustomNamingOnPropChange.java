@@ -17,7 +17,7 @@ abstract class CustomNamingOnPropChange
   }
 
   @OnInputChange
-  void onPropChange( String prevMyProp2 )
+  void onPropChange( @Nullable String prevMyProp2 )
   {
   }
 

@@ -4,19 +4,20 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
+@NullMarked
 @SuppressArezWarnings({
     "Arez:UnnecessaryDefault",
     "Arez:UnnecessaryAllowEmpty"
@@ -30,15 +31,13 @@ import react4j.internal.ViewConstructorFunction;
 )
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildrenWithManyRequired {
-  @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   React4j_RequiredChildrenWithManyRequired(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
-    this.$$react4j$$_nativeView = Objects.requireNonNull( $$react4j$$_nativeView );
+      final react4j.internal.NativeView $$react4j$$_nativeView) {
+    this.$$react4j$$_nativeView = $$react4j$$_nativeView;
   }
 
-  @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
@@ -47,50 +46,46 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
     return viewConstructor;
   }
 
-  @Nullable
   @Override
-  String getMyRequiredProp1() {
+  @Nullable String getMyRequiredProp1() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp1 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp1 ).asString() : null;
+      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myRequiredProp1 ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myRequiredProp1 ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp1 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myRequiredProp1 ) );
     }
   }
 
-  @Nullable
   @Override
-  String getMyRequiredProp2() {
+  @Nullable String getMyRequiredProp2() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp2 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp2 ).asString() : null;
+      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myRequiredProp2 ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myRequiredProp2 ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp2 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myRequiredProp2 ) );
     }
   }
 
-  @Nullable
   @Override
-  String getMyRequiredProp3() {
+  @Nullable String getMyRequiredProp3() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp3 ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp3 ).asString() : null;
+      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myRequiredProp3 ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myRequiredProp3 ).asString() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.myRequiredProp3 ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myRequiredProp3 ) );
     }
   }
 
-  @Nullable
   @Override
-  ReactNode[] getChildren() {
+  ReactNode @Nullable [] getChildren() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ) ? $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ).cast() : null;
+      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.children ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.children ).cast() : null;
     } else {
-      return Js.uncheckedCast( $$react4j$$_nativeView.inputs().getAsAny( Inputs.children ) );
+      return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.children ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextInputs) {
+      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
-    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     if ( !Js.isTripleEqual( inputs.get( Inputs.myRequiredProp1 ), nextInputs.get( Inputs.myRequiredProp1 ) ) ) {
       return true;
     }
@@ -117,7 +112,6 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
   }
 
   static final class Factory {
-    @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
 
     private Factory() {
@@ -138,17 +132,17 @@ abstract class React4j_RequiredChildrenWithManyRequired extends RequiredChildren
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
+    @NonNull
     private final React4j_RequiredChildrenWithManyRequired view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_RequiredChildrenWithManyRequired( this );
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
       return view.$$react4j$$_shouldComponentUpdate( nextInputs );
     }
 

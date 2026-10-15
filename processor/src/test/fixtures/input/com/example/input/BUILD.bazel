@@ -6,8 +6,6 @@ filegroup(
         "ChildInputView.java",
         "InputOrderingView.java",
         "NoShouldComponentUpdateForInputsView.java",
-        "SuppressedNullabilityInputView.java",
-        "UnspecifiedNullabilityInputView.java",
     ],
     visibility = ["//processor/src/test/fixtures:__pkg__"],
 )

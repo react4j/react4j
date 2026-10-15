@@ -77,8 +77,16 @@ final class BuilderGenerator {
         GeneratorUtil.copyWhitelistedAnnotations(
                 descriptor.getElement(), builder, Collections.singletonList(Deprecated.class.getName()));
 
-        if (descriptor.builderAccessesDeprecatedElements()) {
-            builder.addAnnotation(SuppressWarningsUtil.suppressWarningsAnnotation("deprecation"));
+        // Builder signatures mirror view contracts, including concrete collection types.
+        final var concreteCollections = descriptor.getInputs().stream()
+                .anyMatch(input -> input.getType() instanceof DeclaredType type
+                        && (type.asElement().toString().equals("java.util.ArrayList")
+                                || type.asElement().toString().equals("java.util.HashSet")));
+        final var suppression = SuppressWarningsUtil.maybeSuppressWarningsAnnotation(
+                concreteCollections ? "NonApiType" : null,
+                descriptor.builderAccessesDeprecatedElements() ? "deprecation" : null);
+        if (suppression != null) {
+            builder.addAnnotation(suppression);
         }
 
         // Private constructor so can not instantiate
@@ -142,7 +150,9 @@ final class BuilderGenerator {
         if (descriptor.exportBuilder()) {
             method.addModifiers(Modifier.PUBLIC);
         }
-        GeneratorUtil.copyTypeParameters(descriptor.getElement(), method);
+        if (!stepMethod.isBuildIntrinsic()) {
+            GeneratorUtil.copyTypeParameters(descriptor.getElement(), method);
+        }
 
         if (stepMethod.isBuildIntrinsic()) {
             method.addStatement("return newBuilder().build()");
@@ -151,7 +161,8 @@ final class BuilderGenerator {
             final var parameter = ParameterSpec.builder(type, stepMethod.getName(), Modifier.FINAL);
             final var inputElement = stepMethod.getElement();
             if (null != inputElement) {
-                GeneratorUtil.copyWhitelistedAnnotations(inputElement, parameter);
+                GeneratorUtil.copyWhitelistedAnnotations(inputElement, method);
+                Nullability.preserveScope(inputElement, method);
                 final var inputType = stepMethod.getTypeMirror();
                 assert null != inputType;
                 SuppressWarningsUtil.addSuppressWarningsIfRequired(processingEnv, parameter, inputType);
@@ -255,7 +266,8 @@ final class BuilderGenerator {
                                     final var parameter = ParameterSpec.builder(type, stepMethod.getName());
                                     final var inputElement = stepMethod.getElement();
                                     if (null != inputElement) {
-                                        GeneratorUtil.copyWhitelistedAnnotations(inputElement, parameter);
+                                        Nullability.preserveScope(inputElement, m);
+                                        GeneratorUtil.copyWhitelistedAnnotations(inputElement, m);
                                         final var inputType = stepMethod.getTypeMirror();
                                         assert null != inputType;
                                         SuppressWarningsUtil.addSuppressWarningsIfRequired(
@@ -293,7 +305,8 @@ final class BuilderGenerator {
         }
         final var inputElement = stepMethod.getElement();
         if (null != inputElement) {
-            GeneratorUtil.copyWhitelistedAnnotations(inputElement, parameter);
+            GeneratorUtil.copyWhitelistedAnnotations(inputElement, method);
+            Nullability.preserveScope(inputElement, method);
             final var inputType = stepMethod.getTypeMirror();
             assert null != inputType;
             SuppressWarningsUtil.addSuppressWarningsIfRequired(processingEnv, parameter, inputType);
@@ -320,21 +333,23 @@ final class BuilderGenerator {
                         descriptor.keySuffix(),
                         descriptor.getClassName());
             } else if (ImmutableInputKeyStrategy.DYNAMIC == strategy) {
+                final var keyValue = "$" + stepMethod.getName() + "$";
+                method.addStatement("final $T $N = $N", Object.class, keyValue, stepMethod.getName());
                 method.addStatement(
                         "_element.setKey( ( $N instanceof $T ? $T.getKey( $N ) : "
                                 + "$N instanceof $T ? $T.<$T>getArezId( $N ) : $T.valueOf( $N ) ) + "
                                 + "( $T.enableViewNames() ? $S : $T.class.getName() ) )",
-                        stepMethod.getName(),
+                        keyValue,
                         KEYED_CLASSNAME,
                         KEYED_CLASSNAME,
-                        stepMethod.getName(),
-                        stepMethod.getName(),
+                        keyValue,
+                        keyValue,
                         IDENTIFIABLE_CLASSNAME,
                         IDENTIFIABLE_CLASSNAME,
                         Object.class,
-                        stepMethod.getName(),
+                        keyValue,
                         String.class,
-                        stepMethod.getName(),
+                        keyValue,
                         REACT_CLASSNAME,
                         descriptor.keySuffix(),
                         descriptor.getClassName());
@@ -358,10 +373,9 @@ final class BuilderGenerator {
             method.varargs();
             assert null != input;
             method.addStatement(
-                    "_element.input( $T.Inputs.$N, $T.of( $N ) )",
+                    "_element.input( $T.Inputs.$N, $N )",
                     descriptor.getEnhancedClassName(),
                     input.getConstantName(),
-                    REACT_NODE_CLASSNAME,
                     stepMethod.getName());
         } else if (stepMethod.isChildrenStreamIntrinsic()) {
             method.addStatement("children( $N.toArray( $T[]::new ) )", stepMethod.getName(), REACT_NODE_CLASSNAME);
@@ -407,7 +421,7 @@ final class BuilderGenerator {
     private static FieldSpec buildContextBuildField(final InputDescriptor current) {
         final var typeName = ParameterizedTypeName.get(
                 CONTEXT_RENDER_FUNCTION_CLASSNAME,
-                GeneratorUtil.getTypeName(current.getType()).box());
+                current.getTypeName().withoutAnnotations().box());
         return FieldSpec.builder(typeName, CONTEXT_FIELD_PREFIX + current.getName(), Modifier.PRIVATE, Modifier.FINAL)
                 .initializer("this::$N", CONTEXT_METHOD_PREFIX + current.getName())
                 .build();
@@ -571,7 +585,7 @@ final class BuilderGenerator {
                 .toList();
 
         for (final var input : fromTreeContextInputs) {
-            final var type = GeneratorUtil.getTypeName(input.getType()).box();
+            final var type = input.getTypeName().withoutAnnotations().box();
             final var field = FieldSpec.builder(
                     ParameterizedTypeName.get(CONTEXT_CLASSNAME, type),
                     CONTEXT_INPUT_PREFIX + input.getConstantName(),
@@ -580,9 +594,9 @@ final class BuilderGenerator {
                     Modifier.FINAL);
             final var qualifier = input.getQualifier();
             if (qualifier.isEmpty()) {
-                field.initializer("$T.get( $T.class )", CONTEXTS_CLASSNAME, type);
+                field.initializer("$T.get( $T.class )", CONTEXTS_CLASSNAME, type.withoutAnnotations());
             } else {
-                field.initializer("$T.get( $T.class, $S )", CONTEXTS_CLASSNAME, type, qualifier);
+                field.initializer("$T.get( $T.class, $S )", CONTEXTS_CLASSNAME, type.withoutAnnotations(), qualifier);
             }
             builder.addField(field.build());
         }

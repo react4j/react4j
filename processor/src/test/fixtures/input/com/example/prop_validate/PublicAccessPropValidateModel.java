@@ -12,7 +12,7 @@ import react4j.annotations.View;
 abstract class PublicAccessPropValidateModel
 {
   @InputValidate
-  public void validateMyProp( String prop )
+  public void validateMyProp( @Nullable String prop )
   {
   }
 

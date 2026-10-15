@@ -1,32 +1,30 @@
 package com.example.prop;
 
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class CollectionSetPropModelBuilder {
   private CollectionSetPropModelBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static ReactNode myProp(@Nullable final Set<String> myProp) {
+  static ReactNode myProp(final @Nullable Set<String> myProp) {
     return newBuilder().myProp( myProp );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -35,13 +33,11 @@ final class CollectionSetPropModelBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
     ReactNode myProp(@Nullable Set<String> myProp);
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -49,20 +45,18 @@ final class CollectionSetPropModelBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_CollectionSetPropModel.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(@Nullable final Set<String> myProp) {
+    public final ReactNode myProp(final @Nullable Set<String> myProp) {
       _element.input( React4j_CollectionSetPropModel.Inputs.myProp, myProp );
       return build();
     }
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

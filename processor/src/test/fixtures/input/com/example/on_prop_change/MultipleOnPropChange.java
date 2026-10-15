@@ -12,7 +12,7 @@ import react4j.annotations.View;
 abstract class MultipleOnPropChange
 {
   @OnInputChange
-  void onPropChange( boolean myProp1, String myProp2, int myProp3 )
+  void onPropChange( boolean myProp1, @Nullable String myProp2, int myProp3 )
   {
   }
 

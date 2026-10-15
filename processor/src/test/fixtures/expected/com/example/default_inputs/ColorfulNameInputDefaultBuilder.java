@@ -1,32 +1,30 @@
 package com.example.default_inputs;
 
-import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class ColorfulNameInputDefaultBuilder {
   private ColorfulNameInputDefaultBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static ReactNode myProp12$23(@Nonnull final String myProp12$23) {
+  static ReactNode myProp12$23(final String myProp12$23) {
     return newBuilder().myProp12$23( myProp12$23 );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -35,13 +33,11 @@ final class ColorfulNameInputDefaultBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode myProp12$23(@Nonnull String myProp12$23);
+    ReactNode myProp12$23(String myProp12$23);
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -49,27 +45,24 @@ final class ColorfulNameInputDefaultBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element;
 
     Builder() {
       _element = ReactElement.createViewElement( React4j_ColorfulNameInputDefaultView.Factory.TYPE );
-      final JsPropertyMap<Object> inputs = _element.inputs();
+      final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
       inputs.set( React4j_ColorfulNameInputDefaultView.Inputs.myProp12$23, ColorfulNameInputDefaultView.DEFAULT_MY_PROP12$23 );
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode myProp12$23(@Nonnull final String myProp12$23) {
-      Objects.requireNonNull( myProp12$23 );
+    public final ReactNode myProp12$23(final String myProp12$23) {
       _element.input( React4j_ColorfulNameInputDefaultView.Inputs.myProp12$23, myProp12$23 );
       return build();
     }
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

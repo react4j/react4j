@@ -14,7 +14,7 @@ abstract class Suppressed1PublicAccessOnPropChangeModel
   // This uses the SOURCE retention suppression
   @SuppressWarnings( "React4j:PublicMethod" )
   @OnInputChange
-  public void onMyPropChange( String myProp )
+  public void onMyPropChange( @Nullable String myProp )
   {
   }
 

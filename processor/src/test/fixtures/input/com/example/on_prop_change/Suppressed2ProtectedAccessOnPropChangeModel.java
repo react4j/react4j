@@ -15,7 +15,7 @@ abstract class Suppressed2ProtectedAccessOnPropChangeModel
   // This uses the CLASS retention suppression
   @SuppressReact4jWarnings( "React4j:ProtectedMethod" )
   @OnInputChange
-  protected void onMyPropChange( String myProp )
+  protected void onMyPropChange( @Nullable String myProp )
   {
   }
 

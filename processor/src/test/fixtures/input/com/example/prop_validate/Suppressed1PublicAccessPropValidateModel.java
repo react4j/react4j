@@ -14,7 +14,7 @@ abstract class Suppressed1PublicAccessPropValidateModel
   // This uses the SOURCE retention suppression
   @SuppressWarnings( "React4j:PublicMethod" )
   @InputValidate
-  public void validateMyProp( String prop )
+  public void validateMyProp( @Nullable String prop )
   {
   }
 

@@ -12,7 +12,7 @@ import react4j.annotations.View;
 abstract class PublicAccessOnPropChangeModel
 {
   @OnInputChange
-  public void onMyPropChange( String myProp )
+  public void onMyPropChange( @Nullable String myProp )
   {
   }
 

@@ -4,6 +4,7 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
+import java.util.ArrayList;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
@@ -11,6 +12,8 @@ import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Context;
+import react4j.Contexts;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.OnComponentWillUnmount;
@@ -18,6 +21,7 @@ import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
 @NullMarked
+@SuppressWarnings("deprecation")
 @SuppressArezWarnings({
     "Arez:UnnecessaryDefault",
     "Arez:UnnecessaryAllowEmpty"
@@ -68,6 +72,17 @@ abstract class React4j_PresenceView extends PresenceView {
     return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.defaulted ).asString();
   }
 
+  @SuppressWarnings("NonApiType")
+  @Deprecated
+  @Override
+  @Nullable ArrayList<String> collection() {
+    if ( React.shouldCheckInvariants() ) {
+      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.collection ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.collection ).cast() : null;
+    } else {
+      return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.collection ) );
+    }
+  }
+
   private boolean $$react4j$$_shouldComponentUpdate(
       @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
@@ -81,6 +96,9 @@ abstract class React4j_PresenceView extends PresenceView {
     if ( !Js.isTripleEqual( inputs.get( Inputs.defaulted ), nextInputs.get( Inputs.defaulted ) ) ) {
       return true;
     }
+    if ( !Js.isTripleEqual( inputs.get( Inputs.collection ), nextInputs.get( Inputs.collection ) ) ) {
+      return true;
+    }
     return false;
   }
 
@@ -91,7 +109,14 @@ abstract class React4j_PresenceView extends PresenceView {
   @Nullable
   ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
-    return render();
+    return ContextHolder.CONTEXT_getPublished.provide( getPublished(), render() );
+  }
+
+  private static final class ContextHolder {
+    private static final Context<String> CONTEXT_getPublished = Contexts.get( String.class );
+
+    private ContextHolder() {
+    }
   }
 
   static final class Factory {
@@ -107,6 +132,8 @@ abstract class React4j_PresenceView extends PresenceView {
     static final String optionalNullable = React.shouldMinimizeInputKeys() ? "b" : "optionalNullable";
 
     static final String defaulted = React.shouldMinimizeInputKeys() ? "c" : "defaulted";
+
+    static final String collection = React.shouldMinimizeInputKeys() ? "d" : "collection";
 
     private Inputs() {
     }

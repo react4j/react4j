@@ -192,8 +192,11 @@ final class ViewGenerator {
             builder.addType(buildContextHolder(descriptor));
         }
 
-        builder.addField(FieldSpec.builder(NATIVE_VIEW_CLASSNAME, NATIVE_VIEW_FIELD, Modifier.PRIVATE, Modifier.FINAL)
-                .build());
+        if (needsNativeView(descriptor)) {
+            builder.addField(
+                    FieldSpec.builder(NATIVE_VIEW_CLASSNAME, NATIVE_VIEW_FIELD, Modifier.PRIVATE, Modifier.FINAL)
+                            .build());
+        }
 
         builder.addMethod(buildConstructor(processingEnv, descriptor).build());
 
@@ -202,7 +205,11 @@ final class ViewGenerator {
             if (element.skipShouldViewUpdate()) {
                 method.addStatement("$N.forceUpdate()", NATIVE_VIEW_FIELD);
             } else {
-                method.addStatement("$N.setState( $T.of() )", NATIVE_VIEW_FIELD, JS_PROPERTY_MAP_CLASSNAME);
+                method.addStatement(
+                        "$N.setState( $T.uncheckedCast( $T.of() ) )",
+                        NATIVE_VIEW_FIELD,
+                        JS_CLASSNAME,
+                        JS_PROPERTY_MAP_CLASSNAME);
             }
             builder.addMethod(method.build());
         }
@@ -288,9 +295,20 @@ final class ViewGenerator {
         return annotation.build();
     }
 
+    private static boolean needsNativeView(final ViewDescriptor descriptor) {
+        return descriptor.trackRender()
+                || !descriptor.getScheduleRenderDescriptors().isEmpty()
+                || descriptor.getInputs().stream().anyMatch(InputDescriptor::isMethodInput);
+    }
+
     private static MethodSpec.Builder buildConstructor(
             final ProcessingEnvironment processingEnv, final ViewDescriptor descriptor) {
-        final var componentParameter = ParameterSpec.builder(NATIVE_VIEW_CLASSNAME, NATIVE_VIEW_FIELD, Modifier.FINAL);
+        final var nativeViewType = Nullability.isMarked(descriptor.getConstructor())
+                ? NATIVE_VIEW_CLASSNAME
+                : NATIVE_VIEW_CLASSNAME.annotated(
+                        AnnotationSpec.builder(ClassName.get("org.jspecify.annotations", "NonNull"))
+                                .build());
+        final var componentParameter = ParameterSpec.builder(nativeViewType, NATIVE_VIEW_FIELD, Modifier.FINAL);
         final var ctor = MethodSpec.constructorBuilder();
         ctor.addParameter(componentParameter.build());
 
@@ -319,7 +337,9 @@ final class ViewGenerator {
             ctor.addStatement(sb.toString(), params.toArray());
         }
 
-        ctor.addStatement("this.$N = $N", NATIVE_VIEW_FIELD, NATIVE_VIEW_FIELD);
+        if (needsNativeView(descriptor)) {
+            ctor.addStatement("this.$N = $N", NATIVE_VIEW_FIELD, NATIVE_VIEW_FIELD);
+        }
         Nullability.preserveScope(descriptor.getConstructor(), ctor);
 
         return ctor;
@@ -353,6 +373,12 @@ final class ViewGenerator {
                         methodElement.getSimpleName().toString())
                 .returns(input.getTypeName());
         Nullability.preserveScope(methodElement, method);
+        if (returnType instanceof DeclaredType type
+                && (type.asElement().toString().equals("java.util.ArrayList")
+                        || type.asElement().toString().equals("java.util.HashSet"))) {
+            // An override must retain the concrete collection type from the view contract.
+            method.addAnnotation(SuppressWarningsUtil.suppressWarningsAnnotation("NonApiType"));
+        }
         GeneratorUtil.copyTypeParameters(methodType, method);
         GeneratorUtil.copyAccessModifiers(methodElement, method);
         GeneratorUtil.copyWhitelistedAnnotations(methodElement, method);
@@ -633,13 +659,12 @@ final class ViewGenerator {
     }
 
     private static MethodSpec.Builder buildComponentPreUpdate(final ViewDescriptor descriptor) {
-        final var method = MethodSpec.methodBuilder(COMPONENT_PRE_UPDATE_METHOD)
-                .addModifiers(Modifier.PRIVATE)
-                .addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME)
-                        .build());
+        final var method = MethodSpec.methodBuilder(COMPONENT_PRE_UPDATE_METHOD).addModifiers(Modifier.PRIVATE);
         final var hasPreUpdateOnInputChange = descriptor.hasPreUpdateOnInputChange();
         if (hasPreUpdateOnInputChange) {
+            method.addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL)
+                    .addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME)
+                    .build());
             final var block = CodeBlock.builder();
             block.beginControlFlow("if ( null != prevInputs )");
             block.addStatement(
@@ -730,6 +755,13 @@ final class ViewGenerator {
         if (descriptor.trackRender()) {
             var candidateIndex = 0;
             for (final var candidate : descriptor.getPreludeCheckCandidates()) {
+                if (candidate.observeMode() == ObserveMode.NO_OBSERVE) {
+                    if (candidate.element() instanceof ExecutableElement) {
+                        method.addStatement(
+                                "$N()", candidate.element().getSimpleName().toString());
+                    }
+                    continue;
+                }
                 final var varName = "$$react4jv$$_candidate" + candidateIndex++;
                 final var memberName = candidate.element().getSimpleName().toString();
                 method.addStatement(
@@ -840,7 +872,10 @@ final class ViewGenerator {
         block.addStatement("$N = false", flag);
         block.nextControlFlow("else");
         block.addStatement(
-                "final $T newState = $T.of()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, JS_PROPERTY_MAP_CLASSNAME);
+                "final var newState = $T.<$T>uncheckedCast( $T.of() )",
+                JS_CLASSNAME,
+                JS_PROPERTY_MAP_T_OBJECT_CLASSNAME,
+                JS_PROPERTY_MAP_CLASSNAME);
         // Present id as state. Useful to track when instance ids change.
         block.addStatement("newState.set( $S, $N() )", "Arez.id", FRAMEWORK_INTERNAL_PREFIX + "getComponentId");
         block.addStatement("newState.set( $S, $N() )", "Arez.name", FRAMEWORK_INTERNAL_PREFIX + "getComponentName");
@@ -874,7 +909,11 @@ final class ViewGenerator {
         outer.beginControlFlow("if ( $T.IDLE == $N )", VIEW_STATE_CLASSNAME, STATE_FIELD);
         outer.addStatement("$N = $T.SCHEDULED", STATE_FIELD, VIEW_STATE_CLASSNAME);
         if (descriptor.hasObservableInputs()) {
-            outer.addStatement("$N.setState( $T.of() )", NATIVE_VIEW_FIELD, JS_PROPERTY_MAP_CLASSNAME);
+            outer.addStatement(
+                    "$N.setState( $T.uncheckedCast( $T.of() ) )",
+                    NATIVE_VIEW_FIELD,
+                    JS_CLASSNAME,
+                    JS_PROPERTY_MAP_CLASSNAME);
         } else {
             outer.addStatement("$N.forceUpdate()", NATIVE_VIEW_FIELD);
         }
@@ -1115,6 +1154,9 @@ final class ViewGenerator {
                     .addParameter(inputs.build())
                     .addAnnotation(JS_CONSTRUCTOR_CLASSNAME);
             method.addStatement("super( inputs )");
+            if (!descriptor.getConstructorInputs().isEmpty()) {
+                method.addStatement("assert null != inputs");
+            }
 
             final var prefix = new StringBuilder();
             final var params = new ArrayList<>();
@@ -1123,7 +1165,7 @@ final class ViewGenerator {
                 if (!prefix.isEmpty()) {
                     prefix.append(" || ");
                 }
-                if (!input.getType().getKind().isPrimitive() && !input.isNonNull()) {
+                if (!input.getType().getKind().isPrimitive() && input.getNullness() == Nullability.Nullness.NULLABLE) {
                     prefix.append("$T.isDisposed( $T.uncheckedCast( inputs.getAsAny( Inputs.$N ) ) )");
                     params.add(DISPOSABLE_CLASSNAME);
                     params.add(JS_CLASSNAME);
@@ -1148,9 +1190,10 @@ final class ViewGenerator {
                 for (final var input : descriptor.getConstructorInputs()) {
                     final var localName = input.getName();
                     final var convertMethodName = getConverter(input.getType(), input.getElement());
-                    if (!input.getType().getKind().isPrimitive() && !input.isNonNull()) {
+                    if (!input.getType().getKind().isPrimitive()
+                            && input.getNullness() == Nullability.Nullness.NULLABLE) {
                         final var extraction = CodeBlock.builder();
-                        extraction.addStatement("$T $N", input.getType(), localName);
+                        extraction.addStatement("$T $N", input.getTypeName().withoutAnnotations(), localName);
                         extraction.beginControlFlow("if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME);
                         extraction.addStatement(
                                 "$N = null != inputs.getAsAny( Inputs.$N ) ? "
@@ -1170,7 +1213,7 @@ final class ViewGenerator {
                     } else {
                         method.addStatement(
                                 "final $T $N = inputs.getAsAny( Inputs.$N ).$N()",
-                                input.getType(),
+                                input.getTypeName().withoutAnnotations(),
                                 localName,
                                 input.getConstantName(),
                                 convertMethodName);
@@ -1206,7 +1249,13 @@ final class ViewGenerator {
                 if (descriptor.hasNoValidateMethod()) {
                     block.addStatement("$T.$N( inputs )", descriptor.getEnhancedClassName(), VALIDATE_INPUTS_METHOD);
                 } else {
+                    if (descriptor.hasDisposableInput()) {
+                        block.beginControlFlow("if ( null != $N )", VIEW_FIELD);
+                    }
                     block.addStatement("$N.$N( inputs )", VIEW_FIELD, VALIDATE_INPUTS_METHOD);
+                    if (descriptor.hasDisposableInput()) {
+                        block.endControlFlow();
+                    }
                 }
                 block.endControlFlow();
                 method.addCode(block.build());
@@ -1257,7 +1306,8 @@ final class ViewGenerator {
         if (descriptor.shouldGenerateRender()) {
             if (descriptor.hasDisposableInput()) {
                 final var block = CodeBlock.builder();
-                block.beginControlFlow("if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD);
+                block.beginControlFlow(
+                        "if ( null != $N && $T.isNotDisposed( $N ) )", VIEW_FIELD, DISPOSABLE_CLASSNAME, VIEW_FIELD);
                 block.addStatement("return $N.$N()", VIEW_FIELD, RENDER_METHOD);
                 block.nextControlFlow("else");
                 block.addStatement("return null");
@@ -1278,7 +1328,8 @@ final class ViewGenerator {
                 .addModifiers(Modifier.FINAL, Modifier.PUBLIC);
         if (descriptor.hasDisposableInput()) {
             final var block = CodeBlock.builder();
-            block.beginControlFlow("if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD);
+            block.beginControlFlow(
+                    "if ( null != $N && $T.isNotDisposed( $N ) )", VIEW_FIELD, DISPOSABLE_CLASSNAME, VIEW_FIELD);
             block.addStatement("$N.$N()", VIEW_FIELD, COMPONENT_DID_MOUNT_METHOD);
             block.endControlFlow();
             method.addCode(block.build());
@@ -1300,7 +1351,8 @@ final class ViewGenerator {
             method.addStatement("return false");
         } else if (descriptor.hasDisposableInput()) {
             final var block = CodeBlock.builder();
-            block.beginControlFlow("if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD);
+            block.beginControlFlow(
+                    "if ( null != $N && $T.isNotDisposed( $N ) )", VIEW_FIELD, DISPOSABLE_CLASSNAME, VIEW_FIELD);
             block.addStatement("return $N.$N( nextInputs )", VIEW_FIELD, SHOULD_COMPONENT_UPDATE_METHOD);
             block.nextControlFlow("else");
             block.addStatement("return false");
@@ -1324,12 +1376,19 @@ final class ViewGenerator {
                         .build());
         if (descriptor.hasDisposableInput()) {
             final var block = CodeBlock.builder();
-            block.beginControlFlow("if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD);
-            block.addStatement("$N.$N( prevInputs )", VIEW_FIELD, COMPONENT_PRE_UPDATE_METHOD);
+            block.beginControlFlow(
+                    "if ( null != $N && $T.isNotDisposed( $N ) )", VIEW_FIELD, DISPOSABLE_CLASSNAME, VIEW_FIELD);
+            block.addStatement(
+                    "$N.$N(" + (descriptor.hasPreUpdateOnInputChange() ? " prevInputs " : "") + ")",
+                    VIEW_FIELD,
+                    COMPONENT_PRE_UPDATE_METHOD);
             block.endControlFlow();
             method.addCode(block.build());
         } else {
-            method.addStatement("$N.$N( prevInputs )", VIEW_FIELD, COMPONENT_PRE_UPDATE_METHOD);
+            method.addStatement(
+                    "$N.$N(" + (descriptor.hasPreUpdateOnInputChange() ? " prevInputs " : "") + ")",
+                    VIEW_FIELD,
+                    COMPONENT_PRE_UPDATE_METHOD);
         }
         method.addStatement("return null");
         return method.build();
@@ -1343,7 +1402,8 @@ final class ViewGenerator {
                         .build());
         if (descriptor.hasDisposableInput()) {
             final var block = CodeBlock.builder();
-            block.beginControlFlow("if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD);
+            block.beginControlFlow(
+                    "if ( null != $N && $T.isNotDisposed( $N ) )", VIEW_FIELD, DISPOSABLE_CLASSNAME, VIEW_FIELD);
             if (descriptor.hasPostUpdateOnInputChange()) {
                 block.addStatement("$N.$N( prevInputs )", VIEW_FIELD, COMPONENT_DID_UPDATE_METHOD);
             } else {
@@ -1367,7 +1427,8 @@ final class ViewGenerator {
                 .addModifiers(Modifier.FINAL, Modifier.PUBLIC);
         if (descriptor.hasDisposableInput()) {
             final var block = CodeBlock.builder();
-            block.beginControlFlow("if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD);
+            block.beginControlFlow(
+                    "if ( null != $N && $T.isNotDisposed( $N ) )", VIEW_FIELD, DISPOSABLE_CLASSNAME, VIEW_FIELD);
             block.addStatement("$N.$N()", VIEW_FIELD, COMPONENT_WILL_UNMOUNT_METHOD);
             block.endControlFlow();
             method.addCode(block.build());
@@ -1403,7 +1464,8 @@ final class ViewGenerator {
 
         if (descriptor.hasDisposableInput()) {
             final var block = CodeBlock.builder();
-            block.beginControlFlow("if ( $T.isNotDisposed( $N ) )", DISPOSABLE_CLASSNAME, VIEW_FIELD);
+            block.beginControlFlow(
+                    "if ( null != $N && $T.isNotDisposed( $N ) )", VIEW_FIELD, DISPOSABLE_CLASSNAME, VIEW_FIELD);
             block.addStatement("$N.$N" + args, VIEW_FIELD, onError.getSimpleName());
             block.endControlFlow();
             method.addCode(block.build());
@@ -1448,6 +1510,7 @@ final class ViewGenerator {
 
         for (final var publish : descriptor.getPublishDescriptors()) {
             final var type = GeneratorUtil.getTypeName(publish.getMethodType().getReturnType())
+                    .withoutAnnotations()
                     .box();
             final var field = FieldSpec.builder(
                     ParameterizedTypeName.get(CONTEXT_CLASSNAME, type),

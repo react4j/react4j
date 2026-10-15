@@ -1,22 +1,21 @@
 package com.example.on_prop_change;
 
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class BooleanOnPropChangeBuilder {
   private BooleanOnPropChangeBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -25,7 +24,6 @@ final class BooleanOnPropChangeBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -33,11 +31,9 @@ final class BooleanOnPropChangeBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_BooleanOnPropChange.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -46,11 +42,10 @@ final class BooleanOnPropChangeBuilder {
       return build();
     }
 
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode build() {
+    private final ReactNode build() {
       return _element;
     }
   }

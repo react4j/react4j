@@ -1,33 +1,31 @@
 package com.example.default_inputs;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class ConstructorInputDefaultBuilder {
   private ConstructorInputDefaultBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static ReactNode myInput(@Nullable final String myInput) {
+  static ReactNode myInput(final @Nullable String myInput) {
     return newBuilder().myInput( myInput );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -36,13 +34,11 @@ final class ConstructorInputDefaultBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
     ReactNode myInput(@Nullable String myInput);
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -50,27 +46,25 @@ final class ConstructorInputDefaultBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element;
 
     Builder() {
       _element = ReactElement.createViewElement( React4j_ConstructorInputDefaultView.Factory.TYPE );
-      final JsPropertyMap<Object> inputs = _element.inputs();
+      final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
       inputs.set( React4j_ConstructorInputDefaultView.Inputs.myInput, ConstructorInputDefaultView.getMyInputDefault() );
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode myInput(@Nullable final String myInput) {
+    public final ReactNode myInput(final @Nullable String myInput) {
       _element.setKey( myInput + ( React.enableViewNames() ? "_ConstructorInputDefaultView_7de36afb" : ConstructorInputDefaultView.class.getName() ) );
       _element.input( React4j_ConstructorInputDefaultView.Inputs.myInput, myInput );
       return build();
     }
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

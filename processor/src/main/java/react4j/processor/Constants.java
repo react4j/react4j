@@ -75,10 +75,6 @@ final class Constants {
     static final String WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT =
             "React4j:MutableInputAccessedInPostConstruct";
 
-    static final String WARNING_MISSING_INPUT_NULLABILITY = "React4j:MissingInputNullability";
-
-    static final String WARNING_MISSING_RENDER_NULLABILITY = "React4j:MissingRenderNullability";
-
     static final String WARNING_PUBLIC_METHOD = "React4j:PublicMethod";
 
     static final String WARNING_PROTECTED_METHOD = "React4j:ProtectedMethod";

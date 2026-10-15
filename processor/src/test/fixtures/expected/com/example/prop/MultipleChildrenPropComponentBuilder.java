@@ -1,40 +1,37 @@
 package com.example.prop;
 
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class MultipleChildrenPropComponentBuilder {
   private MultipleChildrenPropComponentBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
+  static ReactNode children(final Stream<? extends ReactNode> children) {
     return newBuilder().children( children );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static ReactNode children(@Nullable final ReactNode... children) {
+  static ReactNode children(final ReactNode @Nullable ... children) {
     return newBuilder().children( children );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -43,19 +40,16 @@ final class MultipleChildrenPropComponentBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode children(@Nonnull Stream<? extends ReactNode> children);
+    ReactNode children(Stream<? extends ReactNode> children);
 
-    @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode children(@Nullable ReactNode... children);
+    ReactNode children(ReactNode @Nullable ... children);
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -63,30 +57,27 @@ final class MultipleChildrenPropComponentBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_MultipleChildrenPropComponent.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
+    public final ReactNode children(final Stream<? extends ReactNode> children) {
       children( children.toArray( ReactNode[]::new ) );
       return build();
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode children(@Nullable final ReactNode... children) {
-      _element.input( React4j_MultipleChildrenPropComponent.Inputs.children, ReactNode.of( children ) );
+    public final ReactNode children(final ReactNode @Nullable ... children) {
+      _element.input( React4j_MultipleChildrenPropComponent.Inputs.children, children );
       return build();
     }
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

@@ -10,7 +10,7 @@ import react4j.annotations.Render;
 public abstract class BaseProtectedAccessOnPropChangeModel
 {
   @OnInputChange
-  protected void onMyPropChange( String myProp )
+  protected void onMyPropChange( @Nullable String myProp )
   {
   }
 

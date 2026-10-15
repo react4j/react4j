@@ -8,28 +8,33 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jspecify.annotations.NullMarked;
 
-/** Copies regenerated goldens only after checking every destination was declared. */
+/** Copies changed goldens after checking declared paths and concurrent edits. */
 @NullMarked
 public final class GoldenUpdater {
     private GoldenUpdater() {}
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 2) {
-            throw new IllegalArgumentException("Expected regenerated and maintained fixture roots");
+        if (args.length != 3) {
+            throw new IllegalArgumentException("Expected regenerated, baseline and maintained fixture roots");
         }
         var source = Path.of(args[0]);
-        var destination = Path.of(args[1]);
+        var baseline = Path.of(args[1]);
+        var destination = Path.of(args[2]);
         var changed = new ArrayList<Path>();
         for (var tree : List.of("expected", "expectedFormatted")) {
             try (var files = Files.walk(source.resolve(tree))) {
                 for (var file : files.filter(Files::isRegularFile).sorted().toList()) {
                     var relative = source.relativize(file);
+                    var original = baseline.resolve(relative);
                     var target = destination.resolve(relative);
-                    if (!Files.isRegularFile(target)) {
+                    if (!Files.isRegularFile(original) || !Files.isRegularFile(target)) {
                         throw new IllegalArgumentException(
                                 "Declare and review the new golden before copying: " + target);
                     }
-                    if (Files.mismatch(file, target) != -1) {
+                    if (Files.mismatch(file, original) != -1 && Files.mismatch(file, target) != -1) {
+                        if (Files.mismatch(original, target) != -1) {
+                            throw new IllegalArgumentException("Golden changed during generation: " + target);
+                        }
                         changed.add(relative);
                     }
                 }

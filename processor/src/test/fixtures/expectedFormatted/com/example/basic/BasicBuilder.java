@@ -29,6 +29,7 @@ final class BasicBuilder {
     private final ReactElement _element =
         ReactElement.createViewElement(React4j_BasicView.Factory.TYPE);
 
+    @Override
     @Contract(pure = true)
     public final ReactNode build() {
       return _element;

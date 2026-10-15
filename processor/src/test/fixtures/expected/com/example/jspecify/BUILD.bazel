@@ -1,12 +1,20 @@
 filegroup(
     name = "files",
     srcs = [
+        "ConstructorContractBuilder.java",
         "NestedContractBuilder.java",
+        "ParametricConstructorBuilder.java",
         "ParametricRequiredBuilder.java",
         "PresenceBuilder.java",
+        "React4j_ConstructorContractView.java",
+        "React4j_ConstructorContractViewFactory.java",
         "React4j_NestedContractView.java",
+        "React4j_ParametricConstructorView.java",
         "React4j_ParametricRequiredView.java",
         "React4j_PresenceView.java",
+        "React4j_UnmarkedConstructorView.java",
+        "React4j_UnmarkedConstructorViewFactory.java",
+        "UnmarkedConstructorBuilder.java",
     ],
     visibility = ["//processor/src/test/fixtures:__pkg__"],
 )

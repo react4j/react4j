@@ -29,6 +29,7 @@ final class ConstructorInjectRawTypeComponentBuilder {
     private final ReactElement _element =
         ReactElement.createViewElement(React4j_ConstructorInjectRawTypeComponent.Factory.TYPE);
 
+    @Override
     @Contract(pure = true)
     public final ReactNode build() {
       return _element;

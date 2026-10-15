@@ -17,13 +17,13 @@ import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
 import arez.annotations.SuppressArezWarnings;
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
@@ -36,6 +36,7 @@ import react4j.internal.SchedulerUtil;
 import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
+@NullMarked
 @SuppressArezWarnings("Arez:UnnecessaryDefault")
 @ArezComponent(
     name = "com_example_prop_ObservableProp",
@@ -44,18 +45,16 @@ import react4j.internal.ViewState;
     sting = Feature.DISABLE)
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_ObservableProp extends ObservableProp {
-  @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   private int $$react4j$$_state;
 
   private boolean $$react4j$$_scheduledDebugStateUpdate;
 
-  React4j_ObservableProp(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
-    this.$$react4j$$_nativeView = Objects.requireNonNull($$react4j$$_nativeView);
+  React4j_ObservableProp(final react4j.internal.NativeView $$react4j$$_nativeView) {
+    this.$$react4j$$_nativeView = $$react4j$$_nativeView;
   }
 
-  @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor =
         (React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues())
@@ -67,27 +66,27 @@ abstract class React4j_ObservableProp extends ObservableProp {
     return viewConstructor;
   }
 
-  @Nullable
   @Override
   @Observable(name = "value", expectSetter = false, readOutsideTransaction = Feature.ENABLE)
+  @Nullable
   Object getValue() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny(Inputs.value)
-          ? $$react4j$$_nativeView.inputs().getAsAny(Inputs.value).cast()
+      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.value)
+          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.value).cast()
           : null;
     } else {
-      return Js.uncheckedCast($$react4j$$_nativeView.inputs().getAsAny(Inputs.value));
+      return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.value));
     }
   }
 
-  @Nonnull
   @ObservableValueRef
   abstract ObservableValue<?> getValueObservableValue();
 
   @Action(verifyRequired = false, skipIfDisposed = Feature.DISABLE, reportParameters = false)
-  boolean $$react4j$$_shouldComponentUpdate(@Nullable final JsPropertyMap<Object> nextInputs) {
+  boolean $$react4j$$_shouldComponentUpdate(
+      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
-    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     boolean modified = false;
     if (!Js.isTripleEqual(inputs.get(Inputs.value), nextInputs.get(Inputs.value))) {
       getValueObservableValue().reportChanged();
@@ -143,11 +142,10 @@ abstract class React4j_ObservableProp extends ObservableProp {
   void onRenderDepsChange() {
     if (ViewState.IDLE == $$react4j$$_state) {
       $$react4j$$_state = ViewState.SCHEDULED;
-      $$react4j$$_nativeView.setState(JsPropertyMap.of());
+      $$react4j$$_nativeView.setState(Js.uncheckedCast(JsPropertyMap.of()));
     }
   }
 
-  @Nonnull
   @ObserverRef(name = "render")
   abstract Observer $$react4j$$_getRenderObserver();
 
@@ -161,7 +159,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
     if ($$react4j$$_scheduledDebugStateUpdate) {
       $$react4j$$_scheduledDebugStateUpdate = false;
     } else {
-      final JsPropertyMap<Object> newState = JsPropertyMap.of();
+      final var newState = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(JsPropertyMap.of());
       newState.set("Arez.id", $$react4j$$_getComponentId());
       newState.set("Arez.name", $$react4j$$_getComponentName());
       IntrospectUtil.collectDependencyDebugData($$react4j$$_getRenderObserver(), newState);
@@ -174,7 +172,6 @@ abstract class React4j_ObservableProp extends ObservableProp {
   }
 
   static final class Factory {
-    @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
 
     private Factory() {}
@@ -188,17 +185,17 @@ abstract class React4j_ObservableProp extends ObservableProp {
 
   private static final class LiteNativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nonnull
+    @NonNull
     private final React4j_ObservableProp view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    LiteNativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_ObservableProp(this);
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
       return view.$$react4j$$_shouldComponentUpdate(nextInputs);
     }
 
@@ -219,11 +216,11 @@ abstract class React4j_ObservableProp extends ObservableProp {
           OnComponentDidUpdate,
           OnShouldComponentUpdate,
           OnComponentWillUnmount {
-    @Nonnull
+    @NonNull
     private final React4j_ObservableProp view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_ObservableProp(this);
     }
@@ -234,12 +231,12 @@ abstract class React4j_ObservableProp extends ObservableProp {
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
       return view.$$react4j$$_shouldComponentUpdate(nextInputs);
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
+    public final void componentDidUpdate(final JsPropertyMap<@Nullable Object> prevInputs) {
       view.$$react4j$$_componentDidUpdate();
     }
 

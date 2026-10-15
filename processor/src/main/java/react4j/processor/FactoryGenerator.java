@@ -97,6 +97,7 @@ final class FactoryGenerator {
             final ViewDescriptor descriptor,
             final ExecutableElement constructor) {
         for (final var parameter : descriptor.getInjectableConstructorParameters()) {
+            Nullability.requireSpecifiedTree(parameter, parameter.asType());
             final var field = FieldSpec.builder(
                     GeneratorUtil.getTypeName(parameter.asType()),
                     parameter.getSimpleName().toString(),
@@ -122,8 +123,9 @@ final class FactoryGenerator {
     private static TypeSpec buildInjectSupport(final ViewDescriptor descriptor) {
         // We create a separate InjectSupport class to avoid generating a clinit for the factory class
         // which can block optimizations in GWT
-        final var builder =
-                TypeSpec.classBuilder("InjectSupport").addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL);
+        final var builder = TypeSpec.classBuilder("InjectSupport")
+                .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+                .addAnnotation(ClassName.get("org.jspecify.annotations", "NullMarked"));
 
         builder.addField(buildFactoryField(descriptor).build());
         builder.addMethod(buildSetFactoryMethod(descriptor).build());
@@ -133,7 +135,8 @@ final class FactoryGenerator {
     }
 
     private static FieldSpec.Builder buildFactoryField(final ViewDescriptor descriptor) {
-        return FieldSpec.builder(descriptor.getFactoryClassName(), "c_factory", Modifier.STATIC, Modifier.PRIVATE);
+        return FieldSpec.builder(
+                Nullability.nullable(descriptor.getFactoryClassName()), "c_factory", Modifier.STATIC, Modifier.PRIVATE);
     }
 
     private static MethodSpec.Builder buildSetFactoryMethod(final ViewDescriptor descriptor) {
@@ -171,14 +174,15 @@ final class FactoryGenerator {
                 descriptor.getName());
         block.endControlFlow();
         method.addCode(block.build());
+        method.addStatement("assert null != c_factory");
         for (final var input : descriptor.getConstructorInputs()) {
             final var parameter = input.getParameter();
             assert null != parameter;
             final var localName = parameter.getSimpleName().toString();
             final var convertMethodName = getConverter(input);
-            if (!input.getType().getKind().isPrimitive() && !input.isNonNull()) {
+            if (!input.getType().getKind().isPrimitive() && input.getNullness() == Nullability.Nullness.NULLABLE) {
                 final var extraction = CodeBlock.builder();
-                extraction.addStatement("$T $N", GeneratorUtil.getTypeName(input.getType()), localName);
+                extraction.addStatement("$T $N", input.getTypeName().withoutAnnotations(), localName);
                 extraction.beginControlFlow("if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME);
                 extraction.addStatement(
                         "$N = null != view.requireInputs().getAsAny( $T.Inputs.$N ) ? "
@@ -201,7 +205,7 @@ final class FactoryGenerator {
             } else {
                 method.addStatement(
                         "final $T $N = view.requireInputs().getAsAny( $T.Inputs.$N ).$N()",
-                        GeneratorUtil.getTypeName(input.getType()),
+                        input.getTypeName().withoutAnnotations(),
                         localName,
                         descriptor.getEnhancedClassName(),
                         input.getConstantName(),

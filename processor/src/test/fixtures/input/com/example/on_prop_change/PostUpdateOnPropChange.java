@@ -12,7 +12,7 @@ import react4j.annotations.View;
 abstract class PostUpdateOnPropChange
 {
   @OnInputChange( phase = OnInputChange.Phase.POST )
-  void onMyPropChange( String myProp )
+  void onMyPropChange( @Nullable String myProp )
   {
   }
 

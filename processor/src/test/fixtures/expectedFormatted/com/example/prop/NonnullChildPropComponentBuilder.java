@@ -1,51 +1,43 @@
 package com.example.prop;
 
-import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class NonnullChildPropComponentBuilder {
   private NonnullChildPropComponentBuilder() {}
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(pure = true)
-  static ReactNode child(@Nonnull final ReactNode child) {
+  static ReactNode child(final ReactNode child) {
     return newBuilder().child(child);
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(pure = true)
-    ReactNode child(@Nonnull ReactNode child);
+    ReactNode child(ReactNode child);
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element =
         ReactElement.createViewElement(React4j_NonnullChildPropComponent.Factory.TYPE);
 
     @Override
-    @Nonnull
     @Contract(pure = true)
-    public final ReactNode child(@Nonnull final ReactNode child) {
-      _element.input(
-          React4j_NonnullChildPropComponent.Inputs.child,
-          ReactNode.of(Objects.requireNonNull(child)));
+    public final ReactNode child(final ReactNode child) {
+      _element.input(React4j_NonnullChildPropComponent.Inputs.child, ReactNode.of(child));
       return build();
     }
 
-    @Nonnull
     @Contract(pure = true)
-    public final ReactNode build() {
+    private final ReactNode build() {
       return _element;
     }
   }

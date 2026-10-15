@@ -1,24 +1,24 @@
 package com.example.input;
 
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class InputOrderingBuilder {
   private InputOrderingBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -27,7 +27,6 @@ final class InputOrderingBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -35,7 +34,6 @@ final class InputOrderingBuilder {
   }
 
   interface Step2 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -43,7 +41,6 @@ final class InputOrderingBuilder {
   }
 
   interface Step3 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -51,7 +48,6 @@ final class InputOrderingBuilder {
   }
 
   interface Step4 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -59,7 +55,6 @@ final class InputOrderingBuilder {
   }
 
   interface Step5 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -71,11 +66,9 @@ final class InputOrderingBuilder {
       Step3,
       Step4,
       Step5 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_InputOrderingView.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -85,7 +78,6 @@ final class InputOrderingBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -95,7 +87,6 @@ final class InputOrderingBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -105,7 +96,6 @@ final class InputOrderingBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -115,7 +105,6 @@ final class InputOrderingBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -124,12 +113,11 @@ final class InputOrderingBuilder {
       return build();
     }
 
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode build() {
-      final JsPropertyMap<Object> inputs = _element.inputs();
+    private final ReactNode build() {
+      final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
       _element.setKey( String.valueOf( (boolean) inputs.get( React4j_InputOrderingView.Inputs.paramZ ) ) + "-" + String.valueOf( (boolean) inputs.get( React4j_InputOrderingView.Inputs.paramP ) ) + ( React.enableViewNames() ? "_InputOrderingView_5e9a9eff" : InputOrderingView.class.getName() ) );
       return _element;
     }

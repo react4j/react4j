@@ -12,5 +12,6 @@ abstract class NestedContractView extends NestedContractBase<List<@Nullable Stri
     @Input abstract String @Nullable [] nullableArray();
     @Input abstract @Nullable String[] nullableElements();
     @Input abstract List<? extends @Nullable String> wildcard();
+    @Input abstract List<? super @Nullable String> lowerWildcard();
     @Render @Nullable ReactNode render() { return null; }
 }

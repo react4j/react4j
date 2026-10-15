@@ -52,7 +52,10 @@ java_testng(
     name = "smoke_goldens",
     size = "medium",
     srcs = [],
-    data = ["//processor/src/test/fixtures"],
+    data = [
+        "//processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
     jvm_flags = _FLAGS,
     test_class = "react4j.processor.React4jProcessorTest",
     test_methods = ["react4j.processor.React4jProcessorTest.goldenSmoke"],
@@ -63,7 +66,10 @@ java_testng(
     name = "smoke_diagnostics",
     size = "medium",
     srcs = [],
-    data = ["//processor/src/test/fixtures"],
+    data = [
+        "//processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
     jvm_flags = _FLAGS,
     test_class = "react4j.processor.React4jProcessorTest",
     test_methods = ["react4j.processor.React4jProcessorTest.diagnosticSmoke"],
@@ -74,7 +80,10 @@ java_testng(
     name = "regressions",
     size = "medium",
     srcs = [],
-    data = ["//processor/src/test/fixtures"],
+    data = [
+        "//processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
     jvm_flags = _FLAGS,
     test_class = "react4j.processor.React4jProcessorTest",
     test_methods = [
@@ -88,7 +97,10 @@ java_testng(
     name = "generated_goldens",
     size = "large",
     srcs = [],
-    data = ["//processor/src/test/fixtures"],
+    data = [
+        "//processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
     jvm_flags = _FLAGS,
     test_class = "react4j.processor.React4jProcessorTest",
     test_methods = [
@@ -132,7 +144,10 @@ java_testng(
     name = "diagnostics",
     size = "large",
     srcs = [],
-    data = ["//processor/src/test/fixtures"],
+    data = [
+        "//processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
     jvm_flags = _FLAGS,
     test_class = "react4j.processor.React4jProcessorTest",
     test_methods = [
@@ -148,7 +163,10 @@ java_testng(
     name = "nullness_contracts",
     size = "medium",
     srcs = [],
-    data = ["//processor/src/test/fixtures"],
+    data = [
+        "//processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
     jvm_flags = _FLAGS,
     test_class = "react4j.processor.NullabilityTest",
     deps = _RUNTIME,
@@ -165,6 +183,7 @@ java_testng(
     jvm_flags = _FLAGS,
     test_class = "react4j.processor.React4jProcessorTest",
     test_methods = [
+        "react4j.processor.React4jProcessorTest.constructorContracts",
         "react4j.processor.React4jProcessorTest.genericSourceAndCompiledContracts",
         "react4j.processor.React4jProcessorTest.presenceAndParametricContracts",
     ],
@@ -182,5 +201,19 @@ java_testng(
     jvm_flags = _FLAGS,
     test_class = "react4j.processor.React4jProcessorTest",
     test_methods = ["react4j.processor.React4jProcessorTest.inputContractDiagnostics"],
+    deps = _RUNTIME,
+)
+
+java_testng(
+    name = "checker_negative_control",
+    size = "medium",
+    srcs = [],
+    data = [
+        "//processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
+    jvm_flags = _FLAGS,
+    test_class = "react4j.processor.React4jProcessorTest",
+    test_methods = ["react4j.processor.React4jProcessorTest.strictCheckerRejectsInvalidGeneratedBody"],
     deps = _RUNTIME,
 )

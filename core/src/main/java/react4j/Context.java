@@ -16,7 +16,7 @@ import org.jspecify.annotations.Nullable;
  * views without having to explicitly pass a input through every level of the tree.
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public final class Context<T> {
+public final class Context<T extends @Nullable Object> {
     /**
      * Create a builder for the Provider component.
      *
@@ -35,7 +35,7 @@ public final class Context<T> {
      * @return the element.
      */
     @JsOverlay
-    public ReactNode provide(@Nullable final T value, final ReactNode... children) {
+    public ReactNode provide(@Nullable final T value, final @Nullable ReactNode... children) {
         return provider().value(value).children(children);
     }
 
@@ -53,7 +53,7 @@ public final class Context<T> {
      * A Builder for the Provider component.
      * A provider component is a react component that allows Consumers to subscribe to context changes.
      */
-    public static final class ProviderBuilder<ST> {
+    public static final class ProviderBuilder<ST extends @Nullable Object> {
 
         private final ReactElement _element;
 
@@ -78,7 +78,7 @@ public final class Context<T> {
             return this;
         }
 
-        public ReactNode children(final ReactNode... children) {
+        public ReactNode children(final @Nullable ReactNode... children) {
             _element.input("children", children);
             return build();
         }
@@ -108,7 +108,7 @@ public final class Context<T> {
      * A Builder for the Consumer component.
      * A Consumer component is a react component that subscribes to context changes.
      */
-    public static final class ConsumerBuilder<ST> {
+    public static final class ConsumerBuilder<ST extends @Nullable Object> {
 
         private final ReactElement _element;
 

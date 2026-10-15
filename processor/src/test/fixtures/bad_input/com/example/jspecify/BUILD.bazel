@@ -4,6 +4,7 @@ filegroup(
         "NullableDefaultView.java",
         "OptionalNonNullView.java",
         "ParametricOmissionView.java",
+        "UnknownConstructorView.java",
         "UnknownContractView.java",
     ],
     visibility = ["//processor/src/test/fixtures:__pkg__"],

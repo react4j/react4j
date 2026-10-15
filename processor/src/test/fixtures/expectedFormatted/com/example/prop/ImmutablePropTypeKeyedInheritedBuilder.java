@@ -1,55 +1,49 @@
 package com.example.prop;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class ImmutablePropTypeKeyedInheritedBuilder {
   private ImmutablePropTypeKeyedInheritedBuilder() {}
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(pure = true)
-  static ReactNode myProp(@Nullable final ImmutablePropTypeKeyedInherited.KeyedComponent myProp) {
+  static ReactNode myProp(final ImmutablePropTypeKeyedInherited.@Nullable KeyedComponent myProp) {
     return newBuilder().myProp(myProp);
   }
 
-  @Nonnull
   @Contract(pure = true)
   static ReactNode build() {
     return newBuilder().build();
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(pure = true)
-    ReactNode myProp(@Nullable ImmutablePropTypeKeyedInherited.KeyedComponent myProp);
+    ReactNode myProp(ImmutablePropTypeKeyedInherited.@Nullable KeyedComponent myProp);
 
-    @Nonnull
     @Contract(pure = true)
     ReactNode build();
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element =
         ReactElement.createViewElement(React4j_ImmutablePropTypeKeyedInherited.Factory.TYPE);
 
     @Override
-    @Nonnull
     @Contract(pure = true)
     public final ReactNode myProp(
-        @Nullable final ImmutablePropTypeKeyedInherited.KeyedComponent myProp) {
+        final ImmutablePropTypeKeyedInherited.@Nullable KeyedComponent myProp) {
       _element.setKey(Keyed.getKey(myProp)
           + (React.enableViewNames()
               ? "_ImmutablePropTypeKeyedInherited_62ec04af"
@@ -58,7 +52,7 @@ final class ImmutablePropTypeKeyedInheritedBuilder {
       return build();
     }
 
-    @Nonnull
+    @Override
     @Contract(pure = true)
     public final ReactNode build() {
       return _element;

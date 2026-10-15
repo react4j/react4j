@@ -37,22 +37,7 @@
     "processFailedCompileInheritedPackageAccessFieldInDifferentPackage",
     "processCompileWithWarnings",
     "processCompileWithWarnings",
-    "formatGeneratedSourceFailsClearlyWithoutJdkExports",
-    "ProcessBuilder",
-    "processor",
-    "React4jProcessor",
-    "additionalProcessors",
-    "getOptionPrefix",
-    "getOptions",
-    "assertSuccessfulCompile",
-    "assertSuccessfulCompileWithoutSting",
-    "assertSuccessfulCompileWithoutSting",
-    "deleteDir",
-    "IllegalStateException",
-    "deriveExpectedOutputs",
-    "emitGeneratedFile",
-    "deriveBuilderFilename",
-    "toFilename"
+    "formatGeneratedSourceFailsClearlyWithoutJdkExports"
   ],
   "fixture_counts": {
     "input": 351,

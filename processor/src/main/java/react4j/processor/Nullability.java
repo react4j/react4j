@@ -13,11 +13,13 @@ import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.IntersectionType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.WildcardType;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.GeneratorUtil;
@@ -114,6 +116,43 @@ final class Nullability {
 
     static Nullness requireSpecified(Element declaration, TypeMirror resolvedType, TypeElement context) {
         return requireSpecified(declaration, resolve(declaration, resolvedType, context));
+    }
+
+    static void requireSpecifiedTree(Element declaration, TypeMirror type) {
+        if (type instanceof WildcardType wildcard) {
+            var lower = wildcard.getSuperBound();
+            var upper = wildcard.getExtendsBound();
+            if (lower != null) {
+                requireSpecifiedTree(declaration, lower);
+            }
+            if (upper != null) {
+                requireSpecifiedTree(declaration, upper);
+            }
+            return;
+        }
+        if (!type.getKind().isPrimitive()
+                && !isMarked(declaration)
+                && !AnnotationsUtil.hasAnnotationOfType(type, NULLABLE)
+                && !AnnotationsUtil.hasAnnotationOfType(type, NONNULL)) {
+            throw new ProcessorException(
+                    "Unspecified JSpecify nullness in injected constructor parameter: qualify all stored reference"
+                            + " types, including type arguments and array elements",
+                    declaration);
+        }
+        if (type instanceof ArrayType array) {
+            requireSpecifiedTree(declaration, array.getComponentType());
+        } else if (type instanceof DeclaredType declared) {
+            for (var argument : declared.getTypeArguments()) {
+                requireSpecifiedTree(declaration, argument);
+            }
+            for (var owner = declared.getEnclosingType();
+                    owner instanceof DeclaredType enclosing;
+                    owner = enclosing.getEnclosingType()) {
+                for (var argument : enclosing.getTypeArguments()) {
+                    requireSpecifiedTree(declaration, argument);
+                }
+            }
+        }
     }
 
     static TypeName typeName(Element declaration, TypeMirror resolvedType, TypeElement context) {

@@ -1,64 +1,58 @@
 package com.example.optional_props;
 
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class RequiredChildrenWithManyRequiredBuilder {
   private RequiredChildrenWithManyRequiredBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static Step1 myRequiredProp1(@Nullable final String myRequiredProp1) {
+  static Step1 myRequiredProp1(final @Nullable String myRequiredProp1) {
     return newBuilder().myRequiredProp1( myRequiredProp1 );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static Step1 myRequiredProp2(@Nullable final String myRequiredProp2) {
+  static Step1 myRequiredProp2(final @Nullable String myRequiredProp2) {
     return newBuilder().myRequiredProp2( myRequiredProp2 );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static Step1 myRequiredProp3(@Nullable final String myRequiredProp3) {
+  static Step1 myRequiredProp3(final @Nullable String myRequiredProp3) {
     return newBuilder().myRequiredProp3( myRequiredProp3 );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
+  static ReactNode children(final Stream<? extends ReactNode> children) {
     return newBuilder().children( children );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static Step1 children(@Nullable final ReactNode... children) {
+  static Step1 children(final ReactNode @Nullable ... children) {
     return newBuilder().children( children );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -67,37 +61,31 @@ final class RequiredChildrenWithManyRequiredBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
     Step1 myRequiredProp1(@Nullable String myRequiredProp1);
 
-    @Nonnull
     @Contract(
         pure = true
     )
     Step1 myRequiredProp2(@Nullable String myRequiredProp2);
 
-    @Nonnull
     @Contract(
         pure = true
     )
     Step1 myRequiredProp3(@Nullable String myRequiredProp3);
 
-    @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode children(@Nonnull Stream<? extends ReactNode> children);
+    ReactNode children(Stream<? extends ReactNode> children);
 
-    @Nonnull
     @Contract(
         pure = true
     )
-    Step1 children(@Nullable ReactNode... children);
+    Step1 children(ReactNode @Nullable ... children);
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -105,60 +93,54 @@ final class RequiredChildrenWithManyRequiredBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_RequiredChildrenWithManyRequired.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final Step1 myRequiredProp1(@Nullable final String myRequiredProp1) {
+    public final Step1 myRequiredProp1(final @Nullable String myRequiredProp1) {
       _element.input( React4j_RequiredChildrenWithManyRequired.Inputs.myRequiredProp1, myRequiredProp1 );
       return this;
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final Step1 myRequiredProp2(@Nullable final String myRequiredProp2) {
+    public final Step1 myRequiredProp2(final @Nullable String myRequiredProp2) {
       _element.input( React4j_RequiredChildrenWithManyRequired.Inputs.myRequiredProp2, myRequiredProp2 );
       return this;
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final Step1 myRequiredProp3(@Nullable final String myRequiredProp3) {
+    public final Step1 myRequiredProp3(final @Nullable String myRequiredProp3) {
       _element.input( React4j_RequiredChildrenWithManyRequired.Inputs.myRequiredProp3, myRequiredProp3 );
       return this;
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode children(@Nonnull final Stream<? extends ReactNode> children) {
+    public final ReactNode children(final Stream<? extends ReactNode> children) {
       children( children.toArray( ReactNode[]::new ) );
       return build();
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final Step1 children(@Nullable final ReactNode... children) {
-      _element.input( React4j_RequiredChildrenWithManyRequired.Inputs.children, ReactNode.of( children ) );
+    public final Step1 children(final ReactNode @Nullable ... children) {
+      _element.input( React4j_RequiredChildrenWithManyRequired.Inputs.children, children );
       return this;
     }
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

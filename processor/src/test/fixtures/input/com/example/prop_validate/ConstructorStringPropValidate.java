@@ -16,7 +16,7 @@ abstract class ConstructorStringPropValidate
   }
 
   @InputValidate
-  void validateMyProp( String prop )
+  void validateMyProp( @Nullable String prop )
   {
   }
 
