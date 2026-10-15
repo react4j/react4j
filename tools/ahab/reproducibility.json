@@ -24,6 +24,14 @@
       "spec": {
         "reproducibility": "always"
       }
+    },
+    "//tools/site/src/main/java/react4j/site/tool": {
+      "spec": {
+        "reproducibility": "sometimes",
+        "required_flags": [
+          "build"
+        ]
+      }
     }
   }
 }

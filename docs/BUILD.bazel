@@ -1,0 +1,14 @@
+filegroup(
+    name = "pages",
+    srcs = [
+        "arez.md",
+        "compared_to_react.md",
+        "faq.md",
+        "intellij.md",
+        "overview.md",
+        "project_setup.md",
+        "related_projects.md",
+        "todomvc.md",
+    ],
+    visibility = ["//website:__pkg__"],
+)

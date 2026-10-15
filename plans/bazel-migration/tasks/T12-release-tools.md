@@ -1,6 +1,6 @@
 # T12 — Explicit release operations
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: `T11`
 - Spec coverage: `R8`, `R11`, `AC4`, `AC7`
 
