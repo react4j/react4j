@@ -1,66 +1,60 @@
 package com.example.default_inputs;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class ProtectedFieldInputDefaultBuilder {
   private ProtectedFieldInputDefaultBuilder() {}
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(pure = true)
-  static ReactNode myProp(@Nullable final String myProp) {
+  static ReactNode myProp(final @Nullable String myProp) {
     return newBuilder().myProp(myProp);
   }
 
-  @Nonnull
   @Contract(pure = true)
   static ReactNode build() {
     return newBuilder().build();
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(pure = true)
     ReactNode myProp(@Nullable String myProp);
 
-    @Nonnull
     @Contract(pure = true)
     ReactNode build();
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element;
 
     Builder() {
       _element =
           ReactElement.createViewElement(React4j_ProtectedFieldInputDefaultView.Factory.TYPE);
-      final JsPropertyMap<Object> inputs = _element.inputs();
+      final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
       inputs.set(
           React4j_ProtectedFieldInputDefaultView.Inputs.myProp,
           ProtectedFieldInputDefaultView.DEFAULT_MY_PROP);
     }
 
     @Override
-    @Nonnull
     @Contract(pure = true)
-    public final ReactNode myProp(@Nullable final String myProp) {
+    public final ReactNode myProp(final @Nullable String myProp) {
       _element.input(React4j_ProtectedFieldInputDefaultView.Inputs.myProp, myProp);
       return build();
     }
 
-    @Nonnull
+    @Override
     @Contract(pure = true)
     public final ReactNode build() {
       return _element;

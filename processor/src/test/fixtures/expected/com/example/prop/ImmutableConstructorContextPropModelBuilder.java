@@ -1,24 +1,24 @@
 package com.example.prop;
 
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.Context;
 import react4j.Contexts;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class ImmutableConstructorContextPropModelBuilder {
   private ImmutableConstructorContextPropModelBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -27,7 +27,6 @@ final class ImmutableConstructorContextPropModelBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -35,7 +34,6 @@ final class ImmutableConstructorContextPropModelBuilder {
   }
 
   private static class ContextHolder {
-    @Nonnull
     private static final Context<String> CONTEXT_myProp = Contexts.get( String.class );
 
     private ContextHolder() {
@@ -43,18 +41,14 @@ final class ImmutableConstructorContextPropModelBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutableConstructorContextPropModel.Factory.TYPE );
 
-    @Nonnull
     private final Context.ConsumerRenderFunction<String> _$context_myProp = this::$context_myProp;
 
-    @Nonnull
-    private ReactNode build(@Nonnull final ReactElement element) {
+    private ReactNode build(final ReactElement element) {
       return element;
     }
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -62,8 +56,7 @@ final class ImmutableConstructorContextPropModelBuilder {
       return ContextHolder.CONTEXT_myProp.consumer().render( _$context_myProp );
     }
 
-    @Nonnull
-    private ReactNode $context_myProp(final String myProp) {
+    private ReactNode $context_myProp(final @Nullable String myProp) {
       _element.input( React4j_ImmutableConstructorContextPropModel.Inputs.myProp, myProp );
       return build( _element.dup() );
     }

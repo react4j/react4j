@@ -9,10 +9,7 @@ import jsinterop.annotations.JsType;
  * <p>Use {@code Js.uncheckedCast(target)} to convert this value to the target type supplied by the
  * browser JsInterop library used by the application.</p>
  */
-@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "EventTarget" )
-public class EventTarget
-{
-  protected EventTarget()
-  {
-  }
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "EventTarget")
+public class EventTarget {
+    protected EventTarget() {}
 }

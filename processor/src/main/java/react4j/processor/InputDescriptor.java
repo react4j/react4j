@@ -1,325 +1,288 @@
 package react4j.processor;
 
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.palantir.javapoet.TypeName;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
-import org.realityforge.proton.AnnotationsUtil;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
+import react4j.processor.Nullability.Nullness;
 
-@SuppressWarnings( "Duplicates" )
-final class InputDescriptor
-{
-  @Nonnull
-  private final ViewDescriptor _descriptor;
-  @Nonnull
-  private final String _name;
-  @Nonnull
-  private final String _qualifier;
-  @Nonnull
-  private final Element _element;
-  @Nonnull
-  private final TypeMirror _type;
-  @Nullable
-  private final ExecutableElement _method;
-  @Nullable
-  private final ExecutableType _methodType;
-  @Nullable
-  private final VariableElement _parameter;
-  private final boolean _fromTreeContext;
-  private final boolean _shouldUpdateOnChange;
-  private final boolean _observable;
-  private final boolean _disposable;
-  @Nullable
-  private final ImmutableInputKeyStrategy _immutableInputKeyStrategy;
-  @Nonnull
-  private final String _requiredValue;
-  private boolean _onChangePresent;
-  private boolean _suppressMutableInputAccessedInPostConstruct;
-  @Nullable
-  private VariableElement _defaultField;
-  @Nullable
-  private ExecutableElement _defaultMethod;
-  @Nullable
-  private ExecutableElement _validateMethod;
-  /**
-   * Flag set to true if input is optional.
-   */
-  private boolean _optional;
-  @Nullable
-  private Boolean _isNonNull;
+@SuppressWarnings("Duplicates")
+final class InputDescriptor {
 
-  InputDescriptor( @Nonnull final ViewDescriptor descriptor,
-                   @Nonnull final String name,
-                   @Nonnull final String qualifier,
-                   @Nonnull final Element element,
-                   @Nonnull final TypeMirror type,
-                   @Nullable final ExecutableElement method,
-                   @Nullable final ExecutableType methodType,
-                   @Nullable final VariableElement parameter,
-                   final boolean fromTreeContext,
-                   final boolean shouldUpdateOnChange,
-                   final boolean observable,
-                   final boolean disposable,
-                   @Nullable final ImmutableInputKeyStrategy immutableInputKeyStrategy,
-                   @Nonnull final String requiredValue )
-  {
-    _descriptor = Objects.requireNonNull( descriptor );
-    _name = Objects.requireNonNull( name );
-    _qualifier = Objects.requireNonNull( qualifier );
-    _element = Objects.requireNonNull( element );
-    _type = Objects.requireNonNull( type );
-    _method = method;
-    _methodType = methodType;
-    _parameter = parameter;
-    _fromTreeContext = fromTreeContext;
-    _shouldUpdateOnChange = shouldUpdateOnChange;
-    _observable = observable;
-    _disposable = disposable;
-    _immutableInputKeyStrategy = immutableInputKeyStrategy;
-    _requiredValue = Objects.requireNonNull( requiredValue );
-  }
+    private final ViewDescriptor _descriptor;
 
-  @Nonnull
-  String getName()
-  {
-    return _name;
-  }
+    private final String _name;
 
-  @Nonnull
-  String getQualifier()
-  {
-    return _qualifier;
-  }
+    private final String _qualifier;
 
-  @Nonnull
-  Element getElement()
-  {
-    return _element;
-  }
+    private final Element _element;
 
-  @Nonnull
-  TypeMirror getType()
-  {
-    return _type;
-  }
+    private final TypeMirror _type;
 
-  boolean isMethodInput()
-  {
-    return !isImmutable();
-  }
+    @Nullable
+    private final ExecutableElement _method;
 
-  @Nullable
-  ExecutableElement getMethod()
-  {
-    return _method;
-  }
+    @Nullable
+    private final ExecutableType _methodType;
 
-  @Nullable
-  ExecutableType getMethodType()
-  {
-    return _methodType;
-  }
+    @Nullable
+    private final VariableElement _parameter;
 
-  @Nullable
-  VariableElement getParameter()
-  {
-    return _parameter;
-  }
+    private final boolean _fromTreeContext;
+    private final boolean _shouldUpdateOnChange;
+    private final boolean _observable;
+    private final boolean _disposable;
 
-  boolean shouldUpdateOnChange()
-  {
-    return _shouldUpdateOnChange;
-  }
+    @Nullable
+    private final ImmutableInputKeyStrategy _immutableInputKeyStrategy;
 
-  boolean isObservable()
-  {
-    return _observable;
-  }
+    private final String _requiredValue;
 
-  boolean isDisposable()
-  {
-    return _disposable;
-  }
+    private boolean _onChangePresent;
+    private boolean _suppressMutableInputAccessedInPostConstruct;
 
-  boolean isImmutable()
-  {
-    return null != _immutableInputKeyStrategy;
-  }
+    @Nullable
+    private VariableElement _defaultField;
 
-  @Nonnull
-  String getRequiredValue()
-  {
-    return _requiredValue;
-  }
+    @Nullable
+    private ExecutableElement _defaultMethod;
 
-  void markAsOnChangePresent()
-  {
-    _onChangePresent = true;
-  }
+    @Nullable
+    private ExecutableElement _validateMethod;
+    /**
+     * Flag set to true if input is optional.
+     */
+    private boolean _optional;
 
-  void suppressMutableInputAccessedInPostConstruct()
-  {
-    _suppressMutableInputAccessedInPostConstruct = true;
-  }
+    @Nullable
+    private Nullness _nullness;
 
-  boolean needsMutableInputAccessedInPostConstructInvariant()
-  {
-    return !_suppressMutableInputAccessedInPostConstruct && mayNeedMutableInputAccessedInPostConstructInvariant();
-  }
-
-  boolean mayNeedMutableInputAccessedInPostConstructInvariant()
-  {
-    return !isImmutable() && !_onChangePresent && _descriptor.hasPostConstruct();
-  }
-
-  @Nonnull
-  ImmutableInputKeyStrategy getImmutableInputKeyStrategy()
-  {
-    assert null != _immutableInputKeyStrategy;
-    return _immutableInputKeyStrategy;
-  }
-
-  boolean hasValidateMethod()
-  {
-    return null != _validateMethod;
-  }
-
-  @Nonnull
-  ExecutableElement getValidateMethod()
-  {
-    assert null != _validateMethod;
-    return _validateMethod;
-  }
-
-  void setValidateMethod( @Nonnull final ExecutableElement method )
-  {
-    if ( null != _validateMethod )
-    {
-      throw new ProcessorException( MemberChecks.toSimpleName( Constants.INPUT_VALIDATE_CLASSNAME ) +
-                                    " target duplicates existing method named " + _validateMethod.getSimpleName(),
-                                    method );
+    InputDescriptor(
+            final ViewDescriptor descriptor,
+            final String name,
+            final String qualifier,
+            final Element element,
+            final TypeMirror type,
+            @Nullable final ExecutableElement method,
+            @Nullable final ExecutableType methodType,
+            @Nullable final VariableElement parameter,
+            final boolean fromTreeContext,
+            final boolean shouldUpdateOnChange,
+            final boolean observable,
+            final boolean disposable,
+            @Nullable final ImmutableInputKeyStrategy immutableInputKeyStrategy,
+            final String requiredValue) {
+        _descriptor = descriptor;
+        _name = name;
+        _qualifier = qualifier;
+        _element = element;
+        _type = type;
+        _method = method;
+        _methodType = methodType;
+        _parameter = parameter;
+        _fromTreeContext = fromTreeContext;
+        _shouldUpdateOnChange = shouldUpdateOnChange;
+        _observable = observable;
+        _disposable = disposable;
+        _immutableInputKeyStrategy = immutableInputKeyStrategy;
+        _requiredValue = requiredValue;
     }
-    else
-    {
-      _validateMethod = Objects.requireNonNull( method );
+
+    String getName() {
+        return _name;
     }
-  }
 
-  boolean hasDefaultField()
-  {
-    return null != _defaultField;
-  }
-
-  @Nonnull
-  VariableElement getDefaultField()
-  {
-    assert null != _defaultField;
-    return _defaultField;
-  }
-
-  void setDefaultField( @Nonnull final VariableElement field )
-  {
-    if ( isFromTreeContext() )
-    {
-      throw new ProcessorException( MemberChecks.mustNot( Constants.INPUT_DEFAULT_CLASSNAME,
-                                                          "be specified for an @Input that has fromTreeContext=true" ),
-                                    field );
+    String getQualifier() {
+        return _qualifier;
     }
-    if ( null != _defaultMethod )
-    {
-      throw new ProcessorException( "@InputDefault target duplicates existing method named " +
-                                    _defaultMethod.getSimpleName(), field );
+
+    Element getElement() {
+        return _element;
     }
-    else if ( null != _defaultField )
-    {
-      throw new ProcessorException( "@InputDefault target duplicates existing field named " +
-                                    _defaultField.getSimpleName(), field );
+
+    TypeMirror getType() {
+        return _type;
     }
-    else
-    {
-      _defaultField = Objects.requireNonNull( field );
+
+    boolean isMethodInput() {
+        return !isImmutable();
     }
-  }
 
-  boolean hasDefaultMethod()
-  {
-    return null != _defaultMethod;
-  }
-
-  @Nonnull
-  ExecutableElement getDefaultMethod()
-  {
-    assert null != _defaultMethod;
-    return _defaultMethod;
-  }
-
-  void setDefaultMethod( @Nonnull final ExecutableElement method )
-  {
-    if ( isFromTreeContext() )
-    {
-      throw new ProcessorException( MemberChecks.mustNot( Constants.INPUT_DEFAULT_CLASSNAME,
-                                                          "be specified for an @Input that has fromTreeContext=true" ),
-                                    method );
+    @Nullable
+    ExecutableElement getMethod() {
+        return _method;
     }
-    if ( null != _defaultMethod )
-    {
-      throw new ProcessorException( "@InputDefault target duplicates existing method named " +
-                                    _defaultMethod.getSimpleName(), method );
+
+    @Nullable
+    ExecutableType getMethodType() {
+        return _methodType;
     }
-    else
-    {
-      /*
-       * As all methods are processed first, there is no chance that a duplicate field will be detected
-       * prior to the field being set. If there is a duplicate field it will be detected in setDefaultField()
-       */
-      assert null == _defaultField;
-      _defaultMethod = Objects.requireNonNull( method );
+
+    @Nullable
+    VariableElement getParameter() {
+        return _parameter;
     }
-  }
 
-  boolean isOptional()
-  {
-    return _optional;
-  }
-
-  boolean isRequired()
-  {
-    return !isOptional();
-  }
-
-  boolean isNonNull()
-  {
-    if ( null == _isNonNull )
-    {
-      _isNonNull = AnnotationsUtil.hasNonnullAnnotation( getElement() );
+    boolean shouldUpdateOnChange() {
+        return _shouldUpdateOnChange;
     }
-    return _isNonNull;
-  }
 
-  void markAsOptional()
-  {
-    _optional = true;
-  }
+    boolean isObservable() {
+        return _observable;
+    }
 
-  @Nonnull
-  String getConstantName()
-  {
-    return getName();
-  }
+    boolean isDisposable() {
+        return _disposable;
+    }
 
-  boolean isFromTreeContext()
-  {
-    return _fromTreeContext;
-  }
+    boolean isImmutable() {
+        return null != _immutableInputKeyStrategy;
+    }
 
-  boolean isSpecialChildrenInput()
-  {
-    return getName().equals( "children" ) || getName().equals( "child" );
-  }
+    String getRequiredValue() {
+        return _requiredValue;
+    }
+
+    void markAsOnChangePresent() {
+        _onChangePresent = true;
+    }
+
+    void suppressMutableInputAccessedInPostConstruct() {
+        _suppressMutableInputAccessedInPostConstruct = true;
+    }
+
+    boolean needsMutableInputAccessedInPostConstructInvariant() {
+        return !_suppressMutableInputAccessedInPostConstruct && mayNeedMutableInputAccessedInPostConstructInvariant();
+    }
+
+    boolean mayNeedMutableInputAccessedInPostConstructInvariant() {
+        return !isImmutable() && !_onChangePresent && _descriptor.hasPostConstruct();
+    }
+
+    ImmutableInputKeyStrategy getImmutableInputKeyStrategy() {
+        assert null != _immutableInputKeyStrategy;
+        return _immutableInputKeyStrategy;
+    }
+
+    boolean hasValidateMethod() {
+        return null != _validateMethod;
+    }
+
+    ExecutableElement getValidateMethod() {
+        assert null != _validateMethod;
+        return _validateMethod;
+    }
+
+    void setValidateMethod(final ExecutableElement method) {
+        if (null != _validateMethod) {
+            throw new ProcessorException(
+                    MemberChecks.toSimpleName(Constants.INPUT_VALIDATE_CLASSNAME)
+                            + " target duplicates existing method named " + _validateMethod.getSimpleName(),
+                    method);
+        } else {
+            _validateMethod = method;
+        }
+    }
+
+    boolean hasDefaultField() {
+        return null != _defaultField;
+    }
+
+    VariableElement getDefaultField() {
+        assert null != _defaultField;
+        return _defaultField;
+    }
+
+    void setDefaultField(final VariableElement field) {
+        if (isFromTreeContext()) {
+            throw new ProcessorException(
+                    MemberChecks.mustNot(
+                            Constants.INPUT_DEFAULT_CLASSNAME,
+                            "be specified for an @Input that has fromTreeContext=true"),
+                    field);
+        }
+        if (null != _defaultMethod) {
+            throw new ProcessorException(
+                    "@InputDefault target duplicates existing method named " + _defaultMethod.getSimpleName(), field);
+        } else if (null != _defaultField) {
+            throw new ProcessorException(
+                    "@InputDefault target duplicates existing field named " + _defaultField.getSimpleName(), field);
+        } else {
+            _defaultField = field;
+        }
+    }
+
+    boolean hasDefaultMethod() {
+        return null != _defaultMethod;
+    }
+
+    ExecutableElement getDefaultMethod() {
+        assert null != _defaultMethod;
+        return _defaultMethod;
+    }
+
+    void setDefaultMethod(final ExecutableElement method) {
+        if (isFromTreeContext()) {
+            throw new ProcessorException(
+                    MemberChecks.mustNot(
+                            Constants.INPUT_DEFAULT_CLASSNAME,
+                            "be specified for an @Input that has fromTreeContext=true"),
+                    method);
+        }
+        if (null != _defaultMethod) {
+            throw new ProcessorException(
+                    "@InputDefault target duplicates existing method named " + _defaultMethod.getSimpleName(), method);
+        } else {
+            /*
+             * As all methods are processed first, there is no chance that a duplicate field will be detected
+             * prior to the field being set. If there is a duplicate field it will be detected in setDefaultField()
+             */
+            assert null == _defaultField;
+            _defaultMethod = method;
+        }
+    }
+
+    boolean isOptional() {
+        return _optional;
+    }
+
+    boolean isRequired() {
+        return !isOptional();
+    }
+
+    Nullability.Nullness getNullness() {
+        if (_nullness == null) {
+            _nullness = Nullability.requireSpecified(getElement(), getType(), _descriptor.getElement());
+        }
+        return _nullness;
+    }
+
+    boolean isNonNull() {
+        return getNullness() == Nullability.Nullness.NONNULL;
+    }
+
+    TypeName getTypeName() {
+        return Nullability.typeName(getElement(), getType(), _descriptor.getElement());
+    }
+
+    void markAsOptional() {
+        _optional = true;
+    }
+
+    String getConstantName() {
+        return getName();
+    }
+
+    boolean isFromTreeContext() {
+        return _fromTreeContext;
+    }
+
+    boolean isSpecialChildrenInput() {
+        return getName().equals("children") || getName().equals("child");
+    }
 }

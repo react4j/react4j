@@ -5,9 +5,10 @@ import react4j.annotations.PostRender;
 import react4j.annotations.Render;
 import react4j.annotations.SortOrder;
 import react4j.annotations.View;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class MultipleSortedPostRenderModel
 {
   @PostRender( sortOrder = SortOrder.APPLICATION + 50 )

@@ -1,7 +1,0 @@
-<module>
-  <inherits name='react4j.React'/>
-
-  <public path='public' includes='*'/>
-
-  <source path=''/>
-</module>

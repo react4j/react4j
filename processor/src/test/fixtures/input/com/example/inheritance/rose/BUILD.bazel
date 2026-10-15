@@ -1,0 +1,9 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "MyBaseView.java",
+        "MyConsumerView.java",
+        "MyView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

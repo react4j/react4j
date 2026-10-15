@@ -1,0 +1,30 @@
+load("//third_party/java:rules.bzl", "java_binary", "java_library")
+
+java_library(
+    name = "site",
+    srcs = [
+        "Markdown.java",
+        "SiteBuilder.java",
+        "SiteDeploy.java",
+        "SiteLinks.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//tools/site/src/test/java/react4j/site:__pkg__",
+    ],
+    deps = [
+        "//third_party/java:commonmark",
+        "//third_party/java:commonmark_ext_gfm_tables",
+    ],
+)
+
+java_binary(
+    name = "tool",
+    srcs = ["Main.java"],
+    main_class = "react4j.site.Main",
+    visibility = ["//tools/site:__pkg__"],
+    deps = [
+        ":site",
+        "//tools/browser:preview",
+    ],
+)

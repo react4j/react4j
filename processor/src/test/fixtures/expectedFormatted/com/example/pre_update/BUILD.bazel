@@ -1,0 +1,16 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicPreUpdateModelBuilder.java",
+        "OnPropChangeAndPreUpdateModelBuilder.java",
+        "PackageAccessPreUpdateModelBuilder.java",
+        "ProtectedAccessFromBasePreUpdateModelBuilder.java",
+        "PublicAccessViaInterfacePreUpdateModelBuilder.java",
+        "React4j_BasicPreUpdateModel.java",
+        "React4j_OnPropChangeAndPreUpdateModel.java",
+        "React4j_PackageAccessPreUpdateModel.java",
+        "React4j_ProtectedAccessFromBasePreUpdateModel.java",
+        "React4j_PublicAccessViaInterfacePreUpdateModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

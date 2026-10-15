@@ -1,0 +1,18 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicPostRenderModelBuilder.java",
+        "MultiplePostRenderModelBuilder.java",
+        "MultipleSortedPostRenderModelBuilder.java",
+        "PackageAccessPostRenderModelBuilder.java",
+        "ProtectedAccessFromBasePostRenderModelBuilder.java",
+        "PublicAccessViaInterfacePostRenderModelBuilder.java",
+        "React4j_BasicPostRenderModel.java",
+        "React4j_MultiplePostRenderModel.java",
+        "React4j_MultipleSortedPostRenderModel.java",
+        "React4j_PackageAccessPostRenderModel.java",
+        "React4j_ProtectedAccessFromBasePostRenderModel.java",
+        "React4j_PublicAccessViaInterfacePostRenderModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

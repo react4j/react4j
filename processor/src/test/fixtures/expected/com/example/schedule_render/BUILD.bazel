@@ -1,0 +1,14 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicScheduleRenderComponentBuilder.java",
+        "MultiScheduleRenderComponentBuilder.java",
+        "NoSkipScheduleRenderComponentBuilder.java",
+        "React4j_BasicScheduleRenderComponent.java",
+        "React4j_MultiScheduleRenderComponent.java",
+        "React4j_NoSkipScheduleRenderComponent.java",
+        "React4j_SkipScheduleRenderComponent.java",
+        "SkipScheduleRenderComponentBuilder.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

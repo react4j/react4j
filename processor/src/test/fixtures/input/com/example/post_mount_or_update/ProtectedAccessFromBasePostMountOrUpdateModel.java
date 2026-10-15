@@ -4,6 +4,7 @@ import com.example.post_mount_or_update.other.BaseProtectedAccessPostMountOrUpda
 import react4j.annotations.View;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class ProtectedAccessFromBasePostMountOrUpdateModel
   extends BaseProtectedAccessPostMountOrUpdateModel
 {

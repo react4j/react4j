@@ -1,22 +1,21 @@
 package com.example.inheritance.simple;
 
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class LeafBuilder {
   private LeafBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -25,7 +24,6 @@ final class LeafBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -33,7 +31,6 @@ final class LeafBuilder {
   }
 
   interface Step2 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -41,7 +38,6 @@ final class LeafBuilder {
   }
 
   interface Step3 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -49,7 +45,6 @@ final class LeafBuilder {
   }
 
   interface Step4 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -57,7 +52,6 @@ final class LeafBuilder {
   }
 
   interface Step5 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -65,7 +59,6 @@ final class LeafBuilder {
   }
 
   interface Step6 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -73,7 +66,6 @@ final class LeafBuilder {
   }
 
   interface Step7 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -81,7 +73,6 @@ final class LeafBuilder {
   }
 
   interface Step8 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -89,7 +80,6 @@ final class LeafBuilder {
   }
 
   interface Step9 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -97,7 +87,6 @@ final class LeafBuilder {
   }
 
   interface Step10 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -105,7 +94,6 @@ final class LeafBuilder {
   }
 
   interface Step11 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -113,7 +101,6 @@ final class LeafBuilder {
   }
 
   interface Step12 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -132,11 +119,9 @@ final class LeafBuilder {
       Step10,
       Step11,
       Step12 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_LeafView.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -146,7 +131,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -156,7 +140,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -166,7 +149,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -176,7 +158,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -186,7 +167,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -196,7 +176,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -206,7 +185,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -216,7 +194,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -226,7 +203,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -236,7 +212,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -246,7 +221,6 @@ final class LeafBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -255,11 +229,10 @@ final class LeafBuilder {
       return build();
     }
 
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode build() {
+    private final ReactNode build() {
       return _element;
     }
   }

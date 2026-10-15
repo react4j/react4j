@@ -8,8 +8,6 @@ import java.lang.annotation.Target;
 /**
  * Integration into sting the name of the annotation and shape is all that matters.
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.ANNOTATION_TYPE )
-@interface ActAsStingConsumer
-{
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
+@interface ActAsStingConsumer {}

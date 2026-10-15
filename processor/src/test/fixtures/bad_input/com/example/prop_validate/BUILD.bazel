@@ -1,0 +1,20 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BadName1PropValidate.java",
+        "BadName2PropValidate.java",
+        "BadName3PropValidate.java",
+        "BadNullabilityProp1Validate.java",
+        "BadNullabilityProp2Validate.java",
+        "BadTypeParamPropValidate.java",
+        "DuplicatePropValidate.java",
+        "MissingPropPropValidate.java",
+        "NoParamPropValidate.java",
+        "PrivatePropValidate.java",
+        "ReturnPropValidate.java",
+        "StaticPropValidate.java",
+        "ThrowsPropValidate.java",
+        "TooManyParamsPropValidate.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

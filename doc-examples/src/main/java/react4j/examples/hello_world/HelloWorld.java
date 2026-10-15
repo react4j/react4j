@@ -1,14 +1,15 @@
 package react4j.examples.hello_world;
 
-import com.google.gwt.core.client.EntryPoint;
-import react4j.dom.ReactDOM;
 import static react4j.dom.DOM.*;
 
-public class HelloWorld
-  implements EntryPoint
-{
-  public void onModuleLoad()
-  {
-    ReactDOM.render( h1( "Hello World" ), WindowGlobal.document().getElementById( "app" ) );
-  }
+import jsinterop.annotations.JsMethod;
+import react4j.dom.ReactDOM;
+
+public final class HelloWorld {
+    private HelloWorld() {}
+
+    @JsMethod
+    public static void bootstrap() {
+        ReactDOM.render(h1("Hello World"), WindowGlobal.document().getElementById("app"));
+    }
 }

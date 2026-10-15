@@ -1,22 +1,21 @@
 package com.example.on_error;
 
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class ProtectedAccessFromBaseOnErrorModelBuilder {
   private ProtectedAccessFromBaseOnErrorModelBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -25,7 +24,6 @@ final class ProtectedAccessFromBaseOnErrorModelBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -33,10 +31,9 @@ final class ProtectedAccessFromBaseOnErrorModelBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_ProtectedAccessFromBaseOnErrorModel.Factory.TYPE );
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

@@ -6,6 +6,7 @@ import react4j.annotations.ScheduleRender;
 import react4j.annotations.View;
 
 @View
+@org.jspecify.annotations.NullMarked
 abstract class TrackingScheduleRenderComponent
 {
   @ScheduleRender

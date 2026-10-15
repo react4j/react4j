@@ -5,6 +5,7 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View( name = "-abc", type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class BadNameComponent
 {
   @Render

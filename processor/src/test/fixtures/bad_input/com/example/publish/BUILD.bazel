@@ -1,0 +1,13 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "ParameterizedPublishView.java",
+        "PrivatePublishView.java",
+        "StaticPublishView.java",
+        "ThrowingPublishView.java",
+        "TypeParameterized1PublishView.java",
+        "TypeParameterized2PublishView.java",
+        "VoidPublishView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

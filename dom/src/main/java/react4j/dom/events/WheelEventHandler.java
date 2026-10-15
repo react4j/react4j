@@ -4,7 +4,6 @@ import jsinterop.annotations.JsFunction;
 
 @JsFunction
 @FunctionalInterface
-public interface WheelEventHandler
-{
-  void onWheelEvent( WheelEvent event );
+public interface WheelEventHandler {
+    void onWheelEvent(WheelEvent event);
 }

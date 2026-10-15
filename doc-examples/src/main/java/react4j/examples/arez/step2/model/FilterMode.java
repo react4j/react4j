@@ -1,8 +1,7 @@
 package react4j.examples.arez.step2.model;
 
-public enum FilterMode
-{
-  ACTIVE,
-  COMPLETED,
-  ALL
+public enum FilterMode {
+    ACTIVE,
+    COMPLETED,
+    ALL
 }

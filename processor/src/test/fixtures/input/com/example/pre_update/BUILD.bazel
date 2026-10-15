@@ -1,0 +1,18 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicPreUpdateModel.java",
+        "OnPropChangeAndPreUpdateModel.java",
+        "PackageAccessPreUpdateModel.java",
+        "PreUpdateInterface.java",
+        "ProtectedAccessFromBasePreUpdateModel.java",
+        "ProtectedAccessPreUpdateModel.java",
+        "PublicAccessPreUpdateModel.java",
+        "PublicAccessViaInterfacePreUpdateModel.java",
+        "Suppressed1ProtectedAccessPreUpdateModel.java",
+        "Suppressed1PublicAccessPreUpdateModel.java",
+        "Suppressed2ProtectedAccessPreUpdateModel.java",
+        "Suppressed2PublicAccessPreUpdateModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

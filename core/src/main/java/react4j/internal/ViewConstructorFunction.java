@@ -2,6 +2,7 @@ package react4j.internal;
 
 import jsinterop.annotations.JsFunction;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A function interface to create component instances.
@@ -10,13 +11,12 @@ import jsinterop.base.JsPropertyMap;
  */
 @FunctionalInterface
 @JsFunction
-public interface ViewConstructorFunction
-{
-  /**
-   * Construct a component based on specified inputs.
-   *
-   * @param inputs the component inputs.
-   * @return the component.
-   */
-  NativeView construct( JsPropertyMap<Object> inputs );
+public interface ViewConstructorFunction {
+    /**
+     * Construct a component based on specified inputs.
+     *
+     * @param inputs the component inputs.
+     * @return the component.
+     */
+    NativeView construct(JsPropertyMap<@Nullable Object> inputs);
 }

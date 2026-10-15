@@ -1,0 +1,5 @@
+alias(
+    name = "coverage_check",
+    actual = "//tools/verification/src/main/java/react4j/verification:coverage_check",
+    visibility = ["//visibility:public"],
+)

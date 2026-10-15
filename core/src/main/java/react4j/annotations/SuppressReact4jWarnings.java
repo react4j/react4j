@@ -23,21 +23,22 @@ import java.lang.annotation.Target;
  * policy and is thus not available when the files are already compiled and is thus
  * not useful when attempting to suppress warnings in already compiled code.</p>
  */
-@Target( { ElementType.TYPE,
-           ElementType.FIELD,
-           ElementType.METHOD,
-           ElementType.PARAMETER,
-           ElementType.CONSTRUCTOR,
-           ElementType.LOCAL_VARIABLE } )
-@Retention( RetentionPolicy.CLASS )
-public @interface SuppressReact4jWarnings
-{
-  /**
-   * The set of warnings that are to be suppressed by the compiler in the
-   * annotated element. Duplicate names are permitted.  The second and
-   * successive occurrences of a name are ignored.
-   *
-   * @return the set of warnings to be suppressed
-   */
-  String[] value();
+@Target({
+    ElementType.TYPE,
+    ElementType.FIELD,
+    ElementType.METHOD,
+    ElementType.PARAMETER,
+    ElementType.CONSTRUCTOR,
+    ElementType.LOCAL_VARIABLE
+})
+@Retention(RetentionPolicy.CLASS)
+public @interface SuppressReact4jWarnings {
+    /**
+     * The set of warnings that are to be suppressed by the compiler in the
+     * annotated element. Duplicate names are permitted.  The second and
+     * successive occurrences of a name are ignored.
+     *
+     * @return the set of warnings to be suppressed
+     */
+    String[] value();
 }

@@ -1,0 +1,9 @@
+filegroup(
+    name = "sources",
+    srcs = [
+        "AnimationFillMode.java",
+        "Visibility.java",
+        "package-info.java",
+    ],
+    visibility = ["//dom/src/main/java/react4j/dom:__pkg__"],
+)

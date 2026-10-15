@@ -6,6 +6,7 @@ import react4j.annotations.ScheduleRender;
 import react4j.annotations.View;
 
 @View( type = View.Type.MAYBE_TRACKING )
+@org.jspecify.annotations.NullMarked
 abstract class MaybeTrackingScheduleRenderComponent
 {
   @ScheduleRender

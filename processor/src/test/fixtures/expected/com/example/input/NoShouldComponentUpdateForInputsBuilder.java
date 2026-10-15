@@ -1,24 +1,24 @@
 package com.example.input;
 
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class NoShouldComponentUpdateForInputsBuilder {
   private NoShouldComponentUpdateForInputsBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -27,7 +27,6 @@ final class NoShouldComponentUpdateForInputsBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -35,7 +34,6 @@ final class NoShouldComponentUpdateForInputsBuilder {
   }
 
   interface Step2 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -43,11 +41,9 @@ final class NoShouldComponentUpdateForInputsBuilder {
   }
 
   private static class Builder implements Step1, Step2 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_NoShouldComponentUpdateForInputsView.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -57,7 +53,6 @@ final class NoShouldComponentUpdateForInputsBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -66,12 +61,11 @@ final class NoShouldComponentUpdateForInputsBuilder {
       return build();
     }
 
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode build() {
-      final JsPropertyMap<Object> inputs = _element.inputs();
+    private final ReactNode build() {
+      final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
       _element.setKey( String.valueOf( (boolean) inputs.get( React4j_NoShouldComponentUpdateForInputsView.Inputs.paramZ ) ) + "-" + String.valueOf( (boolean) inputs.get( React4j_NoShouldComponentUpdateForInputsView.Inputs.paramP ) ) + ( React.enableViewNames() ? "_NoShouldComponentUpdateForInputsView_4a12cafd" : NoShouldComponentUpdateForInputsView.class.getName() ) );
       return _element;
     }

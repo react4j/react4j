@@ -1,43 +1,31 @@
 package react4j.processor;
 
-import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.ExecutableType;
 
-final class PublishDescriptor
-{
-  @Nonnull
-  private final String _qualifier;
-  @Nonnull
-  private final ExecutableElement _method;
-  @Nonnull
-  private final ExecutableType _methodType;
+final class PublishDescriptor {
 
-  PublishDescriptor( @Nonnull final String qualifier,
-                     @Nonnull final ExecutableElement method,
-                     @Nonnull final ExecutableType methodType )
-  {
-    _qualifier = Objects.requireNonNull( qualifier );
-    _method = Objects.requireNonNull( method );
-    _methodType = Objects.requireNonNull( methodType );
-  }
+    private final String _qualifier;
 
-  @Nonnull
-  String getQualifier()
-  {
-    return _qualifier;
-  }
+    private final ExecutableElement _method;
 
-  @Nonnull
-  ExecutableElement getMethod()
-  {
-    return _method;
-  }
+    private final ExecutableType _methodType;
 
-  @Nonnull
-  ExecutableType getMethodType()
-  {
-    return _methodType;
-  }
+    PublishDescriptor(final String qualifier, final ExecutableElement method, final ExecutableType methodType) {
+        _qualifier = qualifier;
+        _method = method;
+        _methodType = methodType;
+    }
+
+    String getQualifier() {
+        return _qualifier;
+    }
+
+    ExecutableElement getMethod() {
+        return _method;
+    }
+
+    ExecutableType getMethodType() {
+        return _methodType;
+    }
 }

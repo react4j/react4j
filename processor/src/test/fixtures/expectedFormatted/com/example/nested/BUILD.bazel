@@ -1,0 +1,13 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "NestedCompleteComponent_BasicBuilder.java",
+        "NestedCompleteComponent_React4j_BasicView.java",
+        "NestedCompleteComponent_React4j_BasicViewFactory.java",
+        "NestedNestedView_DeepNesting_BasicBuilder.java",
+        "NestedNestedView_DeepNesting_React4j_BasicView.java",
+        "NestedView_BasicBuilder.java",
+        "NestedView_React4j_BasicView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

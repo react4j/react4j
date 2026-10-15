@@ -1,11 +1,12 @@
 package com.example.nested;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
+@org.jspecify.annotations.NullMarked
 public class NestedCompleteComponent
 {
   @View( type = View.Type.STATEFUL )

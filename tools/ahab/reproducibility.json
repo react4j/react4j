@@ -1,0 +1,42 @@
+{
+  "programs": {
+    "@rules_palantir_java_format//java_format/private/java/org/realityforge/rules/palantirjavaformat/palantir_java_format_worker": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//tools/generation/src/main/java/react4j/generation/dom_generator": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//tools/generation/src/main/java/react4j/generation/react_asset_patcher": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//tools/release/src/main/java/react4j/release/jar_builder": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//tools/release/src/main/java/react4j/release/javadoc_jar_builder": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//tools/site/src/main/java/react4j/site/tool": {
+      "spec": {
+        "reproducibility": "sometimes",
+        "required_flags": [
+          "build"
+        ]
+      }
+    },
+    "//tools/browser/src/main/java/react4j/browser/assets": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    }
+  }
+}

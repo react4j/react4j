@@ -1,45 +1,35 @@
 package react4j.processor;
 
 import java.util.List;
-import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.lang.model.element.ExecutableElement;
 
-final class OnInputChangeDescriptor
-{
-  @Nonnull
-  private final ExecutableElement _method;
-  @Nonnull
-  private final List<InputDescriptor> _inputs;
-  /**
-   * Flag set to true if the hook method is invoked prior to update.
-   */
-  private final boolean _preUpdate;
+final class OnInputChangeDescriptor {
 
-  OnInputChangeDescriptor( @Nonnull final ExecutableElement method,
-                           @Nonnull final List<InputDescriptor> inputs,
-                           final boolean preUpdate )
-  {
-    _method = Objects.requireNonNull( method );
-    _inputs = Objects.requireNonNull( inputs );
-    _preUpdate = preUpdate;
-    _inputs.forEach( InputDescriptor::markAsOnChangePresent );
-  }
+    private final ExecutableElement _method;
 
-  @Nonnull
-  ExecutableElement getMethod()
-  {
-    return _method;
-  }
+    private final List<InputDescriptor> _inputs;
+    /**
+     * Flag set to true if the hook method is invoked prior to update.
+     */
+    private final boolean _preUpdate;
 
-  boolean isPreUpdate()
-  {
-    return _preUpdate;
-  }
+    OnInputChangeDescriptor(
+            final ExecutableElement method, final List<InputDescriptor> inputs, final boolean preUpdate) {
+        _method = method;
+        _inputs = inputs;
+        _preUpdate = preUpdate;
+        _inputs.forEach(InputDescriptor::markAsOnChangePresent);
+    }
 
-  @Nonnull
-  List<InputDescriptor> getInputs()
-  {
-    return _inputs;
-  }
+    ExecutableElement getMethod() {
+        return _method;
+    }
+
+    boolean isPreUpdate() {
+        return _preUpdate;
+    }
+
+    List<InputDescriptor> getInputs() {
+        return _inputs;
+    }
 }

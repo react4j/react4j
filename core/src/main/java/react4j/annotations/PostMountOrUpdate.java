@@ -37,7 +37,5 @@ import java.lang.annotation.Target;
  * </ul>
  */
 @Documented
-@Target( ElementType.METHOD )
-public @interface PostMountOrUpdate
-{
-}
+@Target(ElementType.METHOD)
+public @interface PostMountOrUpdate {}

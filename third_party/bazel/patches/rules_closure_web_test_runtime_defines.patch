@@ -1,0 +1,67 @@
+diff -urN orig/closure/testing/closure_js_test.bzl new/closure/testing/closure_js_test.bzl
+--- orig/closure/testing/closure_js_test.bzl	2026-07-30 10:00:00
++++ new/closure/testing/closure_js_test.bzl	2026-07-30 10:00:00
+@@ -35,6 +35,7 @@
+         visibility = None,
+         tags = [],
+         debug = False,
++        runtime_defines = {},
+         browsers = None,
+         **kwargs):
+     if not srcs:
+@@ -96,6 +97,7 @@
+                 visibility = visibility,
+                 tags = tags,
+                 data = data,
++                runtime_defines = runtime_defines,
+                 **kwargs
+             )
+
+diff -urN orig/closure/testing/gen_webtest_html.template new/closure/testing/gen_webtest_html.template
+--- orig/closure/testing/gen_webtest_html.template	2026-07-30 10:00:00
++++ new/closure/testing/gen_webtest_html.template	2026-07-30 10:00:00
+@@ -26,7 +26,8 @@
+   // goog.require does not need to fetch sources from the local
+   // server because everything is compiled and loaded explicitly below.
+   var CLOSURE_NO_DEPS = true;
+-  var CLOSURE_UNCOMPILED_DEFINES = {};
++  var CLOSURE_DEFINES = {{CLOSURE_DEFINES}};
++  var CLOSURE_UNCOMPILED_DEFINES = CLOSURE_DEFINES;
+ </script>
+ <script src="{{TEST_FILE_JS}}"></script>
+ </body>
+diff -urN orig/closure/testing/webdriver_test.bzl new/closure/testing/webdriver_test.bzl
+--- orig/closure/testing/webdriver_test.bzl	2026-07-30 10:00:00
++++ new/closure/testing/webdriver_test.bzl	2026-07-30 10:00:00
+@@ -26,6 +26,7 @@
+         test_file_js,
+         data = None,
+         tags = [],
++        runtime_defines = {},
+         visibility = None,
+         **kwargs):
+     """ Macro for running Closure JavaScript binary on browsers.
+@@ -40,6 +41,7 @@
+     _gen_test_html(
+         name = html,
+         test_file_js = test_file_js,
++        runtime_defines = runtime_defines,
+     )
+
+     path = "/"
+@@ -105,6 +107,7 @@
+         output = ctx.outputs.html_file,
+         substitutions = {
+             "{{TEST_FILE_JS}}": ctx.attr.test_file_js,
++            "{{CLOSURE_DEFINES}}": json.encode(ctx.attr.runtime_defines),
+         },
+     )
+     runfiles = ctx.runfiles(files = [ctx.outputs.html_file], collect_default = True)
+@@ -116,6 +119,7 @@
+     implementation = _gen_test_html_impl,
+     attrs = {
+         "test_file_js": attr.string(mandatory = True),
++        "runtime_defines": attr.string_dict(),
+         "_template": attr.label(
+             default = Label("//closure/testing:gen_webtest_html.template"),
+             allow_single_file = True,

@@ -1,22 +1,14 @@
 # React4j
 
-React4j is an opinionated Java binding for React, with a runtime, DOM bindings, and an annotation processor that generates view APIs.
+React4j provides a runtime, DOM bindings and an annotation processor for React views. Encrypted secrets are in `etc/secrets`; do not modify or decode them.
 
-Encrypted secrets are in `etc/secrets`; do not modify or decode them.
+Use [CONTRIBUTING.md](CONTRIBUTING.md) for build commands, checks, formatting, fixture updates and contribution policy. The shared local/CI gate is `tools/check.sh`.
 
-## Build and verification
+Read the relevant technical guide before changing its area:
 
-- Package all modules: `bundle exec buildr clean package`.
-- Run all tests: `bundle exec buildr test` (includes external downstream builds).
-- Test processor changes: `bundle exec buildr react4j:processor:test`.
+- [Build and testing](docs/agents/build-and-testing.md): Bazel graph, archive boundaries, hermeticity, coverage or site actions.
+- [Java and runtime](docs/agents/java-and-runtime.md): nullness contracts, runtime checks or browser configuration.
+- [Code generation](docs/agents/code-generation.md): processor semantics, golden fixtures, DOM factories or React asset patches.
+- [Contributing and releases](docs/agents/contributing-and-releases.md): changelog, release preparation or publication commands.
 
-## Task-specific guidance
-
-Read the relevant guide before working in its area:
-
-- [Build and testing](docs/agents/build-and-testing.md): environment setup, test configuration, downstream builds, API diffs, or website tasks.
-- [Java and runtime](docs/agents/java-and-runtime.md): Java source changes, GWT/J2CL compatibility, or runtime configuration.
-- [Code generation](docs/agents/code-generation.md): annotation processing, generated APIs, processor fixtures, DOM factories, or bundled JavaScript assets.
-- [Contributing and releases](docs/agents/contributing-and-releases.md): user-facing behavior changes, changelog edits, commits, pull requests, or release automation.
-
-Record durable, non-obvious discoveries in the relevant guide.
+Record durable, non-obvious discoveries in the relevant guide. Keep run evidence in commits or CI; remove completed experiments and migration scaffolding.

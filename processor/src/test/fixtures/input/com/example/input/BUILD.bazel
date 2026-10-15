@@ -1,0 +1,11 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "ArezComponentInputView.java",
+        "BasicInputView.java",
+        "ChildInputView.java",
+        "InputOrderingView.java",
+        "NoShouldComponentUpdateForInputsView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

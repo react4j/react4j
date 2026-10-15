@@ -1,0 +1,15 @@
+filegroup(
+    name = "sources",
+    srcs = [
+        "AudioPreload.java",
+        "ButtonType.java",
+        "FormMethod.java",
+        "HeaderScope.java",
+        "InputType.java",
+        "OnOff.java",
+        "Target.java",
+        "YesNo.java",
+        "package-info.java",
+    ],
+    visibility = ["//dom/src/main/java/react4j/dom:__pkg__"],
+)

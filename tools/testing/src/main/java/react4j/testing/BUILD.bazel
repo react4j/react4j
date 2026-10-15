@@ -1,0 +1,23 @@
+load("//third_party/java:rules.bzl", "java_binary", "java_library")
+
+java_binary(
+    name = "golden_updater",
+    srcs = ["GoldenUpdater.java"],
+    main_class = "react4j.testing.GoldenUpdater",
+    visibility = ["//visibility:public"],
+)
+
+java_library(
+    name = "strict_generated_code",
+    testonly = True,
+    srcs = ["StrictGeneratedCode.java"],
+    data = ["//third_party/java:strict_checker_options"],
+    visibility = ["//processor:__subpackages__"],
+    deps = [
+        "//third_party/java:dataflow_errorprone",
+        "//third_party/java:error_prone_core",
+        "//third_party/java:nullaway",
+        "//third_party/java:proton_qa",
+        "//third_party/java:testng",
+    ],
+)

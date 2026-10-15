@@ -1,0 +1,22 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicOnErrorComponentBuilder.java",
+        "ErrorOnlyOnErrorComponentBuilder.java",
+        "InfoOnlyOnErrorComponentBuilder.java",
+        "InverseOrderOnErrorComponentBuilder.java",
+        "MinimalOnErrorComponentBuilder.java",
+        "PackageAccessOnErrorModelBuilder.java",
+        "ProtectedAccessFromBaseOnErrorModelBuilder.java",
+        "PublicAccessViaInterfaceOnErrorModelBuilder.java",
+        "React4j_BasicOnErrorComponent.java",
+        "React4j_ErrorOnlyOnErrorComponent.java",
+        "React4j_InfoOnlyOnErrorComponent.java",
+        "React4j_InverseOrderOnErrorComponent.java",
+        "React4j_MinimalOnErrorComponent.java",
+        "React4j_PackageAccessOnErrorModel.java",
+        "React4j_ProtectedAccessFromBaseOnErrorModel.java",
+        "React4j_PublicAccessViaInterfaceOnErrorModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

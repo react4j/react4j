@@ -1,99 +1,91 @@
 package react4j.processor;
 
-import javax.annotation.Nonnull;
+final class Constants {
 
-final class Constants
-{
-  @Nonnull
-  static final String ERROR_INFO_CLASSNAME = "react4j.ReactErrorInfo";
-  @Nonnull
-  static final String VNODE_CLASSNAME = "react4j.ReactNode";
-  @Nonnull
-  static final String KEYED_CLASSNAME = "react4j.Keyed";
-  @Nonnull
-  static final String RENDER_CLASSNAME = "react4j.annotations.Render";
-  @Nonnull
-  static final String INPUT_CLASSNAME = "react4j.annotations.Input";
-  @Nonnull
-  static final String PUBLISH_CLASSNAME = "react4j.annotations.Publish";
-  @Nonnull
-  static final String PRE_RENDER_CLASSNAME = "react4j.annotations.PreRender";
-  @Nonnull
-  static final String POST_RENDER_CLASSNAME = "react4j.annotations.PostRender";
-  @Nonnull
-  static final String SUPPRESS_REACT4J_WARNINGS_CLASSNAME = "react4j.annotations.SuppressReact4jWarnings";
-  @Nonnull
-  static final String INPUT_REF_CLASSNAME = "react4j.annotations.InputRef";
-  @Nonnull
-  static final String INPUT_DEFAULT_CLASSNAME = "react4j.annotations.InputDefault";
-  @Nonnull
-  static final String INPUT_VALIDATE_CLASSNAME = "react4j.annotations.InputValidate";
-  @Nonnull
-  static final String ON_ERROR_CLASSNAME = "react4j.annotations.OnError";
-  @Nonnull
-  static final String ON_INPUT_CHANGE_CLASSNAME = "react4j.annotations.OnInputChange";
-  @Nonnull
-  static final String VIEW_CLASSNAME = "react4j.annotations.View";
-  @Nonnull
-  static final String POST_MOUNT_CLASSNAME = "react4j.annotations.PostMount";
-  @Nonnull
-  static final String POST_MOUNT_OR_UPDATE_CLASSNAME = "react4j.annotations.PostMountOrUpdate";
-  @Nonnull
-  static final String POST_UPDATE_CLASSNAME = "react4j.annotations.PostUpdate";
-  @Nonnull
-  static final String PRE_UPDATE_CLASSNAME = "react4j.annotations.PreUpdate";
-  @Nonnull
-  static final String SCHEDULE_RENDER_CLASSNAME = "react4j.annotations.ScheduleRender";
-  @Nonnull
-  static final String IDENTIFIABLE_CLASSNAME = "arez.component.Identifiable";
-  @Nonnull
-  static final String COMPONENT_OBSERVABLE_CLASSNAME = "arez.component.ComponentObservable";
-  @Nonnull
-  static final String DISPOSABLE_CLASSNAME = "arez.Disposable";
-  @Nonnull
-  static final String AREZ_COMPONENT_LIKE_CLASSNAME = "arez.annotations.ArezComponentLike";
-  @Nonnull
-  static final String AREZ_COMPONENT_CLASSNAME = "arez.annotations.ArezComponent";
-  @Nonnull
-  static final String AUTO_OBSERVE_CLASSNAME = "arez.annotations.AutoObserve";
-  @Nonnull
-  static final String COMPONENT_DEPENDENCY_CLASSNAME = "arez.annotations.ComponentDependency";
-  @Nonnull
-  static final String OBSERVE_CLASSNAME = "arez.annotations.Observe";
-  @Nonnull
-  static final String MEMOIZE_CLASSNAME = "arez.annotations.Memoize";
-  @Nonnull
-  static final String POST_CONSTRUCT_CLASSNAME = "arez.annotations.PostConstruct";
-  @Nonnull
-  static final String STING_INJECTABLE_CLASSNAME = "sting.Injectable";
-  @Nonnull
-  static final String STING_EAGER_CLASSNAME = "sting.Eager";
-  @Nonnull
-  static final String STING_NAMED_CLASSNAME = "sting.Named";
-  @Nonnull
-  static final String STING_CONTRIBUTE_TO_CLASSNAME = "sting.ContributeTo";
-  @Nonnull
-  static final String JS_ERROR_CLASSNAME = "react4j.JsError";
-  @Nonnull
-  static final String WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT = "React4j:MutableInputAccessedInPostConstruct";
-  @Nonnull
-  static final String WARNING_MISSING_INPUT_NULLABILITY = "React4j:MissingInputNullability";
-  @Nonnull
-  static final String WARNING_MISSING_RENDER_NULLABILITY = "React4j:MissingRenderNullability";
-  @Nonnull
-  static final String WARNING_PUBLIC_METHOD = "React4j:PublicMethod";
-  @Nonnull
-  static final String WARNING_PROTECTED_METHOD = "React4j:ProtectedMethod";
-  @Nonnull
-  static final String WARNING_FINAL_METHOD = "React4j:FinalMethod";
-  @Nonnull
-  static final String WARNING_CONSTRUCTOR_PARAMETER_ORDER = "React4j:ConstructorParameterOrder";
-  @Nonnull
-  static final String WARNING_POST_CONSTRUCT_NAME = "React4j:PostConstructName";
-  @Nonnull
-  static final String WARNING_PUBLIC_VIEW = "React4j:PublicView";
+    static final String ERROR_INFO_CLASSNAME = "react4j.ReactErrorInfo";
 
-  private Constants()
-  {
-  }
+    static final String VNODE_CLASSNAME = "react4j.ReactNode";
+
+    static final String KEYED_CLASSNAME = "react4j.Keyed";
+
+    static final String RENDER_CLASSNAME = "react4j.annotations.Render";
+
+    static final String INPUT_CLASSNAME = "react4j.annotations.Input";
+
+    static final String PUBLISH_CLASSNAME = "react4j.annotations.Publish";
+
+    static final String PRE_RENDER_CLASSNAME = "react4j.annotations.PreRender";
+
+    static final String POST_RENDER_CLASSNAME = "react4j.annotations.PostRender";
+
+    static final String SUPPRESS_REACT4J_WARNINGS_CLASSNAME = "react4j.annotations.SuppressReact4jWarnings";
+
+    static final String INPUT_REF_CLASSNAME = "react4j.annotations.InputRef";
+
+    static final String INPUT_DEFAULT_CLASSNAME = "react4j.annotations.InputDefault";
+
+    static final String INPUT_VALIDATE_CLASSNAME = "react4j.annotations.InputValidate";
+
+    static final String ON_ERROR_CLASSNAME = "react4j.annotations.OnError";
+
+    static final String ON_INPUT_CHANGE_CLASSNAME = "react4j.annotations.OnInputChange";
+
+    static final String VIEW_CLASSNAME = "react4j.annotations.View";
+
+    static final String POST_MOUNT_CLASSNAME = "react4j.annotations.PostMount";
+
+    static final String POST_MOUNT_OR_UPDATE_CLASSNAME = "react4j.annotations.PostMountOrUpdate";
+
+    static final String POST_UPDATE_CLASSNAME = "react4j.annotations.PostUpdate";
+
+    static final String PRE_UPDATE_CLASSNAME = "react4j.annotations.PreUpdate";
+
+    static final String SCHEDULE_RENDER_CLASSNAME = "react4j.annotations.ScheduleRender";
+
+    static final String IDENTIFIABLE_CLASSNAME = "arez.component.Identifiable";
+
+    static final String COMPONENT_OBSERVABLE_CLASSNAME = "arez.component.ComponentObservable";
+
+    static final String DISPOSABLE_CLASSNAME = "arez.Disposable";
+
+    static final String AREZ_COMPONENT_LIKE_CLASSNAME = "arez.annotations.ArezComponentLike";
+
+    static final String AREZ_COMPONENT_CLASSNAME = "arez.annotations.ArezComponent";
+
+    static final String AUTO_OBSERVE_CLASSNAME = "arez.annotations.AutoObserve";
+
+    static final String COMPONENT_DEPENDENCY_CLASSNAME = "arez.annotations.ComponentDependency";
+
+    static final String OBSERVE_CLASSNAME = "arez.annotations.Observe";
+
+    static final String MEMOIZE_CLASSNAME = "arez.annotations.Memoize";
+
+    static final String POST_CONSTRUCT_CLASSNAME = "arez.annotations.PostConstruct";
+
+    static final String STING_INJECTABLE_CLASSNAME = "sting.Injectable";
+
+    static final String STING_EAGER_CLASSNAME = "sting.Eager";
+
+    static final String STING_NAMED_CLASSNAME = "sting.Named";
+
+    static final String STING_CONTRIBUTE_TO_CLASSNAME = "sting.ContributeTo";
+
+    static final String JS_ERROR_CLASSNAME = "react4j.JsError";
+
+    static final String WARNING_MUTABLE_INPUT_ACCESSED_IN_POST_CONSTRUCT =
+            "React4j:MutableInputAccessedInPostConstruct";
+
+    static final String WARNING_PUBLIC_METHOD = "React4j:PublicMethod";
+
+    static final String WARNING_PROTECTED_METHOD = "React4j:ProtectedMethod";
+
+    static final String WARNING_FINAL_METHOD = "React4j:FinalMethod";
+
+    static final String WARNING_CONSTRUCTOR_PARAMETER_ORDER = "React4j:ConstructorParameterOrder";
+
+    static final String WARNING_POST_CONSTRUCT_NAME = "React4j:PostConstructName";
+
+    static final String WARNING_PUBLIC_VIEW = "React4j:PublicView";
+
+    private Constants() {}
 }

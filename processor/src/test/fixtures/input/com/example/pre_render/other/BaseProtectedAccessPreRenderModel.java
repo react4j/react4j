@@ -5,6 +5,7 @@ import react4j.annotations.PreRender;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
+@org.jspecify.annotations.NullMarked
 public abstract class BaseProtectedAccessPreRenderModel
 {
   @PreRender

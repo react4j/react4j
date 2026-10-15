@@ -1,0 +1,8 @@
+filegroup(
+    name = "sources",
+    srcs = [
+        "JDependTest.java",
+        "package-info.java",
+    ],
+    visibility = ["//core/src/test/java/react4j:__pkg__"],
+)

@@ -1,0 +1,17 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "BrowserExample.java",
+        "Counter.java",
+        "HelloWorld.java",
+        "WindowGlobal.java",
+        "package-info.java",
+    ],
+)
+
+exports_files([
+    "HelloWorld.entry.js",
+    "public/index.html",
+])

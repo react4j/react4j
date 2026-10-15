@@ -1,0 +1,16 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "ExplicitOptionalBuilder.java",
+        "OptionalChildrenWithOptionalAndRequiredBuilder.java",
+        "React4j_ExplicitOptional.java",
+        "React4j_OptionalChildrenWithOptionalAndRequired.java",
+        "React4j_RequiredChildrenWithManyOptional.java",
+        "React4j_RequiredChildrenWithManyRequired.java",
+        "React4j_RequiredChildrenWithOptionalAndRequired.java",
+        "RequiredChildrenWithManyOptionalBuilder.java",
+        "RequiredChildrenWithManyRequiredBuilder.java",
+        "RequiredChildrenWithOptionalAndRequiredBuilder.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

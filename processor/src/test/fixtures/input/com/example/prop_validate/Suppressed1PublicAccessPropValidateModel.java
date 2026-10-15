@@ -1,6 +1,6 @@
 package com.example.prop_validate;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.InputValidate;
@@ -8,12 +8,13 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class Suppressed1PublicAccessPropValidateModel
 {
   // This uses the SOURCE retention suppression
   @SuppressWarnings( "React4j:PublicMethod" )
   @InputValidate
-  public void validateMyProp( String prop )
+  public void validateMyProp( @Nullable String prop )
   {
   }
 

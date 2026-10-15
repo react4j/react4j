@@ -1,0 +1,27 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "dom",
+    srcs = [
+        "BatchingTaskInterceptor.java",
+        "ReactDOM.java",
+        "ReactPortal.java",
+        "ReactRoot.java",
+        "package-info.java",
+        "//dom/src/main/java/react4j/dom/events:sources",
+        "//dom/src/main/java/react4j/dom/proptypes/cssPropertyTypes:sources",
+        "//dom/src/main/java/react4j/dom/proptypes/html:sources",
+        "//dom/src/main/java/react4j/dom/proptypes/html/attributeTypes:sources",
+        "//tools/generation:dom_sources",
+    ],
+    deps = [
+        "//core",
+        "//third_party/java:arez_core",
+        "//third_party/java:base",
+        "//third_party/java:braincheck_core",
+        "//third_party/java:jsinterop_annotations",
+        "//third_party/java:org_jetbrains_annotations",
+    ],
+)

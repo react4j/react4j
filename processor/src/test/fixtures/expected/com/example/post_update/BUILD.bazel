@@ -1,0 +1,18 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "ActionOnPostUpdateBuilder.java",
+        "BasicPostUpdateModelBuilder.java",
+        "OnPropChangeAndPostUpdateModelBuilder.java",
+        "PackageAccessPostUpdateModelBuilder.java",
+        "ProtectedAccessFromBasePostUpdateModelBuilder.java",
+        "PublicAccessViaInterfacePostUpdateModelBuilder.java",
+        "React4j_ActionOnPostUpdateView.java",
+        "React4j_BasicPostUpdateModel.java",
+        "React4j_OnPropChangeAndPostUpdateModel.java",
+        "React4j_PackageAccessPostUpdateModel.java",
+        "React4j_ProtectedAccessFromBasePostUpdateModel.java",
+        "React4j_PublicAccessViaInterfacePostUpdateModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

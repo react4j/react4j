@@ -1,0 +1,11 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BadNamePostConstructView.java",
+        "GoodNamePostConstructView.java",
+        "MultiplePostConstructView.java",
+        "Suppressed1BadNamePostConstructView.java",
+        "Suppressed2BadNamePostConstructView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

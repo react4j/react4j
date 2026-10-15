@@ -1,0 +1,19 @@
+diff -urN orig/cc/private/toolchain/unix_cc_configure.bzl new/cc/private/toolchain/unix_cc_configure.bzl
+--- orig/cc/private/toolchain/unix_cc_configure.bzl	2026-09-21 09:00:00
++++ new/cc/private/toolchain/unix_cc_configure.bzl	2026-09-21 09:00:00
+@@ -655,6 +655,15 @@
+         # paths can be used interchangeably
+         (["/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"] if darwin else []),
+     )
+
++    # Apple Clang records root-level SDK metadata such as SDKSettings.json in
++    # dependency files, so the SDK root must be allowlisted with its headers.
++    if darwin:
++        builtin_include_directories = _uniq(builtin_include_directories + [
++            directory[:-len("/usr/include")]
++            for directory in builtin_include_directories
++            if directory.endswith(".sdk/usr/include")
++        ])
++
+     generate_modulemap = is_clang
+     if generate_modulemap:

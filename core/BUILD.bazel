@@ -1,0 +1,13 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "core",
+    exports = ["//core/src/main/java/react4j"],
+)
+
+test_suite(
+    name = "tests",
+    tests = ["//core/src/test/java/react4j:tests"],
+)

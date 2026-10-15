@@ -1,32 +1,31 @@
 package com.example.prop;
 
 import java.util.HashSet;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
+@SuppressWarnings("NonApiType")
 final class CollectionHashSetPropModelBuilder {
   private CollectionHashSetPropModelBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static ReactNode myProp(@Nullable final HashSet<String> myProp) {
+  static ReactNode myProp(final @Nullable HashSet<String> myProp) {
     return newBuilder().myProp( myProp );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -35,13 +34,11 @@ final class CollectionHashSetPropModelBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
     ReactNode myProp(@Nullable HashSet<String> myProp);
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -49,20 +46,18 @@ final class CollectionHashSetPropModelBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_CollectionHashSetPropModel.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode myProp(@Nullable final HashSet<String> myProp) {
+    public final ReactNode myProp(final @Nullable HashSet<String> myProp) {
       _element.input( React4j_CollectionHashSetPropModel.Inputs.myProp, myProp );
       return build();
     }
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

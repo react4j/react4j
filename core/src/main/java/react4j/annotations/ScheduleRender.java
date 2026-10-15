@@ -34,13 +34,12 @@ import java.lang.annotation.Target;
  * </ul>
  */
 @Documented
-@Target( ElementType.METHOD )
-public @interface ScheduleRender
-{
-  /**
-   * Determines whether the view will invoke the <code>shouldComponentUpdate()</code> before invoking the render method.
-   *
-   * @return true to skip "shouldViewUpdate" phase, false otherwise.
-   */
-  boolean skipShouldViewUpdate() default true;
+@Target(ElementType.METHOD)
+public @interface ScheduleRender {
+    /**
+     * Determines whether the view will invoke the <code>shouldComponentUpdate()</code> before invoking the render method.
+     *
+     * @return true to skip "shouldViewUpdate" phase, false otherwise.
+     */
+    boolean skipShouldViewUpdate() default true;
 }

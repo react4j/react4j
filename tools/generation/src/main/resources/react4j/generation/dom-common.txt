@@ -1,0 +1,94 @@
+
+/**
+ * DOM provides convenience wrappers around React.createElement for DOM components.
+ */
+@Generated( "react4j.generation.DomGenerator" )
+@NullMarked
+public final class DOM
+{
+  private DOM()
+  {
+  }
+
+  // Arbitrarily large value as the time will be clamped to the expiration time of the whole tree
+  private static final int DEFAULT_TIME_TO_FALLBACK = 1000000000;
+
+  public static ReactNode text( final String content )
+  {
+    return ReactNode.of( content );
+  }
+
+  public static ReactNode fragment( @Nullable final String key, final @Nullable ReactNode... children )
+  {
+    return ReactElement.createFragment( key, children );
+  }
+
+  public static ReactNode fragment( @Nullable final String key, final Stream<? extends @Nullable ReactNode> children )
+  {
+    return fragment( key, toArray( children ) );
+  }
+
+  public static ReactNode fragment( final @Nullable ReactNode... children )
+  {
+    return fragment( null, children );
+  }
+
+  public static ReactNode fragment( final Stream<? extends @Nullable ReactNode> children )
+  {
+    return fragment( null, children );
+  }
+
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    final @Nullable ReactNode... children )
+  {
+    return ReactElement.createSuspense( key, fallback, maxTimeToFallback, children );
+  }
+
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    final Stream<? extends @Nullable ReactNode> children )
+  {
+    return suspense( key, fallback, maxTimeToFallback, toArray( children ) );
+  }
+
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    final @Nullable ReactNode... children )
+  {
+    return suspense( null, fallback, maxTimeToFallback, children );
+  }
+
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    final int maxTimeToFallback,
+                                    final Stream<? extends @Nullable ReactNode> children )
+  {
+    return suspense( null, fallback, maxTimeToFallback, children );
+  }
+
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    final @Nullable ReactNode... children )
+  {
+    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, children );
+  }
+
+  public static ReactNode suspense( @Nullable final String key,
+                                    @Nullable final ReactNode fallback,
+                                    final Stream<? extends @Nullable ReactNode> children )
+  {
+    return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
+  }
+
+  public static ReactNode suspense( @Nullable final ReactNode fallback, final @Nullable ReactNode... children )
+  {
+    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, children );
+  }
+
+  public static ReactNode suspense( @Nullable final ReactNode fallback,
+                                    final Stream<? extends @Nullable ReactNode> children )
+  {
+    return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
+  }

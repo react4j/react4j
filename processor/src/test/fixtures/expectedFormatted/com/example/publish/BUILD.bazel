@@ -1,0 +1,14 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicPublishBuilder.java",
+        "MultiPublishBuilder.java",
+        "ProtectedAccessFromBasePublishModelBuilder.java",
+        "QualifiedPublishBuilder.java",
+        "React4j_BasicPublishView.java",
+        "React4j_MultiPublishView.java",
+        "React4j_ProtectedAccessFromBasePublishModel.java",
+        "React4j_QualifiedPublishView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

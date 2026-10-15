@@ -1,0 +1,19 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "ActionOnPostMountView.java",
+        "InputAndMemoizeComponent.java",
+        "KeepAliveMemoizeOnView.java",
+        "MaybeTrackingHasComponentDependencyFieldView.java",
+        "MaybeTrackingView.java",
+        "NonObservableComponentDependencyView.java",
+        "NonTrackingHasActionView.java",
+        "NonTrackingHasAutoObserveFieldView.java",
+        "NonTrackingHasFieldCascadeDisposeView.java",
+        "ObserveOnView.java",
+        "TrackingInheritedAutoObserveMethodBase.java",
+        "TrackingInheritedAutoObserveMethodView.java",
+        "TrackingView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

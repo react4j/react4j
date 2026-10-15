@@ -1,0 +1,132 @@
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("@rules_java//java:defs.bzl", "java_import", "java_plugin")
+load("@rules_palantir_java_format//:defs.bzl", "java_format_check")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["LICENSE"])
+
+java_format_check(
+    name = "java_format_check",
+    testonly = True,
+    remediation = "tools/java_format.sh write",
+    targets = [
+        "//core",
+        "//core:tests",
+        "//dom",
+        "//dom:tests",
+        "//processor",
+        "//processor/src/test/java/react4j/processor:test_classes",
+        "//tools/testing/src/main/java/react4j/testing:golden_updater",
+        "//tools/browser:preview",
+        "//tools/browser:assets",
+        "//tools/consumer:config",
+        "//tools/verification:coverage_check",
+        "//doc-examples:java",
+        "//tools/site/src/main/java/react4j/site:site",
+        "//tools/site:tool",
+        "//tools/site/src/test/java/react4j/site:all_tests",
+        "//tools/release:artifact_check",
+        "//tools/release/consumer/src/main/java/isolated:packaged_consumer",
+        "//tools/release:jar_builder",
+        "//tools/release/src/main/java/react4j/release:bundle_classes",
+        "//tools/release/src/test/java/react4j/release:bundle_tests",
+        "//tools/release:javadoc_jar_builder",
+        "//tools/generation:dom_generator",
+        "//tools/generation:react_asset_patcher",
+    ],
+)
+
+_RUNTIME = [
+    "//third_party/java:arez_core",
+    "//third_party/java:base",
+    "//third_party/java:braincheck_core",
+    "//third_party/java:javaemul_internal_annotations",
+    "//third_party/java:jsinterop_annotations",
+    "//third_party/java:jspecify",
+    "//third_party/java:org_jetbrains_annotations",
+    "//third_party/java:zemeckis_core",
+]
+
+java_import(
+    name = "core",
+    jars = ["//tools/release:core_jar"],
+    srcjar = "//tools/release:core_sources",
+    exports = _RUNTIME,
+)
+
+java_import(
+    name = "dom",
+    jars = ["//tools/release:dom_jar"],
+    srcjar = "//tools/release:dom_sources",
+    exports = [":core"] + _RUNTIME,
+)
+
+java_import(
+    name = "processor",
+    jars = ["//tools/release:processor_jar"],
+    srcjar = "//tools/release:processor_sources",
+)
+
+java_plugin(
+    name = "react4j_processor_plugin",
+    generates_api = True,
+    processor_class = "react4j.processor.React4jProcessor",
+    deps = [":processor"],
+)
+
+j2cl_library(
+    name = "core-j2cl",
+    srcs = ["//tools/release:core_j2cl_sources"],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    deps = [
+        "//third_party/java:braincheck_core-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:org_jetbrains_annotations-j2cl",
+        "//third_party/java:zemeckis_core-j2cl",
+        "@arez//:core-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "dom-j2cl",
+    srcs = ["//tools/release:dom_j2cl_sources"],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    deps = [
+        ":core-j2cl",
+        "//third_party/java:braincheck_core-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:org_jetbrains_annotations-j2cl",
+        "//third_party/java:zemeckis_core-j2cl",
+        "@arez//:core-j2cl",
+    ],
+)
+
+test_suite(
+    name = "browser_tests",
+    tests = ["//doc-examples:browser_tests"],
+)
+
+test_suite(
+    name = "jvm_tests",
+    tests = [
+        "//core:tests",
+        "//dom:tests",
+        "//processor:all_tests",
+    ],
+)
+
+test_suite(
+    name = "all_tests",
+    tests = [
+        ":browser_tests",
+        ":jvm_tests",
+        "//third_party/java:verify_config_sha256",
+        "//tools/release:tests",
+        "//tools/site:tests",
+    ],
+)

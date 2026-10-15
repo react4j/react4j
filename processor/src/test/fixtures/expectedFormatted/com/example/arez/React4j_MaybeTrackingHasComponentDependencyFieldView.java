@@ -14,13 +14,12 @@ import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
 import arez.annotations.SuppressArezWarnings;
 import arez.component.ComponentObservable;
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
@@ -33,6 +32,7 @@ import react4j.internal.SchedulerUtil;
 import react4j.internal.ViewConstructorFunction;
 import react4j.internal.ViewState;
 
+@NullMarked
 @SuppressArezWarnings("Arez:UnnecessaryDefault")
 @ArezComponent(
     name = "com_example_arez_MaybeTrackingHasComponentDependencyFieldView",
@@ -42,7 +42,6 @@ import react4j.internal.ViewState;
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     extends MaybeTrackingHasComponentDependencyFieldView {
-  @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   private int $$react4j$$_state;
@@ -50,13 +49,12 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
   private boolean $$react4j$$_scheduledDebugStateUpdate;
 
   React4j_MaybeTrackingHasComponentDependencyFieldView(
-      @Nonnull final react4j.internal.NativeView $$react4j$$_nativeView,
-      @Nonnull final MaybeTrackingHasComponentDependencyFieldView.Model model) {
+      final react4j.internal.NativeView $$react4j$$_nativeView,
+      final MaybeTrackingHasComponentDependencyFieldView.Model model) {
     super(model);
-    this.$$react4j$$_nativeView = Objects.requireNonNull($$react4j$$_nativeView);
+    this.$$react4j$$_nativeView = $$react4j$$_nativeView;
   }
 
-  @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor =
         (React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues())
@@ -69,7 +67,8 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     return viewConstructor;
   }
 
-  private static void $$react4j$$_validateInputValues(@Nonnull final JsPropertyMap<Object> inputs) {
+  private static void $$react4j$$_validateInputValues(
+      final JsPropertyMap<@Nullable Object> inputs) {
     final Object raw$model = inputs.get(Inputs.model);
     if (React.shouldCheckInvariants()) {
       Guards.apiInvariant(
@@ -80,7 +79,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextInputs) {
+      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if (React.shouldValidateInputValues()) {
       $$react4j$$_validateInputValues(nextInputs);
@@ -131,7 +130,6 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     }
   }
 
-  @Nonnull
   @ObserverRef(name = "render")
   abstract Observer $$react4j$$_getRenderObserver();
 
@@ -145,7 +143,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     if ($$react4j$$_scheduledDebugStateUpdate) {
       $$react4j$$_scheduledDebugStateUpdate = false;
     } else {
-      final JsPropertyMap<Object> newState = JsPropertyMap.of();
+      final var newState = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(JsPropertyMap.of());
       newState.set("Arez.id", $$react4j$$_getComponentId());
       newState.set("Arez.name", $$react4j$$_getComponentName());
       IntrospectUtil.collectDependencyDebugData($$react4j$$_getRenderObserver(), newState);
@@ -158,7 +156,6 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
   }
 
   static final class Factory {
-    @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
 
     private Factory() {}
@@ -176,8 +173,9 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     private final React4j_MaybeTrackingHasComponentDependencyFieldView view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    LiteNativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
+      assert null != inputs;
       final MaybeTrackingHasComponentDependencyFieldView.Model model =
           inputs.getAsAny(Inputs.model).cast();
       view = Disposable.isDisposed(inputs.getAsAny(Inputs.model).cast())
@@ -191,8 +189,8 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      if (Disposable.isNotDisposed(view)) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
+      if (null != view && Disposable.isNotDisposed(view)) {
         return view.$$react4j$$_shouldComponentUpdate(nextInputs);
       } else {
         return false;
@@ -201,7 +199,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
 
     @Override
     public final void componentWillUnmount() {
-      if (Disposable.isNotDisposed(view)) {
+      if (null != view && Disposable.isNotDisposed(view)) {
         view.$$react4j$$_componentWillUnmount();
       }
     }
@@ -209,7 +207,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     @Override
     @Nullable
     public final ReactNode render() {
-      if (Disposable.isNotDisposed(view)) {
+      if (null != view && Disposable.isNotDisposed(view)) {
         return view.$$react4j$$_render();
       } else {
         return null;
@@ -226,8 +224,9 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     private final React4j_MaybeTrackingHasComponentDependencyFieldView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
+      assert null != inputs;
       final MaybeTrackingHasComponentDependencyFieldView.Model model =
           inputs.getAsAny(Inputs.model).cast();
       view = Disposable.isDisposed(inputs.getAsAny(Inputs.model).cast())
@@ -242,14 +241,14 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
 
     @Override
     public final void componentDidMount() {
-      if (Disposable.isNotDisposed(view)) {
+      if (null != view && Disposable.isNotDisposed(view)) {
         view.$$react4j$$_componentDidMount();
       }
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
-      if (Disposable.isNotDisposed(view)) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
+      if (null != view && Disposable.isNotDisposed(view)) {
         return view.$$react4j$$_shouldComponentUpdate(nextInputs);
       } else {
         return false;
@@ -257,15 +256,15 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     }
 
     @Override
-    public final void componentDidUpdate(@Nonnull final JsPropertyMap<Object> prevInputs) {
-      if (Disposable.isNotDisposed(view)) {
+    public final void componentDidUpdate(final JsPropertyMap<@Nullable Object> prevInputs) {
+      if (null != view && Disposable.isNotDisposed(view)) {
         view.$$react4j$$_componentDidUpdate();
       }
     }
 
     @Override
     public final void componentWillUnmount() {
-      if (Disposable.isNotDisposed(view)) {
+      if (null != view && Disposable.isNotDisposed(view)) {
         view.$$react4j$$_componentWillUnmount();
       }
     }
@@ -273,7 +272,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     @Override
     @Nullable
     public final ReactNode render() {
-      if (Disposable.isNotDisposed(view)) {
+      if (null != view && Disposable.isNotDisposed(view)) {
         return view.$$react4j$$_render();
       } else {
         return null;

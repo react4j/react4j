@@ -2,28 +2,19 @@ package react4j.examples.arez.step2.model;
 
 import arez.annotations.ArezComponent;
 import arez.annotations.Observable;
-import java.util.Objects;
-import javax.annotation.Nonnull;
 
 @ArezComponent
-public abstract class ViewService
-{
-  @Nonnull
-  private FilterMode _filterMode = FilterMode.ALL;
+public abstract class ViewService {
+    private FilterMode _filterMode = FilterMode.ALL;
 
-  ViewService()
-  {
-  }
+    ViewService() {}
 
-  @Observable
-  @Nonnull
-  public FilterMode getFilterMode()
-  {
-    return _filterMode;
-  }
+    @Observable
+    public FilterMode getFilterMode() {
+        return _filterMode;
+    }
 
-  public void setFilterMode( @Nonnull final FilterMode filterMode )
-  {
-    _filterMode = Objects.requireNonNull( filterMode );
-  }
+    public void setFilterMode(final FilterMode filterMode) {
+        _filterMode = filterMode;
+    }
 }

@@ -1,0 +1,15 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicView.java",
+        "CustomNameView.java",
+        "DeprecatedView.java",
+        "ExportedBuilderView.java",
+        "FinalMethodInView.java",
+        "GenericTypeView.java",
+        "PublicView.java",
+        "Suppressed1PublicView.java",
+        "Suppressed2PublicView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

@@ -1,0 +1,28 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//third_party/java:rules.bzl", "java_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["rules.bzl"])
+
+config_setting(
+    name = "production",
+    values = {"compilation_mode": "opt"},
+)
+
+closure_js_library(
+    name = "mode",
+    testonly = True,
+    srcs = ["mode.js"],
+)
+
+java_binary(
+    name = "preview",
+    srcs = ["//tools/browser/src/main/java/react4j/browser:preview_sources"],
+    main_class = "react4j.browser.Preview",
+)
+
+alias(
+    name = "assets",
+    actual = "//tools/browser/src/main/java/react4j/browser:assets",
+)

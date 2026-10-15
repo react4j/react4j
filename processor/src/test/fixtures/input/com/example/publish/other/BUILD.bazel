@@ -1,0 +1,5 @@
+filegroup(
+    name = "files",
+    srcs = ["BaseProtectedAccessPublishModel.java"],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

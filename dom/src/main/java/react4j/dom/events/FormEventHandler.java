@@ -4,7 +4,6 @@ import jsinterop.annotations.JsFunction;
 
 @JsFunction
 @FunctionalInterface
-public interface FormEventHandler
-{
-  void onFormEvent( FormEvent event );
+public interface FormEventHandler {
+    void onFormEvent(FormEvent event);
 }

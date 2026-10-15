@@ -1,52 +1,13 @@
 # Build and testing
 
-## Setup and dependencies
+[CONTRIBUTING.md](../../CONTRIBUTING.md) owns the contributor command inventory. Bazel's graph and toolchains are pinned in `MODULE.bazel` and `.bazelrc`; maintain generated dependency sections through `tools/update_java_deps.sh`.
 
-Use JDK 17+, Bundler with the Ruby version in [`.ruby-version`](../../.ruby-version), and Node.js with Yarn for the website (see [`.node-version`](../../.node-version)). Bootstrap with `bundle install` and `yarn install`.
+Public JVM imports/plugins consume assembled publication binaries. Internal source targets are for implementation and unit tests. Public J2CL targets derive from publication source archives, projected only to exclude separately loaded UMD assets. Source packaging must depend on checked JVM class outputs: otherwise a source-only J2CL consumer could bypass static checks. Archive tests enforce byte identity and complete payloads; the isolated consumer uses packaged jars and automatic processor service discovery.
 
-Dependency coordinates belong in [`build.yaml`](../../build.yaml); module wiring and test properties are in [`buildfile`](../../buildfile).
+Bazel ignores a dependency module's overrides. `tools/export_bazel_config.sh` promotes the pinned module preamble, compiler patches and Maven lock into the application root. Keep the exported configuration at the same React4j revision; the disposable external consumer verifies this boundary without building a real downstream repository.
 
-Zemeckis uses JSpecify type-use annotations, so the GWT path needs `jspecify` in `CORE_DEPS` and GWT 2.13.1 support. [`Gemfile`](../../Gemfile) pins a Buildr revision with that support that still generates IntelliJ `.ipr` files; preserve both capabilities when changing the pin.
+The processor has Java 17 output but Java 21 execution requirements because shaded dependencies include Java 21 bytecode. Javadocs use the complete compiled/generated source sets. Reproducibility compares all twelve Maven artifacts and aggregate API archive with an independent Bazel output base.
 
-## Tests
+Browser tests use pinned Chromium and require local process/loopback access. Declare narrow Ahab exceptions for that execution boundary; keep compilation and site rendering sandboxed. Even a run_shell copy introduces a host /bin/bash dependency; the owned Java browser asset tool keeps copy/concatenation actions declared and reproducible. Site generation receives declared source archives, API archive, assets and compiled example outputs; it checks links without fetching external pages. The four separately maintained application roots are explicit page-link exclusions and protected deployment paths, not generated content.
 
-Modules use TestNG. Buildr supplies the `react4j.core.compile_target` and `react4j.dom.compile_target` properties required by JDepend tests; supply these explicitly when running tests outside Buildr.
-
-The root [AGENTS.md](../../AGENTS.md) lists the standard build and test commands. For processor fixture changes, also read [Code generation](code-generation.md).
-
-The full test task builds external example repositories through `downstream-test`. [`tasks/util.rb`](../../tasks/util.rb) selects branches, including `master` for several examples. Breaking API or annotation changes can fail there until downstream repositories migrate, even when local processor and API-diff tests pass.
-
-Build flags:
-
-| Flag | Effect |
-| --- | --- |
-| `TEST=no` | Skip tests. |
-| `GWT=no` | Skip GWT compilation. |
-| `J2CL=no` | Skip downstream J2CL variants. |
-| `DOWNSTREAM=no` | Skip downstream application builds; build-statistics collection is controlled separately. |
-| `BUILD_STATS=no` | Skip build-statistics collection and related tests. |
-| `PRODUCT_VERSION`, `PREVIOUS_PRODUCT_VERSION` | Select versions for release, API-diff, and downstream tasks. |
-| `STORE_API_DIFF=true`, `STORE_BUILD_STATISTICS=true` | Update the corresponding fixtures. |
-
-## API diffs and downstream statistics
-
-API-diff tests compare previous and current core/DOM jars against `api-test/src/test/resources/fixtures`. Downstream statistics fixtures live in `downstream-test/src/test/resources/fixtures`.
-
-| Task | Command |
-| --- | --- |
-| Update API-diff fixtures | `bundle exec buildr update_api_diff` |
-| Verify API diffs | `bundle exec buildr test_api_diff` |
-| Update downstream statistics | `bundle exec buildr update_downstream_build_stats` |
-| Verify downstream statistics | `bundle exec buildr test_downstream_build_stats` |
-
-These helpers derive versions from the changelog and run clean builds. `update_api_diff` also stages its fixture; see [`tasks/api_diff.rake`](../../tasks/api_diff.rake) and [`tasks/update_downstream_build_stats.rake`](../../tasks/update_downstream_build_stats.rake).
-
-## Website
-
-Markdown content is in `docs/`; the Docusaurus site is in `website/`. [`tasks/site.rake`](../../tasks/site.rake) integrates Javadocs, API diffs, favicons, and GWT examples from `doc-examples/`.
-
-- Serve: `bundle exec buildr site:serve`.
-- Build into `reports/site`: `bundle exec buildr site:build`.
-- Check links after building: `bundle exec buildr site:link_check`.
-
-`bundle exec buildr ci` derives versions, packages the project, and deploys the website; it publishes changes through `site:deploy`.
+Coverage must contain nonempty owned core/DOM/processor reports. Accept root-relative owned source paths; external dependency coverage cannot satisfy those module reports, and failed validation must remove a stale summary. Prefer focused verification while iterating, then the shared gate for completion. Ahab program declarations must describe actual reproducibility conditions; operational serve/publish commands are not reproducible build actions.

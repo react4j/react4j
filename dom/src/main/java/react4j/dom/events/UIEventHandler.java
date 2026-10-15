@@ -4,7 +4,6 @@ import jsinterop.annotations.JsFunction;
 
 @JsFunction
 @FunctionalInterface
-public interface UIEventHandler
-{
-  void onUIEvent( UIEvent event );
+public interface UIEventHandler {
+    void onUIEvent(UIEvent event);
 }

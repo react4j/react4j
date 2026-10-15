@@ -1,8 +1,0 @@
-<module>
-  <inherits name='react4j.ReactDev'/>
-  <inherits name='react4j.dom.Dom'/>
-
-  <source path='ignored'/>
-
-  <public path='public' includes='dev/*'/>
-</module>

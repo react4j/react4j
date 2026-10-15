@@ -43,7 +43,6 @@ React.Component.prototype.setState = function(nextState, callback) {};
 
 /**
  * @return {void}
- * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.componentDidMount = function() {};
 
@@ -51,7 +50,6 @@ React.Component.prototype.componentDidMount = function() {};
  * @param {Object} nextProps
  * @param {Object} nextState
  * @return {boolean}
- * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.shouldComponentUpdate = function(nextProps, nextState) {};
 
@@ -59,30 +57,25 @@ React.Component.prototype.shouldComponentUpdate = function(nextProps, nextState)
  * @param {Object} prevProps
  * @param {Object} prevState
  * @return {void}
- * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.componentDidUpdate = function(prevProps, prevState) {};
 
 /**
  * @return {void}
- * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.componentWillUnmount = function() {};
 
 /**
  * @return {void}
- * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.componentDidCatch = function() {};
 
 /**
- * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.getSnapshotBeforeUpdate = function() {};
 
 /**
  * @return {React.Component}
- * TODO: This should be protected when we go J2CL only and change the generated classes to be protected. Currently not possible as @JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" ) is used to export this for GWT 2.x
  */
 React.Component.prototype.render = function() {};
 
@@ -550,7 +543,11 @@ var topVolumeChange;
 var topWaiting;
 var topWheel;
 
-React.createContext = function() {};
+/**
+ * @param {*} defaultValue
+ * @return {!Object}
+ */
+React.createContext = function(defaultValue) {};
 
 React.Context = function() {};
 React.Context.prototype.Provider = function() {};
@@ -615,14 +612,14 @@ var ReactDOM = {};
 
 /**
  * @param {React.Component} container
- * @param {Element} mountPoint
+ * @param {*} mountPoint
  * @param {(function(): void)=} opt_callback
  * @return {React.Component}
  */
 ReactDOM.render = function(container, mountPoint, opt_callback) {};
 
 /**
- * @param {Element} container
+ * @param {*} container
  * @return {boolean}
  */
 ReactDOM.unmountComponentAtNode = function(container) {};
@@ -635,7 +632,12 @@ ReactDOM.unmountComponentAtNode = function(container) {};
  */
 ReactDOM.unstable_batchedUpdates = function(callback) {};
 
-ReactDOM.createPortal = function() {};
+/**
+ * @param {*} children
+ * @param {*} container
+ * @return {!Object}
+ */
+ReactDOM.createPortal = function(children, container) {};
 
 /**
  * @interface
@@ -654,7 +656,7 @@ React.ReactRoot.prototype.render = function(child, opt_callback) {};
 React.ReactRoot.prototype.unmount = function(opt_callback) {};
 
 /**
- * @param {Element} container
+ * @param {*} container
  * @return {React.ReactRoot}
  */
 ReactDOM.unstable_createRoot = function(container) {};

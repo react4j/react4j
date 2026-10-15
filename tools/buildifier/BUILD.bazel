@@ -1,0 +1,33 @@
+load("@buildifier_prebuilt//:rules.bzl", "buildifier")
+
+WARNINGS = [
+    "+unsorted-dict-items",
+    "-module-docstring",
+    "-function-docstring",
+    "-external-path",
+]
+
+EXCLUDE_PATTERNS = [
+    "./.bazelbsp/*",
+    "./.git/*",
+    "./.idea/*",
+    "./dist/*",
+    "./reports/*",
+    "./tmp/*",
+]
+
+buildifier(
+    name = "buildifier",
+    exclude_patterns = EXCLUDE_PATTERNS,
+    lint_mode = "fix",
+    lint_warnings = WARNINGS,
+)
+
+buildifier(
+    name = "buildifier_check",
+    diff_command = "diff -u",
+    exclude_patterns = EXCLUDE_PATTERNS,
+    lint_mode = "warn",
+    lint_warnings = WARNINGS,
+    mode = "diff",
+)

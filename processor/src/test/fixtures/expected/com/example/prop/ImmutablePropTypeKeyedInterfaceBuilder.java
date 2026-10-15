@@ -1,33 +1,31 @@
 package com.example.prop;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class ImmutablePropTypeKeyedInterfaceBuilder {
   private ImmutablePropTypeKeyedInterfaceBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static ReactNode myProp(@Nullable final ImmutablePropTypeKeyedInterface.KeyedInterface myProp) {
+  static ReactNode myProp(final ImmutablePropTypeKeyedInterface. @Nullable KeyedInterface myProp) {
     return newBuilder().myProp( myProp );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -36,13 +34,11 @@ final class ImmutablePropTypeKeyedInterfaceBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
-    ReactNode myProp(@Nullable ImmutablePropTypeKeyedInterface.KeyedInterface myProp);
+    ReactNode myProp(ImmutablePropTypeKeyedInterface. @Nullable KeyedInterface myProp);
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -50,22 +46,20 @@ final class ImmutablePropTypeKeyedInterfaceBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_ImmutablePropTypeKeyedInterface.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
     public final ReactNode myProp(
-        @Nullable final ImmutablePropTypeKeyedInterface.KeyedInterface myProp) {
+        final ImmutablePropTypeKeyedInterface. @Nullable KeyedInterface myProp) {
       _element.setKey( Keyed.getKey( myProp ) + ( React.enableViewNames() ? "_ImmutablePropTypeKeyedInterface_3326071b" : ImmutablePropTypeKeyedInterface.class.getName() ) );
       _element.input( React4j_ImmutablePropTypeKeyedInterface.Inputs.myProp, myProp );
       return build();
     }
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

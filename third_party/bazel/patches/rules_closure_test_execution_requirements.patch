@@ -1,0 +1,42 @@
+diff --git a/closure/testing/webdriver_test.bzl b/closure/testing/webdriver_test.bzl
+index d12d3aa..9d5321a 100644
+--- a/closure/testing/webdriver_test.bzl
++++ b/closure/testing/webdriver_test.bzl
+@@ -24,6 +24,7 @@ def webdriver_test(
+         test_file_js,
+         data = None,
+         tags = [],
++        execution_requirements = {},
+         runtime_defines = {},
+         visibility = None,
+         **kwargs):
+@@ -76,6 +77,9 @@ def webdriver_test(
+         use_full_path = True,
+     )
+ 
++    test_execution_requirements = dict(execution_requirements)
++    test_execution_requirements["no-sandbox"] = ""
++
+     if len(browsers) == 1:
+         web_test(
+             name = name,
+@@ -83,7 +87,8 @@ def webdriver_test(
+             browser = str(browsers[0]),
+             test = ":%s_test_runner" % name,
+             args = [html_webpath],
+-            tags = tags + ["no-sandbox", "native"],
++            execution_requirements = test_execution_requirements,
++            tags = tags + ["native"],
+             visibility = visibility,
+             **kwargs
+         )
+@@ -94,7 +99,8 @@ def webdriver_test(
+             browsers = browsers,
+             test = ":%s_test_runner" % name,
+             args = [html_webpath],
+-            tags = tags + ["no-sandbox", "native"],
++            execution_requirements = {"default": test_execution_requirements},
++            tags = tags + ["native"],
+             visibility = visibility,
+             **kwargs
+         )

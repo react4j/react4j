@@ -1,0 +1,18 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicPreRenderModelBuilder.java",
+        "MultiplePreRenderModelBuilder.java",
+        "MultipleSortedPreRenderModelBuilder.java",
+        "PackageAccessPreRenderModelBuilder.java",
+        "ProtectedAccessFromBasePreRenderModelBuilder.java",
+        "PublicAccessViaInterfacePreRenderModelBuilder.java",
+        "React4j_BasicPreRenderModel.java",
+        "React4j_MultiplePreRenderModel.java",
+        "React4j_MultipleSortedPreRenderModel.java",
+        "React4j_PackageAccessPreRenderModel.java",
+        "React4j_ProtectedAccessFromBasePreRenderModel.java",
+        "React4j_PublicAccessViaInterfacePreRenderModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

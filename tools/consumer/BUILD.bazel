@@ -1,0 +1,5 @@
+alias(
+    name = "config",
+    actual = "//tools/consumer/src/main/java/react4j/consumer:config",
+    visibility = ["//visibility:public"],
+)

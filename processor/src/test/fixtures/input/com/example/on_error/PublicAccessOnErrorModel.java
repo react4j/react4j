@@ -1,15 +1,15 @@
 package com.example.on_error;
 
 import react4j.JsError;
-import javax.annotation.Nonnull;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
 import react4j.annotations.OnError;
 import react4j.annotations.Render;
 import react4j.annotations.View;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class PublicAccessOnErrorModel
 {
   @Nullable
@@ -20,7 +20,7 @@ abstract class PublicAccessOnErrorModel
   }
 
   @OnError
-  public void onError( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
+  public void onError( final JsError error, final ReactErrorInfo info )
   {
   }
 }

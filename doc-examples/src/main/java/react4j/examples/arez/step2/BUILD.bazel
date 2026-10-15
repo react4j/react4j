@@ -1,0 +1,10 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "Footer.java",
+        "FooterTodoCount.java",
+        "package-info.java",
+    ],
+)

@@ -1,0 +1,16 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "ArezComponentInputBuilder.java",
+        "BasicInputBuilder.java",
+        "ChildInputBuilder.java",
+        "InputOrderingBuilder.java",
+        "NoShouldComponentUpdateForInputsBuilder.java",
+        "React4j_ArezComponentInputView.java",
+        "React4j_BasicInputView.java",
+        "React4j_ChildInputView.java",
+        "React4j_InputOrderingView.java",
+        "React4j_NoShouldComponentUpdateForInputsView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

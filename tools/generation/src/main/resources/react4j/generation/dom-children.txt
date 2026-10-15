@@ -1,0 +1,60 @@
+
+  public static ReactNode {tag}( final {props} props, final @Nullable ReactNode @Nullable ... children )
+  {
+    return createElement( "{tag}", Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( props ), children );
+  }
+
+  public static ReactNode {tag}( final @Nullable ReactNode @Nullable ... children )
+  {
+    return createElement( "{tag}", null, children );
+  }
+
+  public static ReactNode {tag}( final {props} props, final String content )
+  {
+    return createElement( "{tag}", Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( props ), text( content ) );
+  }
+
+  public static ReactNode {tag}( final String content )
+  {
+    return {tag}( ReactNode.of( content ) );
+  }
+
+  public static ReactNode {tag}( final byte content )
+  {
+    return {tag}( ReactNode.of( content ) );
+  }
+
+  public static ReactNode {tag}( final short content )
+  {
+    return {tag}( ReactNode.of( content ) );
+  }
+
+  public static ReactNode {tag}( final int content )
+  {
+    return {tag}( ReactNode.of( content ) );
+  }
+
+  public static ReactNode {tag}( final long content )
+  {
+    return {tag}( ReactNode.of( content ) );
+  }
+
+  public static ReactNode {tag}( final float content )
+  {
+    return {tag}( ReactNode.of( content ) );
+  }
+
+  public static ReactNode {tag}( final double content )
+  {
+    return {tag}( ReactNode.of( content ) );
+  }
+
+  public static ReactNode {tag}( final {props} props, final Stream<? extends @Nullable ReactNode> children )
+  {
+    return {tag}( props, toArray( children ) );
+  }
+
+  public static ReactNode {tag}( final Stream<? extends @Nullable ReactNode> children )
+  {
+    return {tag}( toArray( children ) );
+  }

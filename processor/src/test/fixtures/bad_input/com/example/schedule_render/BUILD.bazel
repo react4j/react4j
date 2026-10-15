@@ -1,0 +1,11 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "ConcreteScheduleRenderComponent.java",
+        "MaybeTrackingScheduleRenderComponent.java",
+        "PrivateScheduleRenderComponent.java",
+        "StaticScheduleRenderComponent.java",
+        "TrackingScheduleRenderComponent.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

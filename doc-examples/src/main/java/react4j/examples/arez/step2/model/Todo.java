@@ -3,45 +3,35 @@ package react4j.examples.arez.step2.model;
 import arez.annotations.ArezComponent;
 import arez.annotations.ComponentIdRef;
 import arez.annotations.Observable;
-import java.util.Objects;
-import javax.annotation.Nonnull;
 
 @ArezComponent
-public abstract class Todo
-{
-  @Nonnull
-  private String _title;
-  private boolean _completed;
+public abstract class Todo {
+    private String _title;
+    private boolean _completed;
 
-  Todo( @Nonnull final String title, final boolean completed )
-  {
-    _title = Objects.requireNonNull( title );
-    _completed = completed;
-  }
+    Todo(final String title, final boolean completed) {
+        _title = title;
+        _completed = completed;
+    }
 
-  @ComponentIdRef
-  public abstract int getId();
+    @ComponentIdRef
+    public abstract int getId();
 
-  @Observable
-  @Nonnull
-  public String getTitle()
-  {
-    return _title;
-  }
+    @Observable
+    public String getTitle() {
+        return _title;
+    }
 
-  public void setTitle( @Nonnull final String title )
-  {
-    _title = Objects.requireNonNull( title );
-  }
+    public void setTitle(final String title) {
+        _title = title;
+    }
 
-  @Observable
-  public boolean isCompleted()
-  {
-    return _completed;
-  }
+    @Observable
+    public boolean isCompleted() {
+        return _completed;
+    }
 
-  public void setCompleted( final boolean completed )
-  {
-    _completed = completed;
-  }
+    public void setCompleted(final boolean completed) {
+        _completed = completed;
+    }
 }

@@ -10,9 +10,10 @@ import react4j.annotations.PreUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.SortOrder;
 import react4j.annotations.View;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class RootPackageCompleteComponent
 {
   @InputDefault( name = "myProp" )

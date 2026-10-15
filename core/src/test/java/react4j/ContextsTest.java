@@ -1,152 +1,148 @@
 package react4j;
 
-import org.mockito.Mockito;
-import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
-public final class ContextsTest
-  extends AbstractTest
-{
-  @Test
-  public void basicOperation_withQualifier()
-  {
-    final Runnable defaultValue = mock( Runnable.class );
-    final Context<Runnable> context = new Context<>();
+import org.mockito.Mockito;
+import org.testng.annotations.Test;
 
-    final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
-    Contexts.setContextProvider( provider );
+public final class ContextsTest extends AbstractTest {
+    @Test
+    public void basicOperation_withQualifier() {
+        final Runnable defaultValue = mock(Runnable.class);
+        final Context<Runnable> context = new Context<>();
 
-    when( provider.createContext( eq( defaultValue ) ) ).thenReturn( context );
+        final Contexts.ContextProvider provider = mock(Contexts.ContextProvider.class);
+        Contexts.setContextProvider(provider);
 
-    Contexts.register( Runnable.class, "someQual", defaultValue );
+        when(provider.createContext(eq(defaultValue))).thenReturn(context);
 
-    verify( provider, only() ).createContext( eq( defaultValue ) );
+        Contexts.register(Runnable.class, "someQual", defaultValue);
 
-    assertSame( Contexts.get( Runnable.class, "someQual" ), context );
-  }
+        verify(provider, only()).createContext(eq(defaultValue));
 
-  @Test
-  public void basicOperation_withoutDefaultValue()
-  {
-    final Context<Runnable> context = new Context<>();
+        assertSame(Contexts.get(Runnable.class, "someQual"), context);
+    }
 
-    final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
-    Contexts.setContextProvider( provider );
+    @Test
+    public void basicOperation_withoutDefaultValue() {
+        final Context<Runnable> context = new Context<>();
 
-    Mockito.<Context<Runnable>>when( provider.createContext( isNull() ) ).thenReturn( context );
+        final Contexts.ContextProvider provider = mock(Contexts.ContextProvider.class);
+        Contexts.setContextProvider(provider);
 
-    Contexts.register( Runnable.class, "someQual" );
+        Mockito.<Context<Runnable>>when(provider.createContext(isNull())).thenReturn(context);
 
-    verify( provider, only() ).createContext( isNull() );
+        Contexts.register(Runnable.class, "someQual");
 
-    assertSame( Contexts.get( Runnable.class, "someQual" ), context );
-  }
+        verify(provider, only()).createContext(isNull());
 
-  @Test
-  public void basicOperation_withoutQualifier()
-  {
-    final Runnable defaultValue = mock( Runnable.class );
-    final Context<Runnable> context = new Context<>();
+        assertSame(Contexts.get(Runnable.class, "someQual"), context);
+    }
 
-    final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
-    Contexts.setContextProvider( provider );
+    @Test
+    public void basicOperation_withoutQualifier() {
+        final Runnable defaultValue = mock(Runnable.class);
+        final Context<Runnable> context = new Context<>();
 
-    when( provider.createContext( eq( defaultValue ) ) ).thenReturn( context );
+        final Contexts.ContextProvider provider = mock(Contexts.ContextProvider.class);
+        Contexts.setContextProvider(provider);
 
-    Contexts.register( Runnable.class, defaultValue );
+        when(provider.createContext(eq(defaultValue))).thenReturn(context);
 
-    verify( provider, only() ).createContext( eq( defaultValue ) );
+        Contexts.register(Runnable.class, defaultValue);
 
-    assertSame( Contexts.get( Runnable.class ), context );
-    assertSame( Contexts.get( Runnable.class, "" ), context );
-  }
+        verify(provider, only()).createContext(eq(defaultValue));
 
-  @Test
-  public void basicOperation_withoutDefaultValueOrQualifier()
-  {
-    final Context<Runnable> context = new Context<>();
+        assertSame(Contexts.get(Runnable.class), context);
+        assertSame(Contexts.get(Runnable.class, ""), context);
+    }
 
-    final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
-    Contexts.setContextProvider( provider );
+    @Test
+    public void basicOperation_withoutDefaultValueOrQualifier() {
+        final Context<Runnable> context = new Context<>();
 
-    Mockito.<Context<Runnable>>when( provider.createContext( isNull() ) ).thenReturn( context );
+        final Contexts.ContextProvider provider = mock(Contexts.ContextProvider.class);
+        Contexts.setContextProvider(provider);
 
-    Contexts.register( Runnable.class );
+        Mockito.<Context<Runnable>>when(provider.createContext(isNull())).thenReturn(context);
 
-    verify( provider, only() ).createContext( isNull() );
+        Contexts.register(Runnable.class);
 
-    assertSame( Contexts.get( Runnable.class ), context );
-    assertSame( Contexts.get( Runnable.class, "" ), context );
-  }
+        verify(provider, only()).createContext(isNull());
 
-  @Test
-  public void register_duplicate()
-  {
-    final Runnable defaultValue = mock( Runnable.class );
-    final Context<Runnable> context = new Context<>();
+        assertSame(Contexts.get(Runnable.class), context);
+        assertSame(Contexts.get(Runnable.class, ""), context);
+    }
 
-    final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
-    Contexts.setContextProvider( provider );
+    @Test
+    public void register_duplicate() {
+        final Runnable defaultValue = mock(Runnable.class);
+        final Context<Runnable> context = new Context<>();
 
-    when( provider.createContext( eq( defaultValue ) ) ).thenReturn( context );
+        final Contexts.ContextProvider provider = mock(Contexts.ContextProvider.class);
+        Contexts.setContextProvider(provider);
 
-    Contexts.register( Runnable.class, "someQual", defaultValue );
+        when(provider.createContext(eq(defaultValue))).thenReturn(context);
 
-    verify( provider, only() ).createContext( eq( defaultValue ) );
+        Contexts.register(Runnable.class, "someQual", defaultValue);
 
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class,
-                    () -> Contexts.register( Runnable.class, "someQual", defaultValue ) );
+        verify(provider, only()).createContext(eq(defaultValue));
 
-    verify( provider, only() ).createContext( eq( defaultValue ) );
+        final IllegalStateException exception = expectThrows(
+                IllegalStateException.class, () -> Contexts.register(Runnable.class, "someQual", defaultValue));
 
-    assertEquals( exception.getMessage(),
-                  "Attempting to register React context with type interface java.lang.Runnable and qualifier 'someQual' but a context already exists with that type and name" );
-  }
+        verify(provider, only()).createContext(eq(defaultValue));
 
-  @Test
-  public void register_primitive()
-  {
-    final Contexts.ContextProvider provider = mock( Contexts.ContextProvider.class );
-    Contexts.setContextProvider( provider );
+        assertEquals(
+                exception.getMessage(),
+                "Attempting to register React context with type interface java.lang.Runnable and qualifier 'someQual'"
+                        + " but a context already exists with that type and name");
+    }
 
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class,
-                    () -> Contexts.register( int.class, "port", 2 ) );
+    @Test
+    public void register_primitive() {
+        final Contexts.ContextProvider provider = mock(Contexts.ContextProvider.class);
+        Contexts.setContextProvider(provider);
 
-    verify( provider, never() ).createContext( any() );
+        final IllegalStateException exception =
+                expectThrows(IllegalStateException.class, () -> Contexts.register(int.class, "port", 2));
 
-    assertEquals( exception.getMessage(),
-                  "Attempting to register primitive type int in React context. Use the boxed type instead" );
-  }
+        verify(provider, never()).createContext(any());
 
-  @Test
-  public void get_missing()
-  {
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class, () -> Contexts.get( Runnable.class, "someQual" ) );
+        assertEquals(
+                exception.getMessage(),
+                "Attempting to register primitive type int in React context. Use the boxed type instead");
+    }
 
-    assertEquals( exception.getMessage(),
-                  "Attempting to retrieve React context with type interface java.lang.Runnable and qualifier 'someQual' but no such context exists with that type and name" );
-  }
+    @Test
+    public void get_missing() {
+        final IllegalStateException exception =
+                expectThrows(IllegalStateException.class, () -> Contexts.get(Runnable.class, "someQual"));
 
-  @Test
-  public void get_primitiveType()
-  {
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class, () -> Contexts.get( int.class, "port" ) );
+        assertEquals(
+                exception.getMessage(),
+                "Attempting to retrieve React context with type interface java.lang.Runnable and qualifier 'someQual'"
+                        + " but no such context exists with that type and name");
+    }
 
-    assertEquals( exception.getMessage(),
-                  "Attempting to access primitive type int from the React context. Access using the boxed type instead" );
-  }
+    @Test
+    public void get_primitiveType() {
+        final IllegalStateException exception =
+                expectThrows(IllegalStateException.class, () -> Contexts.get(int.class, "port"));
 
-  @Test
-  public void get_withoutQualifier_missing()
-  {
-    final IllegalStateException exception =
-      expectThrows( IllegalStateException.class, () -> Contexts.get( Runnable.class ) );
-    assertEquals( exception.getMessage(),
-                  "Attempting to retrieve React context with type interface java.lang.Runnable and qualifier '' but no such context exists with that type and name" );
-  }
+        assertEquals(
+                exception.getMessage(),
+                "Attempting to access primitive type int from the React context. Access using the boxed type instead");
+    }
+
+    @Test
+    public void get_withoutQualifier_missing() {
+        final IllegalStateException exception =
+                expectThrows(IllegalStateException.class, () -> Contexts.get(Runnable.class));
+        assertEquals(
+                exception.getMessage(),
+                "Attempting to retrieve React context with type interface java.lang.Runnable and qualifier '' but no"
+                        + " such context exists with that type and name");
+    }
 }

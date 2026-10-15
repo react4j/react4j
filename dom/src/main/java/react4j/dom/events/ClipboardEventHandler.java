@@ -4,7 +4,6 @@ import jsinterop.annotations.JsFunction;
 
 @JsFunction
 @FunctionalInterface
-public interface ClipboardEventHandler
-{
-  void onClipboardEvent( ClipboardEvent event );
+public interface ClipboardEventHandler {
+    void onClipboardEvent(ClipboardEvent event);
 }

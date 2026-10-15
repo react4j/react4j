@@ -1,0 +1,12 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "InnerInterface.java",
+        "InnerView.java",
+        "LeafInterface.java",
+        "LeafView.java",
+        "RootInterface.java",
+        "RootView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

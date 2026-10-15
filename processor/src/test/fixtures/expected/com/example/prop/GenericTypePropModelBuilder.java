@@ -1,47 +1,43 @@
 package com.example.prop;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class GenericTypePropModelBuilder {
   private GenericTypePropModelBuilder() {
   }
 
-  @Nonnull
   static <T> Step1<T> newBuilder() {
     return new Builder<>();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static <T> ReactNode value(@Nullable final T value) {
+  static <T> ReactNode value(final @Nullable T value) {
     return GenericTypePropModelBuilder.<T>newBuilder().value( value );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static <T> ReactNode build() {
+  static ReactNode build() {
     return newBuilder().build();
   }
 
   @SuppressWarnings("unused")
   interface Step1<T> {
-    @Nonnull
     @Contract(
         pure = true
     )
     ReactNode value(@Nullable T value);
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -49,20 +45,18 @@ final class GenericTypePropModelBuilder {
   }
 
   private static class Builder<T> implements Step1<T> {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_GenericTypePropModel.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode value(@Nullable final T value) {
+    public final ReactNode value(final @Nullable T value) {
       _element.input( React4j_GenericTypePropModel.Inputs.value, value );
       return build();
     }
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

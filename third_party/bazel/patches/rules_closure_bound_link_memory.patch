@@ -1,0 +1,33 @@
+diff -urN orig/closure/compiler/closure_js_binary.bzl new/closure/compiler/closure_js_binary.bzl
+--- orig/closure/compiler/closure_js_binary.bzl	2026-03-30 20:43:53
++++ new/closure/compiler/closure_js_binary.bzl	2026-08-11 10:00:00
+@@ -39,2 +39,8 @@
+     "unfurl",
+ )
++
++def _closure_link_resources(_os_name, _input_count):
++    return {
++        "cpu": 1,
++        "memory": 3 * 1024,
++    }
+@@ -272,7 +278,8 @@
+         executable = ctx.executable._ClosureWorker,
+         arguments = [all_args],
+-        mnemonic = "Closure",
++        mnemonic = "ClosureLink",
+         execution_requirements = {"supports-workers": "1"},
++        resource_set = _closure_link_resources,
+         progress_message = "Compiling %d JavaScript files to %s" % (
+             len(js.srcs.to_list()),
+             ctx.outputs.bin.short_path,
+diff -urN orig/java/io/bazel/rules/closure/BUILD new/java/io/bazel/rules/closure/BUILD
+--- orig/java/io/bazel/rules/closure/BUILD	2026-07-31 10:00:00
++++ new/java/io/bazel/rules/closure/BUILD	2026-08-11 10:00:00
+@@ -22,6 +22,7 @@
+     name = "ClosureWorker",
+     srcs = ["ClosureWorker.java"],
+     jvm_flags = [
++        "-Xmx2g",
+         "-Xss20m",  # JSCompiler needs big stacks for recursive parsing
+         "-XX:+UseParallelGC",  # Best GC when app isn't latency sensitive
+     ],

@@ -1,0 +1,33 @@
+load("//third_party/java:rules.bzl", "java_testng")
+
+java_testng(
+    name = "tests",
+    size = "small",
+    srcs = [
+        "AbstractTest.java",
+        "ContextsTest.java",
+        "KeyedTest.java",
+        "//core/src/test/java/react4j/test:sources",
+    ],
+    data = ["//core/src/main/java/react4j"],
+    jvm_flags = [
+        "-Dbraincheck.environment=development",
+        "-Dzemeckis.environment=development",
+        "-Darez.environment=development",
+        "-Dreact4j.environment=development",
+        "-Dreact4j.core.compile_target=$(rootpath //core/src/main/java/react4j)",
+    ],
+    test_classes = [
+        "react4j.ContextsTest",
+        "react4j.KeyedTest",
+        "react4j.test.JDependTest",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//core",
+        "//third_party/java:arez_core",
+        "//third_party/java:arez_testng",
+        "//third_party/java:jdepend",
+        "//third_party/java:mockito_core",
+    ],
+)

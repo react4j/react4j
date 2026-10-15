@@ -1,13 +1,15 @@
 package com.example.inject;
 
-import javax.annotation.Nonnull;
 import javax.annotation.processing.Generated;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.internal.NativeView;
 import sting.Eager;
 import sting.Injectable;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 @Injectable
 @Eager
@@ -19,26 +21,26 @@ final class React4j_PublicViewFactory {
     InjectSupport.setFactory( this );
   }
 
-  @Nonnull
-  static React4j_PublicView create(@Nonnull final NativeView view) {
+  static React4j_PublicView create(final NativeView view) {
     return InjectSupport.create( view );
   }
 
+  @NullMarked
   private static final class InjectSupport {
-    private static React4j_PublicViewFactory c_factory;
+    private static @Nullable React4j_PublicViewFactory c_factory;
 
-    private static void setFactory(@Nonnull final React4j_PublicViewFactory factory) {
+    private static void setFactory(final React4j_PublicViewFactory factory) {
       if ( React.shouldCheckInvariants() ) {
         Guards.invariant( () -> null == c_factory, () -> "Attempted to instantiate the React4j view factory for the view named 'PublicView' a second time" );
       }
       c_factory = factory;
     }
 
-    @Nonnull
-    private static React4j_PublicView create(@Nonnull final NativeView view) {
+    private static React4j_PublicView create(final NativeView view) {
       if ( React.shouldCheckInvariants() ) {
         Guards.invariant( () -> null != c_factory, () -> "Attempted to create an instance of the React4j view named 'PublicView' before the view factory has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
       }
+      assert null != c_factory;
       return new Arez_React4j_PublicView( view, c_factory.someParam );
     }
   }

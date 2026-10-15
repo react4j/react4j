@@ -1,0 +1,419 @@
+load("@j2cl//build_defs:rules.bzl", "j2cl_import", "j2cl_library")
+load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_import = "java_import", _java_library = "java_library")
+load(":rules.bzl", "strict_checker_options", _java_test = "java_test")
+
+package(default_visibility = ["//visibility:public"])
+
+alias(
+    name = "arez_core",
+    actual = "@arez//:core",
+)
+
+alias(
+    name = "arez_testng",
+    actual = "@arez//:testng",
+)
+
+alias(
+    name = "arez_processor_runtime",
+    actual = "@arez//:processor",
+)
+
+_java_library(
+    name = "arez_processor",
+    exported_plugins = ["@arez//:arez_processor_plugin"],
+    exports = ["@arez//:processor"],
+)
+
+alias(
+    name = "sting_processor_runtime",
+    actual = "@sting//:processor",
+)
+
+alias(
+    name = "proton_core",
+    actual = "@proton//:core",
+)
+
+alias(
+    name = "proton_qa",
+    actual = "@proton//:qa",
+)
+
+alias(
+    name = "sting_core",
+    actual = "@sting//:core",
+)
+
+_java_library(
+    name = "sting_processor",
+    exported_plugins = ["@sting//:sting_processor_plugin"],
+    exports = ["@sting//:processor"],
+)
+
+alias(
+    name = "nullaway_plugin",
+    actual = "@sting//third_party/java:nullaway_plugin",
+)
+
+strict_checker_options(name = "strict_checker_options")
+
+alias(
+    name = "error_prone_core",
+    actual = "@sting//third_party/java:error_prone_core",
+)
+
+alias(
+    name = "nullaway",
+    actual = "@sting//third_party/java:nullaway",
+)
+
+# Browser annotations are bytecode-only imports; they do not produce JavaScript modules.
+j2cl_import(
+    name = "jspecify-j2cl",
+    jar = ":jspecify",
+)
+
+j2cl_import(
+    name = "grim_annotations-j2cl",
+    jar = ":grim_annotations",
+)
+
+j2cl_import(
+    name = "org_jetbrains_annotations-j2cl",
+    jar = ":org_jetbrains_annotations",
+)
+
+alias(
+    name = "jsinterop_annotations-j2cl",
+    actual = "@j2cl//:jsinterop-annotations-j2cl",
+)
+
+alias(
+    name = "jsinterop_base-j2cl",
+    actual = "@jsinterop_base//:jsinterop-base-j2cl",
+)
+
+# Share Arez's compilation so the linked application has one Braincheck module set.
+alias(
+    name = "braincheck_core-j2cl",
+    actual = "@arez//third_party/java:braincheck_core-j2cl",
+)
+
+j2cl_library(
+    name = "zemeckis_core-j2cl",
+    # This release bundles its Java and native configuration companions together.
+    srcs = ["@zemeckis_core//file"],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    deps = [
+        ":braincheck_core-j2cl",
+        ":grim_annotations-j2cl",
+        ":jsinterop_annotations-j2cl",
+        ":jsinterop_base-j2cl",
+        ":jspecify-j2cl",
+        ":org_jetbrains_annotations-j2cl",
+    ],
+)
+
+# --- depgen-generated targets start ---
+
+# DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.26
+
+# SHA256 of the configuration content that generated this content
+_CONFIG_SHA256 = "BB7EC882E9987F8E54DD0C3C3AACEEDC5BE039CBC6118D364ED8FF8E06594CE5"
+
+exports_files(["dependencies.yml"])
+
+# Dependency Graph Generated from the input data
+# +- org.commonmark:commonmark:jar:0.30.1 [compile]
+# +- org.commonmark:commonmark-ext-gfm-tables:jar:0.30.1 [compile]
+# |  \- org.commonmark:commonmark:jar:0.30.1 [compile]
+# +- io.github.eisop:dataflow-errorprone:jar:3.41.0-eisop1 [compile]
+# +- org.realityforge.braincheck:braincheck-core:jar:1.35.0 [compile]
+# |  +- org.jspecify:jspecify:jar:1.0.0 [compile]
+# |  \- com.google.jsinterop:jsinterop-annotations:jar:2.0.0 [compile]
+# +- org.realityforge.grim:grim-annotations:jar:0.09 [compile]
+# |  \- org.realityforge.javax.annotation:javax.annotation:jar:1.0.1 [compile]
+# +- org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:jar:1.7.0 [compile]
+# +- com.google.jsinterop:jsinterop-annotations:jar:2.0.0 [compile]
+# +- com.google.jsinterop:base:jar:1.0.0 [compile]
+# |  \- com.google.jsinterop:jsinterop-annotations:jar:1.0.2 [compile] (conflicts with 2.0.0)
+# +- org.jspecify:jspecify:jar:1.0.0 [compile]
+# +- org.testng:testng:jar:7.10.2 [compile]
+# |  +- org.slf4j:slf4j-api:jar:1.7.36 [compile]
+# |  +- com.beust:jcommander:jar:1.82 [compile]
+# |  +- org.webjars:jquery:jar:3.7.1 [runtime]
+# |  +- com.google.inject:guice:jar:5.1.0 [compile, optional]
+# |  \- org.yaml:snakeyaml:jar:2.2 [runtime, optional]
+# +- guru.nidi:jdepend:jar:2.9.5 [compile]
+# |  \- org.hamcrest:hamcrest-core:jar:1.3 [compile, optional]
+# +- org.mockito:mockito-core:jar:4.5.1 [compile]
+# |  +- net.bytebuddy:byte-buddy:jar:1.12.9 [compile]
+# |  +- net.bytebuddy:byte-buddy-agent:jar:1.12.9 [compile]
+# |  \- org.objenesis:objenesis:jar:3.2 [runtime]
+# +- com.palantir.javapoet:javapoet:jar:0.14.0 [compile]
+# +- org.realityforge.zemeckis:zemeckis-core:jar:0.18 [compile]
+# |  +- org.jspecify:jspecify:jar:1.0.0 [compile]
+# |  +- com.google.jsinterop:jsinterop-annotations:jar:2.0.0 [compile]
+# |  +- com.google.jsinterop:base:jar:1.0.0 [compile]
+# |  +- org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:jar:1.7.0 [compile]
+# |  +- org.realityforge.braincheck:braincheck-core:jar:1.35.0 [compile]
+# |  \- org.realityforge.grim:grim-annotations:jar:0.09 [compile]
+# \- org.realityforge.javaemul.internal.annotations:javaemul.internal.annotations:jar:0.01 [compile]
+
+_java_test(
+    name = "verify_config_sha256",
+    size = "small",
+    args = [
+        "--config-file",
+        "$(rootpath //third_party/java:dependencies.yml)",
+        "--verbose",
+        "hash",
+        "--verify-sha256",
+        _CONFIG_SHA256,
+    ],
+    data = ["//third_party/java:dependencies.yml"],
+    main_class = "org.realityforge.bazel.depgen.Main",
+    use_testrunner = False,
+    visibility = ["//visibility:private"],
+    runtime_deps = [":bazel_depgen"],
+)
+
+_java_binary(
+    name = "update_depgen_generated_outputs",
+    args = [
+        "--config-file",
+        "$(rootpath //third_party/java:dependencies.yml)",
+        "--verbose",
+        "generate",
+    ],
+    data = ["//third_party/java:dependencies.yml"],
+    main_class = "org.realityforge.bazel.depgen.Main",
+    tags = [
+        "local",
+        "manual",
+        "no-cache",
+        "no-remote",
+        "no-sandbox",
+    ],
+    visibility = ["//visibility:private"],
+    runtime_deps = [":bazel_depgen"],
+)
+
+_java_import(
+    name = "jcommander",
+    jars = ["@jcommander//file"],
+    srcjar = "@jcommander__sources//file",
+    tags = ["maven_coordinates=com.beust:jcommander:1.82"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "guice",
+    jars = ["@guice//file"],
+    srcjar = "@guice__sources//file",
+    tags = ["maven_coordinates=com.google.inject:guice:5.1.0"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "base",
+    jars = ["@base//file"],
+    srcjar = "@base__sources//file",
+    tags = ["maven_coordinates=com.google.jsinterop:base:1.0.0"],
+    deps = [":jsinterop_annotations"],
+)
+
+_java_import(
+    name = "jsinterop_annotations",
+    jars = ["@jsinterop_annotations//file"],
+    srcjar = "@jsinterop_annotations__sources//file",
+    tags = ["maven_coordinates=com.google.jsinterop:jsinterop-annotations:2.0.0"],
+)
+
+_java_import(
+    name = "javapoet",
+    jars = ["@javapoet//file"],
+    srcjar = "@javapoet__sources//file",
+    tags = ["maven_coordinates=com.palantir.javapoet:javapoet:0.14.0"],
+)
+
+_java_import(
+    name = "jdepend",
+    jars = ["@jdepend//file"],
+    srcjar = "@jdepend__sources//file",
+    tags = ["maven_coordinates=guru.nidi:jdepend:2.9.5"],
+)
+
+_java_import(
+    name = "dataflow_errorprone",
+    jars = ["@dataflow_errorprone//file"],
+    srcjar = "@dataflow_errorprone__sources//file",
+    tags = ["maven_coordinates=io.github.eisop:dataflow-errorprone:3.41.0-eisop1"],
+)
+
+_java_import(
+    name = "byte_buddy",
+    jars = ["@byte_buddy//file"],
+    srcjar = "@byte_buddy__sources//file",
+    tags = ["maven_coordinates=net.bytebuddy:byte-buddy:1.12.9"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "byte_buddy_agent",
+    jars = ["@byte_buddy_agent//file"],
+    srcjar = "@byte_buddy_agent__sources//file",
+    tags = ["maven_coordinates=net.bytebuddy:byte-buddy-agent:1.12.9"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "commonmark",
+    jars = ["@commonmark//file"],
+    srcjar = "@commonmark__sources//file",
+    tags = ["maven_coordinates=org.commonmark:commonmark:0.30.1"],
+)
+
+_java_import(
+    name = "commonmark_ext_gfm_tables",
+    jars = ["@commonmark_ext_gfm_tables//file"],
+    srcjar = "@commonmark_ext_gfm_tables__sources//file",
+    tags = ["maven_coordinates=org.commonmark:commonmark-ext-gfm-tables:0.30.1"],
+    deps = [":commonmark"],
+)
+
+_java_import(
+    name = "hamcrest_core",
+    jars = ["@hamcrest_core//file"],
+    srcjar = "@hamcrest_core__sources//file",
+    tags = ["maven_coordinates=org.hamcrest:hamcrest-core:1.3"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "jspecify",
+    jars = ["@jspecify//file"],
+    srcjar = "@jspecify__sources//file",
+    tags = ["maven_coordinates=org.jspecify:jspecify:1.0.0"],
+)
+
+_java_import(
+    name = "mockito_core",
+    jars = ["@mockito_core//file"],
+    srcjar = "@mockito_core__sources//file",
+    tags = ["maven_coordinates=org.mockito:mockito-core:4.5.1"],
+    runtime_deps = [":objenesis"],
+    deps = [
+        ":byte_buddy",
+        ":byte_buddy_agent",
+    ],
+)
+
+_java_import(
+    name = "objenesis",
+    jars = ["@objenesis//file"],
+    srcjar = "@objenesis__sources//file",
+    tags = ["maven_coordinates=org.objenesis:objenesis:3.2"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "bazel_depgen",
+    jars = ["@bazel_depgen//file"],
+    tags = ["maven_coordinates=org.realityforge.bazel.depgen:bazel-depgen:0.26"],
+)
+
+_java_import(
+    name = "braincheck_core",
+    jars = ["@braincheck_core//file"],
+    srcjar = "@braincheck_core__sources//file",
+    tags = ["maven_coordinates=org.realityforge.braincheck:braincheck-core:1.35.0"],
+    deps = [
+        ":jsinterop_annotations",
+        ":jspecify",
+    ],
+)
+
+_java_import(
+    name = "grim_annotations",
+    jars = ["@grim_annotations//file"],
+    srcjar = "@grim_annotations__sources//file",
+    tags = ["maven_coordinates=org.realityforge.grim:grim-annotations:0.09"],
+    deps = [":javax_annotation"],
+)
+
+_java_import(
+    name = "javaemul_internal_annotations",
+    jars = ["@javaemul_internal_annotations//file"],
+    srcjar = "@javaemul_internal_annotations__sources//file",
+    tags = ["maven_coordinates=org.realityforge.javaemul.internal.annotations:javaemul.internal.annotations:0.01"],
+)
+
+_java_import(
+    name = "javax_annotation",
+    jars = ["@javax_annotation//file"],
+    srcjar = "@javax_annotation__sources//file",
+    tags = ["maven_coordinates=org.realityforge.javax.annotation:javax.annotation:1.0.1"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "org_jetbrains_annotations",
+    jars = ["@org_jetbrains_annotations//file"],
+    srcjar = "@org_jetbrains_annotations__sources//file",
+    tags = ["maven_coordinates=org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:1.7.0"],
+)
+
+_java_import(
+    name = "zemeckis_core",
+    jars = ["@zemeckis_core//file"],
+    srcjar = "@zemeckis_core__sources//file",
+    tags = ["maven_coordinates=org.realityforge.zemeckis:zemeckis-core:0.18"],
+    deps = [
+        ":base",
+        ":braincheck_core",
+        ":grim_annotations",
+        ":jsinterop_annotations",
+        ":jspecify",
+        ":org_jetbrains_annotations",
+    ],
+)
+
+_java_import(
+    name = "slf4j_api",
+    jars = ["@slf4j_api//file"],
+    srcjar = "@slf4j_api__sources//file",
+    tags = ["maven_coordinates=org.slf4j:slf4j-api:1.7.36"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "testng",
+    jars = ["@testng//file"],
+    srcjar = "@testng__sources//file",
+    tags = ["maven_coordinates=org.testng:testng:7.10.2"],
+    runtime_deps = [":jquery"],
+    deps = [
+        ":jcommander",
+        ":slf4j_api",
+    ],
+)
+
+_java_import(
+    name = "jquery",
+    jars = ["@jquery//file"],
+    srcjar = "@jquery__sources//file",
+    tags = ["maven_coordinates=org.webjars:jquery:3.7.1"],
+    visibility = ["//visibility:private"],
+)
+
+_java_import(
+    name = "snakeyaml",
+    jars = ["@snakeyaml//file"],
+    srcjar = "@snakeyaml__sources//file",
+    tags = ["maven_coordinates=org.yaml:snakeyaml:2.2"],
+    visibility = ["//visibility:private"],
+)
+
+# --- depgen-generated targets end ---

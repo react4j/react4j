@@ -1,0 +1,5 @@
+filegroup(
+    name = "files",
+    srcs = ["GenericTypeInjectedComponent.java"],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

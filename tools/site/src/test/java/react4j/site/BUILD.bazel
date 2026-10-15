@@ -1,0 +1,13 @@
+load("//third_party/java:rules.bzl", "java_testng")
+
+java_testng(
+    name = "all_tests",
+    size = "small",
+    srcs = ["SiteTest.java"],
+    test_class = "react4j.site.SiteTest",
+    visibility = [
+        "//:__pkg__",
+        "//tools/site:__pkg__",
+    ],
+    deps = ["//tools/site/src/main/java/react4j/site"],
+)

@@ -1,40 +1,37 @@
 package com.example.prop;
 
 import arez.Disposable;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class ArezPropModelBuilder {
   private ArezPropModelBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static Step1 value(@Nullable final String value) {
+  static Step1 value(final @Nullable String value) {
     return newBuilder().value( value );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
-  static Step1 model(@Nullable final ArezPropModel.Model model) {
+  static Step1 model(final ArezPropModel. @Nullable Model model) {
     return newBuilder().model( model );
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -43,19 +40,16 @@ final class ArezPropModelBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
     Step1 value(@Nullable String value);
 
-    @Nonnull
     @Contract(
         pure = true
     )
-    Step1 model(@Nullable ArezPropModel.Model model);
+    Step1 model(ArezPropModel. @Nullable Model model);
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -63,31 +57,28 @@ final class ArezPropModelBuilder {
   }
 
   private static class Builder implements Step1 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_ArezPropModel.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final Step1 value(@Nullable final String value) {
+    public final Step1 value(final @Nullable String value) {
       _element.input( React4j_ArezPropModel.Inputs.value, value );
       return this;
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final Step1 model(@Nullable final ArezPropModel.Model model) {
+    public final Step1 model(final ArezPropModel. @Nullable Model model) {
       assert Disposable.isNotDisposed( model );
       _element.input( React4j_ArezPropModel.Inputs.model, model );
       return this;
     }
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

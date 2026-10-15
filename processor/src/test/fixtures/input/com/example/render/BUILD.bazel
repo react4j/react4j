@@ -1,0 +1,17 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BaseRenderComponent.java",
+        "MyParent.java",
+        "NoRenderWithConstructorView.java",
+        "NoRenderWithPostConstructView.java",
+        "NoRenderWithPostMountOrUpdateView.java",
+        "NoRenderWithPostMountView.java",
+        "NoRenderWithPostRenderView.java",
+        "NoRenderWithPostUpdateView.java",
+        "NoRenderWithPreRenderView.java",
+        "NoRenderWithPreUpdateView.java",
+        "RenderFromParentComponent.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

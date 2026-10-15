@@ -1,7 +1,6 @@
 package react4j.internal;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Objects;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
@@ -9,44 +8,46 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactNode;
 
 /**
  * The react native component.
  */
-@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "React.Component" )
-@SuppressWarnings( "unused" )
-public abstract class NativeView
-{
-  @JsProperty( name = "props" )
-  private JsPropertyMap<Object> inputs;
-  @JsProperty
-  private JsPropertyMap<Object> state;
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "React.Component")
+@SuppressWarnings("unused")
+public abstract class NativeView {
+    @JsProperty(name = "props")
+    private @Nullable JsPropertyMap<@Nullable Object> inputs;
 
-  @JsConstructor
-  protected NativeView( @Nullable final JsPropertyMap<Object> inputs )
-  {
-  }
+    @JsProperty
+    private @Nullable JsPropertyMap<@Nullable Object> state;
 
-  @JsMethod
-  @Nullable
-  public abstract ReactNode render();
+    @JsConstructor
+    protected NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {}
 
-  @JsOverlay
-  @Nullable
-  public final JsPropertyMap<Object> inputs()
-  {
-    return inputs;
-  }
+    @JsMethod
+    @Nullable
+    public abstract ReactNode render();
 
-  @JsOverlay
-  @Nullable
-  public final JsPropertyMap<Object> state()
-  {
-    return state;
-  }
+    @JsOverlay
+    @Nullable
+    public final JsPropertyMap<@Nullable Object> inputs() {
+        return inputs;
+    }
 
-  public final native void setState( @Nonnull JsPropertyMap<Object> state );
+    @JsOverlay
+    public final JsPropertyMap<@Nullable Object> requireInputs() {
+        return Objects.requireNonNull(inputs);
+    }
 
-  public final native void forceUpdate();
+    @JsOverlay
+    @Nullable
+    public final JsPropertyMap<@Nullable Object> state() {
+        return state;
+    }
+
+    public final native void setState(JsPropertyMap<@Nullable Object> state);
+
+    public final native void forceUpdate();
 }

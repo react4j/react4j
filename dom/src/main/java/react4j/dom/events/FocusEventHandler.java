@@ -4,7 +4,6 @@ import jsinterop.annotations.JsFunction;
 
 @JsFunction
 @FunctionalInterface
-public interface FocusEventHandler
-{
-  void onFocusEvent( FocusEvent event );
+public interface FocusEventHandler {
+    void onFocusEvent(FocusEvent event);
 }

@@ -1,0 +1,11 @@
+alias(
+    name = "tool",
+    actual = "//tools/site/src/main/java/react4j/site:tool",
+    visibility = ["//visibility:public"],
+)
+
+test_suite(
+    name = "tests",
+    tests = ["//tools/site/src/test/java/react4j/site:all_tests"],
+    visibility = ["//visibility:public"],
+)

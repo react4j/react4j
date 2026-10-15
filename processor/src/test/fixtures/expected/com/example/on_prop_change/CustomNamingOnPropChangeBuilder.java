@@ -1,23 +1,22 @@
 package com.example.on_prop_change;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
+@NullMarked
 @Generated("react4j.processor.React4jProcessor")
 final class CustomNamingOnPropChangeBuilder {
   private CustomNamingOnPropChangeBuilder() {
   }
 
-  @Nonnull
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Nonnull
   @Contract(
       pure = true
   )
@@ -26,7 +25,6 @@ final class CustomNamingOnPropChangeBuilder {
   }
 
   interface Step1 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -34,7 +32,6 @@ final class CustomNamingOnPropChangeBuilder {
   }
 
   interface Step2 {
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -42,13 +39,11 @@ final class CustomNamingOnPropChangeBuilder {
   }
 
   interface Step3 {
-    @Nonnull
     @Contract(
         pure = true
     )
     ReactNode myProp2(@Nullable String myProp2);
 
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -56,11 +51,9 @@ final class CustomNamingOnPropChangeBuilder {
   }
 
   private static class Builder implements Step1, Step2, Step3 {
-    @Nonnull
     private final ReactElement _element = ReactElement.createViewElement( React4j_CustomNamingOnPropChange.Factory.TYPE );
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -70,7 +63,6 @@ final class CustomNamingOnPropChangeBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
@@ -80,16 +72,15 @@ final class CustomNamingOnPropChangeBuilder {
     }
 
     @Override
-    @Nonnull
     @Contract(
         pure = true
     )
-    public final ReactNode myProp2(@Nullable final String myProp2) {
+    public final ReactNode myProp2(final @Nullable String myProp2) {
       _element.input( React4j_CustomNamingOnPropChange.Inputs.myProp2, myProp2 );
       return build();
     }
 
-    @Nonnull
+    @Override
     @Contract(
         pure = true
     )

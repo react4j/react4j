@@ -1,7 +1,6 @@
 package com.example.on_prop_change;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.OnInputChange;
@@ -9,15 +8,16 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class NonnullOnPropChange
 {
   @OnInputChange
-  void onMyPropChange( @Nonnull String myProp )
+  void onMyPropChange( String myProp )
   {
   }
 
   @Input
-  @Nonnull
+
   abstract String getMyProp();
 
   @Nullable

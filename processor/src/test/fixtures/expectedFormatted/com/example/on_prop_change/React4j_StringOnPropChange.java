@@ -4,13 +4,13 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.OnComponentWillUnmount;
@@ -18,6 +18,7 @@ import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
+@NullMarked
 @SuppressArezWarnings({"Arez:UnnecessaryDefault", "Arez:UnnecessaryAllowEmpty"})
 @ArezComponent(
     name = "com_example_on_prop_change_StringOnPropChange",
@@ -27,14 +28,12 @@ import react4j.internal.ViewConstructorFunction;
     allowEmpty = true)
 @Generated("react4j.processor.React4jProcessor")
 abstract class React4j_StringOnPropChange extends StringOnPropChange {
-  @Nonnull
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
-  React4j_StringOnPropChange(@Nonnull final react4j.internal.NativeView $$react4j$$_nativeView) {
-    this.$$react4j$$_nativeView = Objects.requireNonNull($$react4j$$_nativeView);
+  React4j_StringOnPropChange(final react4j.internal.NativeView $$react4j$$_nativeView) {
+    this.$$react4j$$_nativeView = $$react4j$$_nativeView;
   }
 
-  @Nonnull
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
@@ -43,31 +42,32 @@ abstract class React4j_StringOnPropChange extends StringOnPropChange {
     return viewConstructor;
   }
 
-  @Nullable
   @Override
+  @Nullable
   String getMyProp() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.inputs().getAsAny(Inputs.myProp)
-          ? $$react4j$$_nativeView.inputs().getAsAny(Inputs.myProp).asString()
+      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp)
+          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp).asString()
           : null;
     } else {
-      return Js.uncheckedCast($$react4j$$_nativeView.inputs().getAsAny(Inputs.myProp));
+      return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp));
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<Object> nextInputs) {
+      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
-    final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+    final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     if (!Js.isTripleEqual(inputs.get(Inputs.myProp), nextInputs.get(Inputs.myProp))) {
       return true;
     }
     return false;
   }
 
-  private void $$react4j$$_componentPreUpdate(@Nullable final JsPropertyMap<Object> prevInputs) {
+  private void $$react4j$$_componentPreUpdate(
+      @Nullable final JsPropertyMap<@Nullable Object> prevInputs) {
     if (null != prevInputs) {
-      final JsPropertyMap<Object> inputs = $$react4j$$_nativeView.inputs();
+      final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
       final boolean myProp =
           !Js.isTripleEqual(inputs.get(Inputs.myProp), prevInputs.get(Inputs.myProp));
       if (myProp) {
@@ -87,7 +87,6 @@ abstract class React4j_StringOnPropChange extends StringOnPropChange {
   }
 
   static final class Factory {
-    @Nonnull
     static final ViewConstructorFunction TYPE = getConstructorFunction();
 
     private Factory() {}
@@ -101,25 +100,25 @@ abstract class React4j_StringOnPropChange extends StringOnPropChange {
 
   private static final class NativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
-    @Nonnull
+    @NonNull
     private final React4j_StringOnPropChange view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<Object> inputs) {
+    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_StringOnPropChange(this);
     }
 
     @Override
-    public final boolean shouldComponentUpdate(@Nonnull final JsPropertyMap<Object> nextInputs) {
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
       return view.$$react4j$$_shouldComponentUpdate(nextInputs);
     }
 
     @Override
     @Nullable
     public final Object getSnapshotBeforeUpdate(
-        @Nonnull final JsPropertyMap<Object> prevInputs,
-        @Nonnull final JsPropertyMap<Object> prevState) {
+        final JsPropertyMap<@Nullable Object> prevInputs,
+        final JsPropertyMap<@Nullable Object> prevState) {
       view.$$react4j$$_componentPreUpdate(prevInputs);
       return null;
     }

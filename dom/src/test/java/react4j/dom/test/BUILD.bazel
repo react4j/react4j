@@ -1,0 +1,26 @@
+load("//third_party/java:rules.bzl", "java_testng")
+
+java_testng(
+    name = "tests",
+    size = "small",
+    srcs = [
+        "DomJDependTest.java",
+        "HtmlPropsTest.java",
+        "package-info.java",
+    ],
+    data = ["//dom/src/main/java/react4j/dom"],
+    jvm_flags = [
+        "-Dbraincheck.environment=development",
+        "-Dreact4j.environment=development",
+        "-Dreact4j.dom.compile_target=$(rootpath //dom/src/main/java/react4j/dom)",
+    ],
+    test_classes = [
+        "react4j.dom.test.DomJDependTest",
+        "react4j.dom.test.HtmlPropsTest",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//dom",
+        "//third_party/java:jdepend",
+    ],
+)

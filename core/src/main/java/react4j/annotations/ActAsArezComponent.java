@@ -8,8 +8,6 @@ import java.lang.annotation.Target;
 /**
  * Integration into arez the name of the annotation and shape is all that matters.
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.ANNOTATION_TYPE )
-@interface ActAsArezComponent
-{
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
+@interface ActAsArezComponent {}

@@ -1,0 +1,11 @@
+exports_files(
+    [
+        "IntelliJ-AddSource.png",
+        "IntelliJ-AnnotationProcessor.png",
+        "IntelliJ-EnableAutoBuild.png",
+        "external-link-symbol.svg",
+        "logo.svg",
+        "todomvc.svg",
+    ],
+    visibility = ["//visibility:public"],
+)

@@ -39,28 +39,26 @@ import java.lang.annotation.Target;
  * </ul>
  */
 @Documented
-@Target( ElementType.METHOD )
-public @interface OnInputChange
-{
-  /**
-   * Phase in which method should be invoked.
-   */
-  enum Phase
-  {
+@Target(ElementType.METHOD)
+public @interface OnInputChange {
     /**
-     * Method should be invoked before update.
+     * Phase in which method should be invoked.
      */
-    PRE,
-    /**
-     * Method should be invoked after update.
-     */
-    POST
-  }
+    enum Phase {
+        /**
+         * Method should be invoked before update.
+         */
+        PRE,
+        /**
+         * Method should be invoked after update.
+         */
+        POST
+    }
 
-  /**
-   * The phase in which the method should be invoked.
-   *
-   * @return the phase in which the method should be invoked.
-   */
-  Phase phase() default Phase.PRE;
+    /**
+     * The phase in which the method should be invoked.
+     *
+     * @return the phase in which the method should be invoked.
+     */
+    Phase phase() default Phase.PRE;
 }

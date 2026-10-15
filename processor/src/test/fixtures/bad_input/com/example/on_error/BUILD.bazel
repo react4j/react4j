@@ -1,0 +1,16 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "AbstractOnErrorComponent.java",
+        "BadParam1OnErrorComponent.java",
+        "BadParam2OnErrorComponent.java",
+        "BadParam3OnErrorComponent.java",
+        "BadParam4OnErrorComponent.java",
+        "DuplicateOnErrorComponent.java",
+        "PrivateOnErrorComponent.java",
+        "ReturnOnErrorComponent.java",
+        "StaticOnErrorComponent.java",
+        "ThrowsOnErrorComponent.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

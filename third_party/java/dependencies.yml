@@ -1,0 +1,31 @@
+# DO NOT EDIT GENERATED BUILD CONTENT: run tools/update_java_deps.sh after editing this file.
+repositories:
+  - name: central
+    url: https://repo.maven.apache.org/maven2
+options:
+  workspaceDirectory: ../..
+  nameStrategy: ArtifactId
+  repositoryNameStrategy: ArtifactId
+  repositoryRuleGenerationStrategy: module
+  targetGenerationStrategy: build
+  targetRuleLoadSymbols:
+    java_test: false
+  failOnMissingPom: false
+artifacts:
+  - coord: org.commonmark:commonmark:0.30.1
+  - coord: org.commonmark:commonmark-ext-gfm-tables:0.30.1
+  - coord: io.github.eisop:dataflow-errorprone:3.41.0-eisop1
+  - coord: org.realityforge.braincheck:braincheck-core:1.35.0
+  - coord: org.realityforge.grim:grim-annotations:0.09
+  - coord: org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:1.7.0
+  - coord: com.google.jsinterop:jsinterop-annotations:2.0.0
+  - coord: com.google.jsinterop:base:1.0.0
+  - coord: org.jspecify:jspecify:1.0.0
+  - coord: org.testng:testng:7.10.2
+  - coord: guru.nidi:jdepend:2.9.5
+  - coord: org.mockito:mockito-core:4.5.1
+  - coord: com.palantir.javapoet:javapoet:0.14.0
+    excludes:
+      - com.palantir.javapoet:javapoet-root
+  - coord: org.realityforge.zemeckis:zemeckis-core:0.18
+  - coord: org.realityforge.javaemul.internal.annotations:javaemul.internal.annotations:0.01

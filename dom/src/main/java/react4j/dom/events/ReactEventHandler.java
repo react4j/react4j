@@ -4,7 +4,6 @@ import jsinterop.annotations.JsFunction;
 
 @JsFunction
 @FunctionalInterface
-public interface ReactEventHandler
-{
-  void onReactEvent( SyntheticEvent<?> event );
+public interface ReactEventHandler {
+    void onReactEvent(SyntheticEvent<?> event);
 }

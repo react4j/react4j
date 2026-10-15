@@ -3,7 +3,6 @@ package react4j.annotations;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import javax.annotation.Nonnull;
 
 /**
  * Identifies method that is called when the input value is specified or changes.
@@ -33,15 +32,13 @@ import javax.annotation.Nonnull;
  * </ul>
  */
 @Documented
-@Target( ElementType.METHOD )
-public @interface InputValidate
-{
-  /**
-   * Return the name of the associated input. If the value is not specified then the name
-   * will be derived assuming that the method name matches the pattern "validate[Name]"
-   *
-   * @return the name of the input.
-   */
-  @Nonnull
-  String name() default "<default>";
+@Target(ElementType.METHOD)
+public @interface InputValidate {
+    /**
+     * Return the name of the associated input. If the value is not specified then the name
+     * will be derived assuming that the method name matches the pattern "validate[Name]"
+     *
+     * @return the name of the input.
+     */
+    String name() default "<default>";
 }

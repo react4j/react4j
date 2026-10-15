@@ -1,0 +1,18 @@
+{
+  "exceptions": [
+    {
+      "reason": "Chromium requires its native process launcher and loopback server outside the sandbox; compilation and site actions remain sandboxed",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//doc-examples:browser_tests",
+      "requirement": "no-sandbox"
+    },
+    {
+      "reason": "The argument is an HTTP route served from declared test runfiles, not a host filesystem input",
+      "kind": "absolute_path",
+      "mnemonic": "TestRunner",
+      "target": "//doc-examples:browser_tests",
+      "path": "/gen_html_browser_tests.html"
+    }
+  ]
+}
