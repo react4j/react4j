@@ -1,0 +1,22 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "ArezAnnotatedProp.java",
+        "BadNameProp.java",
+        "BadNameProp2.java",
+        "BoxedPrimitiveBuild.java",
+        "ChildPropBadTypeComponent.java",
+        "ChildrenPropBadTypeComponent.java",
+        "DuplicateConstructorMethodImmutableProp.java",
+        "GenericPropComponent.java",
+        "ImmutableObservableProp.java",
+        "MultipleChildrenPropsComponent.java",
+        "PropHasParameterComponent.java",
+        "PropNamedBuild.java",
+        "PropNoReturnComponent.java",
+        "PropNotAbstractComponent.java",
+        "PropThrowsExceptionComponent.java",
+        "QualifiedNonContextPropModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

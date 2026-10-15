@@ -1,0 +1,10 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "React4j_RootPackageCompleteComponent.java",
+        "React4j_RootPackageView.java",
+        "RootPackageBuilder.java",
+        "RootPackageCompleteComponentBuilder.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

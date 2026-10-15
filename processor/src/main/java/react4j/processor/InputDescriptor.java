@@ -1,32 +1,25 @@
 package react4j.processor;
 
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
-import org.realityforge.proton.AnnotationsUtil;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
 
 @SuppressWarnings("Duplicates")
 final class InputDescriptor {
-    @Nonnull
+
     private final ViewDescriptor _descriptor;
 
-    @Nonnull
     private final String _name;
 
-    @Nonnull
     private final String _qualifier;
 
-    @Nonnull
     private final Element _element;
 
-    @Nonnull
     private final TypeMirror _type;
 
     @Nullable
@@ -46,7 +39,6 @@ final class InputDescriptor {
     @Nullable
     private final ImmutableInputKeyStrategy _immutableInputKeyStrategy;
 
-    @Nonnull
     private final String _requiredValue;
 
     private boolean _onChangePresent;
@@ -69,11 +61,11 @@ final class InputDescriptor {
     private Boolean _isNonNull;
 
     InputDescriptor(
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final String name,
-            @Nonnull final String qualifier,
-            @Nonnull final Element element,
-            @Nonnull final TypeMirror type,
+            final ViewDescriptor descriptor,
+            final String name,
+            final String qualifier,
+            final Element element,
+            final TypeMirror type,
             @Nullable final ExecutableElement method,
             @Nullable final ExecutableType methodType,
             @Nullable final VariableElement parameter,
@@ -82,12 +74,12 @@ final class InputDescriptor {
             final boolean observable,
             final boolean disposable,
             @Nullable final ImmutableInputKeyStrategy immutableInputKeyStrategy,
-            @Nonnull final String requiredValue) {
-        _descriptor = Objects.requireNonNull(descriptor);
-        _name = Objects.requireNonNull(name);
-        _qualifier = Objects.requireNonNull(qualifier);
-        _element = Objects.requireNonNull(element);
-        _type = Objects.requireNonNull(type);
+            final String requiredValue) {
+        _descriptor = descriptor;
+        _name = name;
+        _qualifier = qualifier;
+        _element = element;
+        _type = type;
         _method = method;
         _methodType = methodType;
         _parameter = parameter;
@@ -96,25 +88,21 @@ final class InputDescriptor {
         _observable = observable;
         _disposable = disposable;
         _immutableInputKeyStrategy = immutableInputKeyStrategy;
-        _requiredValue = Objects.requireNonNull(requiredValue);
+        _requiredValue = requiredValue;
     }
 
-    @Nonnull
     String getName() {
         return _name;
     }
 
-    @Nonnull
     String getQualifier() {
         return _qualifier;
     }
 
-    @Nonnull
     Element getElement() {
         return _element;
     }
 
-    @Nonnull
     TypeMirror getType() {
         return _type;
     }
@@ -154,7 +142,6 @@ final class InputDescriptor {
         return null != _immutableInputKeyStrategy;
     }
 
-    @Nonnull
     String getRequiredValue() {
         return _requiredValue;
     }
@@ -175,7 +162,6 @@ final class InputDescriptor {
         return !isImmutable() && !_onChangePresent && _descriptor.hasPostConstruct();
     }
 
-    @Nonnull
     ImmutableInputKeyStrategy getImmutableInputKeyStrategy() {
         assert null != _immutableInputKeyStrategy;
         return _immutableInputKeyStrategy;
@@ -185,20 +171,19 @@ final class InputDescriptor {
         return null != _validateMethod;
     }
 
-    @Nonnull
     ExecutableElement getValidateMethod() {
         assert null != _validateMethod;
         return _validateMethod;
     }
 
-    void setValidateMethod(@Nonnull final ExecutableElement method) {
+    void setValidateMethod(final ExecutableElement method) {
         if (null != _validateMethod) {
             throw new ProcessorException(
                     MemberChecks.toSimpleName(Constants.INPUT_VALIDATE_CLASSNAME)
                             + " target duplicates existing method named " + _validateMethod.getSimpleName(),
                     method);
         } else {
-            _validateMethod = Objects.requireNonNull(method);
+            _validateMethod = method;
         }
     }
 
@@ -206,13 +191,12 @@ final class InputDescriptor {
         return null != _defaultField;
     }
 
-    @Nonnull
     VariableElement getDefaultField() {
         assert null != _defaultField;
         return _defaultField;
     }
 
-    void setDefaultField(@Nonnull final VariableElement field) {
+    void setDefaultField(final VariableElement field) {
         if (isFromTreeContext()) {
             throw new ProcessorException(
                     MemberChecks.mustNot(
@@ -227,7 +211,7 @@ final class InputDescriptor {
             throw new ProcessorException(
                     "@InputDefault target duplicates existing field named " + _defaultField.getSimpleName(), field);
         } else {
-            _defaultField = Objects.requireNonNull(field);
+            _defaultField = field;
         }
     }
 
@@ -235,13 +219,12 @@ final class InputDescriptor {
         return null != _defaultMethod;
     }
 
-    @Nonnull
     ExecutableElement getDefaultMethod() {
         assert null != _defaultMethod;
         return _defaultMethod;
     }
 
-    void setDefaultMethod(@Nonnull final ExecutableElement method) {
+    void setDefaultMethod(final ExecutableElement method) {
         if (isFromTreeContext()) {
             throw new ProcessorException(
                     MemberChecks.mustNot(
@@ -258,7 +241,7 @@ final class InputDescriptor {
              * prior to the field being set. If there is a duplicate field it will be detected in setDefaultField()
              */
             assert null == _defaultField;
-            _defaultMethod = Objects.requireNonNull(method);
+            _defaultMethod = method;
         }
     }
 
@@ -272,7 +255,7 @@ final class InputDescriptor {
 
     boolean isNonNull() {
         if (null == _isNonNull) {
-            _isNonNull = AnnotationsUtil.hasNonnullAnnotation(getElement());
+            _isNonNull = Nullability.isNonNull(getElement(), getType(), _descriptor.getElement());
         }
         return _isNonNull;
     }
@@ -281,7 +264,6 @@ final class InputDescriptor {
         _optional = true;
     }
 
-    @Nonnull
     String getConstantName() {
         return getName();
     }

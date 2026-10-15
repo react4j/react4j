@@ -1,16 +1,16 @@
 package com.example.on_error;
 
 import react4j.JsError;
-import javax.annotation.Nonnull;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
 import react4j.annotations.OnError;
 import react4j.annotations.Render;
 import react4j.annotations.SuppressReact4jWarnings;
 import react4j.annotations.View;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class Suppressed2ProtectedAccessOnErrorModel
 {
   @Nullable
@@ -23,7 +23,7 @@ abstract class Suppressed2ProtectedAccessOnErrorModel
   // This uses the CLASS retention suppression
   @SuppressReact4jWarnings( "React4j:ProtectedMethod" )
   @OnError
-  protected void onError( @Nonnull final JsError error, @Nonnull final ReactErrorInfo info )
+  protected void onError( final JsError error, final ReactErrorInfo info )
   {
   }
 }

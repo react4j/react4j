@@ -17,75 +17,58 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
-import org.realityforge.proton.AnnotationsUtil;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.SuppressWarningsUtil;
 
 @SuppressWarnings("DuplicatedCode")
 final class BuilderGenerator {
-    @Nonnull
+
     private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get("arez", "Disposable");
 
     private static final ClassName IDENTIFIABLE_CLASSNAME = ClassName.get("arez.component", "Identifiable");
 
-    @Nonnull
     private static final ClassName REACT_ELEMENT_CLASSNAME = ClassName.get("react4j", "ReactElement");
 
-    @Nonnull
     private static final ClassName CONTEXT_CLASSNAME = ClassName.get("react4j", "Context");
 
-    @Nonnull
     private static final ClassName CONTEXT_RENDER_FUNCTION_CLASSNAME =
             ClassName.get("react4j", "Context", "ConsumerRenderFunction");
 
-    @Nonnull
     private static final ClassName CONTEXTS_CLASSNAME = ClassName.get("react4j", "Contexts");
 
-    @Nonnull
     private static final ClassName REACT_CLASSNAME = ClassName.get("react4j", "React");
 
-    @Nonnull
     private static final ClassName KEYED_CLASSNAME = ClassName.get("react4j", "Keyed");
 
-    @Nonnull
     private static final ClassName REACT_NODE_CLASSNAME = ClassName.get("react4j", "ReactNode");
 
-    @Nonnull
     private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get("jsinterop.base", "JsPropertyMap");
 
-    @Nonnull
     private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
             ParameterizedTypeName.get(JS_PROPERTY_MAP_CLASSNAME, ClassName.get("java.lang", "Object"));
 
-    @Nonnull
     private static final ClassName CONTRACT_CLASSNAME = ClassName.get("org.jetbrains.annotations", "Contract");
 
-    @Nonnull
     private static final String CONTEXT_METHOD_PREFIX = "$context_";
 
-    @Nonnull
     private static final String CONTEXT_FIELD_PREFIX = "_" + CONTEXT_METHOD_PREFIX;
 
-    @Nonnull
     private static final String CONTEXT_INPUT_PREFIX = "CONTEXT_";
 
-    @Nonnull
     private static final String CONTEXT_HOLDER = "ContextHolder";
 
     private BuilderGenerator() {}
 
-    @Nonnull
-    static TypeSpec buildType(
-            @Nonnull final ProcessingEnvironment processingEnv, @Nonnull final ViewDescriptor descriptor) {
+    static TypeSpec buildType(final ProcessingEnvironment processingEnv, final ViewDescriptor descriptor) {
         final var builder = TypeSpec.classBuilder(descriptor.getBuilderClassName());
+        builder.addAnnotation(ClassName.get("org.jspecify.annotations", "NullMarked"));
         GeneratorUtil.addOriginatingTypes(descriptor.getElement(), builder);
         GeneratorUtil.addGeneratedAnnotation(processingEnv, builder, React4jProcessor.class.getName());
         builder.addModifiers(Modifier.FINAL);
@@ -126,21 +109,19 @@ final class BuilderGenerator {
     }
 
     private static void buildStaticStepMethodMethods(
-            @Nonnull final ProcessingEnvironment processingEnv,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final TypeSpec.Builder builder,
-            @Nonnull final Step step) {
+            final ProcessingEnvironment processingEnv,
+            final ViewDescriptor descriptor,
+            final TypeSpec.Builder builder,
+            final Step step) {
         for (final var method : step.getMethods()) {
             builder.addMethod(buildStaticStepMethodMethod(processingEnv, descriptor, step, method));
         }
     }
 
-    @Nonnull
-    private static MethodSpec buildStaticNewBuilderMethod(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec buildStaticNewBuilderMethod(final ViewDescriptor descriptor) {
         final var infix = descriptor.getDeclaredType().getTypeArguments().isEmpty() ? "" : "<>";
         final var method = MethodSpec.methodBuilder("newBuilder")
                 .addModifiers(Modifier.STATIC)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .returns(parameterizeIfRequired(descriptor, ClassName.bestGuess("Step1")))
                 .addStatement("return new $T" + infix + "()", ClassName.bestGuess("Builder"));
         if (descriptor.exportBuilder()) {
@@ -150,14 +131,12 @@ final class BuilderGenerator {
         return method.build();
     }
 
-    @Nonnull
     private static MethodSpec buildStaticStepMethodMethod(
-            @Nonnull final ProcessingEnvironment processingEnv,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final Step step,
-            @Nonnull final StepMethod stepMethod) {
-        final var method =
-                MethodSpec.methodBuilder(stepMethod.getName()).addAnnotation(GeneratorUtil.NONNULL_CLASSNAME);
+            final ProcessingEnvironment processingEnv,
+            final ViewDescriptor descriptor,
+            final Step step,
+            final StepMethod stepMethod) {
+        final var method = MethodSpec.methodBuilder(stepMethod.getName());
         addPureContract(method);
 
         method.addModifiers(Modifier.STATIC);
@@ -177,8 +156,6 @@ final class BuilderGenerator {
                 final var inputType = stepMethod.getTypeMirror();
                 assert null != inputType;
                 SuppressWarningsUtil.addSuppressWarningsIfRequired(processingEnv, parameter, inputType);
-            } else if (stepMethod.isChildrenStreamIntrinsic()) {
-                parameter.addAnnotation(GeneratorUtil.NONNULL_CLASSNAME);
             }
             if (type instanceof ArrayTypeName) {
                 method.varargs();
@@ -201,16 +178,15 @@ final class BuilderGenerator {
         return method.build();
     }
 
-    @Nonnull
     private static MethodSpec.Builder buildStepInterfaceMethod(
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final String name,
-            @Nonnull final Step step,
-            @Nonnull final StepMethodType stepMethodType,
-            @Nonnull final Consumer<MethodSpec.Builder> action) {
+            final ViewDescriptor descriptor,
+            final String name,
+            final Step step,
+            final StepMethodType stepMethodType,
+            final Consumer<MethodSpec.Builder> action) {
         final var method = MethodSpec.methodBuilder(name);
         method.addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
-        method.addAnnotation(GeneratorUtil.NONNULL_CLASSNAME);
+
         addPureContract(method);
         action.accept(method);
         configureStepMethodReturns(descriptor, method, step, stepMethodType);
@@ -218,10 +194,10 @@ final class BuilderGenerator {
     }
 
     private static void configureStepMethodReturns(
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final MethodSpec.Builder method,
-            @Nonnull final Step step,
-            @Nonnull final StepMethodType stepMethodType) {
+            final ViewDescriptor descriptor,
+            final MethodSpec.Builder method,
+            final Step step,
+            final StepMethodType stepMethodType) {
         if (StepMethodType.TERMINATE == stepMethodType) {
             method.returns(REACT_NODE_CLASSNAME);
         } else {
@@ -230,9 +206,7 @@ final class BuilderGenerator {
         }
     }
 
-    @Nonnull
-    private static TypeName parameterizeIfRequired(
-            @Nonnull final ViewDescriptor descriptor, @Nonnull final ClassName className) {
+    private static TypeName parameterizeIfRequired(final ViewDescriptor descriptor, final ClassName className) {
         final var variableNames = GeneratorUtil.getTypeArgumentsAsNames(descriptor.getDeclaredType());
         if (variableNames.isEmpty()) {
             return className;
@@ -241,11 +215,8 @@ final class BuilderGenerator {
         }
     }
 
-    @Nonnull
     private static TypeSpec buildBuilderStepInterface(
-            @Nonnull final ProcessingEnvironment processingEnv,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final Step step) {
+            final ProcessingEnvironment processingEnv, final ViewDescriptor descriptor, final Step step) {
         final var stepIndex = step.getIndex();
         final var builder = TypeSpec.interfaceBuilder("Step" + stepIndex);
         builder.addModifiers(Modifier.STATIC);
@@ -290,8 +261,6 @@ final class BuilderGenerator {
                                         assert null != inputType;
                                         SuppressWarningsUtil.addSuppressWarningsIfRequired(
                                                 processingEnv, parameter, inputType);
-                                    } else if (stepMethod.isChildrenStreamIntrinsic()) {
-                                        parameter.addAnnotation(GeneratorUtil.NONNULL_CLASSNAME);
                                     }
                                     m.addParameter(parameter.build());
                                 })
@@ -302,16 +271,15 @@ final class BuilderGenerator {
         return builder.build();
     }
 
-    @Nonnull
     private static MethodSpec buildBuilderStepImpl(
-            @Nonnull final ProcessingEnvironment processingEnv,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final Step step,
-            @Nonnull final StepMethod stepMethod) {
+            final ProcessingEnvironment processingEnv,
+            final ViewDescriptor descriptor,
+            final Step step,
+            final StepMethod stepMethod) {
         final var method = MethodSpec.methodBuilder(stepMethod.getName());
         method.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
         method.addAnnotation(Override.class);
-        method.addAnnotation(GeneratorUtil.NONNULL_CLASSNAME);
+
         addPureContract(method);
 
         final InputDescriptor input = stepMethod.getInput();
@@ -330,8 +298,6 @@ final class BuilderGenerator {
             final var inputType = stepMethod.getTypeMirror();
             assert null != inputType;
             SuppressWarningsUtil.addSuppressWarningsIfRequired(processingEnv, parameter, inputType);
-        } else if (stepMethod.isChildrenStreamIntrinsic()) {
-            parameter.addAnnotation(GeneratorUtil.NONNULL_CLASSNAME);
         }
         method.addParameter(parameter.build());
 
@@ -403,7 +369,7 @@ final class BuilderGenerator {
         } else if (stepMethod.isChildIntrinsic()) {
             assert null != inputElement;
             assert null != input;
-            if (AnnotationsUtil.hasNonnullAnnotation(inputElement)) {
+            if (Nullability.isNonNull(inputElement)) {
                 method.addStatement(
                         "_element.input( $T.Inputs.$N, $T.of( $T.requireNonNull( $N ) ) )",
                         descriptor.getEnhancedClassName(),
@@ -420,7 +386,7 @@ final class BuilderGenerator {
                         stepMethod.getName());
             }
         } else {
-            if ((null != inputElement && AnnotationsUtil.hasNonnullAnnotation(inputElement)) && !type.isPrimitive()) {
+            if ((null != inputElement && Nullability.isNonNull(inputElement)) && !type.isPrimitive()) {
                 method.addStatement("$T.requireNonNull( $N )", Objects.class, stepMethod.getName());
             }
             assert null != input;
@@ -441,34 +407,25 @@ final class BuilderGenerator {
         return method.build();
     }
 
-    @Nonnull
-    private static MethodSpec buildBuildStepImpl(@Nonnull final ViewDescriptor descriptor) {
-        final var method = MethodSpec.methodBuilder("build")
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME);
+    private static MethodSpec buildBuildStepImpl(final ViewDescriptor descriptor) {
+        final var method = MethodSpec.methodBuilder("build").addModifiers(Modifier.PUBLIC, Modifier.FINAL);
         addPureContract(method);
         return buildBuildMethodContent(descriptor, method, "_element");
     }
 
-    @Nonnull
-    private static FieldSpec buildContextBuildField(@Nonnull final InputDescriptor current) {
+    private static FieldSpec buildContextBuildField(final InputDescriptor current) {
         final var typeName = ParameterizedTypeName.get(
                 CONTEXT_RENDER_FUNCTION_CLASSNAME,
                 TypeName.get(current.getType()).box());
         return FieldSpec.builder(typeName, CONTEXT_FIELD_PREFIX + current.getName(), Modifier.PRIVATE, Modifier.FINAL)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .initializer("this::$N", CONTEXT_METHOD_PREFIX + current.getName())
                 .build();
     }
 
-    @Nonnull
     private static MethodSpec buildContextBuildStepImpl(
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final InputDescriptor current,
-            @Nullable final InputDescriptor next) {
+            final ViewDescriptor descriptor, final InputDescriptor current, @Nullable final InputDescriptor next) {
         final var method = MethodSpec.methodBuilder(CONTEXT_METHOD_PREFIX + current.getName())
                 .addModifiers(Modifier.PRIVATE)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .returns(REACT_NODE_CLASSNAME)
                 .addParameter(ParameterSpec.builder(TypeName.get(current.getType()), current.getName(), Modifier.FINAL)
                         .build())
@@ -490,11 +447,9 @@ final class BuilderGenerator {
         return method.build();
     }
 
-    @Nonnull
-    private static MethodSpec buildContextBuildStepImpl(@Nonnull final InputDescriptor firstContextInput) {
+    private static MethodSpec buildContextBuildStepImpl(final InputDescriptor firstContextInput) {
         final var method = MethodSpec.methodBuilder("build")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .returns(REACT_NODE_CLASSNAME)
                 .addStatement(
                         "return $T.$N.consumer().render( $N )",
@@ -505,22 +460,16 @@ final class BuilderGenerator {
         return method.build();
     }
 
-    @Nonnull
-    private static MethodSpec buildInternalBuildStepImpl(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec buildInternalBuildStepImpl(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder("build")
                 .addModifiers(Modifier.PRIVATE)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .addParameter(ParameterSpec.builder(REACT_ELEMENT_CLASSNAME, "element", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                         .build());
         return buildBuildMethodContent(descriptor, method, "element");
     }
 
-    @Nonnull
     private static MethodSpec buildBuildMethodContent(
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final MethodSpec.Builder method,
-            @Nonnull final String elementName) {
+            final ViewDescriptor descriptor, final MethodSpec.Builder method, final String elementName) {
         final var syntheticInputs = descriptor.getInputs().stream()
                 .filter(InputDescriptor::isImmutable)
                 .toList();
@@ -615,8 +564,7 @@ final class BuilderGenerator {
         return method.build();
     }
 
-    @Nonnull
-    private static TypeSpec buildContextHolder(@Nonnull final ViewDescriptor descriptor) {
+    private static TypeSpec buildContextHolder(final ViewDescriptor descriptor) {
         final var builder = TypeSpec.classBuilder(CONTEXT_HOLDER);
         GeneratorUtil.copyTypeParameters(descriptor.getElement(), builder);
 
@@ -632,12 +580,11 @@ final class BuilderGenerator {
         for (final var input : fromTreeContextInputs) {
             final var type = TypeName.get(input.getType()).box();
             final var field = FieldSpec.builder(
-                            ParameterizedTypeName.get(CONTEXT_CLASSNAME, type),
-                            CONTEXT_INPUT_PREFIX + input.getConstantName(),
-                            Modifier.PRIVATE,
-                            Modifier.STATIC,
-                            Modifier.FINAL)
-                    .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME);
+                    ParameterizedTypeName.get(CONTEXT_CLASSNAME, type),
+                    CONTEXT_INPUT_PREFIX + input.getConstantName(),
+                    Modifier.PRIVATE,
+                    Modifier.STATIC,
+                    Modifier.FINAL);
             final var qualifier = input.getQualifier();
             if (qualifier.isEmpty()) {
                 field.initializer("$T.get( $T.class )", CONTEXTS_CLASSNAME, type);
@@ -650,11 +597,10 @@ final class BuilderGenerator {
         return builder.build();
     }
 
-    @Nonnull
     private static TypeSpec buildBuilder(
-            @Nonnull final ProcessingEnvironment processingEnv,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final BuilderDescriptor builderDescriptor) {
+            final ProcessingEnvironment processingEnv,
+            final ViewDescriptor descriptor,
+            final BuilderDescriptor builderDescriptor) {
         final var builder = TypeSpec.classBuilder("Builder");
         GeneratorUtil.copyTypeParameters(descriptor.getElement(), builder);
         builder.addModifiers(Modifier.PRIVATE, Modifier.STATIC);
@@ -698,8 +644,7 @@ final class BuilderGenerator {
             }
         }
 
-        final var field = FieldSpec.builder(REACT_ELEMENT_CLASSNAME, "_element", Modifier.PRIVATE, Modifier.FINAL)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME);
+        final var field = FieldSpec.builder(REACT_ELEMENT_CLASSNAME, "_element", Modifier.PRIVATE, Modifier.FINAL);
         if (inputsWithDefaults.isEmpty()) {
             field.initializer(
                     "$T.createViewElement( $T.Factory.TYPE )",
@@ -728,9 +673,7 @@ final class BuilderGenerator {
         return builder.build();
     }
 
-    @Nonnull
-    private static TypeName getParameterizedTypeName(
-            @Nonnull final ViewDescriptor descriptor, @Nonnull final ClassName baseName) {
+    private static TypeName getParameterizedTypeName(final ViewDescriptor descriptor, final ClassName baseName) {
         final var arguments = descriptor.getDeclaredType().getTypeArguments();
         if (arguments.isEmpty()) {
             return baseName;
@@ -740,22 +683,20 @@ final class BuilderGenerator {
         }
     }
 
-    private static void addPureContract(@Nonnull final MethodSpec.Builder method) {
+    private static void addPureContract(final MethodSpec.Builder method) {
         method.addAnnotation(AnnotationSpec.builder(CONTRACT_CLASSNAME)
                 .addMember("pure", "true")
                 .build());
     }
 
-    @Nonnull
-    static String asTypeArgumentsInfix(@Nonnull final DeclaredType declaredType) {
+    static String asTypeArgumentsInfix(final DeclaredType declaredType) {
         final var typeArguments = declaredType.getTypeArguments();
         return typeArguments.isEmpty()
                 ? ""
                 : "<" + typeArguments.stream().map(TypeMirror::toString).collect(Collectors.joining(", ")) + ">";
     }
 
-    @Nonnull
-    private static BuilderDescriptor buildBuilderDescriptor(@Nonnull final ViewDescriptor descriptor) {
+    private static BuilderDescriptor buildBuilderDescriptor(final ViewDescriptor descriptor) {
         final var builder = new BuilderDescriptor();
 
         Step optionalInputStep = null;
@@ -821,14 +762,14 @@ final class BuilderGenerator {
     /**
      * Setup the "build" intrinsic step.
      */
-    private static void addBuildStep(@Nonnull final Step step) {
+    private static void addBuildStep(final Step step) {
         step.addTerminalMethod("build", "build", REACT_NODE_CLASSNAME);
     }
 
     /**
      * A helper intrinsic that converts children streams.
      */
-    private static void addChildrenStreamInputStepMethod(@Nonnull final Step step) {
+    private static void addChildrenStreamInputStepMethod(final Step step) {
         final ParameterizedTypeName typeName = ParameterizedTypeName.get(
                 ClassName.get(Stream.class), WildcardTypeName.subtypeOf(REACT_NODE_CLASSNAME));
 

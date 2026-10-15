@@ -1,0 +1,10 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BadOrderView.java",
+        "GoodOrderView.java",
+        "Suppressed1BadOrderView.java",
+        "Suppressed2BadOrderView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

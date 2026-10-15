@@ -1,0 +1,8 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "MyBuilder.java",
+        "React4j_MyView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

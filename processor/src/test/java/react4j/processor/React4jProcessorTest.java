@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.Nonnull;
+import java.util.stream.Stream;
 import javax.annotation.processing.Processor;
 import javax.tools.JavaFileObject;
 import org.realityforge.proton.qa.AbstractProcessorTest;
@@ -25,7 +25,6 @@ import sting.processor.StingProcessor;
 
 public final class React4jProcessorTest extends AbstractProcessorTest {
     @DataProvider(name = "successfulCompiles")
-    @Nonnull
     public Object[][] successfulCompiles() {
         return new Object[][] {
             new Object[] {"com.example.arez.ActionOnPostMountView"},
@@ -230,11 +229,10 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     }
 
     @Test(dataProvider = "successfulCompiles")
-    public void processSuccessfulCompile(@Nonnull final String classname) throws Exception {
-        assertSuccessfulCompile(classname, false);
+    public void processSuccessfulCompile(final String classname) throws Exception {
+        assertGoldenCompile(classname, false);
     }
 
-    @Nonnull
     @DataProvider(name = "successfulStingCompiles")
     public Object[][] successfulStingCompiles() {
         return new Object[][] {
@@ -248,8 +246,8 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     }
 
     @Test(dataProvider = "successfulStingCompiles")
-    public void processSuccessfulStingCompile(@Nonnull final String classname) throws Exception {
-        assertSuccessfulCompile(classname, true);
+    public void processSuccessfulStingCompile(final String classname) throws Exception {
+        assertGoldenCompile(classname, true);
     }
 
     @Test
@@ -259,7 +257,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
 
     @Test
     public void nestedView() throws Exception {
-        assertSuccessfulCompile(
+        assertGoldenCompile(
                 "com.example.nested.NestedView",
                 "com/example/nested/NestedView_BasicBuilder.java",
                 "com/example/nested/NestedView_React4j_BasicView.java");
@@ -267,7 +265,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
 
     @Test
     public void nestedNestedView() throws Exception {
-        assertSuccessfulCompile(
+        assertGoldenCompile(
                 "com.example.nested.NestedNestedView",
                 "com/example/nested/NestedNestedView_DeepNesting_BasicBuilder.java",
                 "com/example/nested/NestedNestedView_DeepNesting_React4j_BasicView.java");
@@ -275,7 +273,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
 
     @Test
     public void nestedCompleteComponent() throws Exception {
-        assertSuccessfulCompile(
+        assertGoldenCompile(
                 "com.example.nested.NestedCompleteComponent",
                 "com/example/nested/NestedCompleteComponent_BasicBuilder.java",
                 "com/example/nested/NestedCompleteComponent_React4j_BasicViewFactory.java",
@@ -287,14 +285,14 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final JavaFileObject source1 = fixture("input/com/example/render/MyParent.java");
         final JavaFileObject source2 = fixture("input/com/example/render/RenderFromParentComponent.java");
         final String output = "com/example/render/React4j_RenderFromParentComponent.java";
-        assertSuccessfulCompile(Arrays.asList(source1, source2), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(source1, source2), Collections.singletonList(output));
     }
 
     @Test
     public void trackingInheritedAutoObserveMethodView() throws Exception {
         final JavaFileObject source1 = fixture("input/com/example/arez/TrackingInheritedAutoObserveMethodBase.java");
         final JavaFileObject source2 = fixture("input/com/example/arez/TrackingInheritedAutoObserveMethodView.java");
-        assertSuccessfulCompile(
+        assertGoldenCompile(
                 Arrays.asList(source1, source2),
                 Arrays.asList(
                         "com/example/arez/React4j_TrackingInheritedAutoObserveMethodView.java",
@@ -306,7 +304,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.on_error.ProtectedAccessFromBaseOnErrorModel");
         final String input2 = "input/" + toFilename("com.example.on_error.other.BaseProtectedAccessOnErrorModel");
         final String output = toFilename("com.example.on_error.React4j_ProtectedAccessFromBaseOnErrorModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -314,7 +312,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.on_error.PublicAccessViaInterfaceOnErrorModel");
         final String input2 = "input/" + toFilename("com.example.on_error.OnErrorInterface");
         final String output = toFilename("com.example.on_error.React4j_PublicAccessViaInterfaceOnErrorModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -324,7 +322,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input2 =
                 "input/" + toFilename("com.example.on_prop_change.other.BaseProtectedAccessOnPropChangeModel");
         final String output = toFilename("com.example.on_prop_change.React4j_ProtectedAccessFromBaseOnPropChangeModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -334,7 +332,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input2 = "input/" + toFilename("com.example.on_prop_change.OnPropChangeInterface");
         final String output =
                 toFilename("com.example.on_prop_change.React4j_PublicAccessViaInterfaceOnPropChangeModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -342,7 +340,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.post_mount.ProtectedAccessFromBasePostMountModel");
         final String input2 = "input/" + toFilename("com.example.post_mount.other.BaseProtectedAccessPostMountModel");
         final String output = toFilename("com.example.post_mount.React4j_ProtectedAccessFromBasePostMountModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -350,7 +348,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.post_mount.PublicAccessViaInterfacePostMountModel");
         final String input2 = "input/" + toFilename("com.example.post_mount.PostMountInterface");
         final String output = toFilename("com.example.post_mount.React4j_PublicAccessViaInterfacePostMountModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -361,7 +359,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
                 + toFilename("com.example.post_mount_or_update.other.BaseProtectedAccessPostMountOrUpdateModel");
         final String output =
                 toFilename("com.example.post_mount_or_update.React4j_ProtectedAccessFromBasePostMountOrUpdateModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -371,7 +369,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input2 = "input/" + toFilename("com.example.post_mount_or_update.PostMountOrUpdateInterface");
         final String output =
                 toFilename("com.example.post_mount_or_update.React4j_PublicAccessViaInterfacePostMountOrUpdateModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -379,7 +377,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.post_render.ProtectedAccessFromBasePostRenderModel");
         final String input2 = "input/" + toFilename("com.example.post_render.other.BaseProtectedAccessPostRenderModel");
         final String output = toFilename("com.example.post_render.React4j_ProtectedAccessFromBasePostRenderModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -387,7 +385,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.post_render.PublicAccessViaInterfacePostRenderModel");
         final String input2 = "input/" + toFilename("com.example.post_render.PostRenderInterface");
         final String output = toFilename("com.example.post_render.React4j_PublicAccessViaInterfacePostRenderModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -395,7 +393,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.post_update.ProtectedAccessFromBasePostUpdateModel");
         final String input2 = "input/" + toFilename("com.example.post_update.other.BaseProtectedAccessPostUpdateModel");
         final String output = toFilename("com.example.post_update.React4j_ProtectedAccessFromBasePostUpdateModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -403,7 +401,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.post_update.PublicAccessViaInterfacePostUpdateModel");
         final String input2 = "input/" + toFilename("com.example.post_update.PostUpdateInterface");
         final String output = toFilename("com.example.post_update.React4j_PublicAccessViaInterfacePostUpdateModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -411,7 +409,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.pre_render.ProtectedAccessFromBasePreRenderModel");
         final String input2 = "input/" + toFilename("com.example.pre_render.other.BaseProtectedAccessPreRenderModel");
         final String output = toFilename("com.example.pre_render.React4j_ProtectedAccessFromBasePreRenderModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -419,7 +417,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.pre_render.PublicAccessViaInterfacePreRenderModel");
         final String input2 = "input/" + toFilename("com.example.pre_render.PreRenderInterface");
         final String output = toFilename("com.example.pre_render.React4j_PublicAccessViaInterfacePreRenderModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -427,7 +425,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.pre_update.ProtectedAccessFromBasePreUpdateModel");
         final String input2 = "input/" + toFilename("com.example.pre_update.other.BaseProtectedAccessPreUpdateModel");
         final String output = toFilename("com.example.pre_update.React4j_ProtectedAccessFromBasePreUpdateModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -435,7 +433,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.pre_update.PublicAccessViaInterfacePreUpdateModel");
         final String input2 = "input/" + toFilename("com.example.pre_update.PreUpdateInterface");
         final String output = toFilename("com.example.pre_update.React4j_PublicAccessViaInterfacePreUpdateModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -443,7 +441,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.prop.ProtectedAccessFromBasePropModel");
         final String input2 = "input/" + toFilename("com.example.prop.other.BaseProtectedAccessPropModel");
         final String output = toFilename("com.example.prop.React4j_ProtectedAccessFromBasePropModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -451,7 +449,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.prop.PublicAccessViaInterfacePropModel");
         final String input2 = "input/" + toFilename("com.example.prop.PropInterface");
         final String output = toFilename("com.example.prop.React4j_PublicAccessViaInterfacePropModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -461,7 +459,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input2 =
                 "input/" + toFilename("com.example.prop_validate.other.BaseProtectedAccessPropValidateModel");
         final String output = toFilename("com.example.prop_validate.React4j_ProtectedAccessFromBasePropValidateModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -470,7 +468,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
                 "input/" + toFilename("com.example.prop_validate.PublicAccessViaInterfacePropValidateModel");
         final String input2 = "input/" + toFilename("com.example.prop_validate.PropValidateInterface");
         final String output = toFilename("com.example.prop_validate.React4j_PublicAccessViaInterfacePropValidateModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -478,7 +476,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input1 = "input/" + toFilename("com.example.publish.ProtectedAccessFromBasePublishModel");
         final String input2 = "input/" + toFilename("com.example.publish.other.BaseProtectedAccessPublishModel");
         final String output = toFilename("com.example.publish.React4j_ProtectedAccessFromBasePublishModel");
-        assertSuccessfulCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
+        assertGoldenCompile(Arrays.asList(fixture(input1), fixture(input2)), Collections.singletonList(output));
     }
 
     @Test
@@ -491,7 +489,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input6 = "input/" + toFilename("com.example.inheritance.simple.LeafInterface");
         final String output1 = toFilename("com.example.inheritance.simple.React4j_LeafView");
         final String output2 = toFilename("com.example.inheritance.simple.LeafBuilder");
-        assertSuccessfulCompile(
+        assertGoldenCompile(
                 Arrays.asList(
                         fixture(input1),
                         fixture(input2),
@@ -510,7 +508,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input4 = "input/" + toFilename("com.example.inheritance.complex_interface.MyView");
         final String output1 = toFilename("com.example.inheritance.complex_interface.React4j_MyView");
         final String output2 = toFilename("com.example.inheritance.complex_interface.MyBuilder");
-        assertSuccessfulCompile(
+        assertGoldenCompile(
                 Arrays.asList(fixture(input1), fixture(input2), fixture(input3), fixture(input4)),
                 Arrays.asList(output1, output2));
     }
@@ -522,12 +520,11 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final String input3 = "input/" + toFilename("com.example.inheritance.rose.MyView");
         final String output1 = toFilename("com.example.inheritance.rose.React4j_MyView");
         final String output2 = toFilename("com.example.inheritance.rose.MyBuilder");
-        assertSuccessfulCompile(
+        assertGoldenCompile(
                 Arrays.asList(fixture(input1), fixture(input2), fixture(input3)), Arrays.asList(output1, output2));
     }
 
     @DataProvider(name = "failedCompiles")
-    @Nonnull
     public Object[][] failedCompiles() {
         return new Object[][] {
             new Object[] {"com.example.component.ConcreteComponent", "@View target must be abstract"},
@@ -787,7 +784,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
             },
             new Object[] {
                 "com.example.prop.BoxedPrimitiveBuild",
-                "@Input named 'myValue' is a boxed primitive annotated with a @Nonnull annotation. The return type"
+                "@Input named 'myValue' is a boxed primitive annotated with a annotation. The return type"
                         + " should be the primitive type."
             },
             new Object[] {
@@ -931,12 +928,11 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     }
 
     @Test(dataProvider = "failedCompiles")
-    public void processFailedCompile(@Nonnull final String classname, @Nonnull final String errorMessageFragment) {
+    public void processFailedCompile(final String classname, final String errorMessageFragment) {
         assertFailedCompile(classname, errorMessageFragment);
     }
 
     @DataProvider(name = "packageAccessElementInDifferentPackage")
-    @Nonnull
     public Object[][] packageAccessElementInDifferentPackage() {
         return new Object[][] {
             new Object[] {"Input", "Input"},
@@ -950,7 +946,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
 
     @Test(dataProvider = "packageAccessElementInDifferentPackage")
     public void processFailedCompileInheritedPackageAccessInDifferentPackage(
-            @Nonnull final String annotation, @Nonnull final String name) {
+            final String annotation, final String name) {
         final JavaFileObject source1 = fixture("bad_input/com/example/package_access/other/Base" + name + "Model.java");
         final JavaFileObject source2 = fixture("bad_input/com/example/package_access/" + name + "Model.java");
         assertFailedCompileResource(
@@ -967,7 +963,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
 
     @Test(dataProvider = "packageAccessFieldInDifferentPackage")
     public void processFailedCompileInheritedPackageAccessFieldInDifferentPackage(
-            @Nonnull final String annotation, @Nonnull final String name) {
+            final String annotation, final String name) {
         final JavaFileObject source1 = fixture("bad_input/com/example/package_access/other/Base" + name + "Model.java");
         final JavaFileObject source2 = fixture("bad_input/com/example/package_access/" + name + "Model.java");
         assertFailedCompileResource(
@@ -1114,14 +1110,14 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
             },
             new Object[] {
                 "com.example.input.UnspecifiedNullabilityInputView",
-                "@Input target should not return a non-primitive type without a @Nonnull or @Nullable annotation. This"
+                "@Input target should not return a non-primitive type without a or @Nullable annotation. This"
                         + " warning can be suppressed by annotating the element with @SuppressWarnings("
                         + " \"React4j:MissingInputNullability\" ) or @SuppressReact4jWarnings("
                         + " \"React4j:MissingInputNullability\" )"
             },
             new Object[] {
                 "com.example.render.UnspecifiedNullabilityRenderView",
-                "@Render target should be annotated by a @Nonnull or a @Nullable annotation. This warning can be"
+                "@Render target should be annotated by a or a @Nullable annotation. This warning can be"
                         + " suppressed by annotating the element with @SuppressWarnings("
                         + " \"React4j:MissingRenderNullability\" ) or @SuppressReact4jWarnings("
                         + " \"React4j:MissingRenderNullability\" )"
@@ -1173,12 +1169,11 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     }
 
     @Test(dataProvider = "compileWithWarnings")
-    public void processCompileWithWarnings(@Nonnull final String classname, @Nonnull final String messageFragment) {
+    public void processCompileWithWarnings(final String classname, final String messageFragment) {
         assertCompilesWithSingleWarningThatCanBeUpgradedToError(classname, messageFragment);
     }
 
     @DataProvider(name = "compileWithoutWarnings")
-    @Nonnull
     public Object[][] compileWithoutWarnings() {
         return new Object[][] {
             new Object[] {"com.example.basic.Suppressed1PublicView"},
@@ -1238,7 +1233,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     }
 
     @Test(dataProvider = "compileWithoutWarnings")
-    public void processCompileWithWarnings(@Nonnull final String classname) {
+    public void processCompileWithWarnings(final String classname) {
         assertCompilesWithoutWarnings(classname);
     }
 
@@ -1250,7 +1245,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         final Path classOutput = Files.createTempDirectory("react4j-format-no-exports-classes");
         final Path sourceOutput = Files.createTempDirectory("react4j-format-no-exports-sources");
         try {
-            final Path javac = Path.of(System.getProperty("java.home"), "bin", "javac");
+            final var javac = Path.of(System.getProperty("java.home"), "bin", "javac");
             assertTrue(Files.exists(javac), "Expected javac to exist at " + javac);
 
             final List<String> command = new ArrayList<>();
@@ -1271,7 +1266,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
 
             final Process process =
                     new ProcessBuilder(command).redirectErrorStream(true).start();
-            final String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            final var output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             final int exitCode = process.waitFor();
 
             assertNotEquals(exitCode, 0, "Expected javac to fail without formatter JDK exports. Output:\n" + output);
@@ -1289,38 +1284,85 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         }
     }
 
-    @Nonnull
     @Override
     protected Processor processor() {
         return new React4jProcessor();
     }
 
-    @Nonnull
     @Override
     protected Processor[] additionalProcessors() {
         return new Processor[] {new StingProcessor(), new ArezProcessor()};
     }
 
-    @Nonnull
     @Override
     protected String getOptionPrefix() {
         return "react4j";
     }
 
-    @Nonnull
     @Override
     protected List<String> getOptions() {
         final List<String> options = new ArrayList<>(super.getOptions());
         options.add("-Aarez.defer.errors=false");
+        options.addAll(List.of("--release", "17"));
         return options;
     }
 
-    void assertSuccessfulCompile(@Nonnull final String classname, final boolean factory) throws Exception {
-        assertSuccessfulCompile(classname, deriveExpectedOutputs(classname, factory));
+    @Test
+    public void goldenSmoke() throws Exception {
+        assertGoldenCompile("com.example.basic.BasicView", false);
+    }
+
+    @Test
+    public void diagnosticSmoke() {
+        assertFailedCompile("com.example.component.FinalComponent", "@View target must not be final");
+    }
+
+    private void assertGoldenCompile(String classname, String... outputs) throws Exception {
+        assertGoldenCompile(inputs(classname), Arrays.asList(outputs));
+    }
+
+    private void assertGoldenCompile(List<JavaFileObject> inputs, List<String> outputs) throws Exception {
+        for (var formatted : new boolean[] {false, true}) {
+            var options = new ArrayList<>(getOptions());
+            options.add("-Areact4j.format_generated_source=" + formatted);
+            var compilation = CompileTestUtil.assertCompilesWithoutWarnings(
+                    javaCompiler(), inputs, options, processors(), Collections.emptyList());
+            try {
+                var directory = formatted ? "expectedFormatted" : "expected";
+                outputFilesIfEnabled(compilation, directory, this::emitGeneratedFile);
+                var actual = Stream.concat(
+                                compilation.sourceOutputFilenames().stream(),
+                                compilation.classOutputFilenames().stream())
+                        .filter(this::emitGeneratedFile)
+                        .map(name -> name.replace('\\', '/'))
+                        .sorted()
+                        .toList();
+                var expected = outputs.stream()
+                        .map(name -> name.replace('\\', '/'))
+                        .sorted()
+                        .toList();
+                assertEquals(actual, expected, "Complete generated output set differs");
+                for (var output : expected) {
+                    var generated = compilation.sourceOutput().resolve(output);
+                    if (!Files.exists(generated)) {
+                        generated = compilation.classOutput().resolve(output);
+                    }
+                    CompileTestUtil.assertSourceMatchesTarget(
+                            fixtureDir().resolve(directory).resolve(output), generated);
+                }
+            } finally {
+                deleteDir(compilation.sourceOutput());
+                deleteDir(compilation.classOutput());
+            }
+        }
+    }
+
+    void assertGoldenCompile(final String classname, final boolean factory) throws Exception {
+        assertGoldenCompile(classname, deriveExpectedOutputs(classname, factory));
     }
 
     @SuppressWarnings("SameParameterValue")
-    void assertSuccessfulCompileWithoutSting(@Nonnull final String classname) throws Exception {
+    void assertSuccessfulCompileWithoutSting(final String classname) throws Exception {
         final List<String> unformattedOptions = new ArrayList<>(getOptions());
         unformattedOptions.add("-A" + getOptionPrefix() + ".format_generated_source=false");
         assertSuccessfulCompileWithoutSting(classname, "expected", unformattedOptions);
@@ -1331,29 +1373,42 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     }
 
     void assertSuccessfulCompileWithoutSting(
-            @Nonnull final String classname,
-            @Nonnull final String expectedDirectory,
-            @Nonnull final List<String> options)
-            throws Exception {
+            final String classname, final String expectedDirectory, final List<String> options) throws Exception {
         final List<File> classpath = buildClasspath().stream()
                 .filter(file -> !file.getName().startsWith("sting-"))
                 .toList();
         final Compilation compilation = CompileTestUtil.assertCompilesWithoutWarnings(
                 inputs(classname), options, Arrays.asList(processor(), new ArezProcessor()), classpath);
 
-        outputFilesIfEnabled(compilation, expectedDirectory, this::emitGeneratedFile);
+        try {
+            outputFilesIfEnabled(compilation, expectedDirectory, this::emitGeneratedFile);
 
-        for (final String expectedOutput : deriveExpectedOutputs(classname, true)) {
-            final var fixture = fixtureDir().resolve(expectedDirectory).resolve(expectedOutput);
-            final var output1 = compilation.sourceOutput().resolve(expectedOutput);
-            final var output2 = compilation.classOutput().resolve(expectedOutput);
-            final var output = Files.exists(output1) ? output1 : output2;
-            CompileTestUtil.assertSourceMatchesTarget(fixture, output);
+            var actualOutputs = Stream.concat(
+                            compilation.sourceOutputFilenames().stream(), compilation.classOutputFilenames().stream())
+                    .filter(this::emitGeneratedFile)
+                    .sorted()
+                    .toList();
+            assertEquals(
+                    actualOutputs,
+                    Arrays.stream(deriveExpectedOutputs(classname, true))
+                            .sorted()
+                            .toList(),
+                    "Complete generated output set differs without Sting");
+            for (final String expectedOutput : deriveExpectedOutputs(classname, true)) {
+                final var fixture = fixtureDir().resolve(expectedDirectory).resolve(expectedOutput);
+                final var output1 = compilation.sourceOutput().resolve(expectedOutput);
+                final var output2 = compilation.classOutput().resolve(expectedOutput);
+                final var output = Files.exists(output1) ? output1 : output2;
+                CompileTestUtil.assertSourceMatchesTarget(fixture, output);
+            }
+        } finally {
+            deleteDir(compilation.sourceOutput());
+            deleteDir(compilation.classOutput());
         }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void deleteDir(@Nonnull final Path directory) {
+    private void deleteDir(final Path directory) {
         try (var paths = Files.walk(directory)) {
             paths.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
         } catch (final IOException e) {
@@ -1361,8 +1416,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         }
     }
 
-    @Nonnull
-    private String[] deriveExpectedOutputs(@Nonnull final String classname, final boolean factory) {
+    private String[] deriveExpectedOutputs(final String classname, final boolean factory) {
         final List<String> expectedOutputs = new ArrayList<>();
         expectedOutputs.add(toFilename(classname, "React4j_", ".java"));
         expectedOutputs.add(deriveBuilderFilename(classname));
@@ -1373,7 +1427,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     }
 
     @Override
-    protected boolean emitGeneratedFile(@Nonnull final String target) {
+    protected boolean emitGeneratedFile(final String target) {
         return super.emitGeneratedFile(target)
                 && !target.endsWith(".sbf")
                 && !target.contains("/Arez_")
@@ -1389,8 +1443,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
                         || target.endsWith("Factory.java"));
     }
 
-    @Nonnull
-    private String deriveBuilderFilename(@Nonnull final String classname) {
+    private String deriveBuilderFilename(final String classname) {
         final int lastSeparator = classname.lastIndexOf('.');
         final String prefix = -1 == lastSeparator ? "" : classname.substring(0, lastSeparator + 1);
         final String simpleName = -1 == lastSeparator ? classname : classname.substring(lastSeparator + 1);

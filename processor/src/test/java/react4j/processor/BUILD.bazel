@@ -1,0 +1,133 @@
+load("//third_party/java:rules.bzl", "FORMATTER_JVM_FLAGS", "java_library", "java_testng")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "test_classes",
+    testonly = True,
+    srcs = ["React4jProcessorTest.java"],
+    deps = [
+        "//processor",
+        "//third_party/java:arez_processor_runtime",
+        "//third_party/java:proton_qa",
+        "//third_party/java:sting_processor_runtime",
+        "//third_party/java:testng",
+    ],
+)
+
+_FLAGS = FORMATTER_JVM_FLAGS + [
+    "-Dreact4j.fixture_dir=processor/src/test/fixtures",
+    "-Xmx1024m",
+]
+
+_RUNTIME = [
+    ":test_classes",
+    "//core",
+    "//processor",
+    "//third_party/java:arez_core",
+    "//third_party/java:arez_processor_runtime",
+    "//third_party/java:sting_core",
+    "//third_party/java:sting_processor_runtime",
+    "//third_party/java:base",
+    "//third_party/java:braincheck_core",
+    "//third_party/java:grim_annotations",
+    "//third_party/java:org_jetbrains_annotations",
+    "//third_party/java:jsinterop_annotations",
+    "//third_party/java:zemeckis_core",
+]
+
+java_testng(
+    name = "smoke_goldens",
+    size = "medium",
+    srcs = [],
+    data = ["//processor/src/test/fixtures"],
+    jvm_flags = _FLAGS,
+    test_class = "react4j.processor.React4jProcessorTest",
+    test_methods = ["react4j.processor.React4jProcessorTest.goldenSmoke"],
+    deps = _RUNTIME,
+)
+
+java_testng(
+    name = "smoke_diagnostics",
+    size = "medium",
+    srcs = [],
+    data = ["//processor/src/test/fixtures"],
+    jvm_flags = _FLAGS,
+    test_class = "react4j.processor.React4jProcessorTest",
+    test_methods = ["react4j.processor.React4jProcessorTest.diagnosticSmoke"],
+    deps = _RUNTIME,
+)
+
+java_testng(
+    name = "regressions",
+    size = "medium",
+    srcs = [],
+    data = ["//processor/src/test/fixtures"],
+    jvm_flags = _FLAGS,
+    test_class = "react4j.processor.React4jProcessorTest",
+    test_methods = [
+        "react4j.processor.React4jProcessorTest.processSuccessfulRawTypeCompileWithoutSting",
+        "react4j.processor.React4jProcessorTest.formatGeneratedSourceFailsClearlyWithoutJdkExports",
+    ],
+    deps = _RUNTIME,
+)
+
+java_testng(
+    name = "generated_goldens",
+    size = "large",
+    srcs = [],
+    data = ["//processor/src/test/fixtures"],
+    jvm_flags = _FLAGS,
+    test_class = "react4j.processor.React4jProcessorTest",
+    test_methods = [
+        "react4j.processor.React4jProcessorTest.processSuccessfulCompile",
+        "react4j.processor.React4jProcessorTest.processSuccessfulStingCompile",
+        "react4j.processor.React4jProcessorTest.nestedView",
+        "react4j.processor.React4jProcessorTest.nestedNestedView",
+        "react4j.processor.React4jProcessorTest.nestedCompleteComponent",
+        "react4j.processor.React4jProcessorTest.renderFromParent",
+        "react4j.processor.React4jProcessorTest.trackingInheritedAutoObserveMethodView",
+        "react4j.processor.React4jProcessorTest.validProtectedAccessOnError",
+        "react4j.processor.React4jProcessorTest.validPublicAccessViaInterfaceOnError",
+        "react4j.processor.React4jProcessorTest.validProtectedAccessOnPropChange",
+        "react4j.processor.React4jProcessorTest.validPublicAccessViaInterfaceOnPropChange",
+        "react4j.processor.React4jProcessorTest.validProtectedAccessPostMount",
+        "react4j.processor.React4jProcessorTest.validPublicAccessViaInterfacePostMount",
+        "react4j.processor.React4jProcessorTest.validProtectedAccessPostMountOrUpdate",
+        "react4j.processor.React4jProcessorTest.validPublicAccessViaInterfacePostMountOrUpdate",
+        "react4j.processor.React4jProcessorTest.validProtectedAccessPostRender",
+        "react4j.processor.React4jProcessorTest.validPublicAccessViaInterfacePostRender",
+        "react4j.processor.React4jProcessorTest.validProtectedAccessPostUpdate",
+        "react4j.processor.React4jProcessorTest.validPublicAccessViaInterfacePostUpdate",
+        "react4j.processor.React4jProcessorTest.validProtectedAccessPreRender",
+        "react4j.processor.React4jProcessorTest.validPublicAccessViaInterfacePreRender",
+        "react4j.processor.React4jProcessorTest.validProtectedAccessPreUpdate",
+        "react4j.processor.React4jProcessorTest.validPublicAccessViaInterfacePreUpdate",
+        "react4j.processor.React4jProcessorTest.validProtectedAccessProp",
+        "react4j.processor.React4jProcessorTest.validPublicAccessViaInterfaceProp",
+        "react4j.processor.React4jProcessorTest.validProtectedAccessPropValidate",
+        "react4j.processor.React4jProcessorTest.validPublicAccessViaInterfacePropValidate",
+        "react4j.processor.React4jProcessorTest.validProtectedAccessPublish",
+        "react4j.processor.React4jProcessorTest.validInheritanceSimple",
+        "react4j.processor.React4jProcessorTest.validInheritanceComplexInterface",
+        "react4j.processor.React4jProcessorTest.validInheritanceRose",
+        "react4j.processor.React4jProcessorTest.goldenSmoke",
+    ],
+    deps = _RUNTIME,
+)
+
+java_testng(
+    name = "diagnostics",
+    size = "large",
+    srcs = [],
+    data = ["//processor/src/test/fixtures"],
+    jvm_flags = _FLAGS,
+    test_class = "react4j.processor.React4jProcessorTest",
+    test_methods = [
+        "react4j.processor.React4jProcessorTest.processCompileWithWarnings",
+        "react4j.processor.React4jProcessorTest.processFailedCompile",
+        "react4j.processor.React4jProcessorTest.processFailedCompileInheritedPackageAccessFieldInDifferentPackage",
+        "react4j.processor.React4jProcessorTest.processFailedCompileInheritedPackageAccessInDifferentPackage",
+    ],
+    deps = _RUNTIME,
+)

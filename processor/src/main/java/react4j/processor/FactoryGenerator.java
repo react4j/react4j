@@ -11,36 +11,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
-import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.ElementsUtil;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.ProcessorException;
 import org.realityforge.proton.SuppressWarningsUtil;
 
 final class FactoryGenerator {
-    @Nonnull
+
     private static final ClassName NATIVE_VIEW_CLASSNAME = ClassName.get("react4j.internal", "NativeView");
 
-    @Nonnull
     private static final ClassName GUARDS_CLASSNAME = ClassName.get("org.realityforge.braincheck", "Guards");
 
-    @Nonnull
     private static final ClassName REACT_CLASSNAME = ClassName.get("react4j", "React");
 
-    @Nonnull
     private static final ClassName JS_CLASSNAME = ClassName.get("jsinterop.base", "Js");
 
     private FactoryGenerator() {}
 
-    @Nonnull
-    static TypeSpec buildType(
-            @Nonnull final ProcessingEnvironment processingEnv, @Nonnull final ViewDescriptor descriptor) {
+    static TypeSpec buildType(final ProcessingEnvironment processingEnv, final ViewDescriptor descriptor) {
         final var builder = TypeSpec.classBuilder(descriptor.getFactoryClassName());
+        builder.addAnnotation(ClassName.get("org.jspecify.annotations", "NullMarked"));
         GeneratorUtil.addGeneratedAnnotation(processingEnv, builder, React4jProcessor.class.getName());
         GeneratorUtil.addOriginatingTypes(descriptor.getElement(), builder);
 
@@ -67,13 +61,12 @@ final class FactoryGenerator {
     }
 
     private static void buildConstructor(
-            @Nonnull final ProcessingEnvironment processingEnv,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final TypeSpec.Builder builder,
-            @Nonnull final ExecutableElement constructor) {
+            final ProcessingEnvironment processingEnv,
+            final ViewDescriptor descriptor,
+            final TypeSpec.Builder builder,
+            final ExecutableElement constructor) {
         final var ctor = MethodSpec.constructorBuilder();
 
-        final var sting = descriptor.enableSting();
         final var additionalSuppressions = new ArrayList<String>();
 
         SuppressWarningsUtil.addSuppressWarningsIfRequired(
@@ -89,7 +82,7 @@ final class FactoryGenerator {
 
             GeneratorUtil.copyWhitelistedAnnotations(parameter, param, whitelistedAnnotations);
             ctor.addParameter(param.build());
-            if (AnnotationsUtil.hasNonnullAnnotation(parameter)) {
+            if (Nullability.isNonNull(parameter)) {
                 ctor.addStatement("this.$N = $T.requireNonNull( $N )", name, Objects.class, name);
             } else {
                 ctor.addStatement("this.$N = $N", name, name);
@@ -102,10 +95,10 @@ final class FactoryGenerator {
     }
 
     private static void buildFields(
-            @Nonnull final ProcessingEnvironment processingEnv,
-            @Nonnull final TypeSpec.Builder builder,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final ExecutableElement constructor) {
+            final ProcessingEnvironment processingEnv,
+            final TypeSpec.Builder builder,
+            final ViewDescriptor descriptor,
+            final ExecutableElement constructor) {
         for (final var parameter : descriptor.getInjectableConstructorParameters()) {
             final var field = FieldSpec.builder(
                     TypeName.get(parameter.asType()),
@@ -119,21 +112,17 @@ final class FactoryGenerator {
         }
     }
 
-    private static void buildCreateMethod(
-            @Nonnull final ViewDescriptor descriptor, @Nonnull final TypeSpec.Builder builder) {
+    private static void buildCreateMethod(final ViewDescriptor descriptor, final TypeSpec.Builder builder) {
         builder.addMethod(MethodSpec.methodBuilder("create")
                 .addModifiers(Modifier.STATIC)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .addParameter(ParameterSpec.builder(NATIVE_VIEW_CLASSNAME, "view", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                         .build())
                 .returns(descriptor.getEnhancedClassName())
                 .addStatement("return InjectSupport.create( view )")
                 .build());
     }
 
-    @Nonnull
-    private static TypeSpec buildInjectSupport(@Nonnull final ViewDescriptor descriptor) {
+    private static TypeSpec buildInjectSupport(final ViewDescriptor descriptor) {
         // We create a separate InjectSupport class to avoid generating a clinit for the factory class
         // which can block optimizations in GWT
         final var builder =
@@ -146,17 +135,14 @@ final class FactoryGenerator {
         return builder.build();
     }
 
-    @Nonnull
-    private static FieldSpec.Builder buildFactoryField(@Nonnull final ViewDescriptor descriptor) {
+    private static FieldSpec.Builder buildFactoryField(final ViewDescriptor descriptor) {
         return FieldSpec.builder(descriptor.getFactoryClassName(), "c_factory", Modifier.STATIC, Modifier.PRIVATE);
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildSetFactoryMethod(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildSetFactoryMethod(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder("setFactory")
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
                 .addParameter(ParameterSpec.builder(descriptor.getFactoryClassName(), "factory", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                         .build());
         final var block = CodeBlock.builder();
         block.beginControlFlow("if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME);
@@ -171,14 +157,11 @@ final class FactoryGenerator {
         return method;
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildInjectCreateMethod(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildInjectCreateMethod(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder("create")
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
                 .addParameter(ParameterSpec.builder(NATIVE_VIEW_CLASSNAME, "view", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                         .build())
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .returns(descriptor.getEnhancedClassName());
         final var block = CodeBlock.builder();
         block.beginControlFlow("if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME);
@@ -252,8 +235,7 @@ final class FactoryGenerator {
         return method.addStatement(args.toString(), params.toArray());
     }
 
-    @Nonnull
-    private static String getConverter(@Nonnull final InputDescriptor input) {
+    private static String getConverter(final InputDescriptor input) {
         return switch (input.getType().getKind()) {
             case BOOLEAN -> "asBoolean";
             case BYTE -> "asByte";

@@ -1,0 +1,16 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicPostMountModelBuilder.java",
+        "DeprecatedPostMountModelBuilder.java",
+        "PackageAccessPostMountModelBuilder.java",
+        "ProtectedAccessFromBasePostMountModelBuilder.java",
+        "PublicAccessViaInterfacePostMountModelBuilder.java",
+        "React4j_BasicPostMountModel.java",
+        "React4j_DeprecatedPostMountModel.java",
+        "React4j_PackageAccessPostMountModel.java",
+        "React4j_ProtectedAccessFromBasePostMountModel.java",
+        "React4j_PublicAccessViaInterfacePostMountModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

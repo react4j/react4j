@@ -1,0 +1,24 @@
+load("//third_party/java:rules.bzl", "java_library", "java_plugin")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "processor",
+    exports = ["//processor/src/main/java/react4j/processor"],
+)
+
+java_plugin(
+    name = "react4j_processor_plugin",
+    generates_api = True,
+    processor_class = "react4j.processor.React4jProcessor",
+    deps = [":processor"],
+)
+
+test_suite(
+    name = "all_tests",
+    tests = [
+        "//processor/src/test/java/react4j/processor:diagnostics",
+        "//processor/src/test/java/react4j/processor:generated_goldens",
+        "//processor/src/test/java/react4j/processor:regressions",
+    ],
+)

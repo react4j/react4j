@@ -2,6 +2,7 @@ package com.example.inheritance.complex_interface;
 
 import react4j.annotations.Input;
 
+@org.jspecify.annotations.NullMarked
 interface LeafInterface
   extends InnerInterface
 {

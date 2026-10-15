@@ -1,7 +1,6 @@
 package react4j.processor;
 
 import java.util.Comparator;
-import javax.annotation.Nonnull;
 
 /**
  * Sort inputs.
@@ -14,7 +13,7 @@ final class InputComparator implements Comparator<InputDescriptor> {
     private InputComparator() {}
 
     @Override
-    public int compare(@Nonnull final InputDescriptor o1, @Nonnull final InputDescriptor o2) {
+    public int compare(final InputDescriptor o1, final InputDescriptor o2) {
         if (o1.isSpecialChildrenInput()) {
             return 1;
         } else if (o2.isSpecialChildrenInput()) {

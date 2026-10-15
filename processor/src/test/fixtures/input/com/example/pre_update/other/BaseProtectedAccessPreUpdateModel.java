@@ -3,8 +3,9 @@ package com.example.pre_update.other;
 import react4j.ReactNode;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.Render;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
+@org.jspecify.annotations.NullMarked
 public abstract class BaseProtectedAccessPreUpdateModel
 {
   @PreUpdate

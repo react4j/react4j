@@ -1,0 +1,8 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "RootPackageCompleteComponent.java",
+        "RootPackageView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

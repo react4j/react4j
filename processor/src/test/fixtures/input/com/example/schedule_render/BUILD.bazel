@@ -1,0 +1,14 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicScheduleRenderComponent.java",
+        "MultiScheduleRenderComponent.java",
+        "NoSkipScheduleRenderComponent.java",
+        "ProtectedScheduleRenderComponent.java",
+        "PublicScheduleRenderComponent.java",
+        "SkipScheduleRenderComponent.java",
+        "SuppressedProtectedScheduleRenderComponent.java",
+        "SuppressedPublicScheduleRenderComponent.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

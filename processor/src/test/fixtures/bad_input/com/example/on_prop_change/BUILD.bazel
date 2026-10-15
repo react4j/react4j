@@ -1,0 +1,17 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BadNullability1OnPropChange.java",
+        "BadNullability2OnPropChange.java",
+        "BadType1OnPropChange.java",
+        "ConstructorImmutableOnPropChange.java",
+        "ImmutableOnPropChange.java",
+        "MissingPropOnPropChange.java",
+        "NoPropRefOnPropChange.java",
+        "PrivateOnPropChange.java",
+        "ReturnOnPropChange.java",
+        "StaticOnPropChange.java",
+        "ThrowsOnPropChange.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

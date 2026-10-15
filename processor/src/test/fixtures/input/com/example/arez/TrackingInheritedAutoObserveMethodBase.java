@@ -3,10 +3,11 @@ package com.example.arez;
 import arez.annotations.ArezComponentLike;
 import arez.annotations.AutoObserve;
 import arez.component.ComponentObservable;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import react4j.annotations.Input;
 
 @ArezComponentLike
+@org.jspecify.annotations.NullMarked
 abstract class TrackingInheritedAutoObserveMethodBase
 {
   interface Model

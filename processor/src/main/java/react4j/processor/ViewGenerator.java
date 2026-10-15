@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -32,188 +31,134 @@ import org.realityforge.proton.SuppressWarningsUtil;
 
 @SuppressWarnings("Duplicates")
 final class ViewGenerator {
-    @Nonnull
+
     private static final ClassName GUARDS_CLASSNAME = ClassName.get("org.realityforge.braincheck", "Guards");
 
-    @Nonnull
     private static final ClassName AREZ_CLASSNAME = ClassName.get("arez", "Arez");
 
-    @Nonnull
     private static final ClassName OBSERVER_CLASSNAME = ClassName.get("arez", "Observer");
 
-    @Nonnull
     private static final ClassName OBSERVABLE_CLASSNAME = ClassName.get("arez", "ObservableValue");
 
-    @Nonnull
     private static final ClassName DISPOSABLE_CLASSNAME = ClassName.get("arez", "Disposable");
 
-    @Nonnull
     private static final ClassName AREZ_FEATURE_CLASSNAME = ClassName.get("arez.annotations", "Feature");
 
-    @Nonnull
     private static final ClassName SUPPRESS_AREZ_WARNINGS_CLASSNAME =
             ClassName.get("arez.annotations", "SuppressArezWarnings");
 
-    @Nonnull
     private static final ClassName ACTION_CLASSNAME = ClassName.get("arez.annotations", "Action");
 
-    @Nonnull
     private static final ClassName DEP_TYPE_CLASSNAME = ClassName.get("arez.annotations", "DepType");
 
-    @Nonnull
     private static final ClassName PRIORITY_CLASSNAME = ClassName.get("arez.annotations", "Priority");
 
-    @Nonnull
     private static final ClassName EXECUTOR_CLASSNAME = ClassName.get("arez.annotations", "Executor");
 
-    @Nonnull
     private static final ClassName OBSERVABLE_ANNOTATION_CLASSNAME = ClassName.get("arez.annotations", "Observable");
 
-    @Nonnull
     private static final ClassName OBSERVE_ANNOTATION_CLASSNAME = ClassName.get("arez.annotations", "Observe");
 
-    @Nonnull
     private static final ClassName OBSERVER_REF_ANNOTATION_CLASSNAME = ClassName.get("arez.annotations", "ObserverRef");
 
-    @Nonnull
     private static final ClassName COMPONENT_OBSERVABLE_CLASSNAME =
             ClassName.get("arez.component", "ComponentObservable");
 
-    @Nonnull
     private static final ClassName COMPONENT_NAME_REF_ANNOTATION_CLASSNAME =
             ClassName.get("arez.annotations", "ComponentNameRef");
 
-    @Nonnull
     private static final ClassName COMPONENT_ID_REF_ANNOTATION_CLASSNAME =
             ClassName.get("arez.annotations", "ComponentIdRef");
 
-    @Nonnull
     private static final ClassName COMPONENT_STATE_REF_ANNOTATION_CLASSNAME =
             ClassName.get("arez.annotations", "ComponentStateRef");
 
-    @Nonnull
     private static final ClassName OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME =
             ClassName.get("arez.annotations", "ObservableValueRef");
 
-    @Nonnull
     private static final ClassName AREZ_COMPONENT_CLASSNAME = ClassName.get("arez.annotations", "ArezComponent");
 
-    @Nonnull
     private static final ClassName JS_ERROR_CLASSNAME = ClassName.get("react4j", "JsError");
 
-    @Nonnull
     private static final ClassName JS_CONSTRUCTOR_CLASSNAME = ClassName.get("jsinterop.annotations", "JsConstructor");
 
-    @Nonnull
     private static final ClassName JS_CLASSNAME = ClassName.get("jsinterop.base", "Js");
 
-    @Nonnull
     private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get("jsinterop.base", "JsPropertyMap");
 
-    @Nonnull
     public static final ClassName OBJECT = ClassName.get("java.lang", "Object");
 
-    @Nonnull
     private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
             ParameterizedTypeName.get(JS_PROPERTY_MAP_CLASSNAME, OBJECT);
 
-    @Nonnull
     private static final ClassName REACT_NODE_CLASSNAME = ClassName.get("react4j", "ReactNode");
 
-    @Nonnull
     private static final ClassName REACT_ERROR_INFO_CLASSNAME = ClassName.get("react4j", "ReactErrorInfo");
 
-    @Nonnull
     private static final ClassName REACT_CLASSNAME = ClassName.get("react4j", "React");
 
-    @Nonnull
     private static final ClassName CONTEXT_CLASSNAME = ClassName.get("react4j", "Context");
 
-    @Nonnull
     private static final ClassName CONTEXTS_CLASSNAME = ClassName.get("react4j", "Contexts");
 
-    @Nonnull
     private static final ClassName VIEW_CONSTRUCTOR_FUNCTION_CLASSNAME =
             ClassName.get("react4j.internal", "ViewConstructorFunction");
 
-    @Nonnull
     private static final ClassName ON_COMPONENT_DID_MOUNT_CLASSNAME =
             ClassName.get("react4j.internal", "OnComponentDidMount");
 
-    @Nonnull
     private static final ClassName ON_COMPONENT_DID_UPDATE_CLASSNAME =
             ClassName.get("react4j.internal", "OnComponentDidUpdate");
 
-    @Nonnull
     private static final ClassName ON_COMPONENT_WILL_UNMOUNT_CLASSNAME =
             ClassName.get("react4j.internal", "OnComponentWillUnmount");
 
-    @Nonnull
     private static final ClassName ON_GET_SNAPSHOT_BEFORE_UPDATE_CLASSNAME =
             ClassName.get("react4j.internal", "OnGetSnapshotBeforeUpdate");
 
-    @Nonnull
     private static final ClassName ON_COMPONENT_SHOULD_UPDATE_CLASSNAME =
             ClassName.get("react4j.internal", "OnShouldComponentUpdate");
 
-    @Nonnull
     private static final ClassName ON_COMPONENT_DID_CATCH_CLASSNAME =
             ClassName.get("react4j.internal", "OnComponentDidCatch");
 
-    @Nonnull
     private static final ClassName NATIVE_VIEW_CLASSNAME = ClassName.get("react4j.internal", "NativeView");
 
-    @Nonnull
     private static final ClassName VIEW_STATE_CLASSNAME = ClassName.get("react4j.internal", "ViewState");
 
-    @Nonnull
     private static final ClassName SCHEDULER_UTIL_CLASSNAME = ClassName.get("react4j.internal", "SchedulerUtil");
 
-    @Nonnull
     private static final ClassName INTROSPECT_UTIL_CLASSNAME = ClassName.get("react4j.internal", "IntrospectUtil");
 
-    @Nonnull
     private static final String FRAMEWORK_INTERNAL_PREFIX = "$$react4j$$_";
 
-    @Nonnull
     private static final String RENDER_METHOD = FRAMEWORK_INTERNAL_PREFIX + "render";
 
-    @Nonnull
     private static final String SHOULD_COMPONENT_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "shouldComponentUpdate";
 
-    @Nonnull
     private static final String COMPONENT_PRE_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentPreUpdate";
 
-    @Nonnull
     private static final String COMPONENT_DID_UPDATE_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidUpdate";
 
-    @Nonnull
     private static final String COMPONENT_DID_MOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentDidMount";
 
-    @Nonnull
     private static final String COMPONENT_WILL_UNMOUNT_METHOD = FRAMEWORK_INTERNAL_PREFIX + "componentWillUnmount";
 
-    @Nonnull
     private static final String VALIDATE_INPUTS_METHOD = FRAMEWORK_INTERNAL_PREFIX + "validateInputValues";
 
-    @Nonnull
     private static final String STATE_FIELD = FRAMEWORK_INTERNAL_PREFIX + "state";
 
-    @Nonnull
     private static final String VIEW_FIELD = "view";
 
-    @Nonnull
     private static final String IS_READY_METHOD = FRAMEWORK_INTERNAL_PREFIX + "isReady";
 
-    @Nonnull
     private static final String NATIVE_VIEW_FIELD = FRAMEWORK_INTERNAL_PREFIX + "nativeView";
 
     private ViewGenerator() {}
 
-    @Nonnull
-    static TypeSpec buildType(
-            @Nonnull final ProcessingEnvironment processingEnv, @Nonnull final ViewDescriptor descriptor) {
+    static TypeSpec buildType(final ProcessingEnvironment processingEnv, final ViewDescriptor descriptor) {
         final var builder = TypeSpec.classBuilder(descriptor.getEnhancedClassName());
+        builder.addAnnotation(ClassName.get("org.jspecify.annotations", "NullMarked"));
         builder.addTypeVariables(GeneratorUtil.getTypeArgumentsAsNames(descriptor.getDeclaredType()));
         final TypeElement typeElement = descriptor.getElement();
         GeneratorUtil.copyWhitelistedAnnotations(
@@ -249,7 +194,6 @@ final class ViewGenerator {
         }
 
         builder.addField(FieldSpec.builder(NATIVE_VIEW_CLASSNAME, NATIVE_VIEW_FIELD, Modifier.PRIVATE, Modifier.FINAL)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .build());
 
         builder.addMethod(buildConstructor(processingEnv, descriptor).build());
@@ -332,8 +276,7 @@ final class ViewGenerator {
         return builder.build();
     }
 
-    @Nonnull
-    private static AnnotationSpec buildSuppressArezWarnings(@Nonnull final ViewDescriptor descriptor) {
+    private static AnnotationSpec buildSuppressArezWarnings(final ViewDescriptor descriptor) {
         final AnnotationSpec.Builder annotation = AnnotationSpec.builder(SUPPRESS_AREZ_WARNINGS_CLASSNAME);
         // Theoretically, we could scan the underlying component to detect the presence of `@Action` annotated
         // that do not explicitly set skipIfDisposed parameter and only set defaultSkipIfDisposed if one such
@@ -346,11 +289,9 @@ final class ViewGenerator {
         return annotation.build();
     }
 
-    @Nonnull
     private static MethodSpec.Builder buildConstructor(
-            @Nonnull final ProcessingEnvironment processingEnv, @Nonnull final ViewDescriptor descriptor) {
-        final var componentParameter = ParameterSpec.builder(NATIVE_VIEW_CLASSNAME, NATIVE_VIEW_FIELD, Modifier.FINAL)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME);
+            final ProcessingEnvironment processingEnv, final ViewDescriptor descriptor) {
+        final var componentParameter = ParameterSpec.builder(NATIVE_VIEW_CLASSNAME, NATIVE_VIEW_FIELD, Modifier.FINAL);
         final var ctor = MethodSpec.constructorBuilder();
         ctor.addParameter(componentParameter.build());
 
@@ -383,9 +324,7 @@ final class ViewGenerator {
         return ctor;
     }
 
-    @Nonnull
-    private static FieldSpec.Builder buildInputKeyConstantField(
-            @Nonnull final InputDescriptor descriptor, final int index) {
+    private static FieldSpec.Builder buildInputKeyConstantField(final InputDescriptor descriptor, final int index) {
         final var name = descriptor.getName();
 
         final var field = FieldSpec.builder(
@@ -401,8 +340,7 @@ final class ViewGenerator {
         }
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildInputMethod(@Nonnull final InputDescriptor input) {
+    private static MethodSpec.Builder buildInputMethod(final InputDescriptor input) {
         assert input.isMethodInput();
         assert !input.isImmutable();
         final var methodElement = input.getMethod();
@@ -450,7 +388,7 @@ final class ViewGenerator {
 
         final var convertMethodName = getConverter(returnType, methodElement);
         final var resultKind = methodElement.getReturnType().getKind();
-        if (!resultKind.isPrimitive() && !AnnotationsUtil.hasNonnullAnnotation(methodElement)) {
+        if (!resultKind.isPrimitive() && !Nullability.isNonNull(methodElement)) {
             // Need to add a Nullable if it is not present as invariant path can return nulls.
             if (null == AnnotationsUtil.findAnnotationByType(methodElement, AnnotationsUtil.NULLABLE_CLASSNAME)) {
                 method.addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME);
@@ -484,8 +422,7 @@ final class ViewGenerator {
         return method;
     }
 
-    @Nonnull
-    private static String getConverter(@Nonnull final TypeMirror type, @Nonnull final Element element) {
+    private static String getConverter(final TypeMirror type, final Element element) {
         switch (type.getKind()) {
             case BOOLEAN:
                 return "asBoolean";
@@ -518,23 +455,20 @@ final class ViewGenerator {
         }
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildInputObservableValueRefMethod(@Nonnull final InputDescriptor input) {
+    private static MethodSpec.Builder buildInputObservableValueRefMethod(final InputDescriptor input) {
         return MethodSpec.methodBuilder(toObservableValueRefMethodName(input))
                 .addModifiers(Modifier.ABSTRACT)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .addAnnotation(OBSERVABLE_VALUE_REF_ANNOTATION_CLASSNAME)
                 .returns(ParameterizedTypeName.get(OBSERVABLE_CLASSNAME, WildcardTypeName.subtypeOf(OBJECT)));
     }
 
-    @Nonnull
-    private static String toObservableValueRefMethodName(@Nonnull final InputDescriptor input) {
+    private static String toObservableValueRefMethodName(final InputDescriptor input) {
         final var name = input.getName();
         return "get" + Character.toUpperCase(name.charAt(0)) + name.substring(1) + "ObservableValue";
     }
 
     private static void buildOnInputChangeInvocations(
-            @Nonnull final CodeBlock.Builder code, @Nonnull final List<OnInputChangeDescriptor> onInputChanges) {
+            final CodeBlock.Builder code, final List<OnInputChangeDescriptor> onInputChanges) {
         // The list of inputs we need to check for changes
         final var inputs = onInputChanges.stream()
                 .flatMap(d -> d.getInputs().stream())
@@ -586,8 +520,7 @@ final class ViewGenerator {
         }
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildComponentDidMount(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildComponentDidMount(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder(COMPONENT_DID_MOUNT_METHOD).addModifiers(Modifier.PRIVATE);
         final var postRender = descriptor.getPostRender();
         if (null != postRender) {
@@ -609,8 +542,7 @@ final class ViewGenerator {
         return method;
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildShouldComponentUpdate(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildShouldComponentUpdate(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder(SHOULD_COMPONENT_UPDATE_METHOD)
                 .returns(TypeName.BOOLEAN)
                 .addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextInputs", Modifier.FINAL)
@@ -700,8 +632,7 @@ final class ViewGenerator {
         return method;
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildComponentPreUpdate(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildComponentPreUpdate(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder(COMPONENT_PRE_UPDATE_METHOD)
                 .addModifiers(Modifier.PRIVATE)
                 .addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL)
@@ -723,8 +654,7 @@ final class ViewGenerator {
         return method;
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildComponentDidUpdate(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildComponentDidUpdate(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder(COMPONENT_DID_UPDATE_METHOD).addModifiers(Modifier.PRIVATE);
 
         if (descriptor.hasPostUpdateOnInputChange()) {
@@ -757,8 +687,7 @@ final class ViewGenerator {
         return method;
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildComponentWillUnmount(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildComponentWillUnmount(final ViewDescriptor descriptor) {
         final var method =
                 MethodSpec.methodBuilder(COMPONENT_WILL_UNMOUNT_METHOD).addModifiers(Modifier.PRIVATE);
 
@@ -773,8 +702,7 @@ final class ViewGenerator {
         return method;
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildRender(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildRender(final ViewDescriptor descriptor) {
         final var render = descriptor.hasRender() ? descriptor.getRender() : null;
 
         final var method = MethodSpec.methodBuilder(RENDER_METHOD)
@@ -876,7 +804,6 @@ final class ViewGenerator {
         return method;
     }
 
-    @Nonnull
     private static MethodSpec.Builder buildGetComponentId() {
         return MethodSpec.methodBuilder(FRAMEWORK_INTERNAL_PREFIX + "getComponentId")
                 .addAnnotation(COMPONENT_ID_REF_ANNOTATION_CLASSNAME)
@@ -884,7 +811,6 @@ final class ViewGenerator {
                 .returns(TypeName.INT);
     }
 
-    @Nonnull
     private static MethodSpec.Builder buildGetComponentName() {
         return MethodSpec.methodBuilder(FRAMEWORK_INTERNAL_PREFIX + "getComponentName")
                 .addAnnotation(COMPONENT_NAME_REF_ANNOTATION_CLASSNAME)
@@ -892,11 +818,9 @@ final class ViewGenerator {
                 .returns(ClassName.get(String.class));
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildGetRenderObserver(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildGetRenderObserver(final ViewDescriptor descriptor) {
         assert descriptor.trackRender();
         return MethodSpec.methodBuilder(FRAMEWORK_INTERNAL_PREFIX + "getRenderObserver")
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .addAnnotation(AnnotationSpec.builder(OBSERVER_REF_ANNOTATION_CLASSNAME)
                         .addMember("name", "$S", "render")
                         .build())
@@ -904,7 +828,6 @@ final class ViewGenerator {
                 .returns(OBSERVER_CLASSNAME);
     }
 
-    @Nonnull
     private static MethodSpec.Builder buildStoreDebugDataAsState() {
         final var method = MethodSpec.methodBuilder(FRAMEWORK_INTERNAL_PREFIX + "storeDebugDataAsState")
                 .addModifiers(Modifier.PRIVATE);
@@ -941,8 +864,7 @@ final class ViewGenerator {
         return method;
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildOnRenderDepsChange(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildOnRenderDepsChange(final ViewDescriptor descriptor) {
         assert descriptor.trackRender();
         final var method = MethodSpec.methodBuilder("onRenderDepsChange");
 
@@ -959,7 +881,6 @@ final class ViewGenerator {
         return method;
     }
 
-    @Nonnull
     private static MethodSpec.Builder buildIsReadyMethod() {
         return MethodSpec.methodBuilder(IS_READY_METHOD)
                 .addModifiers(Modifier.ABSTRACT)
@@ -967,12 +888,10 @@ final class ViewGenerator {
                 .addAnnotation(COMPONENT_STATE_REF_ANNOTATION_CLASSNAME);
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildInputValidatorMethod(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildInputValidatorMethod(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder(VALIDATE_INPUTS_METHOD)
                 .addModifiers(Modifier.PRIVATE)
                 .addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "inputs", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                         .build());
         if (descriptor.hasNoValidateMethod()) {
             method.addModifiers(Modifier.STATIC);
@@ -1047,10 +966,8 @@ final class ViewGenerator {
         return method;
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildConstructorFnMethod(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildConstructorFnMethod(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder("getConstructorFunction")
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .addModifiers(Modifier.STATIC, Modifier.PRIVATE)
                 .returns(VIEW_CONSTRUCTOR_FUNCTION_CLASSNAME);
 
@@ -1084,8 +1001,7 @@ final class ViewGenerator {
         return method;
     }
 
-    @Nonnull
-    private static TypeSpec buildInputsType(@Nonnull final ViewDescriptor descriptor) {
+    private static TypeSpec buildInputsType(final ViewDescriptor descriptor) {
         final var builder = TypeSpec.classBuilder("Inputs");
 
         // Ensure it cannot be subclassed
@@ -1105,7 +1021,6 @@ final class ViewGenerator {
         return builder.build();
     }
 
-    @Nonnull
     private static TypeSpec buildFactory() {
         final var builder = TypeSpec.classBuilder("Factory");
 
@@ -1120,15 +1035,13 @@ final class ViewGenerator {
         // every call to React_MyView to first check <clinit> has been invoked.
         final var field = FieldSpec.builder(
                         VIEW_CONSTRUCTOR_FUNCTION_CLASSNAME, "TYPE", Modifier.STATIC, Modifier.FINAL)
-                .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                 .initializer("getConstructorFunction()");
         builder.addField(field.build());
 
         return builder.build();
     }
 
-    @Nonnull
-    private static TypeSpec buildNativeView(@Nonnull final ViewDescriptor descriptor, final boolean lite) {
+    private static TypeSpec buildNativeView(final ViewDescriptor descriptor, final boolean lite) {
         final var builder = TypeSpec.classBuilder((lite ? "Lite" : "") + "NativeView");
 
         // Ensure it cannot be subclassed
@@ -1153,7 +1066,9 @@ final class ViewGenerator {
 
         builder.addField(FieldSpec.builder(viewFieldType, VIEW_FIELD, Modifier.PRIVATE, Modifier.FINAL)
                 .addAnnotation(
-                        disposableInputs.isEmpty() ? GeneratorUtil.NONNULL_CLASSNAME : GeneratorUtil.NULLABLE_CLASSNAME)
+                        disposableInputs.isEmpty()
+                                ? ClassName.get("org.jspecify.annotations", "NonNull")
+                                : GeneratorUtil.NULLABLE_CLASSNAME)
                 .build());
 
         if (lite) {
@@ -1331,8 +1246,7 @@ final class ViewGenerator {
         return builder.build();
     }
 
-    @Nonnull
-    private static MethodSpec buildNativeRender(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec buildNativeRender(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder("render")
                 .addAnnotation(Override.class)
                 .addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME)
@@ -1356,8 +1270,7 @@ final class ViewGenerator {
         return method.build();
     }
 
-    @Nonnull
-    private static MethodSpec buildNativeViewDidMount(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec buildNativeViewDidMount(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder("componentDidMount")
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.FINAL, Modifier.PUBLIC);
@@ -1373,15 +1286,13 @@ final class ViewGenerator {
         return method.build();
     }
 
-    @Nonnull
     private static MethodSpec buildNativeShouldComponentUpdate(
-            @Nonnull final ViewDescriptor descriptor, final boolean fastReturnFalse) {
+            final ViewDescriptor descriptor, final boolean fastReturnFalse) {
         final var method = MethodSpec.methodBuilder("shouldComponentUpdate")
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
                 .returns(TypeName.BOOLEAN)
                 .addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextInputs", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                         .build());
         if (fastReturnFalse) {
             method.addStatement("return false");
@@ -1399,18 +1310,15 @@ final class ViewGenerator {
         return method.build();
     }
 
-    @Nonnull
-    private static MethodSpec buildNativeViewPreUpdate(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec buildNativeViewPreUpdate(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder("getSnapshotBeforeUpdate")
                 .addAnnotation(Override.class)
                 .addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME)
                 .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
                 .returns(TypeName.get(Object.class))
                 .addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                         .build())
                 .addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                         .build());
         if (descriptor.hasDisposableInput()) {
             final var block = CodeBlock.builder();
@@ -1425,13 +1333,11 @@ final class ViewGenerator {
         return method.build();
     }
 
-    @Nonnull
-    private static MethodSpec buildNativeViewDidUpdate(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec buildNativeViewDidUpdate(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder("componentDidUpdate")
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                         .build());
         if (descriptor.hasDisposableInput()) {
             final var block = CodeBlock.builder();
@@ -1453,8 +1359,7 @@ final class ViewGenerator {
         return method.build();
     }
 
-    @Nonnull
-    private static MethodSpec buildNativeViewWillUnmount(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec buildNativeViewWillUnmount(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder("componentWillUnmount")
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.FINAL, Modifier.PUBLIC);
@@ -1470,18 +1375,15 @@ final class ViewGenerator {
         return method.build();
     }
 
-    @Nonnull
-    private static MethodSpec.Builder buildNativeViewDidCatch(@Nonnull final ViewDescriptor descriptor) {
+    private static MethodSpec.Builder buildNativeViewDidCatch(final ViewDescriptor descriptor) {
         final var onError = descriptor.getOnError();
         assert null != onError;
         final var method = MethodSpec.methodBuilder("componentDidCatch")
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(JS_ERROR_CLASSNAME, "error", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                         .build())
                 .addParameter(ParameterSpec.builder(REACT_ERROR_INFO_CLASSNAME, "info", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME)
                         .build());
 
         final var parameters = onError.getParameters();
@@ -1508,9 +1410,7 @@ final class ViewGenerator {
     }
 
     private static void addRenderPreludeObservationCheck(
-            @Nonnull final MethodSpec.Builder method,
-            @Nonnull final PreludeChecksDescriptor candidate,
-            @Nonnull final String varName) {
+            final MethodSpec.Builder method, final PreludeChecksDescriptor candidate, final String varName) {
         final ObserveMode mode = candidate.observeMode();
         if (ObserveMode.NO_OBSERVE != mode) {
             final var block = CodeBlock.builder();
@@ -1533,8 +1433,7 @@ final class ViewGenerator {
         }
     }
 
-    @Nonnull
-    private static TypeSpec buildContextHolder(@Nonnull final ViewDescriptor descriptor) {
+    private static TypeSpec buildContextHolder(final ViewDescriptor descriptor) {
         final var builder = TypeSpec.classBuilder("ContextHolder");
         GeneratorUtil.copyTypeParameters(descriptor.getElement(), builder);
 
@@ -1547,12 +1446,11 @@ final class ViewGenerator {
             final var type =
                     TypeName.get(publish.getMethodType().getReturnType()).box();
             final var field = FieldSpec.builder(
-                            ParameterizedTypeName.get(CONTEXT_CLASSNAME, type),
-                            "CONTEXT_" + publish.getMethod().getSimpleName(),
-                            Modifier.PRIVATE,
-                            Modifier.STATIC,
-                            Modifier.FINAL)
-                    .addAnnotation(GeneratorUtil.NONNULL_CLASSNAME);
+                    ParameterizedTypeName.get(CONTEXT_CLASSNAME, type),
+                    "CONTEXT_" + publish.getMethod().getSimpleName(),
+                    Modifier.PRIVATE,
+                    Modifier.STATIC,
+                    Modifier.FINAL);
             final var qualifier = publish.getQualifier();
             if (qualifier.isEmpty()) {
                 field.initializer("$T.get( $T.class )", CONTEXTS_CLASSNAME, type);

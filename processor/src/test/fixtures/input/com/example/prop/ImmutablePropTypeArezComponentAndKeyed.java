@@ -3,8 +3,7 @@ package com.example.prop;
 import arez.annotations.Action;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import react4j.Keyed;
 import react4j.ReactNode;
 import react4j.annotations.Input;
@@ -12,6 +11,7 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class ImmutablePropTypeArezComponentAndKeyed
 {
   @ArezComponent( requireId = Feature.ENABLE )
@@ -24,7 +24,7 @@ abstract class ImmutablePropTypeArezComponentAndKeyed
     }
 
     // Keyed should win over ArezId
-    @Nonnull
+
     public String getKey()
     {
       return "";

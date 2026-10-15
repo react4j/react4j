@@ -1,0 +1,13 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "InputDefaultFieldModel.java",
+        "InputDefaultModel.java",
+        "InputModel.java",
+        "InputValidateModel.java",
+        "PostUpdateModel.java",
+        "PreUpdateModel.java",
+        "RenderModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

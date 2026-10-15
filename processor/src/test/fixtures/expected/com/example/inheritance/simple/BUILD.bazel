@@ -1,0 +1,8 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "LeafBuilder.java",
+        "React4j_LeafView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

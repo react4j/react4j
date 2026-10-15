@@ -1,0 +1,15 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "AbstractComponent.java",
+        "MethodParameterComponent.java",
+        "MissingRenderComponent.java",
+        "NoRenderNoLifecycleView.java",
+        "ParameterizedComponent.java",
+        "PrivateComponent.java",
+        "StaticComponent.java",
+        "ThrowsComponent.java",
+        "UnexpectedRenderComponent.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

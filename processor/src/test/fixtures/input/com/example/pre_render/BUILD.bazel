@@ -1,0 +1,19 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicPreRenderModel.java",
+        "MultiplePreRenderModel.java",
+        "MultipleSortedPreRenderModel.java",
+        "PackageAccessPreRenderModel.java",
+        "PreRenderInterface.java",
+        "ProtectedAccessFromBasePreRenderModel.java",
+        "ProtectedAccessPreRenderModel.java",
+        "PublicAccessPreRenderModel.java",
+        "PublicAccessViaInterfacePreRenderModel.java",
+        "Suppressed1ProtectedAccessPreRenderModel.java",
+        "Suppressed1PublicAccessPreRenderModel.java",
+        "Suppressed2ProtectedAccessPreRenderModel.java",
+        "Suppressed2PublicAccessPreRenderModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

@@ -3,8 +3,9 @@ package com.example.post_mount_or_update.other;
 import react4j.ReactNode;
 import react4j.annotations.PostMountOrUpdate;
 import react4j.annotations.Render;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
+@org.jspecify.annotations.NullMarked
 public abstract class BaseProtectedAccessPostMountOrUpdateModel
 {
   @PostMountOrUpdate

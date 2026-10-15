@@ -4,9 +4,10 @@ import react4j.ReactNode;
 import react4j.annotations.PostRender;
 import react4j.annotations.Render;
 import react4j.annotations.View;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class Suppressed1ProtectedAccessPostRenderModel
 {
   // This uses the SOURCE retention suppression

@@ -1,13 +1,13 @@
 package com.example.on_error;
 
 import react4j.JsError;
-import javax.annotation.Nonnull;
 import react4j.ReactNode;
 import react4j.annotations.OnError;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class BadParam2OnErrorComponent
 {
   @Render
@@ -17,7 +17,7 @@ abstract class BadParam2OnErrorComponent
   }
 
   @OnError
-  void onError( @Nonnull final JsError error1, @Nonnull final JsError error2 )
+  void onError( final JsError error1, final JsError error2 )
   {
   }
 }

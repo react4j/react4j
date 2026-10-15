@@ -1,0 +1,16 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicBuilder.java",
+        "CustomNameBuilder.java",
+        "DeprecatedBuilder.java",
+        "ExportedBuilderBuilder.java",
+        "GenericTypeBuilder.java",
+        "React4j_BasicView.java",
+        "React4j_CustomNameView.java",
+        "React4j_DeprecatedView.java",
+        "React4j_ExportedBuilderView.java",
+        "React4j_GenericTypeView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

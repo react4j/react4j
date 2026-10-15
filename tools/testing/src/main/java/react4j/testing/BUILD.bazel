@@ -1,0 +1,8 @@
+load("//third_party/java:rules.bzl", "java_binary")
+
+java_binary(
+    name = "golden_updater",
+    srcs = ["GoldenUpdater.java"],
+    main_class = "react4j.testing.GoldenUpdater",
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,21 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicOnErrorComponent.java",
+        "ErrorOnlyOnErrorComponent.java",
+        "InfoOnlyOnErrorComponent.java",
+        "InverseOrderOnErrorComponent.java",
+        "MinimalOnErrorComponent.java",
+        "OnErrorInterface.java",
+        "PackageAccessOnErrorModel.java",
+        "ProtectedAccessFromBaseOnErrorModel.java",
+        "ProtectedAccessOnErrorModel.java",
+        "PublicAccessOnErrorModel.java",
+        "PublicAccessViaInterfaceOnErrorModel.java",
+        "Suppressed1ProtectedAccessOnErrorModel.java",
+        "Suppressed1PublicAccessOnErrorModel.java",
+        "Suppressed2ProtectedAccessOnErrorModel.java",
+        "Suppressed2PublicAccessOnErrorModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

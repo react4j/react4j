@@ -1,0 +1,11 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "ExplicitOptional.java",
+        "OptionalChildrenWithOptionalAndRequired.java",
+        "RequiredChildrenWithManyOptional.java",
+        "RequiredChildrenWithManyRequired.java",
+        "RequiredChildrenWithOptionalAndRequired.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

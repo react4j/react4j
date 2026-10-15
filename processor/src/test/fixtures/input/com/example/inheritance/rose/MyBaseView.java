@@ -1,13 +1,13 @@
 package com.example.inheritance.rose;
 
 import java.util.Date;
-import javax.annotation.Nonnull;
 import react4j.annotations.PostRender;
 import react4j.annotations.PreRender;
 
+@org.jspecify.annotations.NullMarked
 public interface MyBaseView
 {
-  @Nonnull
+
   Date dateRange();
 
   @PreRender

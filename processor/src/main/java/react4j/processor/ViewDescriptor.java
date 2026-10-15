@@ -6,28 +6,24 @@ import com.palantir.javapoet.TypeName;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
 
 final class ViewDescriptor {
-    @Nonnull
+
     private final String _name;
 
-    @Nonnull
     private final TypeElement _element;
 
-    @Nonnull
     private final ViewType _type;
 
     private final boolean _exportBuilder;
@@ -36,7 +32,6 @@ final class ViewDescriptor {
     private final boolean _hasPostConstruct;
     private final boolean _shouldSetDefaultPriority;
 
-    @Nonnull
     private final ExecutableElement _constructor;
 
     @Nullable
@@ -108,19 +103,19 @@ final class ViewDescriptor {
     private Boolean _hasNoValidateMethod;
 
     ViewDescriptor(
-            @Nonnull final String name,
-            @Nonnull final TypeElement element,
-            @Nonnull final ExecutableElement constructor,
-            @Nonnull final ViewType type,
+            final String name,
+            final TypeElement element,
+            final ExecutableElement constructor,
+            final ViewType type,
             final boolean exportBuilder,
             final boolean sting,
             final boolean hasConstructor,
             final boolean hasPostConstruct,
             final boolean shouldSetDefaultPriority) {
-        _name = Objects.requireNonNull(name);
-        _element = Objects.requireNonNull(element);
-        _constructor = Objects.requireNonNull(constructor);
-        _type = Objects.requireNonNull(type);
+        _name = name;
+        _element = element;
+        _constructor = constructor;
+        _type = type;
         _exportBuilder = exportBuilder;
         _sting = sting;
         _hasConstructor = hasConstructor;
@@ -128,13 +123,11 @@ final class ViewDescriptor {
         _shouldSetDefaultPriority = shouldSetDefaultPriority;
     }
 
-    @Nonnull
     String keySuffix() {
         return "_" + _element.getSimpleName() + "_"
                 + shortSha(_element.getQualifiedName().toString());
     }
 
-    @Nonnull
     ExecutableElement getConstructor() {
         return _constructor;
     }
@@ -163,68 +156,55 @@ final class ViewDescriptor {
         return ViewType.NO_RENDER != _type;
     }
 
-    @Nonnull
     String getPackageName() {
         return GeneratorUtil.getQualifiedPackageName(_element);
     }
 
-    @Nonnull
     String getName() {
         return _name;
     }
 
-    @Nonnull
     String getDisplayName() {
         return trimViewSuffix(getName());
     }
 
-    @Nonnull
     ClassName getClassName() {
         return ClassName.get(getElement());
     }
 
-    @Nonnull
     TypeElement getElement() {
         return _element;
     }
 
-    @Nonnull
     DeclaredType getDeclaredType() {
         return (DeclaredType) _element.asType();
     }
 
-    @Nonnull
     ClassName getEnhancedClassName() {
         return GeneratorUtil.getGeneratedClassName(_element, "React4j_", "");
     }
 
-    @Nonnull
     ClassName getBuilderClassName() {
         return ClassName.get(getPackageName(), getBuilderSimpleName());
     }
 
-    @Nonnull
     String getBuilderSimpleName() {
         return trimViewSuffix(GeneratorUtil.getGeneratedSimpleClassName(_element, "", "")) + "Builder";
     }
 
-    @Nonnull
     ClassName getFactoryClassName() {
         return GeneratorUtil.getGeneratedClassName(_element, "React4j_", "Factory");
     }
 
-    @Nonnull
-    private static String trimViewSuffix(@Nonnull final String name) {
+    private static String trimViewSuffix(final String name) {
         return name.endsWith("View") ? name.substring(0, name.length() - "View".length()) : name;
     }
 
-    @Nonnull
     ClassName getArezClassName() {
         final String simpleName = "Arez_" + GeneratorUtil.getGeneratedSimpleClassName(_element, "React4j_", "");
         return ClassName.get(getPackageName(), simpleName);
     }
 
-    @Nonnull
     TypeName getViewType() {
         final var typeNames =
                 getDeclaredType().getTypeArguments().stream().map(TypeName::get).toList();
@@ -246,7 +226,6 @@ final class ViewDescriptor {
         return (ViewType.MAYBE_TRACKING == _type || ViewType.TRACKING == _type) && hasRender();
     }
 
-    @Nonnull
     ViewType getType() {
         return _type;
     }
@@ -269,13 +248,11 @@ final class ViewDescriptor {
         return _hasNoValidateMethod;
     }
 
-    @Nonnull
     List<InputDescriptor> getImmutableInputs() {
         assert null != _inputs;
         return _inputs.stream().filter(InputDescriptor::isImmutable).collect(Collectors.toList());
     }
 
-    @Nonnull
     List<InputDescriptor> getConstructorInputs() {
         return getConstructor().getParameters().stream()
                 .map(parameter -> (VariableElement) parameter)
@@ -289,7 +266,6 @@ final class ViewDescriptor {
                 .toList();
     }
 
-    @Nonnull
     List<VariableElement> getInjectableConstructorParameters() {
         return getConstructor().getParameters().stream()
                 .map(parameter -> (VariableElement) parameter)
@@ -297,7 +273,6 @@ final class ViewDescriptor {
                 .toList();
     }
 
-    @Nonnull
     List<InputDescriptor> getUpdateOnChangeInputs() {
         return getInputs().stream()
                 .filter(InputDescriptor::shouldUpdateOnChange)
@@ -306,33 +281,30 @@ final class ViewDescriptor {
                 .toList();
     }
 
-    @Nonnull
     List<InputDescriptor> getObservableInputs() {
         return getInputs().stream().filter(InputDescriptor::isObservable).toList();
     }
 
-    @Nonnull
     List<InputDescriptor> getInputs() {
         assert null != _inputs;
         return _inputs;
     }
 
-    void setInputs(@Nonnull final List<InputDescriptor> events) {
-        _inputs = Objects.requireNonNull(events);
+    void setInputs(final List<InputDescriptor> events) {
+        _inputs = events;
     }
 
-    @Nonnull
     List<PreludeChecksDescriptor> getPreludeCheckCandidates() {
         assert null != _preludeCheckCandidates;
         return _preludeCheckCandidates;
     }
 
-    void setPreludeCheckCandidates(@Nonnull final List<PreludeChecksDescriptor> preludeCheckCandidates) {
-        _preludeCheckCandidates = Objects.requireNonNull(preludeCheckCandidates);
+    void setPreludeCheckCandidates(final List<PreludeChecksDescriptor> preludeCheckCandidates) {
+        _preludeCheckCandidates = preludeCheckCandidates;
     }
 
     @Nullable
-    InputDescriptor findInputNamed(@Nonnull final String name) {
+    InputDescriptor findInputNamed(final String name) {
         return getInputs().stream()
                 .filter(p -> p.getName().equals(name))
                 .findAny()
@@ -347,68 +319,61 @@ final class ViewDescriptor {
         _inputs.sort(InputComparator.COMPARATOR);
     }
 
-    @Nonnull
     List<OnInputChangeDescriptor> getPreUpdateOnInputChangeDescriptors() {
         return getOnInputChangeDescriptors().stream()
                 .filter(OnInputChangeDescriptor::isPreUpdate)
                 .collect(Collectors.toList());
     }
 
-    @Nonnull
     List<OnInputChangeDescriptor> getPostUpdateOnInputChangeDescriptors() {
         return getOnInputChangeDescriptors().stream()
                 .filter(o -> !o.isPreUpdate())
                 .collect(Collectors.toList());
     }
 
-    @Nonnull
     private List<OnInputChangeDescriptor> getOnInputChangeDescriptors() {
         assert null != _onInputChangeDescriptors;
         return _onInputChangeDescriptors;
     }
 
-    void setOnInputChangeDescriptors(@Nonnull List<OnInputChangeDescriptor> onInputChangeDescriptors) {
-        _onInputChangeDescriptors = Objects.requireNonNull(onInputChangeDescriptors);
+    void setOnInputChangeDescriptors(List<OnInputChangeDescriptor> onInputChangeDescriptors) {
+        _onInputChangeDescriptors = onInputChangeDescriptors;
     }
 
-    @Nonnull
     List<ScheduleRenderDescriptor> getScheduleRenderDescriptors() {
         assert null != _scheduleRenderDescriptors;
         return _scheduleRenderDescriptors;
     }
 
-    void setScheduleRenderDescriptors(@Nonnull final List<ScheduleRenderDescriptor> scheduleRenderDescriptors) {
-        _scheduleRenderDescriptors = Objects.requireNonNull(scheduleRenderDescriptors);
+    void setScheduleRenderDescriptors(final List<ScheduleRenderDescriptor> scheduleRenderDescriptors) {
+        _scheduleRenderDescriptors = scheduleRenderDescriptors;
     }
 
-    @Nonnull
     List<PublishDescriptor> getPublishDescriptors() {
         assert null != _publishDescriptors;
         return _publishDescriptors;
     }
 
-    void setPublishDescriptors(@Nonnull final List<PublishDescriptor> publishDescriptors) {
-        _publishDescriptors = Objects.requireNonNull(publishDescriptors);
+    void setPublishDescriptors(final List<PublishDescriptor> publishDescriptors) {
+        _publishDescriptors = publishDescriptors;
     }
 
-    @Nonnull
     List<RenderHookDescriptor> getPreRenderDescriptors() {
         assert null != _preRenderHooks;
         return _preRenderHooks;
     }
 
-    void setPreRenderDescriptors(@Nonnull final List<RenderHookDescriptor> preRenderDescriptors) {
-        _preRenderHooks = Objects.requireNonNull(preRenderDescriptors);
+    void setPreRenderDescriptors(final List<RenderHookDescriptor> preRenderDescriptors) {
+        _preRenderHooks = preRenderDescriptors;
     }
 
-    @Nonnull
     List<RenderHookDescriptor> getPostRenderDescriptors() {
         assert null != _postRenderHooks;
         return _postRenderHooks;
     }
 
-    void setPostRenderDescriptors(@Nonnull final List<RenderHookDescriptor> postRenderDescriptors) {
-        _postRenderHooks = Objects.requireNonNull(postRenderDescriptors);
+    void setPostRenderDescriptors(final List<RenderHookDescriptor> postRenderDescriptors) {
+        _postRenderHooks = postRenderDescriptors;
     }
 
     boolean hasObservableInputs() {
@@ -420,7 +385,7 @@ final class ViewDescriptor {
         return _preUpdate;
     }
 
-    void setPreUpdate(@Nonnull final ExecutableElement preUpdate) throws ProcessorException {
+    void setPreUpdate(final ExecutableElement preUpdate) throws ProcessorException {
         if (null != _preUpdate) {
             throw new ProcessorException(
                     "@PreUpdate target duplicates existing method named " + _preUpdate.getSimpleName(), preUpdate);
@@ -439,13 +404,12 @@ final class ViewDescriptor {
         return null != _render;
     }
 
-    @Nonnull
     ExecutableElement getRender() {
         assert null != _render;
         return _render;
     }
 
-    void setRender(@Nonnull final ExecutableElement render) {
+    void setRender(final ExecutableElement render) {
         if (null != _render) {
             throw new ProcessorException(
                     MemberChecks.mustNot(
@@ -454,7 +418,7 @@ final class ViewDescriptor {
                                     + " exists with the same annotation"),
                     render);
         }
-        _render = Objects.requireNonNull(render);
+        _render = render;
     }
 
     @Nullable
@@ -462,7 +426,7 @@ final class ViewDescriptor {
         return _postRender;
     }
 
-    void setPostRender(@Nonnull final ExecutableElement postRender) throws ProcessorException {
+    void setPostRender(final ExecutableElement postRender) throws ProcessorException {
         if (null != _postRender) {
             throw new ProcessorException(
                     "@PostMountOrUpdate target duplicates existing method named " + _postRender.getSimpleName(),
@@ -477,7 +441,7 @@ final class ViewDescriptor {
         return _postUpdate;
     }
 
-    void setPostUpdate(@Nonnull final ExecutableElement postUpdate) throws ProcessorException {
+    void setPostUpdate(final ExecutableElement postUpdate) throws ProcessorException {
         if (null != _postUpdate) {
             throw new ProcessorException(
                     "@PostUpdate target duplicates existing method named " + _postUpdate.getSimpleName(), postUpdate);
@@ -491,7 +455,7 @@ final class ViewDescriptor {
         return _postMount;
     }
 
-    void setPostMount(@Nonnull final ExecutableElement postMount) throws ProcessorException {
+    void setPostMount(final ExecutableElement postMount) throws ProcessorException {
         if (null != _postMount) {
             throw new ProcessorException(
                     "@PostMount target duplicates existing method named " + _postMount.getSimpleName(), postMount);
@@ -505,7 +469,7 @@ final class ViewDescriptor {
         return _onError;
     }
 
-    void setOnError(@Nonnull final ExecutableElement onError) throws ProcessorException {
+    void setOnError(final ExecutableElement onError) throws ProcessorException {
 
         if (null != _onError) {
             throw new ProcessorException(
@@ -633,12 +597,11 @@ final class ViewDescriptor {
         return null != element && null != element.getAnnotation(Deprecated.class);
     }
 
-    @Nonnull
-    private String shortSha(@Nonnull final String text) {
+    private String shortSha(final String text) {
         try {
             final MessageDigest algo = MessageDigest.getInstance("SHA-1");
             final byte[] digest = algo.digest(text.getBytes());
-            final StringBuilder sb = new StringBuilder();
+            final var sb = new StringBuilder();
             for (int i = 0; i < 4; i++) {
                 final byte value = digest[i];
                 sb.append(Integer.toString((value & 0xff) + 0x100, 16).substring(1));

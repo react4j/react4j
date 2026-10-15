@@ -1,16 +1,16 @@
 package com.example.inject;
 
-import javax.annotation.Nonnull;
 import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 import sting.Named;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class StingNamedInjectComponent
 {
-  StingNamedInjectComponent( @Nonnull @Named( "blah" ) String someParam )
+  StingNamedInjectComponent( @Named( "blah" ) String someParam )
   {
   }
 

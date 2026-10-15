@@ -1,0 +1,19 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BasicPostMountOrUpdateModel.java",
+        "PackageAccessPostMountOrUpdateModel.java",
+        "PostMountAndPostMountOrUpdateModel.java",
+        "PostMountOrUpdateInterface.java",
+        "PostUpdateAndPostMountOrUpdateModel.java",
+        "ProtectedAccessFromBasePostMountOrUpdateModel.java",
+        "ProtectedAccessPostMountOrUpdateModel.java",
+        "PublicAccessPostMountOrUpdateModel.java",
+        "PublicAccessViaInterfacePostMountOrUpdateModel.java",
+        "Suppressed1ProtectedAccessPostMountOrUpdateModel.java",
+        "Suppressed1PublicAccessPostMountOrUpdateModel.java",
+        "Suppressed2ProtectedAccessPostMountOrUpdateModel.java",
+        "Suppressed2PublicAccessPostMountOrUpdateModel.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

@@ -1,0 +1,4 @@
+exports_files(
+    ["javax.annotation.processing.Processor"],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,17 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "ColorfulNameInputDefaultView.java",
+        "ConstructorInputDefaultView.java",
+        "DeprecatedFieldInputDefaultView.java",
+        "DeprecatedMethodInputDefaultView.java",
+        "ExplicitNameFieldInputDefaultView.java",
+        "ExplicitNameMethodInputDefaultView.java",
+        "PackageAccessFieldInputDefaultView.java",
+        "PackageAccessMethodInputDefaultView.java",
+        "ProtectedFieldInputDefaultView.java",
+        "ProtectedMethodInputDefaultView.java",
+        "PublicFieldInputDefaultView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

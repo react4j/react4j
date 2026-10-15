@@ -1,0 +1,9 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "NestedCompleteComponent.java",
+        "NestedNestedView.java",
+        "NestedView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

@@ -1,0 +1,14 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "BadNameComponent.java",
+        "BadNameComponent2.java",
+        "ConcreteComponent.java",
+        "FinalComponent.java",
+        "MultipleConstructorsComponent.java",
+        "NonClassComponent.java",
+        "NonStaticInnerClassComponent.java",
+        "PrivateConstructorComponent.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

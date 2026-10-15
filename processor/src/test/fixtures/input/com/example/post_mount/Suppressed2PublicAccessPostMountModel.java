@@ -5,9 +5,10 @@ import react4j.annotations.PostMount;
 import react4j.annotations.Render;
 import react4j.annotations.SuppressReact4jWarnings;
 import react4j.annotations.View;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @View( type = View.Type.STATEFUL )
+@org.jspecify.annotations.NullMarked
 abstract class Suppressed2PublicAccessPostMountModel
 {
   // This uses the CLASS retention suppression

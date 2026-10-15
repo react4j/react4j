@@ -13,8 +13,6 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -34,6 +32,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.DeferredElementSet;
@@ -58,19 +57,17 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     private static final Pattern GETTER_PATTERN = Pattern.compile("^get([A-Z].*)$");
     private static final Pattern ISSER_PATTERN = Pattern.compile("^is([A-Z].*)$");
 
-    @Nonnull
     private final DeferredElementSet _deferredTypes = new DeferredElementSet();
 
-    @Nonnull
     private final StopWatch _analyzeViewStopWatch = new StopWatch("Analyze View");
 
     @Override
-    protected void collectStopWatches(@Nonnull final Collection<StopWatch> stopWatches) {
+    protected void collectStopWatches(final Collection<StopWatch> stopWatches) {
         stopWatches.add(_analyzeViewStopWatch);
     }
 
     @Override
-    public boolean process(@Nonnull final Set<? extends TypeElement> annotations, @Nonnull final RoundEnvironment env) {
+    public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment env) {
         debugAnnotationProcessingRootElements(env);
         collectRootTypeNames(env);
         processTypeElements(
@@ -87,18 +84,16 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     @Override
-    @Nonnull
     protected String getIssueTrackerURL() {
         return "https://github.com/react4j/react4j/issues";
     }
 
-    @Nonnull
     @Override
     protected String getOptionPrefix() {
         return "react4j";
     }
 
-    private void process(@Nonnull final TypeElement element) throws IOException, ProcessorException {
+    private void process(final TypeElement element) throws IOException, ProcessorException {
         final ViewDescriptor descriptor = parse(element);
         final String packageName = descriptor.getPackageName();
         emitTypeSpec(packageName, ViewGenerator.buildType(processingEnv, descriptor));
@@ -111,14 +106,13 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     /**
      * Return true if there is any method annotated with @PostConstruct.
      */
-    private boolean hasPostConstruct(@Nonnull final List<ExecutableElement> methods) {
+    private boolean hasPostConstruct(final List<ExecutableElement> methods) {
         return methods.stream()
                 .anyMatch(e -> AnnotationsUtil.hasAnnotationOfType(e, Constants.POST_CONSTRUCT_CLASSNAME));
     }
 
-    @Nonnull
-    private ViewDescriptor parse(@Nonnull final TypeElement typeElement) {
-        final String name = deriveViewName(typeElement);
+    private ViewDescriptor parse(final TypeElement typeElement) {
+        final var name = deriveViewName(typeElement);
         final ViewType type = extractViewType(typeElement);
         final boolean exportBuilder = extractExportBuilder(typeElement);
         final List<ExecutableElement> methods =
@@ -147,7 +141,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         final boolean notSyntheticConstructor =
                 Elements.Origin.EXPLICIT == processingEnv.getElementUtils().getOrigin(constructor);
 
-        final ViewDescriptor descriptor = new ViewDescriptor(
+        final var descriptor = new ViewDescriptor(
                 name,
                 typeElement,
                 constructor,
@@ -171,7 +165,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
 
         for (final Element element : descriptor.getElement().getEnclosedElements()) {
             if (ElementKind.METHOD == element.getKind()) {
-                final ExecutableElement method = (ExecutableElement) element;
+                final var method = (ExecutableElement) element;
                 if (method.getModifiers().contains(Modifier.PUBLIC)
                         && MemberChecks.doesMethodNotOverrideInterfaceMethod(processingEnv, typeElement, method)
                         && ElementsUtil.isWarningNotSuppressed(
@@ -258,25 +252,24 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         return descriptor;
     }
 
-    private boolean isMethodAProtectedOverride(
-            @Nonnull final TypeElement typeElement, @Nonnull final ExecutableElement method) {
+    private boolean isMethodAProtectedOverride(final TypeElement typeElement, final ExecutableElement method) {
         final ExecutableElement overriddenMethod = ElementsUtil.getOverriddenMethod(processingEnv, typeElement, method);
         return null != overriddenMethod && overriddenMethod.getModifiers().contains(Modifier.PROTECTED);
     }
 
-    private boolean deriveSting(@Nonnull final ExecutableElement constructor) {
+    private boolean deriveSting(final ExecutableElement constructor) {
         return !getInjectableConstructorParameters(constructor).isEmpty()
                 && null != processingEnv.getElementUtils().getTypeElement(Constants.STING_INJECTABLE_CLASSNAME);
     }
 
-    private void verifyConstructorParameterOrder(@Nonnull final ExecutableElement constructor) {
+    private void verifyConstructorParameterOrder(final ExecutableElement constructor) {
         if (Elements.Origin.EXPLICIT == processingEnv.getElementUtils().getOrigin(constructor)
                 && constructor.getParameters().size() > 1
                 && ElementsUtil.isWarningNotSuppressed(
                         constructor,
                         Constants.WARNING_CONSTRUCTOR_PARAMETER_ORDER,
                         Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME)) {
-            final StringJoiner actualOrder = new StringJoiner(", ");
+            final var actualOrder = new StringJoiner(", ");
             int maxObservedGroup = -1;
             boolean invalidOrder = false;
             for (final VariableElement parameter : constructor.getParameters()) {
@@ -302,7 +295,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private void verifyPostConstructMethodName(@Nonnull final List<ExecutableElement> methods) {
+    private void verifyPostConstructMethodName(final List<ExecutableElement> methods) {
         final List<ExecutableElement> postConstructMethods = methods.stream()
                 .filter(e -> AnnotationsUtil.hasAnnotationOfType(e, Constants.POST_CONSTRUCT_CLASSNAME))
                 .toList();
@@ -325,11 +318,10 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private int classifyConstructorParameterGroup(@Nonnull final VariableElement parameter) {
+    private int classifyConstructorParameterGroup(final VariableElement parameter) {
         return isInputParameter(parameter) ? isFromTreeContextInput(parameter) ? 1 : 2 : 0;
     }
 
-    @Nonnull
     private String getConstructorParameterGroupLabel(final int group) {
         return switch (group) {
             case 0 -> "inject";
@@ -339,19 +331,18 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         };
     }
 
-    @Nonnull
-    private List<VariableElement> getInjectableConstructorParameters(@Nonnull final ExecutableElement constructor) {
+    private List<VariableElement> getInjectableConstructorParameters(final ExecutableElement constructor) {
         return constructor.getParameters().stream()
                 .map(parameter -> (VariableElement) parameter)
                 .filter(parameter -> !isInputParameter(parameter))
                 .toList();
     }
 
-    private boolean isInputParameter(@Nonnull final VariableElement parameter) {
+    private boolean isInputParameter(final VariableElement parameter) {
         return AnnotationsUtil.hasAnnotationOfType(parameter, Constants.INPUT_CLASSNAME);
     }
 
-    private boolean isConstructorValid(@Nonnull final ExecutableElement ctor) {
+    private boolean isConstructorValid(final ExecutableElement ctor) {
         if (Elements.Origin.EXPLICIT != processingEnv.getElementUtils().getOrigin(ctor)) {
             return true;
         } else {
@@ -359,7 +350,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private void verifyInputsNotAnnotatedWithArezAnnotations(@Nonnull final ViewDescriptor descriptor) {
+    private void verifyInputsNotAnnotatedWithArezAnnotations(final ViewDescriptor descriptor) {
         for (final InputDescriptor input : descriptor.getInputs()) {
             final Element element = input.getElement();
             for (final AnnotationMirror mirror : element.getAnnotationMirrors()) {
@@ -374,8 +365,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private void determineOnInputChangeMethods(
-            @Nonnull final ViewDescriptor descriptor, @Nonnull final List<ExecutableElement> methods) {
+    private void determineOnInputChangeMethods(final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         final List<ExecutableElement> onInputChangeMethods = methods.stream()
                 .filter(m -> AnnotationsUtil.hasAnnotationOfType(m, Constants.ON_INPUT_CHANGE_CLASSNAME))
                 .toList();
@@ -402,7 +392,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
             final List<InputDescriptor> inputDescriptors = new ArrayList<>(parameterCount);
             for (int i = 0; i < parameterCount; i++) {
                 final VariableElement parameter = parameters.get(i);
-                final String name = deriveOnInputChangeName(parameter);
+                final var name = deriveOnInputChangeName(parameter);
                 final InputDescriptor input = descriptor.findInputNamed(name);
                 if (null == input) {
                     throw new ProcessorException(
@@ -419,9 +409,9 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                                     + "assignable to the return type of the associated @Input annotated method.",
                             method);
                 }
-                final boolean mismatchedNullability = (AnnotationsUtil.hasNonnullAnnotation(parameter)
-                                && AnnotationsUtil.hasNullableAnnotation(input.getElement()))
-                        || (AnnotationsUtil.hasNullableAnnotation(parameter) && input.isNonNull());
+                final boolean mismatchedNullability =
+                        (Nullability.isNonNull(parameter) && Nullability.isNullable(input.getElement()))
+                                || (Nullability.isNullable(parameter) && input.isNonNull());
 
                 if (mismatchedNullability) {
                     throw new ProcessorException(
@@ -444,8 +434,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         descriptor.setOnInputChangeDescriptors(onInputChangeDescriptors);
     }
 
-    @Nonnull
-    private String deriveOnInputChangeName(@Nonnull final VariableElement parameter) {
+    private String deriveOnInputChangeName(final VariableElement parameter) {
         final AnnotationValue value =
                 AnnotationsUtil.findAnnotationValue(parameter, Constants.INPUT_REF_CLASSNAME, "value");
 
@@ -470,13 +459,13 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determineInputValidatesMethods(
-            @Nonnull final ViewDescriptor descriptor, @Nonnull final List<ExecutableElement> methods) {
+            final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         final List<ExecutableElement> inputValidateMethods = methods.stream()
                 .filter(m -> AnnotationsUtil.hasAnnotationOfType(m, Constants.INPUT_VALIDATE_CLASSNAME))
                 .toList();
 
         for (final ExecutableElement method : inputValidateMethods) {
-            final String name = deriveInputValidateName(method);
+            final var name = deriveInputValidateName(method);
             final InputDescriptor input = descriptor.findInputNamed(name);
             if (null == input) {
                 throw new ProcessorException(
@@ -502,9 +491,9 @@ public final class React4jProcessor extends AbstractStandardProcessor {
             MemberChecks.mustNotReturnAnyValue(Constants.INPUT_VALIDATE_CLASSNAME, method);
 
             final VariableElement param = method.getParameters().get(0);
-            final boolean mismatchedNullability = (AnnotationsUtil.hasNonnullAnnotation(param)
-                            && AnnotationsUtil.hasNullableAnnotation(input.getElement()))
-                    || (AnnotationsUtil.hasNullableAnnotation(param) && input.isNonNull());
+            final boolean mismatchedNullability =
+                    (Nullability.isNonNull(param) && Nullability.isNullable(input.getElement()))
+                            || (Nullability.isNullable(param) && input.isNonNull());
 
             if (mismatchedNullability) {
                 throw new ProcessorException(
@@ -517,9 +506,8 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    @Nonnull
-    private String deriveInputValidateName(@Nonnull final Element element) throws ProcessorException {
-        final String name =
+    private String deriveInputValidateName(final Element element) throws ProcessorException {
+        final var name =
                 (String) AnnotationsUtil.getAnnotationValue(element, Constants.INPUT_VALIDATE_CLASSNAME, "name")
                         .getValue();
 
@@ -548,14 +536,13 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private void determineDefaultInputsMethods(
-            @Nonnull final ViewDescriptor descriptor, @Nonnull final List<ExecutableElement> methods) {
+    private void determineDefaultInputsMethods(final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         final List<ExecutableElement> defaultInputsMethods = methods.stream()
                 .filter(m -> AnnotationsUtil.hasAnnotationOfType(m, Constants.INPUT_DEFAULT_CLASSNAME))
                 .toList();
 
         for (final ExecutableElement method : defaultInputsMethods) {
-            final String name = deriveInputDefaultName(method);
+            final var name = deriveInputDefaultName(method);
             final InputDescriptor input = descriptor.findInputNamed(name);
             if (null == input) {
                 throw new ProcessorException(
@@ -580,13 +567,13 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private void determineDefaultInputsFields(@Nonnull final ViewDescriptor descriptor) {
+    private void determineDefaultInputsFields(final ViewDescriptor descriptor) {
         final List<VariableElement> defaultInputsFields = ElementsUtil.getFields(descriptor.getElement()).stream()
                 .filter(m -> AnnotationsUtil.hasAnnotationOfType(m, Constants.INPUT_DEFAULT_CLASSNAME))
                 .toList();
 
         for (final VariableElement field : defaultInputsFields) {
-            final String name = deriveInputDefaultName(field);
+            final var name = deriveInputDefaultName(field);
             final InputDescriptor input = descriptor.findInputNamed(name);
             if (null == input) {
                 throw new ProcessorException(
@@ -607,11 +594,9 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    @Nonnull
-    private String deriveInputDefaultName(@Nonnull final Element element) throws ProcessorException {
-        final String name =
-                (String) AnnotationsUtil.getAnnotationValue(element, Constants.INPUT_DEFAULT_CLASSNAME, "name")
-                        .getValue();
+    private String deriveInputDefaultName(final Element element) throws ProcessorException {
+        final var name = (String) AnnotationsUtil.getAnnotationValue(element, Constants.INPUT_DEFAULT_CLASSNAME, "name")
+                .getValue();
 
         if (isSentinelName(name)) {
             if (element instanceof ExecutableElement) {
@@ -666,10 +651,9 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    @Nonnull
-    private String uppercaseConstantToPascalCase(@Nonnull final String candidate) {
+    private String uppercaseConstantToPascalCase(final String candidate) {
         final String s = candidate.toLowerCase();
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
         boolean uppercase = false;
         for (int i = 0; i < s.length(); i++) {
             final char ch = s.charAt(i);
@@ -685,8 +669,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         return sb.toString();
     }
 
-    private void determineInputs(
-            @Nonnull final ViewDescriptor descriptor, @Nonnull final List<ExecutableElement> methods) {
+    private void determineInputs(final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         final List<InputDescriptor> inputs = new ArrayList<>();
         methods.stream()
                 .filter(m -> AnnotationsUtil.hasAnnotationOfType(m, Constants.INPUT_CLASSNAME))
@@ -716,7 +699,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         descriptor.setInputs(inputs);
     }
 
-    private boolean isDisposableDerivableAtCompileTime(@Nonnull final Element type) {
+    private boolean isDisposableDerivableAtCompileTime(final Element type) {
         final var kind = type.getKind();
         if (ElementKind.CLASS == kind
                 && AnnotationsUtil.hasAnnotationOfType(type, Constants.AREZ_COMPONENT_CLASSNAME)) {
@@ -733,9 +716,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determinePreludeCheckCandidates(
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final TypeElement typeElement,
-            @Nonnull final List<ExecutableElement> methods) {
+            final ViewDescriptor descriptor, final TypeElement typeElement, final List<ExecutableElement> methods) {
         final var candidates = new ArrayList<PreludeChecksDescriptor>();
 
         final var fields = new LinkedHashMap<String, VariableElement>();
@@ -773,7 +754,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         descriptor.setPreludeCheckCandidates(candidates);
     }
 
-    private void addInputDescriptor(@Nonnull final List<InputDescriptor> inputs, @Nonnull final InputDescriptor input) {
+    private void addInputDescriptor(final List<InputDescriptor> inputs, final InputDescriptor input) {
         final var existing = inputs.stream()
                 .filter(p -> p.getName().equals(input.getName()))
                 .findAny()
@@ -788,7 +769,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         inputs.add(input);
     }
 
-    private boolean isInputRequired(@Nonnull final InputDescriptor input) {
+    private boolean isInputRequired(final InputDescriptor input) {
         final String requiredValue = input.getRequiredValue();
         if ("ENABLE".equals(requiredValue)) {
             return true;
@@ -797,18 +778,13 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         } else if (input.isFromTreeContext()) {
             return false;
         } else {
-            return !input.hasDefaultMethod()
-                    && !input.hasDefaultField()
-                    && !AnnotationsUtil.hasNullableAnnotation(input.getElement());
+            return !input.hasDefaultMethod() && !input.hasDefaultField() && !Nullability.isNullable(input.getElement());
         }
     }
 
-    @Nonnull
     private InputDescriptor createMethodInputDescriptor(
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final List<ExecutableElement> methods,
-            @Nonnull final ExecutableElement method) {
-        final String name = deriveInputName(method);
+            final ViewDescriptor descriptor, final List<ExecutableElement> methods, final ExecutableElement method) {
+        final var name = deriveInputName(method);
         final ExecutableType methodType = resolveMethodType(descriptor, method);
 
         verifyNoDuplicateAnnotations(method);
@@ -820,15 +796,15 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                 descriptor.getElement(), Constants.VIEW_CLASSNAME, Constants.INPUT_CLASSNAME, method);
         final TypeMirror returnType = method.getReturnType();
         if (!returnType.getKind().isPrimitive()
-                && !AnnotationsUtil.hasNonnullAnnotation(method)
-                && !AnnotationsUtil.hasNullableAnnotation(method)
+                && !Nullability.isNonNull(method)
+                && !Nullability.isNullable(method)
                 && ElementsUtil.isWarningNotSuppressed(
                         method,
                         Constants.WARNING_MISSING_INPUT_NULLABILITY,
                         Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME)) {
             final String message = MemberChecks.shouldNot(
                     Constants.INPUT_CLASSNAME,
-                    "return a non-primitive type without a @Nonnull or @Nullable annotation. "
+                    "return a non-primitive type without a or @Nullable annotation. "
                             + MemberChecks.suppressedBy(
                                     Constants.WARNING_MISSING_INPUT_NULLABILITY,
                                     Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME));
@@ -848,7 +824,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                         method);
             }
         }
-        final String qualifier =
+        final var qualifier =
                 (String) AnnotationsUtil.getAnnotationValue(method, Constants.INPUT_CLASSNAME, "qualifier")
                         .getValue();
         final boolean fromTreeContextInput = isFromTreeContextInput(method);
@@ -856,10 +832,10 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         final boolean observable = isInputObservable(methods, method);
         final boolean disposable = null != inputType && isDisposableDerivableAtCompileTime(inputType);
         final TypeName typeName = TypeName.get(returnType);
-        if (typeName.isBoxedPrimitive() && AnnotationsUtil.hasNonnullAnnotation(method)) {
+        if (typeName.isBoxedPrimitive() && Nullability.isNonNull(method)) {
             throw new ProcessorException(
                     "@Input named '" + name + "' is a boxed primitive annotated with a "
-                            + "@Nonnull annotation. The return type should be the primitive type.",
+                            + "annotation. The return type should be the primitive type.",
                     method);
         }
         if (!"".equals(qualifier) && !fromTreeContextInput) {
@@ -870,7 +846,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         final String requiredValue =
                 AnnotationsUtil.getEnumAnnotationParameter(method, Constants.INPUT_CLASSNAME, "require");
 
-        final InputDescriptor inputDescriptor = new InputDescriptor(
+        final var inputDescriptor = new InputDescriptor(
                 descriptor,
                 name,
                 qualifier,
@@ -896,21 +872,20 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         return inputDescriptor;
     }
 
-    @Nonnull
     private InputDescriptor createConstructorInputDescriptor(
-            @Nonnull final ViewDescriptor descriptor, @Nonnull final VariableElement parameter) {
-        final String name = deriveInputName(parameter);
+            final ViewDescriptor descriptor, final VariableElement parameter) {
+        final var name = deriveInputName(parameter);
         final TypeMirror type = parameter.asType();
         if (!type.getKind().isPrimitive()
-                && !AnnotationsUtil.hasNonnullAnnotation(parameter)
-                && !AnnotationsUtil.hasNullableAnnotation(parameter)
+                && !Nullability.isNonNull(parameter)
+                && !Nullability.isNullable(parameter)
                 && ElementsUtil.isWarningNotSuppressed(
                         parameter,
                         Constants.WARNING_MISSING_INPUT_NULLABILITY,
                         Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME)) {
             final String message = MemberChecks.shouldNot(
                     Constants.INPUT_CLASSNAME,
-                    "return a non-primitive type without a @Nonnull or @Nullable annotation. "
+                    "return a non-primitive type without a or @Nullable annotation. "
                             + MemberChecks.suppressedBy(
                                     Constants.WARNING_MISSING_INPUT_NULLABILITY,
                                     Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME));
@@ -918,7 +893,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
         validateInputNameAndType(name, type, parameter);
 
-        final String qualifier =
+        final var qualifier =
                 (String) AnnotationsUtil.getAnnotationValue(parameter, Constants.INPUT_CLASSNAME, "qualifier")
                         .getValue();
         final boolean fromTreeContextInput = isFromTreeContextInput(parameter);
@@ -932,10 +907,10 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
         final boolean disposable = null != inputType && isDisposableDerivableAtCompileTime(inputType);
         final TypeName typeName = TypeName.get(type);
-        if (typeName.isBoxedPrimitive() && AnnotationsUtil.hasNonnullAnnotation(parameter)) {
+        if (typeName.isBoxedPrimitive() && Nullability.isNonNull(parameter)) {
             throw new ProcessorException(
                     "@Input named '" + name + "' is a boxed primitive annotated with a "
-                            + "@Nonnull annotation. The return type should be the primitive type.",
+                            + "annotation. The return type should be the primitive type.",
                     parameter);
         }
         final ImmutableInputKeyStrategy strategy = getImmutableInputKeyStrategy(typeName, inputType);
@@ -964,9 +939,8 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                 requiredValue);
     }
 
-    @Nonnull
     private ImmutableInputKeyStrategy getImmutableInputKeyStrategy(
-            @Nonnull final TypeName typeName, @Nullable final Element element) {
+            final TypeName typeName, @Nullable final Element element) {
         if (typeName.toString().equals("java.lang.String")) {
             return ImmutableInputKeyStrategy.IS_STRING;
         } else if (typeName.isBoxedPrimitive() || typeName.isPrimitive()) {
@@ -988,11 +962,11 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         return ImmutableInputKeyStrategy.DYNAMIC;
     }
 
-    private boolean isAssignableToKeyed(@Nonnull final Element element) {
+    private boolean isAssignableToKeyed(final Element element) {
         return ElementsUtil.isAssignableTo(processingEnv, element, Constants.KEYED_CLASSNAME);
     }
 
-    private boolean isAssignableToIdentifiable(@Nonnull final Element element) {
+    private boolean isAssignableToIdentifiable(final Element element) {
         final TypeElement typeElement =
                 processingEnv.getElementUtils().getTypeElement(Constants.IDENTIFIABLE_CLASSNAME);
         final TypeMirror identifiableErasure = processingEnv.getTypeUtils().erasure(typeElement.asType());
@@ -1003,15 +977,14 @@ public final class React4jProcessor extends AbstractStandardProcessor {
      * The logic from this method has been cloned from Arez.
      * One day we should consider improving Arez so that this is not required somehow?
      */
-    private boolean isIdRequired(@Nonnull final TypeElement element) {
+    private boolean isIdRequired(final TypeElement element) {
         final String requireIdParameter =
                 AnnotationsUtil.getEnumAnnotationParameter(element, Constants.AREZ_COMPONENT_CLASSNAME, "requireId");
         return !"DISABLE".equals(requireIdParameter);
     }
 
-    @Nonnull
-    private String deriveInputName(@Nonnull final Element element) throws ProcessorException {
-        final String specifiedName =
+    private String deriveInputName(final Element element) throws ProcessorException {
+        final var specifiedName =
                 (String) AnnotationsUtil.getAnnotationValue(element, Constants.INPUT_CLASSNAME, "name")
                         .getValue();
 
@@ -1036,8 +1009,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private void validateInputNameAndType(
-            @Nonnull final String name, @Nonnull final TypeMirror type, @Nonnull final Element element) {
+    private void validateInputNameAndType(final String name, final TypeMirror type, final Element element) {
         if ("build".equals(name)) {
             throw new ProcessorException(
                     "@Input named 'build' is invalid as it conflicts with the method named "
@@ -1053,9 +1025,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determineOnErrorMethod(
-            @Nonnull final TypeElement typeElement,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final List<ExecutableElement> methods) {
+            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         for (final ExecutableElement method : methods) {
             if (AnnotationsUtil.hasAnnotationOfType(method, Constants.ON_ERROR_CLASSNAME)) {
                 MemberChecks.mustNotBeAbstract(Constants.ON_ERROR_CLASSNAME, method);
@@ -1094,9 +1064,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determineScheduleRenderMethods(
-            @Nonnull final TypeElement typeElement,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final List<ExecutableElement> methods) {
+            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         final List<ScheduleRenderDescriptor> scheduleRenderDescriptors = new ArrayList<>();
         for (final ExecutableElement method : methods) {
             final AnnotationMirror annotation =
@@ -1127,9 +1095,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determinePublishMethods(
-            @Nonnull final TypeElement typeElement,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final List<ExecutableElement> methods) {
+            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         final List<PublishDescriptor> descriptors = new ArrayList<>();
         for (final ExecutableElement method : methods) {
             final AnnotationMirror annotation =
@@ -1157,9 +1123,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determinePreRenderMethods(
-            @Nonnull final TypeElement typeElement,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final List<ExecutableElement> methods) {
+            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         final List<RenderHookDescriptor> descriptors = new ArrayList<>();
         for (final ExecutableElement method : methods) {
             final AnnotationMirror annotation =
@@ -1184,9 +1148,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determinePostRenderMethods(
-            @Nonnull final TypeElement typeElement,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final List<ExecutableElement> methods) {
+            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         final List<RenderHookDescriptor> descriptors = new ArrayList<>();
         for (final ExecutableElement method : methods) {
             final AnnotationMirror annotation =
@@ -1211,9 +1173,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determineRenderMethod(
-            @Nonnull final TypeElement typeElement,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final List<ExecutableElement> methods) {
+            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         boolean foundRender = false;
         for (final ExecutableElement method : methods) {
             final AnnotationMirror annotation =
@@ -1228,15 +1188,15 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                 MemberChecks.mustNotThrowAnyExceptions(Constants.RENDER_CLASSNAME, method);
                 MemberChecks.mustNotHaveAnyTypeParameters(Constants.RENDER_CLASSNAME, method);
                 if (!method.getReturnType().getKind().isPrimitive()
-                        && !AnnotationsUtil.hasNonnullAnnotation(method)
-                        && !AnnotationsUtil.hasNullableAnnotation(method)
+                        && !Nullability.isNonNull(method)
+                        && !Nullability.isNullable(method)
                         && ElementsUtil.isWarningNotSuppressed(
                                 method,
                                 Constants.WARNING_MISSING_RENDER_NULLABILITY,
                                 Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME)) {
                     final String message = MemberChecks.should(
                             Constants.RENDER_CLASSNAME,
-                            "be annotated by a @Nonnull or a @Nullable annotation. "
+                            "be annotated by a or a @Nullable annotation. "
                                     + MemberChecks.suppressedBy(
                                             Constants.WARNING_MISSING_RENDER_NULLABILITY,
                                             Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME));
@@ -1285,9 +1245,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determinePostMountMethod(
-            @Nonnull final TypeElement typeElement,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final List<ExecutableElement> methods) {
+            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         for (final ExecutableElement method : methods) {
             if (AnnotationsUtil.hasAnnotationOfType(method, Constants.POST_MOUNT_CLASSNAME)) {
                 MemberChecks.mustBeLifecycleHook(
@@ -1298,9 +1256,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determinePostMountOrUpdateMethod(
-            @Nonnull final TypeElement typeElement,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final List<ExecutableElement> methods) {
+            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         for (final ExecutableElement method : methods) {
             if (AnnotationsUtil.hasAnnotationOfType(method, Constants.POST_MOUNT_OR_UPDATE_CLASSNAME)) {
                 MemberChecks.mustBeLifecycleHook(
@@ -1311,9 +1267,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determinePostUpdateMethod(
-            @Nonnull final TypeElement typeElement,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final List<ExecutableElement> methods) {
+            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         for (final ExecutableElement method : methods) {
             if (AnnotationsUtil.hasAnnotationOfType(method, Constants.POST_UPDATE_CLASSNAME)) {
                 MemberChecks.mustBeLifecycleHook(
@@ -1324,9 +1278,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void determinePreUpdateMethod(
-            @Nonnull final TypeElement typeElement,
-            @Nonnull final ViewDescriptor descriptor,
-            @Nonnull final List<ExecutableElement> methods) {
+            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         for (final ExecutableElement method : methods) {
             if (AnnotationsUtil.hasAnnotationOfType(method, Constants.PRE_UPDATE_CLASSNAME)) {
                 MemberChecks.mustBeLifecycleHook(
@@ -1336,14 +1288,12 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private ExecutableType resolveMethodType(
-            @Nonnull final ViewDescriptor descriptor, @Nonnull final ExecutableElement method) {
+    private ExecutableType resolveMethodType(final ViewDescriptor descriptor, final ExecutableElement method) {
         return (ExecutableType) processingEnv.getTypeUtils().asMemberOf(descriptor.getDeclaredType(), method);
     }
 
-    @Nonnull
-    private String deriveViewName(@Nonnull final TypeElement typeElement) {
-        final String name = (String) AnnotationsUtil.getAnnotationValue(typeElement, Constants.VIEW_CLASSNAME, "name")
+    private String deriveViewName(final TypeElement typeElement) {
+        final var name = (String) AnnotationsUtil.getAnnotationValue(typeElement, Constants.VIEW_CLASSNAME, "name")
                 .getValue();
 
         if (isSentinelName(name)) {
@@ -1364,8 +1314,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private void determineViewCapabilities(
-            @Nonnull final ViewDescriptor descriptor, @Nonnull final TypeElement typeElement) {
+    private void determineViewCapabilities(final ViewDescriptor descriptor, final TypeElement typeElement) {
         if (AnnotationsUtil.hasAnnotationOfType(typeElement, Constants.AREZ_COMPONENT_CLASSNAME)) {
             throw new ProcessorException(
                     MemberChecks.mustNot(
@@ -1385,19 +1334,18 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    @Nonnull
-    private ViewType extractViewType(@Nonnull final TypeElement typeElement) {
+    private ViewType extractViewType(final TypeElement typeElement) {
         final String declaredType =
                 AnnotationsUtil.getEnumAnnotationParameter(typeElement, Constants.VIEW_CLASSNAME, "type");
         return ViewType.valueOf(declaredType);
     }
 
-    private boolean extractExportBuilder(@Nonnull final TypeElement typeElement) {
+    private boolean extractExportBuilder(final TypeElement typeElement) {
         return (Boolean) AnnotationsUtil.getAnnotationValue(typeElement, Constants.VIEW_CLASSNAME, "exportBuilder")
                 .getValue();
     }
 
-    private boolean isInputObservable(@Nonnull final List<ExecutableElement> methods, @Nonnull final Element element) {
+    private boolean isInputObservable(final List<ExecutableElement> methods, final Element element) {
         final var parameter =
                 AnnotationsUtil.getEnumAnnotationParameter(element, Constants.INPUT_CLASSNAME, "observable");
         return switch (parameter) {
@@ -1407,7 +1355,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         };
     }
 
-    private boolean hasAnyArezObserverMethods(@Nonnull final List<ExecutableElement> methods) {
+    private boolean hasAnyArezObserverMethods(final List<ExecutableElement> methods) {
         return methods.stream()
                 .anyMatch(m -> AnnotationsUtil.hasAnnotationOfType(m, Constants.MEMOIZE_CLASSNAME)
                         || (AnnotationsUtil.hasAnnotationOfType(m, Constants.OBSERVE_CLASSNAME)
@@ -1415,9 +1363,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                                         || !m.getSimpleName().toString().equals("trackRender"))));
     }
 
-    @Nonnull
-    private ObserveMode determinePreludeCheckObservationMode(
-            @Nonnull final Element element, @Nonnull final TypeMirror type) {
+    private ObserveMode determinePreludeCheckObservationMode(final Element element, final TypeMirror type) {
         if (type.getKind().isPrimitive()) {
             return ObserveMode.NO_OBSERVE;
         } else {
@@ -1428,9 +1374,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                     return ObserveMode.NO_OBSERVE;
                 } else if (ArezComponentObservableResolution.ENABLED == resolution
                         || isAssignableToComponentObservable(type)) {
-                    return AnnotationsUtil.hasNonnullAnnotation(element)
-                            ? ObserveMode.OBSERVE_NONNULL
-                            : ObserveMode.OBSERVE_NULLABLE;
+                    return Nullability.isNonNull(element) ? ObserveMode.OBSERVE_NONNULL : ObserveMode.OBSERVE_NULLABLE;
                 } else if (canTypeUseRuntimeComponentObservableCheck(type, typeElement)) {
                     // Type does not implement `arez.component.ComponentObservable` but it is not final so try at
                     // runtime
@@ -1446,7 +1390,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private boolean canTypeUseRuntimeComponentObservableCheck(
-            @Nonnull final TypeMirror type, @Nullable final Element typeElement) {
+            final TypeMirror type, @Nullable final Element typeElement) {
         return TypeKind.TYPEVAR == type.getKind()
                 || null != typeElement
                         && (ElementKind.INTERFACE == typeElement.getKind()
@@ -1454,12 +1398,11 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                                         && !typeElement.getModifiers().contains(Modifier.FINAL)));
     }
 
-    private boolean isAssignableToComponentObservable(@Nonnull final TypeMirror type) {
+    private boolean isAssignableToComponentObservable(final TypeMirror type) {
         return ElementsUtil.isAssignableTo(processingEnv, type, Constants.COMPONENT_OBSERVABLE_CLASSNAME);
     }
 
-    @Nonnull
-    private ArezComponentObservableResolution resolveArezComponentObservable(@Nonnull final TypeElement element) {
+    private ArezComponentObservableResolution resolveArezComponentObservable(final TypeElement element) {
         if (!AnnotationsUtil.hasAnnotationOfType(element, Constants.AREZ_COMPONENT_CLASSNAME)) {
             return ArezComponentObservableResolution.NOT_AREZ_COMPONENT;
         }
@@ -1486,19 +1429,19 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         NOT_AREZ_COMPONENT
     }
 
-    private boolean isFromTreeContextInput(@Nonnull final Element element) {
+    private boolean isFromTreeContextInput(final Element element) {
         return (Boolean) AnnotationsUtil.getAnnotationValue(element, Constants.INPUT_CLASSNAME, "fromTreeContext")
                 .getValue();
     }
 
-    private boolean shouldSetDefaultPriority(@Nonnull final List<ExecutableElement> methods) {
+    private boolean shouldSetDefaultPriority(final List<ExecutableElement> methods) {
         return methods.stream()
                 .filter(method -> !method.getModifiers().contains(Modifier.PRIVATE))
                 .anyMatch(method -> AnnotationsUtil.hasAnnotationOfType(method, Constants.MEMOIZE_CLASSNAME)
                         || AnnotationsUtil.hasAnnotationOfType(method, Constants.OBSERVE_CLASSNAME));
     }
 
-    private void verifyNoDuplicateAnnotations(@Nonnull final ExecutableElement method) throws ProcessorException {
+    private void verifyNoDuplicateAnnotations(final ExecutableElement method) throws ProcessorException {
         final List<String> annotations = Arrays.asList(
                 Constants.INPUT_DEFAULT_CLASSNAME,
                 Constants.INPUT_VALIDATE_CLASSNAME,
@@ -1507,12 +1450,11 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         MemberChecks.verifyNoOverlappingAnnotations(method, annotations, Collections.emptyMap());
     }
 
-    private boolean isSentinelName(@Nonnull final String name) {
+    private boolean isSentinelName(final String name) {
         return SENTINEL_NAME.equals(name);
     }
 
-    @Nonnull
-    private String getPropertyAccessorName(@Nonnull final ExecutableElement method, @Nonnull final String specifiedName)
+    private String getPropertyAccessorName(final ExecutableElement method, final String specifiedName)
             throws ProcessorException {
         String name = deriveName(method, GETTER_PATTERN, specifiedName);
         if (null != name) {
@@ -1527,7 +1469,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     @Nullable
-    private String deriveName(@Nonnull final Element method, @Nonnull final Pattern pattern, @Nonnull final String name)
+    private String deriveName(final Element method, final Pattern pattern, final String name)
             throws ProcessorException {
         if (isSentinelName(name)) {
             final String methodName = method.getSimpleName().toString();
