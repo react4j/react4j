@@ -1,5 +1,5 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
-load("//tools/browser:rules.bzl", "browser_application", "browser_application_variant", "browser_test")
+load("//tools/browser:rules.bzl", "browser_application", "browser_application_variant")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -44,15 +44,4 @@ browser_application_variant(
     name = "development",
     application = ":drumloop",
     mode = "fastbuild",
-)
-
-browser_test(
-    name = "browser_tests",
-    srcs = ["browser_test.js"],
-    data = [":drumloop"],
-    entry_point = "react4j.drumloop.BrowserTest",
-    deps = [
-        "//examples/drumloop/src/test/java/react4j/drumloop/cache:cache_tests",
-        "@rules_closure//closure/testing/library:testcase",
-    ],
 )

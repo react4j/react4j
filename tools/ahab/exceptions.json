@@ -4,21 +4,21 @@
       "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",
-      "target": "//doc-examples:browser_tests",
+      "target": "//doc-examples/src/test/js/react4j/examples:browser_tests",
       "requirement": "requires-network"
     },
     {
       "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",
-      "target": "//examples/drumloop:browser_tests",
+      "target": "//examples/drumloop/src/test/js/react4j/drumloop:browser_tests",
       "requirement": "requires-network"
     },
     {
       "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",
-      "target": "//examples/webspeechdemo:browser_tests",
+      "target": "//examples/webspeechdemo/src/test/js/react4j/webspeechdemo:browser_tests",
       "requirement": "requires-network"
     }
   ]

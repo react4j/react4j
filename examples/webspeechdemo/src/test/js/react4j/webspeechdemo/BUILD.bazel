@@ -1,0 +1,11 @@
+load("//tools/browser:rules.bzl", "browser_test")
+
+package(default_visibility = ["//:__pkg__"])
+
+browser_test(
+    name = "browser_tests",
+    srcs = ["browser_test.js"],
+    data = ["//examples/webspeechdemo"],
+    entry_point = "react4j.webspeechdemo.BrowserTest",
+    deps = ["@rules_closure//closure/testing/library:testcase"],
+)

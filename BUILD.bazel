@@ -123,9 +123,9 @@ j2cl_library(
 test_suite(
     name = "browser_tests",
     tests = [
-        "//doc-examples:browser_tests",
-        "//examples/drumloop:browser_tests",
-        "//examples/webspeechdemo:browser_tests",
+        "//doc-examples/src/test/js/react4j/examples:browser_tests",
+        "//examples/drumloop/src/test/js/react4j/drumloop:browser_tests",
+        "//examples/webspeechdemo/src/test/js/react4j/webspeechdemo:browser_tests",
     ],
 )
 
