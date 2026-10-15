@@ -8,6 +8,8 @@ import jsinterop.annotations.JsType;
 @SuppressWarnings("unused")
 public class UIEvent extends SyntheticEvent<Event> {
     private int detail;
+
+    @SuppressWarnings("NullAway.Init")
     private AbstractView view;
 
     @JsOverlay

@@ -9,13 +9,23 @@ import jsinterop.annotations.JsType;
 public class SyntheticEvent<E extends Event> {
     private boolean bubbles;
     private boolean cancelable;
+
+    @SuppressWarnings("NullAway.Init")
     private Element currentTarget;
+
     private boolean defaultPrevented;
     private int eventPhase;
     private boolean isTrusted;
+
+    @SuppressWarnings("NullAway.Init")
     private E nativeEvent;
+
+    @SuppressWarnings("NullAway.Init")
     private Element target;
+
     private double timeStamp;
+
+    @SuppressWarnings("NullAway.Init")
     private String type;
 
     public native void preventDefault();

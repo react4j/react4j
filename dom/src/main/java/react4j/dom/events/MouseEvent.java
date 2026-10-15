@@ -1,9 +1,9 @@
 package react4j.dom.events;
 
-import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 @SuppressWarnings("unused")
@@ -17,12 +17,12 @@ public class MouseEvent extends SyntheticEvent<Event> {
     private boolean metaKey;
     private int pageX;
     private int pageY;
-    private EventTarget relatedTarget;
+    private @Nullable EventTarget relatedTarget;
     private int screenX;
     private int screenY;
     private boolean shiftKey;
 
-    public native boolean getModifierState(@Nonnull String key);
+    public native boolean getModifierState(String key);
 
     @JsOverlay
     public final boolean isAltKey() {
@@ -70,7 +70,7 @@ public class MouseEvent extends SyntheticEvent<Event> {
     }
 
     @JsOverlay
-    public final EventTarget getRelatedTarget() {
+    public final @Nullable EventTarget getRelatedTarget() {
         return relatedTarget;
     }
 

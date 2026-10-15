@@ -7,6 +7,7 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 @SuppressWarnings("unused")
 public class ClipboardEvent extends SyntheticEvent<Event> {
+    @SuppressWarnings("NullAway.Init")
     private DataTransfer clipboardData;
 
     @JsOverlay

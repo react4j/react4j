@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import jdepend.framework.DependencyConstraint;
 import jdepend.framework.JDepend;
 import jdepend.framework.JavaPackage;
@@ -17,22 +16,29 @@ import org.testng.annotations.Test;
 public class DomJDependTest {
     @Test
     public void dependencyAnalysis() throws Exception {
-        final JDepend jdepend = new JDepend(PackageFilter.all().excluding("java.*", "javax.*"));
+        final var jdepend = new JDepend(PackageFilter.all().excluding("java.*", "javax.*"));
         jdepend.addDirectory(compileTargetDir());
         jdepend.analyze();
 
-        final DependencyConstraint constraint = new DependencyConstraint();
+        final var constraint = new DependencyConstraint();
 
         final JavaPackage arez = constraint.addPackage("arez");
         final JavaPackage react4j = constraint.addPackage("react4j");
         final JavaPackage react4jDom = constraint.addPackage("react4j.dom");
         final JavaPackage react4jDomEvents = constraint.addPackage("react4j.dom.events");
-        constraint.addPackage("react4j.dom.proptypes.cssPropertyTypes");
+        final var cssProperties = constraint.addPackage("react4j.dom.proptypes.cssPropertyTypes");
         final JavaPackage react4jDomHtml = constraint.addPackage("react4j.dom.proptypes.html");
-        constraint.addPackage("react4j.dom.proptypes.html.attributeTypes");
+        final var attributes = constraint.addPackage("react4j.dom.proptypes.html.attributeTypes");
         final JavaPackage braincheck = constraint.addPackage("org.realityforge.braincheck");
         final JavaPackage jsinteropAnnotations = constraint.addPackage("jsinterop.annotations");
         final JavaPackage jsinteropBase = constraint.addPackage("jsinterop.base");
+
+        final var jspecify = constraint.addPackage("org.jspecify.annotations");
+        react4jDom.dependsUpon(jspecify);
+        react4jDomEvents.dependsUpon(jspecify);
+        react4jDomHtml.dependsUpon(jspecify);
+        cssProperties.dependsUpon(jspecify);
+        attributes.dependsUpon(jspecify);
 
         react4jDom.dependsUpon(arez);
         react4jDom.dependsUpon(react4j);
@@ -58,7 +64,7 @@ public class DomJDependTest {
 
         final List<JavaPackage[]> nonMatchingPackages = result.getNonMatchingPackages();
         if (!nonMatchingPackages.isEmpty()) {
-            final StringBuilder sb = new StringBuilder();
+            final var sb = new StringBuilder();
             sb.append("Discovered packages where relationships do not align.\n");
             for (final JavaPackage[] packages : nonMatchingPackages) {
                 final JavaPackage expected = packages[0];
@@ -109,7 +115,6 @@ public class DomJDependTest {
         }
     }
 
-    @Nonnull
     private String compileTargetDir() {
         final String fixtureDir = System.getProperty("react4j.dom.compile_target");
         assertNotNull(fixtureDir, "Expected System.getProperty( \"react4j.dom.compile_target\" ) to return directory");

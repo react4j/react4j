@@ -6,5 +6,5 @@
 
   public static ReactNode {tag}( final {props} props )
   {
-    return createElement( "{tag}", Js.asPropertyMap( props ), (ReactNode[]) null );
+    return createElement( "{tag}", Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( props ), (ReactNode[]) null );
   }

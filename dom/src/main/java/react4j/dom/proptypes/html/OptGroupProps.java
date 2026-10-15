@@ -1,9 +1,9 @@
 package react4j.dom.proptypes.html;
 
-import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Props for optgroup elements. Refer to http://www.w3schools.com/tags/tag_optgroup.asp
@@ -11,21 +11,18 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class OptGroupProps extends HtmlGlobalFields<OptGroupProps> {
     @JsOverlay
-    @Nonnull
     public final OptGroupProps disabled() {
         return disabled(true);
     }
 
     @JsOverlay
-    @Nonnull
     public final OptGroupProps disabled(boolean b) {
         setDisabled(b);
         return self();
     }
 
     @JsOverlay
-    @Nonnull
-    public final OptGroupProps label(String s) {
+    public final OptGroupProps label(@Nullable String s) {
         setLabel(s);
         return self();
     }

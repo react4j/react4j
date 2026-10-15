@@ -1,7 +1,7 @@
 
   public static ReactNode {tag}( final {props} props, final @Nullable ReactNode @Nullable ... children )
   {
-    return createElement( "{tag}", Js.asPropertyMap( props ), children );
+    return createElement( "{tag}", Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( props ), children );
   }
 
   public static ReactNode {tag}( final @Nullable ReactNode @Nullable ... children )
@@ -11,7 +11,7 @@
 
   public static ReactNode {tag}( final {props} props, final String content )
   {
-    return createElement( "{tag}", Js.asPropertyMap( props ), text( content ) );
+    return createElement( "{tag}", Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( props ), text( content ) );
   }
 
   public static ReactNode {tag}( final String content )

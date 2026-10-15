@@ -9,9 +9,9 @@
    */
   private static ReactElement createElement( final String type, @Nullable final JsPropertyMap<@Nullable Object> props, final @Nullable ReactNode @Nullable ... children )
   {
-    final JsPropertyMap<@Nullable Object> actual = JsPropertyMap.of();
-    @Nullable String key = null;
-    @Nullable Object ref = null;
+    final var actual = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( JsPropertyMap.of() );
+    String key = null;
+    Object ref = null;
     if ( null != props )
     {
       key = props.has( "key" ) ? Js.asString( props.get( "key" ) ) : null;

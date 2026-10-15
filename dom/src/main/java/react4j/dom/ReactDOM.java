@@ -2,13 +2,12 @@ package react4j.dom;
 
 import arez.Arez;
 import arez.ArezContext;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
@@ -47,13 +46,11 @@ public class ReactDOM {
     }
 
     @JsOverlay
-    @Nonnull
-    public static ReactRoot createRoot(@Nonnull final Object container) {
+    public static ReactRoot createRoot(final Object container) {
         return unstable_createRoot(container);
     }
 
-    @Nonnull
-    private static native ReactRoot unstable_createRoot(@Nonnull Object container);
+    private static native ReactRoot unstable_createRoot(Object container);
 
     /**
      * Portals provide a first-class way to render children into a DOM node that exists outside the DOM hierarchy
@@ -70,7 +67,7 @@ public class ReactDOM {
      * @param container the DOM element to render into.
      * @return the new portal.
      */
-    public static native ReactPortal createPortal(@Nonnull ReactNode children, @Nonnull Object container);
+    public static native ReactPortal createPortal(ReactNode children, Object container);
 
     /**
      * Render a React element into the DOM in the supplied container.
@@ -88,14 +85,13 @@ public class ReactDOM {
     @Nullable
     @JsOverlay
     public static Object render(
-            @Nonnull final ReactNode node, @Nonnull final Object container, @Nullable final RenderCallbackFn onUpdate) {
+            final ReactNode node, final Object container, @Nullable final RenderCallbackFn onUpdate) {
         return _render(React.shouldCheckInvariants() ? ReactElement.createStrictMode(node) : node, container, onUpdate);
     }
 
     @Nullable
     @JsMethod(name = "render")
-    private static native Object _render(
-            @Nonnull ReactNode node, @Nonnull Object container, @Nullable RenderCallbackFn onUpdate);
+    private static native Object _render(ReactNode node, Object container, @Nullable RenderCallbackFn onUpdate);
 
     /**
      * Render a React element into the DOM in the supplied container.
@@ -110,7 +106,7 @@ public class ReactDOM {
      */
     @Nullable
     @JsOverlay
-    public static Object render(@Nonnull ReactNode node, @Nonnull Object container) {
+    public static Object render(ReactNode node, Object container) {
         return render(node, container, null);
     }
 
@@ -121,7 +117,7 @@ public class ReactDOM {
      * @param container the DOM container containing the react component to unmount
      * @return true if a component was unmounted and false if there was no component to unmount.
      */
-    public static native boolean unmountComponentAtNode(@Nonnull Object container);
+    public static native boolean unmountComponentAtNode(Object container);
 
     /**
      * Batch all state updates within the action.
@@ -132,7 +128,7 @@ public class ReactDOM {
      * @param action the action where all state updates are batched.
      */
     @JsOverlay
-    public static void batchedUpdates(@Nonnull final BatchedUpdatesFn action) {
+    public static void batchedUpdates(final BatchedUpdatesFn action) {
         unstable_batchedUpdates(action);
     }
 
@@ -150,7 +146,7 @@ public class ReactDOM {
      * @param context the context to add interceptor to.
      */
     @JsOverlay
-    public static void registerBatchedArezTaskInterceptor(@Nonnull final ArezContext context) {
+    public static void registerBatchedArezTaskInterceptor(final ArezContext context) {
         context.setTaskInterceptor(new BatchingTaskInterceptor());
     }
 
@@ -160,5 +156,5 @@ public class ReactDOM {
      * @param action the action where all state updates are batched.
      */
     @JsMethod
-    private static native void unstable_batchedUpdates(@Nonnull BatchedUpdatesFn action);
+    private static native void unstable_batchedUpdates(BatchedUpdatesFn action);
 }

@@ -1,7 +1,7 @@
 package react4j.dom.proptypes.html;
 
-import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Method to pass an element or component instance back from the renderer.

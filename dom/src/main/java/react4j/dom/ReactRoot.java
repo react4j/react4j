@@ -1,11 +1,10 @@
 package react4j.dom;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 import react4j.ReactNode;
 
 /**
@@ -32,11 +31,11 @@ public interface ReactRoot {
     }
 
     @JsOverlay
-    default void render(@Nonnull ReactNode children) {
+    default void render(ReactNode children) {
         render(children, null);
     }
 
-    void render(@Nonnull ReactNode children, @Nullable PostRenderCallbackFn callback);
+    void render(ReactNode children, @Nullable PostRenderCallbackFn callback);
 
     @JsOverlay
     default void unmount() {

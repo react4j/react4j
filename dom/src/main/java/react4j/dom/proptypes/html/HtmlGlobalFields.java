@@ -2,8 +2,6 @@ package react4j.dom.proptypes.html;
 
 import static org.realityforge.braincheck.Guards.*;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -11,6 +9,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.dom.events.ClipboardEventHandler;
@@ -40,41 +39,36 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     public RefConsumer ref;
 
     @JsOverlay
-    @Nonnull
     public final T ref(@Nullable final RefConsumer callback) {
         ref = callback;
         return self();
     }
 
     @JsOverlay
-    @Nonnull
     public final T key(final int value) {
         return key(String.valueOf(value));
     }
 
     @JsOverlay
-    @Nonnull
-    public final T key(@Nonnull final String value) {
+    public final T key(final String value) {
         key = value;
         return self();
     }
 
     @JsOverlay
-    @Nonnull
-    public final T dangerouslySetInnerHTML(@Nonnull final String html) {
+    public final T dangerouslySetInnerHTML(final String html) {
         setDangerouslySetInnerHTML(JsPropertyMap.of("__html", html));
         return self();
     }
 
     @JsOverlay
-    @Nonnull
-    public final T prop(@Nonnull final String key, @Nullable final Any value) {
+    public final T prop(final String key, @Nullable final Any value) {
         Js.asPropertyMap(this).set(key, value);
         return self();
     }
 
     @JsProperty
-    protected native void setDangerouslySetInnerHTML(@Nonnull JsPropertyMap<Object> __html);
+    protected native void setDangerouslySetInnerHTML(JsPropertyMap<Object> __html);
 
     // React Specific
     @JsProperty
@@ -84,42 +78,41 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setDefaultChecked(boolean defaultChecked);
 
     @JsProperty
-    public native String getDefaultValue();
+    public native @Nullable String getDefaultValue();
 
     @JsProperty
-    protected native void setDefaultValue(String defaultValue);
+    protected native void setDefaultValue(@Nullable String defaultValue);
 
     // Standard HTML Attributes
     @JsProperty
-    public native String getAccept();
+    public native @Nullable String getAccept();
 
     @JsProperty
-    protected native void setAccept(String accept);
+    protected native void setAccept(@Nullable String accept);
 
     @JsProperty
-    public native String getAcceptCharset();
+    public native @Nullable String getAcceptCharset();
 
     @JsProperty
-    protected native void setAcceptCharset(String acceptCharset);
+    protected native void setAcceptCharset(@Nullable String acceptCharset);
 
     @JsProperty
-    public native String getAccessKey();
+    public native @Nullable String getAccessKey();
 
     @JsOverlay
-    @Nonnull
-    public final T accessKey(String accessKey) {
+    public final T accessKey(@Nullable String accessKey) {
         setAccessKey(accessKey);
         return self();
     }
 
     @JsProperty
-    protected native void setAccessKey(String accessKey);
+    protected native void setAccessKey(@Nullable String accessKey);
 
     @JsProperty
-    public native String getAction();
+    public native @Nullable String getAction();
 
     @JsProperty
-    protected native void setAction(String action);
+    protected native void setAction(@Nullable String action);
 
     @JsProperty
     public native boolean isAllowFullScreen();
@@ -134,10 +127,10 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setAllowTransparency(boolean allowTransparency);
 
     @JsProperty
-    public native String getAlt();
+    public native @Nullable String getAlt();
 
     @JsProperty
-    protected native void setAlt(String alt);
+    protected native void setAlt(@Nullable String alt);
 
     @JsProperty
     public native boolean isAsync();
@@ -146,10 +139,10 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setAsync(boolean async);
 
     @JsProperty
-    public native String getAutoComplete();
+    public native @Nullable String getAutoComplete();
 
     @JsProperty
-    protected native void setAutoComplete(String autoComplete);
+    protected native void setAutoComplete(@Nullable String autoComplete);
 
     @JsProperty
     public native boolean isAutoFocus();
@@ -170,28 +163,28 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setCapture(boolean capture);
 
     @JsProperty
-    public native String getCellPadding();
+    public native @Nullable String getCellPadding();
 
     @JsProperty
-    protected native void setCellPadding(String cellPadding);
+    protected native void setCellPadding(@Nullable String cellPadding);
 
     @JsProperty
-    public native String getCellSpacing();
+    public native @Nullable String getCellSpacing();
 
     @JsProperty
-    protected native void setCellSpacing(String cellSpacing);
+    protected native void setCellSpacing(@Nullable String cellSpacing);
 
     @JsProperty
-    public native String getCharSet();
+    public native @Nullable String getCharSet();
 
     @JsProperty
-    protected native void setCharSet(String charSet);
+    protected native void setCharSet(@Nullable String charSet);
 
     @JsProperty
-    public native String getChallenge();
+    public native @Nullable String getChallenge();
 
     @JsProperty
-    protected native void setChallenge(String challenge);
+    protected native void setChallenge(@Nullable String challenge);
 
     @JsProperty
     public native boolean isChecked();
@@ -200,18 +193,17 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setChecked(boolean checked);
 
     @JsProperty
-    public native String getClassID();
+    public native @Nullable String getClassID();
 
     @JsProperty
-    protected native void setClassID(String classID);
+    protected native void setClassID(@Nullable String classID);
 
     @JsProperty
-    public native String getClassName();
+    public native @Nullable String getClassName();
 
     @SuppressWarnings("StringConcatenationInLoop")
     @JsOverlay
-    @Nonnull
-    public final T className(final String... elements) {
+    public final T className(final @Nullable String... elements) {
         String className = null;
         for (final String element : elements) {
             if (null != element) {
@@ -240,7 +232,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     }
 
     @JsProperty
-    protected native void setClassName(String className);
+    protected native void setClassName(@Nullable String className);
 
     @JsProperty
     public native int getCols();
@@ -255,16 +247,15 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setColSpan(int colSpan);
 
     @JsProperty
-    public native String getContent();
+    public native @Nullable String getContent();
 
     @JsProperty
-    protected native void setContent(String content);
+    protected native void setContent(@Nullable String content);
 
     @JsProperty
     public native boolean isContentEditable();
 
     @JsOverlay
-    @Nonnull
     public final T contentEditable(boolean contentEditable) {
         setContentEditable(contentEditable);
         return self();
@@ -274,17 +265,16 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setContentEditable(boolean contentEditable);
 
     @JsProperty
-    public native String getContextMenu();
+    public native @Nullable String getContextMenu();
 
     @JsOverlay
-    @Nonnull
-    public final T contextMenu(String contextMenu) {
+    public final T contextMenu(@Nullable String contextMenu) {
         setContextMenu(contextMenu);
         return self();
     }
 
     @JsProperty
-    protected native void setContextMenu(String contextMenu);
+    protected native void setContextMenu(@Nullable String contextMenu);
 
     @JsProperty
     public native boolean isControls();
@@ -293,28 +283,28 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setControls(boolean controls);
 
     @JsProperty
-    public native String getCoords();
+    public native @Nullable String getCoords();
 
     @JsProperty
-    protected native void setCoords(String coords);
+    protected native void setCoords(@Nullable String coords);
 
     @JsProperty
-    public native String getCrossOrigin();
+    public native @Nullable String getCrossOrigin();
 
     @JsProperty
-    protected native void setCrossOrigin(String crossOrigin);
+    protected native void setCrossOrigin(@Nullable String crossOrigin);
 
     @JsProperty
-    public native String getData();
+    public native @Nullable String getData();
 
     @JsProperty
-    protected native void setData(String data);
+    protected native void setData(@Nullable String data);
 
     @JsProperty
-    public native String getDateTime();
+    public native @Nullable String getDateTime();
 
     @JsProperty
-    protected native void setDateTime(String dateTime);
+    protected native void setDateTime(@Nullable String dateTime);
 
     // @JsProperty public native boolean is_default();
     // @JsProperty protected native void set_default(boolean _default);
@@ -326,17 +316,16 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setDefer(boolean defer);
 
     @JsProperty
-    public native String getDir();
+    public native @Nullable String getDir();
 
     @JsOverlay
-    @Nonnull
-    public final T dir(String dir) {
+    public final T dir(@Nullable String dir) {
         setDir(dir);
         return self();
     }
 
     @JsProperty
-    protected native void setDir(String dir);
+    protected native void setDir(@Nullable String dir);
 
     @JsProperty
     public native boolean isDisabled();
@@ -345,16 +334,15 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setDisabled(boolean disabled);
 
     @JsProperty
-    public native String getDownload();
+    public native @Nullable String getDownload();
 
     @JsProperty
-    protected native void setDownload(String download);
+    protected native void setDownload(@Nullable String download);
 
     @JsProperty
     public native boolean isDraggable();
 
     @JsOverlay
-    @Nonnull
     public final T draggable(boolean draggable) {
         setDraggable(draggable);
         return self();
@@ -364,34 +352,34 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setDraggable(boolean draggable);
 
     @JsProperty
-    public native String getEncType();
+    public native @Nullable String getEncType();
 
     @JsProperty
-    protected native void setEncType(String encType);
+    protected native void setEncType(@Nullable String encType);
 
     @JsProperty
-    public native String getForm();
+    public native @Nullable String getForm();
 
     @JsProperty
-    protected native void setForm(String form);
+    protected native void setForm(@Nullable String form);
 
     @JsProperty
-    public native String getFormAction();
+    public native @Nullable String getFormAction();
 
     @JsProperty
-    protected native void setFormAction(String formAction);
+    protected native void setFormAction(@Nullable String formAction);
 
     @JsProperty
-    public native String getFormEncType();
+    public native @Nullable String getFormEncType();
 
     @JsProperty
-    protected native void setFormEncType(String formEncType);
+    protected native void setFormEncType(@Nullable String formEncType);
 
     @JsProperty
-    public native String getFormMethod();
+    public native @Nullable String getFormMethod();
 
     @JsProperty
-    protected native void setFormMethod(String formMethod);
+    protected native void setFormMethod(@Nullable String formMethod);
 
     @JsProperty
     public native boolean isFormNoValidate();
@@ -400,34 +388,33 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setFormNoValidate(boolean formNoValidate);
 
     @JsProperty
-    public native String getFormTarget();
+    public native @Nullable String getFormTarget();
 
     @JsProperty
-    protected native void setFormTarget(String formTarget);
+    protected native void setFormTarget(@Nullable String formTarget);
 
     @JsProperty
-    public native String getFrameBorder();
+    public native @Nullable String getFrameBorder();
 
     @JsProperty
-    protected native void setFrameBorder(String frameBorder);
+    protected native void setFrameBorder(@Nullable String frameBorder);
 
     @JsProperty
-    public native String getHeaders();
+    public native @Nullable String getHeaders();
 
     @JsProperty
-    protected native void setHeaders(String headers);
+    protected native void setHeaders(@Nullable String headers);
 
     @JsProperty
-    public native String getHeight();
+    public native @Nullable String getHeight();
 
     @JsProperty
-    protected native void setHeight(String height);
+    protected native void setHeight(@Nullable String height);
 
     @JsProperty
     public native boolean isHidden();
 
     @JsOverlay
-    @Nonnull
     public final T hidden(boolean hidden) {
         setHidden(hidden);
         return self();
@@ -443,108 +430,106 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setHigh(int high);
 
     @JsProperty
-    public native String getHref();
+    public native @Nullable String getHref();
 
     @JsProperty
-    protected native void setHref(String href);
+    protected native void setHref(@Nullable String href);
 
     @JsProperty
-    public native String getHrefLang();
+    public native @Nullable String getHrefLang();
 
     @JsProperty
-    protected native void setHrefLang(String hrefLang);
+    protected native void setHrefLang(@Nullable String hrefLang);
 
     @JsProperty
-    public native String getHtmlFor();
+    public native @Nullable String getHtmlFor();
 
     @JsProperty
-    protected native void setHtmlFor(String htmlFor);
+    protected native void setHtmlFor(@Nullable String htmlFor);
 
     @JsProperty
-    public native String getHttpEquiv();
+    public native @Nullable String getHttpEquiv();
 
     @JsProperty
-    protected native void setHttpEquiv(String httpEquiv);
+    protected native void setHttpEquiv(@Nullable String httpEquiv);
 
     @JsProperty
-    public native String getIcon();
+    public native @Nullable String getIcon();
 
     @JsProperty
-    protected native void setIcon(String icon);
+    protected native void setIcon(@Nullable String icon);
 
     @JsProperty
-    public native String getId();
+    public native @Nullable String getId();
 
     @JsOverlay
-    @Nonnull
-    public final T id(String id) {
+    public final T id(@Nullable String id) {
         setId(id);
         return self();
     }
 
     @JsProperty
-    protected native void setId(String id);
+    protected native void setId(@Nullable String id);
 
     @JsProperty
-    public native String getInputMode();
+    public native @Nullable String getInputMode();
 
     @JsProperty
-    protected native void setInputMode(String inputMode);
+    protected native void setInputMode(@Nullable String inputMode);
 
     @JsProperty
-    public native String getIntegrity();
+    public native @Nullable String getIntegrity();
 
     @JsProperty
-    protected native void setIntegrity(String integrity);
+    protected native void setIntegrity(@Nullable String integrity);
 
     @JsProperty
-    public native String getIs();
+    public native @Nullable String getIs();
 
     @JsProperty
-    protected native void setIs(String is);
+    protected native void setIs(@Nullable String is);
 
     @JsProperty
-    public native String getKeyParams();
+    public native @Nullable String getKeyParams();
 
     @JsProperty
-    protected native void setKeyParams(String keyParams);
+    protected native void setKeyParams(@Nullable String keyParams);
 
     @JsProperty
-    public native String getKeyType();
+    public native @Nullable String getKeyType();
 
     @JsProperty
-    protected native void setKeyType(String keyType);
+    protected native void setKeyType(@Nullable String keyType);
 
     @JsProperty
-    public native String getKind();
+    public native @Nullable String getKind();
 
     @JsProperty
-    protected native void setKind(String kind);
+    protected native void setKind(@Nullable String kind);
 
     @JsProperty
-    public native String getLabel();
+    public native @Nullable String getLabel();
 
     @JsProperty
-    protected native void setLabel(String label);
+    protected native void setLabel(@Nullable String label);
 
     @JsProperty
-    public native String getLang();
+    public native @Nullable String getLang();
 
     @JsOverlay
-    @Nonnull
-    public final T lang(String lang) {
+    public final T lang(@Nullable String lang) {
         setLang(lang);
         return self();
     }
 
     @JsProperty
-    protected native void setLang(String lang);
+    protected native void setLang(@Nullable String lang);
 
     @JsProperty
-    public native String getList();
+    public native @Nullable String getList();
 
     @JsProperty
-    protected native void setList(String list);
+    protected native void setList(@Nullable String list);
 
     @JsProperty
     public native boolean isLoop();
@@ -559,10 +544,10 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setLow(int low);
 
     @JsProperty
-    public native String getManifest();
+    public native @Nullable String getManifest();
 
     @JsProperty
-    protected native void setManifest(String manifest);
+    protected native void setManifest(@Nullable String manifest);
 
     @JsProperty
     public native int getMarginHeight();
@@ -577,10 +562,10 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setMarginWidth(int marginWidth);
 
     @JsProperty
-    public native String getMax();
+    public native @Nullable String getMax();
 
     @JsProperty
-    protected native void setMax(String max);
+    protected native void setMax(@Nullable String max);
 
     @JsProperty
     public native int getMaxLength();
@@ -589,28 +574,28 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setMaxLength(int maxLength);
 
     @JsProperty
-    public native String getMedia();
+    public native @Nullable String getMedia();
 
     @JsProperty
-    protected native void setMedia(String media);
+    protected native void setMedia(@Nullable String media);
 
     @JsProperty
-    public native String getMediaGroup();
+    public native @Nullable String getMediaGroup();
 
     @JsProperty
-    protected native void setMediaGroup(String mediaGroup);
+    protected native void setMediaGroup(@Nullable String mediaGroup);
 
     @JsProperty
-    public native String getMethod();
+    public native @Nullable String getMethod();
 
     @JsProperty
-    protected native void setMethod(String method);
+    protected native void setMethod(@Nullable String method);
 
     @JsProperty
-    public native String getMin();
+    public native @Nullable String getMin();
 
     @JsProperty
-    protected native void setMin(String min);
+    protected native void setMin(@Nullable String min);
 
     @JsProperty
     public native int getMinLength();
@@ -631,10 +616,10 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setMuted(boolean muted);
 
     @JsProperty
-    public native String getName();
+    public native @Nullable String getName();
 
     @JsProperty
-    protected native void setName(String name);
+    protected native void setName(@Nullable String name);
 
     @JsProperty
     public native boolean isNoValidate();
@@ -655,34 +640,34 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setOptimum(int optimum);
 
     @JsProperty
-    public native String getPattern();
+    public native @Nullable String getPattern();
 
     @JsProperty
-    protected native void setPattern(String pattern);
+    protected native void setPattern(@Nullable String pattern);
 
     @JsProperty
-    public native String getPlaceholder();
+    public native @Nullable String getPlaceholder();
 
     @JsProperty
-    protected native void setPlaceholder(String placeholder);
+    protected native void setPlaceholder(@Nullable String placeholder);
 
     @JsProperty
-    public native String getPoster();
+    public native @Nullable String getPoster();
 
     @JsProperty
-    protected native void setPoster(String poster);
+    protected native void setPoster(@Nullable String poster);
 
     @JsProperty
-    public native String getPreload();
+    public native @Nullable String getPreload();
 
     @JsProperty
-    protected native void setPreload(String preload);
+    protected native void setPreload(@Nullable String preload);
 
     @JsProperty
-    public native String getRadioGroup();
+    public native @Nullable String getRadioGroup();
 
     @JsProperty
-    protected native void setRadioGroup(String radioGroup);
+    protected native void setRadioGroup(@Nullable String radioGroup);
 
     @JsProperty
     public native boolean isReadOnly();
@@ -691,16 +676,16 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setReadOnly(boolean readOnly);
 
     @JsProperty
-    public native String getRel();
+    public native @Nullable String getRel();
 
     @JsProperty
-    protected native void setRel(String rel);
+    protected native void setRel(@Nullable String rel);
 
     @JsProperty
-    public native String getReferrerPolicy();
+    public native @Nullable String getReferrerPolicy();
 
     @JsProperty
-    protected native void setReferrerPolicy(String rel);
+    protected native void setReferrerPolicy(@Nullable String rel);
 
     @JsProperty
     public native boolean isRequired();
@@ -709,10 +694,10 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setRequired(boolean required);
 
     @JsProperty
-    public native String getRole();
+    public native @Nullable String getRole();
 
     @JsProperty
-    protected native void setRole(String role);
+    protected native void setRole(@Nullable String role);
 
     @JsProperty
     public native int getRows();
@@ -727,16 +712,16 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setRowSpan(int rowSpan);
 
     @JsProperty
-    public native String getSandbox();
+    public native @Nullable String getSandbox();
 
     @JsProperty
-    protected native void setSandbox(String sandbox);
+    protected native void setSandbox(@Nullable String sandbox);
 
     @JsProperty
-    public native String getScope();
+    public native @Nullable String getScope();
 
     @JsProperty
-    protected native void setScope(String scope);
+    protected native void setScope(@Nullable String scope);
 
     @JsProperty
     public native boolean isScoped();
@@ -745,10 +730,10 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setScoped(boolean scoped);
 
     @JsProperty
-    public native String getScrolling();
+    public native @Nullable String getScrolling();
 
     @JsProperty
-    protected native void setScrolling(String scrolling);
+    protected native void setScrolling(@Nullable String scrolling);
 
     @JsProperty
     public native boolean isSeamless();
@@ -763,10 +748,10 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setSelected(boolean selected);
 
     @JsProperty
-    public native String getShape();
+    public native @Nullable String getShape();
 
     @JsProperty
-    protected native void setShape(String shape);
+    protected native void setShape(@Nullable String shape);
 
     @JsProperty
     public native int getSize();
@@ -775,10 +760,10 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setSize(int size);
 
     @JsProperty
-    public native String getSizes();
+    public native @Nullable String getSizes();
 
     @JsProperty
-    protected native void setSizes(String sizes);
+    protected native void setSizes(@Nullable String sizes);
 
     @JsProperty
     public native int getSpan();
@@ -790,7 +775,6 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     public native boolean isSpellCheck();
 
     @JsOverlay
-    @Nonnull
     public final T spellCheck(boolean spellCheck) {
         setSpellCheck(spellCheck);
         return self();
@@ -800,28 +784,28 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setSpellCheck(boolean spellCheck);
 
     @JsProperty
-    public native String getSrc();
+    public native @Nullable String getSrc();
 
     @JsProperty
-    protected native void setSrc(String src);
+    protected native void setSrc(@Nullable String src);
 
     @JsProperty
-    public native String getSrcDoc();
+    public native @Nullable String getSrcDoc();
 
     @JsProperty
-    protected native void setSrcDoc(String srcDoc);
+    protected native void setSrcDoc(@Nullable String srcDoc);
 
     @JsProperty
-    public native String getSrcLang();
+    public native @Nullable String getSrcLang();
 
     @JsProperty
-    protected native void setSrcLang(String srcLang);
+    protected native void setSrcLang(@Nullable String srcLang);
 
     @JsProperty
-    public native String getSrcSet();
+    public native @Nullable String getSrcSet();
 
     @JsProperty
-    protected native void setSrcSet(String srcSet);
+    protected native void setSrcSet(@Nullable String srcSet);
 
     @JsProperty
     public native int getStart();
@@ -830,16 +814,15 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setStart(int start);
 
     @JsProperty
-    public native String getStep();
+    public native @Nullable String getStep();
 
     @JsProperty
-    protected native void setStep(String step);
+    protected native void setStep(@Nullable String step);
 
     @JsProperty
-    public native CssProps getStyle();
+    public native @Nullable CssProps getStyle();
 
     @JsOverlay
-    @Nonnull
     public final T style(CssProps style) {
         setStyle(style);
         return self();
@@ -849,16 +832,15 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setStyle(CssProps style);
 
     @JsProperty
-    public native String getSummary();
+    public native @Nullable String getSummary();
 
     @JsProperty
-    protected native void setSummary(String summary);
+    protected native void setSummary(@Nullable String summary);
 
     @JsProperty
     public native int getTabIndex();
 
     @JsOverlay
-    @Nonnull
     public final T tabIndex(int tabIndex) {
         setTabIndex(tabIndex);
         return self();
@@ -868,154 +850,152 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setTabIndex(int tabIndex);
 
     @JsProperty
-    public native String getTarget();
+    public native @Nullable String getTarget();
 
     @JsProperty
-    protected native void setTarget(String target);
+    protected native void setTarget(@Nullable String target);
 
     @JsProperty
-    public native String getTitle();
+    public native @Nullable String getTitle();
 
     @JsOverlay
-    @Nonnull
-    public final T title(String title) {
+    public final T title(@Nullable String title) {
         setTitle(title);
         return self();
     }
 
     @JsProperty
-    protected native void setTitle(String title);
+    protected native void setTitle(@Nullable String title);
 
     @JsProperty
-    public native String getType();
+    public native @Nullable String getType();
 
     @JsProperty
-    protected native void setType(@Nonnull @InputType String type);
+    protected native void setType(@InputType String type);
 
     @JsProperty
-    public native String getTranslate();
+    public native @Nullable String getTranslate();
 
     @JsOverlay
-    @Nonnull
-    public final T translate(@Nonnull @YesNo final String s) {
+    public final T translate(@YesNo final String s) {
         setTranslate(s);
         return self();
     }
 
     @JsProperty
-    protected native void setTranslate(String translate);
+    protected native void setTranslate(@Nullable String translate);
 
     @JsProperty
-    public native String getUseMap();
+    public native @Nullable String getUseMap();
 
     @JsProperty
-    protected native void setUseMap(String useMap);
+    protected native void setUseMap(@Nullable String useMap);
 
     @JsProperty
-    public native String getValue();
+    public native @Nullable String getValue();
 
     @JsProperty
-    protected native void setValue(String value);
+    protected native void setValue(@Nullable String value);
 
     @JsProperty
-    public native String getWidth();
+    public native @Nullable String getWidth();
 
     @JsProperty
-    protected native void setWidth(String width);
+    protected native void setWidth(@Nullable String width);
 
     @JsProperty
-    public native String getWmode();
+    public native @Nullable String getWmode();
 
     @JsProperty
-    protected native void setWmode(String wmode);
+    protected native void setWmode(@Nullable String wmode);
 
     @JsProperty
-    public native String getWrap();
+    public native @Nullable String getWrap();
 
     @JsProperty
-    protected native void setWrap(String wrap);
+    protected native void setWrap(@Nullable String wrap);
 
     // RDFa Attributes
 
     @JsProperty
-    public native String getAbout();
+    public native @Nullable String getAbout();
 
     @JsProperty
-    protected native void setAbout(String about);
+    protected native void setAbout(@Nullable String about);
 
     @JsProperty
-    public native String getDatatype();
+    public native @Nullable String getDatatype();
 
     @JsProperty
-    protected native void setDatatype(String datatype);
+    protected native void setDatatype(@Nullable String datatype);
 
     @JsProperty
-    public native String getInlist();
+    public native @Nullable String getInlist();
 
     @JsProperty
-    protected native void setInlist(String inlist);
+    protected native void setInlist(@Nullable String inlist);
 
     @JsProperty
-    public native String getPrefix();
+    public native @Nullable String getPrefix();
 
     @JsProperty
-    protected native void setPrefix(String prefix);
+    protected native void setPrefix(@Nullable String prefix);
 
     @JsProperty
-    public native String getProperty();
+    public native @Nullable String getProperty();
 
     @JsProperty
-    protected native void setProperty(String property);
+    protected native void setProperty(@Nullable String property);
 
     @JsProperty
-    public native String getResource();
+    public native @Nullable String getResource();
 
     @JsProperty
-    protected native void setResource(String resource);
+    protected native void setResource(@Nullable String resource);
 
     @JsProperty
-    public native String getTypeof();
+    public native @Nullable String getTypeof();
 
     @JsProperty
-    protected native void setTypeof(String typeof);
+    protected native void setTypeof(@Nullable String typeof);
 
     @JsProperty
-    public native String getVocab();
+    public native @Nullable String getVocab();
 
     @JsProperty
-    protected native void setVocab(String vocab);
+    protected native void setVocab(@Nullable String vocab);
 
     // Non-standard Attributes
 
     @JsProperty
-    public native String getAutoCapitalize();
+    public native @Nullable String getAutoCapitalize();
 
     @JsProperty
-    protected native void setAutoCapitalize(String autoCapitalize);
+    protected native void setAutoCapitalize(@Nullable String autoCapitalize);
 
     @JsProperty
-    public native String getAutoCorrect();
+    public native @Nullable String getAutoCorrect();
 
     @JsProperty
-    protected native void setAutoCorrect(String autoCorrect);
+    protected native void setAutoCorrect(@Nullable String autoCorrect);
 
     @JsProperty
-    public native String getAutoSave();
+    public native @Nullable String getAutoSave();
 
     @JsProperty
-    protected native void setAutoSave(String autoSave);
+    protected native void setAutoSave(@Nullable String autoSave);
 
     @JsProperty
-    public native String getColor();
+    public native @Nullable String getColor();
 
     @JsProperty
-    protected native void setColor(String color);
+    protected native void setColor(@Nullable String color);
 
     @JsProperty
-    public native String getItemProp();
+    public native @Nullable String getItemProp();
 
     @JsProperty
-    protected native void setItemProp(String itemProp);
+    protected native void setItemProp(@Nullable String itemProp);
 
     @JsProperty
     public native boolean isItemScope();
@@ -1024,22 +1004,22 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setItemScope(boolean itemScope);
 
     @JsProperty
-    public native String getItemType();
+    public native @Nullable String getItemType();
 
     @JsProperty
-    protected native void setItemType(String itemType);
+    protected native void setItemType(@Nullable String itemType);
 
     @JsProperty
-    public native String getItemID();
+    public native @Nullable String getItemID();
 
     @JsProperty
-    protected native void setItemID(String itemID);
+    protected native void setItemID(@Nullable String itemID);
 
     @JsProperty
-    public native String getItemRef();
+    public native @Nullable String getItemRef();
 
     @JsProperty
-    protected native void setItemRef(String itemRef);
+    protected native void setItemRef(@Nullable String itemRef);
 
     @JsProperty
     public native int getResults();
@@ -1048,10 +1028,10 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     protected native void setResults(int results);
 
     @JsProperty
-    public native String getSecurity();
+    public native @Nullable String getSecurity();
 
     @JsProperty
-    protected native void setSecurity(String security);
+    protected native void setSecurity(@Nullable String security);
 
     @JsProperty
     public native boolean isUnselectable();
@@ -1064,7 +1044,6 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     public native ReactEventHandler getOnAnimationStart();
 
     @JsOverlay
-    @Nonnull
     public final T onAnimationStart(@Nullable final ReactEventHandler handler) {
         setOnAnimationStart(handler);
         return self();
@@ -1078,7 +1057,6 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     public native ReactEventHandler getOnAnimationEnd();
 
     @JsOverlay
-    @Nonnull
     public final T onAnimationEnd(@Nullable final ReactEventHandler handler) {
         setOnAnimationEnd(handler);
         return self();
@@ -1092,7 +1070,6 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     public native ReactEventHandler getOnAnimationIteration();
 
     @JsOverlay
-    @Nonnull
     public final T onAnimationIteration(@Nullable final ReactEventHandler handler) {
         setOnAnimationIteration(handler);
         return self();
@@ -1384,7 +1361,7 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     // MouseEvents
 
     @JsProperty
-    public native MouseEventHandler getOnClick();
+    public native @Nullable MouseEventHandler getOnClick();
 
     @JsProperty
     protected native void setOnClick(@Nullable final MouseEventHandler onClick);
@@ -1561,17 +1538,16 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     public native WheelEventHandler getOnWheel();
 
     @JsProperty
-    protected native void setOnWheel(WheelEventHandler onWheel);
+    protected native void setOnWheel(@Nullable WheelEventHandler onWheel);
 
     @JsOverlay
-    @Nonnull
     public final T onWheel(@Nullable final WheelEventHandler onWheel) {
         setOnWheel(onWheel);
         return self();
     }
 
     @JsOverlay
-    @Nonnull
+    @SuppressWarnings("SelfAlwaysReturnsThis")
     protected final T self() {
         return Js.uncheckedCast(this);
     }

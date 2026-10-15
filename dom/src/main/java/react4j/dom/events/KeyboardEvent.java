@@ -1,6 +1,5 @@
 package react4j.dom.events;
 
-import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -11,16 +10,22 @@ public class KeyboardEvent extends SyntheticEvent<Event> {
     private boolean altKey;
     private int charCode;
     private boolean ctrlKey;
+
+    @SuppressWarnings("NullAway.Init")
     private String key;
+
     private int keyCode;
+
+    @SuppressWarnings("NullAway.Init")
     private String locale;
+
     private int location;
     private boolean metaKey;
     private boolean repeat;
     private boolean shiftKey;
     private int which;
 
-    public native boolean getModifierState(@Nonnull String key);
+    public native boolean getModifierState(String key);
 
     @JsOverlay
     public final boolean isAltKey() {

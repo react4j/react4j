@@ -1,6 +1,5 @@
 package react4j.dom.events;
 
-import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -9,14 +8,21 @@ import jsinterop.annotations.JsType;
 @SuppressWarnings("unused")
 public class TouchEvent extends SyntheticEvent<Event> {
     private boolean altKey;
+
+    @SuppressWarnings("NullAway.Init")
     private TouchList changedTouches;
+
     private boolean ctrlKey;
     private boolean metaKey;
     private boolean shiftKey;
+
+    @SuppressWarnings("NullAway.Init")
     private TouchList targetTouches;
+
+    @SuppressWarnings("NullAway.Init")
     private TouchList touches;
 
-    public native boolean getModifierState(@Nonnull String key);
+    public native boolean getModifierState(String key);
 
     @JsOverlay
     public final boolean isAltKey() {

@@ -1,10 +1,10 @@
 package react4j.dom.proptypes.html;
 
-import javax.annotation.Nonnull;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 import react4j.dom.proptypes.cssPropertyTypes.AnimationFillMode;
 import react4j.dom.proptypes.cssPropertyTypes.Visibility;
 
@@ -18,27 +18,25 @@ import react4j.dom.proptypes.cssPropertyTypes.Visibility;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class CssProps {
     @JsProperty
-    public native String getAnimationFillMode();
+    public native @Nullable String getAnimationFillMode();
 
     @JsProperty
-    public native void setAnimationFillMode(String mode);
+    public native void setAnimationFillMode(@Nullable String mode);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps animationFillMode(@Nonnull @AnimationFillMode final String mode) {
+    public final CssProps animationFillMode(@AnimationFillMode final String mode) {
         setAnimationFillMode(mode);
         return this;
     }
 
     @JsProperty
-    public native String getBackgroundColor();
+    public native @Nullable String getBackgroundColor();
 
     @JsProperty
-    public native void setBackgroundColor(String color);
+    public native void setBackgroundColor(@Nullable String color);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps backgroundColor(String color) {
+    public final CssProps backgroundColor(@Nullable String color) {
         setBackgroundColor(color);
         return this;
     }
@@ -50,7 +48,6 @@ public class CssProps {
     public native void setBoxFlex(int boxFlex);
 
     @JsOverlay
-    @Nonnull
     public final CssProps boxFlex(int boxFlex) {
         setBoxFlex(boxFlex);
         return this;
@@ -63,21 +60,19 @@ public class CssProps {
     public native void setBoxFlexGroup(int boxFlexGroup);
 
     @JsOverlay
-    @Nonnull
     public final CssProps boxFlexGroup(int boxFlexGroup) {
         setBoxFlexGroup(boxFlexGroup);
         return this;
     }
 
     @JsProperty
-    public native String getBottom();
+    public native @Nullable String getBottom();
 
     @JsProperty
-    public native void setBottom(String bottom);
+    public native void setBottom(@Nullable String bottom);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps bottom(String bottom) {
+    public final CssProps bottom(@Nullable String bottom) {
         setBottom(bottom);
         return this;
     }
@@ -89,7 +84,6 @@ public class CssProps {
     public native void setColumnCount(int columnCount);
 
     @JsOverlay
-    @Nonnull
     public final CssProps columnCount(int columnCount) {
         setColumnCount(columnCount);
         return this;
@@ -102,7 +96,6 @@ public class CssProps {
     public native void setFlex(int flex);
 
     @JsOverlay
-    @Nonnull
     public final CssProps flex(int flex) {
         setFlex(flex);
         return this;
@@ -115,7 +108,6 @@ public class CssProps {
     public native void setFlexGrow(int flexGrow);
 
     @JsOverlay
-    @Nonnull
     public final CssProps flexGrow(int flexGrow) {
         setFlexGrow(flexGrow);
         return this;
@@ -128,7 +120,6 @@ public class CssProps {
     public native void setFlexShrink(int flexShrink);
 
     @JsOverlay
-    @Nonnull
     public final CssProps flexShrink(int flexShrink) {
         setFlexShrink(flexShrink);
         return this;
@@ -138,18 +129,16 @@ public class CssProps {
     public native void setFontWeight(double fontWeight);
 
     @JsOverlay
-    @Nonnull
     public final CssProps fontWeight(double fontWeight) {
         setFontWeight(fontWeight);
         return this;
     }
 
     @JsProperty
-    public native void setFontWeight(String fontWeight);
+    public native void setFontWeight(@Nullable String fontWeight);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps fontWeight(String fontWeight) {
+    public final CssProps fontWeight(@Nullable String fontWeight) {
         setFontWeight(fontWeight);
         return this;
     }
@@ -161,21 +150,19 @@ public class CssProps {
     public native void setLineClamp(double lineClamp);
 
     @JsOverlay
-    @Nonnull
     public final CssProps lineClamp(double lineClamp) {
         setLineClamp(lineClamp);
         return this;
     }
 
     @JsProperty
-    public native String getLineHeight();
+    public native @Nullable String getLineHeight();
 
     @JsProperty
-    public native void setLineHeight(String lineHeight);
+    public native void setLineHeight(@Nullable String lineHeight);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps lineHeight(String lineHeight) {
+    public final CssProps lineHeight(@Nullable String lineHeight) {
         setLineHeight(lineHeight);
         return this;
     }
@@ -187,7 +174,6 @@ public class CssProps {
     public native void setOpacity(double opacity);
 
     @JsOverlay
-    @Nonnull
     public final CssProps opacity(double opacity) {
         setOpacity(opacity);
         return this;
@@ -200,7 +186,6 @@ public class CssProps {
     public native void setOrder(int order);
 
     @JsOverlay
-    @Nonnull
     public final CssProps order(int order) {
         setOrder(order);
         return this;
@@ -213,7 +198,6 @@ public class CssProps {
     public native void setOrphans(int orphans);
 
     @JsOverlay
-    @Nonnull
     public final CssProps orphans(int orphans) {
         setOrphans(orphans);
         return this;
@@ -226,7 +210,6 @@ public class CssProps {
     public native void setWidows(int widows);
 
     @JsOverlay
-    @Nonnull
     public final CssProps widows(int widows) {
         setWidows(widows);
         return this;
@@ -239,7 +222,6 @@ public class CssProps {
     public native void setZIndex(double zIndex);
 
     @JsOverlay
-    @Nonnull
     public final CssProps zIndex(double zIndex) {
         setZIndex(zIndex);
         return this;
@@ -252,21 +234,19 @@ public class CssProps {
     public native void setZoom(double zoom);
 
     @JsOverlay
-    @Nonnull
     public final CssProps zoom(double zoom) {
         setZoom(zoom);
         return this;
     }
 
     @JsProperty
-    public native String getFontSize();
+    public native @Nullable String getFontSize();
 
     @JsProperty
-    public native void setFontSize(String fontSize);
+    public native void setFontSize(@Nullable String fontSize);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps fontSize(String fontSize) {
+    public final CssProps fontSize(@Nullable String fontSize) {
         setFontSize(fontSize);
         return this;
     }
@@ -280,7 +260,6 @@ public class CssProps {
     public native void setFillOpacity(double fillOpacity);
 
     @JsOverlay
-    @Nonnull
     public final CssProps fillOpacity(double fillOpacity) {
         setFillOpacity(fillOpacity);
         return this;
@@ -293,7 +272,6 @@ public class CssProps {
     public native void setStrokeOpacity(double strokeOpacity);
 
     @JsOverlay
-    @Nonnull
     public final CssProps strokeOpacity(double strokeOpacity) {
         setStrokeOpacity(strokeOpacity);
         return this;
@@ -306,34 +284,32 @@ public class CssProps {
     public native void setStrokeWidth(double strokeWidth);
 
     @JsOverlay
-    @Nonnull
     public final CssProps strokeWidth(double strokeWidth) {
         setStrokeWidth(strokeWidth);
         return this;
     }
 
     @JsProperty
-    public native String getAlignContent();
+    public native @Nullable String getAlignContent();
 
     @JsProperty
-    public native void setAlignContent(String alignContent);
+    public native void setAlignContent(@Nullable String alignContent);
 
     /**
      * Aligns a flex container's lines within the flex container when there is extra space in the
      * cross-axis, similar to how justify-content aligns individual items within the main-axis.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps alignContent(String alignContent) {
+    public final CssProps alignContent(@Nullable String alignContent) {
         setAlignContent(alignContent);
         return this;
     }
 
     @JsProperty
-    public native String getAlignItems();
+    public native @Nullable String getAlignItems();
 
     @JsProperty
-    public native void setAlignItems(String alignItems);
+    public native void setAlignItems(@Nullable String alignItems);
 
     /**
      * Sets the default alignment in the cross axis for all of the flex container's items,
@@ -341,33 +317,31 @@ public class CssProps {
      * the main axis.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps alignItems(String alignItems) {
+    public final CssProps alignItems(@Nullable String alignItems) {
         setAlignItems(alignItems);
         return this;
     }
 
     @JsProperty
-    public native String getAlignSelf();
+    public native @Nullable String getAlignSelf();
 
     @JsProperty
-    public native void setAlignSelf(String alignSelf);
+    public native void setAlignSelf(@Nullable String alignSelf);
 
     /**
      * Allows the default alignment to be overridden for individual flex items.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps alignSelf(String alignSelf) {
+    public final CssProps alignSelf(@Nullable String alignSelf) {
         setAlignSelf(alignSelf);
         return this;
     }
 
     @JsProperty
-    public native String getAlignmentAdjust();
+    public native @Nullable String getAlignmentAdjust();
 
     @JsProperty
-    public native void setAlignmentAdjust(String alignmentAdjust);
+    public native void setAlignmentAdjust(@Nullable String alignmentAdjust);
 
     /**
      * This property allows precise alignment of elements, such as graphics, that do not have a
@@ -377,170 +351,159 @@ public class CssProps {
      * alignment point for each glyph within a textual element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps alignmentAdjust(String alignmentAdjust) {
+    public final CssProps alignmentAdjust(@Nullable String alignmentAdjust) {
         setAlignmentAdjust(alignmentAdjust);
         return this;
     }
 
     @JsProperty
-    public native String getAlignmentBaseline();
+    public native @Nullable String getAlignmentBaseline();
 
     @JsProperty
-    public native void setAlignmentBaseline(String alignmentBaseline);
+    public native void setAlignmentBaseline(@Nullable String alignmentBaseline);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps alignmentBaseline(String alignmentBaseline) {
+    public final CssProps alignmentBaseline(@Nullable String alignmentBaseline) {
         setAlignmentBaseline(alignmentBaseline);
         return this;
     }
 
     @JsProperty
-    public native String getAnimationDelay();
+    public native @Nullable String getAnimationDelay();
 
     @JsProperty
-    public native void setAnimationDelay(String animationDelay);
+    public native void setAnimationDelay(@Nullable String animationDelay);
 
     /**
      * Defines a length of time to elapse before an animation starts, allowing an animation to
      * begin execution some time after it is applied.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps animationDelay(String animationDelay) {
+    public final CssProps animationDelay(@Nullable String animationDelay) {
         setAnimationDelay(animationDelay);
         return this;
     }
 
     @JsProperty
-    public native String getAnimationDirection();
+    public native @Nullable String getAnimationDirection();
 
     @JsProperty
-    public native void setAnimationDirection(String animationDirection);
+    public native void setAnimationDirection(@Nullable String animationDirection);
 
     /*
      * Defines whether an animation should run in reverse on some or all cycles.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps animationDirection(String animationDirection) {
+    public final CssProps animationDirection(@Nullable String animationDirection) {
         setAnimationDirection(animationDirection);
         return this;
     }
 
     @JsProperty
-    public native String getAnimationIterationCount();
+    public native @Nullable String getAnimationIterationCount();
 
     @JsProperty
-    public native void setAnimationIterationCount(String animationIterationCount);
+    public native void setAnimationIterationCount(@Nullable String animationIterationCount);
 
     /**
      * Specifies how many times an animation cycle should play.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps animationIterationCount(String animationIterationCount) {
+    public final CssProps animationIterationCount(@Nullable String animationIterationCount) {
         setAnimationIterationCount(animationIterationCount);
         return this;
     }
 
     @JsProperty
-    public native String getAnimationTimingFunction();
+    public native @Nullable String getAnimationTimingFunction();
 
     @JsProperty
-    public native void setAnimationTimingFunction(@Nonnull String animationTimingFunction);
+    public native void setAnimationTimingFunction(String animationTimingFunction);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps animationTimingFunction(@Nonnull final String animationTimingFunction) {
+    public final CssProps animationTimingFunction(final String animationTimingFunction) {
         setAnimationTimingFunction(animationTimingFunction);
         return this;
     }
 
     @JsProperty
-    public native String getAnimationDuration();
+    public native @Nullable String getAnimationDuration();
 
     @JsProperty
-    public native void setAnimationDuration(@Nonnull String animationDuration);
+    public native void setAnimationDuration(String animationDuration);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps animationDuration(@Nonnull final String animationDuration) {
+    public final CssProps animationDuration(final String animationDuration) {
         setAnimationDuration(animationDuration);
         return this;
     }
 
     @JsProperty
-    public native String getAnimationName();
+    public native @Nullable String getAnimationName();
 
     @JsProperty
-    public native void setAnimationName(String animationName);
+    public native void setAnimationName(@Nullable String animationName);
 
     /**
      * Defines the list of animations that apply to the element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps animationName(String animationName) {
+    public final CssProps animationName(@Nullable String animationName) {
         setAnimationName(animationName);
         return this;
     }
 
     @JsProperty
-    public native String getAnimationPlayState();
+    public native @Nullable String getAnimationPlayState();
 
     @JsProperty
-    public native void setAnimationPlayState(String animationPlayState);
+    public native void setAnimationPlayState(@Nullable String animationPlayState);
 
     /**
      * Defines whether an animation is running or paused.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps animationPlayState(String animationPlayState) {
+    public final CssProps animationPlayState(@Nullable String animationPlayState) {
         setAnimationPlayState(animationPlayState);
         return this;
     }
 
     @JsProperty
-    public native String getAppearance();
+    public native @Nullable String getAppearance();
 
     @JsProperty
-    public native void setAppearance(String appearance);
+    public native void setAppearance(@Nullable String appearance);
 
     /**
      * Allows changing the style of any element to platform-based interface elements or vice versa.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps appearance(String appearance) {
+    public final CssProps appearance(@Nullable String appearance) {
         setAppearance(appearance);
         return this;
     }
 
     @JsProperty
-    public native String getBackfaceVisibility();
+    public native @Nullable String getBackfaceVisibility();
 
     @JsProperty
-    public native void setBackfaceVisibility(String backfaceVisibility);
+    public native void setBackfaceVisibility(@Nullable String backfaceVisibility);
 
     /**
      * Determines whether or not the "back" side of a transformed element is visible when facing
      * the viewer.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps backfaceVisibility(String backfaceVisibility) {
+    public final CssProps backfaceVisibility(@Nullable String backfaceVisibility) {
         setBackfaceVisibility(backfaceVisibility);
         return this;
     }
 
     @JsProperty
-    public native String getBackgroundBlendMode();
+    public native @Nullable String getBackgroundBlendMode();
 
     @JsProperty
-    public native void setBackgroundBlendMode(String backgroundBlendMode);
+    public native void setBackgroundBlendMode(@Nullable String backgroundBlendMode);
 
     /**
      * This property describes how the element's background images should blend with each other
@@ -551,96 +514,90 @@ public class CssProps {
      * values until there are enough.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps backgroundBlendMode(String backgroundBlendMode) {
+    public final CssProps backgroundBlendMode(@Nullable String backgroundBlendMode) {
         setBackgroundBlendMode(backgroundBlendMode);
         return this;
     }
 
     @JsProperty
-    public native String getBackgroundComposite();
+    public native @Nullable String getBackgroundComposite();
 
     @JsProperty
-    public native void setBackgroundComposite(String backgroundComposite);
+    public native void setBackgroundComposite(@Nullable String backgroundComposite);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps backgroundComposite(String backgroundComposite) {
+    public final CssProps backgroundComposite(@Nullable String backgroundComposite) {
         setBackgroundComposite(backgroundComposite);
         return this;
     }
 
     @JsProperty
-    public native String getBackgroundImage();
+    public native @Nullable String getBackgroundImage();
 
     @JsProperty
-    public native void setBackgroundImage(String backgroundImage);
+    public native void setBackgroundImage(@Nullable String backgroundImage);
 
     /**
      * Applies one or more background images to an element. These can be any valid CSS image,
      * including url() paths to image files or CSS gradients.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps backgroundImage(String backgroundImage) {
+    public final CssProps backgroundImage(@Nullable String backgroundImage) {
         setBackgroundImage(backgroundImage);
         return this;
     }
 
     @JsProperty
-    public native String getBackgroundOrigin();
+    public native @Nullable String getBackgroundOrigin();
 
     @JsProperty
-    public native void setBackgroundOrigin(String backgroundOrigin);
+    public native void setBackgroundOrigin(@Nullable String backgroundOrigin);
 
     /**
      * Specifies what the background-position property is relative to.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps backgroundOrigin(String backgroundOrigin) {
+    public final CssProps backgroundOrigin(@Nullable String backgroundOrigin) {
         setBackgroundOrigin(backgroundOrigin);
         return this;
     }
 
     @JsProperty
-    public native String getBackgroundPositionX();
+    public native @Nullable String getBackgroundPositionX();
 
     @JsProperty
-    public native void setBackgroundPositionX(String backgroundPositionX);
+    public native void setBackgroundPositionX(@Nullable String backgroundPositionX);
 
     /**
      * Sets the horizontal position of a background image.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps backgroundPositionX(String backgroundPositionX) {
+    public final CssProps backgroundPositionX(@Nullable String backgroundPositionX) {
         setBackgroundPositionX(backgroundPositionX);
         return this;
     }
 
     @JsProperty
-    public native String getBackgroundRepeat();
+    public native @Nullable String getBackgroundRepeat();
 
     @JsProperty
-    public native void setBackgroundRepeat(String backgroundRepeat);
+    public native void setBackgroundRepeat(@Nullable String backgroundRepeat);
 
     /**
      * Background-repeat defines if and how background images will be repeated after they have
      * been sized and positioned
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps backgroundRepeat(String backgroundRepeat) {
+    public final CssProps backgroundRepeat(@Nullable String backgroundRepeat) {
         setBackgroundRepeat(backgroundRepeat);
         return this;
     }
 
     @JsProperty
-    public native String getBorder();
+    public native @Nullable String getBorder();
 
     @JsProperty
-    public native void setBorder(String border);
+    public native void setBorder(@Nullable String border);
 
     /**
      * Shorthand property that defines the different properties of all four sides of an element's
@@ -648,62 +605,58 @@ public class CssProps {
      * border-color, or a subset of these.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps border(String border) {
+    public final CssProps border(@Nullable String border) {
         setBorder(border);
         return this;
     }
 
     @JsProperty
-    public native String getBorderRadius();
+    public native @Nullable String getBorderRadius();
 
     @JsProperty
-    public native void setBorderRadius(String borderRadius);
+    public native void setBorderRadius(@Nullable String borderRadius);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps borderRadius(String borderRadius) {
+    public final CssProps borderRadius(@Nullable String borderRadius) {
         setBorderRadius(borderRadius);
         return this;
     }
 
     @JsProperty
-    public native String getBorderBottomLeftRadius();
+    public native @Nullable String getBorderBottomLeftRadius();
 
     @JsProperty
-    public native void setBorderBottomLeftRadius(String borderBottomLeftRadius);
+    public native void setBorderBottomLeftRadius(@Nullable String borderBottomLeftRadius);
 
     /**
      * Defines the shape of the border of the bottom-left corner.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderBottomLeftRadius(String borderBottomLeftRadius) {
+    public final CssProps borderBottomLeftRadius(@Nullable String borderBottomLeftRadius) {
         setBorderBottomLeftRadius(borderBottomLeftRadius);
         return this;
     }
 
     @JsProperty
-    public native String getBorderBottomRightRadius();
+    public native @Nullable String getBorderBottomRightRadius();
 
     @JsProperty
-    public native void setBorderBottomRightRadius(String borderBottomRightRadius);
+    public native void setBorderBottomRightRadius(@Nullable String borderBottomRightRadius);
 
     /**
      * Defines the shape of the border of the bottom-right corner.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderBottomRightRadius(String borderBottomRightRadius) {
+    public final CssProps borderBottomRightRadius(@Nullable String borderBottomRightRadius) {
         setBorderBottomRightRadius(borderBottomRightRadius);
         return this;
     }
 
     @JsProperty
-    public native String getBorderBottomWidth();
+    public native @Nullable String getBorderBottomWidth();
 
     @JsProperty
-    public native void setBorderBottomWidth(String borderBottomWidth);
+    public native void setBorderBottomWidth(@Nullable String borderBottomWidth);
 
     /**
      * Sets the width of an element's bottom border. To set all four borders, use the border-width
@@ -711,33 +664,31 @@ public class CssProps {
      * border-right-width, border-bottom-width, and border-left-width.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderBottomWidth(String borderBottomWidth) {
+    public final CssProps borderBottomWidth(@Nullable String borderBottomWidth) {
         setBorderBottomWidth(borderBottomWidth);
         return this;
     }
 
     @JsProperty
-    public native String getBorderCollapse();
+    public native @Nullable String getBorderCollapse();
 
     @JsProperty
-    public native void setBorderCollapse(String borderCollapse);
+    public native void setBorderCollapse(@Nullable String borderCollapse);
 
     /**
      * Border-collapse can be used for collapsing the borders between table cells
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderCollapse(String borderCollapse) {
+    public final CssProps borderCollapse(@Nullable String borderCollapse) {
         setBorderCollapse(borderCollapse);
         return this;
     }
 
     @JsProperty
-    public native String getBorderColor();
+    public native @Nullable String getBorderColor();
 
     @JsProperty
-    public native void setBorderColor(String borderColor);
+    public native void setBorderColor(@Nullable String borderColor);
 
     /**
      * The CSS border-color property sets the color of an element's four borders. This property can
@@ -752,17 +703,16 @@ public class CssProps {
      * order.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderColor(String borderColor) {
+    public final CssProps borderColor(@Nullable String borderColor) {
         setBorderColor(borderColor);
         return this;
     }
 
     @JsProperty
-    public native String getBorderCornerShape();
+    public native @Nullable String getBorderCornerShape();
 
     @JsProperty
-    public native void setBorderCornerShape(String borderCornerShape);
+    public native void setBorderCornerShape(@Nullable String borderCornerShape);
 
     /**
      * Specifies different corner clipping effects, such as scoop (inner curves), bevel (straight
@@ -770,34 +720,32 @@ public class CssProps {
      * corner effect.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderCornerShape(String borderCornerShape) {
+    public final CssProps borderCornerShape(@Nullable String borderCornerShape) {
         setBorderCornerShape(borderCornerShape);
         return this;
     }
 
     @JsProperty
-    public native String getBorderImageSource();
+    public native @Nullable String getBorderImageSource();
 
     @JsProperty
-    public native void setBorderImageSource(String borderImageSource);
+    public native void setBorderImageSource(@Nullable String borderImageSource);
 
     /**
      * The property border-image-source is used to set the image to be used instead of the border
      * style. If this is set to none the border-style is used instead.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderImageSource(String borderImageSource) {
+    public final CssProps borderImageSource(@Nullable String borderImageSource) {
         setBorderImageSource(borderImageSource);
         return this;
     }
 
     @JsProperty
-    public native String getBorderImageWidth();
+    public native @Nullable String getBorderImageWidth();
 
     @JsProperty
-    public native void setBorderImageWidth(String borderImageWidth);
+    public native void setBorderImageWidth(@Nullable String borderImageWidth);
 
     /**
      * The border-image-width CSS property defines the offset to use for dividing the border image
@@ -806,17 +754,16 @@ public class CssProps {
      * represent inward distance from the top, right, bottom, and left edges.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderImageWidth(String borderImageWidth) {
+    public final CssProps borderImageWidth(@Nullable String borderImageWidth) {
         setBorderImageWidth(borderImageWidth);
         return this;
     }
 
     @JsProperty
-    public native String getBorderLeft();
+    public native @Nullable String getBorderLeft();
 
     @JsProperty
-    public native void setBorderLeft(String borderLeft);
+    public native void setBorderLeft(@Nullable String borderLeft);
 
     /**
      * Shorthand property that defines the border-width, border-style and border-color of an
@@ -825,17 +772,16 @@ public class CssProps {
      * border: border-left-width, border-left-style and border-left-color.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderLeft(String borderLeft) {
+    public final CssProps borderLeft(@Nullable String borderLeft) {
         setBorderLeft(borderLeft);
         return this;
     }
 
     @JsProperty
-    public native String getBorderLeftColor();
+    public native @Nullable String getBorderLeftColor();
 
     @JsProperty
-    public native void setBorderLeftColor(String borderLeftColor);
+    public native void setBorderLeftColor(@Nullable String borderLeftColor);
 
     /**
      * The CSS border-left-color property sets the color of an element's left border. This page
@@ -844,17 +790,16 @@ public class CssProps {
      * Colors can be defined several ways. For more information, see Usage.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderLeftColor(String borderLeftColor) {
+    public final CssProps borderLeftColor(@Nullable String borderLeftColor) {
         setBorderLeftColor(borderLeftColor);
         return this;
     }
 
     @JsProperty
-    public native String getBorderLeftStyle();
+    public native @Nullable String getBorderLeftStyle();
 
     @JsProperty
-    public native void setBorderLeftStyle(String borderLeftStyle);
+    public native void setBorderLeftStyle(@Nullable String borderLeftStyle);
 
     /**
      * Sets the style of an element's left border. To set all four borders, use the shorthand
@@ -862,17 +807,16 @@ public class CssProps {
      * border-top-style, border-right-style, border-bottom-style, border-left-style.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderLeftStyle(String borderLeftStyle) {
+    public final CssProps borderLeftStyle(@Nullable String borderLeftStyle) {
         setBorderLeftStyle(borderLeftStyle);
         return this;
     }
 
     @JsProperty
-    public native String getBorderLeftWidth();
+    public native @Nullable String getBorderLeftWidth();
 
     @JsProperty
-    public native void setBorderLeftWidth(String borderLeftWidth);
+    public native void setBorderLeftWidth(@Nullable String borderLeftWidth);
 
     /**
      * Sets the width of an element's left border. To set all four borders, use the border-width
@@ -880,17 +824,16 @@ public class CssProps {
      * border-right-width, border-bottom-width, and border-left-width.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderLeftWidth(String borderLeftWidth) {
+    public final CssProps borderLeftWidth(@Nullable String borderLeftWidth) {
         setBorderLeftWidth(borderLeftWidth);
         return this;
     }
 
     @JsProperty
-    public native String getBorderRight();
+    public native @Nullable String getBorderRight();
 
     @JsProperty
-    public native void setBorderRight(String borderRight);
+    public native void setBorderRight(@Nullable String borderRight);
 
     /**
      * Shorthand property that defines the border-width, border-style and border-color of an
@@ -899,17 +842,16 @@ public class CssProps {
      * border-right-width, border-right-style and border-right-color.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderRight(String borderRight) {
+    public final CssProps borderRight(@Nullable String borderRight) {
         setBorderRight(borderRight);
         return this;
     }
 
     @JsProperty
-    public native String getBorderRightColor();
+    public native @Nullable String getBorderRightColor();
 
     @JsProperty
-    public native void setBorderRightColor(String borderRightColor);
+    public native void setBorderRightColor(@Nullable String borderRightColor);
 
     /**
      * Sets the color of an element's right border. This page explains the border-right-color
@@ -918,17 +860,16 @@ public class CssProps {
      * Colors can be defined several ways. For more information, see Usage.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderRightColor(String borderRightColor) {
+    public final CssProps borderRightColor(@Nullable String borderRightColor) {
         setBorderRightColor(borderRightColor);
         return this;
     }
 
     @JsProperty
-    public native String getBorderRightStyle();
+    public native @Nullable String getBorderRightStyle();
 
     @JsProperty
-    public native void setBorderRightStyle(String borderRightStyle);
+    public native void setBorderRightStyle(@Nullable String borderRightStyle);
 
     /**
      * Sets the style of an element's right border. To set all four borders, use the shorthand
@@ -936,17 +877,16 @@ public class CssProps {
      * border-top-style, border-right-style, border-bottom-style, border-left-style.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderRightStyle(String borderRightStyle) {
+    public final CssProps borderRightStyle(@Nullable String borderRightStyle) {
         setBorderRightStyle(borderRightStyle);
         return this;
     }
 
     @JsProperty
-    public native String getBorderRightWidth();
+    public native @Nullable String getBorderRightWidth();
 
     @JsProperty
-    public native void setBorderRightWidth(String borderRightWidth);
+    public native void setBorderRightWidth(@Nullable String borderRightWidth);
 
     /**
      * Sets the width of an element's right border. To set all four borders, use the
@@ -954,33 +894,31 @@ public class CssProps {
      * border-top-width, border-right-width, border-bottom-width, and border-left-width.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderRightWidth(String borderRightWidth) {
+    public final CssProps borderRightWidth(@Nullable String borderRightWidth) {
         setBorderRightWidth(borderRightWidth);
         return this;
     }
 
     @JsProperty
-    public native String getBorderSpacing();
+    public native @Nullable String getBorderSpacing();
 
     @JsProperty
-    public native void setBorderSpacing(String borderSpacing);
+    public native void setBorderSpacing(@Nullable String borderSpacing);
 
     /**
      * Specifies the distance between the borders of adjacent cells.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderSpacing(String borderSpacing) {
+    public final CssProps borderSpacing(@Nullable String borderSpacing) {
         setBorderSpacing(borderSpacing);
         return this;
     }
 
     @JsProperty
-    public native String getBorderStyle();
+    public native @Nullable String getBorderStyle();
 
     @JsProperty
-    public native void setBorderStyle(String borderStyle);
+    public native void setBorderStyle(@Nullable String borderStyle);
 
     /**
      * Sets the style of an element's four borders. This property can have from one to four values.
@@ -989,17 +927,16 @@ public class CssProps {
      * border-bottom-style, border-left-style, where each border style may be assigned a separate value.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderStyle(String borderStyle) {
+    public final CssProps borderStyle(@Nullable String borderStyle) {
         setBorderStyle(borderStyle);
         return this;
     }
 
     @JsProperty
-    public native String getBorderTop();
+    public native @Nullable String getBorderTop();
 
     @JsProperty
-    public native void setBorderTop(String borderTop);
+    public native void setBorderTop(@Nullable String borderTop);
 
     /**
      * Shorthand property that defines the border-width, border-style and border-color of an
@@ -1008,17 +945,16 @@ public class CssProps {
      * border-top-width, border-top-style and border-top-color.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderTop(String borderTop) {
+    public final CssProps borderTop(@Nullable String borderTop) {
         setBorderTop(borderTop);
         return this;
     }
 
     @JsProperty
-    public native String getBorderTopColor();
+    public native @Nullable String getBorderTopColor();
 
     @JsProperty
-    public native void setBorderTopColor(String borderTopColor);
+    public native void setBorderTopColor(@Nullable String borderTopColor);
 
     /**
      * Sets the color of an element's top border. This page explains the border-top-color value,
@@ -1027,49 +963,46 @@ public class CssProps {
      * Colors can be defined several ways. For more information, see Usage.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderTopColor(String borderTopColor) {
+    public final CssProps borderTopColor(@Nullable String borderTopColor) {
         setBorderTopColor(borderTopColor);
         return this;
     }
 
     @JsProperty
-    public native String getBorderTopLeftRadius();
+    public native @Nullable String getBorderTopLeftRadius();
 
     @JsProperty
-    public native void setBorderTopLeftRadius(String borderTopLeftRadius);
+    public native void setBorderTopLeftRadius(@Nullable String borderTopLeftRadius);
 
     /**
      * Sets the rounding of the top-left corner of the element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderTopLeftRadius(String borderTopLeftRadius) {
+    public final CssProps borderTopLeftRadius(@Nullable String borderTopLeftRadius) {
         setBorderTopLeftRadius(borderTopLeftRadius);
         return this;
     }
 
     @JsProperty
-    public native String getBorderTopRightRadius();
+    public native @Nullable String getBorderTopRightRadius();
 
     @JsProperty
-    public native void setBorderTopRightRadius(String borderTopRightRadius);
+    public native void setBorderTopRightRadius(@Nullable String borderTopRightRadius);
 
     /**
      * Sets the rounding of the top-right corner of the element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderTopRightRadius(String borderTopRightRadius) {
+    public final CssProps borderTopRightRadius(@Nullable String borderTopRightRadius) {
         setBorderTopRightRadius(borderTopRightRadius);
         return this;
     }
 
     @JsProperty
-    public native String getBorderTopStyle();
+    public native @Nullable String getBorderTopStyle();
 
     @JsProperty
-    public native void setBorderTopStyle(String borderTopStyle);
+    public native void setBorderTopStyle(@Nullable String borderTopStyle);
 
     /**
      * Sets the style of an element's top border. To set all four borders, use the shorthand
@@ -1077,17 +1010,16 @@ public class CssProps {
      * border-top-style, border-right-style, border-bottom-style, border-left-style.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderTopStyle(String borderTopStyle) {
+    public final CssProps borderTopStyle(@Nullable String borderTopStyle) {
         setBorderTopStyle(borderTopStyle);
         return this;
     }
 
     @JsProperty
-    public native String getBorderTopWidth();
+    public native @Nullable String getBorderTopWidth();
 
     @JsProperty
-    public native void setBorderTopWidth(String borderTopWidth);
+    public native void setBorderTopWidth(@Nullable String borderTopWidth);
 
     /**
      * Sets the width of an element's top border. To set all four borders, use the shorthand
@@ -1095,17 +1027,16 @@ public class CssProps {
      * border-top-style, border-right-style, border-bottom-style, border-left-style.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderTopWidth(String borderTopWidth) {
+    public final CssProps borderTopWidth(@Nullable String borderTopWidth) {
         setBorderTopWidth(borderTopWidth);
         return this;
     }
 
     @JsProperty
-    public native String getBorderWidth();
+    public native @Nullable String getBorderWidth();
 
     @JsProperty
-    public native void setBorderWidth(String borderWidth);
+    public native void setBorderWidth(@Nullable String borderWidth);
 
     /**
      * Sets the width of an element's four borders. This property can have from one to four values.
@@ -1113,17 +1044,16 @@ public class CssProps {
      * border-right-width, border-bottom-width, and border-left-width.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps borderWidth(String borderWidth) {
+    public final CssProps borderWidth(@Nullable String borderWidth) {
         setBorderWidth(borderWidth);
         return this;
     }
 
     @JsProperty
-    public native String getBoxDecorationBreak();
+    public native @Nullable String getBoxDecorationBreak();
 
     @JsProperty
-    public native void setBoxDecorationBreak(String boxDecorationBreak);
+    public native void setBoxDecorationBreak(@Nullable String boxDecorationBreak);
 
     /**
      * Breaks a box into fragments creating new borders, padding and repeating backgrounds or lets
@@ -1131,17 +1061,16 @@ public class CssProps {
      * line break.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps boxDecorationBreak(String boxDecorationBreak) {
+    public final CssProps boxDecorationBreak(@Nullable String boxDecorationBreak) {
         setBoxDecorationBreak(boxDecorationBreak);
         return this;
     }
 
     @JsProperty
-    public native String getBoxLineProgression();
+    public native @Nullable String getBoxLineProgression();
 
     @JsProperty
-    public native void setBoxLineProgression(String boxLineProgression);
+    public native void setBoxLineProgression(@Nullable String boxLineProgression);
 
     /**
      * Do not use. This property has been replaced by the flex-wrap property.
@@ -1149,17 +1078,16 @@ public class CssProps {
      * the value of box-lines is set to multiple.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps boxLineProgression(String boxLineProgression) {
+    public final CssProps boxLineProgression(@Nullable String boxLineProgression) {
         setBoxLineProgression(boxLineProgression);
         return this;
     }
 
     @JsProperty
-    public native String getBoxLines();
+    public native @Nullable String getBoxLines();
 
     @JsProperty
-    public native void setBoxLines(String boxLines);
+    public native void setBoxLines(@Nullable String boxLines);
 
     /**
      * Do not use. This property has been replaced by the flex-wrap property.
@@ -1167,17 +1095,16 @@ public class CssProps {
      * columns based on the space available in the object.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps boxLines(String boxLines) {
+    public final CssProps boxLines(@Nullable String boxLines) {
         setBoxLines(boxLines);
         return this;
     }
 
     @JsProperty
-    public native String getBoxOrdinalGroup();
+    public native @Nullable String getBoxOrdinalGroup();
 
     @JsProperty
-    public native void setBoxOrdinalGroup(String boxOrdinalGroup);
+    public native void setBoxOrdinalGroup(@Nullable String boxOrdinalGroup);
 
     /**
      * Do not use. This property has been replaced by flex-order.
@@ -1186,17 +1113,16 @@ public class CssProps {
      * for the group.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps boxOrdinalGroup(String boxOrdinalGroup) {
+    public final CssProps boxOrdinalGroup(@Nullable String boxOrdinalGroup) {
         setBoxOrdinalGroup(boxOrdinalGroup);
         return this;
     }
 
     @JsProperty
-    public native String getBreakAfter();
+    public native @Nullable String getBreakAfter();
 
     @JsProperty
-    public native void setBreakAfter(String breakAfter);
+    public native void setBreakAfter(@Nullable String breakAfter);
 
     /**
      * The CSS break-after property allows you to force a break on multi-column layouts. More
@@ -1206,66 +1132,62 @@ public class CssProps {
      * If there is no generated box, the property is ignored.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps breakAfter(String breakAfter) {
+    public final CssProps breakAfter(@Nullable String breakAfter) {
         setBreakAfter(breakAfter);
         return this;
     }
 
     @JsProperty
-    public native String getBreakBefore();
+    public native @Nullable String getBreakBefore();
 
     @JsProperty
-    public native void setBreakBefore(String breakBefore);
+    public native void setBreakBefore(@Nullable String breakBefore);
 
     /**
      * Control page/column/region breaks that fall above a block of content
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps breakBefore(String breakBefore) {
+    public final CssProps breakBefore(@Nullable String breakBefore) {
         setBreakBefore(breakBefore);
         return this;
     }
 
     @JsProperty
-    public native String getBreakInside();
+    public native @Nullable String getBreakInside();
 
     @JsProperty
-    public native void setBreakInside(String breakInside);
+    public native void setBreakInside(@Nullable String breakInside);
 
     /**
      * Control page/column/region breaks that fall within a block of content
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps breakInside(String breakInside) {
+    public final CssProps breakInside(@Nullable String breakInside) {
         setBreakInside(breakInside);
         return this;
     }
 
     @JsProperty
-    public native String getClear();
+    public native @Nullable String getClear();
 
     @JsProperty
-    public native void setClear(String clear);
+    public native void setClear(@Nullable String clear);
 
     /**
      * The clear CSS property specifies if an element can be positioned next to or must be
      * positioned below the floating elements that precede it in the markup.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps clear(String clear) {
+    public final CssProps clear(@Nullable String clear) {
         setClear(clear);
         return this;
     }
 
     @JsProperty
-    public native String getClipRule();
+    public native @Nullable String getClipRule();
 
     @JsProperty
-    public native void setClipRule(String clipRule);
+    public native void setClipRule(@Nullable String clipRule);
 
     /**
      * Clipping crops an graphic, so that only a portion of the graphic is rendered, or filled.
@@ -1273,115 +1195,108 @@ public class CssProps {
      * or algorithm, to use when filling the different parts of a graphics.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps clipRule(String clipRule) {
+    public final CssProps clipRule(@Nullable String clipRule) {
         setClipRule(clipRule);
         return this;
     }
 
     @JsProperty
-    public native String getColor();
+    public native @Nullable String getColor();
 
     @JsProperty
-    public native void setColor(String color);
+    public native void setColor(@Nullable String color);
 
     /**
      * The color property sets the color of an element's foreground content (usually text),
      * accepting any standard CSS color from keywords and hex values to RGB(a) and HSL(a).
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps color(String color) {
+    public final CssProps color(@Nullable String color) {
         this.setColor(color);
         return this;
     }
 
     @JsProperty
-    public native String getColumnFill();
+    public native @Nullable String getColumnFill();
 
     @JsProperty
-    public native void setColumnFill(String columnFill);
+    public native void setColumnFill(@Nullable String columnFill);
 
     /**
      * Specifies how to fill columns (balanced or sequential).
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps columnFill(String columnFill) {
+    public final CssProps columnFill(@Nullable String columnFill) {
         setColumnFill(columnFill);
         return this;
     }
 
     @JsProperty
-    public native String getColumnGap();
+    public native @Nullable String getColumnGap();
 
     @JsProperty
-    public native void setColumnGap(String columnGap);
+    public native void setColumnGap(@Nullable String columnGap);
 
     /**
      * The column-gap property controls the width of the gap between columns in multi-column
      * elements.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps columnGap(String columnGap) {
+    public final CssProps columnGap(@Nullable String columnGap) {
         setColumnGap(columnGap);
         return this;
     }
 
     @JsProperty
-    public native String getColumnRule();
+    public native @Nullable String getColumnRule();
 
     @JsProperty
-    public native void setColumnRule(String columnRule);
+    public native void setColumnRule(@Nullable String columnRule);
 
     /**
      * Sets the width, style, and color of the rule between columns.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps columnRule(String columnRule) {
+    public final CssProps columnRule(@Nullable String columnRule) {
         setColumnRule(columnRule);
         return this;
     }
 
     @JsProperty
-    public native String getColumnRuleColor();
+    public native @Nullable String getColumnRuleColor();
 
     @JsProperty
-    public native void setColumnRuleColor(String columnRuleColor);
+    public native void setColumnRuleColor(@Nullable String columnRuleColor);
 
     /**
      * Specifies the color of the rule between columns.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps columnRuleColor(String columnRuleColor) {
+    public final CssProps columnRuleColor(@Nullable String columnRuleColor) {
         setColumnRuleColor(columnRuleColor);
         return this;
     }
 
     @JsProperty
-    public native String getColumnRuleWidth();
+    public native @Nullable String getColumnRuleWidth();
 
     @JsProperty
-    public native void setColumnRuleWidth(String columnRuleWidth);
+    public native void setColumnRuleWidth(@Nullable String columnRuleWidth);
 
     /**
      * Specifies the width of the rule between columns.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps columnRuleWidth(String columnRuleWidth) {
+    public final CssProps columnRuleWidth(@Nullable String columnRuleWidth) {
         setColumnRuleWidth(columnRuleWidth);
         return this;
     }
 
     @JsProperty
-    public native String getColumnSpan();
+    public native @Nullable String getColumnSpan();
 
     @JsProperty
-    public native void setColumnSpan(String columnSpan);
+    public native void setColumnSpan(@Nullable String columnSpan);
 
     /**
      * The column-span CSS property makes it possible for an element to span across all columns
@@ -1389,49 +1304,46 @@ public class CssProps {
      * spanning element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps columnSpan(String columnSpan) {
+    public final CssProps columnSpan(@Nullable String columnSpan) {
         setColumnSpan(columnSpan);
         return this;
     }
 
     @JsProperty
-    public native String getColumnWidth();
+    public native @Nullable String getColumnWidth();
 
     @JsProperty
-    public native void setColumnWidth(String columnWidth);
+    public native void setColumnWidth(@Nullable String columnWidth);
 
     /**
      * Specifies the width of columns in multi-column elements.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps columnWidth(String columnWidth) {
+    public final CssProps columnWidth(@Nullable String columnWidth) {
         setColumnWidth(columnWidth);
         return this;
     }
 
     @JsProperty
-    public native String getColumns();
+    public native @Nullable String getColumns();
 
     @JsProperty
-    public native void setColumns(String columns);
+    public native void setColumns(@Nullable String columns);
 
     /**
      * This property is a shorthand property for setting column-width and/or column-count.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps columns(String columns) {
+    public final CssProps columns(@Nullable String columns) {
         setColumns(columns);
         return this;
     }
 
     @JsProperty
-    public native String getCounterIncrement();
+    public native @Nullable String getCounterIncrement();
 
     @JsProperty
-    public native void setCounterIncrement(String counterIncrement);
+    public native void setCounterIncrement(@Nullable String counterIncrement);
 
     /**
      * The counter-increment property accepts one or more names of counters (identifiers), each
@@ -1440,17 +1352,16 @@ public class CssProps {
      * invoked).
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps counterIncrement(String counterIncrement) {
+    public final CssProps counterIncrement(@Nullable String counterIncrement) {
         setCounterIncrement(counterIncrement);
         return this;
     }
 
     @JsProperty
-    public native String getCounterReset();
+    public native @Nullable String getCounterReset();
 
     @JsProperty
-    public native void setCounterReset(String counterReset);
+    public native void setCounterReset(@Nullable String counterReset);
 
     /**
      * The counter-reset property contains a list of one or more names of counters, each one
@@ -1459,17 +1370,16 @@ public class CssProps {
      * integer.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps counterReset(String counterReset) {
+    public final CssProps counterReset(@Nullable String counterReset) {
         setCounterReset(counterReset);
         return this;
     }
 
     @JsProperty
-    public native String getCue();
+    public native @Nullable String getCue();
 
     @JsProperty
-    public native void setCue(String cue);
+    public native void setCue(@Nullable String cue);
 
     /**
      * The cue property specifies sound files (known as an "auditory icon") to be played by
@@ -1479,17 +1389,16 @@ public class CssProps {
      * The icon files may also be set separately with the cue-before and cue-after properties.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps cue(String cue) {
+    public final CssProps cue(@Nullable String cue) {
         setCue(cue);
         return this;
     }
 
     @JsProperty
-    public native String getCueAfter();
+    public native @Nullable String getCueAfter();
 
     @JsProperty
-    public native void setCueAfter(String cueAfter);
+    public native void setCueAfter(@Nullable String cueAfter);
 
     /**
      * The cue-after property specifies a sound file (known as an "auditory icon") to be played
@@ -1498,51 +1407,48 @@ public class CssProps {
      * for both before and after the element is presented.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps cueAfter(String cueAfter) {
+    public final CssProps cueAfter(@Nullable String cueAfter) {
         setCueAfter(cueAfter);
         return this;
     }
 
     @JsProperty
-    public native String getDirection();
+    public native @Nullable String getDirection();
 
     @JsProperty
-    public native void setDirection(String direction);
+    public native void setDirection(@Nullable String direction);
 
     /**
      * The direction CSS property specifies the text direction/writing direction. The rtl is
      * used for Hebrew or Arabic text, the ltr is for other languages.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps direction(String direction) {
+    public final CssProps direction(@Nullable String direction) {
         setDirection(direction);
         return this;
     }
 
     @JsProperty
-    public native String getDisplay();
+    public native @Nullable String getDisplay();
 
     @JsProperty
-    public native void setDisplay(String display);
+    public native void setDisplay(@Nullable String display);
 
     /**
      * This property specifies the type of rendering box used for an element. It is a shorthand
      * property for many other display properties.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps display(String display) {
+    public final CssProps display(@Nullable String display) {
         setDisplay(display);
         return this;
     }
 
     @JsProperty
-    public native String getFill();
+    public native @Nullable String getFill();
 
     @JsProperty
-    public native void setFill(String fill);
+    public native void setFill(@Nullable String fill);
 
     /**
      * The "fill" property paints the interior of the given graphical element. The area to be
@@ -1552,17 +1458,16 @@ public class CssProps {
      * geometric outline of a shape is included in the area to be painted.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps fill(String fill) {
+    public final CssProps fill(@Nullable String fill) {
         setFill(fill);
         return this;
     }
 
     @JsProperty
-    public native String getFillRule();
+    public native @Nullable String getFillRule();
 
     @JsProperty
-    public native void setFillRule(String fillRule);
+    public native void setFillRule(@Nullable String fillRule);
 
     /**
      * The "fill-rule" property indicates the algorithm which is to be used to determine what
@@ -1573,34 +1478,32 @@ public class CssProps {
      * The "fill-rule" property provides two options for how the inside of a shape is determined:
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps fillRule(String fillRule) {
+    public final CssProps fillRule(@Nullable String fillRule) {
         setFillRule(fillRule);
         return this;
     }
 
     @JsProperty
-    public native String getFilter();
+    public native @Nullable String getFilter();
 
     @JsProperty
-    public native void setFilter(String filter);
+    public native void setFilter(@Nullable String filter);
 
     /**
      * Applies various image processing effects. This property is largely unsupported. See
      * Compatibility section for more information.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps filter(String filter) {
+    public final CssProps filter(@Nullable String filter) {
         setFilter(filter);
         return this;
     }
 
     @JsProperty
-    public native String getFlexBasis();
+    public native @Nullable String getFlexBasis();
 
     @JsProperty
-    public native void setFlexBasis(String flexBasis);
+    public native void setFlexBasis(@Nullable String flexBasis);
 
     /**
      * The flex-basis CSS property describes the initial main size of the flex item before any free
@@ -1608,51 +1511,48 @@ public class CssProps {
      * (flex-grow and flex-shrink).
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps flexBasis(String flexBasis) {
+    public final CssProps flexBasis(@Nullable String flexBasis) {
         setFlexBasis(flexBasis);
         return this;
     }
 
     @JsProperty
-    public native String getFlexDirection();
+    public native @Nullable String getFlexDirection();
 
     @JsProperty
-    public native void setFlexDirection(String flexDirection);
+    public native void setFlexDirection(@Nullable String flexDirection);
 
     /**
      * The flex-direction CSS property describes how flex items are placed in the flex container,
      * by setting the direction of the flex container's main axis.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps flexDirection(String flexDirection) {
+    public final CssProps flexDirection(@Nullable String flexDirection) {
         setFlexDirection(flexDirection);
         return this;
     }
 
     @JsProperty
-    public native String getFlexFlow();
+    public native @Nullable String getFlexFlow();
 
     @JsProperty
-    public native void setFlexFlow(String flexFlow);
+    public native void setFlexFlow(@Nullable String flexFlow);
 
     /**
      * The flex-flow CSS property defines the flex container's main and cross axis. It is a
      * shorthand property for the flex-direction and flex-wrap properties.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps flexFlow(String flexFlow) {
+    public final CssProps flexFlow(@Nullable String flexFlow) {
         setFlexFlow(flexFlow);
         return this;
     }
 
     @JsProperty
-    public native String getFlexItemAlign();
+    public native @Nullable String getFlexItemAlign();
 
     @JsProperty
-    public native void setFlexItemAlign(String flexItemAlign);
+    public native void setFlexItemAlign(@Nullable String flexItemAlign);
 
     /**
      * Do not use. This property has been renamed to align-self
@@ -1660,34 +1560,32 @@ public class CssProps {
      * of child elements of the object.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps flexItemAlign(String flexItemAlign) {
+    public final CssProps flexItemAlign(@Nullable String flexItemAlign) {
         setFlexItemAlign(flexItemAlign);
         return this;
     }
 
     @JsProperty
-    public native String getFlexOrder();
+    public native @Nullable String getFlexOrder();
 
     @JsProperty
-    public native void setFlexOrder(String flexOrder);
+    public native void setFlexOrder(@Nullable String flexOrder);
 
     /**
      * Gets or sets a value that specifies the ordinal group that a flexbox element belongs to.
      * This ordinal value identifies the display order for the group.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps flexOrder(String flexOrder) {
+    public final CssProps flexOrder(@Nullable String flexOrder) {
         setFlexOrder(flexOrder);
         return this;
     }
 
     @JsProperty(name = "float")
-    public native String getCssFloat();
+    public native @Nullable String getCssFloat();
 
     @JsProperty(name = "float")
-    public native void setCssFloat(String cssFloat);
+    public native void setCssFloat(@Nullable String cssFloat);
 
     /**
      * Elements which have the style float are floated horizontally. These elements can move as
@@ -1697,34 +1595,32 @@ public class CssProps {
      * as long as there is room.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps cssFloat(String cssFloat) {
+    public final CssProps cssFloat(@Nullable String cssFloat) {
         setCssFloat(cssFloat);
         return this;
     }
 
     @JsProperty
-    public native String getFlowFrom();
+    public native @Nullable String getFlowFrom();
 
     @JsProperty
-    public native void setFlowFrom(String flowFrom);
+    public native void setFlowFrom(@Nullable String flowFrom);
 
     /**
      * Flows content from a named flow (specified by a corresponding flow-into) through selected
      * elements to form a dynamic chain of layout regions.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps flowFrom(String flowFrom) {
+    public final CssProps flowFrom(@Nullable String flowFrom) {
         setFlowFrom(flowFrom);
         return this;
     }
 
     @JsProperty
-    public native String getFont();
+    public native @Nullable String getFont();
 
     @JsProperty
-    public native void setFont(String font);
+    public native void setFont(@Nullable String font);
 
     /**
      * The font property is shorthand that allows you to do one of two things: you can either set
@@ -1732,17 +1628,16 @@ public class CssProps {
      * keywords to adopt a system font setting.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps font(String font) {
+    public final CssProps font(@Nullable String font) {
         setFont(font);
         return this;
     }
 
     @JsProperty
-    public native String getFontFamily();
+    public native @Nullable String getFontFamily();
 
     @JsProperty
-    public native void setFontFamily(String fontFamily);
+    public native void setFontFamily(@Nullable String fontFamily);
 
     /**
      * The font-family property allows one or more font family names and/or generic family names
@@ -1751,17 +1646,16 @@ public class CssProps {
      * available glyph for that character.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps fontFamily(String fontFamily) {
+    public final CssProps fontFamily(@Nullable String fontFamily) {
         setFontFamily(fontFamily);
         return this;
     }
 
     @JsProperty
-    public native String getFontKerning();
+    public native @Nullable String getFontKerning();
 
     @JsProperty
-    public native void setFontKerning(String fontKerning);
+    public native void setFontKerning(@Nullable String fontKerning);
 
     /**
      * The font-kerning property allows contextual adjustment of inter-glyph spacing, i.e. the
@@ -1770,17 +1664,16 @@ public class CssProps {
      * yet.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps fontKerning(String fontKerning) {
+    public final CssProps fontKerning(@Nullable String fontKerning) {
         setFontKerning(fontKerning);
         return this;
     }
 
     @JsProperty
-    public native String getFontSizeAdjust();
+    public native @Nullable String getFontSizeAdjust();
 
     @JsProperty
-    public native void setFontSizeAdjust(String fontSizeAdjust);
+    public native void setFontSizeAdjust(@Nullable String fontSizeAdjust);
 
     /**
      * The font-size-adjust property adjusts the font-size of the fallback fonts defined with
@@ -1788,33 +1681,31 @@ public class CssProps {
      * the readability of the text when fallback happens.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps fontSizeAdjust(String fontSizeAdjust) {
+    public final CssProps fontSizeAdjust(@Nullable String fontSizeAdjust) {
         setFontSizeAdjust(fontSizeAdjust);
         return this;
     }
 
     @JsProperty
-    public native String getFontStretch();
+    public native @Nullable String getFontStretch();
 
     @JsProperty
-    public native void setFontStretch(String fontStretch);
+    public native void setFontStretch(@Nullable String fontStretch);
 
     /**
      * Allows you to expand or condense the widths for a normal, condensed, or expanded font face.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps fontStretch(String fontStretch) {
+    public final CssProps fontStretch(@Nullable String fontStretch) {
         setFontStretch(fontStretch);
         return this;
     }
 
     @JsProperty
-    public native String getFontStyle();
+    public native @Nullable String getFontStyle();
 
     @JsProperty
-    public native void setFontStyle(String fontStyle);
+    public native void setFontStyle(@Nullable String fontStyle);
 
     /**
      * The font-style property allows normal, italic, or oblique faces to be selected. Italic
@@ -1823,67 +1714,63 @@ public class CssProps {
      * of the regular face.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps fontStyle(String fontStyle) {
+    public final CssProps fontStyle(@Nullable String fontStyle) {
         setFontStyle(fontStyle);
         return this;
     }
 
     @JsProperty
-    public native String getFontSynthesis();
+    public native @Nullable String getFontSynthesis();
 
     @JsProperty
-    public native void setFontSynthesis(String fontSynthesis);
+    public native void setFontSynthesis(@Nullable String fontSynthesis);
 
     /**
      * This value specifies whether the user agent is allowed to synthesize bold or oblique font
      * faces when a font family lacks bold or italic faces.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps fontSynthesis(String fontSynthesis) {
+    public final CssProps fontSynthesis(@Nullable String fontSynthesis) {
         setFontSynthesis(fontSynthesis);
         return this;
     }
 
     @JsProperty
-    public native String getFontVariant();
+    public native @Nullable String getFontVariant();
 
     @JsProperty
-    public native void setFontVariant(String fontVariant);
+    public native void setFontVariant(@Nullable String fontVariant);
 
     /**
      * The font-variant property enables you to select the small-caps font within a font family.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps fontVariant(String fontVariant) {
+    public final CssProps fontVariant(@Nullable String fontVariant) {
         setFontVariant(fontVariant);
         return this;
     }
 
     @JsProperty
-    public native String getFontVariantAlternates();
+    public native @Nullable String getFontVariantAlternates();
 
     @JsProperty
-    public native void setFontVariantAlternates(String fontVariantAlternates);
+    public native void setFontVariantAlternates(@Nullable String fontVariantAlternates);
 
     /**
      * Fonts can provide alternate glyphs in addition to default glyph for a character. This
      * property provides control over the selection of these alternate glyphs.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps fontVariantAlternates(String fontVariantAlternates) {
+    public final CssProps fontVariantAlternates(@Nullable String fontVariantAlternates) {
         setFontVariantAlternates(fontVariantAlternates);
         return this;
     }
 
     @JsProperty
-    public native String getGridArea();
+    public native @Nullable String getGridArea();
 
     @JsProperty
-    public native void setGridArea(String gridArea);
+    public native void setGridArea(@Nullable String gridArea);
 
     /**
      * Lays out one or more grid items bound by 4 grid lines. Shorthand for setting
@@ -1891,34 +1778,32 @@ public class CssProps {
      * declaration.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps gridArea(String gridArea) {
+    public final CssProps gridArea(@Nullable String gridArea) {
         setGridArea(gridArea);
         return this;
     }
 
     @JsProperty
-    public native String getGridColumn();
+    public native @Nullable String getGridColumn();
 
     @JsProperty
-    public native void setGridColumn(String gridColumn);
+    public native void setGridColumn(@Nullable String gridColumn);
 
     /**
      * Controls a grid item's placement in a grid area, particularly grid position and a grid span.
      * Shorthand for setting grid-column-start and grid-column-end in a single declaration.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps gridColumn(String gridColumn) {
+    public final CssProps gridColumn(@Nullable String gridColumn) {
         setGridColumn(gridColumn);
         return this;
     }
 
     @JsProperty
-    public native String getGridColumnEnd();
+    public native @Nullable String getGridColumnEnd();
 
     @JsProperty
-    public native void setGridColumnEnd(String gridColumnEnd);
+    public native void setGridColumnEnd(@Nullable String gridColumnEnd);
 
     /**
      * Controls a grid item's placement in a grid area as well as grid position and a grid span.
@@ -1926,17 +1811,16 @@ public class CssProps {
      * determines a grid item's placement by specifying the grid lines of a grid item's grid area.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps gridColumnEnd(String gridColumnEnd) {
+    public final CssProps gridColumnEnd(@Nullable String gridColumnEnd) {
         setGridColumnEnd(gridColumnEnd);
         return this;
     }
 
     @JsProperty
-    public native String getGridColumnStart();
+    public native @Nullable String getGridColumnStart();
 
     @JsProperty
-    public native void setGridColumnStart(String gridColumnStart);
+    public native void setGridColumnStart(@Nullable String gridColumnStart);
 
     /**
      * Determines a grid item's placement by specifying the starting grid lines of a grid item's
@@ -1944,34 +1828,32 @@ public class CssProps {
      * span. See also ( grid-row-start, grid-row-end, and grid-column-end)
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps gridColumnStart(String gridColumnStart) {
+    public final CssProps gridColumnStart(@Nullable String gridColumnStart) {
         setGridColumnStart(gridColumnStart);
         return this;
     }
 
     @JsProperty
-    public native String getGridRow();
+    public native @Nullable String getGridRow();
 
     @JsProperty
-    public native void setGridRow(String gridRow);
+    public native void setGridRow(@Nullable String gridRow);
 
     /**
      * Gets or sets a value that indicates which row an element within a Grid should appear in.
      * Shorthand for setting grid-row-start and grid-row-end in a single declaration.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps gridRow(String gridRow) {
+    public final CssProps gridRow(@Nullable String gridRow) {
         setGridRow(gridRow);
         return this;
     }
 
     @JsProperty
-    public native String getGridRowEnd();
+    public native @Nullable String getGridRowEnd();
 
     @JsProperty
-    public native void setGridRowEnd(String gridRowEnd);
+    public native void setGridRowEnd(@Nullable String gridRowEnd);
 
     /**
      * Determines a grid item's placement by specifying the block-end. A grid item's placement in
@@ -1980,47 +1862,44 @@ public class CssProps {
      * placement by specifying the grid lines of a grid item's grid area.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps gridRowEnd(String gridRowEnd) {
+    public final CssProps gridRowEnd(@Nullable String gridRowEnd) {
         setGridRowEnd(gridRowEnd);
         return this;
     }
 
     @JsProperty
-    public native String getGridRowPosition();
+    public native @Nullable String getGridRowPosition();
 
     @JsProperty
-    public native void setGridRowPosition(String gridRowPosition);
+    public native void setGridRowPosition(@Nullable String gridRowPosition);
 
     /**
      * Specifies a row position based upon an integer location, string value, or desired row size.
      * css/properties/grid-row is used as short-hand for grid-row-position and grid-row-position
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps gridRowPosition(String gridRowPosition) {
+    public final CssProps gridRowPosition(@Nullable String gridRowPosition) {
         setGridRowPosition(gridRowPosition);
         return this;
     }
 
     @JsProperty
-    public native String getGridRowSpan();
+    public native @Nullable String getGridRowSpan();
 
     @JsProperty
-    public native void setGridRowSpan(String gridRowSpan);
+    public native void setGridRowSpan(@Nullable String gridRowSpan);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps gridRowSpan(String gridRowSpan) {
+    public final CssProps gridRowSpan(@Nullable String gridRowSpan) {
         setGridRowSpan(gridRowSpan);
         return this;
     }
 
     @JsProperty
-    public native String getGridTemplateAreas();
+    public native @Nullable String getGridTemplateAreas();
 
     @JsProperty
-    public native void setGridTemplateAreas(String gridTemplateAreas);
+    public native void setGridTemplateAreas(@Nullable String gridTemplateAreas);
 
     /**
      * Specifies named grid areas which are not associated with any particular grid item, but can
@@ -2029,17 +1908,16 @@ public class CssProps {
      * layout of the grid container easier to understand.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps gridTemplateAreas(String gridTemplateAreas) {
+    public final CssProps gridTemplateAreas(@Nullable String gridTemplateAreas) {
         setGridTemplateAreas(gridTemplateAreas);
         return this;
     }
 
     @JsProperty
-    public native String getGridTemplateColumns();
+    public native @Nullable String getGridTemplateColumns();
 
     @JsProperty
-    public native void setGridTemplateColumns(String gridTemplateColumns);
+    public native void setGridTemplateColumns(@Nullable String gridTemplateColumns);
 
     /**
      * Specifies (with grid-template-rows) the line names and track sizing functions of the grid.
@@ -2048,17 +1926,16 @@ public class CssProps {
      * space in the grid.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps gridTemplateColumns(String gridTemplateColumns) {
+    public final CssProps gridTemplateColumns(@Nullable String gridTemplateColumns) {
         setGridTemplateColumns(gridTemplateColumns);
         return this;
     }
 
     @JsProperty
-    public native String getGridTemplateRows();
+    public native @Nullable String getGridTemplateRows();
 
     @JsProperty
-    public native void setGridTemplateRows(String gridTemplateRows);
+    public native void setGridTemplateRows(@Nullable String gridTemplateRows);
 
     /**
      * Specifies (with grid-template-columns) the line names and track sizing functions of the
@@ -2067,67 +1944,63 @@ public class CssProps {
      * fraction of the free space in the grid.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps gridTemplateRows(String gridTemplateRows) {
+    public final CssProps gridTemplateRows(@Nullable String gridTemplateRows) {
         setGridTemplateRows(gridTemplateRows);
         return this;
     }
 
     @JsProperty
-    public native String getHeight();
+    public native @Nullable String getHeight();
 
     @JsProperty
-    public native void setHeight(String height);
+    public native void setHeight(@Nullable String height);
 
     /**
      * Sets the height of an element. The content area of the element height does not include
      * the padding, border, and margin of the element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps height(String height) {
+    public final CssProps height(@Nullable String height) {
         setHeight(height);
         return this;
     }
 
     @JsProperty
-    public native String getHyphenateLimitChars();
+    public native @Nullable String getHyphenateLimitChars();
 
     @JsProperty
-    public native void setHyphenateLimitChars(String hyphenateLimitChars);
+    public native void setHyphenateLimitChars(@Nullable String hyphenateLimitChars);
 
     /**
      * Specifies the minimum number of characters in a hyphenated word
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps hyphenateLimitChars(String hyphenateLimitChars) {
+    public final CssProps hyphenateLimitChars(@Nullable String hyphenateLimitChars) {
         setHyphenateLimitChars(hyphenateLimitChars);
         return this;
     }
 
     @JsProperty
-    public native String getHyphenateLimitLines();
+    public native @Nullable String getHyphenateLimitLines();
 
     @JsProperty
-    public native void setHyphenateLimitLines(String hyphenateLimitLines);
+    public native void setHyphenateLimitLines(@Nullable String hyphenateLimitLines);
 
     /**
      * Indicates the maximum number of successive hyphenated lines in an element. The "no-limit"
      * value means that there is no limit.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps hyphenateLimitLines(String hyphenateLimitLines) {
+    public final CssProps hyphenateLimitLines(@Nullable String hyphenateLimitLines) {
         setHyphenateLimitLines(hyphenateLimitLines);
         return this;
     }
 
     @JsProperty
-    public native String getHyphenateLimitZone();
+    public native @Nullable String getHyphenateLimitZone();
 
     @JsProperty
-    public native void setHyphenateLimitZone(String hyphenateLimitZone);
+    public native void setHyphenateLimitZone(@Nullable String hyphenateLimitZone);
 
     /**
      * Specifies the maximum amount of trailing whitespace (before justification) that may be
@@ -2135,161 +2008,150 @@ public class CssProps {
      * line back up into the current one.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps hyphenateLimitZone(String hyphenateLimitZone) {
+    public final CssProps hyphenateLimitZone(@Nullable String hyphenateLimitZone) {
         setHyphenateLimitZone(hyphenateLimitZone);
         return this;
     }
 
     @JsProperty
-    public native String getHyphens();
+    public native @Nullable String getHyphens();
 
     @JsProperty
-    public native void setHyphens(String hyphens);
+    public native void setHyphens(@Nullable String hyphens);
 
     /**
      * Specifies whether or not words in a sentence can be split by the use of a manual or
      * automatic hyphenation mechanism.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps hyphens(String hyphens) {
+    public final CssProps hyphens(@Nullable String hyphens) {
         setHyphens(hyphens);
         return this;
     }
 
     @JsProperty
-    public native String getImeMode();
+    public native @Nullable String getImeMode();
 
     @JsProperty
-    public native void setImeMode(String imeMode);
+    public native void setImeMode(@Nullable String imeMode);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps imeMode(String imeMode) {
+    public final CssProps imeMode(@Nullable String imeMode) {
         setImeMode(imeMode);
         return this;
     }
 
     @JsProperty
-    public native String getLayoutGrid();
+    public native @Nullable String getLayoutGrid();
 
     @JsProperty
-    public native void setLayoutGrid(String layoutGrid);
+    public native void setLayoutGrid(@Nullable String layoutGrid);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps layoutGrid(String layoutGrid) {
+    public final CssProps layoutGrid(@Nullable String layoutGrid) {
         setLayoutGrid(layoutGrid);
         return this;
     }
 
     @JsProperty
-    public native String getLayoutGridChar();
+    public native @Nullable String getLayoutGridChar();
 
     @JsProperty
-    public native void setLayoutGridChar(String layoutGridChar);
+    public native void setLayoutGridChar(@Nullable String layoutGridChar);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps layoutGridChar(String layoutGridChar) {
+    public final CssProps layoutGridChar(@Nullable String layoutGridChar) {
         setLayoutGridChar(layoutGridChar);
         return this;
     }
 
     @JsProperty
-    public native String getLayoutGridLine();
+    public native @Nullable String getLayoutGridLine();
 
     @JsProperty
-    public native void setLayoutGridLine(String layoutGridLine);
+    public native void setLayoutGridLine(@Nullable String layoutGridLine);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps layoutGridLine(String layoutGridLine) {
+    public final CssProps layoutGridLine(@Nullable String layoutGridLine) {
         setLayoutGridLine(layoutGridLine);
         return this;
     }
 
     @JsProperty
-    public native String getLayoutGridMode();
+    public native @Nullable String getLayoutGridMode();
 
     @JsProperty
-    public native void setLayoutGridMode(String layoutGridMode);
+    public native void setLayoutGridMode(@Nullable String layoutGridMode);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps layoutGridMode(String layoutGridMode) {
+    public final CssProps layoutGridMode(@Nullable String layoutGridMode) {
         setLayoutGridMode(layoutGridMode);
         return this;
     }
 
     @JsProperty
-    public native String getLayoutGridType();
+    public native @Nullable String getLayoutGridType();
 
     @JsProperty
-    public native void setLayoutGridType(String layoutGridType);
+    public native void setLayoutGridType(@Nullable String layoutGridType);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps layoutGridType(String layoutGridType) {
+    public final CssProps layoutGridType(@Nullable String layoutGridType) {
         setLayoutGridType(layoutGridType);
         return this;
     }
 
     @JsProperty
-    public native String getLeft();
+    public native @Nullable String getLeft();
 
     @JsProperty
-    public native void setLeft(String left);
+    public native void setLeft(@Nullable String left);
 
     /**
      * Sets the left edge of an element
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps left(String left) {
+    public final CssProps left(@Nullable String left) {
         setLeft(left);
         return this;
     }
 
     @JsProperty
-    public native String getLetterSpacing();
+    public native @Nullable String getLetterSpacing();
 
     @JsProperty
-    public native void setLetterSpacing(String letterSpacing);
+    public native void setLetterSpacing(@Nullable String letterSpacing);
 
     /**
      * The letter-spacing CSS property specifies the spacing behavior between text characters.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps letterSpacing(String letterSpacing) {
+    public final CssProps letterSpacing(@Nullable String letterSpacing) {
         setLetterSpacing(letterSpacing);
         return this;
     }
 
     @JsProperty
-    public native String getListStyle();
+    public native @Nullable String getListStyle();
 
     @JsProperty
-    public native void setListStyle(String listStyle);
+    public native void setListStyle(@Nullable String listStyle);
 
     /**
      * Shorthand property that sets the list-style-type, list-style-position and list-style-image
      * properties in one declaration.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps listStyle(String listStyle) {
+    public final CssProps listStyle(@Nullable String listStyle) {
         setListStyle(listStyle);
         return this;
     }
 
     @JsProperty
-    public native String getListStyleImage();
+    public native @Nullable String getListStyleImage();
 
     @JsProperty
-    public native void setListStyleImage(String listStyleImage);
+    public native void setListStyleImage(@Nullable String listStyleImage);
 
     /**
      * This property sets the image that will be used as the list item marker. When the image is
@@ -2298,49 +2160,46 @@ public class CssProps {
      * list-style-property
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps listStyleImage(String listStyleImage) {
+    public final CssProps listStyleImage(@Nullable String listStyleImage) {
         setListStyleImage(listStyleImage);
         return this;
     }
 
     @JsProperty
-    public native String getListStylePosition();
+    public native @Nullable String getListStylePosition();
 
     @JsProperty
-    public native void setListStylePosition(String listStylePosition);
+    public native void setListStylePosition(@Nullable String listStylePosition);
 
     /**
      * Specifies if the list-item markers should appear inside or outside the content flow.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps listStylePosition(String listStylePosition) {
+    public final CssProps listStylePosition(@Nullable String listStylePosition) {
         setListStylePosition(listStylePosition);
         return this;
     }
 
     @JsProperty
-    public native String getListStyleType();
+    public native @Nullable String getListStyleType();
 
     @JsProperty
-    public native void setListStyleType(String listStyleType);
+    public native void setListStyleType(@Nullable String listStyleType);
 
     /**
      * Specifies the type of list-item marker in a list.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps listStyleType(String listStyleType) {
+    public final CssProps listStyleType(@Nullable String listStyleType) {
         setListStyleType(listStyleType);
         return this;
     }
 
     @JsProperty
-    public native String getMargin();
+    public native @Nullable String getMargin();
 
     @JsProperty
-    public native void setMargin(String margin);
+    public native void setMargin(@Nullable String margin);
 
     /**
      * The margin property is shorthand to allow you to set all four margins of an element at once.
@@ -2348,81 +2207,76 @@ public class CssProps {
      * margin-left. Negative values are also allowed.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps margin(String margin) {
+    public final CssProps margin(@Nullable String margin) {
         setMargin(margin);
         return this;
     }
 
     @JsProperty
-    public native String getMarginBottom();
+    public native @Nullable String getMarginBottom();
 
     @JsProperty
-    public native void setMarginBottom(String marginBottom);
+    public native void setMarginBottom(@Nullable String marginBottom);
 
     /**
      * margin-bottom sets the bottom margin of an element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps marginBottom(String marginBottom) {
+    public final CssProps marginBottom(@Nullable String marginBottom) {
         setMarginBottom(marginBottom);
         return this;
     }
 
     @JsProperty
-    public native String getMarginLeft();
+    public native @Nullable String getMarginLeft();
 
     @JsProperty
-    public native void setMarginLeft(String marginLeft);
+    public native void setMarginLeft(@Nullable String marginLeft);
 
     /**
      * margin-left sets the left margin of an element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps marginLeft(String marginLeft) {
+    public final CssProps marginLeft(@Nullable String marginLeft) {
         setMarginLeft(marginLeft);
         return this;
     }
 
     @JsProperty
-    public native String getMarginRight();
+    public native @Nullable String getMarginRight();
 
     @JsProperty
-    public native void setMarginRight(String marginRight);
+    public native void setMarginRight(@Nullable String marginRight);
 
     /**
      * margin-right sets the right margin of an element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps marginRight(String marginRight) {
+    public final CssProps marginRight(@Nullable String marginRight) {
         setMarginRight(marginRight);
         return this;
     }
 
     @JsProperty
-    public native String getMarginTop();
+    public native @Nullable String getMarginTop();
 
     @JsProperty
-    public native void setMarginTop(String marginTop);
+    public native void setMarginTop(@Nullable String marginTop);
 
     /**
      * margin-top sets the top margin of an element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps marginTop(String marginTop) {
+    public final CssProps marginTop(@Nullable String marginTop) {
         setMarginTop(marginTop);
         return this;
     }
 
     @JsProperty
-    public native String getMask();
+    public native @Nullable String getMask();
 
     @JsProperty
-    public native void setMask(String mask);
+    public native void setMask(@Nullable String mask);
 
     /**
      * This property is shorthand for setting mask-image, mask-mode, mask-repeat, mask-position,
@@ -2430,17 +2284,16 @@ public class CssProps {
      * original properties' initial values.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps mask(String mask) {
+    public final CssProps mask(@Nullable String mask) {
         setMask(mask);
         return this;
     }
 
     @JsProperty
-    public native String getMaskBorder();
+    public native @Nullable String getMaskBorder();
 
     @JsProperty
-    public native void setMaskBorder(String maskBorder);
+    public native void setMaskBorder(@Nullable String maskBorder);
 
     /**
      * This property is shorthand for setting mask-border-source, mask-border-slice,
@@ -2448,17 +2301,16 @@ public class CssProps {
      * their original properties' initial values.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps maskBorder(String maskBorder) {
+    public final CssProps maskBorder(@Nullable String maskBorder) {
         setMaskBorder(maskBorder);
         return this;
     }
 
     @JsProperty
-    public native String getMaskBorderRepeat();
+    public native @Nullable String getMaskBorderRepeat();
 
     @JsProperty
-    public native void setMaskBorderRepeat(String maskBorderRepeat);
+    public native void setMaskBorderRepeat(@Nullable String maskBorderRepeat);
 
     /**
      * This property specifies how the images for the sides and the middle part of the mask image
@@ -2467,17 +2319,16 @@ public class CssProps {
      * same as the first, similar to the CSS border-image-repeat property.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps maskBorderRepeat(String maskBorderRepeat) {
+    public final CssProps maskBorderRepeat(@Nullable String maskBorderRepeat) {
         setMaskBorderRepeat(maskBorderRepeat);
         return this;
     }
 
     @JsProperty
-    public native String getMaskBorderSlice();
+    public native @Nullable String getMaskBorderSlice();
 
     @JsProperty
-    public native void setMaskBorderSlice(String maskBorderSlice);
+    public native void setMaskBorderSlice(@Nullable String maskBorderSlice);
 
     /**
      * This property specifies inward offsets from the top, right, bottom, and left edges of the
@@ -2487,68 +2338,64 @@ public class CssProps {
      * order, similar to the CSS border-image-slice property.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps maskBorderSlice(String maskBorderSlice) {
+    public final CssProps maskBorderSlice(@Nullable String maskBorderSlice) {
         setMaskBorderSlice(maskBorderSlice);
         return this;
     }
 
     @JsProperty
-    public native String getMaskBorderSource();
+    public native @Nullable String getMaskBorderSource();
 
     @JsProperty
-    public native void setMaskBorderSource(String maskBorderSource);
+    public native void setMaskBorderSource(@Nullable String maskBorderSource);
 
     /**
      * Specifies an image to be used as a mask. An image that is empty, fails to download, is
      * non-existent, or cannot be displayed is ignored and does not mask the element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps maskBorderSource(String maskBorderSource) {
+    public final CssProps maskBorderSource(@Nullable String maskBorderSource) {
         setMaskBorderSource(maskBorderSource);
         return this;
     }
 
     @JsProperty
-    public native String getMaskBorderWidth();
+    public native @Nullable String getMaskBorderWidth();
 
     @JsProperty
-    public native void setMaskBorderWidth(String maskBorderWidth);
+    public native void setMaskBorderWidth(@Nullable String maskBorderWidth);
 
     /**
      * This property sets the width of the mask box image, similar to the CSS border-image-width
      * property.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps maskBorderWidth(String maskBorderWidth) {
+    public final CssProps maskBorderWidth(@Nullable String maskBorderWidth) {
         setMaskBorderWidth(maskBorderWidth);
         return this;
     }
 
     @JsProperty
-    public native String getMaskClip();
+    public native @Nullable String getMaskClip();
 
     @JsProperty
-    public native void setMaskClip(String maskClip);
+    public native void setMaskClip(@Nullable String maskClip);
 
     /**
      * Determines the mask painting area, which defines the area that is affected by the mask.
      * The painted content of an element may be restricted to this area.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps maskClip(String maskClip) {
+    public final CssProps maskClip(@Nullable String maskClip) {
         setMaskClip(maskClip);
         return this;
     }
 
     @JsProperty
-    public native String getMaskOrigin();
+    public native @Nullable String getMaskOrigin();
 
     @JsProperty
-    public native void setMaskOrigin(String maskOrigin);
+    public native void setMaskOrigin(@Nullable String maskOrigin);
 
     /**
      * For elements rendered as a single box, specifies the mask positioning area. For elements
@@ -2557,17 +2404,16 @@ public class CssProps {
      * area(s).
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps maskOrigin(String maskOrigin) {
+    public final CssProps maskOrigin(@Nullable String maskOrigin) {
         setMaskOrigin(maskOrigin);
         return this;
     }
 
     @JsProperty
-    public native String getMaxFontSize();
+    public native @Nullable String getMaxFontSize();
 
     @JsProperty
-    public native void setMaxFontSize(String maxFontSize);
+    public native void setMaxFontSize(@Nullable String maxFontSize);
 
     /**
      * This property must not be used. It is no longer included in any standard or standard track
@@ -2576,17 +2422,16 @@ public class CssProps {
      * fit line content.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps maxFontSize(String maxFontSize) {
+    public final CssProps maxFontSize(@Nullable String maxFontSize) {
         setMaxFontSize(maxFontSize);
         return this;
     }
 
     @JsProperty
-    public native String getMaxHeight();
+    public native @Nullable String getMaxHeight();
 
     @JsProperty
-    public native void setMaxHeight(String maxHeight);
+    public native void setMaxHeight(@Nullable String maxHeight);
 
     /**
      * Sets the maximum height for an element. It prevents the height of the element to exceed
@@ -2594,34 +2439,32 @@ public class CssProps {
      * is overridden.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps maxHeight(String maxHeight) {
+    public final CssProps maxHeight(@Nullable String maxHeight) {
         setMaxHeight(maxHeight);
         return this;
     }
 
     @JsProperty
-    public native String getMaxWidth();
+    public native @Nullable String getMaxWidth();
 
     @JsProperty
-    public native void setMaxWidth(String maxWidth);
+    public native void setMaxWidth(@Nullable String maxWidth);
 
     /**
      * Sets the maximum width for an element. It limits the width property to be larger than the
      * value specified in max-width.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps maxWidth(String maxWidth) {
+    public final CssProps maxWidth(@Nullable String maxWidth) {
         setMaxWidth(maxWidth);
         return this;
     }
 
     @JsProperty
-    public native String getMinHeight();
+    public native @Nullable String getMinHeight();
 
     @JsProperty
-    public native void setMinHeight(String minHeight);
+    public native void setMinHeight(@Nullable String minHeight);
 
     /**
      * Sets the minimum height for an element. It prevents the height of the element to be
@@ -2629,34 +2472,32 @@ public class CssProps {
      * height.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps minHeight(String minHeight) {
+    public final CssProps minHeight(@Nullable String minHeight) {
         setMinHeight(minHeight);
         return this;
     }
 
     @JsProperty
-    public native String getMinWidth();
+    public native @Nullable String getMinWidth();
 
     @JsProperty
-    public native void setMinWidth(String minWidth);
+    public native void setMinWidth(@Nullable String minWidth);
 
     /**
      * Sets the minimum width of an element. It limits the width property to be not smaller
      * than the value specified in min-width.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps minWidth(String minWidth) {
+    public final CssProps minWidth(@Nullable String minWidth) {
         setMinWidth(minWidth);
         return this;
     }
 
     @JsProperty
-    public native String getOutline();
+    public native @Nullable String getOutline();
 
     @JsProperty
-    public native void setOutline(String outline);
+    public native void setOutline(@Nullable String outline);
 
     /**
      * The CSS outline property is a shorthand property for setting one or more of the
@@ -2670,50 +2511,47 @@ public class CssProps {
      * non-rectangular shape around a construct.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps outline(String outline) {
+    public final CssProps outline(@Nullable String outline) {
         setOutline(outline);
         return this;
     }
 
     @JsProperty
-    public native String getOutlineColor();
+    public native @Nullable String getOutlineColor();
 
     @JsProperty
-    public native void setOutlineColor(String outlineColor);
+    public native void setOutlineColor(@Nullable String outlineColor);
 
     /**
      * The outline-color property sets the color of the outline of an element. An outline is a
      * line that is drawn around elements, outside the border edge, to make the element stand out.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps outlineColor(String outlineColor) {
+    public final CssProps outlineColor(@Nullable String outlineColor) {
         setOutlineColor(outlineColor);
         return this;
     }
 
     @JsProperty
-    public native String getOutlineOffset();
+    public native @Nullable String getOutlineOffset();
 
     @JsProperty
-    public native void setOutlineOffset(String outlineOffset);
+    public native void setOutlineOffset(@Nullable String outlineOffset);
 
     /**
      * The outline-offset property offsets the outline and draw it beyond the border edge.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps outlineOffset(String outlineOffset) {
+    public final CssProps outlineOffset(@Nullable String outlineOffset) {
         setOutlineOffset(outlineOffset);
         return this;
     }
 
     @JsProperty
-    public native String getOverflow();
+    public native @Nullable String getOverflow();
 
     @JsProperty
-    public native void setOverflow(String overflow);
+    public native void setOverflow(@Nullable String overflow);
 
     /**
      * The overflow property controls how extra content exceeding the bounding box of an element
@@ -2721,50 +2559,47 @@ public class CssProps {
      * height, to eliminate text-induced page distortion.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps overflow(String overflow) {
+    public final CssProps overflow(@Nullable String overflow) {
         setOverflow(overflow);
         return this;
     }
 
     @JsProperty
-    public native String getOverflowStyle();
+    public native @Nullable String getOverflowStyle();
 
     @JsProperty
-    public native void setOverflowStyle(String overflowStyle);
+    public native void setOverflowStyle(@Nullable String overflowStyle);
 
     /**
      * Specifies the preferred scrolling methods for elements that overflow.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps overflowStyle(String overflowStyle) {
+    public final CssProps overflowStyle(@Nullable String overflowStyle) {
         setOverflowStyle(overflowStyle);
         return this;
     }
 
     @JsProperty
-    public native String getOverflowX();
+    public native @Nullable String getOverflowX();
 
     @JsProperty
-    public native void setOverflowX(String overflowX);
+    public native void setOverflowX(@Nullable String overflowX);
 
     /**
      * The overflow-x property is a specific case of the generic overflow property. It controls
      * how extra content exceeding the x-axis of the bounding box of an element is rendered.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps overflowX(String overflowX) {
+    public final CssProps overflowX(@Nullable String overflowX) {
         setOverflowX(overflowX);
         return this;
     }
 
     @JsProperty
-    public native String getPadding();
+    public native @Nullable String getPadding();
 
     @JsProperty
-    public native void setPadding(String padding);
+    public native void setPadding(@Nullable String padding);
 
     /**
      * The padding optional CSS property sets the required padding space on one to four sides of
@@ -2775,17 +2610,16 @@ public class CssProps {
      * padding-right, padding-bottom, padding-left).
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps padding(String padding) {
+    public final CssProps padding(@Nullable String padding) {
         setPadding(padding);
         return this;
     }
 
     @JsProperty
-    public native String getPaddingBottom();
+    public native @Nullable String getPaddingBottom();
 
     @JsProperty
-    public native void setPaddingBottom(String paddingBottom);
+    public native void setPaddingBottom(@Nullable String paddingBottom);
 
     /**
      * The padding-bottom CSS property of an element sets the padding space required on the
@@ -2794,17 +2628,16 @@ public class CssProps {
      * invalid.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps paddingBottom(String paddingBottom) {
+    public final CssProps paddingBottom(@Nullable String paddingBottom) {
         setPaddingBottom(paddingBottom);
         return this;
     }
 
     @JsProperty
-    public native String getPaddingLeft();
+    public native @Nullable String getPaddingLeft();
 
     @JsProperty
-    public native void setPaddingLeft(String paddingLeft);
+    public native void setPaddingLeft(@Nullable String paddingLeft);
 
     /**
      * The padding-left CSS property of an element sets the padding space required on the left
@@ -2812,17 +2645,16 @@ public class CssProps {
      * its border. Contrary to margin-left values, negative values of padding-left are invalid.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps paddingLeft(String paddingLeft) {
+    public final CssProps paddingLeft(@Nullable String paddingLeft) {
         setPaddingLeft(paddingLeft);
         return this;
     }
 
     @JsProperty
-    public native String getPaddingRight();
+    public native @Nullable String getPaddingRight();
 
     @JsProperty
-    public native void setPaddingRight(String paddingRight);
+    public native void setPaddingRight(@Nullable String paddingRight);
 
     /**
      * The padding-right CSS property of an element sets the padding space required on the right
@@ -2830,17 +2662,16 @@ public class CssProps {
      * its border. Contrary to margin-right values, negative values of padding-right are invalid.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps paddingRight(String paddingRight) {
+    public final CssProps paddingRight(@Nullable String paddingRight) {
         setPaddingRight(paddingRight);
         return this;
     }
 
     @JsProperty
-    public native String getPaddingTop();
+    public native @Nullable String getPaddingTop();
 
     @JsProperty
-    public native void setPaddingTop(String paddingTop);
+    public native void setPaddingTop(@Nullable String paddingTop);
 
     /**
      * The padding-top CSS property of an element sets the padding space required on the top of
@@ -2848,17 +2679,16 @@ public class CssProps {
      * border. Contrary to margin-top values, negative values of padding-top are invalid.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps paddingTop(String paddingTop) {
+    public final CssProps paddingTop(@Nullable String paddingTop) {
         setPaddingTop(paddingTop);
         return this;
     }
 
     @JsProperty
-    public native String getPageBreakAfter();
+    public native @Nullable String getPageBreakAfter();
 
     @JsProperty
-    public native void setPageBreakAfter(String pageBreakAfter);
+    public native void setPageBreakAfter(@Nullable String pageBreakAfter);
 
     /**
      * The page-break-after property is supported in all major browsers. With CSS3, page-break-*
@@ -2866,17 +2696,16 @@ public class CssProps {
      * breaks for all CSS box fragmentation.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps pageBreakAfter(String pageBreakAfter) {
+    public final CssProps pageBreakAfter(@Nullable String pageBreakAfter) {
         setPageBreakAfter(pageBreakAfter);
         return this;
     }
 
     @JsProperty
-    public native String getPageBreakBefore();
+    public native @Nullable String getPageBreakBefore();
 
     @JsProperty
-    public native void setPageBreakBefore(String pageBreakBefore);
+    public native void setPageBreakBefore(@Nullable String pageBreakBefore);
 
     /**
      * The page-break-after property is supported in all major browsers. With CSS3, page-break-*
@@ -2884,17 +2713,16 @@ public class CssProps {
      * breaks for all CSS box fragmentation.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps pageBreakBefore(String pageBreakBefore) {
+    public final CssProps pageBreakBefore(@Nullable String pageBreakBefore) {
         setPageBreakBefore(pageBreakBefore);
         return this;
     }
 
     @JsProperty
-    public native String getPageBreakInside();
+    public native @Nullable String getPageBreakInside();
 
     @JsProperty
-    public native void setPageBreakInside(String pageBreakInside);
+    public native void setPageBreakInside(@Nullable String pageBreakInside);
 
     /**
      * Sets the page-breaking behavior inside an element. With CSS3, page-break-* properties
@@ -2902,34 +2730,32 @@ public class CssProps {
      * for all CSS box fragmentation.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps pageBreakInside(String pageBreakInside) {
+    public final CssProps pageBreakInside(@Nullable String pageBreakInside) {
         setPageBreakInside(pageBreakInside);
         return this;
     }
 
     @JsProperty
-    public native String getPause();
+    public native @Nullable String getPause();
 
     @JsProperty
-    public native void setPause(String pause);
+    public native void setPause(@Nullable String pause);
 
     /**
      * The pause property determines how long a speech media agent should pause before and after
      * presenting an element. It is a shorthand for the pause-before and pause-after properties.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps pause(String pause) {
+    public final CssProps pause(@Nullable String pause) {
         setPause(pause);
         return this;
     }
 
     @JsProperty
-    public native String getPauseAfter();
+    public native @Nullable String getPauseAfter();
 
     @JsProperty
-    public native void setPauseAfter(String pauseAfter);
+    public native void setPauseAfter(@Nullable String pauseAfter);
 
     /**
      * The pause-after property determines how long a speech media agent should pause after
@@ -2937,17 +2763,16 @@ public class CssProps {
      * pause time before and after.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps pauseAfter(String pauseAfter) {
+    public final CssProps pauseAfter(@Nullable String pauseAfter) {
         setPauseAfter(pauseAfter);
         return this;
     }
 
     @JsProperty
-    public native String getPauseBefore();
+    public native @Nullable String getPauseBefore();
 
     @JsProperty
-    public native void setPauseBefore(String pauseBefore);
+    public native void setPauseBefore(@Nullable String pauseBefore);
 
     /**
      * The pause-before property determines how long a speech media agent should pause before
@@ -2955,17 +2780,16 @@ public class CssProps {
      * pause time before and after.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps pauseBefore(String pauseBefore) {
+    public final CssProps pauseBefore(@Nullable String pauseBefore) {
         setPauseBefore(pauseBefore);
         return this;
     }
 
     @JsProperty
-    public native String getPerspective();
+    public native @Nullable String getPerspective();
 
     @JsProperty
-    public native void setPerspective(String perspective);
+    public native void setPerspective(@Nullable String perspective);
 
     /**
      * The perspective property defines how far an element is placed from the view on the
@@ -2982,17 +2806,16 @@ public class CssProps {
      * virtual environments, this flat surface is called a projection plane.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps perspective(String perspective) {
+    public final CssProps perspective(@Nullable String perspective) {
         setPerspective(perspective);
         return this;
     }
 
     @JsProperty
-    public native String getPerspectiveOrigin();
+    public native @Nullable String getPerspectiveOrigin();
 
     @JsProperty
-    public native void setPerspectiveOrigin(String perspectiveOrigin);
+    public native void setPerspectiveOrigin(@Nullable String perspectiveOrigin);
 
     /**
      * The perspective-origin property establishes the origin for the perspective property. It
@@ -3011,34 +2834,32 @@ public class CssProps {
      * toward the bottom right angle.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps perspectiveOrigin(String perspectiveOrigin) {
+    public final CssProps perspectiveOrigin(@Nullable String perspectiveOrigin) {
         setPerspectiveOrigin(perspectiveOrigin);
         return this;
     }
 
     @JsProperty
-    public native String getPointerEvents();
+    public native @Nullable String getPointerEvents();
 
     @JsProperty
-    public native void setPointerEvents(String pointerEvents);
+    public native void setPointerEvents(@Nullable String pointerEvents);
 
     /**
      * The pointer-events property allows you to control whether an element can be the target
      * for the pointing device (e.g, mouse, pen) events.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps pointerEvents(String pointerEvents) {
+    public final CssProps pointerEvents(@Nullable String pointerEvents) {
         setPointerEvents(pointerEvents);
         return this;
     }
 
     @JsProperty
-    public native String getPosition();
+    public native @Nullable String getPosition();
 
     @JsProperty
-    public native void setPosition(String position);
+    public native void setPosition(@Nullable String position);
 
     /**
      * The position property controls the type of positioning used by an element within its
@@ -3046,33 +2867,31 @@ public class CssProps {
      * example the position property of parent elements.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps position(String position) {
+    public final CssProps position(@Nullable String position) {
         setPosition(position);
         return this;
     }
 
     @JsProperty
-    public native String getQuotes();
+    public native @Nullable String getQuotes();
 
     @JsProperty
-    public native void setQuotes(String quotes);
+    public native void setQuotes(@Nullable String quotes);
 
     /**
      * Sets the type of quotation marks for embedded quotations.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps quotes(String quotes) {
+    public final CssProps quotes(@Nullable String quotes) {
         setQuotes(quotes);
         return this;
     }
 
     @JsProperty
-    public native String getRegionFragment();
+    public native @Nullable String getRegionFragment();
 
     @JsProperty
-    public native void setRegionFragment(String regionFragment);
+    public native void setRegionFragment(@Nullable String regionFragment);
 
     /**
      * Controls whether the last region in a chain displays additional 'overset' content
@@ -3080,17 +2899,16 @@ public class CssProps {
      * if it were flowing into a subsequent region.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps regionFragment(String regionFragment) {
+    public final CssProps regionFragment(@Nullable String regionFragment) {
         setRegionFragment(regionFragment);
         return this;
     }
 
     @JsProperty
-    public native String getRestAfter();
+    public native @Nullable String getRestAfter();
 
     @JsProperty
-    public native void setRestAfter(String restAfter);
+    public native void setRestAfter(@Nullable String restAfter);
 
     /**
      * The rest-after property determines how long a speech media agent should pause after
@@ -3098,17 +2916,16 @@ public class CssProps {
      * It may be replaced by the shorthand property rest, which sets rest time before and after.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps restAfter(String restAfter) {
+    public final CssProps restAfter(@Nullable String restAfter) {
         setRestAfter(restAfter);
         return this;
     }
 
     @JsProperty
-    public native String getRestBefore();
+    public native @Nullable String getRestBefore();
 
     @JsProperty
-    public native void setRestBefore(String restBefore);
+    public native void setRestBefore(@Nullable String restBefore);
 
     /**
      * The rest-before property determines how long a speech media agent should pause after
@@ -3117,59 +2934,55 @@ public class CssProps {
      * and after.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps restBefore(String restBefore) {
+    public final CssProps restBefore(@Nullable String restBefore) {
         setRestBefore(restBefore);
         return this;
     }
 
     @JsProperty
-    public native String getRight();
+    public native @Nullable String getRight();
 
     @JsProperty
-    public native void setRight(String right);
+    public native void setRight(@Nullable String right);
 
     /**
      * Specifies the position an element in relation to the right side of the containing element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps right(String right) {
+    public final CssProps right(@Nullable String right) {
         setRight(right);
         return this;
     }
 
     @JsProperty
-    public native String getRubyAlign();
+    public native @Nullable String getRubyAlign();
 
     @JsProperty
-    public native void setRubyAlign(String rubyAlign);
+    public native void setRubyAlign(@Nullable String rubyAlign);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps rubyAlign(String rubyAlign) {
+    public final CssProps rubyAlign(@Nullable String rubyAlign) {
         setRubyAlign(rubyAlign);
         return this;
     }
 
     @JsProperty
-    public native String getRubyPosition();
+    public native @Nullable String getRubyPosition();
 
     @JsProperty
-    public native void setRubyPosition(String rubyPosition);
+    public native void setRubyPosition(@Nullable String rubyPosition);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps rubyPosition(String rubyPosition) {
+    public final CssProps rubyPosition(@Nullable String rubyPosition) {
         setRubyPosition(rubyPosition);
         return this;
     }
 
     @JsProperty
-    public native String getShapeImageThreshold();
+    public native @Nullable String getShapeImageThreshold();
 
     @JsProperty
-    public native void setShapeImageThreshold(String shapeImageThreshold);
+    public native void setShapeImageThreshold(@Nullable String shapeImageThreshold);
 
     /**
      * Defines the alpha channel threshold used to extract a shape from an image. Can be thought
@@ -3177,34 +2990,32 @@ public class CssProps {
      * enclose all the pixels that are more than 50% opaque.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps shapeImageThreshold(String shapeImageThreshold) {
+    public final CssProps shapeImageThreshold(@Nullable String shapeImageThreshold) {
         setShapeImageThreshold(shapeImageThreshold);
         return this;
     }
 
     @JsProperty
-    public native String getShapeInside();
+    public native @Nullable String getShapeInside();
 
     @JsProperty
-    public native void setShapeInside(String shapeInside);
+    public native void setShapeInside(@Nullable String shapeInside);
 
     /**
      * A future level of CSS Shapes will define a shape-inside property, which will define a
      * shape to wrap content within the element. See Editor's Draft
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps shapeInside(String shapeInside) {
+    public final CssProps shapeInside(@Nullable String shapeInside) {
         setShapeInside(shapeInside);
         return this;
     }
 
     @JsProperty
-    public native String getShapeMargin();
+    public native @Nullable String getShapeMargin();
 
     @JsProperty
-    public native void setShapeMargin(String shapeMargin);
+    public native void setShapeMargin(@Nullable String shapeMargin);
 
     /**
      * Adds a margin to a shape-outside. In effect, defines a new shape that is the smallest
@@ -3215,17 +3026,16 @@ public class CssProps {
      * non-negative values.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps shapeMargin(String shapeMargin) {
+    public final CssProps shapeMargin(@Nullable String shapeMargin) {
         setShapeMargin(shapeMargin);
         return this;
     }
 
     @JsProperty
-    public native String getShapeOutside();
+    public native @Nullable String getShapeOutside();
 
     @JsProperty
-    public native void setShapeOutside(String shapeOutside);
+    public native void setShapeOutside(@Nullable String shapeOutside);
 
     /**
      * Declares a shape around which text should be wrapped, with possible modifications
@@ -3233,34 +3043,32 @@ public class CssProps {
      * changes the geometry of a float element's float area.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps shapeOutside(String shapeOutside) {
+    public final CssProps shapeOutside(@Nullable String shapeOutside) {
         setShapeOutside(shapeOutside);
         return this;
     }
 
     @JsProperty
-    public native String getSpeak();
+    public native @Nullable String getSpeak();
 
     @JsProperty
-    public native void setSpeak(String speak);
+    public native void setSpeak(@Nullable String speak);
 
     /**
      * The speak property determines whether or not a speech synthesizer will read aloud
      * the contents of an element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps speak(String speak) {
+    public final CssProps speak(@Nullable String speak) {
         setSpeak(speak);
         return this;
     }
 
     @JsProperty
-    public native String getSpeakAs();
+    public native @Nullable String getSpeakAs();
 
     @JsProperty
-    public native void setSpeakAs(String speakAs);
+    public native void setSpeakAs(@Nullable String speakAs);
 
     /**
      * The speak-as property determines how the speech synthesizer interprets the content:
@@ -3268,50 +3076,47 @@ public class CssProps {
      * sequence of digits, punctuation as pauses in speech or named punctuation characters.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps speakAs(String speakAs) {
+    public final CssProps speakAs(@Nullable String speakAs) {
         setSpeakAs(speakAs);
         return this;
     }
 
     @JsProperty
-    public native String getTabSize();
+    public native @Nullable String getTabSize();
 
     @JsProperty
-    public native void setTabSize(String tabSize);
+    public native void setTabSize(@Nullable String tabSize);
 
     /**
      * The tab-size CSS property is used to customise the width of a tab (U+0009) character.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps tabSize(String tabSize) {
+    public final CssProps tabSize(@Nullable String tabSize) {
         setTabSize(tabSize);
         return this;
     }
 
     @JsProperty
-    public native String getTableLayout();
+    public native @Nullable String getTableLayout();
 
     @JsProperty
-    public native void setTableLayout(String tableLayout);
+    public native void setTableLayout(@Nullable String tableLayout);
 
     /**
      * The 'table-layout' property controls the algorithm used to lay out the table cells,
      * rows, and columns.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps tableLayout(String tableLayout) {
+    public final CssProps tableLayout(@Nullable String tableLayout) {
         setTableLayout(tableLayout);
         return this;
     }
 
     @JsProperty
-    public native String getTextAlign();
+    public native @Nullable String getTextAlign();
 
     @JsProperty
-    public native void setTextAlign(String textAlign);
+    public native void setTextAlign(@Nullable String textAlign);
 
     /**
      * The text-align CSS property describes how inline content like text is aligned in
@@ -3319,34 +3124,32 @@ public class CssProps {
      * elements itself, only their inline content.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textAlign(String textAlign) {
+    public final CssProps textAlign(@Nullable String textAlign) {
         setTextAlign(textAlign);
         return this;
     }
 
     @JsProperty
-    public native String getTextAlignLast();
+    public native @Nullable String getTextAlignLast();
 
     @JsProperty
-    public native void setTextAlignLast(String textAlignLast);
+    public native void setTextAlignLast(@Nullable String textAlignLast);
 
     /**
      * The text-align-last CSS property describes how the last line of a block element or
      * a line before line break is aligned in its parent block element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textAlignLast(String textAlignLast) {
+    public final CssProps textAlignLast(@Nullable String textAlignLast) {
         setTextAlignLast(textAlignLast);
         return this;
     }
 
     @JsProperty
-    public native String getTextDecoration();
+    public native @Nullable String getTextDecoration();
 
     @JsProperty
-    public native void setTextDecoration(String textDecoration);
+    public native void setTextDecoration(@Nullable String textDecoration);
 
     /**
      * The text-decoration CSS property is used to set the text formatting to underline,
@@ -3355,134 +3158,125 @@ public class CssProps {
      * underline and overline decorations are positioned under the text, line-through over it.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textDecoration(String textDecoration) {
+    public final CssProps textDecoration(@Nullable String textDecoration) {
         setTextDecoration(textDecoration);
         return this;
     }
 
     @JsProperty
-    public native String getTextDecorationColor();
+    public native @Nullable String getTextDecorationColor();
 
     @JsProperty
-    public native void setTextDecorationColor(String textDecorationColor);
+    public native void setTextDecorationColor(@Nullable String textDecorationColor);
 
     /**
      * Sets the color of any text decoration, such as underlines, overlines, and strike throughs.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textDecorationColor(String textDecorationColor) {
+    public final CssProps textDecorationColor(@Nullable String textDecorationColor) {
         setTextDecorationColor(textDecorationColor);
         return this;
     }
 
     @JsProperty
-    public native String getTextDecorationLine();
+    public native @Nullable String getTextDecorationLine();
 
     @JsProperty
-    public native void setTextDecorationLine(String textDecorationLine);
+    public native void setTextDecorationLine(@Nullable String textDecorationLine);
 
     /**
      * Sets what kind of line decorations are added to an element, such as underlines, overlines, etc.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textDecorationLine(String textDecorationLine) {
+    public final CssProps textDecorationLine(@Nullable String textDecorationLine) {
         setTextDecorationLine(textDecorationLine);
         return this;
     }
 
     @JsProperty
-    public native String getTextDecorationLineThrough();
+    public native @Nullable String getTextDecorationLineThrough();
 
     @JsProperty
-    public native void setTextDecorationLineThrough(String textDecorationLineThrough);
+    public native void setTextDecorationLineThrough(@Nullable String textDecorationLineThrough);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps textDecorationLineThrough(String textDecorationLineThrough) {
+    public final CssProps textDecorationLineThrough(@Nullable String textDecorationLineThrough) {
         setTextDecorationLineThrough(textDecorationLineThrough);
         return this;
     }
 
     @JsProperty
-    public native String getTextDecorationNone();
+    public native @Nullable String getTextDecorationNone();
 
     @JsProperty
-    public native void setTextDecorationNone(String textDecorationNone);
+    public native void setTextDecorationNone(@Nullable String textDecorationNone);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps textDecorationNone(String textDecorationNone) {
+    public final CssProps textDecorationNone(@Nullable String textDecorationNone) {
         setTextDecorationNone(textDecorationNone);
         return this;
     }
 
     @JsProperty
-    public native String getTextDecorationOverline();
+    public native @Nullable String getTextDecorationOverline();
 
     @JsProperty
-    public native void setTextDecorationOverline(String textDecorationOverline);
+    public native void setTextDecorationOverline(@Nullable String textDecorationOverline);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps textDecorationOverline(String textDecorationOverline) {
+    public final CssProps textDecorationOverline(@Nullable String textDecorationOverline) {
         setTextDecorationOverline(textDecorationOverline);
         return this;
     }
 
     @JsProperty
-    public native String getTextDecorationSkip();
+    public native @Nullable String getTextDecorationSkip();
 
     @JsProperty
-    public native void setTextDecorationSkip(String textDecorationSkip);
+    public native void setTextDecorationSkip(@Nullable String textDecorationSkip);
 
     /**
      * Specifies what parts of an element's content are skipped over when applying any text decoration.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textDecorationSkip(String textDecorationSkip) {
+    public final CssProps textDecorationSkip(@Nullable String textDecorationSkip) {
         setTextDecorationSkip(textDecorationSkip);
         return this;
     }
 
     @JsProperty
-    public native String getTextDecorationStyle();
+    public native @Nullable String getTextDecorationStyle();
 
     @JsProperty
-    public native void setTextDecorationStyle(String textDecorationStyle);
+    public native void setTextDecorationStyle(@Nullable String textDecorationStyle);
 
     /**
      * This property specifies the style of the text decoration line drawn on the specified element.
      * The intended meaning for the values are the same as those of the border-style-properties.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textDecorationStyle(String textDecorationStyle) {
+    public final CssProps textDecorationStyle(@Nullable String textDecorationStyle) {
         setTextDecorationStyle(textDecorationStyle);
         return this;
     }
 
     @JsProperty
-    public native String getTextDecorationUnderline();
+    public native @Nullable String getTextDecorationUnderline();
 
     @JsProperty
-    public native void setTextDecorationUnderline(String textDecorationUnderline);
+    public native void setTextDecorationUnderline(@Nullable String textDecorationUnderline);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps textDecorationUnderline(String textDecorationUnderline) {
+    public final CssProps textDecorationUnderline(@Nullable String textDecorationUnderline) {
         setTextDecorationUnderline(textDecorationUnderline);
         return this;
     }
 
     @JsProperty
-    public native String getTextEmphasis();
+    public native @Nullable String getTextEmphasis();
 
     @JsProperty
-    public native void setTextEmphasis(String textEmphasis);
+    public native void setTextEmphasis(@Nullable String textEmphasis);
 
     /**
      * The text-emphasis property will apply special emphasis marks to the elements text. Slightly
@@ -3491,49 +3285,46 @@ public class CssProps {
      * text-emphasis-color.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textEmphasis(String textEmphasis) {
+    public final CssProps textEmphasis(@Nullable String textEmphasis) {
         setTextEmphasis(textEmphasis);
         return this;
     }
 
     @JsProperty
-    public native String getTextEmphasisColor();
+    public native @Nullable String getTextEmphasisColor();
 
     @JsProperty
-    public native void setTextEmphasisColor(String textEmphasisColor);
+    public native void setTextEmphasisColor(@Nullable String textEmphasisColor);
 
     /**
      * The text-emphasis-color property specifies the foreground color of the emphasis marks.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textEmphasisColor(String textEmphasisColor) {
+    public final CssProps textEmphasisColor(@Nullable String textEmphasisColor) {
         setTextEmphasisColor(textEmphasisColor);
         return this;
     }
 
     @JsProperty
-    public native String getTextEmphasisStyle();
+    public native @Nullable String getTextEmphasisStyle();
 
     @JsProperty
-    public native void setTextEmphasisStyle(String textEmphasisStyle);
+    public native void setTextEmphasisStyle(@Nullable String textEmphasisStyle);
 
     /**
      * The text-emphasis-style property applies special emphasis marks to an element's text.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textEmphasisStyle(String textEmphasisStyle) {
+    public final CssProps textEmphasisStyle(@Nullable String textEmphasisStyle) {
         setTextEmphasisStyle(textEmphasisStyle);
         return this;
     }
 
     @JsProperty
-    public native String getTextHeight();
+    public native @Nullable String getTextHeight();
 
     @JsProperty
-    public native void setTextHeight(String textHeight);
+    public native void setTextHeight(@Nullable String textHeight);
 
     /**
      * This property helps determine an inline box's block-progression dimension, derived from
@@ -3543,17 +3334,16 @@ public class CssProps {
      * padding, border and margin for the element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textHeight(String textHeight) {
+    public final CssProps textHeight(@Nullable String textHeight) {
         setTextHeight(textHeight);
         return this;
     }
 
     @JsProperty
-    public native String getTextIndent();
+    public native @Nullable String getTextIndent();
 
     @JsProperty
-    public native void setTextIndent(String textIndent);
+    public native void setTextIndent(@Nullable String textIndent);
 
     /**
      * Specifies the amount of space horizontally that should be left on the first line of the
@@ -3561,59 +3351,55 @@ public class CssProps {
      * is in respect to the left edge of the containing block box.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textIndent(String textIndent) {
+    public final CssProps textIndent(@Nullable String textIndent) {
         setTextIndent(textIndent);
         return this;
     }
 
     @JsProperty
-    public native String getTextJustifyTrim();
+    public native @Nullable String getTextJustifyTrim();
 
     @JsProperty
-    public native void setTextJustifyTrim(String textJustifyTrim);
+    public native void setTextJustifyTrim(@Nullable String textJustifyTrim);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps textJustifyTrim(String textJustifyTrim) {
+    public final CssProps textJustifyTrim(@Nullable String textJustifyTrim) {
         setTextJustifyTrim(textJustifyTrim);
         return this;
     }
 
     @JsProperty
-    public native String getTextKashidaSpace();
+    public native @Nullable String getTextKashidaSpace();
 
     @JsProperty
-    public native void setTextKashidaSpace(String textKashidaSpace);
+    public native void setTextKashidaSpace(@Nullable String textKashidaSpace);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps textKashidaSpace(String textKashidaSpace) {
+    public final CssProps textKashidaSpace(@Nullable String textKashidaSpace) {
         setTextKashidaSpace(textKashidaSpace);
         return this;
     }
 
     @JsProperty
-    public native String getTextLineThroughWidth();
+    public native @Nullable String getTextLineThroughWidth();
 
     @JsProperty
-    public native void setTextLineThroughWidth(String textLineThroughWidth);
+    public native void setTextLineThroughWidth(@Nullable String textLineThroughWidth);
 
     /**
      * Specifies the line width for the line-through text decoration.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textLineThroughWidth(String textLineThroughWidth) {
+    public final CssProps textLineThroughWidth(@Nullable String textLineThroughWidth) {
         setTextLineThroughWidth(textLineThroughWidth);
         return this;
     }
 
     @JsProperty
-    public native String getTextOverflow();
+    public native @Nullable String getTextOverflow();
 
     @JsProperty
-    public native void setTextOverflow(String textOverflow);
+    public native void setTextOverflow(@Nullable String textOverflow);
 
     /**
      * The text-overflow shorthand CSS property determines how overflowed content that is not
@@ -3622,116 +3408,109 @@ public class CssProps {
      * properties text-overflow-mode and text-overflow-ellipsis
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textOverflow(String textOverflow) {
+    public final CssProps textOverflow(@Nullable String textOverflow) {
         setTextOverflow(textOverflow);
         return this;
     }
 
     @JsProperty
-    public native String getTextOverline();
+    public native @Nullable String getTextOverline();
 
     @JsProperty
-    public native void setTextOverline(String textOverline);
+    public native void setTextOverline(@Nullable String textOverline);
 
     /**
      * The text-overline property is the shorthand for the text-overline-style,
      * text-overline-width, text-overline-color, and text-overline-mode properties.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textOverline(String textOverline) {
+    public final CssProps textOverline(@Nullable String textOverline) {
         setTextOverline(textOverline);
         return this;
     }
 
     @JsProperty
-    public native String getTextOverlineColor();
+    public native @Nullable String getTextOverlineColor();
 
     @JsProperty
-    public native void setTextOverlineColor(String textOverlineColor);
+    public native void setTextOverlineColor(@Nullable String textOverlineColor);
 
     /**
      * Specifies the line color for the overline text decoration.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textOverlineColor(String textOverlineColor) {
+    public final CssProps textOverlineColor(@Nullable String textOverlineColor) {
         setTextOverlineColor(textOverlineColor);
         return this;
     }
 
     @JsProperty
-    public native String getTextOverlineMode();
+    public native @Nullable String getTextOverlineMode();
 
     @JsProperty
-    public native void setTextOverlineMode(String textOverlineMode);
+    public native void setTextOverlineMode(@Nullable String textOverlineMode);
 
     /**
      * Sets the mode for the overline text decoration, determining whether the text decoration
      * affects the space characters or not.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textOverlineMode(String textOverlineMode) {
+    public final CssProps textOverlineMode(@Nullable String textOverlineMode) {
         setTextOverlineMode(textOverlineMode);
         return this;
     }
 
     @JsProperty
-    public native String getTextOverlineStyle();
+    public native @Nullable String getTextOverlineStyle();
 
     @JsProperty
-    public native void setTextOverlineStyle(String textOverlineStyle);
+    public native void setTextOverlineStyle(@Nullable String textOverlineStyle);
 
     /**
      * Specifies the line style for overline text decoration.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textOverlineStyle(String textOverlineStyle) {
+    public final CssProps textOverlineStyle(@Nullable String textOverlineStyle) {
         setTextOverlineStyle(textOverlineStyle);
         return this;
     }
 
     @JsProperty
-    public native String getTextOverlineWidth();
+    public native @Nullable String getTextOverlineWidth();
 
     @JsProperty
-    public native void setTextOverlineWidth(String textOverlineWidth);
+    public native void setTextOverlineWidth(@Nullable String textOverlineWidth);
 
     /**
      * Specifies the line width for the overline text decoration.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textOverlineWidth(String textOverlineWidth) {
+    public final CssProps textOverlineWidth(@Nullable String textOverlineWidth) {
         setTextOverlineWidth(textOverlineWidth);
         return this;
     }
 
     @JsProperty
-    public native String getTextRendering();
+    public native @Nullable String getTextRendering();
 
     @JsProperty
-    public native void setTextRendering(String textRendering);
+    public native void setTextRendering(@Nullable String textRendering);
 
     /**
      * The text-rendering CSS property provides information to the browser about how to optimize
      * when rendering text. Options are: legibility, speed or geometric precision.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textRendering(String textRendering) {
+    public final CssProps textRendering(@Nullable String textRendering) {
         setTextRendering(textRendering);
         return this;
     }
 
     @JsProperty
-    public native String getTextShadow();
+    public native @Nullable String getTextShadow();
 
     @JsProperty
-    public native void setTextShadow(String textShadow);
+    public native void setTextShadow(@Nullable String textShadow);
 
     /**
      * The CSS text-shadow property applies one or more drop shadows to the text and
@@ -3739,34 +3518,32 @@ public class CssProps {
      * along with optional color and blur radius values.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textShadow(String textShadow) {
+    public final CssProps textShadow(@Nullable String textShadow) {
         setTextShadow(textShadow);
         return this;
     }
 
     @JsProperty
-    public native String getTextTransform();
+    public native @Nullable String getTextTransform();
 
     @JsProperty
-    public native void setTextTransform(String textTransform);
+    public native void setTextTransform(@Nullable String textTransform);
 
     /**
      * This property transforms text for styling purposes. (It has no effect on the underlying
      * content.)
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps textTransform(String textTransform) {
+    public final CssProps textTransform(@Nullable String textTransform) {
         setTextTransform(textTransform);
         return this;
     }
 
     @JsProperty
-    public native String getTop();
+    public native @Nullable String getTop();
 
     @JsProperty
-    public native void setTop(String top);
+    public native void setTop(@Nullable String top);
 
     /**
      * This property specifies how far an absolutely positioned box's top margin edge is offset
@@ -3775,34 +3552,32 @@ public class CssProps {
      * position in the normal flow, then offset from that position according to these properties).
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps top(String top) {
+    public final CssProps top(@Nullable String top) {
         setTop(top);
         return this;
     }
 
     @JsProperty
-    public native String getTouchAction();
+    public native @Nullable String getTouchAction();
 
     @JsProperty
-    public native void setTouchAction(String touchAction);
+    public native void setTouchAction(@Nullable String touchAction);
 
     /**
      * Determines whether touch input may trigger default behavior supplied by the user agent,
      * such as panning or zooming.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps touchAction(String touchAction) {
+    public final CssProps touchAction(@Nullable String touchAction) {
         setTouchAction(touchAction);
         return this;
     }
 
     @JsProperty
-    public native String getTransform();
+    public native @Nullable String getTransform();
 
     @JsProperty
-    public native void setTransform(String transform);
+    public native void setTransform(@Nullable String transform);
 
     /**
      * CSS transforms allow elements styled with CSS to be transformed in two-dimensional or
@@ -3810,67 +3585,63 @@ public class CssProps {
      * and skewed. The value list may consist of 2D and/or 3D transform values.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps transform(String transform) {
+    public final CssProps transform(@Nullable String transform) {
         setTransform(transform);
         return this;
     }
 
     @JsProperty
-    public native String getTransformOrigin();
+    public native @Nullable String getTransformOrigin();
 
     @JsProperty
-    public native void setTransformOrigin(String transformOrigin);
+    public native void setTransformOrigin(@Nullable String transformOrigin);
 
     /**
      * This property defines the origin of the transformation axes relative to the element to
      * which the transformation is applied.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps transformOrigin(String transformOrigin) {
+    public final CssProps transformOrigin(@Nullable String transformOrigin) {
         setTransformOrigin(transformOrigin);
         return this;
     }
 
     @JsProperty
-    public native String getTransformOriginZ();
+    public native @Nullable String getTransformOriginZ();
 
     @JsProperty
-    public native void setTransformOriginZ(String transformOriginZ);
+    public native void setTransformOriginZ(@Nullable String transformOriginZ);
 
     /**
      * This property allows you to define the relative position of the origin of the transformation
      * grid along the z-axis.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps transformOriginZ(String transformOriginZ) {
+    public final CssProps transformOriginZ(@Nullable String transformOriginZ) {
         setTransformOriginZ(transformOriginZ);
         return this;
     }
 
     @JsProperty
-    public native String getTransformStyle();
+    public native @Nullable String getTransformStyle();
 
     @JsProperty
-    public native void setTransformStyle(String transformStyle);
+    public native void setTransformStyle(@Nullable String transformStyle);
 
     /**
      * This property specifies how nested elements are rendered in 3D space relative to their parent.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps transformStyle(String transformStyle) {
+    public final CssProps transformStyle(@Nullable String transformStyle) {
         setTransformStyle(transformStyle);
         return this;
     }
 
     @JsProperty
-    public native String getTransition();
+    public native @Nullable String getTransition();
 
     @JsProperty
-    public native void setTransition(String transition);
+    public native void setTransition(@Nullable String transition);
 
     /**
      * The transition CSS property is a shorthand property for transition-property,
@@ -3878,17 +3649,16 @@ public class CssProps {
      * the transition between two states of an element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps transition(String transition) {
+    public final CssProps transition(@Nullable String transition) {
         setTransition(transition);
         return this;
     }
 
     @JsProperty
-    public native String getTransitionDelay();
+    public native @Nullable String getTransitionDelay();
 
     @JsProperty
-    public native void setTransitionDelay(String transitionDelay);
+    public native void setTransitionDelay(@Nullable String transitionDelay);
 
     /**
      * Defines when the transition will start. A value of "0s" means the transition will execute
@@ -3896,58 +3666,54 @@ public class CssProps {
      * moment the property is changed, and the transition will delay execution by that offset.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps transitionDelay(String transitionDelay) {
+    public final CssProps transitionDelay(@Nullable String transitionDelay) {
         setTransitionDelay(transitionDelay);
         return this;
     }
 
     @JsProperty
-    public native String getTransitionDuration();
+    public native @Nullable String getTransitionDuration();
 
     @JsProperty
-    public native void setTransitionDuration(String transitionDuration);
+    public native void setTransitionDuration(@Nullable String transitionDuration);
 
     /**
      * The 'transition-duration' property specifies the length of time a transition animation
      * takes to complete.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps transitionDuration(String transitionDuration) {
+    public final CssProps transitionDuration(@Nullable String transitionDuration) {
         setTransitionDuration(transitionDuration);
         return this;
     }
 
     @JsProperty
-    public native String getTransitionProperty();
+    public native @Nullable String getTransitionProperty();
 
     @JsProperty
-    public native void setTransitionProperty(String transitionProperty);
+    public native void setTransitionProperty(@Nullable String transitionProperty);
 
     /**
      * The 'transition-property' property specifies the name of the CSS property to which the
      * transition is applied.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps transitionProperty(String transitionProperty) {
+    public final CssProps transitionProperty(@Nullable String transitionProperty) {
         setTransitionProperty(transitionProperty);
         return this;
     }
 
     @JsProperty
-    public native String getTransitionTimingFunction();
+    public native @Nullable String getTransitionTimingFunction();
 
     @JsProperty
-    public native void setTransitionTimingFunction(String transitionTimingFunction);
+    public native void setTransitionTimingFunction(@Nullable String transitionTimingFunction);
 
     /**
      * Sets the pace of action within a transition
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps transitionTimingFunction(String transitionTimingFunction) {
+    public final CssProps transitionTimingFunction(@Nullable String transitionTimingFunction) {
         setTransitionTimingFunction(transitionTimingFunction);
         return this;
     }
@@ -3957,72 +3723,68 @@ public class CssProps {
      * bidirectional algorithm.
      */
     @JsProperty
-    public native String getUnicodeBidi();
+    public native @Nullable String getUnicodeBidi();
 
     @JsProperty
-    public native void setUnicodeBidi(String unicodeBidi);
+    public native void setUnicodeBidi(@Nullable String unicodeBidi);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps unicodeBidi(String unicodeBidi) {
+    public final CssProps unicodeBidi(@Nullable String unicodeBidi) {
         setUnicodeBidi(unicodeBidi);
         return this;
     }
 
     @JsProperty
-    public native String getUnicodeRange();
+    public native @Nullable String getUnicodeRange();
 
     @JsProperty
-    public native void setUnicodeRange(String unicodeRange);
+    public native void setUnicodeRange(@Nullable String unicodeRange);
 
     /**
      * unicode-range allows you to set a specific range of characters to be downloaded from a
      * font (embedded using @font-face) and made available for use on the current page.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps unicodeRange(String unicodeRange) {
+    public final CssProps unicodeRange(@Nullable String unicodeRange) {
         setUnicodeRange(unicodeRange);
         return this;
     }
 
     @JsProperty
-    public native String getUserFocus();
+    public native @Nullable String getUserFocus();
 
     @JsProperty
-    public native void setUserFocus(String userFocus);
+    public native void setUserFocus(@Nullable String userFocus);
 
     /**
      * This is for all the high level UX stuff.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps userFocus(String userFocus) {
+    public final CssProps userFocus(@Nullable String userFocus) {
         setUserFocus(userFocus);
         return this;
     }
 
     @JsProperty
-    public native String getUserInput();
+    public native @Nullable String getUserInput();
 
     @JsProperty
-    public native void setUserInput(String userInput);
+    public native void setUserInput(@Nullable String userInput);
 
     /**
      * For inputing user content
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps userInput(String userInput) {
+    public final CssProps userInput(@Nullable String userInput) {
         setUserInput(userInput);
         return this;
     }
 
     @JsProperty
-    public native String getVerticalAlign();
+    public native @Nullable String getVerticalAlign();
 
     @JsProperty
-    public native void setVerticalAlign(String verticalAlign);
+    public native void setVerticalAlign(@Nullable String verticalAlign);
 
     /**
      * The vertical-align property controls how inline elements or text are vertically aligned
@@ -4030,50 +3792,47 @@ public class CssProps {
      * alignment of content of the table cell.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps verticalAlign(String verticalAlign) {
+    public final CssProps verticalAlign(@Nullable String verticalAlign) {
         setVerticalAlign(verticalAlign);
         return this;
     }
 
     @JsProperty
-    public native String getVisibility();
+    public native @Nullable String getVisibility();
 
     @JsProperty
-    public native void setVisibility(String visibility);
+    public native void setVisibility(@Nullable String visibility);
 
     /**
      * The visibility property specifies whether the boxes generated by an element are rendered.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps visibility(@Nonnull @Visibility final String visibility) {
+    public final CssProps visibility(@Visibility final String visibility) {
         setVisibility(visibility);
         return this;
     }
 
     @JsProperty
-    public native String getVoiceBalance();
+    public native @Nullable String getVoiceBalance();
 
     @JsProperty
-    public native void setVoiceBalance(String voiceBalance);
+    public native void setVoiceBalance(@Nullable String voiceBalance);
 
     /**
      * The voice-balance property sets the apparent position (in stereo sound) of the synthesized
      * voice for spoken media.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps voiceBalance(String voiceBalance) {
+    public final CssProps voiceBalance(@Nullable String voiceBalance) {
         setVoiceBalance(voiceBalance);
         return this;
     }
 
     @JsProperty
-    public native String getVoiceDuration();
+    public native @Nullable String getVoiceDuration();
 
     @JsProperty
-    public native void setVoiceDuration(String voiceDuration);
+    public native void setVoiceDuration(@Nullable String voiceDuration);
 
     /**
      * The voice-duration property allows the author to explicitly set the amount of time it should
@@ -4082,17 +3841,16 @@ public class CssProps {
      * takes to read the content is determined by the content itself and the voice-rate property.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps voiceDuration(String voiceDuration) {
+    public final CssProps voiceDuration(@Nullable String voiceDuration) {
         setVoiceDuration(voiceDuration);
         return this;
     }
 
     @JsProperty
-    public native String getVoiceFamily();
+    public native @Nullable String getVoiceFamily();
 
     @JsProperty
-    public native void setVoiceFamily(String voiceFamily);
+    public native void setVoiceFamily(@Nullable String voiceFamily);
 
     /**
      * The voice-family property sets the speaker's voice used by a speech media agent to read an
@@ -4103,17 +3861,16 @@ public class CssProps {
      * cannot synthesize the requested combination of generic properties.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps voiceFamily(String voiceFamily) {
+    public final CssProps voiceFamily(@Nullable String voiceFamily) {
         setVoiceFamily(voiceFamily);
         return this;
     }
 
     @JsProperty
-    public native String getVoicePitch();
+    public native @Nullable String getVoicePitch();
 
     @JsProperty
-    public native void setVoicePitch(String voicePitch);
+    public native void setVoicePitch(@Nullable String voicePitch);
 
     /**
      * The voice-pitch property sets pitch or tone (high or low) for the synthesized speech when
@@ -4121,17 +3878,16 @@ public class CssProps {
      * for the voice-family used to read the text.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps voicePitch(String voicePitch) {
+    public final CssProps voicePitch(@Nullable String voicePitch) {
         setVoicePitch(voicePitch);
         return this;
     }
 
     @JsProperty
-    public native String getVoiceRange();
+    public native @Nullable String getVoiceRange();
 
     @JsProperty
-    public native void setVoiceRange(String voiceRange);
+    public native void setVoiceRange(@Nullable String voiceRange);
 
     /**
      * The voice-range property determines how much variation in pitch or tone will be created by
@@ -4141,102 +3897,96 @@ public class CssProps {
      * speech, while small ranges are associated with flat or mechanical speech.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps voiceRange(String voiceRange) {
+    public final CssProps voiceRange(@Nullable String voiceRange) {
         setVoiceRange(voiceRange);
         return this;
     }
 
     @JsProperty
-    public native String getVoiceRate();
+    public native @Nullable String getVoiceRate();
 
     @JsProperty
-    public native void setVoiceRate(String voiceRate);
+    public native void setVoiceRate(@Nullable String voiceRate);
 
     /**
      * The voice-rate property sets the speed at which the voice synthesized by a speech media
      * agent will read content.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps voiceRate(String voiceRate) {
+    public final CssProps voiceRate(@Nullable String voiceRate) {
         setVoiceRate(voiceRate);
         return this;
     }
 
     @JsProperty
-    public native String getVoiceStress();
+    public native @Nullable String getVoiceStress();
 
     @JsProperty
-    public native void setVoiceStress(String voiceStress);
+    public native void setVoiceStress(@Nullable String voiceStress);
 
     /**
      * The voice-stress property sets the level of vocal emphasis to be used for synthesized
      * speech reading the element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps voiceStress(String voiceStress) {
+    public final CssProps voiceStress(@Nullable String voiceStress) {
         setVoiceStress(voiceStress);
         return this;
     }
 
     @JsProperty
-    public native String getVoiceVolume();
+    public native @Nullable String getVoiceVolume();
 
     @JsProperty
-    public native void setVoiceVolume(String voiceVolume);
+    public native void setVoiceVolume(@Nullable String voiceVolume);
 
     /**
      * The voice-volume property sets the volume for spoken content in speech media. It replaces
      * the deprecated volume property.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps voiceVolume(String voiceVolume) {
+    public final CssProps voiceVolume(@Nullable String voiceVolume) {
         setVoiceVolume(voiceVolume);
         return this;
     }
 
     @JsProperty
-    public native String getWhiteSpace();
+    public native @Nullable String getWhiteSpace();
 
     @JsProperty
-    public native void setWhiteSpace(String whiteSpace);
+    public native void setWhiteSpace(@Nullable String whiteSpace);
 
     /**
      * The white-space property controls whether and how white space inside the element is
      * collapsed, and whether lines may wrap at unforced "soft wrap" opportunities.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps whiteSpace(String whiteSpace) {
+    public final CssProps whiteSpace(@Nullable String whiteSpace) {
         setWhiteSpace(whiteSpace);
         return this;
     }
 
     @JsProperty
-    public native String getWidth();
+    public native @Nullable String getWidth();
 
     @JsProperty
-    public native void setWidth(String width);
+    public native void setWidth(@Nullable String width);
 
     /**
      * Specifies the width of the content area of an element. The content area of the element
      * width does not include the padding, border, and margin of the element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps width(String width) {
+    public final CssProps width(@Nullable String width) {
         setWidth(width);
         return this;
     }
 
     @JsProperty
-    public native String getWordBreak();
+    public native @Nullable String getWordBreak();
 
     @JsProperty
-    public native void setWordBreak(String wordBreak);
+    public native void setWordBreak(@Nullable String wordBreak);
 
     /**
      * The word-break property is often used when there is long generated content that is
@@ -4245,92 +3995,86 @@ public class CssProps {
      * breaking of the layout as it could extend past the parent element.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps wordBreak(String wordBreak) {
+    public final CssProps wordBreak(@Nullable String wordBreak) {
         setWordBreak(wordBreak);
         return this;
     }
 
     @JsProperty
-    public native String getWordSpacing();
+    public native @Nullable String getWordSpacing();
 
     @JsProperty
-    public native void setWordSpacing(String wordSpacing);
+    public native void setWordSpacing(@Nullable String wordSpacing);
 
     /**
      * The word-spacing CSS property specifies the spacing behavior between "words".
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps wordSpacing(String wordSpacing) {
+    public final CssProps wordSpacing(@Nullable String wordSpacing) {
         setWordSpacing(wordSpacing);
         return this;
     }
 
     @JsProperty
-    public native String getWordWrap();
+    public native @Nullable String getWordWrap();
 
     @JsProperty
-    public native void setWordWrap(String wordWrap);
+    public native void setWordWrap(@Nullable String wordWrap);
 
     /**
      * An alias of css/properties/overflow-wrap, word-wrap defines whether to break words when
      * the content exceeds the boundaries of its container.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps wordWrap(String wordWrap) {
+    public final CssProps wordWrap(@Nullable String wordWrap) {
         setWordWrap(wordWrap);
         return this;
     }
 
     @JsProperty
-    public native String getWrapFlow();
+    public native @Nullable String getWrapFlow();
 
     @JsProperty
-    public native void setWrapFlow(String wrapFlow);
+    public native void setWrapFlow(@Nullable String wrapFlow);
 
     /**
      * Specifies how exclusions affect inline content within block-level elements. Elements lay
      * out their inline content in their content area but wrap around exclusion areas.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps wrapFlow(String wrapFlow) {
+    public final CssProps wrapFlow(@Nullable String wrapFlow) {
         setWrapFlow(wrapFlow);
         return this;
     }
 
     @JsProperty
-    public native String getWrapMargin();
+    public native @Nullable String getWrapMargin();
 
     @JsProperty
-    public native void setWrapMargin(String wrapMargin);
+    public native void setWrapMargin(@Nullable String wrapMargin);
 
     /**
      * Set the value that is used to offset the inner wrap shape from other shapes. Inline
      * content that intersects a shape with this property will be pushed by this shape's margin.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps wrapMargin(String wrapMargin) {
+    public final CssProps wrapMargin(@Nullable String wrapMargin) {
         setWrapMargin(wrapMargin);
         return this;
     }
 
     @JsProperty
-    public native String getWritingMode();
+    public native @Nullable String getWritingMode();
 
     @JsProperty
-    public native void setWritingMode(String writingMode);
+    public native void setWritingMode(@Nullable String writingMode);
 
     /**
      * writing-mode specifies if lines of text are laid out horizontally or vertically, and the
      * direction which lines of text and blocks progress.
      */
     @JsOverlay
-    @Nonnull
-    public final CssProps writingMode(String writingMode) {
+    public final CssProps writingMode(@Nullable String writingMode) {
         setWritingMode(writingMode);
         return this;
     }
@@ -4338,27 +4082,25 @@ public class CssProps {
     // WebKit specific styles
 
     @JsProperty(name = "WebkitMask")
-    public native String getWebKitMask();
+    public native @Nullable String getWebKitMask();
 
     @JsProperty(name = "WebkitMask")
-    public native void setWebKitMask(String mask);
+    public native void setWebKitMask(@Nullable String mask);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps webkitMask(String mask) {
+    public final CssProps webkitMask(@Nullable String mask) {
         setWebKitMask(mask);
         return this;
     }
 
     @JsProperty(name = "WebkitMaskSize")
-    public native String getWebKitMaskSize();
+    public native @Nullable String getWebKitMaskSize();
 
     @JsProperty(name = "WebkitMaskSize")
-    public native void setWebKitMaskSize(String mask);
+    public native void setWebKitMaskSize(@Nullable String mask);
 
     @JsOverlay
-    @Nonnull
-    public final CssProps webkitMaskSize(String mask) {
+    public final CssProps webkitMaskSize(@Nullable String mask) {
         setWebKitMaskSize(mask);
         return this;
     }
