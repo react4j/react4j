@@ -94,15 +94,24 @@ alias(
     actual = "@jsinterop_base//:jsinterop-base-j2cl",
 )
 
-j2cl_library(
+# Share Arez's compilation so the linked application has one Braincheck module set.
+alias(
     name = "braincheck_core-j2cl",
-    # Braincheck 1.35 ships Java and native JS together in its binary jar;
-    # its sources jar omits the native configuration companions.
-    srcs = ["@braincheck_core//file"],
+    actual = "@arez//third_party/java:braincheck_core-j2cl",
+)
+
+j2cl_library(
+    name = "zemeckis_core-j2cl",
+    # This release bundles its Java and native configuration companions together.
+    srcs = ["@zemeckis_core//file"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     deps = [
+        ":braincheck_core-j2cl",
+        ":grim_annotations-j2cl",
         ":jsinterop_annotations-j2cl",
+        ":jsinterop_base-j2cl",
         ":jspecify-j2cl",
+        ":org_jetbrains_annotations-j2cl",
     ],
 )
 

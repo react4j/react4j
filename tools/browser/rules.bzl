@@ -1,0 +1,19 @@
+"""Browser mode defaults and complete library compile smoke bundles."""
+
+load("@rules_closure//closure:defs.bzl", "closure_js_binary")
+
+_PRODUCTION_DEFINES = {"arez.check_api_invariants": "false", "arez.check_expensive_invariants": "false", "arez.check_invariants": "false", "arez.collections_properties_unmodifiable": "false", "arez.enable_names": "false", "arez.enable_native_components": "false", "arez.enable_observer_error_handlers": "true", "arez.enable_property_introspection": "false", "arez.enable_references": "false", "arez.enable_registries": "false", "arez.enable_spies": "false", "arez.enable_task_interceptor": "true", "arez.enable_verify": "false", "arez.enable_zones": "false", "arez.enforce_transaction_type": "false", "arez.environment": "production", "arez.logger": "console", "arez.purge_tasks_when_runaway_detected": "true", "braincheck.check_api_invariants": "false", "braincheck.check_invariants": "false", "braincheck.environment": "production", "braincheck.verbose_error_messages": "false", "jre.checks.checkLevel": "NORMAL", "jre.classMetadata": "STRIPPED", "react4j.check_invariants": "false", "react4j.enable_view_names": "false", "react4j.environment": "production", "react4j.minimize_input_keys": "true", "react4j.store_debug_data_as_state": "false", "react4j.validate_input_values": "false", "zemeckis.enable_names": "false", "zemeckis.enable_uncaught_error_handlers": "false", "zemeckis.environment": "production", "zemeckis.log_worker_interactions": "false", "zemeckis.logger": "console", "zemeckis.purge_tasks_when_runaway_detected": "true", "zemeckis.use_message_channel_to_schedule_tasks": "true", "zemeckis.use_test_scheduler": "false", "zemeckis.use_worker_to_schedule_delayed_tasks": "true"}
+_DEVELOPMENT_DEFINES = {"arez.check_api_invariants": "true", "arez.check_expensive_invariants": "false", "arez.check_invariants": "false", "arez.collections_properties_unmodifiable": "true", "arez.enable_names": "true", "arez.enable_native_components": "false", "arez.enable_observer_error_handlers": "true", "arez.enable_property_introspection": "false", "arez.enable_references": "false", "arez.enable_registries": "false", "arez.enable_spies": "false", "arez.enable_task_interceptor": "true", "arez.enable_verify": "true", "arez.enable_zones": "false", "arez.enforce_transaction_type": "true", "arez.environment": "development", "arez.logger": "console", "arez.purge_tasks_when_runaway_detected": "true", "braincheck.check_api_invariants": "true", "braincheck.check_invariants": "true", "braincheck.environment": "development", "braincheck.verbose_error_messages": "true", "jre.checks.checkLevel": "NORMAL", "jre.classMetadata": "SIMPLE", "react4j.check_invariants": "true", "react4j.enable_view_names": "true", "react4j.environment": "development", "react4j.minimize_input_keys": "false", "react4j.store_debug_data_as_state": "true", "react4j.validate_input_values": "true", "zemeckis.enable_names": "true", "zemeckis.enable_uncaught_error_handlers": "true", "zemeckis.environment": "development", "zemeckis.log_worker_interactions": "false", "zemeckis.logger": "console", "zemeckis.purge_tasks_when_runaway_detected": "true", "zemeckis.use_message_channel_to_schedule_tasks": "true", "zemeckis.use_test_scheduler": "false", "zemeckis.use_worker_to_schedule_delayed_tasks": "true"}
+
+def browser_compile_smoke(name, entry_point, deps):
+    for suffix, level, debug, defines in [
+        ("", "ADVANCED", "false", _PRODUCTION_DEFINES),
+        ("_dev", "BUNDLE", "true", _DEVELOPMENT_DEFINES),
+    ]:
+        closure_js_binary(
+            name = name + suffix,
+            compilation_level = level,
+            defs = ["--define=goog.DEBUG=" + debug] + ["--define=%s=%s" % item for item in defines.items()],
+            entry_points = [entry_point],
+            deps = deps,
+        )

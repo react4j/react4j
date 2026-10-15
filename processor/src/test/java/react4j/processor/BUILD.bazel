@@ -49,34 +49,6 @@ _RUNTIME = [
 ]
 
 java_testng(
-    name = "smoke_goldens",
-    size = "medium",
-    srcs = [],
-    data = [
-        "//processor/src/test/fixtures",
-        "//third_party/java:strict_checker_options",
-    ],
-    jvm_flags = _FLAGS,
-    test_class = "react4j.processor.React4jProcessorTest",
-    test_methods = ["react4j.processor.React4jProcessorTest.goldenSmoke"],
-    deps = _RUNTIME,
-)
-
-java_testng(
-    name = "smoke_diagnostics",
-    size = "medium",
-    srcs = [],
-    data = [
-        "//processor/src/test/fixtures",
-        "//third_party/java:strict_checker_options",
-    ],
-    jvm_flags = _FLAGS,
-    test_class = "react4j.processor.React4jProcessorTest",
-    test_methods = ["react4j.processor.React4jProcessorTest.diagnosticSmoke"],
-    deps = _RUNTIME,
-)
-
-java_testng(
     name = "regressions",
     size = "medium",
     srcs = [],
@@ -135,7 +107,6 @@ java_testng(
         "react4j.processor.React4jProcessorTest.validInheritanceSimple",
         "react4j.processor.React4jProcessorTest.validInheritanceComplexInterface",
         "react4j.processor.React4jProcessorTest.validInheritanceRose",
-        "react4j.processor.React4jProcessorTest.goldenSmoke",
     ],
     deps = _RUNTIME,
 )

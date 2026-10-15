@@ -1,3 +1,4 @@
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@rules_java//java:defs.bzl", "java_import", "java_plugin")
 load("@rules_palantir_java_format//:defs.bzl", "java_format_check")
 
@@ -17,6 +18,7 @@ java_format_check(
         "//processor",
         "//processor/src/test/java/react4j/processor:test_classes",
         "//tools/testing/src/main/java/react4j/testing:golden_updater",
+        "//tools/browser:smoke_java",
         "//tools/release:artifact_check",
         "//tools/release/consumer/src/main/java/isolated:packaged_consumer",
         "//tools/release:jar_builder",
@@ -63,4 +65,37 @@ java_plugin(
     generates_api = True,
     processor_class = "react4j.processor.React4jProcessor",
     deps = [":processor"],
+)
+
+j2cl_library(
+    name = "core-j2cl",
+    srcs = ["//tools/release:core_j2cl_sources"],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    deps = [
+        "//third_party/java:braincheck_core-j2cl",
+        "//third_party/java:grim_annotations-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:org_jetbrains_annotations-j2cl",
+        "//third_party/java:zemeckis_core-j2cl",
+        "@arez//:core-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "dom-j2cl",
+    srcs = ["//tools/release:dom_j2cl_sources"],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    deps = [
+        ":core-j2cl",
+        "//third_party/java:braincheck_core-j2cl",
+        "//third_party/java:grim_annotations-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:org_jetbrains_annotations-j2cl",
+        "//third_party/java:zemeckis_core-j2cl",
+        "@arez//:core-j2cl",
+    ],
 )

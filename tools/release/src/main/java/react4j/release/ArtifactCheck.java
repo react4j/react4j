@@ -73,6 +73,20 @@ public final class ArtifactCheck {
         var binary = archive(Path.of(one(options, "--" + module + "-jar")));
         var sources = archive(Path.of(one(options, "--" + module + "-sources")));
         var raw = archiveSources(Path.of(one(options, "--" + module + "-raw-sources")));
+        if (!module.equals("processor")) {
+            var projection = archive(Path.of(one(options, "--" + module + "-j2cl-sources")));
+            var assetPrefix = module.equals("core") ? "react4j/public/" : "react4j/dom/public/";
+            var expected = sources.keySet().stream()
+                    .filter(name -> !name.startsWith(assetPrefix))
+                    .collect(Collectors.toSet());
+            require(projection.keySet().equals(expected), "J2CL projection must exclude only UMD assets: " + module);
+            for (var name : expected) {
+                require(
+                        Arrays.equals(sources.get(name), projection.get(name)),
+                        "J2CL changed publication bytes: " + name);
+            }
+        }
+
         require(
                 binary.keySet().stream().noneMatch(name -> name.endsWith(".java") || name.endsWith(".js")),
                 "Source payload in binary: " + module);

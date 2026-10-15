@@ -1,12 +1,14 @@
 # T10 — J2CL examples and browser verification
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: `T09`
 - Spec coverage: `R7`, `R9`, `AC5`
 
 ## Delivers
 
 Migrate retained documentation examples/entrypoints from GWT to J2CL. Compile all examples, provide local preview, and exercise meaningful React render/update/context behavior with pinned Chromium in development and optimized production.
+
+After the permanent browser tests prove packaged-library/configuration behavior in both modes, remove T09's temporary compile-smoke Java/JS targets and any helper wiring with no continuing use (user AGENTS.md correction recorded in TASKMAP.md).
 
 ## Acceptance criteria
 

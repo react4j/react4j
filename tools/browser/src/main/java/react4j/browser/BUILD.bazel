@@ -1,0 +1,10 @@
+filegroup(
+    name = "sources",
+    srcs = ["CompileSmoke.java"],
+    visibility = ["//tools/browser:__pkg__"],
+)
+
+exports_files(
+    ["CompileSmoke.entry.js"],
+    visibility = ["//tools/browser:__pkg__"],
+)

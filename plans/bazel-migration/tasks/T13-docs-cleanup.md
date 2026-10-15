@@ -8,6 +8,8 @@
 
 Consolidate contributor docs and update current setup/agent guides/changelog. Delete remaining Buildr/Ruby/Node/Yarn/Docusaurus/GWT/API-diff/downstream infrastructure, dependencies and assets, preserving historical changelog and encrypted secrets.
 
+Audit task-created support code, fixtures, tests, logs and documents against the user's replacement AGENTS.md cleanup rule (source/scope in TASKMAP.md). Retain only concrete continuing coverage/use, and remove replaced migration experiments and their build wiring.
+
 ## Acceptance criteria
 
 - [ ] Current commands and migration contracts match implemented behavior; no obsolete executable/configuration/current-doc references remain, except the documented J2CL pruning annotation and historical descriptions. Git diff verifies secrets untouched and no scratch output.

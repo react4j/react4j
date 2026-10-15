@@ -1433,16 +1433,6 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         }
     }
 
-    @Test
-    public void goldenSmoke() throws Exception {
-        assertGoldenCompile("com.example.basic.BasicView", false);
-    }
-
-    @Test
-    public void diagnosticSmoke() {
-        assertFailedCompile("com.example.component.FinalComponent", "@View target must not be final");
-    }
-
     private void assertGoldenCompile(String classname, String... outputs) throws Exception {
         assertGoldenCompile(inputs(classname), Arrays.asList(outputs));
     }

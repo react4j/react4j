@@ -35,6 +35,7 @@ java_library(
 )
 
 exports_files([
+    "ReactConfig.native.js",
     "react4j.js",
     "react.externs.js",
 ])

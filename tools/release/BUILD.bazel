@@ -50,6 +50,7 @@ release_source_jar(
     java_targets = ["//core/src/main/java/react4j"],
     resource_entries = [
         "META-INF/LICENSE",
+        "react4j/ReactConfig.native.js",
         "react4j/react4j.js",
         "react4j/react.externs.js",
         "react4j/public/dev/react.js",
@@ -57,6 +58,7 @@ release_source_jar(
     ],
     resource_files = [
         "//:LICENSE",
+        "//core/src/main/java/react4j:ReactConfig.native.js",
         "//core/src/main/java/react4j:react4j.js",
         "//core/src/main/java/react4j:react.externs.js",
         "//tools/generation:react_dev",
@@ -340,6 +342,8 @@ java_test(
         "$(rootpath :core_javadoc)",
         "--core-pom",
         "$(rootpath :core_pom)",
+        "--core-j2cl-sources",
+        "$(rootpath :core_j2cl_sources)",
         "--core-raw-sources",
         "$(rootpath :core_source_inputs)",
         "--dom-jar",
@@ -350,6 +354,8 @@ java_test(
         "$(rootpath :dom_javadoc)",
         "--dom-pom",
         "$(rootpath :dom_pom)",
+        "--dom-j2cl-sources",
+        "$(rootpath :dom_j2cl_sources)",
         "--dom-raw-sources",
         "$(rootpath :dom_source_inputs)",
         "--processor-jar",
@@ -362,6 +368,8 @@ java_test(
         "$(rootpath :processor_pom)",
         "--processor-raw-sources",
         "$(rootpath :processor_source_inputs)",
+        "--core-resource",
+        "react4j/ReactConfig.native.js=$(rootpath //core/src/main/java/react4j:ReactConfig.native.js)",
         "--core-resource",
         "react4j/react4j.js=$(rootpath //core/src/main/java/react4j:react4j.js)",
         "--core-resource",
@@ -407,11 +415,13 @@ java_test(
     ],
     data = [
         ":arez_version_file",
+        ":core_j2cl_sources",
         ":core_jar",
         ":core_javadoc",
         ":core_pom",
         ":core_source_inputs",
         ":core_sources",
+        ":dom_j2cl_sources",
         ":dom_jar",
         ":dom_javadoc",
         ":dom_pom",
@@ -424,6 +434,7 @@ java_test(
         ":processor_sources",
         ":site_javadoc",
         ":version_file",
+        "//core/src/main/java/react4j:ReactConfig.native.js",
         "//core/src/main/java/react4j:react.externs.js",
         "//core/src/main/java/react4j:react4j.js",
         "//third_party/java:arez_core",
@@ -449,4 +460,20 @@ java_test(
     main_class = "react4j.release.ArtifactCheck",
     use_testrunner = False,
     runtime_deps = ["//tools/release/src/main/java/react4j/release:artifact_check_classes"],
+)
+
+# React UMD scripts are runtime assets, not Closure compilation units.
+release_jar(
+    name = "core_j2cl_sources",
+    out = "react4j-core-j2cl-sources.jar",
+    exclude_prefixes = ["react4j/public/"],
+    jars = [":core_sources"],
+)
+
+# React UMD scripts are runtime assets, not Closure compilation units.
+release_jar(
+    name = "dom_j2cl_sources",
+    out = "react4j-dom-j2cl-sources.jar",
+    exclude_prefixes = ["react4j/dom/public/"],
+    jars = [":dom_sources"],
 )

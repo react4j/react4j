@@ -4,7 +4,7 @@
 
 The public targets `//:core`, `//:dom`, `//:processor` and `//:react4j_processor_plugin` consume these assembled binary jars. Libraries and generated consumer classes target Java 17; annotation processing requires Java 21. Processor dependencies are shaded into its jar.
 
-Binary jars contain bytecode and metadata. Source jars contain all authored and generated Java, native JavaScript, and the pinned React/ReactDOM assets. J2CL consumers use these source archives.
+Binary jars contain bytecode and metadata. Source jars contain all authored and generated Java, native JavaScript, and the pinned React/ReactDOM assets. J2CL consumers use a byte-preserving projection of these source archives that excludes only the public UMD asset directories from Closure compilation. Browser pages load the UMD scripts separately. Source archives depend on checked JVM class outputs, so building a J2CL consumer also enforces the owned Java checker policy.
 
 Run `bazel test //tools/release:archive_checks //tools/release/consumer/src/main/java/isolated:packaged_consumer` to inspect the artifacts and exercise both the public Bazel targets and an isolated Java 21 compiler/runtime. `tools/release/check_reproducibility.sh` compares all 13 archives/POMs against an independent Bazel build and removes its temporary build data.
 

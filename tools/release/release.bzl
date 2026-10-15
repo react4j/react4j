@@ -86,7 +86,8 @@ def _release_source_jar_impl(ctx):
     ctx.actions.run(
         executable = ctx.executable._jar_builder,
         arguments = [args],
-        inputs = source_jars + resource_files,
+        # A source-only consumer must still wait for the owned JVM/static checks.
+        inputs = source_jars + resource_files + _direct_java_class_jars(ctx.attr.java_targets),
         outputs = [out],
         mnemonic = "ReleaseSourceJar",
         progress_message = "Building release source jar %{output}",
