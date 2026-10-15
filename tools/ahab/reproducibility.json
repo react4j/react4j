@@ -1,0 +1,9 @@
+{
+  "programs": {
+    "@rules_palantir_java_format//java_format/private/java/org/realityforge/rules/palantirjavaformat/palantir_java_format_worker": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    }
+  }
+}

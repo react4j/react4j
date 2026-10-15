@@ -1,0 +1,11 @@
+diff -urN orig/build_defs/internal_do_not_use/j2cl_js_common.bzl new/build_defs/internal_do_not_use/j2cl_js_common.bzl
+--- orig/build_defs/internal_do_not_use/j2cl_js_common.bzl	2026-07-15 10:00:00
++++ new/build_defs/internal_do_not_use/j2cl_js_common.bzl	2026-07-16 10:00:00
+@@ -150,6 +150,7 @@
+         data = data,
+         testonly = 1,
+         entry_points = ["javatests." + test_class + "_AdapterSuite"],
++        defs = args.get("defs"),
+         tags = tags,
+         lenient = True,
+     )

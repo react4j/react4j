@@ -1,0 +1,12 @@
+diff -urN orig/web/internal/web_test.sh.template new/web/internal/web_test.sh.template
+--- orig/web/internal/web_test.sh.template	2026-08-01 12:00:00
++++ new/web/internal/web_test.sh.template	2026-08-01 12:00:00
+@@ -65,8 +65,6 @@
+
+ %TEMPLATED_env_vars%
+
+-printenv
+-
+ # Split arguments into wtl_launcher_args and wtl_test_args. These variables are
+ # prefixed "wtl_" to reduce the chance of colliding with environment variables
+ # that the user intends to pass through to the wrapped test. (It's uncommon to

@@ -1,0 +1,56 @@
+diff -urN orig/MODULE.bazel new/MODULE.bazel
+--- orig/MODULE.bazel	2026-03-30 20:43:53
++++ new/MODULE.bazel	2026-07-07 10:00:00
+@@ -33,6 +33,11 @@
+     name = "rules_web_testing_java",
+     version = "0.4.1",
+ )
++
++bazel_dep(
++    name = "rules_shell",
++    version = "0.8.0",
++)
+ 
+ ##### Java dependencies #####
+ bazel_dep(
+diff -urN orig/third_party/phantomjs/BUILD new/third_party/phantomjs/BUILD
+--- orig/third_party/phantomjs/BUILD	2026-03-30 20:43:53
++++ new/third_party/phantomjs/BUILD	2026-07-07 10:00:00
+@@ -11,6 +11,8 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
++load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
++
+ package(default_visibility = ["//visibility:public"])
+ 
+ licenses(["restricted"])
+diff -urN orig/closure/private/defs.bzl new/closure/private/defs.bzl
+--- orig/closure/private/defs.bzl	2026-03-30 20:43:53
++++ new/closure/private/defs.bzl	2026-07-07 10:00:00
+@@ -204,12 +204,12 @@
+ def collect_runfiles(ctx, files, extra_runfiles_attrs = None):
+     """Aggregates data runfiles from targets."""
+-    all_transitive_files = []
++    runfiles = []
+     if extra_runfiles_attrs:
+         for extra_attr in extra_runfiles_attrs:
+             deps = getattr(ctx.attr, extra_attr, None) or []
+             if type(deps) != "list":
+                 deps = [deps]
+             for dep in deps:
+                 info = dep[DefaultInfo]
+-                all_transitive_files.append(info.default_runfiles.files)
+-                all_transitive_files.append(info.data_runfiles.files)
++                runfiles.append(info.default_runfiles)
++                runfiles.append(info.data_runfiles)
+@@ -217,8 +217,5 @@
+     return ctx.runfiles(
+         collect_default = True,
+         collect_data = True,
+         files = files,
+-        transitive_files = depset(
+-            transitive = all_transitive_files,
+-        ),
+-    )
++    ).merge_all(runfiles)

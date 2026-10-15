@@ -1,0 +1,15 @@
+diff -urN orig/java/jsinterop/base/InternalJsUtil.java new/java/jsinterop/base/InternalJsUtil.java
+--- orig/java/jsinterop/base/InternalJsUtil.java	2026-07-15 10:00:00
++++ new/java/jsinterop/base/InternalJsUtil.java	2026-07-15 10:00:00
+@@ -164,4 +164,5 @@
+   // J2CL_ONLY @JsMethod
++  @SuppressWarnings("unusable-by-js")
+   public static native <T> JsConstructorFn<T> toCtor(Class<T> clazz) /*-{
+     return clazz.@java.lang.Class::jsConstructor;
+   }-*/;
+@@ -169,4 +170,5 @@
+   // J2CL_ONLY @JsMethod(namespace="java.lang.Class", name="$get")
++  @SuppressWarnings("unusable-by-js")
+   public static native <T> Class<T> toClass(JsConstructorFn<T> ctor) /*-{
+     return ctor.prototype.@java.lang.Object::___clazz;
+   }-*/;

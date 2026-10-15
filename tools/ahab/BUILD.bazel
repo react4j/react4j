@@ -1,0 +1,38 @@
+load("@ahab//:defs.bzl", "ahab", "ahab_check", "ahab_explain", "ahab_update")
+
+exports_files(
+    [
+        "baseline.json",
+        "exceptions.json",
+        "reproducibility.json",
+    ],
+    visibility = ["//visibility:private"],
+)
+
+ahab(
+    name = "hermeticity",
+    exceptions = ["exceptions.json"],
+    label = "//...",
+    repro_specs = ["reproducibility.json"],
+)
+
+ahab_check(
+    name = "hermeticity.check",
+    baseline = "baseline.json",
+    exceptions = ["exceptions.json"],
+    label = "//...",
+    repro_specs = ["reproducibility.json"],
+)
+
+ahab_update(
+    name = "hermeticity.update",
+    baseline = "baseline.json",
+    exceptions = ["exceptions.json"],
+    label = "//...",
+    repro_specs = ["reproducibility.json"],
+)
+
+ahab_explain(
+    name = "hermeticity.explain",
+    report = "baseline.json",
+)

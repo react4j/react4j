@@ -1,0 +1,33 @@
+diff -urN orig/go/metadata/main/BUILD.bazel new/go/metadata/main/BUILD.bazel
+--- orig/go/metadata/main/BUILD.bazel	2026-07-31 10:00:00
++++ new/go/metadata/main/BUILD.bazel	2026-07-31 10:00:00
+@@ -32,6 +32,7 @@
+     name = "main",
+     testonly = True,
+     embed = [":go_default_library"],
++    pure = "on",
+     visibility = ["//visibility:public"],
+     out = get_platform_executable_name(),
+ )
+diff -urN orig/go/wsl/main/BUILD.bazel new/go/wsl/main/BUILD.bazel
+--- orig/go/wsl/main/BUILD.bazel	2026-07-31 10:00:00
++++ new/go/wsl/main/BUILD.bazel	2026-07-31 10:00:00
+@@ -30,6 +30,7 @@
+ go_binary(
+     name = "main",
+     embed = [":go_default_library"],
++    pure = "on",
+     visibility = ["//visibility:public"],
+     out = get_platform_executable_name(),
+ )
+diff -urN orig/go/wtl/main/BUILD.bazel new/go/wtl/main/BUILD.bazel
+--- orig/go/wtl/main/BUILD.bazel	2026-07-31 10:00:00
++++ new/go/wtl/main/BUILD.bazel	2026-07-31 10:00:00
+@@ -34,6 +34,7 @@
+     name = "main",
+     testonly = True,
+     embed = [":go_default_library"],
++    pure = "on",
+     visibility = ["//visibility:public"],
+     out = get_platform_executable_name(),
+ )

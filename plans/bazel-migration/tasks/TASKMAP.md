@@ -2,8 +2,8 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Active tree: `plans/bazel-migration/`
-- Status: `planned`
-- Current frontier: `T01`
+- Status: `implementing`
+- Current frontier: `T02`
 - Planning reviewer: `/root/planning_reviewer` (`2/3` rounds; Findings: none)
 - Plan checkpoint: `automatic` (user-confirmed grill-me understanding and passing planning review)
 - Implementation reviewer: `pending` (`0/5` rounds)
@@ -17,7 +17,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Pinned Bazel graph and maintenance tools](T01-bootstrap.md) | pending | None |
+| T01 | [Pinned Bazel graph and maintenance tools](T01-bootstrap.md) | complete | None |
 | T02 | [Java DOM and React asset generation](T02-generators.md) | pending | T01 |
 | T03 | [Core JVM contracts and tests](T03-core.md) | pending | T02 |
 | T04 | [DOM JVM contracts and tests](T04-dom.md) | pending | T03 |

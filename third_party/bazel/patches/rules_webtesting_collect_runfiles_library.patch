@@ -1,0 +1,37 @@
+diff -urN orig/web/internal/web_test.bzl new/web/internal/web_test.bzl
+--- orig/web/internal/web_test.bzl	2026-07-30 10:00:00
++++ new/web/internal/web_test.bzl	2026-07-30 10:00:00
+@@ -78,7 +78,7 @@
+         is_executable = True,
+     )
+
+-    additional_runfiles = list(ctx.files._bash_runfile_helpers)
++    additional_runfiles = []
+     if is_windows(ctx):
+         additional_runfiles += [test]
+         executable = create_windows_native_launcher_script(ctx, test)
+@@ -91,6 +91,7 @@
+             runfiles = runfiles.collect(
+                 ctx = ctx,
+                 files = additional_runfiles,
++                targets = [ctx.attr._bash_runfile_helpers],
+             ),
+         ),
+     ]
+@@ -136,7 +137,7 @@
+         is_executable = True,
+     )
+
+-    additional_runfiles = list(ctx.files._bash_runfile_helpers)
++    additional_runfiles = []
+     if is_windows(ctx):
+         additional_runfiles += [test]
+         executable = create_windows_native_launcher_script(ctx, test)
+@@ -153,6 +154,7 @@
+                 targets = [
+                     ctx.attr.browser,
+                     ctx.attr.config,
++                    ctx.attr._bash_runfile_helpers,
+                     ctx.attr.launcher,
+                     ctx.attr.test,
+                 ],

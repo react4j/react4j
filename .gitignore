@@ -17,3 +17,11 @@
 /website/static/api
 /yarn-error.log
 host-factory-generator/src/main/data/*.html
+
+# Bazel and local development state
+/bazel-*
+/.bazelrc.local
+/.bazelbsp/
+/.idea/
+/dist/
+**/__pycache__/

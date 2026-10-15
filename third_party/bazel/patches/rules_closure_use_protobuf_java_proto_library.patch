@@ -1,0 +1,52 @@
+diff -urN orig/java/io/bazel/rules/closure/BUILD new/java/io/bazel/rules/closure/BUILD
+--- orig/java/io/bazel/rules/closure/BUILD	2026-03-30 20:43:53
++++ new/java/io/bazel/rules/closure/BUILD	2026-07-07 10:00:00
+@@ -12,7 +12,8 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+
+-load("@rules_java//java:defs.bzl", "java_binary", "java_library", "java_proto_library")
++load("@protobuf//bazel:java_proto_library.bzl", "java_proto_library")
++load("@rules_java//java:defs.bzl", "java_binary", "java_library")
+ load("@rules_proto//proto:defs.bzl", "proto_library")
+
+ licenses(["notice"])
+diff -urN orig/java/io/bazel/rules/closure/webfiles/BUILD new/java/io/bazel/rules/closure/webfiles/BUILD
+--- orig/java/io/bazel/rules/closure/webfiles/BUILD	2026-03-30 20:43:53
++++ new/java/io/bazel/rules/closure/webfiles/BUILD	2026-07-31 10:00:00
+@@ -12,7 +12,8 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+
+-load("@rules_java//java:defs.bzl", "java_library", "java_proto_library")
++load("@protobuf//bazel:java_proto_library.bzl", "java_proto_library")
++load("@rules_java//java:defs.bzl", "java_library")
+ load("@rules_proto//proto:defs.bzl", "proto_library")
+
+ licenses(["notice"])
+diff -urN orig/java/io/bazel/rules/closure/webfiles/server/BUILD new/java/io/bazel/rules/closure/webfiles/server/BUILD
+--- orig/java/io/bazel/rules/closure/webfiles/server/BUILD	2026-03-30 20:43:53
++++ new/java/io/bazel/rules/closure/webfiles/server/BUILD	2026-07-31 10:00:00
+@@ -12,7 +12,8 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+
+-load("@rules_java//java:defs.bzl", "java_binary", "java_library", "java_proto_library")
++load("@protobuf//bazel:java_proto_library.bzl", "java_proto_library")
++load("@rules_java//java:defs.bzl", "java_binary", "java_library")
+ load("@rules_proto//proto:defs.bzl", "proto_library")
+
+ licenses(["notice"])
+diff -urN orig/java/io/bazel/rules/closure/worker/BUILD new/java/io/bazel/rules/closure/worker/BUILD
+--- orig/java/io/bazel/rules/closure/worker/BUILD	2026-03-30 20:43:53
++++ new/java/io/bazel/rules/closure/worker/BUILD	2026-07-31 10:00:00
+@@ -12,7 +12,8 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+
+-load("@rules_java//java:defs.bzl", "java_library", "java_proto_library")
++load("@protobuf//bazel:java_proto_library.bzl", "java_proto_library")
++load("@rules_java//java:defs.bzl", "java_library")
+ load("@rules_proto//proto:defs.bzl", "proto_library")
+
+ licenses(["notice"])

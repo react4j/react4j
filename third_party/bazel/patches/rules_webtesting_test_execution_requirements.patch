@@ -1,0 +1,36 @@
+diff --git a/web/internal/web_test.bzl b/web/internal/web_test.bzl
+index 32d2d84..8ca81a0 100644
+--- a/web/internal/web_test.bzl
++++ b/web/internal/web_test.bzl
+@@ -142,6 +142,9 @@ def _generate_default_test(ctx):
+     else:
+         executable = test
+ 
++    execution_requirements = dict(ctx.attr.browser[WebTestInfo].execution_requirements)
++    execution_requirements.update(ctx.attr.execution_requirements)
++
+     return [
+         DefaultInfo(
+             executable = executable,
+@@ -159,7 +162,7 @@ def _generate_default_test(ctx):
+                 ],
+             ),
+         ),
+-        testing.ExecutionInfo(env),
++        testing.ExecutionInfo(execution_requirements),
+         testing.TestEnvironment(ctx.attr.browser[WebTestInfo].environment),
+     ]
+ 
+@@ -177,6 +180,12 @@ web_test = rule(
+             mandatory = True,
+             providers = [WebTestInfo],
+         ),
++        "execution_requirements": attr.string_dict(
++            doc = """
++Execution requirements applied only when running the test, rather than to
++every action that builds the test target.
++            """,
++        ),
+         "launcher": attr.label(
+             doc = "The web test launcher binary.",
+             allow_files = True,
