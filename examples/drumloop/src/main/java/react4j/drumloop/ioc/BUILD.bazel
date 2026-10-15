@@ -1,9 +1,25 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
 package(default_visibility = ["//visibility:public"])
 
-filegroup(
-    name = "sources",
+java_j2cl_library(
+    name = "ioc",
     srcs = [
         "DrumLoopInjector.java",
         "package-info.java",
+    ],
+    java_deps = [
+        "//examples/drumloop/src/main/java/react4j/drumloop/model:model_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/views:views_java",
+        "//third_party/java:sting_core",
+    ],
+    plugins = [
+        "@sting//:sting_processor_plugin",
+    ],
+    deps = [
+        "//examples/drumloop/src/main/java/react4j/drumloop/model",
+        "//examples/drumloop/src/main/java/react4j/drumloop/views",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:sting_core-j2cl",
     ],
 )

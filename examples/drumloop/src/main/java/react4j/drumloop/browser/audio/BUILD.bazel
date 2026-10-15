@@ -1,14 +1,28 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
 package(default_visibility = ["//visibility:public"])
 
-filegroup(
-    name = "sources",
+java_j2cl_library(
+    name = "audio",
     srcs = [
         "AudioBuffer.java",
         "AudioBufferSourceNode.java",
         "AudioContext.java",
         "AudioNode.java",
         "AudioParam.java",
+        "EventHandler.java",
         "GainNode.java",
         "package-info.java",
+    ],
+    java_deps = [
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/core:core_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise:promise_java",
+        "//third_party/java:jsinterop_annotations",
+    ],
+    deps = [
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/core",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jspecify-j2cl",
     ],
 )

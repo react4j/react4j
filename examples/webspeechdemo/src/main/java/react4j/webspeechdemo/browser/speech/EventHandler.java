@@ -1,4 +1,4 @@
-package react4j.drumloop.browser;
+package react4j.webspeechdemo.browser.speech;
 
 import jsinterop.annotations.JsFunction;
 

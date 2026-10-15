@@ -3,7 +3,6 @@ package react4j.webspeechdemo.browser.speech;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.jspecify.annotations.Nullable;
-import react4j.webspeechdemo.browser.EventHandler;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "SpeechSynthesisUtterance")
 public final class SpeechSynthesisUtterance {

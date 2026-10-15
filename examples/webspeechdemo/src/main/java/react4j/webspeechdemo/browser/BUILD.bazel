@@ -1,13 +1,14 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
 package(default_visibility = ["//visibility:public"])
 
-filegroup(
-    name = "sources",
+java_j2cl_library(
+    name = "browser",
     srcs = [
         "Console.java",
         "DOMRect.java",
         "Document.java",
         "Element.java",
-        "EventHandler.java",
         "HTMLInputElement.java",
         "HTMLSelectElement.java",
         "HTMLTextAreaElement.java",
@@ -15,5 +16,16 @@ filegroup(
         "Range.java",
         "WindowGlobal.java",
         "package-info.java",
+    ],
+    java_deps = [
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser/speech:speech_java",
+        "//third_party/java:jsinterop_annotations",
+        "//third_party/java:base",
+    ],
+    deps = [
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser/speech",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+        "//third_party/java:jspecify-j2cl",
     ],
 )

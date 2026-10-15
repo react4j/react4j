@@ -1,0 +1,25 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_j2cl_library(
+    name = "cache",
+    srcs = [
+        "ReactCache.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise:promise_java",
+        "//third_party/java:jsinterop_annotations",
+        "//third_party/java:base",
+    ],
+    native_srcs = [
+        "ReactCache.native.js",
+    ],
+    deps = [
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+        "//third_party/java:jspecify-j2cl",
+    ],
+)

@@ -4,7 +4,6 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsArrayLike;
-import react4j.webspeechdemo.browser.EventHandler;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "SpeechSynthesis")
 public final class SpeechSynthesis {
