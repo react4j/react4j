@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.processing.Processor;
 import javax.tools.JavaFileObject;
@@ -21,6 +22,7 @@ import org.realityforge.proton.qa.Compilation;
 import org.realityforge.proton.qa.CompileTestUtil;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import react4j.testing.StrictGeneratedCode;
 import sting.processor.StingProcessor;
 
 public final class React4jProcessorTest extends AbstractProcessorTest {
@@ -1303,8 +1305,51 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     protected List<String> getOptions() {
         final List<String> options = new ArrayList<>(super.getOptions());
         options.add("-Aarez.defer.errors=false");
-        options.addAll(List.of("--release", "17"));
+        options.addAll(List.of("--release", "17", "-XDaddTypeAnnotationsToSymbol=true"));
         return options;
+    }
+
+    @Test
+    public void inputContractDiagnostics() {
+        assertFailedCompile("com.example.jspecify.OptionalNonNullView", "Optional non-null @Input requires");
+        assertFailedCompile("com.example.jspecify.NullableDefaultView", "@InputDefault nullness is incompatible");
+        assertFailedCompile("com.example.jspecify.ParametricOmissionView", "Parametric @Input nullness requires");
+        assertFailedCompile("com.example.jspecify.UnknownContractView", "Unspecified JSpecify nullness");
+    }
+
+    @Test
+    public void genericSourceAndCompiledContracts() throws Exception {
+        var base = fixture("input/com/example/jspecify/NestedContractBase.java");
+        var view = fixture("input/com/example/jspecify/NestedContractView.java");
+        var outputs = List.of(
+                "com/example/jspecify/React4j_NestedContractView.java",
+                "com/example/jspecify/NestedContractBuilder.java");
+        assertGoldenCompile(List.of(base, view), outputs, List.of(), true);
+        var compiled = CompileTestUtil.assertCompilesWithoutWarnings(List.of(base), getOptions(), List.of(), List.of());
+        try {
+            assertGoldenCompile(
+                    List.of(view),
+                    outputs,
+                    buildClasspath(compiled.classOutput().toFile()),
+                    true);
+        } finally {
+            deleteDir(compiled.sourceOutput());
+            deleteDir(compiled.classOutput());
+        }
+    }
+
+    @Test
+    public void presenceAndParametricContracts() throws Exception {
+        assertGoldenCompile(
+                inputs("com.example.jspecify.PresenceView"),
+                Arrays.asList(deriveExpectedOutputs("com.example.jspecify.PresenceView", false)),
+                List.of(),
+                true);
+        assertGoldenCompile(
+                inputs("com.example.jspecify.ParametricRequiredView"),
+                Arrays.asList(deriveExpectedOutputs("com.example.jspecify.ParametricRequiredView", false)),
+                List.of(),
+                true);
     }
 
     @Test
@@ -1322,12 +1367,28 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     }
 
     private void assertGoldenCompile(List<JavaFileObject> inputs, List<String> outputs) throws Exception {
+        assertGoldenCompile(inputs, outputs, List.of(), false);
+    }
+
+    private void assertGoldenCompile(
+            List<JavaFileObject> inputs, List<String> outputs, List<File> classpath, boolean strict) throws Exception {
         for (var formatted : new boolean[] {false, true}) {
             var options = new ArrayList<>(getOptions());
             options.add("-Areact4j.format_generated_source=" + formatted);
             var compilation = CompileTestUtil.assertCompilesWithoutWarnings(
-                    javaCompiler(), inputs, options, processors(), Collections.emptyList());
+                    javaCompiler(), inputs, options, processors(), classpath);
             try {
+                if (strict) {
+                    var checkingOptions = new ArrayList<>(options);
+                    if (!classpath.isEmpty()) {
+                        checkingOptions.addAll(List.of(
+                                "-classpath",
+                                classpath.stream()
+                                        .map(File::toString)
+                                        .collect(Collectors.joining(File.pathSeparator))));
+                    }
+                    StrictGeneratedCode.check(compilation, checkingOptions);
+                }
                 var directory = formatted ? "expectedFormatted" : "expected";
                 outputFilesIfEnabled(compilation, directory, this::emitGeneratedFile);
                 var actual = Stream.concat(

@@ -206,8 +206,9 @@ final class ViewDescriptor {
     }
 
     TypeName getViewType() {
-        final var typeNames =
-                getDeclaredType().getTypeArguments().stream().map(TypeName::get).toList();
+        final var typeNames = getDeclaredType().getTypeArguments().stream()
+                .map(GeneratorUtil::getTypeName)
+                .toList();
         if (!typeNames.isEmpty()) {
             return ParameterizedTypeName.get(ClassName.get(getElement()), typeNames.toArray(new TypeName[0]));
         } else {

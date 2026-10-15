@@ -1,5 +1,10 @@
 package react4j.processor;
 
+import com.palantir.javapoet.AnnotationSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.MethodSpec;
+import com.palantir.javapoet.TypeName;
+import com.palantir.javapoet.TypeVariableName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +20,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AnnotationsUtil;
+import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.ProcessorException;
 
 /** Resolves nullness at the original declaration, before generated marked scopes are applied. */
@@ -53,7 +59,7 @@ final class Nullability {
         return resolve(declaration, resolvedType, null);
     }
 
-    private static Nullness resolve(
+    static Nullness resolve(
             final Element declaration, final TypeMirror resolvedType, final @Nullable TypeElement context) {
         final TypeMirror original = declaredType(declaration);
         if (original.getKind().isPrimitive() || original.getKind() == TypeKind.VOID) {
@@ -104,6 +110,40 @@ final class Nullability {
                     declaration);
         }
         return nullness;
+    }
+
+    static Nullness requireSpecified(Element declaration, TypeMirror resolvedType, TypeElement context) {
+        return requireSpecified(declaration, resolve(declaration, resolvedType, context));
+    }
+
+    static TypeName typeName(Element declaration, TypeMirror resolvedType, TypeElement context) {
+        var type = GeneratorUtil.getTypeName(resolvedType);
+        var contract = requireSpecified(declaration, resolvedType, context);
+        if (contract == Nullness.NULLABLE) {
+            return nullable(type);
+        }
+        if (contract == Nullness.NONNULL && !type.isPrimitive()) {
+            type = type.withoutAnnotations();
+            if (type instanceof TypeVariableName || !isMarked(declaration)) {
+                type = type.annotated(AnnotationSpec.builder(ClassName.get("org.jspecify.annotations", "NonNull"))
+                        .build());
+            }
+        }
+        return type;
+    }
+
+    static TypeName nullable(TypeName type) {
+        return type.box()
+                .withoutAnnotations()
+                .annotated(
+                        AnnotationSpec.builder(GeneratorUtil.NULLABLE_CLASSNAME).build());
+    }
+
+    static MethodSpec.Builder preserveScope(Element declaration, MethodSpec.Builder method) {
+        if (!isMarked(declaration)) {
+            method.addAnnotation(ClassName.get("org.jspecify.annotations", "NullUnmarked"));
+        }
+        return method;
     }
 
     static boolean isMarked(final Element declaration) {

@@ -1,5 +1,6 @@
 package react4j.internal;
 
+import java.util.Objects;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
@@ -33,6 +34,11 @@ public abstract class NativeView {
     @Nullable
     public final JsPropertyMap<@Nullable Object> inputs() {
         return inputs;
+    }
+
+    @JsOverlay
+    public final JsPropertyMap<@Nullable Object> requireInputs() {
+        return Objects.requireNonNull(inputs);
     }
 
     @JsOverlay

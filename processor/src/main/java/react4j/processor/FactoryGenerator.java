@@ -5,16 +5,15 @@ import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.FieldSpec;
 import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.ParameterSpec;
-import com.palantir.javapoet.TypeName;
 import com.palantir.javapoet.TypeSpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Objects;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import org.realityforge.proton.ElementsUtil;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.ProcessorException;
@@ -78,17 +77,15 @@ final class FactoryGenerator {
         whitelistedAnnotations.add("javax.inject.Named");
         for (final var parameter : descriptor.getInjectableConstructorParameters()) {
             final var name = parameter.getSimpleName().toString();
-            final var param = ParameterSpec.builder(TypeName.get(parameter.asType()), name, Modifier.FINAL);
+            final var param =
+                    ParameterSpec.builder(GeneratorUtil.getTypeName(parameter.asType()), name, Modifier.FINAL);
 
             GeneratorUtil.copyWhitelistedAnnotations(parameter, param, whitelistedAnnotations);
             ctor.addParameter(param.build());
-            if (Nullability.isNonNull(parameter)) {
-                ctor.addStatement("this.$N = $T.requireNonNull( $N )", name, Objects.class, name);
-            } else {
-                ctor.addStatement("this.$N = $N", name, name);
-            }
+            ctor.addStatement("this.$N = $N", name, name);
         }
 
+        Nullability.preserveScope(constructor, ctor);
         ctor.addStatement("InjectSupport.setFactory( this )");
 
         builder.addMethod(ctor.build());
@@ -101,7 +98,7 @@ final class FactoryGenerator {
             final ExecutableElement constructor) {
         for (final var parameter : descriptor.getInjectableConstructorParameters()) {
             final var field = FieldSpec.builder(
-                    TypeName.get(parameter.asType()),
+                    GeneratorUtil.getTypeName(parameter.asType()),
                     parameter.getSimpleName().toString(),
                     Modifier.PRIVATE,
                     Modifier.FINAL);
@@ -181,11 +178,11 @@ final class FactoryGenerator {
             final var convertMethodName = getConverter(input);
             if (!input.getType().getKind().isPrimitive() && !input.isNonNull()) {
                 final var extraction = CodeBlock.builder();
-                extraction.addStatement("$T $N", TypeName.get(input.getType()), localName);
+                extraction.addStatement("$T $N", GeneratorUtil.getTypeName(input.getType()), localName);
                 extraction.beginControlFlow("if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME);
                 extraction.addStatement(
-                        "$N = null != view.inputs().getAsAny( $T.Inputs.$N ) ? "
-                                + "view.inputs().getAsAny( $T.Inputs.$N ).$N() : null",
+                        "$N = null != view.requireInputs().getAsAny( $T.Inputs.$N ) ? "
+                                + "view.requireInputs().getAsAny( $T.Inputs.$N ).$N() : null",
                         localName,
                         descriptor.getEnhancedClassName(),
                         input.getConstantName(),
@@ -194,7 +191,7 @@ final class FactoryGenerator {
                         convertMethodName);
                 extraction.nextControlFlow("else");
                 extraction.addStatement(
-                        "$N = $T.uncheckedCast( view.inputs().getAsAny( $T.Inputs.$N ) )",
+                        "$N = $T.uncheckedCast( view.requireInputs().getAsAny( $T.Inputs.$N ) )",
                         localName,
                         JS_CLASSNAME,
                         descriptor.getEnhancedClassName(),
@@ -203,8 +200,8 @@ final class FactoryGenerator {
                 method.addCode(extraction.build());
             } else {
                 method.addStatement(
-                        "final $T $N = view.inputs().getAsAny( $T.Inputs.$N ).$N()",
-                        TypeName.get(input.getType()),
+                        "final $T $N = view.requireInputs().getAsAny( $T.Inputs.$N ).$N()",
+                        GeneratorUtil.getTypeName(input.getType()),
                         localName,
                         descriptor.getEnhancedClassName(),
                         input.getConstantName(),
@@ -246,7 +243,10 @@ final class FactoryGenerator {
             case LONG -> "asLong";
             case SHORT -> "asShort";
             case TYPEVAR, ARRAY -> "cast";
-            case DECLARED -> input.getType().toString().equals("java.lang.String") ? "asString" : "cast";
+            case DECLARED ->
+                ((DeclaredType) input.getType()).asElement().toString().equals("java.lang.String")
+                        ? "asString"
+                        : "cast";
             default ->
                 throw new ProcessorException(
                         "Return type of @Input method is not yet handled. Type: "

@@ -13,7 +13,6 @@ import com.palantir.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,8 +50,8 @@ final class BuilderGenerator {
 
     private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get("jsinterop.base", "JsPropertyMap");
 
-    private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
-            ParameterizedTypeName.get(JS_PROPERTY_MAP_CLASSNAME, ClassName.get("java.lang", "Object"));
+    private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME = ParameterizedTypeName.get(
+            JS_PROPERTY_MAP_CLASSNAME, Nullability.nullable(ClassName.get("java.lang", "Object")));
 
     private static final ClassName CONTRACT_CLASSNAME = ClassName.get("org.jetbrains.annotations", "Contract");
 
@@ -369,26 +368,14 @@ final class BuilderGenerator {
         } else if (stepMethod.isChildIntrinsic()) {
             assert null != inputElement;
             assert null != input;
-            if (Nullability.isNonNull(inputElement)) {
-                method.addStatement(
-                        "_element.input( $T.Inputs.$N, $T.of( $T.requireNonNull( $N ) ) )",
-                        descriptor.getEnhancedClassName(),
-                        input.getConstantName(),
-                        REACT_NODE_CLASSNAME,
-                        Objects.class,
-                        stepMethod.getName());
-            } else {
-                method.addStatement(
-                        "_element.input( $T.Inputs.$N, $T.of( $N ) )",
-                        descriptor.getEnhancedClassName(),
-                        input.getConstantName(),
-                        REACT_NODE_CLASSNAME,
-                        stepMethod.getName());
-            }
+            method.addStatement(
+                    "_element.input( $T.Inputs.$N, $T.of( $N ) )",
+                    descriptor.getEnhancedClassName(),
+                    input.getConstantName(),
+                    REACT_NODE_CLASSNAME,
+                    stepMethod.getName());
         } else {
-            if ((null != inputElement && Nullability.isNonNull(inputElement)) && !type.isPrimitive()) {
-                method.addStatement("$T.requireNonNull( $N )", Objects.class, stepMethod.getName());
-            }
+
             assert null != input;
             method.addStatement(
                     "_element.input( $T.Inputs.$N, $N )",
@@ -407,8 +394,12 @@ final class BuilderGenerator {
         return method.build();
     }
 
-    private static MethodSpec buildBuildStepImpl(final ViewDescriptor descriptor) {
-        final var method = MethodSpec.methodBuilder("build").addModifiers(Modifier.PUBLIC, Modifier.FINAL);
+    private static MethodSpec buildBuildStepImpl(final ViewDescriptor descriptor, final boolean exposed) {
+        final var method = MethodSpec.methodBuilder("build")
+                .addModifiers(exposed ? Modifier.PUBLIC : Modifier.PRIVATE, Modifier.FINAL);
+        if (exposed) {
+            method.addAnnotation(Override.class);
+        }
         addPureContract(method);
         return buildBuildMethodContent(descriptor, method, "_element");
     }
@@ -416,7 +407,7 @@ final class BuilderGenerator {
     private static FieldSpec buildContextBuildField(final InputDescriptor current) {
         final var typeName = ParameterizedTypeName.get(
                 CONTEXT_RENDER_FUNCTION_CLASSNAME,
-                TypeName.get(current.getType()).box());
+                GeneratorUtil.getTypeName(current.getType()).box());
         return FieldSpec.builder(typeName, CONTEXT_FIELD_PREFIX + current.getName(), Modifier.PRIVATE, Modifier.FINAL)
                 .initializer("this::$N", CONTEXT_METHOD_PREFIX + current.getName())
                 .build();
@@ -427,7 +418,8 @@ final class BuilderGenerator {
         final var method = MethodSpec.methodBuilder(CONTEXT_METHOD_PREFIX + current.getName())
                 .addModifiers(Modifier.PRIVATE)
                 .returns(REACT_NODE_CLASSNAME)
-                .addParameter(ParameterSpec.builder(TypeName.get(current.getType()), current.getName(), Modifier.FINAL)
+                .addParameter(ParameterSpec.builder(
+                                Nullability.nullable(current.getTypeName()), current.getName(), Modifier.FINAL)
                         .build())
                 .addStatement(
                         "_element.input( $T.Inputs.$N, $N )",
@@ -447,9 +439,10 @@ final class BuilderGenerator {
         return method.build();
     }
 
-    private static MethodSpec buildContextBuildStepImpl(final InputDescriptor firstContextInput) {
+    private static MethodSpec buildContextBuildStepImpl(
+            final InputDescriptor firstContextInput, final boolean exposed) {
         final var method = MethodSpec.methodBuilder("build")
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addModifiers(exposed ? Modifier.PUBLIC : Modifier.PRIVATE, Modifier.FINAL)
                 .returns(REACT_NODE_CLASSNAME)
                 .addStatement(
                         "return $T.$N.consumer().render( $N )",
@@ -578,7 +571,7 @@ final class BuilderGenerator {
                 .toList();
 
         for (final var input : fromTreeContextInputs) {
-            final var type = TypeName.get(input.getType()).box();
+            final var type = GeneratorUtil.getTypeName(input.getType()).box();
             final var field = FieldSpec.builder(
                     ParameterizedTypeName.get(CONTEXT_CLASSNAME, type),
                     CONTEXT_INPUT_PREFIX + input.getConstantName(),
@@ -653,12 +646,14 @@ final class BuilderGenerator {
         }
         builder.addField(field.build());
 
+        final var exposesBuild =
+                steps.stream().flatMap(step -> step.getMethods().stream()).anyMatch(StepMethod::isBuildIntrinsic);
         final var fromTreeContextInputs = descriptor.getInputs().stream()
                 .filter(InputDescriptor::isFromTreeContext)
                 .toList();
         if (!fromTreeContextInputs.isEmpty()) {
             builder.addMethod(buildInternalBuildStepImpl(descriptor));
-            builder.addMethod(buildContextBuildStepImpl(fromTreeContextInputs.get(0)));
+            builder.addMethod(buildContextBuildStepImpl(fromTreeContextInputs.get(0), exposesBuild));
             final var size = fromTreeContextInputs.size();
             for (var i = 0; i < size; i++) {
                 final var current = fromTreeContextInputs.get(i);
@@ -667,7 +662,7 @@ final class BuilderGenerator {
                 builder.addMethod(buildContextBuildStepImpl(descriptor, current, next));
             }
         } else {
-            builder.addMethod(buildBuildStepImpl(descriptor));
+            builder.addMethod(buildBuildStepImpl(descriptor, exposesBuild));
         }
 
         return builder.build();
@@ -679,7 +674,7 @@ final class BuilderGenerator {
             return baseName;
         } else {
             return ParameterizedTypeName.get(
-                    baseName, arguments.stream().map(TypeName::get).toArray(TypeName[]::new));
+                    baseName, arguments.stream().map(GeneratorUtil::getTypeName).toArray(TypeName[]::new));
         }
     }
 

@@ -13,7 +13,6 @@ import com.palantir.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -21,9 +20,9 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
-import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
@@ -89,7 +88,7 @@ final class ViewGenerator {
     public static final ClassName OBJECT = ClassName.get("java.lang", "Object");
 
     private static final ParameterizedTypeName JS_PROPERTY_MAP_T_OBJECT_CLASSNAME =
-            ParameterizedTypeName.get(JS_PROPERTY_MAP_CLASSNAME, OBJECT);
+            ParameterizedTypeName.get(JS_PROPERTY_MAP_CLASSNAME, Nullability.nullable(OBJECT));
 
     private static final ClassName REACT_NODE_CLASSNAME = ClassName.get("react4j", "ReactNode");
 
@@ -309,7 +308,8 @@ final class ViewGenerator {
                 sb.append("$N");
                 final var name = element.getSimpleName().toString();
                 params.add(name);
-                final var ctorParameter = ParameterSpec.builder(TypeName.get(element.asType()), name, Modifier.FINAL);
+                final var ctorParameter =
+                        ParameterSpec.builder(GeneratorUtil.getTypeName(element.asType()), name, Modifier.FINAL);
                 GeneratorUtil.copyWhitelistedAnnotations(element, ctorParameter);
                 SuppressWarningsUtil.addSuppressWarningsIfRequired(processingEnv, ctor, element.asType());
 
@@ -319,7 +319,8 @@ final class ViewGenerator {
             ctor.addStatement(sb.toString(), params.toArray());
         }
 
-        ctor.addStatement("this.$N = $T.requireNonNull( $N )", NATIVE_VIEW_FIELD, Objects.class, NATIVE_VIEW_FIELD);
+        ctor.addStatement("this.$N = $N", NATIVE_VIEW_FIELD, NATIVE_VIEW_FIELD);
+        Nullability.preserveScope(descriptor.getConstructor(), ctor);
 
         return ctor;
     }
@@ -350,7 +351,8 @@ final class ViewGenerator {
         final TypeMirror returnType = methodType.getReturnType();
         final var method = MethodSpec.methodBuilder(
                         methodElement.getSimpleName().toString())
-                .returns(TypeName.get(returnType));
+                .returns(input.getTypeName());
+        Nullability.preserveScope(methodElement, method);
         GeneratorUtil.copyTypeParameters(methodType, method);
         GeneratorUtil.copyAccessModifiers(methodElement, method);
         GeneratorUtil.copyWhitelistedAnnotations(methodElement, method);
@@ -388,17 +390,14 @@ final class ViewGenerator {
 
         final var convertMethodName = getConverter(returnType, methodElement);
         final var resultKind = methodElement.getReturnType().getKind();
-        if (!resultKind.isPrimitive() && !Nullability.isNonNull(methodElement)) {
+        if (!resultKind.isPrimitive() && input.getNullness() == Nullability.Nullness.NULLABLE) {
             // Need to add a Nullable if it is not present as invariant path can return nulls.
-            if (null == AnnotationsUtil.findAnnotationByType(methodElement, AnnotationsUtil.NULLABLE_CLASSNAME)) {
-                method.addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME);
-            }
 
             final var block = CodeBlock.builder();
             block.beginControlFlow("if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME);
             block.addStatement(
-                    "return null != $N.inputs().getAsAny( Inputs.$N ) ? "
-                            + "$N.inputs().getAsAny( Inputs.$N ).$N() : null",
+                    "return null != $N.requireInputs().getAsAny( Inputs.$N ) ? "
+                            + "$N.requireInputs().getAsAny( Inputs.$N ).$N() : null",
                     NATIVE_VIEW_FIELD,
                     input.getConstantName(),
                     NATIVE_VIEW_FIELD,
@@ -406,7 +405,7 @@ final class ViewGenerator {
                     convertMethodName);
             block.nextControlFlow("else");
             block.addStatement(
-                    "return $T.uncheckedCast( $N.inputs().getAsAny( Inputs.$N ) )",
+                    "return $T.uncheckedCast( $N.requireInputs().getAsAny( Inputs.$N ) )",
                     JS_CLASSNAME,
                     NATIVE_VIEW_FIELD,
                     input.getConstantName());
@@ -414,7 +413,7 @@ final class ViewGenerator {
             method.addCode(block.build());
         } else {
             method.addStatement(
-                    "return $N.inputs().getAsAny( Inputs.$N ).$N()",
+                    "return $N.requireInputs().getAsAny( Inputs.$N ).$N()",
                     NATIVE_VIEW_FIELD,
                     input.getConstantName(),
                     convertMethodName);
@@ -444,7 +443,7 @@ final class ViewGenerator {
             case ARRAY:
                 return "cast";
             case DECLARED:
-                if (type.toString().equals("java.lang.String")) {
+                if (((DeclaredType) type).asElement().toString().equals("java.lang.String")) {
                     return "asString";
                 } else {
                     return "cast";
@@ -579,7 +578,8 @@ final class ViewGenerator {
                 method.addStatement("return false");
             }
         } else {
-            method.addStatement("final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD);
+            method.addStatement(
+                    "final $T inputs = $N.requireInputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD);
 
             final var hasObservableInputsToUpdateOnChange =
                     observableInputs.stream().anyMatch(InputDescriptor::shouldUpdateOnChange);
@@ -642,7 +642,8 @@ final class ViewGenerator {
         if (hasPreUpdateOnInputChange) {
             final var block = CodeBlock.builder();
             block.beginControlFlow("if ( null != prevInputs )");
-            block.addStatement("final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD);
+            block.addStatement(
+                    "final $T inputs = $N.requireInputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD);
             buildOnInputChangeInvocations(block, descriptor.getPreUpdateOnInputChangeDescriptors());
             block.endControlFlow();
             method.addCode(block.build());
@@ -663,7 +664,8 @@ final class ViewGenerator {
                     .build());
             final var block = CodeBlock.builder();
             block.beginControlFlow("if ( null != prevInputs )");
-            block.addStatement("final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD);
+            block.addStatement(
+                    "final $T inputs = $N.requireInputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, NATIVE_VIEW_FIELD);
             buildOnInputChangeInvocations(block, descriptor.getPostUpdateOnInputChangeDescriptors());
             block.endControlFlow();
             method.addCode(block.build());
@@ -1391,7 +1393,9 @@ final class ViewGenerator {
                 ? "()"
                 : "( "
                         + parameters.stream()
-                                .map(p -> TypeName.get(p.asType()).toString().equals(Constants.JS_ERROR_CLASSNAME)
+                                .map(p -> GeneratorUtil.getTypeName(p.asType())
+                                                .toString()
+                                                .equals(Constants.JS_ERROR_CLASSNAME)
                                         ? "error"
                                         : "info")
                                 .collect(Collectors.joining(", "))
@@ -1443,8 +1447,8 @@ final class ViewGenerator {
                 MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build());
 
         for (final var publish : descriptor.getPublishDescriptors()) {
-            final var type =
-                    TypeName.get(publish.getMethodType().getReturnType()).box();
+            final var type = GeneratorUtil.getTypeName(publish.getMethodType().getReturnType())
+                    .box();
             final var field = FieldSpec.builder(
                     ParameterizedTypeName.get(CONTEXT_CLASSNAME, type),
                     "CONTEXT_" + publish.getMethod().getSimpleName(),

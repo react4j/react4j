@@ -26,6 +26,8 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -230,6 +232,15 @@ public final class React4jProcessor extends AbstractStandardProcessor {
 
         for (final InputDescriptor input : descriptor.getInputs()) {
             if (!isInputRequired(input)) {
+                if (!input.getType().getKind().isPrimitive()
+                        && input.isNonNull()
+                        && !input.isFromTreeContext()
+                        && !input.hasDefaultField()
+                        && !input.hasDefaultMethod()) {
+                    throw new ProcessorException(
+                            "Optional non-null @Input requires a non-null @InputDefault or a tree-context source",
+                            input.getElement());
+                }
                 input.markAsOptional();
             } else {
                 if (input.isFromTreeContext()) {
@@ -410,8 +421,8 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                             method);
                 }
                 final boolean mismatchedNullability =
-                        (Nullability.isNonNull(parameter) && Nullability.isNullable(input.getElement()))
-                                || (Nullability.isNullable(parameter) && input.isNonNull());
+                        Nullability.requireSpecified(parameter, parameterTypes.get(i), descriptor.getElement())
+                                != input.getNullness();
 
                 if (mismatchedNullability) {
                     throw new ProcessorException(
@@ -491,9 +502,9 @@ public final class React4jProcessor extends AbstractStandardProcessor {
             MemberChecks.mustNotReturnAnyValue(Constants.INPUT_VALIDATE_CLASSNAME, method);
 
             final VariableElement param = method.getParameters().get(0);
-            final boolean mismatchedNullability =
-                    (Nullability.isNonNull(param) && Nullability.isNullable(input.getElement()))
-                            || (Nullability.isNullable(param) && input.isNonNull());
+            final boolean mismatchedNullability = Nullability.requireSpecified(
+                            param, methodType.getParameterTypes().get(0), descriptor.getElement())
+                    != input.getNullness();
 
             if (mismatchedNullability) {
                 throw new ProcessorException(
@@ -536,6 +547,18 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
+    private void validateDefaultNullness(
+            InputDescriptor input, Element declaration, TypeMirror type, ViewDescriptor descriptor) {
+        var contract = Nullability.requireSpecified(declaration, type, descriptor.getElement());
+        if ((input.isNonNull() && contract != Nullability.Nullness.NONNULL)
+                || (input.getNullness() == Nullability.Nullness.PARAMETRIC
+                        && contract == Nullability.Nullness.NULLABLE)) {
+            throw new ProcessorException(
+                    "@InputDefault nullness is incompatible with the associated @Input '" + input.getName() + "'",
+                    declaration);
+        }
+    }
+
     private void determineDefaultInputsMethods(final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
         final List<ExecutableElement> defaultInputsMethods = methods.stream()
                 .filter(m -> AnnotationsUtil.hasAnnotationOfType(m, Constants.INPUT_DEFAULT_CLASSNAME))
@@ -563,6 +586,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
             MemberChecks.mustNotThrowAnyExceptions(Constants.INPUT_DEFAULT_CLASSNAME, method);
             MemberChecks.mustReturnAValue(Constants.INPUT_DEFAULT_CLASSNAME, method);
 
+            validateDefaultNullness(input, method, methodType.getReturnType(), descriptor);
             input.setDefaultMethod(method);
         }
     }
@@ -590,6 +614,11 @@ public final class React4jProcessor extends AbstractStandardProcessor {
             MemberChecks.mustBeStaticallySubclassCallable(
                     descriptor.getElement(), Constants.VIEW_CLASSNAME, Constants.INPUT_DEFAULT_CLASSNAME, field);
             MemberChecks.mustBeFinal(Constants.INPUT_DEFAULT_CLASSNAME, field);
+            validateDefaultNullness(
+                    input,
+                    field,
+                    processingEnv.getTypeUtils().asMemberOf(descriptor.getDeclaredType(), field),
+                    descriptor);
             input.setDefaultField(field);
         }
     }
@@ -733,7 +762,8 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                     MemberChecks.mustNotBePackageAccessInDifferentPackage(
                             descriptor.getElement(), Constants.VIEW_CLASSNAME, annotation, field);
                     final var fieldType = processingEnv.getTypeUtils().asMemberOf(descriptor.getDeclaredType(), field);
-                    final var observationMode = determinePreludeCheckObservationMode(field, fieldType);
+                    final var observationMode =
+                            determinePreludeCheckObservationMode(field, fieldType, descriptor.getElement());
                     candidates.add(new PreludeChecksDescriptor(field, fieldType, observationMode));
                 }
             }
@@ -745,7 +775,8 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                     MemberChecks.mustNotBePackageAccessInDifferentPackage(
                             descriptor.getElement(), Constants.VIEW_CLASSNAME, annotation, method);
                     final var returnType = resolveMethodType(descriptor, method).getReturnType();
-                    final var observationMode = determinePreludeCheckObservationMode(method, returnType);
+                    final var observationMode =
+                            determinePreludeCheckObservationMode(method, returnType, descriptor.getElement());
                     candidates.add(new PreludeChecksDescriptor(method, returnType, observationMode));
                 }
             }
@@ -778,7 +809,15 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         } else if (input.isFromTreeContext()) {
             return false;
         } else {
-            return !input.hasDefaultMethod() && !input.hasDefaultField() && !Nullability.isNullable(input.getElement());
+            if (input.hasDefaultMethod() || input.hasDefaultField()) {
+                return false;
+            }
+            if (input.getNullness() == Nullability.Nullness.PARAMETRIC) {
+                throw new ProcessorException(
+                        "Parametric @Input nullness requires an explicit requiredness or a valid default",
+                        input.getElement());
+            }
+            return !input.getNullness().equals(Nullability.Nullness.NULLABLE);
         }
     }
 
@@ -794,22 +833,8 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         MemberChecks.mustNotThrowAnyExceptions(Constants.INPUT_CLASSNAME, method);
         MemberChecks.mustNotBePackageAccessInDifferentPackage(
                 descriptor.getElement(), Constants.VIEW_CLASSNAME, Constants.INPUT_CLASSNAME, method);
-        final TypeMirror returnType = method.getReturnType();
-        if (!returnType.getKind().isPrimitive()
-                && !Nullability.isNonNull(method)
-                && !Nullability.isNullable(method)
-                && ElementsUtil.isWarningNotSuppressed(
-                        method,
-                        Constants.WARNING_MISSING_INPUT_NULLABILITY,
-                        Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME)) {
-            final String message = MemberChecks.shouldNot(
-                    Constants.INPUT_CLASSNAME,
-                    "return a non-primitive type without a or @Nullable annotation. "
-                            + MemberChecks.suppressedBy(
-                                    Constants.WARNING_MISSING_INPUT_NULLABILITY,
-                                    Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME));
-            warning(message, method);
-        }
+        final TypeMirror returnType = methodType.getReturnType();
+
         validateInputNameAndType(name, returnType, method);
 
         if (returnType instanceof final TypeVariable typeVariable) {
@@ -832,10 +857,11 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         final boolean observable = isInputObservable(methods, method);
         final boolean disposable = null != inputType && isDisposableDerivableAtCompileTime(inputType);
         final TypeName typeName = TypeName.get(returnType);
-        if (typeName.isBoxedPrimitive() && Nullability.isNonNull(method)) {
+        if (typeName.withoutAnnotations().isBoxedPrimitive()
+                && Nullability.isNonNull(method, returnType, descriptor.getElement())) {
             throw new ProcessorException(
-                    "@Input named '" + name + "' is a boxed primitive annotated with a "
-                            + "annotation. The return type should be the primitive type.",
+                    "@Input named '" + name + "' is a non-null boxed primitive. "
+                            + "The return type should be the primitive type.",
                     method);
         }
         if (!"".equals(qualifier) && !fromTreeContextInput) {
@@ -876,21 +902,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
             final ViewDescriptor descriptor, final VariableElement parameter) {
         final var name = deriveInputName(parameter);
         final TypeMirror type = parameter.asType();
-        if (!type.getKind().isPrimitive()
-                && !Nullability.isNonNull(parameter)
-                && !Nullability.isNullable(parameter)
-                && ElementsUtil.isWarningNotSuppressed(
-                        parameter,
-                        Constants.WARNING_MISSING_INPUT_NULLABILITY,
-                        Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME)) {
-            final String message = MemberChecks.shouldNot(
-                    Constants.INPUT_CLASSNAME,
-                    "return a non-primitive type without a or @Nullable annotation. "
-                            + MemberChecks.suppressedBy(
-                                    Constants.WARNING_MISSING_INPUT_NULLABILITY,
-                                    Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME));
-            warning(message, parameter);
-        }
+
         validateInputNameAndType(name, type, parameter);
 
         final var qualifier =
@@ -907,13 +919,14 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
         final boolean disposable = null != inputType && isDisposableDerivableAtCompileTime(inputType);
         final TypeName typeName = TypeName.get(type);
-        if (typeName.isBoxedPrimitive() && Nullability.isNonNull(parameter)) {
+        if (typeName.withoutAnnotations().isBoxedPrimitive() && Nullability.isNonNull(parameter)) {
             throw new ProcessorException(
-                    "@Input named '" + name + "' is a boxed primitive annotated with a "
-                            + "annotation. The return type should be the primitive type.",
+                    "@Input named '" + name + "' is a non-null boxed primitive. "
+                            + "The return type should be the primitive type.",
                     parameter);
         }
-        final ImmutableInputKeyStrategy strategy = getImmutableInputKeyStrategy(typeName, inputType);
+        final ImmutableInputKeyStrategy strategy =
+                getImmutableInputKeyStrategy(typeName.withoutAnnotations(), inputType);
         if (!"".equals(qualifier) && !fromTreeContextInput) {
             throw new ProcessorException(
                     MemberChecks.mustNot(Constants.INPUT_CLASSNAME, "specify qualifier unless fromTreeContext=true"),
@@ -943,7 +956,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
             final TypeName typeName, @Nullable final Element element) {
         if (typeName.toString().equals("java.lang.String")) {
             return ImmutableInputKeyStrategy.IS_STRING;
-        } else if (typeName.isBoxedPrimitive() || typeName.isPrimitive()) {
+        } else if (typeName.withoutAnnotations().isBoxedPrimitive() || typeName.isPrimitive()) {
             return ImmutableInputKeyStrategy.TO_STRING;
         } else if (null != element) {
             if ((ElementKind.CLASS == element.getKind() || ElementKind.INTERFACE == element.getKind())
@@ -1009,6 +1022,13 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
+    private static String typeIdentity(TypeMirror type) {
+        if (type instanceof ArrayType array) {
+            return typeIdentity(array.getComponentType()) + "[]";
+        }
+        return type instanceof DeclaredType declared ? declared.asElement().toString() : type.toString();
+    }
+
     private void validateInputNameAndType(final String name, final TypeMirror type, final Element element) {
         if ("build".equals(name)) {
             throw new ProcessorException(
@@ -1016,10 +1036,10 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                             + "build() that is used in the generated Builder classes",
                     element);
         } else if ("child".equals(name)
-                && (type.getKind() != TypeKind.DECLARED && !"react4j.ReactNode".equals(type.toString()))) {
+                && (type.getKind() != TypeKind.DECLARED && !"react4j.ReactNode".equals(typeIdentity(type)))) {
             throw new ProcessorException("@Input named 'child' should be of type react4j.ReactNode", element);
         } else if ("children".equals(name)
-                && (type.getKind() != TypeKind.DECLARED && !"react4j.ReactNode[]".equals(type.toString()))) {
+                && (type.getKind() != TypeKind.DECLARED && !"react4j.ReactNode[]".equals(typeIdentity(type)))) {
             throw new ProcessorException("@Input named 'children' should be of type react4j.ReactNode[]", element);
         }
     }
@@ -1187,21 +1207,6 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                         processingEnv, method, Constants.RENDER_CLASSNAME, Constants.VNODE_CLASSNAME);
                 MemberChecks.mustNotThrowAnyExceptions(Constants.RENDER_CLASSNAME, method);
                 MemberChecks.mustNotHaveAnyTypeParameters(Constants.RENDER_CLASSNAME, method);
-                if (!method.getReturnType().getKind().isPrimitive()
-                        && !Nullability.isNonNull(method)
-                        && !Nullability.isNullable(method)
-                        && ElementsUtil.isWarningNotSuppressed(
-                                method,
-                                Constants.WARNING_MISSING_RENDER_NULLABILITY,
-                                Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME)) {
-                    final String message = MemberChecks.should(
-                            Constants.RENDER_CLASSNAME,
-                            "be annotated by a or a @Nullable annotation. "
-                                    + MemberChecks.suppressedBy(
-                                            Constants.WARNING_MISSING_RENDER_NULLABILITY,
-                                            Constants.SUPPRESS_REACT4J_WARNINGS_CLASSNAME));
-                    warning(message, method);
-                }
 
                 descriptor.setRender(method);
                 foundRender = true;
@@ -1363,7 +1368,8 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                                         || !m.getSimpleName().toString().equals("trackRender"))));
     }
 
-    private ObserveMode determinePreludeCheckObservationMode(final Element element, final TypeMirror type) {
+    private ObserveMode determinePreludeCheckObservationMode(
+            final Element element, final TypeMirror type, final TypeElement context) {
         if (type.getKind().isPrimitive()) {
             return ObserveMode.NO_OBSERVE;
         } else {
@@ -1374,7 +1380,9 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                     return ObserveMode.NO_OBSERVE;
                 } else if (ArezComponentObservableResolution.ENABLED == resolution
                         || isAssignableToComponentObservable(type)) {
-                    return Nullability.isNonNull(element) ? ObserveMode.OBSERVE_NONNULL : ObserveMode.OBSERVE_NULLABLE;
+                    return Nullability.resolve(element, type, context) == Nullability.Nullness.NONNULL
+                            ? ObserveMode.OBSERVE_NONNULL
+                            : ObserveMode.OBSERVE_NULLABLE;
                 } else if (canTypeUseRuntimeComponentObservableCheck(type, typeElement)) {
                     // Type does not implement `arez.component.ComponentObservable` but it is not final so try at
                     // runtime

@@ -1,0 +1,10 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "NullableDefaultView.java",
+        "OptionalNonNullView.java",
+        "ParametricOmissionView.java",
+        "UnknownContractView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

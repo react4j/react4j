@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if [[ $# -ne 1 ]]; then
-  echo "Usage: tools/update_goldens.sh <smoke|generated|regressions>" >&2
+  echo "Usage: tools/update_goldens.sh <smoke|generated|jspecify|regressions>" >&2
   exit 2
 fi
 case "$1" in
   smoke) family=smoke_goldens ;;
   generated) family=generated_goldens ;;
+  jspecify) family=jspecify_goldens ;;
   regressions) family=regressions ;;
   *) echo "Unknown golden family: $1" >&2; exit 2 ;;
 esac

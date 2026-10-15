@@ -1,0 +1,12 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "NestedContractBase.java",
+        "NestedContractView.java",
+        "NullabilityCases.java",
+        "NullabilityProbe.java",
+        "ParametricRequiredView.java",
+        "PresenceView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

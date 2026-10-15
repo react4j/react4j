@@ -39,7 +39,7 @@ final class StepMethod {
     private final StepMethodType _stepMethodType;
 
     StepMethod(final InputDescriptor input, final StepMethodType stepMethodType) {
-        this(input.getName(), input.getName(), TypeName.get(input.getType()), input, stepMethodType);
+        this(input.getName(), input.getName(), input.getTypeName(), input, stepMethodType);
     }
 
     StepMethod(

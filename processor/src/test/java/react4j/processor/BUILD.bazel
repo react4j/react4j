@@ -5,19 +5,31 @@ package(default_visibility = ["//visibility:public"])
 java_library(
     name = "test_classes",
     testonly = True,
-    srcs = ["React4jProcessorTest.java"],
+    srcs = [
+        "NullabilityTest.java",
+        "React4jProcessorTest.java",
+    ],
     deps = [
         "//processor",
         "//third_party/java:arez_processor_runtime",
+        "//third_party/java:proton_core",
         "//third_party/java:proton_qa",
         "//third_party/java:sting_processor_runtime",
         "//third_party/java:testng",
+        "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
     ],
 )
 
 _FLAGS = FORMATTER_JVM_FLAGS + [
     "-Dreact4j.fixture_dir=processor/src/test/fixtures",
     "-Xmx1024m",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED",
+    "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+    "--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
 ]
 
 _RUNTIME = [
@@ -129,5 +141,46 @@ java_testng(
         "react4j.processor.React4jProcessorTest.processFailedCompileInheritedPackageAccessFieldInDifferentPackage",
         "react4j.processor.React4jProcessorTest.processFailedCompileInheritedPackageAccessInDifferentPackage",
     ],
+    deps = _RUNTIME,
+)
+
+java_testng(
+    name = "nullness_contracts",
+    size = "medium",
+    srcs = [],
+    data = ["//processor/src/test/fixtures"],
+    jvm_flags = _FLAGS,
+    test_class = "react4j.processor.NullabilityTest",
+    deps = _RUNTIME,
+)
+
+java_testng(
+    name = "jspecify_goldens",
+    size = "medium",
+    srcs = [],
+    data = [
+        "//processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
+    jvm_flags = _FLAGS,
+    test_class = "react4j.processor.React4jProcessorTest",
+    test_methods = [
+        "react4j.processor.React4jProcessorTest.genericSourceAndCompiledContracts",
+        "react4j.processor.React4jProcessorTest.presenceAndParametricContracts",
+    ],
+    deps = _RUNTIME,
+)
+
+java_testng(
+    name = "jspecify_diagnostics",
+    size = "medium",
+    srcs = [],
+    data = [
+        "//processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
+    jvm_flags = _FLAGS,
+    test_class = "react4j.processor.React4jProcessorTest",
+    test_methods = ["react4j.processor.React4jProcessorTest.inputContractDiagnostics"],
     deps = _RUNTIME,
 )

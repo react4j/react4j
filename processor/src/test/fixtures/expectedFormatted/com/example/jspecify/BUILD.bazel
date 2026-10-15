@@ -1,0 +1,12 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "NestedContractBuilder.java",
+        "ParametricRequiredBuilder.java",
+        "PresenceBuilder.java",
+        "React4j_NestedContractView.java",
+        "React4j_ParametricRequiredView.java",
+        "React4j_PresenceView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

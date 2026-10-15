@@ -1,5 +1,6 @@
 package react4j.processor;
 
+import com.palantir.javapoet.TypeName;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
@@ -8,6 +9,7 @@ import javax.lang.model.type.TypeMirror;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
+import react4j.processor.Nullability.Nullness;
 
 @SuppressWarnings("Duplicates")
 final class InputDescriptor {
@@ -58,7 +60,7 @@ final class InputDescriptor {
     private boolean _optional;
 
     @Nullable
-    private Boolean _isNonNull;
+    private Nullness _nullness;
 
     InputDescriptor(
             final ViewDescriptor descriptor,
@@ -253,11 +255,19 @@ final class InputDescriptor {
         return !isOptional();
     }
 
-    boolean isNonNull() {
-        if (null == _isNonNull) {
-            _isNonNull = Nullability.isNonNull(getElement(), getType(), _descriptor.getElement());
+    Nullability.Nullness getNullness() {
+        if (_nullness == null) {
+            _nullness = Nullability.requireSpecified(getElement(), getType(), _descriptor.getElement());
         }
-        return _isNonNull;
+        return _nullness;
+    }
+
+    boolean isNonNull() {
+        return getNullness() == Nullability.Nullness.NONNULL;
+    }
+
+    TypeName getTypeName() {
+        return Nullability.typeName(getElement(), getType(), _descriptor.getElement());
     }
 
     void markAsOptional() {
