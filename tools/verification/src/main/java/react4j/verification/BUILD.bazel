@@ -1,0 +1,11 @@
+load("//third_party/java:rules.bzl", "java_binary")
+
+java_binary(
+    name = "coverage_check",
+    srcs = ["CoverageCheck.java"],
+    main_class = "react4j.verification.CoverageCheck",
+    visibility = [
+        "//:__pkg__",
+        "//tools/verification:__pkg__",
+    ],
+)

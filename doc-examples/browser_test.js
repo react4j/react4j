@@ -38,4 +38,17 @@ testSuite({
     asserts.assertEquals('development' === Mode.environment ?
       'true:true:false:true:true' : 'false:false:true:false:false', Example.flags());
   },
+  testPortalAndBatchedRendering() {
+    const target = document.createElement('div');
+    document.body.appendChild(target);
+    try {
+      Example.renderPortal(root, target);
+      asserts.assertEquals('container', root.textContent);
+      asserts.assertEquals('portal', target.textContent);
+      asserts.assertTrue(Example.unmount(root));
+      asserts.assertEquals('', target.textContent);
+    } finally {
+      target.remove();
+    }
+  },
 });

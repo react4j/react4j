@@ -2,8 +2,8 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Active tree: `plans/bazel-migration/`
-- Status: `implementing`
-- Current frontier: `T14`
+- Status: `implementation-review`
+- Current frontier: `implementation-review`
 - Planning reviewer: `/root/planning_reviewer` (`2/3` rounds; Findings: none)
 - Plan checkpoint: `automatic` (user-confirmed grill-me understanding and passing planning review)
 - Implementation reviewer: `pending` (`0/5` rounds)
@@ -11,7 +11,7 @@
 ## Full-scope validation
 
 - Gate: `tools/check.sh`, with task-local recorded labels and unsigned release/site/coverage/Ahab checks.
-- Evidence: pending.
+- Evidence: `tools/check.sh` passed on the final implementation. All 15 test targets, four browser cases per mode, both Ahab modes, nonempty owned JVM coverage, external Bazel consumption, 26,925 site links, 12 unsigned release artifacts/60 entries and 13 independently repeatable publication/API artifacts pass. See T14 for counts, failure controls and the local-platform/remote-publication boundary.
 
 ## Tasks
 
@@ -30,7 +30,7 @@
 | T11 | [Java documentation site](T11-java-site.md) | complete | T10 |
 | T12 | [Explicit release operations](T12-release-tools.md) | complete | T11 |
 | T13 | [Contributor guidance and obsolete infrastructure removal](T13-docs-cleanup.md) | complete | T12 |
-| T14 | [Shared CI gate and full verification](T14-ci-gate.md) | in_progress | T13 |
+| T14 | [Shared CI gate and full verification](T14-ci-gate.md) | complete | T13 |
 
 ## Sequencing notes
 

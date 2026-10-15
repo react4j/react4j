@@ -21,3 +21,8 @@ java_binary(
     srcs = ["//tools/browser/src/main/java/react4j/browser:preview_sources"],
     main_class = "react4j.browser.Preview",
 )
+
+alias(
+    name = "assets",
+    actual = "//tools/browser/src/main/java/react4j/browser:assets",
+)

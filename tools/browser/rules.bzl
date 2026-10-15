@@ -115,11 +115,11 @@ def _preview_impl(ctx):
     dom = ctx.actions.declare_file(ctx.label.name + "/react-dom.js")
     ctx.actions.expand_template(template = ctx.file.html, output = html, substitutions = {"@@DEFINES@@": json.encode(ctx.attr.defines)})
     for output, source in [(js, ctx.file.js), (react, ctx.file.react), (dom, ctx.file.dom)]:
-        ctx.actions.run_shell(
+        ctx.actions.run(
+            executable = ctx.executable._assets,
             inputs = [source],
             outputs = [output],
-            arguments = [source.path, output.path],
-            command = 'cp "$1" "$2"',
+            arguments = ["copy", source.path, output.path],
             mnemonic = "BrowserPreviewAsset",
         )
     files = [html, js, react, dom]
@@ -131,6 +131,7 @@ _preview = rule(implementation = _preview_impl, attrs = {
     "html": attr.label(allow_single_file = True, mandatory = True),
     "js": attr.label(allow_single_file = True, mandatory = True),
     "react": attr.label(allow_single_file = True, mandatory = True),
+    "_assets": attr.label(default = Label("//tools/browser:assets"), executable = True, cfg = "exec"),
 })
 
 def _asset(name):
@@ -151,16 +152,16 @@ def _runtime_impl(ctx):
 
     # UMD assets are runtime scripts; concatenating after Closure compilation
     # preserves their published bytes and keeps their legacy JSDoc out of Closure.
-    ctx.actions.run_shell(
+    ctx.actions.run(
+        executable = ctx.executable._assets,
         inputs = [ctx.file.react, ctx.file.dom, ctx.file.js],
         outputs = [output],
-        arguments = [ctx.file.react.path, ctx.file.dom.path, ctx.file.js.path, output.path],
-        command = 'cat "$1" > "$4"; printf "\\n;\\n" >> "$4"; cat "$2" >> "$4"; printf "\\n;\\n" >> "$4"; cat "$3" >> "$4"',
+        arguments = ["bundle", ctx.file.react.path, ctx.file.dom.path, ctx.file.js.path, output.path],
         mnemonic = "BrowserRuntimeBundle",
     )
     return [DefaultInfo(files = depset([output]))]
 
-_runtime = rule(implementation = _runtime_impl, outputs = {"js": "%{name}.js"}, attrs = {"dom": attr.label(allow_single_file = True), "js": attr.label(allow_single_file = True), "react": attr.label(allow_single_file = True)})
+_runtime = rule(implementation = _runtime_impl, outputs = {"js": "%{name}.js"}, attrs = {"dom": attr.label(allow_single_file = True), "js": attr.label(allow_single_file = True), "react": attr.label(allow_single_file = True), "_assets": attr.label(default = Label("//tools/browser:assets"), executable = True, cfg = "exec")})
 
 def browser_test(name, srcs, deps, entry_point):
     closure_js_library(name = name + "_lib", testonly = True, srcs = srcs, deps = deps + ["//tools/browser:mode", "@rules_closure//closure/testing/library:asserts", "@rules_closure//closure/testing/library:testsuite"])

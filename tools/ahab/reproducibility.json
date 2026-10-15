@@ -32,6 +32,11 @@
           "build"
         ]
       }
+    },
+    "//tools/browser/src/main/java/react4j/browser/assets": {
+      "spec": {
+        "reproducibility": "always"
+      }
     }
   }
 }

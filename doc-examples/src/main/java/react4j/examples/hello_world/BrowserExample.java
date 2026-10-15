@@ -4,6 +4,7 @@ import jsinterop.annotations.JsMethod;
 import org.jspecify.annotations.Nullable;
 import react4j.Contexts;
 import react4j.React;
+import react4j.dom.DOM;
 import react4j.dom.ReactDOM;
 
 public final class BrowserExample {
@@ -24,6 +25,12 @@ public final class BrowserExample {
     @JsMethod
     public static boolean unmount(Object container) {
         return ReactDOM.unmountComponentAtNode(container);
+    }
+
+    @JsMethod
+    public static void renderPortal(Object container, Object target) {
+        ReactDOM.batchedUpdates(() -> ReactDOM.render(
+                DOM.div(DOM.span("container"), ReactDOM.createPortal(DOM.span("portal"), target)), container));
     }
 
     @JsMethod

@@ -632,7 +632,12 @@ ReactDOM.unmountComponentAtNode = function(container) {};
  */
 ReactDOM.unstable_batchedUpdates = function(callback) {};
 
-ReactDOM.createPortal = function() {};
+/**
+ * @param {*} children
+ * @param {*} container
+ * @return {!Object}
+ */
+ReactDOM.createPortal = function(children, container) {};
 
 /**
  * @interface

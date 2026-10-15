@@ -1,5 +1,14 @@
+load("//third_party/java:rules.bzl", "java_binary")
+
 filegroup(
     name = "preview_sources",
     srcs = ["Preview.java"],
+    visibility = ["//tools/browser:__pkg__"],
+)
+
+java_binary(
+    name = "assets",
+    srcs = ["BrowserAssets.java"],
+    main_class = "react4j.browser.BrowserAssets",
     visibility = ["//tools/browser:__pkg__"],
 )
