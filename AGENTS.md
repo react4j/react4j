@@ -1,153 +1,22 @@
-# Repository Guidelines
+# React4j
 
-This guide helps contributors work effectively on the React4j codebase.
+React4j is an opinionated Java binding for React, with a runtime, DOM bindings, and an annotation processor that generates view APIs.
 
-## User Interaction
+Encrypted secrets are in `etc/secrets`; do not modify or decode them.
 
-When asked to perform a task, ask the user questions one at a time until you have enough context. Feel free to make
-reasonable assumptions based on patterns present in the code and ask the user to confirm the assumptions if there are
-reasonable alternatives.
+## Build and verification
 
-## Notes for the Agent
+- Package all modules: `bundle exec buildr clean package`.
+- Run all tests: `bundle exec buildr test` (includes external downstream builds).
+- Test processor changes: `bundle exec buildr react4j:processor:test`.
 
-When you learn something non-obvious, add it here if it would make future changes faster or of higher quality.
+## Task-specific guidance
 
-- Render-prelude observation no longer comes from `@Input`. For `TRACKING` and `MAYBE_TRACKING` views, React4j scans subclass-accessible declared/inherited instance fields and zero-arg instance methods annotated with `@ComponentDependency` or `@AutoObserve`; known nullable candidates use `ComponentObservable.maybeObserve(...)`, uncertain types use a runtime `instanceof ComponentObservable` guard, and `@CascadeDispose` is ignored.
-- `bundle exec buildr test` includes `downstream-test` builds of external example repos pinned to their GitHub `master` branches via `tasks/util.rb`, so breaking annotation/API changes can fail there until those downstream repos are migrated even when local processor and api-diff tests pass.
-- Explicit `@View` constructors now emit a suppressible `React4j:ConstructorParameterOrder` warning unless parameters are grouped as non-`@Input`, then `@Input(fromTreeContext = true)`, then other `@Input`; the diagnostic is attached to the constructor and uses the compact labels `inject`, `tree`, and `input`.
-- Generated view builder visibility is now controlled solely by `@View(exportBuilder = true|false)`: `false` keeps the top-level builder class, `newBuilder()`, static entry methods, and step interfaces package access, while `true` makes that builder API public; public `@View` classes themselves now emit suppressible `React4j:PublicView` warnings.
-- Generated native view `displayName` values trim a trailing `View` from the effective `@View.name`, but only for that React debug name; builder keys, generated class names, and other descriptor-name uses still keep the full view name.
-- Processor fixture expectations for generated builders are split between `React4jProcessorTest.deriveExpectedOutputs()` for most cases and a few dedicated nested/inheritance tests with hardcoded builder filenames, so builder naming changes usually require updates in both places.
-- Zemeckis 0.15 uses JSpecify type-use annotations, so React4j's GWT path needs `org.jspecify:jspecify:1.0.0` in `CORE_DEPS` and GWT 2.13.1. The released `realityforge-buildr` 1.5.24 only supports GWT 2.10; `Gemfile` pins the last upstream revision that adds GWT 2.13.1 support before IntelliJ `.ipr` generation was removed.
+Read the relevant guide before working in its area:
 
-## Project Structure & Module Organization
+- [Build and testing](docs/agents/build-and-testing.md): environment setup, test configuration, downstream builds, API diffs, or website tasks.
+- [Java and runtime](docs/agents/java-and-runtime.md): Java source changes, GWT/J2CL compatibility, or runtime configuration.
+- [Code generation](docs/agents/code-generation.md): annotation processing, generated APIs, processor fixtures, DOM factories, or bundled JavaScript assets.
+- [Contributing and releases](docs/agents/contributing-and-releases.md): user-facing behavior changes, changelog edits, commits, pull requests, or release automation.
 
-- Java modules:
-  - `core/` (React4j runtime + annotations)
-  - `dom/` (React DOM bindings, DOM props/events)
-  - `processor/` (annotation processor that generates view/builder/factory code)
-  - `api-test/` (Revapi diff tests against previous releases)
-  - `downstream-test/` (builds/validates downstream example apps and collects stats)
-  - `doc-examples/` (GWT examples embedded into the docs site)
-- Docs and site: `docs/` (Markdown), `website/` (Docusaurus v1), `assets/` (icons/favicons, api-diff assets).
-- Build configuration: `buildfile` (Buildr), `build.yaml` (artifact coordinates), `tasks/*.rake` (CI, GWT, release, docs).
-- Dependency coordinates are centralized in `build.yaml`; update there when adding or upgrading libraries.
-- Source layout: `*/src/main/java/...`; tests: `*/src/test/java/...`.
-- Generated or local-only directories: `target/`, `reports/`, `node_modules/` should not be edited or committed.
-- Encrypted secrets live in `etc/secrets`; do not edit or attempt to decode.
-
-### Module-specific notes
-
-- `core/`
-  - Core APIs live under `react4j.*` with internal helpers in `react4j.internal`.
-  - GWT module is `core/src/main/java/react4j/React.gwt.xml` with compile-time properties set in `react4j.ReactConfig`.
-  - `ReactDev.gwt.xml` sets development defaults and serves assets from `react4j/public/dev`.
-  - Uses Grim `@OmitPattern`/`@KeepPattern` in `core/src/main/java/react4j/package-info.java` to trim output.
-  - JS assets (React 16.6.0) are checked in under `core/generated/js_assets` and patched to expose `React.Element`.
-- `dom/`
-  - DOM bindings and ReactDOM live under `react4j.dom.*`; event wrappers under `react4j.dom.events`.
-  - GWT modules are `Dom.gwt.xml` and `DomDev.gwt.xml` in `dom/src/main/java/react4j/dom`.
-  - `react4j.dom.DOM` is generated from `tasks/react_dom.rake` into `dom/generated/reactgen/main/java/react4j/dom/DOM.java`.
-  - JS assets (react-dom 16.6.0) live under `dom/generated/js_assets`.
-- `processor/`
-  - Annotation processor targets `@react4j.annotations.View` and generates `React4j_*` types plus builders/factories.
-  - Integrates with Arez and Sting annotations (see `react4j.processor.Constants`).
-  - Processor options include `react4j.defer.unresolved`, `react4j.defer.errors`, `react4j.debug`, `react4j.profile`,
-    `react4j.verbose_out_of_round.errors`.
-  - The processor jar shades `javapoet` and `proton` under `react4j.processor.vendor.*` (see `buildfile`).
-  - Tests use fixtures under `processor/src/test/fixtures/{input,expected,bad_input}`.
-- `api-test/`
-  - Uses `revapi-diff` to compare previous/current core+dom jars; fixtures under
-    `api-test/src/test/resources/fixtures`.
-- `downstream-test/`
-  - Uses Gir to clone/build downstream apps and collect build statistics.
-  - Reads `react4j.deploy_test.*` and `react4j.build_j2cl_variants` system properties to control behaviour.
-- `doc-examples/`
-  - GWT example modules used in docs; `buildfile` defines `EXAMPLES` and `site:examples` copies outputs.
-
-## Build, Test, and Development Commands
-
-Prerequisites: JDK 17+, Ruby 2.7.x with Bundler, Node.js + Yarn (for docs site).
-
-- Bootstrap once: `bundle install` and `yarn install`.
-- Build all modules: `bundle exec buildr clean package`.
-- Run all tests: `bundle exec buildr test`.
-- CI task: `bundle exec buildr ci` (derives versions and runs package + site deploy).
-- Generate DOM factories: `bundle exec buildr react4j:dom:reactgen`.
-- Docs site:
-  - Serve: `bundle exec buildr site:serve` (runs `yarn start`).
-  - Build: `bundle exec buildr site:build` (outputs into `reports/site`).
-  - Link check: `bundle exec buildr site:link_check`.
-- API diff helpers:
-  - Update fixtures: `bundle exec buildr update_api_diff`.
-  - Test diff: `bundle exec buildr test_api_diff`.
-- Downstream build stats:
-  - Update stats: `bundle exec buildr update_downstream_build_stats`.
-  - Test stats: `bundle exec buildr test_downstream_build_stats`.
-
-Common environment flags used by build tasks:
-
-- `PRODUCT_VERSION`, `PREVIOUS_PRODUCT_VERSION` (release/versioned tasks).
-- `TEST=no` to skip tests, `GWT=no` to skip GWT compilation, `J2CL=no` to skip J2CL variants.
-- `DOWNSTREAM=no` to skip downstream builds, `BUILD_STATS=no` to skip build stat collection.
-- `STORE_API_DIFF=true` or `STORE_BUILD_STATISTICS=true` to update fixtures.
-
-## Generated Code & Assets
-
-- Do not hand-edit generated outputs in `core/generated`, `dom/generated`, or `processor` fixture outputs.
-- DOM factories are generated by `tasks/react_dom.rake` into `dom/generated/reactgen/main/java/react4j/dom/DOM.java`.
-- React/ReactDOM JS assets are downloaded via `tasks/js_asset.rake` into `core/generated/js_assets` and
-  `dom/generated/js_assets`, with small regex patches applied.
-- When generator behavior changes, update processor fixtures under `processor/src/test/fixtures/expected` to match
-  new output (even for annotation-only changes).
-
-## Configuration & Runtime Flags
-
-React4j uses both JVM system properties and GWT properties (see `core/src/main/java/react4j/React.gwt.xml` and
-`core/src/main/java/react4j/ReactConfig.java`):
-
-- `react4j.environment` = `development|production`
-- `react4j.enable_view_names` = `true|false`
-- `react4j.check_invariants` = `true|false`
-- `react4j.minimize_input_keys` = `true|false`
-- `react4j.validate_input_values` = `true|false`
-- `react4j.store_debug_data_as_state` = `true|false`
-- Closure/J2CL builds also read `goog.define` values from `core/src/main/java/react4j/react4j.js`
-  (retained via `core/src/main/java/react4j/ReactConfig.native.js`).
-
-Testing and tooling properties:
-
-- `react4j.core.compile_target`, `react4j.dom.compile_target` (used by JDepend tests).
-- `react4j.fixture_dir` and `react4j.output_fixture_data` (processor fixture inputs/outputs).
-- `react4j.api_test.*` (api diff paths) and `react4j.deploy_test.*` (downstream build paths).
-
-## Coding Style & Naming Conventions
-
-- Language level: Java 17; compilation uses `-Xlint:all,-processing,-serial` and `-Werror`.
-- Indentation: 2 spaces; braces on a new line for types/methods.
-- Nullability: prefer `@Nonnull`/`@Nullable` from `javax.annotation`.
-- GWT/J2CL compatibility: use `@GwtIncompatible` for JVM-only helpers (see `core/src/main/java/react4j/GwtIncompatible.java`).
-- Public API should have Javadoc; keep package docs in `package-info.java`.
-- Builder codegen may emit `org.jetbrains.annotations.Contract(pure = true)` on public builder methods to assist tooling.
-
-## Testing Guidelines
-
-- Framework: TestNG across modules.
-- Processor tests use `processor/src/test/fixtures` for inputs and expected generated outputs.
-- The fastest verification loop for generator changes is `bundle exec buildr react4j:processor:test`.
-- Core/dom tests include JDepend dependency checks, requiring compile target properties.
-- API diff tests compare against fixtures in `api-test/src/test/resources/fixtures`.
-- Downstream tests may require network access (Git clones); use `DOWNSTREAM=no` to skip.
-
-## Commit & Pull Request Guidelines
-
-- Follow `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`.
-- Keep commits small and focused; update `CHANGELOG.md` for user-visible changes.
-- Any user-facing behavior change must add an `Unreleased` entry in `CHANGELOG.md` in the same change, even if the behavior only affects generated code or developer-facing warnings.
-- When updating `CHANGELOG.md`, add the message under the "Unreleased" section. DO NOT add a `Changes in this release:` header as that is added as part of the automation.
-- Remove trailing whitespace and keep file endings with a newline.
-
-## Security & Release Notes
-
-- `etc/secrets` is encrypted; do not modify it.
-- Release automation lives in `tasks/release.rake` and publishes via `mcrt:publish_if_tagged`.
+Record durable, non-obvious discoveries in the relevant guide.
