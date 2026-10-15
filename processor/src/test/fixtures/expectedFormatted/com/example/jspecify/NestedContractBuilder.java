@@ -55,6 +55,9 @@ final class NestedContractBuilder {
     Step4 lowerWildcard(List<? super @Nullable String> lowerWildcard);
 
     @Contract(pure = true)
+    Step4 objectDefault(Object objectDefault);
+
+    @Contract(pure = true)
     Step4 defaulted(List<List<@Nullable String>> defaulted);
 
     @Contract(pure = true)
@@ -75,6 +78,9 @@ final class NestedContractBuilder {
       inputs.set(
           React4j_NestedContractView.Inputs.lowerWildcard,
           NestedContractView.getLowerWildcardDefault());
+      inputs.set(
+          React4j_NestedContractView.Inputs.objectDefault,
+          NestedContractView.getObjectDefaultDefault());
       inputs.set(
           React4j_NestedContractView.Inputs.defaulted, NestedContractView.getDefaultedDefault());
     }
@@ -127,6 +133,13 @@ final class NestedContractBuilder {
     @Contract(pure = true)
     public final Step4 lowerWildcard(final List<? super @Nullable String> lowerWildcard) {
       _element.input(React4j_NestedContractView.Inputs.lowerWildcard, lowerWildcard);
+      return this;
+    }
+
+    @Override
+    @Contract(pure = true)
+    public final Step4 objectDefault(final Object objectDefault) {
+      _element.input(React4j_NestedContractView.Inputs.objectDefault, objectDefault);
       return this;
     }
 

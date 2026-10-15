@@ -19,6 +19,8 @@ abstract class NullabilityCases<T extends @Nullable Object,
   abstract <V extends java.util.List<String>> V boundedStrings();
   abstract <V extends java.util.List<@Nullable String>> V boundedNullableStrings();
   abstract <V extends java.util.List<@Nullable String> & Serializable> V boundedIntersection();
+  abstract Object objectValue();
+  abstract @Nullable Object nullableObjectValue();
   abstract java.util.List<String> strings();
   abstract java.util.List<@Nullable String> nullableStrings();
   abstract java.util.ArrayList<@Nullable String> nullableArrayList();

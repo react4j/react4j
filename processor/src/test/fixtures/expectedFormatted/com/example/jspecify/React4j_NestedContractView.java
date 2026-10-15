@@ -97,6 +97,11 @@ abstract class React4j_NestedContractView extends NestedContractView {
   }
 
   @Override
+  Object objectDefault() {
+    return $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.objectDefault).cast();
+  }
+
+  @Override
   List<List<@Nullable String>> defaulted() {
     return $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.defaulted).cast();
   }
@@ -158,6 +163,9 @@ abstract class React4j_NestedContractView extends NestedContractView {
     if (!Js.isTripleEqual(inputs.get(Inputs.lowerWildcard), nextInputs.get(Inputs.lowerWildcard))) {
       return true;
     }
+    if (!Js.isTripleEqual(inputs.get(Inputs.objectDefault), nextInputs.get(Inputs.objectDefault))) {
+      return true;
+    }
     if (!Js.isTripleEqual(inputs.get(Inputs.defaulted), nextInputs.get(Inputs.defaulted))) {
       return true;
     }
@@ -207,7 +215,9 @@ abstract class React4j_NestedContractView extends NestedContractView {
 
     static final String lowerWildcard = React.shouldMinimizeInputKeys() ? "g" : "lowerWildcard";
 
-    static final String defaulted = React.shouldMinimizeInputKeys() ? "h" : "defaulted";
+    static final String objectDefault = React.shouldMinimizeInputKeys() ? "h" : "objectDefault";
+
+    static final String defaulted = React.shouldMinimizeInputKeys() ? "i" : "defaulted";
 
     private Inputs() {}
   }

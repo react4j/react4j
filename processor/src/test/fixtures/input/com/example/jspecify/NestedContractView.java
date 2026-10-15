@@ -17,6 +17,8 @@ abstract class NestedContractView extends NestedContractBase<List<@Nullable Stri
     @Input abstract @Nullable String[] nullableElements();
     @Input abstract List<? extends @Nullable String> wildcard();
     @Input abstract List<? super @Nullable String> lowerWildcard();
+    @Input abstract Object objectDefault();
+    @InputDefault static List<String> getObjectDefaultDefault() { return List.of("valid"); }
     @Input abstract List<List<@Nullable String>> defaulted();
     @InputDefault static ArrayList<List<@Nullable String>> getDefaultedDefault() { return new ArrayList<>(); }
     @InputDefault static final @Nullable String[] DEFAULT_NULLABLE_ELEMENTS = {null};

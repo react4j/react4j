@@ -6,12 +6,12 @@
 - Current frontier: `implementation-review`
 - Planning reviewer: `/root/planning_reviewer` (`2/3` rounds; Findings: none)
 - Plan checkpoint: `automatic` (user-confirmed grill-me understanding and passing planning review)
-- Implementation reviewer: `/root/implementation_reviewer` (`1/5` rounds; two P2 findings corrected; confirmation pending)
+- Implementation reviewer: `/root/implementation_reviewer` (`2/5` rounds; original findings confirmed; Object projection correction pending confirmation)
 
 ## Full-scope validation
 
 - Gate: `tools/check.sh`, with task-local recorded labels and unsigned release/site/coverage/Ahab checks.
-- Evidence: `tools/check.sh` passed on the final implementation. All 15 test targets, four browser cases per mode, both Ahab modes, nonempty owned JVM coverage, external Bazel consumption, 26,925 site links, 12 unsigned release artifacts/60 entries and 13 independently repeatable publication/API artifacts pass. See T14 for counts, failure controls and the local-platform/remote-publication boundary.
+- Evidence: `tools/check.sh` passed at `7df5171f` after the original review corrections; the final Object-projection correction is receiving a repeated full gate before closeout. All 15 test targets, four browser cases per mode, both Ahab modes, nonempty owned JVM coverage, external Bazel consumption, 26,925 site links, 12 unsigned release artifacts/60 entries and 13 independently repeatable publication/API artifacts pass. See T14 for counts, failure controls and the local-platform/remote-publication boundary.
 
 ## Tasks
 
@@ -57,3 +57,4 @@
 ## Implementation review evidence
 
 - Round 1: two P2 findings. Explicit `require=DISABLE` bypassed the parametric omission diagnostic, including constructor inputs. Default/validator/change-callback matching compared only root nullness, allowing unsafe nested contracts through generated map casts. Both are valid R4/R5 corrections within T06/T07; no significant decision or scope changed. The primary agent corrected both findings, including bounded/intersection type variables and preserving declared supertype substitutions; the complete shared gate passed after the final correction. The same reviewer will confirm them in round 2.
+- Round 2: confirmed both original fixes and found one introduced P2: interface values could not widen to Object because declared interfaces have no Object superclass. Corrected after root-nullness validation; source/compiled interface/bounded/wildcard positive regressions and nullable-root rejection pass, as do strict formatted/unformatted goldens using a real List<String> default for an Object input. The same reviewer will confirm this change in round 3.

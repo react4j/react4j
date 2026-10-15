@@ -350,6 +350,10 @@ final class Nullability {
                         : from != to && from != Nullness.NONNULL && to != Nullness.NULLABLE)) {
             return false;
         }
+        if (target.type() instanceof DeclaredType declared
+                && ((TypeElement) declared.asElement()).getQualifiedName().contentEquals("java.lang.Object")) {
+            return true;
+        }
         if (source.type() instanceof TypeVariable variable && !(target.type() instanceof TypeVariable)) {
             var upper = variable.getUpperBound();
             var bounds = upper instanceof IntersectionType intersection ? intersection.getBounds() : List.of(upper);

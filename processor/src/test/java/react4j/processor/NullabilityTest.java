@@ -137,6 +137,10 @@ public final class NullabilityTest extends AbstractProcessorTest {
 
         for (var pair : List.of(
                 List.of("strings", "strings"),
+                List.of("strings", "objectValue"),
+                List.of("boundedNullableStrings", "objectValue"),
+                List.of("nestedStrings", "upperObject"),
+                List.of("nullableArray", "nullableObjectValue"),
                 List.of("boundedStrings", "strings"),
                 List.of("boundedNullableStrings", "nullableStrings"),
                 List.of("nullableStrings", "upperNullableStrings"),
@@ -162,6 +166,7 @@ public final class NullabilityTest extends AbstractProcessorTest {
                 List.of("nestedNullableStrings", "nestedStrings"),
                 List.of("nullableElementArray", "stringArray"),
                 List.of("nullableArray", "stringArray"),
+                List.of("nullableArray", "objectValue"),
                 List.of("upperNullableStrings", "upperStrings"),
                 List.of("lowerStrings", "lowerNullableStrings"),
                 List.of("nestedUpperStrings", "nestedUpperNullableStrings"),
