@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import jdepend.framework.DependencyConstraint;
 import jdepend.framework.JDepend;
 import jdepend.framework.JavaPackage;
@@ -17,21 +16,26 @@ import org.testng.annotations.Test;
 public class JDependTest {
     @Test
     public void dependencyAnalysis() throws Exception {
-        final JDepend jdepend = new JDepend(PackageFilter.all().excluding("java.*", "javax.*"));
+        final var jdepend = new JDepend(PackageFilter.all().excluding("java.*", "javax.*"));
         jdepend.addDirectory(compileTargetDir());
         jdepend.analyze();
 
-        final DependencyConstraint constraint = new DependencyConstraint();
+        final var constraint = new DependencyConstraint();
 
         final JavaPackage react4j = constraint.addPackage("react4j");
         final JavaPackage react4jInternal = constraint.addPackage("react4j.internal");
-        constraint.addPackage("react4j.annotations");
+        final var annotations = constraint.addPackage("react4j.annotations");
         final JavaPackage braincheck = constraint.addPackage("org.realityforge.braincheck");
         final JavaPackage jsinteropAnnotations = constraint.addPackage("jsinterop.annotations");
         final JavaPackage jsinteropBase = constraint.addPackage("jsinterop.base");
         final JavaPackage arez = constraint.addPackage("arez");
         final JavaPackage arezSpy = constraint.addPackage("arez.spy");
         final JavaPackage zemeckis = constraint.addPackage("zemeckis");
+
+        final var jspecify = constraint.addPackage("org.jspecify.annotations");
+        react4j.dependsUpon(jspecify);
+        react4jInternal.dependsUpon(jspecify);
+        annotations.dependsUpon(jspecify);
 
         react4j.dependsUpon(jsinteropAnnotations);
         react4j.dependsUpon(jsinteropBase);
@@ -55,7 +59,7 @@ public class JDependTest {
 
         final List<JavaPackage[]> nonMatchingPackages = result.getNonMatchingPackages();
         if (!nonMatchingPackages.isEmpty()) {
-            final StringBuilder sb = new StringBuilder();
+            final var sb = new StringBuilder();
             sb.append("Discovered packages where relationships do not align.\n");
             for (final JavaPackage[] packages : nonMatchingPackages) {
                 final JavaPackage expected = packages[0];
@@ -106,7 +110,6 @@ public class JDependTest {
         }
     }
 
-    @Nonnull
     private String compileTargetDir() {
         final String fixtureDir = System.getProperty("react4j.core.compile_target");
         assertNotNull(fixtureDir, "Expected System.getProperty( \"react4j.core.compile_target\" ) to return directory");

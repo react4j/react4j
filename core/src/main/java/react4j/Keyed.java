@@ -1,7 +1,6 @@
 package react4j;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Interface implemented by objects so that they can contribute to the synthetic key for immutable inputs.
@@ -12,7 +11,6 @@ public interface Keyed {
      *
      * @return the value used to form key.
      */
-    @Nonnull
     String getKey();
 
     /**

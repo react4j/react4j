@@ -1,7 +1,6 @@
 package react4j;
 
 import grim.annotations.OmitType;
-import javax.annotation.Nonnull;
 import org.realityforge.braincheck.BrainCheckConfig;
 
 /**
@@ -10,7 +9,7 @@ import org.realityforge.braincheck.BrainCheckConfig;
 @SuppressWarnings("FieldMayBeFinal")
 @OmitType
 final class ReactConfig {
-    @Nonnull
+
     private static final ConfigProvider PROVIDER = new ConfigProvider();
 
     private static final boolean PRODUCTION_ENVIRONMENT = PROVIDER.isProductionEnvironment();

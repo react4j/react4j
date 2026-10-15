@@ -1,6 +1,5 @@
 package react4j.internal;
 
-import javax.annotation.Nonnull;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import react4j.JsError;
@@ -11,5 +10,5 @@ import react4j.ReactErrorInfo;
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "?")
 public interface OnComponentDidCatch {
-    void componentDidCatch(@Nonnull JsError error, @Nonnull ReactErrorInfo info);
+    void componentDidCatch(JsError error, ReactErrorInfo info);
 }

@@ -7,11 +7,10 @@ import arez.spy.ObserverInfo;
 import grim.annotations.OmitType;
 import java.util.Objects;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utilities for introspecting the React4j views and runtime.
@@ -29,7 +28,7 @@ public final class IntrospectUtil {
      */
     @SuppressWarnings({"UnnecessaryUnboxing", "rawtypes"})
     @Nullable
-    public static Object getValue(@Nonnull final ObservableValueInfo observableInfo) {
+    public static Object getValue(final ObservableValueInfo observableInfo) {
         try {
             if (Arez.arePropertyIntrospectorsEnabled() && observableInfo.hasAccessor()) {
                 // Consider unwrapping collections and potentially serializing Arez entities so they are presented
@@ -73,8 +72,7 @@ public final class IntrospectUtil {
      * @param observer the observer.
      * @param data     the target in which to place debug data.
      */
-    public static void collectDependencyDebugData(
-            @Nonnull final Observer observer, @Nonnull final JsPropertyMap<Object> data) {
+    public static void collectDependencyDebugData(final Observer observer, final JsPropertyMap<@Nullable Object> data) {
         final ObserverInfo observerInfo = observer.getContext().getSpy().asObserverInfo(observer);
         observerInfo.getDependencies().forEach(d -> data.set(d.getName(), getValue(d)));
     }
@@ -88,7 +86,8 @@ public final class IntrospectUtil {
      * @return true if newState needs to be saved to native view, false otherwise.
      */
     public static boolean prepareStateUpdate(
-            @Nonnull final JsPropertyMap<Object> newState, @Nullable final JsPropertyMap<Object> currentState) {
+            final JsPropertyMap<@Nullable Object> newState,
+            @Nullable final JsPropertyMap<@Nullable Object> currentState) {
         /*
          * To determine whether we need to do a state update we do compare each key and value and make sure
          * they match. In some cases keys can be removed (i.e. a dependency is no longer observed) but as state

@@ -3,7 +3,6 @@ package react4j.annotations;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import javax.annotation.Nonnull;
 
 /**
  * Annotation to mark a method that returns a value to be published in context for child components.
@@ -39,6 +38,5 @@ public @interface Publish {
      *
      * @return the qualifier used to publish value to the context.
      */
-    @Nonnull
     String qualifier() default "";
 }

@@ -1,11 +1,10 @@
 package react4j;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Native interface to native runtime for creating views.
@@ -78,21 +77,25 @@ public final class React {
      * The Symbol type for Fragments.
      */
     @JsProperty(name = "Fragment")
+    @SuppressWarnings("NullAway.Init")
     static Object Fragment;
     /**
      * The Symbol type for StrictMode.
      */
     @JsProperty(name = "StrictMode")
+    @SuppressWarnings("NullAway.Init")
     static Object StrictMode;
     /**
      * The Symbol type for Suspense.
      */
     @JsProperty(name = "Suspense")
+    @SuppressWarnings("NullAway.Init")
     static Object Suspense;
     /**
      * The Symbol type for Element.
      */
     @JsProperty(name = "Element")
+    @SuppressWarnings("NullAway.Init")
     static Object Element;
 
     /**
@@ -102,8 +105,7 @@ public final class React {
      * @param defaultValue the default value.
      * @return the context.
      */
-    @Nonnull
-    static native <T> Context<T> createContext(T defaultValue);
+    static native <T> Context<T> createContext(@Nullable T defaultValue);
 
     /**
      * Return the fiber for current component.

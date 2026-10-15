@@ -3,7 +3,7 @@ package react4j.internal;
 import arez.Arez;
 import arez.Disposable;
 import arez.annotations.ArezComponent;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import zemeckis.Zemeckis;
 
 /**
@@ -36,6 +36,7 @@ public final class SchedulerUtil {
             c_schedulerLock = Arez.context().pauseScheduler();
             // schedule immediately after this call stack pops.
             Zemeckis.microTask(() -> {
+                assert c_schedulerLock != null;
                 c_schedulerLock.dispose();
                 c_schedulerLock = null;
             });

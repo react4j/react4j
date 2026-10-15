@@ -2,8 +2,6 @@ package react4j;
 
 import static org.testng.Assert.*;
 
-import java.util.Objects;
-import javax.annotation.Nonnull;
 import org.testng.annotations.Test;
 
 public final class KeyedTest {
@@ -23,11 +21,10 @@ public final class KeyedTest {
     private static class TestKeyed implements Keyed {
         private final String _key;
 
-        TestKeyed(@Nonnull final String key) {
-            _key = Objects.requireNonNull(key);
+        TestKeyed(final String key) {
+            _key = key;
         }
 
-        @Nonnull
         @Override
         public String getKey() {
             return _key;

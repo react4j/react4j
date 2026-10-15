@@ -1,14 +1,12 @@
 package react4j;
 
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Context is designed to share data that can be considered "global" for a tree of views.
@@ -25,7 +23,6 @@ public final class Context<T> {
      * @return a builder for the Provider component.
      */
     @JsOverlay
-    @Nonnull
     public ProviderBuilder<T> provider() {
         return new ProviderBuilder<>(this);
     }
@@ -38,7 +35,6 @@ public final class Context<T> {
      * @return the element.
      */
     @JsOverlay
-    @Nonnull
     public ReactNode provide(@Nullable final T value, final ReactNode... children) {
         return provider().value(value).children(children);
     }
@@ -49,7 +45,6 @@ public final class Context<T> {
      * @return a builder for the Consumer component.
      */
     @JsOverlay
-    @Nonnull
     public ConsumerBuilder<T> consumer() {
         return new ConsumerBuilder<>(this);
     }
@@ -59,12 +54,12 @@ public final class Context<T> {
      * A provider component is a react component that allows Consumers to subscribe to context changes.
      */
     public static final class ProviderBuilder<ST> {
-        @Nonnull
+
         private final ReactElement _element;
 
-        private ProviderBuilder(@Nonnull final Context<ST> context) {
+        private ProviderBuilder(final Context<ST> context) {
             _element = ReactElement.createContextElement(
-                    Js.<JsPropertyMap<Object>>cast(context).get("Provider"));
+                    Js.<JsPropertyMap<@Nullable Object>>cast(context).get("Provider"));
         }
 
         /**
@@ -73,25 +68,21 @@ public final class Context<T> {
          * @param key the key for the component.
          * @return the builder.
          */
-        @Nonnull
-        public ProviderBuilder<ST> key(@Nonnull final String key) {
-            _element.setKey(Objects.requireNonNull(key));
+        public ProviderBuilder<ST> key(final String key) {
+            _element.setKey(key);
             return this;
         }
 
-        @Nonnull
         public ProviderBuilder<ST> value(@Nullable final ST value) {
             _element.input("value", value);
             return this;
         }
 
-        @Nonnull
         public ReactNode children(final ReactNode... children) {
             _element.input("children", children);
             return build();
         }
 
-        @Nonnull
         public ReactNode build() {
             return _element;
         }
@@ -102,14 +93,15 @@ public final class Context<T> {
      */
     @JsFunction
     @FunctionalInterface
-    public interface ConsumerRenderFunction<T> {
+    public interface ConsumerRenderFunction<T extends @Nullable Object> {
         /**
          * Render the specified tree for context value.
          *
          * @param value the context value.
          * @return the rendered react node tree.
          */
-        ReactNode render(T value);
+        @Nullable
+        ReactNode render(@Nullable T value);
     }
 
     /**
@@ -117,12 +109,12 @@ public final class Context<T> {
      * A Consumer component is a react component that subscribes to context changes.
      */
     public static final class ConsumerBuilder<ST> {
-        @Nonnull
+
         private final ReactElement _element;
 
-        private ConsumerBuilder(@Nonnull final Context<ST> context) {
+        private ConsumerBuilder(final Context<ST> context) {
             _element = ReactElement.createContextElement(
-                    Js.<JsPropertyMap<Object>>cast(context).get("Consumer"));
+                    Js.<JsPropertyMap<@Nullable Object>>cast(context).get("Consumer"));
         }
 
         /**
@@ -131,9 +123,8 @@ public final class Context<T> {
          * @param key the key for the component.
          * @return the builder.
          */
-        @Nonnull
-        public ConsumerBuilder<ST> key(@Nonnull final String key) {
-            _element.setKey(Objects.requireNonNull(key));
+        public ConsumerBuilder<ST> key(final String key) {
+            _element.setKey(key);
             return this;
         }
 
@@ -143,8 +134,7 @@ public final class Context<T> {
          * @param render the child render function.
          * @return the creates react node.
          */
-        @Nonnull
-        public ReactNode render(@Nonnull final ConsumerRenderFunction<ST> render) {
+        public ReactNode render(final ConsumerRenderFunction<ST> render) {
             _element.input("children", render);
             return _element;
         }

@@ -1,0 +1,40 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "react4j",
+    srcs = [
+        "Context.java",
+        "Contexts.java",
+        "GwtIncompatible.java",
+        "JsError.java",
+        "Keyed.java",
+        "React.java",
+        "ReactConfig.java",
+        "ReactElement.java",
+        "ReactErrorInfo.java",
+        "ReactNode.java",
+        "ReactTestUtil.java",
+        "package-info.java",
+        "//core/src/main/java/react4j/annotations:sources",
+        "//core/src/main/java/react4j/internal:sources",
+    ],
+    resources = ["react4j.js"],
+    deps = [
+        "//third_party/java:arez_core",
+        "//third_party/java:base",
+        "//third_party/java:braincheck_core",
+        "//third_party/java:grim_annotations",
+        "//third_party/java:grim_processor",
+        "//third_party/java:javaemul_internal_annotations",
+        "//third_party/java:jsinterop_annotations",
+        "//third_party/java:org_jetbrains_annotations",
+        "//third_party/java:zemeckis_core",
+    ],
+)
+
+exports_files([
+    "react4j.js",
+    "react.externs.js",
+])

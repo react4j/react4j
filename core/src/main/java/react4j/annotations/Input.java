@@ -6,7 +6,6 @@ import arez.annotations.Observe;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import javax.annotation.Nonnull;
 
 /**
  * Annotation used to specify an input.
@@ -52,7 +51,6 @@ public @interface Input {
      *
      * @return the name of the input.
      */
-    @Nonnull
     String name() default "<default>";
 
     /**
@@ -61,7 +59,6 @@ public @interface Input {
      *
      * @return the qualifier used to access value from context.
      */
-    @Nonnull
     String qualifier() default "";
 
     /**

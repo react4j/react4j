@@ -3,7 +3,6 @@ package react4j.annotations;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import javax.annotation.Nonnull;
 
 /**
  * Identifies method that is called when the input value is specified or changes.
@@ -41,6 +40,5 @@ public @interface InputValidate {
      *
      * @return the name of the input.
      */
-    @Nonnull
     String name() default "<default>";
 }

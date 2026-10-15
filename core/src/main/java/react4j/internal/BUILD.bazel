@@ -1,0 +1,18 @@
+filegroup(
+    name = "sources",
+    srcs = [
+        "IntrospectUtil.java",
+        "NativeView.java",
+        "OnComponentDidCatch.java",
+        "OnComponentDidMount.java",
+        "OnComponentDidUpdate.java",
+        "OnComponentWillUnmount.java",
+        "OnGetSnapshotBeforeUpdate.java",
+        "OnShouldComponentUpdate.java",
+        "SchedulerUtil.java",
+        "ViewConstructorFunction.java",
+        "ViewState.java",
+        "package-info.java",
+    ],
+    visibility = ["//core/src/main/java/react4j:__pkg__"],
+)

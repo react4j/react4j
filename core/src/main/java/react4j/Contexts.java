@@ -4,9 +4,7 @@ import static org.realityforge.braincheck.Guards.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A global registry containing the react contexts that have been created.
@@ -17,17 +15,14 @@ public final class Contexts {
     /**
      * The default qualifier if not otherwise specified.
      */
-    @Nonnull
     private static final String DEFAULT_QUALIFIER = "";
     /**
      * The map containing all the contexts. See the class javadocs for further details.
      */
-    @Nonnull
     private static final Map<Class<?>, Map<String, Context<?>>> c_contexts = new HashMap<>();
     /**
      * Context provider.
      */
-    @Nonnull
     private static ContextProvider c_contextProvider = new DefaultContextProvider();
 
     private Contexts() {}
@@ -40,7 +35,7 @@ public final class Contexts {
      * @param <T>  the type of the context value.
      * @see #register(Class, String, Object)
      */
-    public static <T> void register(@Nonnull final Class<T> type) {
+    public static <T> void register(final Class<T> type) {
         register(type, DEFAULT_QUALIFIER, null);
     }
 
@@ -53,7 +48,7 @@ public final class Contexts {
      * @param <T>          the type of the context value.
      * @see #register(Class, String, Object)
      */
-    public static <T> void register(@Nonnull final Class<T> type, @Nullable final T defaultValue) {
+    public static <T> void register(final Class<T> type, @Nullable final T defaultValue) {
         register(type, DEFAULT_QUALIFIER, defaultValue);
     }
 
@@ -66,7 +61,7 @@ public final class Contexts {
      * @param <T>       the type of the context value.
      * @see #register(Class, String, Object)
      */
-    public static <T> void register(@Nonnull final Class<T> type, @Nonnull final String qualifier) {
+    public static <T> void register(final Class<T> type, final String qualifier) {
         register(type, qualifier, null);
     }
 
@@ -79,8 +74,7 @@ public final class Contexts {
      * @param defaultValue the default value to return if no provider has been specified higher in the tree.
      * @param <T>          the type of the context value.
      */
-    public static <T> void register(
-            @Nonnull final Class<T> type, @Nonnull final String qualifier, @Nullable final T defaultValue) {
+    public static <T> void register(final Class<T> type, final String qualifier, @Nullable final T defaultValue) {
         if (ReactConfig.shouldCheckInvariants()) {
             apiInvariant(
                     () -> !type.isPrimitive(),
@@ -107,7 +101,7 @@ public final class Contexts {
      * @return the context.
      * @see #get(Class, String)
      */
-    public static <T> Context<T> get(@Nonnull final Class<T> type) {
+    public static <T> Context<T> get(final Class<T> type) {
         return get(type, DEFAULT_QUALIFIER);
     }
 
@@ -122,7 +116,7 @@ public final class Contexts {
      * @see #get(Class)
      */
     @SuppressWarnings("unchecked")
-    public static <T> Context<T> get(@Nonnull final Class<T> type, @Nonnull final String qualifier) {
+    public static <T> Context<T> get(final Class<T> type, final String qualifier) {
         if (ReactConfig.shouldCheckInvariants()) {
             apiInvariant(
                     () -> !type.isPrimitive(),
@@ -141,8 +135,8 @@ public final class Contexts {
         return (Context<T>) map.get(qualifier);
     }
 
-    static void setContextProvider(@Nonnull final ContextProvider contextProvider) {
-        c_contextProvider = Objects.requireNonNull(contextProvider);
+    static void setContextProvider(final ContextProvider contextProvider) {
+        c_contextProvider = contextProvider;
     }
 
     static void clear() {

@@ -5,7 +5,6 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 
 /**
  * Annotation used to identify a React4j view.
@@ -57,7 +56,6 @@ public @interface View {
      *
      * @return the name of the view.
      */
-    @Nonnull
     String name() default "<default>";
 
     /**
@@ -77,6 +75,5 @@ public @interface View {
      * @return an enum indicating the capabilities of the view.
      * @see Type
      */
-    @Nonnull
     Type type() default Type.TRACKING;
 }

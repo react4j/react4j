@@ -1,15 +1,14 @@
 package react4j;
 
-import java.util.Objects;
 import javaemul.internal.annotations.DoNotAutobox;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.Nullable;
 import react4j.internal.ViewConstructorFunction;
 
 /**
@@ -19,14 +18,18 @@ import react4j.internal.ViewConstructorFunction;
 @JsType(isNative = true, name = "Object", namespace = JsPackage.GLOBAL)
 public class ReactElement implements ReactNode {
     @JsProperty(name = "$$typeof")
+    @SuppressWarnings("NullAway.Init")
     private Object typeof;
 
+    @SuppressWarnings("NullAway.Init")
     private Object type;
-    private String key;
-    private Object ref;
+
+    private @Nullable String key;
+    private @Nullable Object ref;
 
     @JsProperty(name = "props")
-    private JsPropertyMap<Object> inputs;
+    @SuppressWarnings("NullAway.Init")
+    private JsPropertyMap<@Nullable Object> inputs;
     // The view responsible for creating this element.
     // can be null if create happens outside of a render method (i.e. at the top level).
     @Nullable
@@ -34,80 +37,73 @@ public class ReactElement implements ReactNode {
 
     @JsOverlay
     @Contract(pure = true)
-    @Nonnull
     public final ReactElement dup() {
-        final ReactElement element = createRawNode(typeof, type);
+        final var element = createRawNode(typeof, type);
         element.key = key;
         element.ref = ref;
-        element.inputs = JsPropertyMap.of();
+        element.inputs = Js.uncheckedCast(JsPropertyMap.of());
         inputs.forEach(key -> element.inputs.set(key, inputs.get(key)));
         return element;
     }
 
     @JsOverlay
-    @Nonnull
     @Contract(pure = true)
-    public static ReactElement createViewElement(@Nonnull final ViewConstructorFunction type) {
+    public static ReactElement createViewElement(final ViewConstructorFunction type) {
         @SuppressWarnings({"JavaExistingMethodCanBeUsed", "RedundantSuppression"})
-        final ReactElement element = create(type);
-        element.inputs = JsPropertyMap.of();
+        final var element = create(type);
+        element.inputs = Js.uncheckedCast(JsPropertyMap.of());
         element.key = null;
         element.ref = null;
         return element;
     }
 
     @JsOverlay
-    @Nonnull
     @Contract(pure = true)
-    static ReactElement createContextElement(@Nonnull final Object type) {
-        final ReactElement element = create(type);
-        element.inputs = JsPropertyMap.of();
+    static ReactElement createContextElement(final Object type) {
+        final var element = create(type);
+        element.inputs = Js.uncheckedCast(JsPropertyMap.of());
         element.key = null;
         element.ref = null;
         return element;
     }
 
     @JsOverlay
-    @Nonnull
     @Contract(pure = true)
-    private static ReactElement create(@Nonnull final Object type) {
+    private static ReactElement create(final Object type) {
         return createRawNode(React.Element, type);
     }
 
     @JsOverlay
-    @Nonnull
     @Contract(pure = true)
-    private static ReactElement createRawNode(@Nonnull final Object typeof, @Nonnull final Object type) {
-        final ReactElement element = new ReactElement();
-        element.typeof = Objects.requireNonNull(typeof);
-        element.type = Objects.requireNonNull(type);
+    private static ReactElement createRawNode(final Object typeof, final Object type) {
+        final var element = new ReactElement();
+        element.typeof = typeof;
+        element.type = type;
         element._owner = React.currentOwner();
         return element;
     }
 
     @JsOverlay
-    @Nonnull
     @Contract(pure = true)
     private static ReactElement createRawElement(
-            @Nonnull final Object type,
+            final Object type,
             @Nullable final String key,
             @Nullable final Object ref,
-            @Nonnull final JsPropertyMap<Object> inputs) {
-        final ReactElement element = create(type);
+            final JsPropertyMap<@Nullable Object> inputs) {
+        final var element = create(type);
         element.key = key;
         element.ref = ref;
-        element.inputs = Objects.requireNonNull(inputs);
+        element.inputs = inputs;
         return element;
     }
 
     @JsOverlay
-    @Nonnull
     @Contract(pure = true)
-    public static ReactElement createFragment(@Nullable final String key, @Nonnull final ReactNode... children) {
-        final ReactElement element = createRawNode(React.Element, React.Fragment);
+    public static ReactElement createFragment(@Nullable final String key, final @Nullable ReactNode... children) {
+        final var element = createRawNode(React.Element, React.Fragment);
         element.key = key;
         element.ref = null;
-        element.inputs = JsPropertyMap.of("children", Objects.requireNonNull(children));
+        element.inputs = Js.uncheckedCast(JsPropertyMap.of("children", children));
         return element;
     }
 
@@ -118,39 +114,36 @@ public class ReactElement implements ReactNode {
      * @return a new React.StrictMode component.
      */
     @JsOverlay
-    @Nonnull
     @Contract(pure = true)
-    public static ReactNode createStrictMode(@Nonnull final ReactNode... children) {
+    public static ReactNode createStrictMode(final @Nullable ReactNode... children) {
         return ReactElement.createRawElement(
-                React.StrictMode, null, null, JsPropertyMap.of("children", Objects.requireNonNull(children)));
+                React.StrictMode, null, null, Js.uncheckedCast(JsPropertyMap.of("children", children)));
     }
 
     @JsOverlay
-    @Nonnull
     @Contract(pure = true)
     public static ReactElement createSuspense(
             @Nullable final String key,
             @Nullable final ReactNode fallback,
             final int maxTimeToFallback,
-            @Nonnull final ReactNode... children) {
-        final ReactElement element = createRawNode(React.Element, React.Suspense);
+            final @Nullable ReactNode... children) {
+        final var element = createRawNode(React.Element, React.Suspense);
         element.key = key;
         element.ref = null;
-        element.inputs = JsPropertyMap.of(
-                "children", Objects.requireNonNull(children),
+        element.inputs = Js.uncheckedCast(JsPropertyMap.of(
+                "children", children,
                 "fallback", fallback,
-                "ms", maxTimeToFallback);
+                "ms", maxTimeToFallback));
         return element;
     }
 
     @JsOverlay
-    @Nonnull
     @Contract(pure = true)
     public static ReactElement createHostElement(
-            @Nonnull final String type,
+            final String type,
             @Nullable final String key,
             @Nullable final Object ref,
-            @Nonnull final JsPropertyMap<Object> inputs) {
+            final JsPropertyMap<@Nullable Object> inputs) {
         return createRawElement(type, key, ref, inputs);
     }
 
@@ -167,21 +160,19 @@ public class ReactElement implements ReactNode {
     }
 
     @JsOverlay
-    @Nonnull
     @Contract(pure = true)
-    public final JsPropertyMap<Object> inputs() {
+    public final JsPropertyMap<@Nullable Object> inputs() {
         return inputs;
     }
 
     @JsOverlay
-    @Nonnull
-    public final ReactElement input(@Nonnull final String key, @DoNotAutobox final Object value) {
+    public final ReactElement input(final String key, @DoNotAutobox final @Nullable Object value) {
         inputs.set(key, value);
         return this;
     }
 
     @JsOverlay
-    protected final void setInputs(@Nonnull final JsPropertyMap<Object> inputs) {
+    protected final void setInputs(final JsPropertyMap<@Nullable Object> inputs) {
         this.inputs = inputs;
     }
 }

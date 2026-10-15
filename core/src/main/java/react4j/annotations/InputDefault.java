@@ -3,7 +3,6 @@ package react4j.annotations;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-import javax.annotation.Nonnull;
 
 /**
  * Annotation used to specify the default value for a input.
@@ -42,6 +41,5 @@ public @interface InputDefault {
      *
      * @return the name of the input.
      */
-    @Nonnull
     String name() default "<default>";
 }
