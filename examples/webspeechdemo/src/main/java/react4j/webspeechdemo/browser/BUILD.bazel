@@ -1,0 +1,19 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "Console.java",
+        "DOMRect.java",
+        "Document.java",
+        "Element.java",
+        "EventHandler.java",
+        "HTMLInputElement.java",
+        "HTMLSelectElement.java",
+        "HTMLTextAreaElement.java",
+        "Node.java",
+        "Range.java",
+        "WindowGlobal.java",
+        "package-info.java",
+    ],
+)

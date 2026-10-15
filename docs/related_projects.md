@@ -26,5 +26,7 @@ built using React4j.
   application rewritten using react4j and other supporting technologies.
 * [react-heart-rate-monitor](https://github.com/react4j/react4j-heart-rate-monitor) An experiment using the web
   bluetooth API ot display the output of a bluetooth heart rate monitor written using Arez and React4j.
-* [react-webspeechdemo](https://github.com/react4j/react4j-webspeechdemo) An experiment using the web speech
-  synthesis API written using Arez and React4j.
+* [Web Speech Demo](/webspeechdemo/) is included under `examples/webspeechdemo`. It uses Arez
+  and React4j to control browser speech synthesis, select voices, and highlight spoken words.
+  Run `tools/examples.sh serve webspeechdemo development`, or try the
+  [development app](/webspeechdemo_dev/).

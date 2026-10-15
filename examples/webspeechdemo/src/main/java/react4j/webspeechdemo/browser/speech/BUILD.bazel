@@ -1,0 +1,12 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "SpeechSynthesis.java",
+        "SpeechSynthesisEvent.java",
+        "SpeechSynthesisUtterance.java",
+        "SpeechSynthesisVoice.java",
+        "package-info.java",
+    ],
+)

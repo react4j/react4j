@@ -1,0 +1,81 @@
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//third_party/java:rules.bzl", "java_library")
+load("//tools/browser:rules.bzl", "browser_application", "browser_application_variant", "browser_test")
+load("//tools/release:release.bzl", "release_source_jar")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "java",
+    srcs = [
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo:sources",
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser:sources",
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser/speech:sources",
+    ],
+    plugins = [
+        "//:react4j_processor_plugin",
+        "@arez//:arez_processor_plugin",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+    ],
+)
+
+release_source_jar(
+    name = "sources",
+    out = "webspeechdemo-sources.jar",
+    java_targets = [":java"],
+)
+
+j2cl_library(
+    name = "j2cl",
+    srcs = [":sources"],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    deps = [
+        "//:core-j2cl",
+        "//:dom-j2cl",
+        "//third_party/java:braincheck_core-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:org_jetbrains_annotations-j2cl",
+        "//third_party/java:zemeckis_core-j2cl",
+        "@arez//:core-j2cl",
+    ],
+)
+
+closure_js_library(
+    name = "entry",
+    srcs = ["//examples/webspeechdemo/src/main/java/react4j/webspeechdemo:Main.entry.js"],
+    deps = [":j2cl"],
+)
+
+browser_application(
+    name = "webspeechdemo",
+    assets = {"public/css/index.css": "css/index.css"},
+    entry_point = "react4j.webspeechdemo.MainEntry",
+    html = "public/index.html",
+    deps = [":entry"],
+)
+
+browser_application_variant(
+    name = "production",
+    application = ":webspeechdemo",
+    mode = "opt",
+)
+
+browser_application_variant(
+    name = "development",
+    application = ":webspeechdemo",
+    mode = "fastbuild",
+)
+
+browser_test(
+    name = "browser_tests",
+    srcs = ["browser_test.js"],
+    data = [":webspeechdemo"],
+    entry_point = "react4j.webspeechdemo.BrowserTest",
+    deps = ["@rules_closure//closure/testing/library:testcase"],
+)

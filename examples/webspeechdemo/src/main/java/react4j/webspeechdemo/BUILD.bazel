@@ -1,0 +1,13 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "Application.java",
+        "Main.java",
+        "SpeechData.java",
+        "package-info.java",
+    ],
+)
+
+exports_files(["Main.entry.js"])

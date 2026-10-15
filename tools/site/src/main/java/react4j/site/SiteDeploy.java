@@ -9,7 +9,7 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 final class SiteDeploy {
-    static final Set<String> EXTERNAL_PATHS = Set.of("todomvc", "webspeechdemo", "heart-rate-monitor");
+    static final Set<String> EXTERNAL_PATHS = Set.of("todomvc", "heart-rate-monitor");
 
     private SiteDeploy() {}
 
