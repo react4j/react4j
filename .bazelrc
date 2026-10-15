@@ -7,7 +7,6 @@ build --strategy=PalantirJavaFormat=worker,local
 build --worker_max_instances=PalantirJavaFormat=1
 build --sandbox_default_allow_network=false
 
-build --nojava_header_compilation
 build --experimental_strict_java_deps=error
 test --explicit_java_test_deps
 

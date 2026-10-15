@@ -70,6 +70,11 @@ alias(
 
 # Browser annotations are bytecode-only imports; they do not produce JavaScript modules.
 j2cl_import(
+    name = "javaemul_internal_annotations-j2cl",
+    jar = ":javaemul_internal_annotations",
+)
+
+j2cl_import(
     name = "jspecify-j2cl",
     jar = ":jspecify",
 )
