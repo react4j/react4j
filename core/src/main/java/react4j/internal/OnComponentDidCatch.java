@@ -9,8 +9,7 @@ import react4j.ReactErrorInfo;
 /**
  * Native support infrastructure for componentDidCatch react lifecycle.
  */
-@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" )
-public interface OnComponentDidCatch
-{
-  void componentDidCatch( @Nonnull JsError error, @Nonnull ReactErrorInfo info );
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "?")
+public interface OnComponentDidCatch {
+    void componentDidCatch(@Nonnull JsError error, @Nonnull ReactErrorInfo info);
 }

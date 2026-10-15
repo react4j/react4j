@@ -1,6 +1,6 @@
 # T03 — Core JVM contracts and tests
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: `T02`
 - Spec coverage: `R1`, `R3`, `R4`, `R6`, `R7`, `AC1`, `AC2`
 
@@ -18,4 +18,4 @@ Build/test core under Bazel against migrated Arez artifacts. Convert core nullne
 
 ## Evidence
 
-- pending
+- Mechanical formatting checkpoint: formatter applied to 49 core main/test files. Lexical comparison with prior commit passes after normalizing equivalent static/abstract modifier ordering and split constant string literals. Semantic migration and Bazel validation remain in progress.

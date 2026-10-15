@@ -39,7 +39,5 @@ import react4j.ReactErrorInfo;
  * </ul>
  */
 @Documented
-@Target( ElementType.METHOD )
-public @interface OnError
-{
-}
+@Target(ElementType.METHOD)
+public @interface OnError {}

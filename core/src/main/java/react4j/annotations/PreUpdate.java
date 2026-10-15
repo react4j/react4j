@@ -41,7 +41,5 @@ import java.lang.annotation.Target;
  * </ul>
  */
 @Documented
-@Target( ElementType.METHOD )
-public @interface PreUpdate
-{
-}
+@Target(ElementType.METHOD)
+public @interface PreUpdate {}

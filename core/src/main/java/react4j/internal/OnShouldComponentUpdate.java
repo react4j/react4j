@@ -8,8 +8,7 @@ import jsinterop.base.JsPropertyMap;
 /**
  * Native support infrastructure for shouldComponentUpdate react lifecycle.
  */
-@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" )
-public interface OnShouldComponentUpdate
-{
-  boolean shouldComponentUpdate( @Nonnull JsPropertyMap<Object> nextProps );
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "?")
+public interface OnShouldComponentUpdate {
+    boolean shouldComponentUpdate(@Nonnull JsPropertyMap<Object> nextProps);
 }

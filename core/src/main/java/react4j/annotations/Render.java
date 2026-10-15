@@ -36,7 +36,5 @@ import java.lang.annotation.Target;
  * </ul>
  */
 @Documented
-@Target( ElementType.METHOD )
-public @interface Render
-{
-}
+@Target(ElementType.METHOD)
+public @interface Render {}

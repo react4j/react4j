@@ -9,9 +9,8 @@ import jsinterop.base.JsPropertyMap;
 /**
  * Native support infrastructure for getSnapshotBeforeUpdate react lifecycle.
  */
-@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "?" )
-public interface OnGetSnapshotBeforeUpdate
-{
-  @Nullable
-  Object getSnapshotBeforeUpdate( @Nonnull JsPropertyMap<Object> prevProps, @Nonnull JsPropertyMap<Object> prevState );
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "?")
+public interface OnGetSnapshotBeforeUpdate {
+    @Nullable
+    Object getSnapshotBeforeUpdate(@Nonnull JsPropertyMap<Object> prevProps, @Nonnull JsPropertyMap<Object> prevState);
 }

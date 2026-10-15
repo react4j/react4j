@@ -37,14 +37,13 @@ import java.lang.annotation.Target;
  * </ul>
  */
 @Documented
-@Target( ElementType.METHOD )
-public @interface PreRender
-{
-  /**
-   * The parameter to determine the ordering of PreRender annotated methods if multiple methods are defined.
-   * Lower values occur earlier, if multiple methods have the same sortOrder then sorting order is undefined.
-   *
-   * @return the sortOrder.
-   */
-  int sortOrder() default SortOrder.APPLICATION;
+@Target(ElementType.METHOD)
+public @interface PreRender {
+    /**
+     * The parameter to determine the ordering of PreRender annotated methods if multiple methods are defined.
+     * Lower values occur earlier, if multiple methods have the same sortOrder then sorting order is undefined.
+     *
+     * @return the sortOrder.
+     */
+    int sortOrder() default SortOrder.APPLICATION;
 }

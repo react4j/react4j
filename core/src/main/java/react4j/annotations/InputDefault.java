@@ -29,20 +29,19 @@ import javax.annotation.Nonnull;
  * </ul>
  */
 @Documented
-@Target( { ElementType.METHOD, ElementType.FIELD } )
-public @interface InputDefault
-{
-  /**
-   * Return the name of the associated input.
-   *
-   * <p>If the annotation is applied to a method, this value will be derived if the method name matches
-   * the pattern "get[Name]Default", otherwise it must be specified.</p>
-   *
-   * <p>If the annotation is applied to a field, this value will be derived if the field name matches
-   * the pattern "DEFAULT_[NAME]", otherwise it must be specified.</p>
-   *
-   * @return the name of the input.
-   */
-  @Nonnull
-  String name() default "<default>";
+@Target({ElementType.METHOD, ElementType.FIELD})
+public @interface InputDefault {
+    /**
+     * Return the name of the associated input.
+     *
+     * <p>If the annotation is applied to a method, this value will be derived if the method name matches
+     * the pattern "get[Name]Default", otherwise it must be specified.</p>
+     *
+     * <p>If the annotation is applied to a field, this value will be derived if the field name matches
+     * the pattern "DEFAULT_[NAME]", otherwise it must be specified.</p>
+     *
+     * @return the name of the input.
+     */
+    @Nonnull
+    String name() default "<default>";
 }

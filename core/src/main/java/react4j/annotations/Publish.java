@@ -32,14 +32,13 @@ import javax.annotation.Nonnull;
  * </ul>
  */
 @Documented
-@Target( ElementType.METHOD )
-public @interface Publish
-{
-  /**
-   * Return the qualifier used to publish value to the context.
-   *
-   * @return the qualifier used to publish value to the context.
-   */
-  @Nonnull
-  String qualifier() default "";
+@Target(ElementType.METHOD)
+public @interface Publish {
+    /**
+     * Return the qualifier used to publish value to the context.
+     *
+     * @return the qualifier used to publish value to the context.
+     */
+    @Nonnull
+    String qualifier() default "";
 }

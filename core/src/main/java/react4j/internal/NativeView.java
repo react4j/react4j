@@ -14,39 +14,35 @@ import react4j.ReactNode;
 /**
  * The react native component.
  */
-@JsType( isNative = true, namespace = JsPackage.GLOBAL, name = "React.Component" )
-@SuppressWarnings( "unused" )
-public abstract class NativeView
-{
-  @JsProperty( name = "props" )
-  private JsPropertyMap<Object> inputs;
-  @JsProperty
-  private JsPropertyMap<Object> state;
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "React.Component")
+@SuppressWarnings("unused")
+public abstract class NativeView {
+    @JsProperty(name = "props")
+    private JsPropertyMap<Object> inputs;
 
-  @JsConstructor
-  protected NativeView( @Nullable final JsPropertyMap<Object> inputs )
-  {
-  }
+    @JsProperty
+    private JsPropertyMap<Object> state;
 
-  @JsMethod
-  @Nullable
-  public abstract ReactNode render();
+    @JsConstructor
+    protected NativeView(@Nullable final JsPropertyMap<Object> inputs) {}
 
-  @JsOverlay
-  @Nullable
-  public final JsPropertyMap<Object> inputs()
-  {
-    return inputs;
-  }
+    @JsMethod
+    @Nullable
+    public abstract ReactNode render();
 
-  @JsOverlay
-  @Nullable
-  public final JsPropertyMap<Object> state()
-  {
-    return state;
-  }
+    @JsOverlay
+    @Nullable
+    public final JsPropertyMap<Object> inputs() {
+        return inputs;
+    }
 
-  public final native void setState( @Nonnull JsPropertyMap<Object> state );
+    @JsOverlay
+    @Nullable
+    public final JsPropertyMap<Object> state() {
+        return state;
+    }
 
-  public final native void forceUpdate();
+    public final native void setState(@Nonnull JsPropertyMap<Object> state);
+
+    public final native void forceUpdate();
 }

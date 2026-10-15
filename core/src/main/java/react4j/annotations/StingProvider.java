@@ -10,9 +10,8 @@ import java.lang.annotation.Target;
  * Integration into sting the name of the annotation and shape is all that matters.
  */
 @Documented
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.ANNOTATION_TYPE )
-@interface StingProvider
-{
-  String value();
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
+@interface StingProvider {
+    String value();
 }
