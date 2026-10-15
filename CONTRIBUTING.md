@@ -21,7 +21,7 @@ Use Bazel 9.3.0 (pinned in `.bazelversion`, typically selected by Bazelisk) and 
 | Export downstream Bazel pins/patches | `tools/export_bazel_config.sh <application-directory>` |
 | Review hermeticity | `bazel run //tools/ahab:hermeticity.check` |
 | Update Java dependencies | Edit `third_party/java/dependencies.yml`, then `tools/update_java_deps.sh` |
-| Preview example | `tools/examples.sh serve [development\|production]` |
+| Preview example | `tools/examples.sh serve [hello_world\|drumloop] [development\|production]` |
 | Build / check / serve site | `tools/site.sh build` / `tools/site.sh check` / `tools/site.sh serve` |
 | Verify publication repeatability | `tools/release/check_reproducibility.sh` |
 

@@ -1,0 +1,11 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "AcceptCallback.java",
+        "OnFulfilledCallback.java",
+        "Promise.java",
+        "package-info.java",
+    ],
+)

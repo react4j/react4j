@@ -1,0 +1,52 @@
+package react4j.drumloop.views;
+
+import static react4j.dom.DOM.*;
+
+import arez.annotations.Action;
+import arez.annotations.ComponentDependency;
+import react4j.ReactNode;
+import react4j.annotations.Input;
+import react4j.annotations.Render;
+import react4j.annotations.View;
+import react4j.dom.proptypes.html.BtnProps;
+import react4j.drumloop.model.StepCell;
+
+@View(type = View.Type.TRACKING)
+abstract class StepButton {
+    @ComponentDependency
+    final StepCell _cell;
+
+    StepButton(@Input final StepCell cell) {
+        _cell = cell;
+    }
+
+    @Render
+    ReactNode render() {
+        final boolean oddBar = (_cell.beat() / 4) % 2 == 1;
+        return button(new BtnProps()
+                .className(
+                        "step_button",
+                        oddBar ? "step_button_odd" : null,
+                        _cell.on() ? "step_button_on" : null,
+                        _cell.doubled() ? "step_button_doubled" : null)
+                .onClick(e -> toggleCell(e.isShiftKey())));
+    }
+
+    @Action
+    void toggleCell(final boolean shiftKey) {
+        final boolean on = _cell.on();
+        if (on) {
+            if (shiftKey && !_cell.doubled()) {
+                _cell.setDoubled();
+            } else {
+                _cell.setOff();
+            }
+        } else {
+            if (shiftKey) {
+                _cell.setDoubled();
+            } else {
+                _cell.setOn();
+            }
+        }
+    }
+}

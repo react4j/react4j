@@ -1,0 +1,15 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "App.java",
+        "ReactCache.java",
+        "package-info.java",
+    ],
+)
+
+exports_files([
+    "App.entry.js",
+    "ReactCache.native.js",
+])

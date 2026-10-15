@@ -86,6 +86,8 @@ _DEVELOPMENT_DEFINES = {
     "zemeckis.use_worker_to_schedule_delayed_tasks": "true",
 }
 
+BrowserApplicationInfo = provider("Packaged browser files and their relative application paths.", fields = ["assets"])
+
 _PRODUCTION = "//tools/browser:production"
 
 def _defines(test = False):
@@ -122,10 +124,27 @@ def _preview_impl(ctx):
             arguments = ["copy", source.path, output.path],
             mnemonic = "BrowserPreviewAsset",
         )
-    files = [html, js, react, dom]
-    return [DefaultInfo(files = depset(files), runfiles = ctx.runfiles(files))]
+    assets = {html: "index.html", js: "app.js", react: "react.js", dom: "react-dom.js"}
+    for target, destination in ctx.attr.assets.items():
+        if destination.startswith("/") or ".." in destination.split("/") or destination in assets.values():
+            fail("Invalid or duplicate browser asset destination: " + destination)
+        sources = target[DefaultInfo].files.to_list()
+        if len(sources) != 1:
+            fail("Each browser asset must contain exactly one file: %s" % target.label)
+        output = ctx.actions.declare_file(ctx.label.name + "/" + destination)
+        ctx.actions.run(
+            executable = ctx.executable._assets,
+            inputs = sources,
+            outputs = [output],
+            arguments = ["copy", sources[0].path, output.path],
+            mnemonic = "BrowserPreviewAsset",
+        )
+        assets[output] = destination
+    files = assets.keys()
+    return [DefaultInfo(files = depset(files), runfiles = ctx.runfiles(files)), BrowserApplicationInfo(assets = assets)]
 
 _preview = rule(implementation = _preview_impl, attrs = {
+    "assets": attr.label_keyed_string_dict(allow_files = True),
     "defines": attr.string_dict(),
     "dom": attr.label(allow_single_file = True, mandatory = True),
     "html": attr.label(allow_single_file = True, mandatory = True),
@@ -137,7 +156,7 @@ _preview = rule(implementation = _preview_impl, attrs = {
 def _asset(name):
     return select({_PRODUCTION: "//tools/generation:" + name + "_prod", "//conditions:default": "//tools/generation:" + name + "_dev"})
 
-def browser_application(name, entry_point, deps, html):
+def browser_application(name, entry_point, deps, html, assets = {}):
     closure_js_binary(
         name = name + "_bundle",
         deps = deps,
@@ -145,7 +164,29 @@ def browser_application(name, entry_point, deps, html):
         compilation_level = select({_PRODUCTION: "ADVANCED", "//conditions:default": "BUNDLE"}),
         defs = _compiler_defines(),
     )
-    _preview(name = name, html = html, js = name + "_bundle.js", defines = _defines(), react = _asset("react"), dom = _asset("react_dom"))
+    _preview(name = name, html = html, js = name + "_bundle.js", defines = _defines(), react = _asset("react"), dom = _asset("react_dom"), assets = assets)
+
+def _mode_transition_impl(_settings, attr):
+    return {"//command_line_option:compilation_mode": attr.mode}
+
+_mode_transition = transition(
+    implementation = _mode_transition_impl,
+    inputs = [],
+    outputs = ["//command_line_option:compilation_mode"],
+)
+
+def _variant_impl(ctx):
+    application = ctx.attr.application[0]
+    return [application[DefaultInfo], application[BrowserApplicationInfo]]
+
+browser_application_variant = rule(
+    implementation = _variant_impl,
+    attrs = {
+        "application": attr.label(mandatory = True, cfg = _mode_transition, providers = [BrowserApplicationInfo]),
+        "mode": attr.string(mandatory = True, values = ["fastbuild", "opt"]),
+        "_allowlist_function_transition": attr.label(default = "@bazel_tools//tools/allowlists/function_transition_allowlist"),
+    },
+)
 
 def _runtime_impl(ctx):
     output = ctx.outputs.js
@@ -163,7 +204,7 @@ def _runtime_impl(ctx):
 
 _runtime = rule(implementation = _runtime_impl, outputs = {"js": "%{name}.js"}, attrs = {"dom": attr.label(allow_single_file = True), "js": attr.label(allow_single_file = True), "react": attr.label(allow_single_file = True), "_assets": attr.label(default = Label("//tools/browser:assets"), executable = True, cfg = "exec")})
 
-def browser_test(name, srcs, deps, entry_point):
+def browser_test(name, srcs, deps, entry_point, data = []):
     closure_js_library(name = name + "_lib", testonly = True, srcs = srcs, deps = deps + ["//tools/browser:mode", "@rules_closure//closure/testing/library:asserts", "@rules_closure//closure/testing/library:testsuite"])
     closure_js_binary(
         name = name + "_bin",
@@ -174,4 +215,4 @@ def browser_test(name, srcs, deps, entry_point):
         defs = _compiler_defines(test = True),
     )
     _runtime(name = name + "_runtime", testonly = True, js = name + "_bin.js", react = _asset("react"), dom = _asset("react_dom"))
-    webdriver_test(name = name, test_file_js = name + "_runtime.js", browsers = ["@rules_webtesting//browsers:chromium-local"], runtime_defines = _defines(test = True))
+    webdriver_test(name = name, test_file_js = name + "_runtime.js", data = data, browsers = ["@rules_webtesting//browsers:chromium-local"], runtime_defines = _defines(test = True))

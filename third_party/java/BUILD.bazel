@@ -68,6 +68,11 @@ alias(
     actual = "@sting//third_party/java:nullaway",
 )
 
+j2cl_import(
+    name = "sting_core-j2cl",
+    jar = ":sting_core",
+)
+
 # Browser annotations are bytecode-only imports; they do not produce JavaScript modules.
 j2cl_import(
     name = "javaemul_internal_annotations-j2cl",

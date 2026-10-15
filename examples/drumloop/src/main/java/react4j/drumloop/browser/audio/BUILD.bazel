@@ -1,0 +1,14 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "AudioBuffer.java",
+        "AudioBufferSourceNode.java",
+        "AudioContext.java",
+        "AudioNode.java",
+        "AudioParam.java",
+        "GainNode.java",
+        "package-info.java",
+    ],
+)

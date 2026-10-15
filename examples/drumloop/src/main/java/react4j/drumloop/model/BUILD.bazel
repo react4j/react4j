@@ -1,0 +1,14 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "AbstractSoundSample.java",
+        "DrumMachine.java",
+        "ModelFragment.java",
+        "SoundEffect.java",
+        "StepCell.java",
+        "Track.java",
+        "package-info.java",
+    ],
+)

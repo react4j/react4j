@@ -23,6 +23,8 @@ java_format_check(
         "//tools/consumer:config",
         "//tools/verification:coverage_check",
         "//doc-examples:java",
+        "//examples/drumloop:java",
+        "//examples/drumloop:test_java",
         "//tools/site/src/main/java/react4j/site:site",
         "//tools/site:tool",
         "//tools/site/src/test/java/react4j/site:all_tests",
@@ -109,7 +111,10 @@ j2cl_library(
 
 test_suite(
     name = "browser_tests",
-    tests = ["//doc-examples:browser_tests"],
+    tests = [
+        "//doc-examples:browser_tests",
+        "//examples/drumloop:browser_tests",
+    ],
 )
 
 test_suite(

@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Import Drumloop under `examples/drumloop`, with checked Bazel/J2CL builds, local audio/font assets, browser tests in both modes, and site integration at its established URLs. Correct sequencer tempo calculation and resume suspended audio on Play.
+
 * Replace project builds, tests, DOM generation, asset preparation, documentation and release tooling with pinned Bazel and Java/Bash tools. Add the shared local/CI gate, buildifier and Ahab checks.
 * Breaking: use J2CL for browser compilation and remove legacy compiler modules, entrypoints and support infrastructure. Keep React/ReactDOM 16.6.0 and verify development and optimized production behavior with pinned Chromium.
 * Breaking: require JSpecify nullness contracts and full Error Prone/JSpecify-mode NullAway checks. Ignore legacy nullness annotations; diagnose unspecified or invalid generated input contracts. Nullable AUTODETECT inputs remain optional, while explicitly required nullable inputs require a builder call and accept null.
