@@ -8,7 +8,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -36,7 +35,7 @@ abstract class React4j_ProtectedAccessFromBasePostMountOrUpdateModel
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor)
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
           .set("displayName", "ProtectedAccessFromBasePostMountOrUpdateModel");
     }
     return viewConstructor;
@@ -71,11 +70,10 @@ abstract class React4j_ProtectedAccessFromBasePostMountOrUpdateModel
           OnComponentDidUpdate,
           OnShouldComponentUpdate,
           OnComponentWillUnmount {
-    @NonNull
     private final React4j_ProtectedAccessFromBasePostMountOrUpdateModel view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_ProtectedAccessFromBasePostMountOrUpdateModel(this);
     }
@@ -101,8 +99,7 @@ abstract class React4j_ProtectedAccessFromBasePostMountOrUpdateModel
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

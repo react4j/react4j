@@ -9,7 +9,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -42,7 +41,7 @@ abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChan
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ParameterizedOnPropChange" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "ParameterizedOnPropChange" );
     }
     return viewConstructor;
   }
@@ -51,14 +50,15 @@ abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChan
   @Override
   @Nullable ArrayList<String> getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp ).cast() : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp );
+      return null != value ? value.cast() : null;
     } else {
       return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     if ( !Js.isTripleEqual( inputs.get( Inputs.myProp ), nextInputs.get( Inputs.myProp ) ) ) {
@@ -68,7 +68,7 @@ abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChan
   }
 
   private void $$react4j$$_componentPreUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> prevInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if ( null != prevInputs ) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
       final boolean myProp = !Js.isTripleEqual( inputs.get( Inputs.myProp ), prevInputs.get( Inputs.myProp ) );
@@ -82,8 +82,7 @@ abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChan
     ((Arez_React4j_ParameterizedOnPropChange) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -103,11 +102,10 @@ abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChan
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
-    @NonNull
     private final React4j_ParameterizedOnPropChange view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_ParameterizedOnPropChange( this );
     }
@@ -118,8 +116,8 @@ abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChan
     }
 
     @Override
-    @Nullable
-    public final Object getSnapshotBeforeUpdate(final JsPropertyMap<@Nullable Object> prevInputs,
+    public final @Nullable Object getSnapshotBeforeUpdate(
+        final JsPropertyMap<@Nullable Object> prevInputs,
         final JsPropertyMap<@Nullable Object> prevState) {
       view.$$react4j$$_componentPreUpdate( prevInputs );
       return null;
@@ -131,8 +129,7 @@ abstract class React4j_ParameterizedOnPropChange extends ParameterizedOnPropChan
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

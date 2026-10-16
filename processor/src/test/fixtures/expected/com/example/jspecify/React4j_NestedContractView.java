@@ -5,6 +5,7 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
@@ -44,31 +45,32 @@ abstract class React4j_NestedContractView extends NestedContractView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "NestedContract" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "NestedContract" );
     }
     return viewConstructor;
   }
 
   @Override
   List<@Nullable String> data() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.data ).cast();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.data ) ).cast();
   }
 
   @Override
   NestedContractBase.Box<@Nullable String>.Item<@Nullable String> nested() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.nested ).cast();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.nested ) ).cast();
   }
 
   @NullUnmarked
   @Override
   @NonNull List<String> unmarked() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.unmarked ).cast();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.unmarked ) ).cast();
   }
 
   @Override
   String @Nullable [] nullableArray() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.nullableArray ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.nullableArray ).cast() : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.nullableArray );
+      return null != value ? value.cast() : null;
     } else {
       return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.nullableArray ) );
     }
@@ -76,27 +78,27 @@ abstract class React4j_NestedContractView extends NestedContractView {
 
   @Override
   @Nullable String[] nullableElements() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.nullableElements ).cast();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.nullableElements ) ).cast();
   }
 
   @Override
   List<? extends @Nullable String> wildcard() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.wildcard ).cast();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.wildcard ) ).cast();
   }
 
   @Override
   List<? super @Nullable String> lowerWildcard() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.lowerWildcard ).cast();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.lowerWildcard ) ).cast();
   }
 
   @Override
   Object objectDefault() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.objectDefault ).cast();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.objectDefault ) ).cast();
   }
 
   @Override
   List<List<@Nullable String>> defaulted() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.defaulted ).cast();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.defaulted ) ).cast();
   }
 
   private void $$react4j$$_validateInputValues(final JsPropertyMap<@Nullable Object> inputs) {
@@ -119,7 +121,7 @@ abstract class React4j_NestedContractView extends NestedContractView {
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if ( React.shouldValidateInputValues() ) {
       $$react4j$$_validateInputValues( nextInputs );
@@ -156,12 +158,12 @@ abstract class React4j_NestedContractView extends NestedContractView {
   }
 
   private void $$react4j$$_componentPreUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> prevInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if ( null != prevInputs ) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
       final boolean data = !Js.isTripleEqual( inputs.get( Inputs.data ), prevInputs.get( Inputs.data ) );
       if ( data ) {
-        changed( inputs.getAsAny( Inputs.data ).cast() );
+        changed( Objects.requireNonNull( inputs.getAsAny( Inputs.data ) ).cast() );
       }
     }
   }
@@ -170,8 +172,7 @@ abstract class React4j_NestedContractView extends NestedContractView {
     ((Arez_React4j_NestedContractView) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -207,11 +208,10 @@ abstract class React4j_NestedContractView extends NestedContractView {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
-    @NonNull
     private final React4j_NestedContractView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_NestedContractView( this );
       if ( React.shouldValidateInputValues() ) {
@@ -226,8 +226,8 @@ abstract class React4j_NestedContractView extends NestedContractView {
     }
 
     @Override
-    @Nullable
-    public final Object getSnapshotBeforeUpdate(final JsPropertyMap<@Nullable Object> prevInputs,
+    public final @Nullable Object getSnapshotBeforeUpdate(
+        final JsPropertyMap<@Nullable Object> prevInputs,
         final JsPropertyMap<@Nullable Object> prevState) {
       view.$$react4j$$_componentPreUpdate( prevInputs );
       return null;
@@ -239,8 +239,7 @@ abstract class React4j_NestedContractView extends NestedContractView {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

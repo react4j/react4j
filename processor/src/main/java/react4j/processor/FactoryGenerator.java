@@ -9,6 +9,7 @@ import com.palantir.javapoet.TypeSpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -175,6 +176,11 @@ final class FactoryGenerator {
         block.endControlFlow();
         method.addCode(block.build());
         method.addStatement("assert null != c_factory");
+        final var constructor =
+                ElementsUtil.getConstructors(descriptor.getElement()).get(0);
+        final var parameterNames = constructor.getParameters().stream()
+                .map(parameter -> parameter.getSimpleName().toString())
+                .toList();
         for (final var input : descriptor.getConstructorInputs()) {
             final var parameter = input.getParameter();
             assert null != parameter;
@@ -184,15 +190,17 @@ final class FactoryGenerator {
                 final var extraction = CodeBlock.builder();
                 extraction.addStatement("$T $N", input.getTypeName().withoutAnnotations(), localName);
                 extraction.beginControlFlow("if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME);
+                var rawName = "raw$" + localName;
+                while (parameterNames.contains(rawName)) {
+                    rawName += "$";
+                }
                 extraction.addStatement(
-                        "$N = null != view.requireInputs().getAsAny( $T.Inputs.$N ) ? "
-                                + "view.requireInputs().getAsAny( $T.Inputs.$N ).$N() : null",
-                        localName,
+                        "final var $N = view.requireInputs().getAsAny( $T.Inputs.$N )",
+                        rawName,
                         descriptor.getEnhancedClassName(),
-                        input.getConstantName(),
-                        descriptor.getEnhancedClassName(),
-                        input.getConstantName(),
-                        convertMethodName);
+                        input.getConstantName());
+                extraction.addStatement(
+                        "$N = null != $N ? $N.$N() : null", localName, rawName, rawName, convertMethodName);
                 extraction.nextControlFlow("else");
                 extraction.addStatement(
                         "$N = $T.uncheckedCast( view.requireInputs().getAsAny( $T.Inputs.$N ) )",
@@ -204,17 +212,16 @@ final class FactoryGenerator {
                 method.addCode(extraction.build());
             } else {
                 method.addStatement(
-                        "final $T $N = view.requireInputs().getAsAny( $T.Inputs.$N ).$N()",
+                        "final $T $N = $T.requireNonNull( view.requireInputs().getAsAny( $T.Inputs.$N ) ).$N()",
                         input.getTypeName().withoutAnnotations(),
                         localName,
+                        Objects.class,
                         descriptor.getEnhancedClassName(),
                         input.getConstantName(),
                         convertMethodName);
             }
         }
 
-        final var constructor =
-                ElementsUtil.getConstructors(descriptor.getElement()).get(0);
         final var args = new StringBuilder("return new $T( view");
         final var params = new ArrayList<>();
         params.add(descriptor.getArezClassName());

@@ -1,5 +1,6 @@
 package react4j;
 
+import java.util.Objects;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -58,8 +59,8 @@ public final class Context<T extends @Nullable Object> {
         private final ReactElement _element;
 
         private ProviderBuilder(final Context<ST> context) {
-            _element = ReactElement.createContextElement(
-                    Js.<JsPropertyMap<@Nullable Object>>cast(context).get("Provider"));
+            _element = ReactElement.createContextElement(Objects.requireNonNull(
+                    Js.<JsPropertyMap<@Nullable Object>>cast(context).get("Provider")));
         }
 
         /**
@@ -113,8 +114,8 @@ public final class Context<T extends @Nullable Object> {
         private final ReactElement _element;
 
         private ConsumerBuilder(final Context<ST> context) {
-            _element = ReactElement.createContextElement(
-                    Js.<JsPropertyMap<@Nullable Object>>cast(context).get("Consumer"));
+            _element = ReactElement.createContextElement(Objects.requireNonNull(
+                    Js.<JsPropertyMap<@Nullable Object>>cast(context).get("Consumer")));
         }
 
         /**

@@ -41,7 +41,8 @@ abstract class React4j_UnmarkedConstructorView extends UnmarkedConstructorView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "UnmarkedConstructor");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "UnmarkedConstructor");
     }
     return viewConstructor;
   }
@@ -70,11 +71,10 @@ abstract class React4j_UnmarkedConstructorView extends UnmarkedConstructorView {
 
   private static final class NativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_UnmarkedConstructorView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       assert null != inputs;
       view = React4j_UnmarkedConstructorViewFactory.create(this);
@@ -91,8 +91,7 @@ abstract class React4j_UnmarkedConstructorView extends UnmarkedConstructorView {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

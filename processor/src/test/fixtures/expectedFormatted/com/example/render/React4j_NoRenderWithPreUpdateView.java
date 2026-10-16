@@ -7,7 +7,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -32,7 +31,8 @@ abstract class React4j_NoRenderWithPreUpdateView extends NoRenderWithPreUpdateVi
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "NoRenderWithPreUpdate");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "NoRenderWithPreUpdate");
     }
     return viewConstructor;
   }
@@ -53,11 +53,10 @@ abstract class React4j_NoRenderWithPreUpdateView extends NoRenderWithPreUpdateVi
 
   private static final class NativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
-    @NonNull
     private final React4j_NoRenderWithPreUpdateView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_NoRenderWithPreUpdateView(this);
     }
@@ -68,8 +67,7 @@ abstract class React4j_NoRenderWithPreUpdateView extends NoRenderWithPreUpdateVi
     }
 
     @Override
-    @Nullable
-    public final Object getSnapshotBeforeUpdate(
+    public final @Nullable Object getSnapshotBeforeUpdate(
         final JsPropertyMap<@Nullable Object> prevInputs,
         final JsPropertyMap<@Nullable Object> prevState) {
       view.$$react4j$$_componentPreUpdate();
@@ -82,8 +80,7 @@ abstract class React4j_NoRenderWithPreUpdateView extends NoRenderWithPreUpdateVi
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return null;
     }
   }

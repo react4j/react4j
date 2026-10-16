@@ -14,6 +14,7 @@ import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
 import arez.annotations.SuppressArezWarnings;
 import arez.component.ComponentObservable;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
@@ -61,7 +62,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
             ? NativeView::new
             : LiteNativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor)
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
           .set("displayName", "MaybeTrackingHasComponentDependencyField");
     }
     return viewConstructor;
@@ -79,7 +80,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if (React.shouldValidateInputValues()) {
       $$react4j$$_validateInputValues(nextInputs);
@@ -104,7 +105,6 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
-  @Nullable
   @Observe(
       name = "render",
       priority = Priority.LOW,
@@ -112,6 +112,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
       depType = DepType.AREZ_OR_NONE,
       observeLowerPriorityDependencies = true,
       reportResult = false)
+  @Nullable
   ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed(this);
@@ -169,16 +170,16 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
 
   private static final class LiteNativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nullable
-    private final React4j_MaybeTrackingHasComponentDependencyFieldView view;
+    private final @Nullable React4j_MaybeTrackingHasComponentDependencyFieldView view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    LiteNativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       assert null != inputs;
       final MaybeTrackingHasComponentDependencyFieldView.Model model =
-          inputs.getAsAny(Inputs.model).cast();
-      view = Disposable.isDisposed(inputs.getAsAny(Inputs.model).cast())
+          Objects.requireNonNull(inputs.getAsAny(Inputs.model)).cast();
+      view = Disposable.isDisposed(
+              Objects.requireNonNull(inputs.getAsAny(Inputs.model)).cast())
           ? null
           : new Arez_React4j_MaybeTrackingHasComponentDependencyFieldView(this, model);
       if (React.shouldValidateInputValues()) {
@@ -205,8 +206,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       if (null != view && Disposable.isNotDisposed(view)) {
         return view.$$react4j$$_render();
       } else {
@@ -220,16 +220,16 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
           OnComponentDidUpdate,
           OnShouldComponentUpdate,
           OnComponentWillUnmount {
-    @Nullable
-    private final React4j_MaybeTrackingHasComponentDependencyFieldView view;
+    private final @Nullable React4j_MaybeTrackingHasComponentDependencyFieldView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       assert null != inputs;
       final MaybeTrackingHasComponentDependencyFieldView.Model model =
-          inputs.getAsAny(Inputs.model).cast();
-      view = Disposable.isDisposed(inputs.getAsAny(Inputs.model).cast())
+          Objects.requireNonNull(inputs.getAsAny(Inputs.model)).cast();
+      view = Disposable.isDisposed(
+              Objects.requireNonNull(inputs.getAsAny(Inputs.model)).cast())
           ? null
           : new Arez_React4j_MaybeTrackingHasComponentDependencyFieldView(this, model);
       if (React.shouldValidateInputValues()) {
@@ -270,8 +270,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       if (null != view && Disposable.isNotDisposed(view)) {
         return view.$$react4j$$_render();
       } else {

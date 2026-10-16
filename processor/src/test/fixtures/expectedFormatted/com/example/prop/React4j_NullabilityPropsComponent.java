@@ -4,11 +4,11 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
@@ -37,23 +37,24 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "NullabilityPropsComponent");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "NullabilityPropsComponent");
     }
     return viewConstructor;
   }
 
   @Override
   String getMyProp() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp).asString();
+    return Objects.requireNonNull($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp))
+        .asString();
   }
 
   @Override
   @Nullable
   String getMyProp2() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp2)
-          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp2).asString()
-          : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp2);
+      return null != value ? value.asString() : null;
     } else {
       return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp2));
     }
@@ -71,7 +72,7 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if (React.shouldValidateInputValues()) {
       $$react4j$$_validateInputValues(nextInputs);
@@ -112,11 +113,10 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
 
   private static final class NativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_NullabilityPropsComponent view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_NullabilityPropsComponent(this);
       if (React.shouldValidateInputValues()) {
@@ -136,8 +136,7 @@ abstract class React4j_NullabilityPropsComponent extends NullabilityPropsCompone
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

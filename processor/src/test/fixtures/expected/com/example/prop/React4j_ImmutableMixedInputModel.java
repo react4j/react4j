@@ -8,7 +8,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -42,7 +41,7 @@ abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutableMixedInputModel" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "ImmutableMixedInputModel" );
     }
     return viewConstructor;
   }
@@ -50,14 +49,15 @@ abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel
   @Override
   @Nullable String getMyMutableProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myMutableProp ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myMutableProp ).asString() : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myMutableProp );
+      return null != value ? value.asString() : null;
     } else {
       return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myMutableProp ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     if ( !Js.isTripleEqual( inputs.get( Inputs.myMutableProp ), nextInputs.get( Inputs.myMutableProp ) ) ) {
@@ -70,8 +70,7 @@ abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel
     ((Arez_React4j_ImmutableMixedInputModel) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -93,16 +92,16 @@ abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_ImmutableMixedInputModel view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       assert null != inputs;
       String myImmutableProp;
       if ( React.shouldCheckInvariants() ) {
-        myImmutableProp = null != inputs.getAsAny( Inputs.myImmutableProp ) ? inputs.getAsAny( Inputs.myImmutableProp ).asString() : null;
+        final var raw$myImmutableProp = inputs.getAsAny( Inputs.myImmutableProp );
+        myImmutableProp = null != raw$myImmutableProp ? raw$myImmutableProp.asString() : null;
       } else {
         myImmutableProp = Js.uncheckedCast( inputs.getAsAny( Inputs.myImmutableProp ) );
       }
@@ -120,8 +119,7 @@ abstract class React4j_ImmutableMixedInputModel extends ImmutableMixedInputModel
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

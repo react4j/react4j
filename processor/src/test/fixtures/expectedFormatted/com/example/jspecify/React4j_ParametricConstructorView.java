@@ -4,11 +4,11 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -36,7 +36,8 @@ abstract class React4j_ParametricConstructorView<T extends @Nullable Object>
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "ParametricConstructor");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "ParametricConstructor");
     }
     return viewConstructor;
   }
@@ -66,14 +67,13 @@ abstract class React4j_ParametricConstructorView<T extends @Nullable Object>
   private static final class NativeView<T extends @Nullable Object>
       extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_ParametricConstructorView<T> view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       assert null != inputs;
-      final T value = inputs.getAsAny(Inputs.value).cast();
+      final T value = Objects.requireNonNull(inputs.getAsAny(Inputs.value)).cast();
       view = new Arez_React4j_ParametricConstructorView<T>(this, value);
     }
 
@@ -88,8 +88,7 @@ abstract class React4j_ParametricConstructorView<T extends @Nullable Object>
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

@@ -13,6 +13,7 @@ import arez.annotations.Observe;
 import arez.annotations.ObserverRef;
 import arez.annotations.Priority;
 import arez.annotations.SuppressArezWarnings;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
@@ -57,7 +58,7 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "NonObservableComponentDependency" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "NonObservableComponentDependency" );
     }
     return viewConstructor;
   }
@@ -71,7 +72,7 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if ( React.shouldValidateInputValues() ) {
       $$react4j$$_validateInputValues( nextInputs );
@@ -96,7 +97,6 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
     $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
-  @Nullable
   @Observe(
       name = "render",
       priority = Priority.LOW,
@@ -105,7 +105,7 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
       observeLowerPriorityDependencies = true,
       reportResult = false
   )
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
     SchedulerUtil.pauseUntilRenderLoopComplete();
@@ -165,15 +165,14 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nullable
-    private final React4j_NonObservableComponentDependencyView view;
+    private final @Nullable React4j_NonObservableComponentDependencyView view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    LiteNativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       assert null != inputs;
-      final NonObservableComponentDependencyView.Model model = inputs.getAsAny( Inputs.model ).cast();
-      view = Disposable.isDisposed( inputs.getAsAny( Inputs.model ).cast() ) ? null : new Arez_React4j_NonObservableComponentDependencyView( this, model );
+      final NonObservableComponentDependencyView.Model model = Objects.requireNonNull( inputs.getAsAny( Inputs.model ) ).cast();
+      view = Disposable.isDisposed( Objects.requireNonNull( inputs.getAsAny( Inputs.model ) ).cast() ) ? null : new Arez_React4j_NonObservableComponentDependencyView( this, model );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
         React4j_NonObservableComponentDependencyView.$$react4j$$_validateInputValues( inputs );
@@ -197,8 +196,7 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       if ( null != view && Disposable.isNotDisposed( view ) ) {
         return view.$$react4j$$_render();
       } else {
@@ -211,15 +209,14 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
       OnComponentDidUpdate,
       OnShouldComponentUpdate,
       OnComponentWillUnmount {
-    @Nullable
-    private final React4j_NonObservableComponentDependencyView view;
+    private final @Nullable React4j_NonObservableComponentDependencyView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       assert null != inputs;
-      final NonObservableComponentDependencyView.Model model = inputs.getAsAny( Inputs.model ).cast();
-      view = Disposable.isDisposed( inputs.getAsAny( Inputs.model ).cast() ) ? null : new Arez_React4j_NonObservableComponentDependencyView( this, model );
+      final NonObservableComponentDependencyView.Model model = Objects.requireNonNull( inputs.getAsAny( Inputs.model ) ).cast();
+      view = Disposable.isDisposed( Objects.requireNonNull( inputs.getAsAny( Inputs.model ) ).cast() ) ? null : new Arez_React4j_NonObservableComponentDependencyView( this, model );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
         React4j_NonObservableComponentDependencyView.$$react4j$$_validateInputValues( inputs );
@@ -257,8 +254,7 @@ abstract class React4j_NonObservableComponentDependencyView extends NonObservabl
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       if ( null != view && Disposable.isNotDisposed( view ) ) {
         return view.$$react4j$$_render();
       } else {

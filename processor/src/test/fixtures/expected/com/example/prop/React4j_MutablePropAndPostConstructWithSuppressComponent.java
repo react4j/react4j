@@ -9,7 +9,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
@@ -43,7 +42,7 @@ abstract class React4j_MutablePropAndPostConstructWithSuppressComponent extends 
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "MutablePropAndPostConstructWithSuppressComponent" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "MutablePropAndPostConstructWithSuppressComponent" );
     }
     return viewConstructor;
   }
@@ -57,14 +56,15 @@ abstract class React4j_MutablePropAndPostConstructWithSuppressComponent extends 
       Guards.apiInvariant( () -> $$react4j$$_isReady(), () -> "The view '" + this + "' accessed the input named 'myProp' before the view is ready (possibly in a @PostConstruct annotated method?) and does not have a @OnInputChange annotated method to cover the input and reflect changes of the input onto the view. This is considered a likely bug and the @Input should be made immutable or an @OnInputChange method added to cover the input. This warning can be suppressed by annotating the element with @SuppressWarnings( \"React4j:MutableInputAccessedInPostConstruct\" ) or @SuppressReact4jWarnings( \"React4j:MutableInputAccessedInPostConstruct\" ) to the @Input annotated method." );
     }
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp ).asString() : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp );
+      return null != value ? value.asString() : null;
     } else {
       return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     if ( !Js.isTripleEqual( inputs.get( Inputs.myProp ), nextInputs.get( Inputs.myProp ) ) ) {
@@ -77,8 +77,7 @@ abstract class React4j_MutablePropAndPostConstructWithSuppressComponent extends 
     ((Arez_React4j_MutablePropAndPostConstructWithSuppressComponent) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -98,11 +97,10 @@ abstract class React4j_MutablePropAndPostConstructWithSuppressComponent extends 
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_MutablePropAndPostConstructWithSuppressComponent view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_MutablePropAndPostConstructWithSuppressComponent( this );
     }
@@ -118,8 +116,7 @@ abstract class React4j_MutablePropAndPostConstructWithSuppressComponent extends 
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

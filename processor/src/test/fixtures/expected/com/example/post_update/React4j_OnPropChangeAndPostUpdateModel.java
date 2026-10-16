@@ -4,11 +4,11 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
@@ -43,14 +43,14 @@ abstract class React4j_OnPropChangeAndPostUpdateModel extends OnPropChangeAndPos
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "OnPropChangeAndPostUpdateModel" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "OnPropChangeAndPostUpdateModel" );
     }
     return viewConstructor;
   }
 
   @Override
   int getMyProp() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp ).asInt();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp ) ).asInt();
   }
 
   private static void $$react4j$$_validateInputValues(
@@ -62,7 +62,7 @@ abstract class React4j_OnPropChangeAndPostUpdateModel extends OnPropChangeAndPos
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if ( React.shouldValidateInputValues() ) {
       $$react4j$$_validateInputValues( nextInputs );
@@ -75,12 +75,12 @@ abstract class React4j_OnPropChangeAndPostUpdateModel extends OnPropChangeAndPos
   }
 
   private void $$react4j$$_componentPreUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> prevInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if ( null != prevInputs ) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
       final boolean myProp = !Js.isTripleEqual( inputs.get( Inputs.myProp ), prevInputs.get( Inputs.myProp ) );
       if ( myProp ) {
-        onMyPropChange( inputs.getAsAny( Inputs.myProp ).asInt() );
+        onMyPropChange( Objects.requireNonNull( inputs.getAsAny( Inputs.myProp ) ).asInt() );
       }
     }
   }
@@ -93,8 +93,7 @@ abstract class React4j_OnPropChangeAndPostUpdateModel extends OnPropChangeAndPos
     ((Arez_React4j_OnPropChangeAndPostUpdateModel) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -117,11 +116,10 @@ abstract class React4j_OnPropChangeAndPostUpdateModel extends OnPropChangeAndPos
       OnShouldComponentUpdate,
       OnComponentWillUnmount,
       OnGetSnapshotBeforeUpdate {
-    @NonNull
     private final React4j_OnPropChangeAndPostUpdateModel view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_OnPropChangeAndPostUpdateModel( this );
       if ( React.shouldValidateInputValues() ) {
@@ -136,8 +134,8 @@ abstract class React4j_OnPropChangeAndPostUpdateModel extends OnPropChangeAndPos
     }
 
     @Override
-    @Nullable
-    public final Object getSnapshotBeforeUpdate(final JsPropertyMap<@Nullable Object> prevInputs,
+    public final @Nullable Object getSnapshotBeforeUpdate(
+        final JsPropertyMap<@Nullable Object> prevInputs,
         final JsPropertyMap<@Nullable Object> prevState) {
       view.$$react4j$$_componentPreUpdate( prevInputs );
       return null;
@@ -154,8 +152,7 @@ abstract class React4j_OnPropChangeAndPostUpdateModel extends OnPropChangeAndPos
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

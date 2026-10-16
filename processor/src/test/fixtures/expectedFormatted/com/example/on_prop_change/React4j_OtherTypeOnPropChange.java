@@ -9,7 +9,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -38,7 +37,8 @@ abstract class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "OtherTypeOnPropChange");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "OtherTypeOnPropChange");
     }
     return viewConstructor;
   }
@@ -47,16 +47,15 @@ abstract class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
   @Nullable
   BitSet getMyProp() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp)
-          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp).cast()
-          : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp);
+      return null != value ? value.cast() : null;
     } else {
       return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp));
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     if (!Js.isTripleEqual(inputs.get(Inputs.myProp), nextInputs.get(Inputs.myProp))) {
@@ -66,7 +65,7 @@ abstract class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
   }
 
   private void $$react4j$$_componentPreUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> prevInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if (null != prevInputs) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
       final boolean myProp =
@@ -101,11 +100,10 @@ abstract class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
 
   private static final class NativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
-    @NonNull
     private final React4j_OtherTypeOnPropChange view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_OtherTypeOnPropChange(this);
     }
@@ -116,8 +114,7 @@ abstract class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
     }
 
     @Override
-    @Nullable
-    public final Object getSnapshotBeforeUpdate(
+    public final @Nullable Object getSnapshotBeforeUpdate(
         final JsPropertyMap<@Nullable Object> prevInputs,
         final JsPropertyMap<@Nullable Object> prevState) {
       view.$$react4j$$_componentPreUpdate(prevInputs);
@@ -130,8 +127,7 @@ abstract class React4j_OtherTypeOnPropChange extends OtherTypeOnPropChange {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

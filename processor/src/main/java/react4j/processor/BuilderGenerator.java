@@ -13,6 +13,7 @@ import com.palantir.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -521,17 +522,23 @@ final class BuilderGenerator {
                 } else if (ImmutableInputKeyStrategy.TO_STRING == strategy) {
                     final var inputType = input.getType();
                     final var kind = inputType.getKind();
+                    final var value = kind.isPrimitive()
+                            ? "$T.requireNonNull( inputs.get( $T.Inputs.$N ) )"
+                            : "inputs.get( $T.Inputs.$N )";
                     if (TypeKind.LONG == kind
                             || TypeKind.INT == kind
                             || TypeKind.SHORT == kind
                             || TypeKind.BYTE == kind
                             || TypeKind.FLOAT == kind) {
-                        sb.append("$T.valueOf( ($T) (double) inputs.get( $T.Inputs.$N ) )");
+                        sb.append("$T.valueOf( ($T) (double) " + value + " )");
                     } else {
-                        sb.append("$T.valueOf( ($T) inputs.get( $T.Inputs.$N ) )");
+                        sb.append("$T.valueOf( ($T) " + value + " )");
                     }
                     params.add(String.class);
                     params.add(inputType);
+                    if (kind.isPrimitive()) {
+                        params.add(Objects.class);
+                    }
                     params.add(descriptor.getEnhancedClassName());
                     params.add(input.getConstantName());
                 } else if (ImmutableInputKeyStrategy.DYNAMIC == strategy) {

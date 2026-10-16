@@ -8,7 +8,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -34,7 +33,8 @@ abstract class React4j_BasicPostMountOrUpdateModel extends BasicPostMountOrUpdat
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "BasicPostMountOrUpdateModel");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "BasicPostMountOrUpdateModel");
     }
     return viewConstructor;
   }
@@ -68,11 +68,10 @@ abstract class React4j_BasicPostMountOrUpdateModel extends BasicPostMountOrUpdat
           OnComponentDidUpdate,
           OnShouldComponentUpdate,
           OnComponentWillUnmount {
-    @NonNull
     private final React4j_BasicPostMountOrUpdateModel view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_BasicPostMountOrUpdateModel(this);
     }
@@ -98,8 +97,7 @@ abstract class React4j_BasicPostMountOrUpdateModel extends BasicPostMountOrUpdat
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

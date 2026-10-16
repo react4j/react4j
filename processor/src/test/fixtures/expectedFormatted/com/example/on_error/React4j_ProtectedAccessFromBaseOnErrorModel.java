@@ -8,7 +8,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.JsError;
@@ -37,7 +36,8 @@ abstract class React4j_ProtectedAccessFromBaseOnErrorModel
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "ProtectedAccessFromBaseOnErrorModel");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "ProtectedAccessFromBaseOnErrorModel");
     }
     return viewConstructor;
   }
@@ -60,11 +60,10 @@ abstract class React4j_ProtectedAccessFromBaseOnErrorModel
 
   private static final class NativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount, OnComponentDidCatch {
-    @NonNull
     private final React4j_ProtectedAccessFromBaseOnErrorModel view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_ProtectedAccessFromBaseOnErrorModel(this);
     }
@@ -85,8 +84,7 @@ abstract class React4j_ProtectedAccessFromBaseOnErrorModel
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

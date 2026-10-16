@@ -8,7 +8,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.JsError;
@@ -44,7 +43,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "OverrideLifecycleMethodsComponent" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "OverrideLifecycleMethodsComponent" );
     }
     return viewConstructor;
   }
@@ -67,8 +66,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     ((Arez_React4j_OverrideLifecycleMethodsComponent) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -86,11 +84,10 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
       OnComponentWillUnmount,
       OnGetSnapshotBeforeUpdate,
       OnComponentDidCatch {
-    @NonNull
     private final React4j_OverrideLifecycleMethodsComponent view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_OverrideLifecycleMethodsComponent( this );
     }
@@ -106,8 +103,8 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     }
 
     @Override
-    @Nullable
-    public final Object getSnapshotBeforeUpdate(final JsPropertyMap<@Nullable Object> prevInputs,
+    public final @Nullable Object getSnapshotBeforeUpdate(
+        final JsPropertyMap<@Nullable Object> prevInputs,
         final JsPropertyMap<@Nullable Object> prevState) {
       view.$$react4j$$_componentPreUpdate();
       return null;
@@ -129,8 +126,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

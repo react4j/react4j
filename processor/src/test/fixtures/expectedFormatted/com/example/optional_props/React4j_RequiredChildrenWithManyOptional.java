@@ -8,7 +8,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -37,7 +36,8 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "RequiredChildrenWithManyOptional");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "RequiredChildrenWithManyOptional");
     }
     return viewConstructor;
   }
@@ -46,9 +46,8 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   @Nullable
   String getMyPropA() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropA)
-          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropA).asString()
-          : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropA);
+      return null != value ? value.asString() : null;
     } else {
       return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropA));
     }
@@ -58,9 +57,8 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   @Nullable
   String getMyPropB() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropB)
-          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropB).asString()
-          : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropB);
+      return null != value ? value.asString() : null;
     } else {
       return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropB));
     }
@@ -70,9 +68,8 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   @Nullable
   String getMyPropC() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropC)
-          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropC).asString()
-          : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropC);
+      return null != value ? value.asString() : null;
     } else {
       return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropC));
     }
@@ -82,9 +79,8 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   @Nullable
   String getMyPropD() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropD)
-          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropD).asString()
-          : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropD);
+      return null != value ? value.asString() : null;
     } else {
       return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myPropD));
     }
@@ -93,16 +89,15 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
   @Override
   ReactNode @Nullable [] getChildren() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.children)
-          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.children).cast()
-          : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.children);
+      return null != value ? value.cast() : null;
     } else {
       return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.children));
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     if (!Js.isTripleEqual(inputs.get(Inputs.myPropA), nextInputs.get(Inputs.myPropA))) {
@@ -155,11 +150,10 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
 
   private static final class NativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_RequiredChildrenWithManyOptional view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_RequiredChildrenWithManyOptional(this);
     }
@@ -175,8 +169,7 @@ abstract class React4j_RequiredChildrenWithManyOptional extends RequiredChildren
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

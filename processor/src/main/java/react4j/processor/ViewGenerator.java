@@ -13,6 +13,7 @@ import com.palantir.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -422,13 +423,10 @@ final class ViewGenerator {
             final var block = CodeBlock.builder();
             block.beginControlFlow("if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME);
             block.addStatement(
-                    "return null != $N.requireInputs().getAsAny( Inputs.$N ) ? "
-                            + "$N.requireInputs().getAsAny( Inputs.$N ).$N() : null",
+                    "final var value = $N.requireInputs().getAsAny( Inputs.$N )",
                     NATIVE_VIEW_FIELD,
-                    input.getConstantName(),
-                    NATIVE_VIEW_FIELD,
-                    input.getConstantName(),
-                    convertMethodName);
+                    input.getConstantName());
+            block.addStatement("return null != value ? value.$N() : null", convertMethodName);
             block.nextControlFlow("else");
             block.addStatement(
                     "return $T.uncheckedCast( $N.requireInputs().getAsAny( Inputs.$N ) )",
@@ -439,7 +437,8 @@ final class ViewGenerator {
             method.addCode(block.build());
         } else {
             method.addStatement(
-                    "return $N.requireInputs().getAsAny( Inputs.$N ).$N()",
+                    "return $T.requireNonNull( $N.requireInputs().getAsAny( Inputs.$N ) ).$N()",
+                    Objects.class,
                     NATIVE_VIEW_FIELD,
                     input.getConstantName(),
                     convertMethodName);
@@ -532,7 +531,8 @@ final class ViewGenerator {
                     params.add(JS_CLASSNAME);
                     params.add(input.getConstantName());
                 } else {
-                    sb.append("inputs.getAsAny( Inputs.$N ).$N()");
+                    sb.append("$T.requireNonNull( inputs.getAsAny( Inputs.$N ) ).$N()");
+                    params.add(Objects.class);
                     params.add(input.getConstantName());
                     params.add(convertMethodName);
                 }
@@ -570,8 +570,8 @@ final class ViewGenerator {
     private static MethodSpec.Builder buildShouldComponentUpdate(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder(SHOULD_COMPONENT_UPDATE_METHOD)
                 .returns(TypeName.BOOLEAN)
-                .addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "nextInputs", Modifier.FINAL)
-                        .addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME)
+                .addParameter(ParameterSpec.builder(
+                                Nullability.nullable(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME), "nextInputs", Modifier.FINAL)
                         .build());
 
         final var observableInputs = descriptor.getObservableInputs();
@@ -662,8 +662,8 @@ final class ViewGenerator {
         final var method = MethodSpec.methodBuilder(COMPONENT_PRE_UPDATE_METHOD).addModifiers(Modifier.PRIVATE);
         final var hasPreUpdateOnInputChange = descriptor.hasPreUpdateOnInputChange();
         if (hasPreUpdateOnInputChange) {
-            method.addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL)
-                    .addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME)
+            method.addParameter(ParameterSpec.builder(
+                            Nullability.nullable(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME), "prevInputs", Modifier.FINAL)
                     .build());
             final var block = CodeBlock.builder();
             block.beginControlFlow("if ( null != prevInputs )");
@@ -684,8 +684,8 @@ final class ViewGenerator {
         final var method = MethodSpec.methodBuilder(COMPONENT_DID_UPDATE_METHOD).addModifiers(Modifier.PRIVATE);
 
         if (descriptor.hasPostUpdateOnInputChange()) {
-            method.addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL)
-                    .addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME)
+            method.addParameter(ParameterSpec.builder(
+                            Nullability.nullable(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME), "prevInputs", Modifier.FINAL)
                     .build());
             final var block = CodeBlock.builder();
             block.beginControlFlow("if ( null != prevInputs )");
@@ -732,9 +732,7 @@ final class ViewGenerator {
     private static MethodSpec.Builder buildRender(final ViewDescriptor descriptor) {
         final var render = descriptor.hasRender() ? descriptor.getRender() : null;
 
-        final var method = MethodSpec.methodBuilder(RENDER_METHOD)
-                .addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME)
-                .returns(REACT_NODE_CLASSNAME);
+        final var method = MethodSpec.methodBuilder(RENDER_METHOD).returns(Nullability.nullable(REACT_NODE_CLASSNAME));
 
         if (descriptor.trackRender()) {
             final AnnotationSpec.Builder observe = AnnotationSpec.builder(OBSERVE_ANNOTATION_CLASSNAME)
@@ -1031,8 +1029,9 @@ final class ViewGenerator {
         final var codeBlock = CodeBlock.builder();
         codeBlock.beginControlFlow("if ( $T.enableViewNames() )", REACT_CLASSNAME);
         codeBlock.addStatement(
-                "$T.asPropertyMap( viewConstructor ).set( \"displayName\", $S )",
+                "$T.<$T>uncheckedCast( viewConstructor ).set( \"displayName\", $S )",
                 JS_CLASSNAME,
+                JS_PROPERTY_MAP_T_OBJECT_CLASSNAME,
                 descriptor.getDisplayName());
         codeBlock.endControlFlow();
 
@@ -1105,11 +1104,11 @@ final class ViewGenerator {
                 .filter(InputDescriptor::isDisposable)
                 .toList();
 
-        builder.addField(FieldSpec.builder(viewFieldType, VIEW_FIELD, Modifier.PRIVATE, Modifier.FINAL)
-                .addAnnotation(
-                        disposableInputs.isEmpty()
-                                ? ClassName.get("org.jspecify.annotations", "NonNull")
-                                : GeneratorUtil.NULLABLE_CLASSNAME)
+        builder.addField(FieldSpec.builder(
+                        disposableInputs.isEmpty() ? viewFieldType : Nullability.nullable(viewFieldType),
+                        VIEW_FIELD,
+                        Modifier.PRIVATE,
+                        Modifier.FINAL)
                 .build());
 
         if (lite) {
@@ -1148,8 +1147,8 @@ final class ViewGenerator {
 
         // build the constructor
         {
-            final var inputs = ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "inputs", Modifier.FINAL)
-                    .addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME);
+            final var inputs = ParameterSpec.builder(
+                    Nullability.nullable(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME), "inputs", Modifier.FINAL);
             final var method = MethodSpec.constructorBuilder()
                     .addParameter(inputs.build())
                     .addAnnotation(JS_CONSTRUCTOR_CLASSNAME);
@@ -1171,8 +1170,9 @@ final class ViewGenerator {
                     params.add(JS_CLASSNAME);
                     params.add(input.getConstantName());
                 } else {
-                    prefix.append("$T.isDisposed( inputs.getAsAny( Inputs.$N ).$N() )");
+                    prefix.append("$T.isDisposed( $T.requireNonNull( inputs.getAsAny( Inputs.$N ) ).$N() )");
                     params.add(DISPOSABLE_CLASSNAME);
+                    params.add(Objects.class);
                     params.add(input.getConstantName());
                     params.add(getConverter(input.getType(), input.getElement()));
                 }
@@ -1187,6 +1187,9 @@ final class ViewGenerator {
                 }
             } else {
                 final var infix = BuilderGenerator.asTypeArgumentsInfix(descriptor.getDeclaredType());
+                final var constructorInputNames = descriptor.getConstructorInputs().stream()
+                        .map(InputDescriptor::getName)
+                        .toList();
                 for (final var input : descriptor.getConstructorInputs()) {
                     final var localName = input.getName();
                     final var convertMethodName = getConverter(input.getType(), input.getElement());
@@ -1195,13 +1198,14 @@ final class ViewGenerator {
                         final var extraction = CodeBlock.builder();
                         extraction.addStatement("$T $N", input.getTypeName().withoutAnnotations(), localName);
                         extraction.beginControlFlow("if ( $T.shouldCheckInvariants() )", REACT_CLASSNAME);
+                        var rawName = "raw$" + localName;
+                        while (constructorInputNames.contains(rawName)) {
+                            rawName += "$";
+                        }
                         extraction.addStatement(
-                                "$N = null != inputs.getAsAny( Inputs.$N ) ? "
-                                        + "inputs.getAsAny( Inputs.$N ).$N() : null",
-                                localName,
-                                input.getConstantName(),
-                                input.getConstantName(),
-                                convertMethodName);
+                                "final var $N = inputs.getAsAny( Inputs.$N )", rawName, input.getConstantName());
+                        extraction.addStatement(
+                                "$N = null != $N ? $N.$N() : null", localName, rawName, rawName, convertMethodName);
                         extraction.nextControlFlow("else");
                         extraction.addStatement(
                                 "$N = $T.uncheckedCast( inputs.getAsAny( Inputs.$N ) )",
@@ -1212,9 +1216,10 @@ final class ViewGenerator {
                         method.addCode(extraction.build());
                     } else {
                         method.addStatement(
-                                "final $T $N = inputs.getAsAny( Inputs.$N ).$N()",
+                                "final $T $N = $T.requireNonNull( inputs.getAsAny( Inputs.$N ) ).$N()",
                                 input.getTypeName().withoutAnnotations(),
                                 localName,
+                                Objects.class,
                                 input.getConstantName(),
                                 convertMethodName);
                     }
@@ -1300,9 +1305,8 @@ final class ViewGenerator {
     private static MethodSpec buildNativeRender(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder("render")
                 .addAnnotation(Override.class)
-                .addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME)
                 .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                .returns(REACT_NODE_CLASSNAME);
+                .returns(Nullability.nullable(REACT_NODE_CLASSNAME));
         if (descriptor.shouldGenerateRender()) {
             if (descriptor.hasDisposableInput()) {
                 final var block = CodeBlock.builder();
@@ -1367,9 +1371,8 @@ final class ViewGenerator {
     private static MethodSpec buildNativeViewPreUpdate(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder("getSnapshotBeforeUpdate")
                 .addAnnotation(Override.class)
-                .addAnnotation(GeneratorUtil.NULLABLE_CLASSNAME)
                 .addModifiers(Modifier.FINAL, Modifier.PUBLIC)
-                .returns(TypeName.get(Object.class))
+                .returns(Nullability.nullable(TypeName.get(Object.class)))
                 .addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevInputs", Modifier.FINAL)
                         .build())
                 .addParameter(ParameterSpec.builder(JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, "prevState", Modifier.FINAL)

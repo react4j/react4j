@@ -18,7 +18,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
@@ -57,7 +56,7 @@ abstract class React4j_TrackingInheritedAutoObserveMethodView extends TrackingIn
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "TrackingInheritedAutoObserveMethod" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "TrackingInheritedAutoObserveMethod" );
     }
     return viewConstructor;
   }
@@ -65,14 +64,15 @@ abstract class React4j_TrackingInheritedAutoObserveMethodView extends TrackingIn
   @Override
   TrackingInheritedAutoObserveMethodBase. @Nullable Model getModel() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.model ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.model ).cast() : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.model );
+      return null != value ? value.cast() : null;
     } else {
       return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.model ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     if ( !Js.isTripleEqual( inputs.get( Inputs.model ), nextInputs.get( Inputs.model ) ) ) {
@@ -98,7 +98,6 @@ abstract class React4j_TrackingInheritedAutoObserveMethodView extends TrackingIn
     $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
-  @Nullable
   @Observe(
       name = "render",
       priority = Priority.LOW,
@@ -107,7 +106,7 @@ abstract class React4j_TrackingInheritedAutoObserveMethodView extends TrackingIn
       observeLowerPriorityDependencies = true,
       reportResult = false
   )
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
     final TrackingInheritedAutoObserveMethodBase.Model $$react4jv$$_candidate0 = observedModel();
@@ -171,11 +170,10 @@ abstract class React4j_TrackingInheritedAutoObserveMethodView extends TrackingIn
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_TrackingInheritedAutoObserveMethodView view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    LiteNativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_TrackingInheritedAutoObserveMethodView( this );
     }
@@ -191,8 +189,7 @@ abstract class React4j_TrackingInheritedAutoObserveMethodView extends TrackingIn
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }
@@ -201,11 +198,10 @@ abstract class React4j_TrackingInheritedAutoObserveMethodView extends TrackingIn
       OnComponentDidUpdate,
       OnShouldComponentUpdate,
       OnComponentWillUnmount {
-    @NonNull
     private final React4j_TrackingInheritedAutoObserveMethodView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_TrackingInheritedAutoObserveMethodView( this );
     }
@@ -231,8 +227,7 @@ abstract class React4j_TrackingInheritedAutoObserveMethodView extends TrackingIn
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

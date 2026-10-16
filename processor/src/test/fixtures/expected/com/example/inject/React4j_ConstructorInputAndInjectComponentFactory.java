@@ -45,7 +45,8 @@ final class React4j_ConstructorInputAndInjectComponentFactory {
       assert null != c_factory;
       String myProp;
       if ( React.shouldCheckInvariants() ) {
-        myProp = null != view.requireInputs().getAsAny( React4j_ConstructorInputAndInjectComponent.Inputs.myProp ) ? view.requireInputs().getAsAny( React4j_ConstructorInputAndInjectComponent.Inputs.myProp ).asString() : null;
+        final var raw$myProp = view.requireInputs().getAsAny( React4j_ConstructorInputAndInjectComponent.Inputs.myProp );
+        myProp = null != raw$myProp ? raw$myProp.asString() : null;
       } else {
         myProp = Js.uncheckedCast( view.requireInputs().getAsAny( React4j_ConstructorInputAndInjectComponent.Inputs.myProp ) );
       }

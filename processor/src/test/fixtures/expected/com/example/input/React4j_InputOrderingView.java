@@ -4,11 +4,11 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
@@ -43,24 +43,24 @@ abstract class React4j_InputOrderingView extends InputOrderingView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "InputOrdering" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "InputOrdering" );
     }
     return viewConstructor;
   }
 
   @Override
   boolean paramB() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.paramB ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.paramB ) ).asBoolean();
   }
 
   @Override
   boolean paramC() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.paramC ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.paramC ) ).asBoolean();
   }
 
   @Override
   boolean paramA() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.paramA ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.paramA ) ).asBoolean();
   }
 
   private static void $$react4j$$_validateInputValues(
@@ -88,7 +88,7 @@ abstract class React4j_InputOrderingView extends InputOrderingView {
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if ( React.shouldValidateInputValues() ) {
       $$react4j$$_validateInputValues( nextInputs );
@@ -110,8 +110,7 @@ abstract class React4j_InputOrderingView extends InputOrderingView {
     ((Arez_React4j_InputOrderingView) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -139,15 +138,14 @@ abstract class React4j_InputOrderingView extends InputOrderingView {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_InputOrderingView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       assert null != inputs;
-      final boolean paramZ = inputs.getAsAny( Inputs.paramZ ).asBoolean();
-      final boolean paramP = inputs.getAsAny( Inputs.paramP ).asBoolean();
+      final boolean paramZ = Objects.requireNonNull( inputs.getAsAny( Inputs.paramZ ) ).asBoolean();
+      final boolean paramP = Objects.requireNonNull( inputs.getAsAny( Inputs.paramP ) ).asBoolean();
       view = new Arez_React4j_InputOrderingView( this, paramZ, paramP );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
@@ -166,8 +164,7 @@ abstract class React4j_InputOrderingView extends InputOrderingView {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

@@ -2,6 +2,7 @@ package com.example.prop;
 
 import arez.Disposable;
 import arez.component.Identifiable;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
@@ -103,8 +104,8 @@ final class ImmutablePropTypesBuilder {
     public final ReactNode build() {
       final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
       final Object $object$ = inputs.get(React4j_ImmutablePropTypes.Inputs.object);
-      _element.setKey(String.valueOf(
-              (int) (double) inputs.get(React4j_ImmutablePropTypes.Inputs.stillAnotherProp))
+      _element.setKey(String.valueOf((int) (double) Objects.requireNonNull(
+              inputs.get(React4j_ImmutablePropTypes.Inputs.stillAnotherProp)))
           + "-"
           + String.valueOf(Identifiable.<Object>getArezId((ImmutablePropTypes.MyComponent)
               inputs.get(React4j_ImmutablePropTypes.Inputs.myProp)))

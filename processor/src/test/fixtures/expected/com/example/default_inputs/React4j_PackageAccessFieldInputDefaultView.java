@@ -8,7 +8,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -41,7 +40,7 @@ abstract class React4j_PackageAccessFieldInputDefaultView extends PackageAccessF
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "PackageAccessFieldInputDefault" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "PackageAccessFieldInputDefault" );
     }
     return viewConstructor;
   }
@@ -49,14 +48,15 @@ abstract class React4j_PackageAccessFieldInputDefaultView extends PackageAccessF
   @Override
   @Nullable String getMyProp() {
     if ( React.shouldCheckInvariants() ) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp ) ? $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp ).asString() : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp );
+      return null != value ? value.asString() : null;
     } else {
       return Js.uncheckedCast( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.myProp ) );
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     if ( !Js.isTripleEqual( inputs.get( Inputs.myProp ), nextInputs.get( Inputs.myProp ) ) ) {
@@ -69,8 +69,7 @@ abstract class React4j_PackageAccessFieldInputDefaultView extends PackageAccessF
     ((Arez_React4j_PackageAccessFieldInputDefaultView) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -90,11 +89,10 @@ abstract class React4j_PackageAccessFieldInputDefaultView extends PackageAccessF
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_PackageAccessFieldInputDefaultView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_PackageAccessFieldInputDefaultView( this );
     }
@@ -110,8 +108,7 @@ abstract class React4j_PackageAccessFieldInputDefaultView extends PackageAccessF
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

@@ -5,11 +5,11 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
 import java.util.Date;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
@@ -38,24 +38,29 @@ abstract class React4j_MyView extends MyView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "My");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor).set("displayName", "My");
     }
     return viewConstructor;
   }
 
   @Override
   boolean field2InLeaf() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.field2InLeaf).asBoolean();
+    return Objects.requireNonNull(
+            $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.field2InLeaf))
+        .asBoolean();
   }
 
   @Override
   public Date dateRange() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.dateRange).cast();
+    return Objects.requireNonNull($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.dateRange))
+        .cast();
   }
 
   @Override
   boolean field1InLeaf() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.field1InLeaf).asBoolean();
+    return Objects.requireNonNull(
+            $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.field1InLeaf))
+        .asBoolean();
   }
 
   private static void $$react4j$$_validateInputValues(
@@ -84,7 +89,7 @@ abstract class React4j_MyView extends MyView {
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if (React.shouldValidateInputValues()) {
       $$react4j$$_validateInputValues(nextInputs);
@@ -133,11 +138,10 @@ abstract class React4j_MyView extends MyView {
 
   private static final class NativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_MyView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_MyView(this);
       if (React.shouldValidateInputValues()) {
@@ -157,8 +161,7 @@ abstract class React4j_MyView extends MyView {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

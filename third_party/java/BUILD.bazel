@@ -130,7 +130,7 @@ j2cl_library(
 # DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.26
 
 # SHA256 of the configuration content that generated this content
-_CONFIG_SHA256 = "BB7EC882E9987F8E54DD0C3C3AACEEDC5BE039CBC6118D364ED8FF8E06594CE5"
+_CONFIG_SHA256 = "16D59DA7C0F3A908CF67E7EC27627DB57B9C0262FA46F8267770764D90EC06A4"
 
 exports_files(["dependencies.yml"])
 
@@ -146,8 +146,9 @@ exports_files(["dependencies.yml"])
 # |  \- org.realityforge.javax.annotation:javax.annotation:jar:1.0.1 [compile]
 # +- org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:jar:1.7.0 [compile]
 # +- com.google.jsinterop:jsinterop-annotations:jar:2.0.0 [compile]
-# +- com.google.jsinterop:base:jar:1.0.0 [compile]
-# |  \- com.google.jsinterop:jsinterop-annotations:jar:1.0.2 [compile] (conflicts with 2.0.0)
+# +- com.google.jsinterop:base:jar:1.2.0 [compile]
+# |  +- com.google.jsinterop:jsinterop-annotations:jar:2.0.2 [compile] (conflicts with 2.0.0)
+# |  \- org.jspecify:jspecify:jar:0.3.0 [compile] (conflicts with 1.0.0)
 # +- org.jspecify:jspecify:jar:1.0.0 [compile]
 # +- org.testng:testng:jar:7.10.2 [compile]
 # |  +- org.slf4j:slf4j-api:jar:1.7.36 [compile]
@@ -165,7 +166,7 @@ exports_files(["dependencies.yml"])
 # +- org.realityforge.zemeckis:zemeckis-core:jar:0.18 [compile]
 # |  +- org.jspecify:jspecify:jar:1.0.0 [compile]
 # |  +- com.google.jsinterop:jsinterop-annotations:jar:2.0.0 [compile]
-# |  +- com.google.jsinterop:base:jar:1.0.0 [compile]
+# |  +- com.google.jsinterop:base:jar:1.0.0 [compile] (conflicts with 1.2.0)
 # |  +- org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:jar:1.7.0 [compile]
 # |  +- org.realityforge.braincheck:braincheck-core:jar:1.35.0 [compile]
 # |  \- org.realityforge.grim:grim-annotations:jar:0.09 [compile]
@@ -230,8 +231,11 @@ _java_import(
     name = "base",
     jars = ["@base//file"],
     srcjar = "@base__sources//file",
-    tags = ["maven_coordinates=com.google.jsinterop:base:1.0.0"],
-    deps = [":jsinterop_annotations"],
+    tags = ["maven_coordinates=com.google.jsinterop:base:1.2.0"],
+    deps = [
+        ":jsinterop_annotations",
+        ":jspecify",
+    ],
 )
 
 _java_import(

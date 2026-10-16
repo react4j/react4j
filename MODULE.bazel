@@ -3,7 +3,7 @@ module(name = "react4j")
 bazel_dep(name = "arez")
 git_override(
     module_name = "arez",
-    commit = "6811e57bd0585752876f2de0996385e8d24aaf5f",
+    commit = "491a15a93363431eb1df4ba81e3e8088a4153ce3",
     remote = "https://github.com/arez/arez.git",
 )
 
@@ -160,16 +160,16 @@ _http_file(
 
 _http_file(
     name = "base",
-    downloaded_file_path = "com/google/jsinterop/base/1.0.0/base-1.0.0.jar",
-    sha256 = "603635c26a384f601b19fa79c04208bd2f52da7af54650a3abced5b813ca4412",
-    urls = ["https://repo.maven.apache.org/maven2/com/google/jsinterop/base/1.0.0/base-1.0.0.jar"],
+    downloaded_file_path = "com/google/jsinterop/base/1.2.0/base-1.2.0.jar",
+    sha256 = "74b273c76c94b27826ff816186310a2b384fb7b3e96471b26dd28afae263572a",
+    urls = ["https://repo.maven.apache.org/maven2/com/google/jsinterop/base/1.2.0/base-1.2.0.jar"],
 )
 
 _http_file(
     name = "base__sources",
-    downloaded_file_path = "com/google/jsinterop/base/1.0.0/base-1.0.0-sources.jar",
-    sha256 = "733f02f18b225ffb24e927f23ca12ea91fec7b560665a8720a62ab95013cf5ea",
-    urls = ["https://repo.maven.apache.org/maven2/com/google/jsinterop/base/1.0.0/base-1.0.0-sources.jar"],
+    downloaded_file_path = "com/google/jsinterop/base/1.2.0/base-1.2.0-sources.jar",
+    sha256 = "bd3584e4541e96557b98066c1bda7070046e87f11ec017c7815a0eed207e0ec8",
+    urls = ["https://repo.maven.apache.org/maven2/com/google/jsinterop/base/1.2.0/base-1.2.0-sources.jar"],
 )
 
 _http_file(
