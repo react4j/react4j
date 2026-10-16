@@ -14,6 +14,11 @@ console.log = (...args) => window.applicationLogs.push(args.join(' '));
 
 // Control the external Bluetooth device, retaining native events, promises and DataView.
 const BLUETOOTH = `
+// Linux Chromium does not expose the Web Bluetooth constructors by default.
+window.BluetoothDevice = class extends EventTarget {};
+window.BluetoothRemoteGATTCharacteristic = class extends EventTarget {};
+window.BluetoothRemoteGATTServer = class {};
+window.BluetoothRemoteGATTService = class {};
 const device = new EventTarget();
 Object.setPrototypeOf(device, BluetoothDevice.prototype);
 const characteristic = new EventTarget();
