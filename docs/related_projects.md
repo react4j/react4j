@@ -24,8 +24,10 @@ built using React4j.
   in the [flux challenge](https://github.com/staltz/flux-challenge) using Arez and React4j.
 * [react-todomvc](https://github.com/react4j/react4j-todomvc) Several implementations of the [TodoMVC](todomvc.md)
   application rewritten using react4j and other supporting technologies.
-* [react-heart-rate-monitor](https://github.com/react4j/react4j-heart-rate-monitor) An experiment using the web
-  bluetooth API ot display the output of a bluetooth heart rate monitor written using Arez and React4j.
+* [Heart Rate Monitor](/heart-rate-monitor/) uses Web Bluetooth, Arez and React4j to display
+  readings from a Bluetooth heart rate sensor. It is included under `examples/heart-rate-monitor`.
+  Run `tools/examples.sh serve heart-rate-monitor development`, or try the
+  [development app](/heart-rate-monitor_dev/).
 * [Web Speech Demo](/webspeechdemo/) is included under `examples/webspeechdemo`. It uses Arez
   and React4j to control browser speech synthesis, select voices, and highlight spoken words.
   Run `tools/examples.sh serve webspeechdemo development`, or try the

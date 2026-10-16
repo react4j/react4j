@@ -154,7 +154,8 @@ public final class SiteTest {
                     .contains("external asset"));
             Files.writeString(root.resolve("index.html"), "<a href=\"/todomvc/raw/app\">External example</a>");
             SiteLinks.check(root);
-            for (final var route : List.of("drumloop", "webspeechdemo", "webspeechdemo_dev")) {
+            for (final var route : List.of(
+                    "drumloop", "webspeechdemo", "webspeechdemo_dev", "heart-rate-monitor", "heart-rate-monitor_dev")) {
                 Files.writeString(root.resolve("index.html"), "<a href=\"/" + route + "/\">Missing owned example</a>");
                 Assert.expectThrows(IOException.class, () -> SiteLinks.check(root));
             }
@@ -198,7 +199,11 @@ public final class SiteTest {
                 "webspeechdemo/index.html",
                 "Owned speech",
                 "webspeechdemo_dev/index.html",
-                "Development speech"));
+                "Development speech",
+                "heart-rate-monitor/index.html",
+                "Owned monitor",
+                "heart-rate-monitor_dev/index.html",
+                "Development monitor"));
         final var destination = site(Map.of(
                 "index.html",
                 "Old site",
@@ -223,7 +228,9 @@ public final class SiteTest {
             Assert.assertEquals(Files.readString(destination.resolve("drumloop/index.html")), "Owned drumloop");
             Assert.assertEquals(Files.readString(destination.resolve("webspeechdemo/index.html")), "Owned speech");
             Assert.assertEquals(
-                    Files.readString(destination.resolve("heart-rate-monitor/index.html")), "external monitor");
+                    Files.readString(destination.resolve("heart-rate-monitor/index.html")), "Owned monitor");
+            Assert.assertEquals(
+                    Files.readString(destination.resolve("heart-rate-monitor_dev/index.html")), "Development monitor");
             Assert.assertEquals(
                     Files.readString(destination.resolve("drumloop/drumloop/index.html")), "Production drumloop");
             Assert.assertEquals(

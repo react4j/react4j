@@ -1,0 +1,24 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_j2cl_library(
+    name = "browser",
+    srcs = [
+        "Console.java",
+        "Document.java",
+        "Element.java",
+        "Navigator.java",
+        "WindowGlobal.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/bluetooth:bluetooth_java",
+        "//third_party/java:jsinterop_annotations",
+    ],
+    deps = [
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/bluetooth",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jspecify-j2cl",
+    ],
+)
