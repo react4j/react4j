@@ -1,0 +1,29 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_j2cl_library(
+    name = "bluetooth",
+    srcs = [
+        "Bluetooth.java",
+        "BluetoothDevice.java",
+        "BluetoothLEScanFilterInit.java",
+        "BluetoothRemoteGATTCharacteristic.java",
+        "BluetoothRemoteGATTServer.java",
+        "BluetoothRemoteGATTService.java",
+        "RequestDeviceOptions.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/core:core_java",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/promise:promise_java",
+        "//third_party/java:jsinterop_annotations",
+    ],
+    native_srcs = ["bluetooth.externs.js"],
+    deps = [
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/core",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/promise",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jspecify-j2cl",
+    ],
+)

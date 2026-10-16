@@ -1,0 +1,41 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_j2cl_library(
+    name = "hrm",
+    srcs = [
+        "Application.java",
+        "HeartRateMonitor.java",
+        "Main.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        "//:core",
+        "//:dom",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/bluetooth:bluetooth_java",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/core:core_java",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser:browser_java",
+        "//third_party/java:jsinterop_annotations",
+    ],
+    plugins = [
+        "//:react4j_processor_plugin",
+        "@arez//:arez_processor_plugin",
+    ],
+    deps = [
+        "//:core-j2cl",
+        "//:dom-j2cl",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/bluetooth",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/core",
+        "//third_party/java:braincheck_core-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:org_jetbrains_annotations-j2cl",
+        "//third_party/java:zemeckis_core-j2cl",
+        "@arez//:core-j2cl",
+    ],
+)
+
+exports_files(["Main.entry.js"])

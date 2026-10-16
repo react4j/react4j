@@ -37,6 +37,8 @@ react4j_site(
         "//doc-examples:hello_world": "examples/hello_world",
         "//examples/drumloop:development": "drumloop/drumloop_dev",
         "//examples/drumloop:production": "drumloop/drumloop",
+        "//examples/heart-rate-monitor:development": "heart-rate-monitor_dev",
+        "//examples/heart-rate-monitor:production": "heart-rate-monitor",
         "//examples/webspeechdemo:development": "webspeechdemo_dev",
         "//examples/webspeechdemo:production": "webspeechdemo",
     },

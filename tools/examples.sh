@@ -8,6 +8,7 @@ mode="${3:-development}"
 case "$example" in
   hello_world) target=//doc-examples:hello_world; output=doc-examples/hello_world ;;
   drumloop) target=//examples/drumloop:drumloop; output=examples/drumloop/drumloop ;;
+  heart-rate-monitor) target=//examples/heart-rate-monitor:heart-rate-monitor; output=examples/heart-rate-monitor/heart-rate-monitor ;;
   webspeechdemo) target=//examples/webspeechdemo:webspeechdemo; output=examples/webspeechdemo/webspeechdemo ;;
   *) echo "Unknown example: $example" >&2; exit 2 ;;
 esac
@@ -25,6 +26,6 @@ case "$command" in
     fi
     echo "$directory/index.html"
     ;;
-  --help|-h) echo "Usage: tools/examples.sh <build|serve> [hello_world|drumloop|webspeechdemo] [development|production]" ;;
+  --help|-h) echo "Usage: tools/examples.sh <build|serve> [hello_world|drumloop|heart-rate-monitor|webspeechdemo] [development|production]" ;;
   *) echo "Unknown command: $command" >&2; exit 2 ;;
 esac

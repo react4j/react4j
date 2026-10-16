@@ -26,6 +26,7 @@ paths=(
   processor/src/test/java
   examples/drumloop/src/main/java
   examples/drumloop/src/test/java
+  examples/heart-rate-monitor/src/main/java
   examples/webspeechdemo/src/main/java
   doc-examples/src/main/java
 )

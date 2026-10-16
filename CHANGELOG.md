@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Import Heart Rate Monitor under `examples/heart-rate-monitor` with checked package-level Bazel/J2CL builds, browser tests, preview commands, and site integration at `/heart-rate-monitor/`.
+
 * Import Web Speech Demo under `examples/webspeechdemo` with checked Bazel/J2CL builds, development and production browser tests, preview commands, and site integration at `/webspeechdemo/` and `/webspeechdemo_dev/`.
 
 * Import Drumloop under `examples/drumloop`, with checked Bazel/J2CL builds, local audio/font assets, browser tests in both modes, and site integration at its established URLs. Correct sequencer tempo calculation and resume suspended audio on Play.
