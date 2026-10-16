@@ -263,7 +263,7 @@ public final class ArtifactCheck {
             require(dependencies.isEmpty(), "Processor must be self-contained");
         } else {
             require(
-                    dependencies.contains("org.jspecify:jspecify:1.0.0")
+                    dependencies.contains("org.jspecify:jspecify:1.0.1")
                             && dependencies.contains("org.realityforge.arez:arez-core:" + arezVersion),
                     "Missing JSpecify/migrated Arez dependency");
             if (module.equals("dom")) {

@@ -19,7 +19,7 @@ artifacts:
   - coord: org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:1.7.0
   - coord: com.google.jsinterop:jsinterop-annotations:2.0.0
   - coord: com.google.jsinterop:base:1.2.0
-  - coord: org.jspecify:jspecify:1.0.0
+  - coord: org.jspecify:jspecify:1.0.1
   - coord: org.testng:testng:7.10.2
   - coord: guru.nidi:jdepend:2.9.5
   - coord: org.mockito:mockito-core:4.5.1

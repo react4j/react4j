@@ -154,7 +154,7 @@ _java_import(
 # DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.26
 
 # SHA256 of the configuration content that generated this content
-_CONFIG_SHA256 = "A93D57E8B3CA73D3F8DA6BED046003D523AF34FB200B88A9B85117C032976D7E"
+_CONFIG_SHA256 = "8171958B00751A242935A1270DD8CE2D98A4FAF559721A3AED4CDC37BA7AB17A"
 
 exports_files(["dependencies.yml"])
 
@@ -169,8 +169,8 @@ exports_files(["dependencies.yml"])
 # +- com.google.jsinterop:jsinterop-annotations:jar:2.0.0 [compile]
 # +- com.google.jsinterop:base:jar:1.2.0 [compile]
 # |  +- com.google.jsinterop:jsinterop-annotations:jar:2.0.2 [compile] (conflicts with 2.0.0)
-# |  \- org.jspecify:jspecify:jar:0.3.0 [compile] (conflicts with 1.0.0)
-# +- org.jspecify:jspecify:jar:1.0.0 [compile]
+# |  \- org.jspecify:jspecify:jar:0.3.0 [compile] (conflicts with 1.0.1)
+# +- org.jspecify:jspecify:jar:1.0.1 [compile]
 # +- org.testng:testng:jar:7.10.2 [compile]
 # |  +- org.slf4j:slf4j-api:jar:1.7.36 [compile]
 # |  +- com.beust:jcommander:jar:1.82 [compile]
@@ -323,7 +323,7 @@ _java_import(
     name = "jspecify",
     jars = ["@jspecify//file"],
     srcjar = "@jspecify__sources//file",
-    tags = ["maven_coordinates=org.jspecify:jspecify:1.0.0"],
+    tags = ["maven_coordinates=org.jspecify:jspecify:1.0.1"],
 )
 
 _java_import(

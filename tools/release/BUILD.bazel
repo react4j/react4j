@@ -93,7 +93,7 @@ release_pom(
     out = "react4j-core.pom",
     artifact_id = "react4j-core",
     dependencies = [
-        "org.jspecify:jspecify:1.0.0",
+        "org.jspecify:jspecify:1.0.1",
         "org.realityforge.arez:arez-core:{arez_version}",
         "org.realityforge.braincheck:braincheck-core:1.35.0",
         "com.google.jsinterop:jsinterop-annotations:2.0.0",
@@ -157,7 +157,7 @@ release_pom(
     out = "react4j-dom.pom",
     artifact_id = "react4j-dom",
     dependencies = [
-        "org.jspecify:jspecify:1.0.0",
+        "org.jspecify:jspecify:1.0.1",
         "org.realityforge.arez:arez-core:{arez_version}",
         "org.realityforge.braincheck:braincheck-core:1.35.0",
         "com.google.jsinterop:jsinterop-annotations:2.0.0",
