@@ -10,7 +10,7 @@ git_override(
 bazel_dep(name = "proton_project", repo_name = "proton")
 git_override(
     module_name = "proton_project",
-    commit = "6d50db451021b7880097d0880907aa036a30a689",
+    commit = "d156a9d2eee74f1577cf8b7a03cd9a5a67a637ee",
     remote = "https://github.com/realityforge/proton.git",
 )
 
