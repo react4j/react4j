@@ -141,7 +141,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
 
         final boolean sting = deriveSting(constructor);
         final boolean notSyntheticConstructor =
-                Elements.Origin.EXPLICIT == processingEnv.getElementUtils().getOrigin(constructor);
+                Elements.Origin.EXPLICIT == ElementsUtil.getOrigin(processingEnv.getElementUtils(), constructor);
 
         final var descriptor = new ViewDescriptor(
                 name,
@@ -274,7 +274,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private void verifyConstructorParameterOrder(final ExecutableElement constructor) {
-        if (Elements.Origin.EXPLICIT == processingEnv.getElementUtils().getOrigin(constructor)
+        if (Elements.Origin.EXPLICIT == ElementsUtil.getOrigin(processingEnv.getElementUtils(), constructor)
                 && constructor.getParameters().size() > 1
                 && ElementsUtil.isWarningNotSuppressed(
                         constructor,
@@ -354,7 +354,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
     }
 
     private boolean isConstructorValid(final ExecutableElement ctor) {
-        if (Elements.Origin.EXPLICIT != processingEnv.getElementUtils().getOrigin(ctor)) {
+        if (Elements.Origin.EXPLICIT != ElementsUtil.getOrigin(processingEnv.getElementUtils(), ctor)) {
             return true;
         } else {
             return ElementsUtil.isPackageAccess(ctor);
