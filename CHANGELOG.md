@@ -3,15 +3,10 @@
 ### Unreleased
 
 * Import the raw, Arez and Sting TodoMVC examples with checked Bazel/J2CL builds, shared assets, browser coverage and local preview commands. Correct the remaining-task counts and raw view subscriptions. Build the existing site routes here and retire the separately hosted Dagger demo.
-
 * Correct implicit default constructor handling under Turbine using Proton's origin query, preserving validation and diagnostics for explicitly written constructors.
-
 * Import Heart Rate Monitor under `examples/heart-rate-monitor` with checked package-level Bazel/J2CL builds, browser tests, preview commands, and site integration at `/heart-rate-monitor/`.
-
 * Import Web Speech Demo under `examples/webspeechdemo` with checked Bazel/J2CL builds, development and production browser tests, preview commands, and site integration at `/webspeechdemo/` and `/webspeechdemo_dev/`.
-
 * Import Drumloop under `examples/drumloop`, with checked Bazel/J2CL builds, local audio/font assets, browser tests in both modes, and site integration at its established URLs. Correct sequencer tempo calculation and resume suspended audio on Play.
-
 * Replace project builds, tests, DOM generation, asset preparation, documentation and release tooling with pinned Bazel and Java/Bash tools. Add the shared local/CI gate, buildifier and Ahab checks.
 * Breaking: use J2CL for browser compilation and remove legacy compiler modules, entrypoints and support infrastructure. Keep React/ReactDOM 16.6.0 and verify development and optimized production behavior with pinned Chromium.
 * Breaking: require JSpecify nullness contracts and full Error Prone/JSpecify-mode NullAway checks. Ignore legacy nullness annotations; diagnose unspecified or invalid generated input contracts. Nullable AUTODETECT inputs remain optional, while explicitly required nullable inputs require a builder call and accept null.
