@@ -3,7 +3,10 @@ load("//third_party/java:rules.bzl", "java_binary")
 
 package(default_visibility = ["//visibility:public"])
 
-exports_files(["rules.bzl"])
+exports_files([
+    "java.bzl",
+    "rules.bzl",
+])
 
 config_setting(
     name = "production",

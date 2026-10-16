@@ -1,0 +1,30 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//tools/browser:rules.bzl", "browser_application", "browser_application_variant")
+
+package(default_visibility = ["//visibility:public"])
+
+closure_js_library(
+    name = "entry",
+    srcs = ["//examples/webspeechdemo/src/main/java/react4j/webspeechdemo:Main.entry.js"],
+    deps = ["//examples/webspeechdemo/src/main/java/react4j/webspeechdemo"],
+)
+
+browser_application(
+    name = "webspeechdemo",
+    assets = {"public/css/index.css": "css/index.css"},
+    entry_point = "react4j.webspeechdemo.MainEntry",
+    html = "public/index.html",
+    deps = [":entry"],
+)
+
+browser_application_variant(
+    name = "production",
+    application = ":webspeechdemo",
+    mode = "opt",
+)
+
+browser_application_variant(
+    name = "development",
+    application = ":webspeechdemo",
+    mode = "fastbuild",
+)

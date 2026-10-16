@@ -1,32 +1,25 @@
 {
   "exceptions": [
     {
-      "reason": "Chromium requires its native process launcher and loopback server outside the sandbox; compilation and site actions remain sandboxed",
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",
-      "target": "//doc-examples:browser_tests",
-      "requirement": "no-sandbox"
+      "target": "//doc-examples/src/test/js/react4j/examples:browser_tests",
+      "requirement": "requires-network"
     },
     {
-      "reason": "The argument is an HTTP route served from declared test runfiles, not a host filesystem input",
-      "kind": "absolute_path",
-      "mnemonic": "TestRunner",
-      "target": "//doc-examples:browser_tests",
-      "path": "/gen_html_browser_tests.html"
-    },
-    {
-      "reason": "Chromium requires its native process launcher and loopback server outside the sandbox; compilation and site actions remain sandboxed",
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",
-      "target": "//examples/drumloop:browser_tests",
-      "requirement": "no-sandbox"
+      "target": "//examples/drumloop/src/test/js/react4j/drumloop:browser_tests",
+      "requirement": "requires-network"
     },
     {
-      "reason": "The argument is an HTTP route served from declared test runfiles, not a host filesystem input",
-      "kind": "absolute_path",
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
       "mnemonic": "TestRunner",
-      "target": "//examples/drumloop:browser_tests",
-      "path": "/gen_html_browser_tests.html"
+      "target": "//examples/webspeechdemo/src/test/js/react4j/webspeechdemo:browser_tests",
+      "requirement": "requires-network"
     }
   ]
 }

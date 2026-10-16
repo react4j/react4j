@@ -1,4 +1,4 @@
-package react4j.drumloop.browser;
+package react4j.drumloop.browser.audio;
 
 import jsinterop.annotations.JsFunction;
 

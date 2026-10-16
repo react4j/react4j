@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import org.jspecify.annotations.NullMarked;
 import org.testng.Assert;
@@ -153,8 +154,10 @@ public final class SiteTest {
                     .contains("external asset"));
             Files.writeString(root.resolve("index.html"), "<a href=\"/todomvc/raw/app\">External example</a>");
             SiteLinks.check(root);
-            Files.writeString(root.resolve("index.html"), "<a href=\"/drumloop/\">Missing owned example</a>");
-            Assert.expectThrows(IOException.class, () -> SiteLinks.check(root));
+            for (final var route : List.of("drumloop", "webspeechdemo", "webspeechdemo_dev")) {
+                Files.writeString(root.resolve("index.html"), "<a href=\"/" + route + "/\">Missing owned example</a>");
+                Assert.expectThrows(IOException.class, () -> SiteLinks.check(root));
+            }
             Files.writeString(root.resolve("index.html"), "<a href=\"/todomvc/../../outside.html\">Escapes</a>");
             Assert.expectThrows(IOException.class, () -> SiteLinks.check(root));
             Files.writeString(root.resolve("index.html"), "<a href=\"../outside.html\">Escapes</a>");
@@ -191,7 +194,11 @@ public final class SiteTest {
                 "drumloop/drumloop/index.html",
                 "Production drumloop",
                 "drumloop/drumloop_dev/index.html",
-                "Development drumloop"));
+                "Development drumloop",
+                "webspeechdemo/index.html",
+                "Owned speech",
+                "webspeechdemo_dev/index.html",
+                "Development speech"));
         final var destination = site(Map.of(
                 "index.html",
                 "Old site",
@@ -214,13 +221,15 @@ public final class SiteTest {
             Assert.assertEquals(Files.readString(destination.resolve(".git/config")), "git metadata");
             Assert.assertEquals(Files.readString(destination.resolve("todomvc/raw/index.html")), "external app");
             Assert.assertEquals(Files.readString(destination.resolve("drumloop/index.html")), "Owned drumloop");
-            Assert.assertEquals(Files.readString(destination.resolve("webspeechdemo/index.html")), "external speech");
+            Assert.assertEquals(Files.readString(destination.resolve("webspeechdemo/index.html")), "Owned speech");
             Assert.assertEquals(
                     Files.readString(destination.resolve("heart-rate-monitor/index.html")), "external monitor");
             Assert.assertEquals(
                     Files.readString(destination.resolve("drumloop/drumloop/index.html")), "Production drumloop");
             Assert.assertEquals(
                     Files.readString(destination.resolve("drumloop/drumloop_dev/index.html")), "Development drumloop");
+            Assert.assertEquals(
+                    Files.readString(destination.resolve("webspeechdemo_dev/index.html")), "Development speech");
             Files.createDirectories(source.resolve("todomvc"));
             Files.writeString(source.resolve("todomvc/index.html"), "collision");
             Assert.expectThrows(IOException.class, () -> SiteDeploy.prepare(source, destination));

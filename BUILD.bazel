@@ -23,8 +23,19 @@ java_format_check(
         "//tools/consumer:config",
         "//tools/verification:coverage_check",
         "//doc-examples:java",
-        "//examples/drumloop:java",
-        "//examples/drumloop:test_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/audio:audio_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/core:core_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise:promise_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser:browser_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/cache:cache_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/ioc:ioc_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/model:model_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/views:views_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop:drumloop_java",
+        "//examples/drumloop/src/test/java/react4j/drumloop/cache:cache_tests_java",
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser/speech:speech_java",
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser:browser_java",
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo:webspeechdemo_java",
         "//tools/site/src/main/java/react4j/site:site",
         "//tools/site:tool",
         "//tools/site/src/test/java/react4j/site:all_tests",
@@ -112,8 +123,9 @@ j2cl_library(
 test_suite(
     name = "browser_tests",
     tests = [
-        "//doc-examples:browser_tests",
-        "//examples/drumloop:browser_tests",
+        "//doc-examples/src/test/js/react4j/examples:browser_tests",
+        "//examples/drumloop/src/test/js/react4j/drumloop:browser_tests",
+        "//examples/webspeechdemo/src/test/js/react4j/webspeechdemo:browser_tests",
     ],
 )
 

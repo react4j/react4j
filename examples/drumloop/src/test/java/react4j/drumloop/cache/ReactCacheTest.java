@@ -1,4 +1,4 @@
-package react4j.drumloop;
+package react4j.drumloop.cache;
 
 import java.util.function.Function;
 import jsinterop.annotations.JsFunction;

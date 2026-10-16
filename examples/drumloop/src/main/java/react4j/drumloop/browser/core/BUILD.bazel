@@ -1,9 +1,18 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
 package(default_visibility = ["//visibility:public"])
 
-filegroup(
-    name = "sources",
+java_j2cl_library(
+    name = "core",
     srcs = [
         "ArrayBuffer.java",
         "package-info.java",
+    ],
+    java_deps = [
+        "//third_party/java:jsinterop_annotations",
+    ],
+    deps = [
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jspecify-j2cl",
     ],
 )

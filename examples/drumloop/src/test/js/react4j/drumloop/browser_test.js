@@ -1,5 +1,5 @@
 goog.module('react4j.drumloop.BrowserTest');
-const CacheTest = goog.require('react4j.drumloop.ReactCacheTest');
+const CacheTest = goog.require('react4j.drumloop.cache.ReactCacheTest');
 const TestCase = goog.require('goog.testing.TestCase');
 const asserts = goog.require('goog.testing.asserts');
 const testSuite = goog.require('goog.testing.testSuite');

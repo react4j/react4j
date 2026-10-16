@@ -1,8 +1,7 @@
 diff --git a/closure/testing/webdriver_test.bzl b/closure/testing/webdriver_test.bzl
-index d12d3aa..9d5321a 100644
 --- a/closure/testing/webdriver_test.bzl
 +++ b/closure/testing/webdriver_test.bzl
-@@ -24,6 +24,7 @@ def webdriver_test(
+@@ -23,6 +23,7 @@
          test_file_js,
          data = None,
          tags = [],
@@ -10,17 +9,22 @@ index d12d3aa..9d5321a 100644
          runtime_defines = {},
          visibility = None,
          **kwargs):
-@@ -76,6 +77,9 @@ def webdriver_test(
+@@ -48,2 +49,2 @@
+     path = "/"
+-    html_webpath = "%s%s.html" % (path, html)
++    html_webpath = "%s.html" % html
+@@ -75,6 +76,10 @@
          use_full_path = True,
      )
  
 +    test_execution_requirements = dict(execution_requirements)
-+    test_execution_requirements["no-sandbox"] = ""
++    # The runner and WebDriver communicate over loopback.
++    test_execution_requirements["requires-network"] = ""
 +
      if len(browsers) == 1:
          web_test(
              name = name,
-@@ -83,7 +87,8 @@ def webdriver_test(
+@@ -82,7 +87,8 @@
              browser = str(browsers[0]),
              test = ":%s_test_runner" % name,
              args = [html_webpath],
@@ -30,7 +34,7 @@ index d12d3aa..9d5321a 100644
              visibility = visibility,
              **kwargs
          )
-@@ -94,7 +99,8 @@ def webdriver_test(
+@@ -93,7 +99,8 @@
              browsers = browsers,
              test = ":%s_test_runner" % name,
              args = [html_webpath],

@@ -1,6 +1,0 @@
-package(default_visibility = ["//visibility:public"])
-
-exports_files([
-    "ReactCacheTest.java",
-    "ReactCacheTest.native.js",
-])

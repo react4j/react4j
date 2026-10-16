@@ -1,7 +1,7 @@
 load("@j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//third_party/java:rules.bzl", "java_library")
-load("//tools/browser:rules.bzl", "browser_application", "browser_test")
+load("//tools/browser:rules.bzl", "browser_application")
 load("//tools/release:release.bzl", "release_source_jar")
 
 package(default_visibility = ["//visibility:public"])
@@ -62,11 +62,4 @@ browser_application(
     entry_point = "react4j.examples.HelloWorldEntry",
     html = "//doc-examples/src/main/java/react4j/examples/hello_world:public/index.html",
     deps = [":hello_world_entry"],
-)
-
-browser_test(
-    name = "browser_tests",
-    srcs = ["browser_test.js"],
-    entry_point = "react4j.examples.BrowserTest",
-    deps = [":j2cl"],
 )

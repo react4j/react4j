@@ -11,6 +11,6 @@ Core APIs live under `react4j`, internal helpers under `react4j.internal`, and D
 - `core/src/main/java/react4j/ReactConfig.java`: JVM overrides and browser providers.
 - `core/src/main/java/react4j/react4j.js` and `ReactConfig.native.js`: registered Closure definitions and retention.
 - `tools/browser/rules.bzl`: explicit development/production values and runtime defines for BUNDLE.
-- `doc-examples/browser_test.js`: live configuration and rendering contracts.
+- `doc-examples/src/test/js/react4j/examples/browser_test.js`: live configuration and rendering contracts.
 
 The package-private `GwtIncompatible` annotation is a J2CL pruning marker recognized by simple name. It removes JVM-only System.getProperty overrides from browser sources. Keep it independent of any compiler dependency. The browser runtime retains React/ReactDOM 16.6.0 and the React.Element symbol patch; changing these needs asset and both-mode browser validation.

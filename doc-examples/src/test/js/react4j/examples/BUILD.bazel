@@ -1,0 +1,10 @@
+load("//tools/browser:rules.bzl", "browser_test")
+
+package(default_visibility = ["//:__pkg__"])
+
+browser_test(
+    name = "browser_tests",
+    srcs = ["browser_test.js"],
+    entry_point = "react4j.examples.BrowserTest",
+    deps = ["//doc-examples:j2cl"],
+)

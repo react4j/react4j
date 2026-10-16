@@ -1,0 +1,40 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_j2cl_library(
+    name = "webspeechdemo",
+    srcs = [
+        "Application.java",
+        "Main.java",
+        "SpeechData.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser:browser_java",
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser/speech:speech_java",
+        "//:core",
+        "//:dom",
+    ],
+    plugins = [
+        "//:react4j_processor_plugin",
+        "@arez//:arez_processor_plugin",
+    ],
+    deps = [
+        "//:core-j2cl",
+        "//:dom-j2cl",
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser",
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser/speech",
+        "//third_party/java:braincheck_core-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:org_jetbrains_annotations-j2cl",
+        "//third_party/java:zemeckis_core-j2cl",
+        "@arez//:core-j2cl",
+    ],
+)
+
+exports_files([
+    "Main.entry.js",
+])

@@ -1,7 +1,9 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
 package(default_visibility = ["//visibility:public"])
 
-filegroup(
-    name = "sources",
+java_j2cl_library(
+    name = "model",
     srcs = [
         "AbstractSoundSample.java",
         "DrumMachine.java",
@@ -10,5 +12,29 @@ filegroup(
         "StepCell.java",
         "Track.java",
         "package-info.java",
+    ],
+    java_deps = [
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser:browser_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/audio:audio_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise:promise_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/cache:cache_java",
+        "//:core",
+        "//third_party/java:sting_core",
+    ],
+    plugins = [
+        "@arez//:arez_processor_plugin",
+        "@sting//:sting_processor_plugin",
+    ],
+    deps = [
+        "//:core-j2cl",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/audio",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise",
+        "//examples/drumloop/src/main/java/react4j/drumloop/cache",
+        "//third_party/java:braincheck_core-j2cl",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:sting_core-j2cl",
+        "//third_party/java:zemeckis_core-j2cl",
+        "@arez//:core-j2cl",
     ],
 )

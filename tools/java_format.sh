@@ -26,6 +26,7 @@ paths=(
   processor/src/test/java
   examples/drumloop/src/main/java
   examples/drumloop/src/test/java
+  examples/webspeechdemo/src/main/java
   doc-examples/src/main/java
 )
 format_roots=()

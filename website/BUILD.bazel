@@ -37,6 +37,8 @@ react4j_site(
         "//doc-examples:hello_world": "examples/hello_world",
         "//examples/drumloop:development": "drumloop/drumloop_dev",
         "//examples/drumloop:production": "drumloop/drumloop",
+        "//examples/webspeechdemo:development": "webspeechdemo_dev",
+        "//examples/webspeechdemo:production": "webspeechdemo",
     },
     docs = ["//docs:pages"],
     document = "document.html",

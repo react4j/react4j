@@ -8,7 +8,6 @@ import arez.annotations.Observable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import react4j.drumloop.ReactCache;
 import react4j.drumloop.browser.Response;
 import react4j.drumloop.browser.WindowGlobal;
 import react4j.drumloop.browser.audio.AudioBuffer;
@@ -16,6 +15,7 @@ import react4j.drumloop.browser.audio.AudioBufferSourceNode;
 import react4j.drumloop.browser.audio.AudioContext;
 import react4j.drumloop.browser.audio.GainNode;
 import react4j.drumloop.browser.promise.Promise;
+import react4j.drumloop.cache.ReactCache;
 import zemeckis.Zemeckis;
 
 @ArezComponent(service = Feature.ENABLE, requireId = Feature.DISABLE, disposeNotifier = Feature.DISABLE)
