@@ -1,0 +1,80 @@
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_test")
+load("@css_npm//:defs.bzl", "npm_link_all_packages")
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("//third_party/java:rules.bzl", "java_binary", "java_library", "java_testng")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+])
+
+npm_link_all_packages()
+
+js_binary(
+    name = "tool",
+    data = [":node_modules"],
+    entry_point = "tool.mjs",
+)
+
+java_library(
+    name = "annotations",
+    srcs = [
+        "src/main/java/org/realityforge/css/Css.java",
+        "src/main/java/org/realityforge/css/package-info.java",
+    ],
+)
+
+j2cl_library(
+    name = "annotations-j2cl",
+    srcs = ["src/main/java/org/realityforge/css/Css.java"],
+)
+
+java_library(
+    name = "processor",
+    srcs = [
+        "src/main/java/org/realityforge/css/CssBridge.java",
+        "src/main/java/org/realityforge/css/CssProcessor.java",
+        "src/main/java/org/realityforge/css/Format.java",
+        "src/main/java/org/realityforge/css/Names.java",
+        "src/main/java/org/realityforge/css/TextBlock.java",
+        "src/main/java/org/realityforge/css/package-info.java",
+    ],
+    deps = [":annotations"],
+)
+
+java_binary(
+    name = "compiler",
+    srcs = ["src/main/java/org/realityforge/css/Compile.java"],
+    main_class = "org.realityforge.css.Compile",
+    deps = [":processor"],
+)
+
+js_test(
+    name = "tool_tests",
+    data = [
+        "tool.mjs",
+        ":node_modules",
+    ],
+    entry_point = "tool.test.mjs",
+)
+
+java_testng(
+    name = "processor_tests",
+    srcs = ["src/test/java/org/realityforge/css/CssProcessorTest.java"],
+    data = [":tool"],
+    env = {"BAZEL_BINDIR": "."},
+    jvm_flags = ["-Dcss.tool=$(rootpath :tool)"],
+    test_class = "org.realityforge.css.CssProcessorTest",
+    deps = [
+        ":annotations",
+        ":processor",
+    ],
+)
+
+java_binary(
+    name = "format",
+    main_class = "org.realityforge.css.Format",
+    runtime_deps = [":processor"],
+)

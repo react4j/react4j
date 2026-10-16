@@ -516,3 +516,19 @@ _http_file(
     sha256 = "91758fd769bfe8c936505615fbf5a07f1d2c2eddfac7b6f2433f4b7fd8d972d6",
     urls = ["https://unpkg.com/react-dom@16.6.0/umd/react-dom.production.min.js"],
 )
+
+# Build-time tooling for the isolated CSS authoring proof.
+bazel_dep(name = "aspect_rules_js", version = "3.5.1", dev_dependency = True)
+bazel_dep(name = "rules_nodejs", version = "6.7.3", dev_dependency = True)
+
+css_node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node", dev_dependency = True)
+css_node.toolchain(node_version = "24.9.0")
+use_repo(css_node, "nodejs_toolchains")
+
+css_npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm", dev_dependency = True)
+css_npm.npm_translate_lock(
+    name = "css_npm",
+    data = ["//css:pnpm-workspace.yaml"],
+    pnpm_lock = "//css:pnpm-lock.yaml",
+)
+use_repo(css_npm, "css_npm")

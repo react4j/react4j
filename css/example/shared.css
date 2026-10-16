@@ -1,0 +1,11 @@
+:root {
+  --on-accent: #fff;
+  --focus: #06f;
+  --success: #080;
+  --cancel: #a00;
+}
+
+button[data-shared][data-shared] {
+  background-color: #333;
+  color: #000;
+}

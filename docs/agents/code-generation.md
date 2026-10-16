@@ -31,3 +31,9 @@ The golden updater operates in an isolated runfiles/temporary compilation tree. 
 `tools/generation/src/main/java/react4j/generation/DomGenerator.java` and adjacent resource templates own DOM factories. Its deterministic source archive includes the generated factories compiled by the DOM target and distributed in its source archive.
 
 `ReactAssetPatcher.java` transforms the pinned React 16.6.0 UMD inputs to expose React.Element. `MODULE.bazel` owns URLs/checksums. Published source archives include the native companions, externs and UMD assets; binaries contain bytecode and metadata. Keep these boundaries in archive checks when changing resources.
+
+## CSS authoring proof
+
+[`css/README.md`](../../css/README.md) owns the isolated CSS proof's API, commands and limits. Its annotation processor invokes the declared Node CSS bridge before emitting static Java bindings and Filer resources; a separate Bazel extraction action collects those resources before ordinary checked Java/J2CL compilation. Product packaging remains open. Keep CSS parsing and selector validation in the bridge rather than matching selector text in Java with regular expressions.
+
+Java and Node launchers each locate their own Bazel runfiles. Clear the Java launcher's inherited runfiles variables when starting the CSS tool; otherwise the Node launcher searches the Java tool's runfiles and cannot find its runtime. Retain the original Java token and javac's cooked text-block value together: indentation stripping, Unicode/Java escapes and continued lines make a fixed line/column offset insufficient for diagnostics or formatting writeback.

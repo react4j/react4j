@@ -1,0 +1,14 @@
+{
+  "name": "react4j-css-proof",
+  "private": true,
+  "dependencies": {
+    "lightningcss": "1.33.0",
+    "postcss": "8.5.30",
+    "postcss-selector-parser": "7.1.6",
+    "prettier": "3.9.10",
+    "stylelint": "17.16.0",
+    "browserslist": "4.29.3",
+    "caniuse-lite": "1.0.30001816",
+    "stylelint-config-recommended": "18.0.0"
+  }
+}

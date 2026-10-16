@@ -37,6 +37,11 @@
       "spec": {
         "reproducibility": "always"
       }
+    },
+    "//css/compiler": {
+      "spec": {
+        "reproducibility": "always"
+      }
     }
   }
 }

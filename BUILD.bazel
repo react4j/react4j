@@ -11,6 +11,12 @@ java_format_check(
     testonly = True,
     remediation = "tools/java_format.sh write",
     targets = [
+        "//css:annotations",
+        "//css:processor",
+        "//css:compiler",
+        "//css:processor_tests",
+        "//css/example:bindings_java",
+        "//css/example:browser_java",
         "//core",
         "//core:tests",
         "//dom",
@@ -139,6 +145,7 @@ j2cl_library(
 test_suite(
     name = "browser_tests",
     tests = [
+        "//css/example:browser_tests",
         "//doc-examples/src/test/js/react4j/examples:browser_tests",
         "//examples/drumloop/src/test/js/react4j/drumloop:browser_tests",
         "//examples/heart-rate-monitor/src/test/js/react4j/hrm:browser_tests",
@@ -161,6 +168,8 @@ test_suite(
     tests = [
         ":browser_tests",
         ":jvm_tests",
+        "//css:processor_tests",
+        "//css:tool_tests",
         "//third_party/java:verify_config_sha256",
         "//tools/release:tests",
         "//tools/site:tests",
