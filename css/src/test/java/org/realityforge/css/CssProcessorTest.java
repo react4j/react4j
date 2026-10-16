@@ -2,6 +2,7 @@ package org.realityforge.css;
 
 import static org.testng.Assert.*;
 
+import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -15,6 +16,7 @@ import java.util.Map;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
+import org.jspecify.annotations.NullMarked;
 import org.testng.annotations.Test;
 
 public final class CssProcessorTest {
@@ -51,6 +53,18 @@ public final class CssProcessorTest {
                                 "--release",
                                 "17",
                                 "-classpath",
+                                Path.of(Css.class
+                                                .getProtectionDomain()
+                                                .getCodeSource()
+                                                .getLocation()
+                                                .toURI())
+                                        + File.pathSeparator
+                                        + Path.of(NullMarked.class
+                                                .getProtectionDomain()
+                                                .getCodeSource()
+                                                .getLocation()
+                                                .toURI()),
+                                "--processor-path",
                                 System.getProperty("java.class.path"),
                                 "-d",
                                 classes.toString(),
@@ -58,7 +72,6 @@ public final class CssProcessorTest {
                                 generated.toString()),
                         null,
                         manager.getJavaFileObjectsFromPaths(paths));
-                task.setProcessors(List.of(new CssProcessor()));
                 success = task.call();
             }
             var files = new LinkedHashMap<String, String>();
@@ -95,6 +108,17 @@ public final class CssProcessorTest {
                 }
             }
         }
+    }
+
+    @Test
+    public void processorDependenciesAreNotApplicationDependencies() throws Exception {
+        String text = source("demo", "    color: red;", "")
+                .replace(
+                        "abstract String style();",
+                        "abstract String style(); com.helger.css.CSSSourceLocation parser;");
+        var result = compile(Map.of("Button.java", text));
+        assertFalse(result.success());
+        assertTrue(result.diagnostics().contains("package com.helger.css does not exist"), result.diagnostics());
     }
 
     @Test

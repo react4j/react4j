@@ -9,15 +9,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
-/** Bazel adapter for the isolated proof; annotation processing emits both Java and CSS. */
+/** Bazel extraction adapter; annotation processing emits both Java and CSS. */
 public final class Compile {
     private Compile() {}
 
     public static void main(String[] args) {
         try {
-            compile(args);
+            if (args.length != 1 || !args[0].startsWith("@")) {
+                throw new IllegalArgumentException("Usage: compiler @argument-file");
+            }
+            compile(Files.readAllLines(Path.of(args[0].substring(1))).toArray(String[]::new));
         } catch (IOException | IllegalArgumentException e) {
             System.err.println(e.getMessage());
             System.exit(1);
@@ -35,23 +39,22 @@ public final class Compile {
             try (var manager = compiler.getStandardFileManager(null, null, null)) {
                 var sources = new ArrayList<Path>();
                 var shared = new ArrayList<String>();
-                for (int i = 2; i < args.length; i++) {
-                    if (args[i].endsWith(".java")) {
-                        sources.add(Path.of(args[i]));
-                    } else {
-                        shared.add(Files.readString(Path.of(args[i])));
+                var classpath = new ArrayList<Path>();
+                for (int i = 2; i < args.length; i += 2) {
+                    if (i + 1 == args.length) {
+                        throw new IllegalArgumentException("Missing value for " + args[i]);
+                    }
+                    var path = Path.of(args[i + 1]);
+                    switch (args[i]) {
+                        case "--source" -> sources.add(path);
+                        case "--shared" -> shared.add(Files.readString(path));
+                        case "--classpath" -> classpath.add(path);
+                        default -> throw new IllegalArgumentException("Unknown option: " + args[i]);
                     }
                 }
-                var options = List.of(
-                        "--release",
-                        "17",
-                        "-proc:only",
-                        "-classpath",
-                        System.getProperty("java.class.path"),
-                        "-s",
-                        generated.toString(),
-                        "-d",
-                        classes.toString());
+                manager.setLocationFromPaths(StandardLocation.CLASS_PATH, classpath);
+                var options =
+                        List.of("--release", "17", "-proc:only", "-s", generated.toString(), "-d", classes.toString());
                 var task = compiler.getTask(
                         null, manager, null, options, null, manager.getJavaFileObjectsFromPaths(sources));
                 task.setProcessors(List.of(new CssProcessor()));
