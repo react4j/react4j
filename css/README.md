@@ -1,8 +1,8 @@
 # CSS-in-Java proof
 
-This directory proves static CSS extraction from Java declaration-list annotations with checked abstract style accessors. `org.realityforge.css` is a provisional namespace; directory layout, final product name, repository and publication artifacts remain open. The annotation and processor targets are separate here so their dependency costs can be inspected independently.
+This directory proves static CSS extraction from Java declaration-list annotations with checked abstract style accessors. Parsing, validation and output run inside the JVM; the CSS toolchain does not require Node, npm or native executables. `org.realityforge.css` is a provisional namespace; directory layout, final product name, repository and publication artifacts remain open. The annotation and processor targets are separate so the parser dependencies do not enter the application annotation classpath.
 
-WorldBuilder's [authoring architecture](https://github.com/realityforge/WorldBuilder/blob/ad52a87/docs/adr/0020-extract-static-client-styles.md), [separate-product boundary](https://github.com/realityforge/WorldBuilder/blob/ad52a87/docs/adr/0021-consume-a-separate-style-generator.md) and [selected tools](https://github.com/realityforge/WorldBuilder/blob/ad52a87/spikes/j2cl-client/tools/README.md#selected-css-pipeline) are the consumer context. This proof does not migrate WorldBuilder or publish a release.
+WorldBuilder's [authoring architecture](https://github.com/realityforge/WorldBuilder/blob/ad52a87/docs/adr/0020-extract-static-client-styles.md) and [separate-product boundary](https://github.com/realityforge/WorldBuilder/blob/ad52a87/docs/adr/0021-consume-a-separate-style-generator.md) provide the consumer context. The JVM-only requirement supersedes that experiment's Node-based tool selection. This proof does not migrate WorldBuilder or publish a release.
 
 ## Authoring and generated API
 
@@ -12,44 +12,29 @@ The processor generates a package-access `Styled_SaveButton` subclass. `style()`
 
 Names derive from the Java binary owner name, including package and enclosing classes. ASCII letters and digits remain readable, package dots become single hyphens, and all other UTF-16 code units become `_hhhh_`. The root has a `jcss-` prefix and modifier names follow `--`. Because Java owner names contain no hyphens and literal underscores are escaped, separator and escape sequences cannot be confused. Generated subclass names use the encoded local binary name. Names do not depend on content, compilation order or checkout paths. Name shortening is outside this proof.
 
-The parsed selector tree must agree with the declared accessors in both directions. Comments, property values and quoted strings do not declare modifiers. State pseudo-classes need no accessor. Functional pseudos are limited to `:is`, `:not` and `:where` in this proof. Component selectors must begin with `&` and stay on the owned element; descendant/sibling reach, global escapes, `:has`, component keyframes and component global at-rules are diagnosed. Conditional `@media`, `@supports` and `@container` rules are supported. These are explicit proof limits, not a complete CSS ownership language.
+The parsed selector tree must agree with the declared accessors in both directions. Comments, property values and quoted strings do not declare modifiers. State pseudo-classes need no accessor. Functional pseudos are limited to `:is`, `:not` and `:where`. Component selectors must begin with `&` and stay on the owned element; descendant/sibling reach, global escapes, `:has`, escaped selector identifiers, component keyframes and global at-rules are diagnosed. Conditional `@media` and `@supports` rules containing explicit nested selectors are supported. Bare declarations inside those conditional rules and `@container` are outside this parser integration's supported subset and fail compilation.
 
-## Build and tools
+## Build and parser
 
 ```sh
 bazel build //css/example:styles //css/example:bindings
-bazel test //css:tool_tests //css:processor_tests //css/example:browser_tests --test_output=errors
+bazel test //css:compiler_tests //css:processor_tests //css/example:browser_tests --test_output=errors
 bazel test -c opt //css/example:browser_tests --test_output=errors
-bazel run //css:tool -- targets
 css/check_reproducibility.sh
 ```
 
-`styles` runs the annotation processor through a declared Java compiler action before ordinary checked Java/J2CL compilation. It emits a deterministic generated source archive, external minified CSS and Brotli output. CSS resources are emitted through Java's Filer, then collected without relying on J2CL to retain auxiliary resources. The proof adapter accepts self-contained style definitions; application classpath wiring and installation as a conventional compiler plugin are not delivered.
+`styles` runs the annotation processor through a declared Java compiler action before ordinary checked Java/J2CL compilation. It emits a deterministic generated source archive and external compact CSS. CSS resources are emitted through Java's Filer, then collected without relying on J2CL to retain auxiliary resources. The proof adapter accepts self-contained style definitions; application classpath wiring and installation as a conventional compiler plugin are not delivered.
 
-The annotation processor reads javac's cooked text-block value and parses the original token to retain per-character Java offsets. The mapper handles incidental indentation, trailing whitespace, CRLF, Java escapes, octal escapes, Unicode escapes and continued lines, and checks its result against javac before reporting CSS locations. Diagnostics include the original Java path, line and column; javac's attached caret covers the annotation value. This bridge uses javac's public tree API and has not been verified under Turbine.
+The processor calls [ph-css 8.2.3](https://github.com/phax/ph-css/tree/ph-css-parent-pom-8.2.3) in-process. Its JavaCC parser supplies the syntax and selector trees. Recovery is disabled and unsupported rule types are rejected in the syntax tree before conversion to the higher-level model, which can otherwise omit unsupported nested rules. Selector nodes are checked and namespaced, nesting is flattened while preserving declaration order and selector-list specificity, and the library's compact writer serializes declaration values. Shared styles precede component rules through explicit `shared, components` cascade layers. `!important` is rejected in both inputs because it reverses layer precedence. Shared inputs support style rules, `@media` and `@supports`; imports, author layers and other at-rules are outside this proof.
 
-The processor invokes the declared CSS bridge before emitting Java. PostCSS parses the stylesheet and `postcss-selector-parser` parses selectors; Prettier formats CSS; Stylelint's recommended semantic rules lint both shared and embedded CSS; Lightning CSS transforms nesting, targets the pinned browser list, and bundles and minifies the declared fragments through its resolver API. Shared styles precede component rules through explicit `shared, components` cascade layers. `!important` is rejected in both inputs because it reverses layer precedence. Shared imports and explicit author layers are outside the proof.
+The dependency graph is checksum-pinned through `third_party/java/dependencies.yml` and the generated Bazel declarations. The processor runtime includes ph-css, nine ph-commons modules, SLF4J API and the existing JSpecify annotations. These are JVM build dependencies; they do not enter generated bindings or browser output. The source and final artifact layout remain open despite the separate annotation and processor build targets.
 
-`pnpm-lock.yaml` pins the complete Node tool graph and native Lightning CSS packages by integrity. Node 24.9.0 and rules_js are declared in the root Bazel module as development dependencies, outside the configuration exported to ordinary React4j consumers. Normal compilation actions require no network access or globally installed Node packages. The browser receives Java-generated class strings and static CSS; it receives none of these tools. The processor adds no JVM CSS parser dependency. JSpecify supplies Java nullness annotations.
-
-Browser targets resolve from pinned Browserslist and caniuse-lite data using the consumer's last-two-stable-major policy for Chrome, Edge, Firefox, Safari and iOS Safari. The `targets` command prints the resolved versions. That consumer policy is not automatically the separate product's support contract. The browser test uses the pinned Chromium runtime with `--headless=new` to exercise actual focus state; it does not establish Firefox, WebKit or full accessibility conformance.
-
-## Formatting
-
-Build `//css:format` and `//css:tool`, then invoke the Java formatter with the bridge and source paths:
-
-```sh
-bazel build //css:format //css:tool
-BAZEL_BINDIR=bazel-bin bazel-bin/css/format \
-  "$PWD/bazel-bin/css/tool_/tool" check "$PWD/css/example/src/main/java/org/realityforge/css/example/SaveButton.java"
-```
-
-Use `write` instead of `check` to rewrite CSS text blocks. For standalone CSS, use `bazel run //css:tool -- check "$PWD/css/example/shared.css"` or replace `check` with `format`. Formatting parses Java, calls Prettier on the CSS block and re-encodes Java escapes; it leaves surrounding Java unchanged. Run the normal Java formatter afterward when changing Java layout. The tests check CSS equivalence and formatting idempotence. Source writeback is a separate operation from annotation processing.
-
-To update Node dependencies, edit exact versions in `package.json` and run `npx --yes pnpm@10.22.0 install --lockfile-only --ignore-scripts` in this directory, then review the lock diff. Package lifecycle hooks are disabled. Bazel consumes the lock without invoking npm installation in build actions.
+The annotation processor reads javac's cooked text-block value and parses the original token to retain per-character Java offsets. The mapper handles incidental indentation, trailing whitespace, CRLF, Java escapes, octal escapes, Unicode escapes and continued lines, and checks its result against javac before reporting CSS locations. Diagnostics include the original Java path, line and column; javac's attached caret covers the annotation value. This uses javac's public tree API and has not been verified under Turbine.
 
 ## Evidence and remaining product work
 
-The maintained tests exercise generated methods, complete CSS resources, independent and reversed compilation order, clean compiler outputs, nested owners, encoding collisions, negative CSS/Java contracts and source diagnostics. The browser case exercises real React4j props, custom-property assignment, shared/component precedence, focus and disabled states, conflicting modifiers, nested instances and independent fragment reordering while preserving order inside each component.
+The maintained JVM tests exercise generated methods, complete CSS resources, independent and reversed compilation order, clean compiler outputs, nested owners, encoding collisions, syntax and ownership failures, functional selectors, conditional rules, declaration order and source diagnostics. The browser case exercises real React4j props, custom-property assignment, shared/component precedence, focus and disabled states, conflicting modifiers, nested instances and independent fragment reordering while preserving order inside each component. It uses pinned Chromium with `--headless=new`; Firefox and WebKit runtime behavior remain unverified.
 
-The proof leaves final artifact layout, publication, editor integration, cross-file style composition, richer owned subelements, keyframe bindings and broader browser verification open. One Node bridge serves all style definitions in a compilation and is closed in the final processing round. The proof groups Java and shared CSS inputs in one extraction action: shared edits rerun that action with unchanged Java bindings, while embedded edits also invalidate checked Java, J2CL and the development bundle. Scaling the development loop across thousands of definitions and many compilation targets still requires measurement before product adoption.
+This proof checks CSS syntax and selector/accessor agreement. It does not provide a property registry or Stylelint-equivalent semantic linting. Source formatting, browser-target transforms, vendor-prefix generation and Brotli packaging are not implemented in the JVM path. Generated component nesting is flattened, but other modern CSS features are emitted as authored. Those gaps need JVM-compatible solutions before claiming the capabilities of the earlier Node pipeline.
+
+The proof also leaves final artifact layout, publication, editor integration, cross-file style composition, richer owned subelements and keyframe bindings open. Java and shared CSS inputs share one extraction action: shared edits rerun that action with unchanged Java bindings, while embedded edits also invalidate checked Java, J2CL and the development bundle. Scaling the development loop across thousands of definitions and many compilation targets still requires measurement before product adoption. Earlier Node-pipeline timings and compressed sizes do not describe this JVM implementation.

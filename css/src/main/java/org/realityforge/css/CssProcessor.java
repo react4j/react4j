@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ElementKind;
@@ -20,14 +19,11 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
-import org.jspecify.annotations.Nullable;
 
-/** Validates component CSS with the declared build tool, then emits static bindings and CSS resources. */
+/** Validates component CSS in the JVM, then emits static bindings and CSS resources. */
 @SupportedAnnotationTypes("org.realityforge.css.Css")
-@SupportedOptions("css.tool")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public final class CssProcessor extends AbstractProcessor {
-    private @Nullable CssBridge bridge;
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment round) {
@@ -36,15 +32,6 @@ public final class CssProcessor extends AbstractProcessor {
                 process((TypeElement) element);
             } catch (IllegalArgumentException | IOException e) {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), element);
-            }
-        }
-        if (round.processingOver() && bridge != null) {
-            try {
-                bridge.close();
-            } catch (IOException e) {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage());
-            } finally {
-                bridge = null;
             }
         }
         return true;
@@ -110,22 +97,13 @@ public final class CssProcessor extends AbstractProcessor {
         var block = TextBlock.decode(source.substring(start, end), start, css);
         String root =
                 Names.root(processingEnv.getElementUtils().getBinaryName(owner).toString());
-        String tool = processingEnv.getOptions().get("css.tool");
-        if (tool == null) {
-            throw new IllegalArgumentException("Set -Acss.tool to the declared CSS bridge executable");
-        }
-        CssBridge.Result result;
+        String result;
         try {
-            var current = bridge;
-            if (current == null) {
-                current = new CssBridge(tool);
-                bridge = current;
-            }
-            result = current.compile(
+            result = CssCompiler.component(
                     block.value(),
                     root,
                     methods.stream().map(m -> m.getSimpleName().toString()).toList());
-        } catch (CssBridge.InvalidCss e) {
+        } catch (CssCompiler.InvalidCss e) {
             int offset = block.offsets()[Math.max(0, Math.min(block.value().length(), e.offset()))];
             String location =
                     unit.getSourceFile().getName() + ":" + unit.getLineMap().getLineNumber(offset) + ":"
@@ -180,7 +158,7 @@ public final class CssProcessor extends AbstractProcessor {
                 .getFiler()
                 .createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/jcss/" + root + ".css", owner)
                 .openOutputStream()) {
-            stream.write(result.css().getBytes(StandardCharsets.UTF_8));
+            stream.write(result.getBytes(StandardCharsets.UTF_8));
         }
     }
 

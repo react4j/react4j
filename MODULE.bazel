@@ -187,6 +187,146 @@ _http_file(
 )
 
 _http_file(
+    name = "ph_annotations",
+    downloaded_file_path = "com/helger/commons/ph-annotations/12.5.1/ph-annotations-12.5.1.jar",
+    sha256 = "324608559894a1f2800cf1553f5ba9af67da8b77e09314938c1ddaefbbb4f5ed",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-annotations/12.5.1/ph-annotations-12.5.1.jar"],
+)
+
+_http_file(
+    name = "ph_annotations__sources",
+    downloaded_file_path = "com/helger/commons/ph-annotations/12.5.1/ph-annotations-12.5.1-sources.jar",
+    sha256 = "56079e801f8cec5411e7bb4d34fb0ae364db59a5273efc6c58ef219673726eba",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-annotations/12.5.1/ph-annotations-12.5.1-sources.jar"],
+)
+
+_http_file(
+    name = "ph_base",
+    downloaded_file_path = "com/helger/commons/ph-base/12.5.1/ph-base-12.5.1.jar",
+    sha256 = "795fb66d3a62bb887140522a4878f73f1eef22e910bb0bea5765f820949edba6",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-base/12.5.1/ph-base-12.5.1.jar"],
+)
+
+_http_file(
+    name = "ph_base__sources",
+    downloaded_file_path = "com/helger/commons/ph-base/12.5.1/ph-base-12.5.1-sources.jar",
+    sha256 = "f52b79cb3410d755b8797e20d3a219d82614b58804acb33f6a2a0d0ed58921eb",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-base/12.5.1/ph-base-12.5.1-sources.jar"],
+)
+
+_http_file(
+    name = "ph_cache",
+    downloaded_file_path = "com/helger/commons/ph-cache/12.5.1/ph-cache-12.5.1.jar",
+    sha256 = "5e41d0379e6f6a4abb9ae54cd44df22ea0b69de2a690e858dba563206d73eb79",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-cache/12.5.1/ph-cache-12.5.1.jar"],
+)
+
+_http_file(
+    name = "ph_cache__sources",
+    downloaded_file_path = "com/helger/commons/ph-cache/12.5.1/ph-cache-12.5.1-sources.jar",
+    sha256 = "71273485bce3f0b820de7dcbdca6ed00f9d67424ef7c87782a99a342c8b41098",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-cache/12.5.1/ph-cache-12.5.1-sources.jar"],
+)
+
+_http_file(
+    name = "ph_collection",
+    downloaded_file_path = "com/helger/commons/ph-collection/12.5.1/ph-collection-12.5.1.jar",
+    sha256 = "c724b2a1cca97fd8431f938303e3c159fd3e2fcb0a948a07eeb609868f9b3a02",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-collection/12.5.1/ph-collection-12.5.1.jar"],
+)
+
+_http_file(
+    name = "ph_collection__sources",
+    downloaded_file_path = "com/helger/commons/ph-collection/12.5.1/ph-collection-12.5.1-sources.jar",
+    sha256 = "7cc312301a142e89a0665e432c77d919341446b91cabb5d1d01b584953166b11",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-collection/12.5.1/ph-collection-12.5.1-sources.jar"],
+)
+
+_http_file(
+    name = "ph_io",
+    downloaded_file_path = "com/helger/commons/ph-io/12.5.1/ph-io-12.5.1.jar",
+    sha256 = "7ff50aab71fb25cfe887cf1038b314063f7dd0682e1ae8e82ef331a13d3709db",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-io/12.5.1/ph-io-12.5.1.jar"],
+)
+
+_http_file(
+    name = "ph_io__sources",
+    downloaded_file_path = "com/helger/commons/ph-io/12.5.1/ph-io-12.5.1-sources.jar",
+    sha256 = "b3ea34eed038f757b4f51d5f0dfe915d12ecd3780f4c91c73f2db207fef2cd80",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-io/12.5.1/ph-io-12.5.1-sources.jar"],
+)
+
+_http_file(
+    name = "ph_mime",
+    downloaded_file_path = "com/helger/commons/ph-mime/12.5.1/ph-mime-12.5.1.jar",
+    sha256 = "654e958d6998fdd8c515c459390c345ea67d9ee047509737d04305fa255187aa",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-mime/12.5.1/ph-mime-12.5.1.jar"],
+)
+
+_http_file(
+    name = "ph_mime__sources",
+    downloaded_file_path = "com/helger/commons/ph-mime/12.5.1/ph-mime-12.5.1-sources.jar",
+    sha256 = "3d9f06753bbcba8cefc80cf98776806c428c413b963fd7d28efaf161862c078f",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-mime/12.5.1/ph-mime-12.5.1-sources.jar"],
+)
+
+_http_file(
+    name = "ph_statistics",
+    downloaded_file_path = "com/helger/commons/ph-statistics/12.5.1/ph-statistics-12.5.1.jar",
+    sha256 = "441f183515a2d7f2a9f72a8a66a7a01fced67de2f74b61fd3bb51baa22c86d5c",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-statistics/12.5.1/ph-statistics-12.5.1.jar"],
+)
+
+_http_file(
+    name = "ph_statistics__sources",
+    downloaded_file_path = "com/helger/commons/ph-statistics/12.5.1/ph-statistics-12.5.1-sources.jar",
+    sha256 = "8b25792c19d5f6ddec00af4ebb1ab4753a4dbf5c20150fa0c2ceb617528e11a0",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-statistics/12.5.1/ph-statistics-12.5.1-sources.jar"],
+)
+
+_http_file(
+    name = "ph_text",
+    downloaded_file_path = "com/helger/commons/ph-text/12.5.1/ph-text-12.5.1.jar",
+    sha256 = "fcf0d7397ab8c8fb8169c814bb6039f072cbfcb29f3b3c053e263933eaf6cf8d",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-text/12.5.1/ph-text-12.5.1.jar"],
+)
+
+_http_file(
+    name = "ph_text__sources",
+    downloaded_file_path = "com/helger/commons/ph-text/12.5.1/ph-text-12.5.1-sources.jar",
+    sha256 = "a6d7a0532de67a2c82cec6b17fa3c4fde080fc3da2c8c6aad218b9cd7d7e326c",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-text/12.5.1/ph-text-12.5.1-sources.jar"],
+)
+
+_http_file(
+    name = "ph_typeconvert",
+    downloaded_file_path = "com/helger/commons/ph-typeconvert/12.5.1/ph-typeconvert-12.5.1.jar",
+    sha256 = "f7362b64a3e2a561e0d52b94fdb7ed16856535632149f17cf666573ae790ba11",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-typeconvert/12.5.1/ph-typeconvert-12.5.1.jar"],
+)
+
+_http_file(
+    name = "ph_typeconvert__sources",
+    downloaded_file_path = "com/helger/commons/ph-typeconvert/12.5.1/ph-typeconvert-12.5.1-sources.jar",
+    sha256 = "38e6be847488958cadd9b21dd2577814c7594e34118e3ba148021982deb44b2d",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/commons/ph-typeconvert/12.5.1/ph-typeconvert-12.5.1-sources.jar"],
+)
+
+_http_file(
+    name = "ph_css",
+    downloaded_file_path = "com/helger/ph-css/8.2.3/ph-css-8.2.3.jar",
+    sha256 = "769da4d3f812704d3669f62e3fbf4bf24e046f3a7f253fff9b5bab3648a22c15",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/ph-css/8.2.3/ph-css-8.2.3.jar"],
+)
+
+_http_file(
+    name = "ph_css__sources",
+    downloaded_file_path = "com/helger/ph-css/8.2.3/ph-css-8.2.3-sources.jar",
+    sha256 = "062adc1b48b813dcfb70aa41b5f8828bc1fe386b13336ea87a9ae65f38cc6ee7",
+    urls = ["https://repo.maven.apache.org/maven2/com/helger/ph-css/8.2.3/ph-css-8.2.3-sources.jar"],
+)
+
+_http_file(
     name = "javapoet",
     downloaded_file_path = "com/palantir/javapoet/javapoet/0.14.0/javapoet-0.14.0.jar",
     sha256 = "eed13dad118e27ff53567855c9677a75723e904ccb612dbba16cfa6636edb251",
@@ -433,16 +573,16 @@ _http_file(
 
 _http_file(
     name = "slf4j_api",
-    downloaded_file_path = "org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar",
-    sha256 = "d3ef575e3e4979678dc01bf1dcce51021493b4d11fb7f1be8ad982877c16a1c0",
-    urls = ["https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar"],
+    downloaded_file_path = "org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar",
+    sha256 = "44508fd1576500688c790b190acdd16fec4f8c79a3e0b900afd70503cf055f55",
+    urls = ["https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18.jar"],
 )
 
 _http_file(
     name = "slf4j_api__sources",
-    downloaded_file_path = "org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
-    sha256 = "15bc04357a3725b7a5153f132db71379f95e83b7b8590a86cc6d4ad77bfc150a",
-    urls = ["https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar"],
+    downloaded_file_path = "org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18-sources.jar",
+    sha256 = "192e007cf7f2be41d40574e44521fc0b7ce55e01f13dbe0fa8707c8ae3329075",
+    urls = ["https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/2.0.18/slf4j-api-2.0.18-sources.jar"],
 )
 
 _http_file(
@@ -516,19 +656,3 @@ _http_file(
     sha256 = "91758fd769bfe8c936505615fbf5a07f1d2c2eddfac7b6f2433f4b7fd8d972d6",
     urls = ["https://unpkg.com/react-dom@16.6.0/umd/react-dom.production.min.js"],
 )
-
-# Build-time tooling for the isolated CSS authoring proof.
-bazel_dep(name = "aspect_rules_js", version = "3.5.1", dev_dependency = True)
-bazel_dep(name = "rules_nodejs", version = "6.7.3", dev_dependency = True)
-
-css_node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node", dev_dependency = True)
-css_node.toolchain(node_version = "24.9.0")
-use_repo(css_node, "nodejs_toolchains")
-
-css_npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm", dev_dependency = True)
-css_npm.npm_translate_lock(
-    name = "css_npm",
-    data = ["//css:pnpm-workspace.yaml"],
-    pnpm_lock = "//css:pnpm-lock.yaml",
-)
-use_repo(css_npm, "css_npm")

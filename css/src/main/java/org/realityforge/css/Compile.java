@@ -21,17 +21,12 @@ public final class Compile {
         } catch (IOException | IllegalArgumentException e) {
             System.err.println(e.getMessage());
             System.exit(1);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.err.println("CSS compilation interrupted");
-            System.exit(1);
         }
     }
 
-    private static void compile(String[] args) throws IOException, InterruptedException {
-        String tool = Path.of(args[0]).toAbsolutePath().toString();
-        var srcjar = Path.of(args[1]);
-        String cssOutput = Path.of(args[2]).toAbsolutePath().toString();
+    private static void compile(String[] args) throws IOException {
+        var srcjar = Path.of(args[0]);
+        var cssOutput = Path.of(args[1]);
         Path work = Files.createTempDirectory("jcss-compile-");
         try {
             Path generated = Files.createDirectory(work.resolve("sources"));
@@ -40,11 +35,11 @@ public final class Compile {
             try (var manager = compiler.getStandardFileManager(null, null, null)) {
                 var sources = new ArrayList<Path>();
                 var shared = new ArrayList<String>();
-                for (int i = 3; i < args.length; i++) {
+                for (int i = 2; i < args.length; i++) {
                     if (args[i].endsWith(".java")) {
                         sources.add(Path.of(args[i]));
                     } else {
-                        shared.add("s:" + Path.of(args[i]).toAbsolutePath());
+                        shared.add(Files.readString(Path.of(args[i])));
                     }
                 }
                 var options = List.of(
@@ -56,8 +51,7 @@ public final class Compile {
                         "-s",
                         generated.toString(),
                         "-d",
-                        classes.toString(),
-                        "-Acss.tool=" + tool);
+                        classes.toString());
                 var task = compiler.getTask(
                         null, manager, null, options, null, manager.getJavaFileObjectsFromPaths(sources));
                 task.setProcessors(List.of(new CssProcessor()));
@@ -75,16 +69,15 @@ public final class Compile {
                         zip.closeEntry();
                     }
                 }
-                var command = new ArrayList<>(List.of(tool, "bundle", cssOutput));
-                command.addAll(shared);
+                var fragments = new ArrayList<String>();
                 try (var paths = Files.walk(classes)) {
-                    paths.filter(p -> p.toString().endsWith(".css"))
+                    for (var path : paths.filter(p -> p.toString().endsWith(".css"))
                             .sorted()
-                            .forEach(p -> command.add("c:" + p.toAbsolutePath()));
+                            .toList()) {
+                        fragments.add(Files.readString(path));
+                    }
                 }
-                if (CssBridge.process(command).inheritIO().start().waitFor() != 0) {
-                    throw new IOException("CSS bundling failed");
-                }
+                Files.writeString(cssOutput, CssCompiler.bundle(shared, fragments));
             }
         } finally {
             try (var paths = Files.walk(work)) {

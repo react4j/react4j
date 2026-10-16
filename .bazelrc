@@ -2,7 +2,6 @@ common --java_language_version=17
 common --java_runtime_version=remotejdk_21
 common --tool_java_language_version=25
 common --tool_java_runtime_version=remotejdk_25
-common --repo_env=DO_NOT_TRACK=1
 
 build --strategy=PalantirJavaFormat=worker,local
 build --worker_max_instances=PalantirJavaFormat=1

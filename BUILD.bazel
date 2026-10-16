@@ -14,6 +14,7 @@ java_format_check(
         "//css:annotations",
         "//css:processor",
         "//css:compiler",
+        "//css:compiler_tests",
         "//css:processor_tests",
         "//css/example:bindings_java",
         "//css/example:browser_java",
@@ -168,8 +169,8 @@ test_suite(
     tests = [
         ":browser_tests",
         ":jvm_tests",
+        "//css:compiler_tests",
         "//css:processor_tests",
-        "//css:tool_tests",
         "//third_party/java:verify_config_sha256",
         "//tools/release:tests",
         "//tools/site:tests",

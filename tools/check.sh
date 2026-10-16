@@ -5,11 +5,6 @@ cd "$root"
 test "$(bazel --version)" = 'bazel 9.3.0'
 bazel run //tools/buildifier:buildifier_check
 tools/java_format.sh check
-bazel build //css:format //css:tool
-BAZEL_BINDIR=bazel-bin bazel-bin/css/format "$root/bazel-bin/css/tool_/tool" check \
-  "$root/css/example/src/main/java/org/realityforge/css/example/SaveButton.java" \
-  "$root/css/example/src/main/java/org/realityforge/css/example/Status.java"
-bazel run //css:tool -- check "$root/css/example/shared.css"
 bazel run //tools/ahab:hermeticity.check
 bazel run //tools/ahab:hermeticity.check -- --compilation-mode=opt
 bazel build //core //dom //processor //doc-examples:java //:core-j2cl //:dom-j2cl //tools/generation:assets //tools/release:maven_artifacts //tools/release:site_javadoc

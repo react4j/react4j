@@ -17,9 +17,9 @@ cleanup() {
 trap cleanup EXIT
 bazel --output_base="$scratch/bazel" build //css/example:styles
 second="$(bazel --output_base="$scratch/bazel" info bazel-bin)/css/example"
-for suffix in srcjar css css.br; do
+for suffix in srcjar css; do
   cmp "$first/styles.$suffix" "$second/styles.$suffix"
 done
 # Restore the ordinary output links before removing the independent checkout.
 bazel build //css/example:styles
-echo 'CSS, Brotli and generated Java source archive match an independent Bazel build'
+echo 'CSS and generated Java source archive match an independent Bazel build'

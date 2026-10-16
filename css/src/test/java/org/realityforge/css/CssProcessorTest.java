@@ -55,10 +55,7 @@ public final class CssProcessorTest {
                                 "-d",
                                 classes.toString(),
                                 "-s",
-                                generated.toString(),
-                                "-Acss.tool="
-                                        + Path.of(System.getProperty("css.tool"))
-                                                .toAbsolutePath()),
+                                generated.toString()),
                         null,
                         manager.getJavaFileObjectsFromPaths(paths));
                 task.setProcessors(List.of(new CssProcessor()));
@@ -137,7 +134,6 @@ public final class CssProcessorTest {
                 "/* &.success {} */ color: red;",
                 "content: \"&.success\";",
                 "& .success { color: red; }",
-                "colour: red;",
                 "color red;")) {
             var result = compile(Map.of("Button.java", source("demo", "    " + css, "abstract String success();")));
             assertFalse(result.success(), css);
@@ -155,10 +151,6 @@ public final class CssProcessorTest {
         var result = compile(Map.of("Button.java", text));
         assertFalse(result.success());
         assertTrue(result.diagnostics().contains("Button.java:6:6: Local selector .sucess"), result.diagnostics());
-        String escaped = source("demo", "    content: \"\\141\\s\\\\a\";\n    colour: red;", "");
-        var lint = compile(Map.of("Button.java", escaped));
-        assertFalse(lint.success());
-        assertTrue(lint.diagnostics().contains("Button.java:5:5: Unknown property"), lint.diagnostics());
     }
 
     @Test
@@ -187,31 +179,6 @@ public final class CssProcessorTest {
                         .replace("@Css(\"\"\"\n    color: red;\n    \"\"\")", "@Css(\"color: \" + \"red;\")")));
         assertFalse(expression.success());
         assertTrue(expression.diagnostics().contains("literal Java text block"), expression.diagnostics());
-    }
-
-    @Test
-    public void formattingPreservesCookedCssAndSurroundingJava() throws Exception {
-        String before = "// Before\n"
-                + source("demo", "    content: \"\\\\a\";\n    &.success {color:green;}", "abstract String success();")
-                + "// After\n";
-        Path file = Files.createTempFile("css-format-", ".java");
-        try {
-            Files.writeString(file, before);
-            String formatted = Format.format(file, System.getProperty("css.tool"));
-            assertNotEquals(formatted, before);
-            assertTrue(formatted.startsWith("// Before\npackage demo;"));
-            assertTrue(formatted.endsWith("// After\n"));
-            var original = compile(Map.of("Button.java", before));
-            Files.writeString(file, formatted);
-            assertEquals(Format.format(file, System.getProperty("css.tool")), formatted);
-            var updated = compile(Map.of("Button.java", formatted));
-            assertTrue(original.success(), original.diagnostics());
-            assertTrue(updated.success(), updated.diagnostics());
-            String resource = "classes/META-INF/jcss/jcss-demo-Button.css";
-            assertEquals(updated.files().get(resource), original.files().get(resource));
-        } finally {
-            Files.delete(file);
-        }
     }
 
     @Test
