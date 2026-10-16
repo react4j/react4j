@@ -8,6 +8,7 @@
 
 ### Current behavior
 
+- Query constructor origins through Proton's `ElementsUtil.getOrigin(...)` for validation, descriptor metadata and parameter-order diagnostics. Proton owns compiler-specific corrections and javac/Turbine regression coverage; React4j retains its normal processor behavior and diagnostic tests.
 - For `TRACKING` and `MAYBE_TRACKING` views, render-prelude observation scans subclass-accessible declared/inherited instance fields and zero-argument instance methods annotated with `@ComponentDependency` or `@AutoObserve`. `@Input` and `@CascadeDispose` do not select candidates. Known nullable candidates use `ComponentObservable.maybeObserve(...)`; uncertain types use a runtime `instanceof ComponentObservable` guard.
 - Explicit `@View` constructors warn with `React4j:ConstructorParameterOrder` when parameters are not grouped as non-`@Input`, then `@Input(fromTreeContext = true)`, then other `@Input`. The suppressible diagnostic attaches to the constructor and labels the groups `inject`, `tree`, and `input`.
 - `@View(exportBuilder = true|false)` alone controls builder API visibility. `false` gives package access to the top-level builder, `newBuilder()`, static entry methods, and step interfaces; `true` makes them public. Public `@View` classes emit the suppressible `React4j:PublicView` warning.
