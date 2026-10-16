@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Support JsInterop 1.2 nullness contracts when reading required JavaScript inputs and context components. Emit JSpecify qualifiers directly on generated types so consumer builds pass AnnotationPosition. Accept an absent inline style in DOM props.
+* Support JsInterop 1.2 nullness contracts when reading required JavaScript inputs and context components. Emit JSpecify qualifiers directly on generated types so consumer builds pass AnnotationPosition. Accept an absent inline style in DOM props and a null context children array, including generated context providers without a render method.
 
 * Import the raw, Arez and Sting TodoMVC examples with checked Bazel/J2CL builds, shared assets, browser coverage and local preview commands. Correct the remaining-task counts and raw view subscriptions. Build the existing site routes here and retire the separately hosted Dagger demo.
 * Correct implicit default constructor handling under Turbine using Proton's origin query, preserving validation and diagnostics for explicitly written constructors.

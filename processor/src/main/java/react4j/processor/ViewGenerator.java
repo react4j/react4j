@@ -795,8 +795,11 @@ final class ViewGenerator {
         if (null != render) {
             sb.append("$N()");
             args.add(render.getSimpleName().toString());
-        } else {
+        } else if (publishDescriptors.isEmpty()) {
             sb.append("null");
+        } else {
+            sb.append("($T[]) null");
+            args.add(REACT_NODE_CLASSNAME);
         }
 
         final var publishCount = publishDescriptors.size();

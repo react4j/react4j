@@ -10,6 +10,8 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Context;
+import react4j.Contexts;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.OnComponentWillUnmount;
@@ -48,7 +50,14 @@ abstract class React4j_NoRenderWithPreRenderView extends NoRenderWithPreRenderVi
   @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     preRender();
-    return null;
+    return ContextHolder.CONTEXT_contextValue.provide( contextValue(), (ReactNode[]) null );
+  }
+
+  private static final class ContextHolder {
+    private static final Context<String> CONTEXT_contextValue = Contexts.get( String.class );
+
+    private ContextHolder() {
+    }
   }
 
   static final class Factory {

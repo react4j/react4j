@@ -36,7 +36,7 @@ public final class Context<T extends @Nullable Object> {
      * @return the element.
      */
     @JsOverlay
-    public ReactNode provide(@Nullable final T value, final @Nullable ReactNode... children) {
+    public ReactNode provide(@Nullable final T value, final @Nullable ReactNode @Nullable ... children) {
         return provider().value(value).children(children);
     }
 
@@ -79,7 +79,7 @@ public final class Context<T extends @Nullable Object> {
             return this;
         }
 
-        public ReactNode children(final @Nullable ReactNode... children) {
+        public ReactNode children(final @Nullable ReactNode @Nullable ... children) {
             _element.input("children", children);
             return build();
         }
