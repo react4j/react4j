@@ -152,10 +152,19 @@ public final class SiteTest {
             Assert.assertTrue(Assert.expectThrows(IOException.class, () -> SiteLinks.check(root))
                     .toString()
                     .contains("external asset"));
-            Files.writeString(root.resolve("index.html"), "<a href=\"/todomvc/raw/app\">External example</a>");
-            SiteLinks.check(root);
             for (final var route : List.of(
-                    "drumloop", "webspeechdemo", "webspeechdemo_dev", "heart-rate-monitor", "heart-rate-monitor_dev")) {
+                    "drumloop",
+                    "webspeechdemo",
+                    "webspeechdemo_dev",
+                    "heart-rate-monitor",
+                    "heart-rate-monitor_dev",
+                    "todomvc",
+                    "todomvc/raw/todomvc",
+                    "todomvc/raw/todomvc_dev",
+                    "todomvc/arez/todomvc",
+                    "todomvc/arez/todomvc_dev",
+                    "todomvc/sting/todomvc",
+                    "todomvc/sting/todomvc_dev")) {
                 Files.writeString(root.resolve("index.html"), "<a href=\"/" + route + "/\">Missing owned example</a>");
                 Assert.expectThrows(IOException.class, () -> SiteLinks.check(root));
             }
@@ -184,7 +193,7 @@ public final class SiteTest {
     }
 
     @Test
-    public void preservesExternalDeploymentsAndRejectsOwnershipCollisions() throws IOException {
+    public void replacesPublishedAppsAndPreservesGitMetadata() throws IOException {
         final var source = site(Map.of(
                 "index.html",
                 "<main>New site</main>",
@@ -203,7 +212,9 @@ public final class SiteTest {
                 "heart-rate-monitor/index.html",
                 "Owned monitor",
                 "heart-rate-monitor_dev/index.html",
-                "Development monitor"));
+                "Development monitor",
+                "todomvc/raw/todomvc/index.html",
+                "Owned TodoMVC"));
         final var destination = site(Map.of(
                 "index.html",
                 "Old site",
@@ -211,8 +222,10 @@ public final class SiteTest {
                 "stale",
                 ".git/config",
                 "git metadata",
-                "todomvc/raw/index.html",
+                "todomvc/raw/todomvc/index.html",
                 "external app",
+                "todomvc/dagger/todomvc/index.html",
+                "legacy dagger",
                 "drumloop/index.html",
                 "external drumloop",
                 "webspeechdemo/index.html",
@@ -224,7 +237,8 @@ public final class SiteTest {
             Assert.assertEquals(Files.readString(destination.resolve("index.html")), "<main>New site</main>");
             Assert.assertFalse(Files.exists(destination.resolve("stale")));
             Assert.assertEquals(Files.readString(destination.resolve(".git/config")), "git metadata");
-            Assert.assertEquals(Files.readString(destination.resolve("todomvc/raw/index.html")), "external app");
+            Assert.assertEquals(
+                    Files.readString(destination.resolve("todomvc/raw/todomvc/index.html")), "Owned TodoMVC");
             Assert.assertEquals(Files.readString(destination.resolve("drumloop/index.html")), "Owned drumloop");
             Assert.assertEquals(Files.readString(destination.resolve("webspeechdemo/index.html")), "Owned speech");
             Assert.assertEquals(
@@ -237,10 +251,12 @@ public final class SiteTest {
                     Files.readString(destination.resolve("drumloop/drumloop_dev/index.html")), "Development drumloop");
             Assert.assertEquals(
                     Files.readString(destination.resolve("webspeechdemo_dev/index.html")), "Development speech");
-            Files.createDirectories(source.resolve("todomvc"));
-            Files.writeString(source.resolve("todomvc/index.html"), "collision");
+            Assert.assertFalse(Files.exists(destination.resolve("todomvc/dagger")));
+            Files.createDirectories(source.resolve(".git"));
+            Files.writeString(source.resolve(".git/config"), "collision");
             Assert.expectThrows(IOException.class, () -> SiteDeploy.prepare(source, destination));
-            Assert.assertEquals(Files.readString(destination.resolve("todomvc/raw/index.html")), "external app");
+            Assert.assertEquals(
+                    Files.readString(destination.resolve("todomvc/raw/todomvc/index.html")), "Owned TodoMVC");
             Assert.expectThrows(IOException.class, () -> SiteDeploy.prepare(source, source));
         } finally {
             delete(source);

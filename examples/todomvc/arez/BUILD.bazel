@@ -1,0 +1,35 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//tools/browser:rules.bzl", "browser_application", "browser_application_variant")
+
+package(default_visibility = ["//visibility:public"])
+
+closure_js_library(
+    name = "entry",
+    srcs = ["//examples/todomvc/arez/src/main/java/react4j/todomvc/arez:App.entry.js"],
+    deps = ["//examples/todomvc/arez/src/main/java/react4j/todomvc/arez:todomvc"],
+)
+
+browser_application(
+    name = "arez",
+    assets = {
+        "//examples/todomvc:public/css/base.css": "css/base.css",
+        "//examples/todomvc:public/css/index.css": "css/index.css",
+        "//examples/todomvc:public/css/toggle.svg": "css/toggle.svg",
+        "//examples/todomvc:public/css/toggle_checked.svg": "css/toggle_checked.svg",
+    },
+    entry_point = "react4j.todomvc.arez.AppEntry",
+    html = "//examples/todomvc:public/index.html",
+    deps = [":entry"],
+)
+
+browser_application_variant(
+    name = "development",
+    application = ":arez",
+    mode = "fastbuild",
+)
+
+browser_application_variant(
+    name = "production",
+    application = ":arez",
+    mode = "opt",
+)

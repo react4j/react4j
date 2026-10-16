@@ -27,6 +27,10 @@ paths=(
   examples/drumloop/src/main/java
   examples/drumloop/src/test/java
   examples/heart-rate-monitor/src/main/java
+  examples/todomvc/raw/src/main/java
+  examples/todomvc/arez/src/main/java
+  examples/todomvc/sting/src/main/java
+  examples/todomvc/src/main/java
   examples/webspeechdemo/src/main/java
   doc-examples/src/main/java
 )

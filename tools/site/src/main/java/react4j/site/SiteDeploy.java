@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
-import java.util.Set;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 final class SiteDeploy {
-    static final Set<String> EXTERNAL_PATHS = Set.of("todomvc");
-
     private SiteDeploy() {}
 
     static void prepare(Path source, Path destination) throws IOException {
@@ -22,16 +19,15 @@ final class SiteDeploy {
         }
         try (var entries = Files.list(root)) {
             for (final var entry : entries.toList()) {
-                if (EXTERNAL_PATHS.contains(entry.getFileName().toString())
-                        || entry.getFileName().toString().equals(".git")) {
-                    throw new IOException("Site output would replace an externally owned path: " + entry);
+                if (entry.getFileName().toString().equals(".git")) {
+                    throw new IOException("Site output would replace Git metadata: " + entry);
                 }
             }
         }
         try (var entries = Files.list(target)) {
             for (final var entry : entries.toList()) {
                 final var name = entry.getFileName().toString();
-                if (!name.equals(".git") && !EXTERNAL_PATHS.contains(name)) {
+                if (!name.equals(".git")) {
                     try (var paths = Files.walk(entry)) {
                         for (final var path :
                                 paths.sorted(Comparator.reverseOrder()).toList()) {
