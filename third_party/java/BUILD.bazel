@@ -113,7 +113,7 @@ alias(
 j2cl_library(
     name = "zemeckis_core-j2cl",
     # This release bundles its Java and native configuration companions together.
-    srcs = ["@zemeckis_core//file"],
+    srcs = ["@zemeckis//tools/release:zemeckis_core_jar"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     deps = [
         ":braincheck_core-j2cl",
@@ -125,12 +125,36 @@ j2cl_library(
     ],
 )
 
+_java_import(
+    name = "braincheck_core",
+    jars = ["@braincheck//tools/release:braincheck_core_jar"],
+    srcjar = "@braincheck//tools/release:braincheck_core_sources_jar",
+    deps = [
+        ":jsinterop_annotations",
+        ":jspecify",
+    ],
+)
+
+_java_import(
+    name = "zemeckis_core",
+    jars = ["@zemeckis//tools/release:zemeckis_core_jar"],
+    srcjar = "@zemeckis//tools/release:zemeckis_core_sources_jar",
+    deps = [
+        ":base",
+        ":braincheck_core",
+        ":grim_annotations",
+        ":jsinterop_annotations",
+        ":jspecify",
+        ":org_jetbrains_annotations",
+    ],
+)
+
 # --- depgen-generated targets start ---
 
 # DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.26
 
 # SHA256 of the configuration content that generated this content
-_CONFIG_SHA256 = "16D59DA7C0F3A908CF67E7EC27627DB57B9C0262FA46F8267770764D90EC06A4"
+_CONFIG_SHA256 = "A93D57E8B3CA73D3F8DA6BED046003D523AF34FB200B88A9B85117C032976D7E"
 
 exports_files(["dependencies.yml"])
 
@@ -139,9 +163,6 @@ exports_files(["dependencies.yml"])
 # +- org.commonmark:commonmark-ext-gfm-tables:jar:0.30.1 [compile]
 # |  \- org.commonmark:commonmark:jar:0.30.1 [compile]
 # +- io.github.eisop:dataflow-errorprone:jar:3.41.0-eisop1 [compile]
-# +- org.realityforge.braincheck:braincheck-core:jar:1.35.0 [compile]
-# |  +- org.jspecify:jspecify:jar:1.0.0 [compile]
-# |  \- com.google.jsinterop:jsinterop-annotations:jar:2.0.0 [compile]
 # +- org.realityforge.grim:grim-annotations:jar:0.09 [compile]
 # |  \- org.realityforge.javax.annotation:javax.annotation:jar:1.0.1 [compile]
 # +- org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:jar:1.7.0 [compile]
@@ -163,13 +184,6 @@ exports_files(["dependencies.yml"])
 # |  +- net.bytebuddy:byte-buddy-agent:jar:1.12.9 [compile]
 # |  \- org.objenesis:objenesis:jar:3.2 [runtime]
 # +- com.palantir.javapoet:javapoet:jar:0.14.0 [compile]
-# +- org.realityforge.zemeckis:zemeckis-core:jar:0.18 [compile]
-# |  +- org.jspecify:jspecify:jar:1.0.0 [compile]
-# |  +- com.google.jsinterop:jsinterop-annotations:jar:2.0.0 [compile]
-# |  +- com.google.jsinterop:base:jar:1.0.0 [compile] (conflicts with 1.2.0)
-# |  +- org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:jar:1.7.0 [compile]
-# |  +- org.realityforge.braincheck:braincheck-core:jar:1.35.0 [compile]
-# |  \- org.realityforge.grim:grim-annotations:jar:0.09 [compile]
 # \- org.realityforge.javaemul.internal.annotations:javaemul.internal.annotations:jar:0.01 [compile]
 
 _java_test(
@@ -339,17 +353,6 @@ _java_import(
 )
 
 _java_import(
-    name = "braincheck_core",
-    jars = ["@braincheck_core//file"],
-    srcjar = "@braincheck_core__sources//file",
-    tags = ["maven_coordinates=org.realityforge.braincheck:braincheck-core:1.35.0"],
-    deps = [
-        ":jsinterop_annotations",
-        ":jspecify",
-    ],
-)
-
-_java_import(
     name = "grim_annotations",
     jars = ["@grim_annotations//file"],
     srcjar = "@grim_annotations__sources//file",
@@ -377,21 +380,6 @@ _java_import(
     jars = ["@org_jetbrains_annotations//file"],
     srcjar = "@org_jetbrains_annotations__sources//file",
     tags = ["maven_coordinates=org.realityforge.org.jetbrains.annotations:org.jetbrains.annotations:1.7.0"],
-)
-
-_java_import(
-    name = "zemeckis_core",
-    jars = ["@zemeckis_core//file"],
-    srcjar = "@zemeckis_core__sources//file",
-    tags = ["maven_coordinates=org.realityforge.zemeckis:zemeckis-core:0.18"],
-    deps = [
-        ":base",
-        ":braincheck_core",
-        ":grim_annotations",
-        ":jsinterop_annotations",
-        ":jspecify",
-        ":org_jetbrains_annotations",
-    ],
 )
 
 _java_import(

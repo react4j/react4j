@@ -1,9 +1,23 @@
 module(name = "react4j")
 
+bazel_dep(name = "braincheck")
+git_override(
+    module_name = "braincheck",
+    commit = "cf4f382f75a8660425d7637a88451c3a5596d887",
+    remote = "https://github.com/realityforge/braincheck.git",
+)
+
+bazel_dep(name = "zemeckis")
+git_override(
+    module_name = "zemeckis",
+    commit = "25ef6cd3499ff21405da75d4d074e7ed5bad06ae",
+    remote = "https://github.com/realityforge/zemeckis.git",
+)
+
 bazel_dep(name = "arez")
 git_override(
     module_name = "arez",
-    commit = "491a15a93363431eb1df4ba81e3e8088a4153ce3",
+    commit = "c4e99b9c1dc61593a3a7adf12fd932f66d621271",
     remote = "https://github.com/arez/arez.git",
 )
 
@@ -17,7 +31,7 @@ git_override(
 bazel_dep(name = "sting")
 git_override(
     module_name = "sting",
-    commit = "fc89bc7c3f4450d3d1b75eaa58e63edfb37f1267",
+    commit = "b313be65dc351090e31fb53862f345c260f01e68",
     remote = "https://github.com/sting-ioc/sting.git",
 )
 
@@ -63,6 +77,8 @@ browser_maven.install(
     duplicate_version_warning = "none",
     fail_if_repin_required = True,
     known_contributing_modules = [
+        "braincheck",
+        "zemeckis",
         "j2cl",
         "jsinterop_base",
         "protobuf",
@@ -348,20 +364,6 @@ _http_file(
 )
 
 _http_file(
-    name = "braincheck_core",
-    downloaded_file_path = "org/realityforge/braincheck/braincheck-core/1.35.0/braincheck-core-1.35.0.jar",
-    sha256 = "6d37351d8be23c2dd5b0c06a75cf6d1eaf70a8cad9300ce4bcf2d2d92de74b94",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/braincheck/braincheck-core/1.35.0/braincheck-core-1.35.0.jar"],
-)
-
-_http_file(
-    name = "braincheck_core__sources",
-    downloaded_file_path = "org/realityforge/braincheck/braincheck-core/1.35.0/braincheck-core-1.35.0-sources.jar",
-    sha256 = "2111c57c8b83e4e0e75dfe6f00b13dedd7c8484a91f8331fbd00c657cc9ed9d2",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/braincheck/braincheck-core/1.35.0/braincheck-core-1.35.0-sources.jar"],
-)
-
-_http_file(
     name = "grim_annotations",
     downloaded_file_path = "org/realityforge/grim/grim-annotations/0.09/grim-annotations-0.09.jar",
     sha256 = "b1968ada2e5693cf513627510d271d8f6e21e4a69dd381c747a0ecafbbbe8c7c",
@@ -415,20 +417,6 @@ _http_file(
     downloaded_file_path = "org/realityforge/org/jetbrains/annotations/org.jetbrains.annotations/1.7.0/org.jetbrains.annotations-1.7.0-sources.jar",
     sha256 = "51b7fe38ce0c21d53eb236f911d109923459c5625c6e62a4d02b95c71bfaec22",
     urls = ["https://repo.maven.apache.org/maven2/org/realityforge/org/jetbrains/annotations/org.jetbrains.annotations/1.7.0/org.jetbrains.annotations-1.7.0-sources.jar"],
-)
-
-_http_file(
-    name = "zemeckis_core",
-    downloaded_file_path = "org/realityforge/zemeckis/zemeckis-core/0.18/zemeckis-core-0.18.jar",
-    sha256 = "9fecd374ffd669e2816685d74f7c1d7b1dc746103bd932ea9c9ee6659132d827",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/zemeckis/zemeckis-core/0.18/zemeckis-core-0.18.jar"],
-)
-
-_http_file(
-    name = "zemeckis_core__sources",
-    downloaded_file_path = "org/realityforge/zemeckis/zemeckis-core/0.18/zemeckis-core-0.18-sources.jar",
-    sha256 = "052da3cd335515041c0ab0c27b7abc760fb7870b7241f35d23e0c4e6f7a02e26",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/zemeckis/zemeckis-core/0.18/zemeckis-core-0.18-sources.jar"],
 )
 
 _http_file(
