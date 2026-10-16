@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Add a JVM CSS-in-Java implementation with owner-derived names, checked static modifier accessors, source diagnostics, external CSS assets and React4j/J2CL integration. Support javac processor discovery and declared extraction dependencies. Production refinement and final product packaging remain in progress.
 * Import the raw, Arez and Sting TodoMVC examples with checked Bazel/J2CL builds, shared assets, browser coverage and local preview commands. Correct the remaining-task counts and raw view subscriptions. Build the existing site routes here and retire the separately hosted Dagger demo.
 * Correct implicit default constructor handling under Turbine using Proton's origin query, preserving validation and diagnostics for explicitly written constructors.
 * Import Heart Rate Monitor under `examples/heart-rate-monitor` with checked package-level Bazel/J2CL builds, browser tests, preview commands, and site integration at `/heart-rate-monitor/`.

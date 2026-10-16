@@ -31,3 +31,9 @@ The golden updater operates in an isolated runfiles/temporary compilation tree. 
 `tools/generation/src/main/java/react4j/generation/DomGenerator.java` and adjacent resource templates own DOM factories. Its deterministic source archive includes the generated factories compiled by the DOM target and distributed in its source archive.
 
 `ReactAssetPatcher.java` transforms the pinned React 16.6.0 UMD inputs to expose React.Element. `MODULE.bazel` owns URLs/checksums. Published source archives include the native companions, externs and UMD assets; binaries contain bytecode and metadata. Keep these boundaries in archive checks when changing resources.
+
+## CSS authoring implementation
+
+[`css/README.md`](../../css/README.md) owns the CSS authoring API, current limits and production refinement sequence. The work remains on a draft PR pending production acceptance. Its annotation processor parses and validates CSS in-process with ph-css before emitting static Java bindings and Filer resources; a separate JVM extraction action collects those resources before ordinary checked Java/J2CL compilation. Node and native CSS tools are excluded from this toolchain. Product packaging remains open, with separate annotation and processor targets keeping parser dependencies off the application annotation classpath. The processor jar has javac service registration; the extraction rule's `deps` supplies application compilation jars independently of the tool runtime. Keep all jars as declared inputs and use argument files for source/classpath lists.
+
+Check the parser's syntax tree before converting it to the domain model: unsupported nested rules can otherwise disappear during conversion. Keep selector/accessor validation on parsed selector nodes. Retain the original Java token and javac's cooked text-block value together: indentation stripping, Unicode/Java escapes and continued lines make a fixed line/column offset insufficient for diagnostics.

@@ -130,11 +130,40 @@ j2cl_library(
 # DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.26
 
 # SHA256 of the configuration content that generated this content
-_CONFIG_SHA256 = "BB7EC882E9987F8E54DD0C3C3AACEEDC5BE039CBC6118D364ED8FF8E06594CE5"
+_CONFIG_SHA256 = "4E42CA5CB91D5FC6751468AE327555ED4CAF0C8C321FC0648110AD5BE0BF88F5"
 
 exports_files(["dependencies.yml"])
 
 # Dependency Graph Generated from the input data
+# +- com.helger:ph-css:jar:8.2.3 [compile]
+# |  +- com.helger.commons:ph-typeconvert:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  +- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-base:jar:12.5.1 [compile]
+# |  |     +- org.slf4j:slf4j-api:jar:2.0.18 [compile]
+# |  |     \- com.helger.commons:ph-annotations:jar:12.5.1 [compile]
+# |  +- com.helger.commons:ph-cache:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-annotations:jar:12.5.1 [compile]
+# |  |  |  \- org.jspecify:jspecify:jar:1.0.1 [compile] (conflicts with 1.0.0)
+# |  |  +- com.helger.commons:ph-base:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-statistics:jar:12.5.1 [compile]
+# |  |     \- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  +- com.helger.commons:ph-io:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-annotations:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-base:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-typeconvert:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-statistics:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-cache:jar:12.5.1 [compile]
+# |  +- com.helger.commons:ph-mime:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  +- com.helger.commons:ph-text:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-annotations:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-base:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-typeconvert:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-cache:jar:12.5.1 [compile]
+# |  \- org.slf4j:slf4j-api:jar:2.0.18 [compile]
 # +- org.commonmark:commonmark:jar:0.30.1 [compile]
 # +- org.commonmark:commonmark-ext-gfm-tables:jar:0.30.1 [compile]
 # |  \- org.commonmark:commonmark:jar:0.30.1 [compile]
@@ -150,7 +179,7 @@ exports_files(["dependencies.yml"])
 # |  \- com.google.jsinterop:jsinterop-annotations:jar:1.0.2 [compile] (conflicts with 2.0.0)
 # +- org.jspecify:jspecify:jar:1.0.0 [compile]
 # +- org.testng:testng:jar:7.10.2 [compile]
-# |  +- org.slf4j:slf4j-api:jar:1.7.36 [compile]
+# |  +- org.slf4j:slf4j-api:jar:1.7.36 [compile] (conflicts with 2.0.18)
 # |  +- com.beust:jcommander:jar:1.82 [compile]
 # |  +- org.webjars:jquery:jar:3.7.1 [runtime]
 # |  +- com.google.inject:guice:jar:5.1.0 [compile, optional]
@@ -239,6 +268,123 @@ _java_import(
     jars = ["@jsinterop_annotations//file"],
     srcjar = "@jsinterop_annotations__sources//file",
     tags = ["maven_coordinates=com.google.jsinterop:jsinterop-annotations:2.0.0"],
+)
+
+_java_import(
+    name = "ph_annotations",
+    jars = ["@ph_annotations//file"],
+    srcjar = "@ph_annotations__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-annotations:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [":jspecify"],
+)
+
+_java_import(
+    name = "ph_base",
+    jars = ["@ph_base//file"],
+    srcjar = "@ph_base__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-base:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":ph_annotations",
+        ":slf4j_api",
+    ],
+)
+
+_java_import(
+    name = "ph_cache",
+    jars = ["@ph_cache//file"],
+    srcjar = "@ph_cache__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-cache:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":ph_annotations",
+        ":ph_base",
+        ":ph_statistics",
+    ],
+)
+
+_java_import(
+    name = "ph_collection",
+    jars = ["@ph_collection//file"],
+    srcjar = "@ph_collection__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-collection:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [":ph_base"],
+)
+
+_java_import(
+    name = "ph_io",
+    jars = ["@ph_io//file"],
+    srcjar = "@ph_io__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-io:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":ph_annotations",
+        ":ph_base",
+        ":ph_cache",
+        ":ph_collection",
+        ":ph_statistics",
+        ":ph_typeconvert",
+    ],
+)
+
+_java_import(
+    name = "ph_mime",
+    jars = ["@ph_mime//file"],
+    srcjar = "@ph_mime__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-mime:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [":ph_collection"],
+)
+
+_java_import(
+    name = "ph_statistics",
+    jars = ["@ph_statistics//file"],
+    srcjar = "@ph_statistics__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-statistics:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [":ph_collection"],
+)
+
+_java_import(
+    name = "ph_text",
+    jars = ["@ph_text//file"],
+    srcjar = "@ph_text__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-text:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":ph_annotations",
+        ":ph_base",
+        ":ph_cache",
+        ":ph_collection",
+        ":ph_typeconvert",
+    ],
+)
+
+_java_import(
+    name = "ph_typeconvert",
+    jars = ["@ph_typeconvert//file"],
+    srcjar = "@ph_typeconvert__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-typeconvert:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [":ph_collection"],
+)
+
+_java_import(
+    name = "ph_css",
+    jars = ["@ph_css//file"],
+    srcjar = "@ph_css__sources//file",
+    tags = ["maven_coordinates=com.helger:ph-css:8.2.3"],
+    deps = [
+        ":ph_cache",
+        ":ph_collection",
+        ":ph_io",
+        ":ph_mime",
+        ":ph_text",
+        ":ph_typeconvert",
+        ":slf4j_api",
+    ],
 )
 
 _java_import(
@@ -394,7 +540,7 @@ _java_import(
     name = "slf4j_api",
     jars = ["@slf4j_api//file"],
     srcjar = "@slf4j_api__sources//file",
-    tags = ["maven_coordinates=org.slf4j:slf4j-api:1.7.36"],
+    tags = ["maven_coordinates=org.slf4j:slf4j-api:2.0.18"],
     visibility = ["//visibility:private"],
 )
 

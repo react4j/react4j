@@ -204,7 +204,7 @@ def _runtime_impl(ctx):
 
 _runtime = rule(implementation = _runtime_impl, outputs = {"js": "%{name}.js"}, attrs = {"dom": attr.label(allow_single_file = True), "js": attr.label(allow_single_file = True), "react": attr.label(allow_single_file = True), "_assets": attr.label(default = Label("//tools/browser:assets"), executable = True, cfg = "exec")})
 
-def browser_test(name, srcs, deps, entry_point, data = []):
+def browser_test(name, srcs, deps, entry_point, data = [], browser = "@rules_webtesting//browsers:chromium-local"):
     closure_js_library(name = name + "_lib", testonly = True, srcs = srcs, deps = deps + ["//tools/browser:mode", "@rules_closure//closure/testing/library:asserts", "@rules_closure//closure/testing/library:testsuite"])
     closure_js_binary(
         name = name + "_bin",
@@ -215,4 +215,4 @@ def browser_test(name, srcs, deps, entry_point, data = []):
         defs = _compiler_defines(test = True),
     )
     _runtime(name = name + "_runtime", testonly = True, js = name + "_bin.js", react = _asset("react"), dom = _asset("react_dom"))
-    webdriver_test(name = name, test_file_js = name + "_runtime.js", data = data, browsers = ["@rules_webtesting//browsers:chromium-local"], runtime_defines = _defines(test = True))
+    webdriver_test(name = name, test_file_js = name + "_runtime.js", data = data, browsers = [browser], runtime_defines = _defines(test = True))

@@ -1,0 +1,81 @@
+load("@rules_webtesting//web:web.bzl", "custom_browser")
+load("//css:rules.bzl", "styles")
+load("//tools/browser:java.bzl", "java_j2cl_library")
+load("//tools/browser:rules.bzl", "browser_test")
+
+package(default_visibility = ["//visibility:public"])
+
+styles(
+    name = "styles",
+    srcs = [
+        "src/main/java/org/realityforge/css/example/SaveButton.java",
+        "src/main/java/org/realityforge/css/example/Status.java",
+    ],
+    shared = ["shared.css"],
+)
+
+filegroup(
+    name = "generated",
+    srcs = [":styles"],
+    output_group = "sources",
+)
+
+filegroup(
+    name = "css",
+    srcs = [":styles"],
+    output_group = "css",
+)
+
+java_j2cl_library(
+    name = "bindings",
+    srcs = [
+        "src/main/java/org/realityforge/css/example/SaveButton.java",
+        "src/main/java/org/realityforge/css/example/Status.java",
+        "src/main/java/org/realityforge/css/example/package-info.java",
+        ":generated",
+    ],
+    java_deps = ["//css:annotations"],
+    deps = [
+        "//css:annotations-j2cl",
+        "//third_party/java:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
+    name = "browser",
+    srcs = [
+        "src/main/java/org/realityforge/css/example/BrowserExample.java",
+        "src/main/java/org/realityforge/css/example/package-info.java",
+    ],
+    java_deps = [
+        ":bindings_java",
+        "//:core",
+        "//:dom",
+        "//third_party/java:base",
+    ],
+    deps = [
+        ":bindings",
+        "//:core-j2cl",
+        "//:dom-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+    ],
+)
+
+custom_browser(
+    name = "chromium",
+    browser = "@rules_webtesting//browsers:chromium-local",
+    metadata = "chromium.json",
+)
+
+browser_test(
+    name = "browser_tests",
+    srcs = ["browser_test.js"],
+    browser = ":chromium",
+    data = [":css"],
+    entry_point = "cssproof.BrowserTest",
+    deps = [
+        ":browser",
+        "@rules_closure//closure/testing/library:testcase",
+    ],
+)
