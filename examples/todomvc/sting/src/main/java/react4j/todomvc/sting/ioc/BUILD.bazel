@@ -1,0 +1,25 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_j2cl_library(
+    name = "ioc",
+    srcs = [
+        "TodoInjector.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/model:model_java",
+        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/views:views_java",
+        "//third_party/java:sting_core",
+    ],
+    plugins = [
+        "@sting//:sting_processor_plugin",
+    ],
+    deps = [
+        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/model",
+        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/views",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:sting_core-j2cl",
+    ],
+)

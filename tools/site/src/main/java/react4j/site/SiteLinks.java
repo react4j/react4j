@@ -74,12 +74,6 @@ final class SiteLinks {
                                 : Objects.requireNonNull(entry.getKey().getParent())
                                         .resolve(path)
                                         .normalize();
-                if (!link.asset()
-                        && target.startsWith(root)
-                        && SiteDeploy.EXTERNAL_PATHS.contains(
-                                root.relativize(target).getName(0).toString())) {
-                    continue;
-                }
                 if (Files.isDirectory(target)) {
                     target = target.resolve("index.html");
                 } else if (!Files.exists(target)

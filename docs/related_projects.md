@@ -22,8 +22,8 @@ built using React4j.
   [production app](/drumloop/drumloop/) and [development app](/drumloop/drumloop_dev/).
 * [react-sithtracker](https://github.com/react4j/react4j-flux-challenge) A solution for the problem presented
   in the [flux challenge](https://github.com/staltz/flux-challenge) using Arez and React4j.
-* [react-todomvc](https://github.com/react4j/react4j-todomvc) Several implementations of the [TodoMVC](todomvc.md)
-  application rewritten using react4j and other supporting technologies.
+* [TodoMVC](todomvc.md) includes three implementations under `examples/todomvc`: explicit
+  render scheduling, Arez state management, and Arez with Sting dependency injection.
 * [Heart Rate Monitor](/heart-rate-monitor/) uses Web Bluetooth, Arez and React4j to display
   readings from a Bluetooth heart rate sensor. It is included under `examples/heart-rate-monitor`.
   Run `tools/examples.sh serve heart-rate-monitor development`, or try the

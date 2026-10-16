@@ -27,6 +27,13 @@
       "mnemonic": "TestRunner",
       "target": "//examples/heart-rate-monitor/src/test/js/react4j/hrm:browser_tests",
       "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//examples/todomvc/src/test/js/react4j/todomvc:browser_tests",
+      "requirement": "requires-network"
     }
   ]
 }

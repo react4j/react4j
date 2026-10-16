@@ -4,68 +4,22 @@ title: TodoMVC
 
 ![TodoMVC](/img/todomvc.svg)
 
-The [TodoMVC](https://todomvc.com/) project specified a standard project that aims to help you select
-frontend framework. The functionality is fixed as is the look and feel so that it easier to compare
-and contrast the different implementations of the application using different approaches.
+[TodoMVC](https://todomvc.com/) gives each implementation the same task list and appearance,
+so you can compare how different approaches handle the same application.
 
-These applications and their hosted directories are maintained separately from the React4j build and may use older releases.
+The three examples under `examples/todomvc` use the same page assets and browser tests:
 
-The React4j project has implemented several variants of the TodoMVC application using different
-combinations of features. The goal is to give you an idea about what an application built using
-React4j looks like.
+| Variant | State and dependency management | Production | Development |
+| --- | --- | --- | --- |
+| Raw | Explicit subscriptions and render scheduling | [Run](/todomvc/raw/todomvc/) | [Run](/todomvc/raw/todomvc_dev/) |
+| Arez | Reactive state, with services created explicitly | [Run](/todomvc/arez/todomvc/) | [Run](/todomvc/arez/todomvc_dev/) |
+| Sting | Arez state with Sting dependency injection | [Run](/todomvc/sting/todomvc/) | [Run](/todomvc/sting/todomvc_dev/) |
 
-<table width="100%">
-  <caption>TodoMVC variants</caption>
-  <thead>
-  <tr>
-    <th class="rotate"><div><span>Branch</span></div></th>
-    <th class="rotate"><div><span>Production Build</span></div></th>
-    <th class="rotate"><div><span>Development Build</span></div></th>
-    <th class="rotate"><div><span>Features</span></div></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td><a href="https://github.com/react4j/react4j-todomvc/tree/raw">raw</a></td>
-    <td><a href="/todomvc/raw/todomvc"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
-    <td><a href="/todomvc/raw/todomvc_dev"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
-    <td>
-      <ul>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/react4j/react4j-todomvc/tree/arez">arez</a></td>
-    <td><a href="/todomvc/arez/todomvc"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
-    <td><a href="/todomvc/arez/todomvc_dev"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
-    <td>
-      <ul>
-        <li>State Management: <a href="https://arez.github.io">Arez</a></li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-      <td><a href="https://github.com/react4j/react4j-todomvc/tree/sting">sting</a></td>
-      <td><a href="/todomvc/sting/todomvc"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
-      <td><a href="/todomvc/sting/todomvc_dev"><img src="/img/external-link-symbol.svg" width="20" /></a></td>
-      <td>
-        <ul>
-          <li>Dependency Injection: <a href="https://sting-ioc.github.io/">Sting</a></li>
-          <li>State Management: <a href="https://arez.github.io">Arez</a></li>
-        </ul>
-      </td>
-    </tr>
-  <tr>
-    <td><a href="https://github.com/react4j/react4j-todomvc/tree/sting_maven">sting_maven</a></td>
-    <td></td>
-    <td></td>
-    <td>
-      <ul>
-        <li>Dependency Injection: <a href="https://sting-ioc.github.io/">Sting</a></li>
-        <li>State Management: <a href="https://arez.github.io">Arez</a></li>
-        <li>Build System: <a href="https://maven.apache.org">Maven</a></li>
-      </ul>
-    </td>
-  </tr>
-  </tbody>
-</table>
+Run one locally from the repository root:
+
+```sh
+tools/examples.sh serve todomvc-raw development
+```
+
+Use `todomvc-arez` or `todomvc-sting` to try the other implementations.
+The examples keep tasks in memory; reloading the page clears them.

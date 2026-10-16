@@ -21,7 +21,7 @@ Use Bazel 9.3.0 (pinned in `.bazelversion`, typically selected by Bazelisk) and 
 | Export downstream Bazel pins/patches | `tools/export_bazel_config.sh <application-directory>` |
 | Review hermeticity | `bazel run //tools/ahab:hermeticity.check` |
 | Update Java dependencies | Edit `third_party/java/dependencies.yml`, then `tools/update_java_deps.sh` |
-| Preview example | `tools/examples.sh serve [hello_world\|drumloop\|heart-rate-monitor\|webspeechdemo] [development\|production]` |
+| Preview example | `tools/examples.sh serve [hello_world\|drumloop\|heart-rate-monitor\|todomvc-raw\|todomvc-arez\|todomvc-sting\|webspeechdemo] [development\|production]` |
 | Build / check / serve site | `tools/site.sh build` / `tools/site.sh check` / `tools/site.sh serve` |
 | Verify publication repeatability | `tools/release/check_reproducibility.sh` |
 
@@ -47,6 +47,6 @@ Keep React/ReactDOM versions and browser mode switches aligned with the runtime 
 
 ## Documentation and releases
 
-Reader documentation lives in `docs/`; Java/CommonMark rendering, templates and navigation live in `tools/site/` and `website/`. Snippets come from checked example source jars. Site generation validates local links, assets, fragments, navigation and snippet boundaries. Rebuild and refresh the local preview after edits. Site deployment preserves the separately maintained application directories listed in `SiteDeploy.EXTERNAL_PATHS`.
+Reader documentation lives in `docs/`; Java/CommonMark rendering, templates and navigation live in `tools/site/` and `website/`. Snippets come from checked example source jars. Site generation validates local links, assets, fragments, navigation and snippet boundaries. Rebuild and refresh the local preview after edits. Site deployment replaces published content with the generated site and preserves Git metadata.
 
 Before signing or publishing, follow the [release guide](tools/release/README.md), verify the migrated Arez Maven prerequisite and review the exact tag and bundle. Keep validation independent of credentials and remote mutation.

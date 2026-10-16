@@ -1,0 +1,35 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_j2cl_library(
+    name = "model",
+    srcs = [
+        "AppData.java",
+        "BrowserLocation.java",
+        "FilterMode.java",
+        "Todo.java",
+        "TodoRepository.java",
+        "TodoService.java",
+        "ViewService.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        "//:core",
+        "//examples/todomvc/src/main/java/react4j/todomvc/browser:browser_java",
+    ],
+    plugins = [
+        "@arez//:arez_processor_plugin",
+    ],
+    deps = [
+        "//:core-j2cl",
+        "//examples/todomvc/src/main/java/react4j/todomvc/browser",
+        "//third_party/java:braincheck_core-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:org_jetbrains_annotations-j2cl",
+        "//third_party/java:zemeckis_core-j2cl",
+        "@arez//:core-j2cl",
+    ],
+)

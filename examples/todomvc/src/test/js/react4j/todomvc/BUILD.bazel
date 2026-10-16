@@ -1,0 +1,15 @@
+load("//tools/browser:rules.bzl", "browser_test")
+
+package(default_visibility = ["//:__pkg__"])
+
+browser_test(
+    name = "browser_tests",
+    srcs = ["browser_test.js"],
+    data = [
+        "//examples/todomvc/arez",
+        "//examples/todomvc/raw",
+        "//examples/todomvc/sting",
+    ],
+    entry_point = "react4j.todomvc.BrowserTest",
+    deps = ["@rules_closure//closure/testing/library:testcase"],
+)
