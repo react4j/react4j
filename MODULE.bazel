@@ -35,7 +35,7 @@ bazel_dep(name = "ahab", version = "0.4.0", dev_dependency = True)
 bazel_dep(name = "rules_palantir_java_format")
 git_override(
     module_name = "rules_palantir_java_format",
-    commit = "e480c70bd6fe1ac12424756a6b3a22e30b93a6f0",
+    commit = "28d55d3fb5de184c228366f3be73686bbe6a26bd",
     remote = "https://github.com/realityforge/rules_palantir_java_format.git",
 )
 
