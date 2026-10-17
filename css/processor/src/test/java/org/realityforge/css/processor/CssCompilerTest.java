@@ -110,4 +110,14 @@ public final class CssCompilerTest {
                 CssCompiler.InvalidCss.class,
                 () -> CssCompiler.bundle(List.of("@layer components { body { color: red; } }"), List.of(fragment)));
     }
+
+    @Test
+    public void javaTextBlockMappingMatchesCompilerSemantics() {
+        String token =
+                "\"\"\"\r\n\t color: red;  \r\n\t content: \"\\141\\s\\\\a\";\\\r\n\t opacity: 0.5;\r\n\t \"\"\"";
+        var result = TextBlock.decode(token, 10, "color: red;\ncontent: \"a \\a\";opacity: 0.5;\n");
+        assertEquals(result.offsets()[result.value().indexOf("opacity")], 10 + token.indexOf("opacity"));
+        String unicode = "\"\"\"\n  color: r" + "\\" + "u0065d;\n  \"\"\"";
+        assertEquals(TextBlock.decode(unicode, 0, "color: red;\n").value(), "color: red;\n");
+    }
 }

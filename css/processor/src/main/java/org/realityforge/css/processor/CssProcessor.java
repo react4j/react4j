@@ -19,16 +19,21 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
-import org.realityforge.css.Css;
 
 /** Validates component CSS in the JVM, then emits static bindings and CSS resources. */
 @SupportedAnnotationTypes("org.realityforge.css.Css")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public final class CssProcessor extends AbstractProcessor {
 
+    private static final String CSS_ANNOTATION = "org.realityforge.css.Css";
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment round) {
-        for (var element : round.getElementsAnnotatedWith(Css.class)) {
+        var annotationType = processingEnv.getElementUtils().getTypeElement(CSS_ANNOTATION);
+        if (annotationType == null) {
+            return false;
+        }
+        for (var element : round.getElementsAnnotatedWith(annotationType)) {
             try {
                 process((TypeElement) element);
             } catch (IllegalArgumentException | IOException e) {
@@ -80,7 +85,7 @@ public final class CssProcessor extends AbstractProcessor {
             throw new IllegalArgumentException("@Css style classes require abstract String style()");
         }
         var annotation = owner.getAnnotationMirrors().stream()
-                .filter(a -> a.getAnnotationType().toString().equals(Css.class.getName()))
+                .filter(a -> a.getAnnotationType().toString().equals(CSS_ANNOTATION))
                 .findFirst()
                 .orElseThrow();
         var value = annotation.getElementValues().values().iterator().next();

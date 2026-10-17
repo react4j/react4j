@@ -5,6 +5,7 @@ import static org.testng.Assert.*;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -13,6 +14,9 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.jar.JarFile;
+import javax.annotation.processing.Processor;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
@@ -20,8 +24,60 @@ import org.jspecify.annotations.NullMarked;
 import org.realityforge.css.Css;
 import org.testng.annotations.Test;
 
+@NullMarked
 public final class CssProcessorTest {
     private record Result(boolean success, String diagnostics, Map<String, String> files, Map<String, String> values) {}
+
+    private static Path processorJar() {
+        return Path.of(Objects.requireNonNull(System.getProperty("css.processor.jar")));
+    }
+
+    @Test
+    public void artifactIsStandaloneAndRelocated() throws Exception {
+        try (var jar = new JarFile(processorJar().toFile())) {
+            var names = jar.stream().map(entry -> entry.getName()).toList();
+            assertTrue(names.contains("org/realityforge/css/processor/vendor/helger/css/CSSSourceLocation.class"));
+            assertTrue(names.contains("org/realityforge/css/processor/vendor/slf4j/Logger.class"));
+            assertTrue(names.contains("META-INF/LICENSE"));
+            assertTrue(names.contains("META-INF/licenses/ph-css-8.2.3.jar/NOTICE"));
+            assertTrue(names.contains("META-INF/licenses/ph-base-12.5.1.jar/NOTICE"));
+            assertTrue(names.contains("META-INF/licenses/slf4j-api-2.0.18.jar/META-INF/LICENSE.txt"));
+            assertFalse(
+                    names.stream()
+                            .anyMatch(name ->
+                                    name.endsWith(".class") && !name.startsWith("org/realityforge/css/processor/")),
+                    names.toString());
+            for (var entry : Map.of(
+                            "META-INF/licenses/ph-css-8.2.3.jar/NOTICE", "phloc systems",
+                            "META-INF/licenses/ph-base-12.5.1.jar/NOTICE", "Robert Harder",
+                            "META-INF/licenses/slf4j-api-2.0.18.jar/META-INF/LICENSE.txt",
+                                    "Permission is hereby granted")
+                    .entrySet()) {
+                var notice = jar.getJarEntry(entry.getKey());
+                assertNotNull(notice);
+                assert notice != null;
+                try (var stream = jar.getInputStream(notice)) {
+                    assertTrue(new String(stream.readAllBytes(), StandardCharsets.UTF_8).contains(entry.getValue()));
+                }
+            }
+            var service = jar.getJarEntry("META-INF/services/javax.annotation.processing.Processor");
+            assertNotNull(service);
+            assert service != null;
+            try (var stream = jar.getInputStream(service)) {
+                assertEquals(
+                        new String(stream.readAllBytes(), StandardCharsets.UTF_8),
+                        "org.realityforge.css.processor.CssProcessor\n");
+            }
+        }
+        try (var loader =
+                new URLClassLoader(new URL[] {processorJar().toUri().toURL()}, ClassLoader.getPlatformClassLoader())) {
+            var processor = loader.loadClass("org.realityforge.css.processor.CssProcessor");
+            assertTrue(processor.getConstructor().newInstance() instanceof Processor);
+            expectThrows(ClassNotFoundException.class, () -> loader.loadClass("org.realityforge.css.Css"));
+            expectThrows(ClassNotFoundException.class, () -> loader.loadClass("com.helger.css.CSSSourceLocation"));
+            expectThrows(ClassNotFoundException.class, () -> loader.loadClass("org.slf4j.Logger"));
+        }
+    }
 
     private static String source(String packageName, String css, String methods) {
         return "package " + packageName + ";\nimport org.realityforge.css.Css;\n@Css(\"\"\"\n"
@@ -66,7 +122,7 @@ public final class CssProcessorTest {
                                                 .getLocation()
                                                 .toURI()),
                                 "--processor-path",
-                                System.getProperty("java.class.path"),
+                                processorJar().toString(),
                                 "-d",
                                 classes.toString(),
                                 "-s",
@@ -176,16 +232,6 @@ public final class CssProcessorTest {
         var result = compile(Map.of("Button.java", text));
         assertFalse(result.success());
         assertTrue(result.diagnostics().contains("Button.java:6:6: Local selector .sucess"), result.diagnostics());
-    }
-
-    @Test
-    public void javaTextBlockMappingMatchesCompilerSemantics() {
-        String token =
-                "\"\"\"\r\n\t color: red;  \r\n\t content: \"\\141\\s\\\\a\";\\\r\n\t opacity: 0.5;\r\n\t \"\"\"";
-        var result = TextBlock.decode(token, 10, "color: red;\ncontent: \"a \\a\";opacity: 0.5;\n");
-        assertEquals(result.offsets()[result.value().indexOf("opacity")], 10 + token.indexOf("opacity"));
-        String unicode = "\"\"\"\n  color: r" + "\\" + "u0065d;\n  \"\"\"";
-        assertEquals(TextBlock.decode(unicode, 0, "color: red;\n").value(), "color: red;\n");
     }
 
     @Test

@@ -1,10 +1,13 @@
+load("@rules_java//java:defs.bzl", "java_import")
 load("//third_party/java:rules.bzl", "java_binary", "java_library", "java_testng")
+load("//tools/release:release.bzl", "release_jar")
 
 package(default_visibility = ["//visibility:public"])
 
 java_library(
-    name = "processor",
+    name = "processor_impl",
     srcs = [
+        "src/main/java/org/realityforge/css/processor/Compile.java",
         "src/main/java/org/realityforge/css/processor/CssCompiler.java",
         "src/main/java/org/realityforge/css/processor/CssProcessor.java",
         "src/main/java/org/realityforge/css/processor/Names.java",
@@ -13,25 +16,50 @@ java_library(
     ],
     resource_strip_prefix = "css/processor/src/main/resources",
     resources = ["src/main/resources/META-INF/services/javax.annotation.processing.Processor"],
+    visibility = ["//:__pkg__"],
     deps = [
-        "//css/core",
         "//third_party/java:ph_css",
     ],
 )
 
+release_jar(
+    name = "processor_jar",
+    out = "css-processor.jar",
+    exclude_prefixes = [
+        "org/jspecify/",
+        "META-INF/versions/",
+        "META-INF/buildinfo.xml",
+        "META-INF/sbom/",
+    ],
+    preserve_dependency_notices = True,
+    relocations = [
+        "com.helger=org.realityforge.css.processor.vendor.helger",
+        "org.slf4j=org.realityforge.css.processor.vendor.slf4j",
+    ],
+    resource_entries = ["META-INF/LICENSE"],
+    resource_files = ["//:LICENSE"],
+    runtime_java_targets = [":processor_impl"],
+)
+
+java_import(
+    name = "processor",
+    jars = [":processor_jar"],
+)
+
+# The adapter is included in the assembled jar so it can share package-private compiler code.
 java_binary(
     name = "compiler",
-    srcs = ["src/main/java/org/realityforge/css/processor/Compile.java"],
     main_class = "org.realityforge.css.processor.Compile",
-    deps = [":processor"],
+    runtime_deps = [":processor"],
 )
 
 java_testng(
     name = "processor_tests",
     srcs = ["src/test/java/org/realityforge/css/processor/CssProcessorTest.java"],
+    data = [":processor_jar"],
+    jvm_flags = ["-Dcss.processor.jar=$(rootpath :processor_jar)"],
     test_class = "org.realityforge.css.processor.CssProcessorTest",
     deps = [
-        ":processor",
         "//css/core",
     ],
 )
@@ -40,5 +68,5 @@ java_testng(
     name = "compiler_tests",
     srcs = ["src/test/java/org/realityforge/css/processor/CssCompilerTest.java"],
     test_class = "org.realityforge.css.processor.CssCompilerTest",
-    deps = [":processor"],
+    deps = [":processor_impl"],
 )

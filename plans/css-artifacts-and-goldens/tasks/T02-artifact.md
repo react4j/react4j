@@ -1,6 +1,6 @@
 # T02 — Standalone shaded artifact
 
-- Status: pending
+- Status: complete
 - Blocked by: T01
 - Spec coverage: R2, AC2
 
@@ -10,7 +10,7 @@ Assemble a single relocated processor using shared jar machinery, remove runtime
 
 ## Acceptance criteria
 
-- [ ] Delivered behavior and corresponding spec criteria verified.
+- [x] Delivered behavior and corresponding spec criteria verified.
 
 ## Validation
 
@@ -18,4 +18,4 @@ Run isolated javac positive and application import negative control; inspect cla
 
 ## Evidence
 
-Pending.
+`bazel test //css:tests //css/examples/save-button:browser_tests //tools/release:tests --test_output=errors`: 7/7 passed. Service discovery uses a single packaged processor path; a platform-parent loader cannot load core/parser public packages. Artifact audit checks relocated classes, sole processor service and distinct notices. `bazel cquery` confirms the public runtime closure contains only css-processor.jar. `css/check_reproducibility.sh`: shaded jar/srcjar/CSS match independent output base. Outputs still match pre-move baseline bytes. Java formatting and shell syntax passed.

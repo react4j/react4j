@@ -39,9 +39,13 @@ public final class JarBuilder {
         final var resources = new ArrayList<Resource>();
         final var relocations = new LinkedHashMap<String, String>();
         final var exclusions = new LinkedHashSet<String>();
+        boolean preserveDependencyNotices = false;
         Path output = null;
         for (int i = 1; i < args.length; i++) {
             switch (args[i]) {
+                case "--preserve-dependency-notices":
+                    preserveDependencyNotices = true;
+                    break;
                 case "--output":
                     output = Path.of(args[++i]);
                     break;
@@ -69,7 +73,7 @@ public final class JarBuilder {
         if (output == null) {
             throw new IllegalArgumentException("Missing --output");
         }
-        merge(output, inputs, resources, relocations, exclusions);
+        merge(output, inputs, resources, relocations, exclusions, preserveDependencyNotices);
     }
 
     private static Resource parseResource(final String arg) {
@@ -85,12 +89,13 @@ public final class JarBuilder {
             final List<Path> inputs,
             final List<Resource> resources,
             final Map<String, String> relocations,
-            final LinkedHashSet<String> exclusions)
+            final LinkedHashSet<String> exclusions,
+            final boolean preserveDependencyNotices)
             throws IOException {
         final var entries = new LinkedHashMap<String, byte[]>();
         final var services = new TreeMap<String, LinkedHashSet<String>>();
         for (final Path input : inputs) {
-            mergeJar(input, entries, services, relocations, exclusions);
+            mergeJar(input, entries, services, relocations, exclusions, preserveDependencyNotices);
         }
         for (final Resource resource : resources) {
             entries.put(resource.entryName(), Files.readAllBytes(resource.path()));
@@ -117,12 +122,22 @@ public final class JarBuilder {
             final Map<String, byte[]> entries,
             final Map<String, LinkedHashSet<String>> services,
             final Map<String, String> relocations,
-            final LinkedHashSet<String> exclusions)
+            final LinkedHashSet<String> exclusions,
+            final boolean preserveDependencyNotices)
             throws IOException {
         try (JarFile jar = new JarFile(input.toFile())) {
             final var jarEntries = Collections.list(jar.entries());
             jarEntries.sort(Comparator.comparing(ZipEntry::getName));
             for (final JarEntry entry : jarEntries) {
+                final String originalName = entry.getName();
+                if (preserveDependencyNotices && !entry.isDirectory() && isDependencyNotice(originalName)) {
+                    addEntry(
+                            entries,
+                            "META-INF/licenses/" + input.getFileName() + "/" + originalName,
+                            read(jar, entry),
+                            false);
+                    continue;
+                }
                 final String name = relocate(relocate(entry.getName(), relocations, '/'), relocations, '.');
                 if (entry.isDirectory()
                         || shouldSkip(name)
@@ -249,6 +264,15 @@ public final class JarBuilder {
     private static boolean isModuleDescriptor(final String name) {
         return "module-info.class".equals(name)
                 || (name.startsWith("META-INF/versions/") && name.endsWith("/module-info.class"));
+    }
+
+    private static boolean isDependencyNotice(final String name) {
+        final String upper = name.toUpperCase(Locale.ROOT);
+        return isLegalMetadata(name)
+                || upper.equals("LICENSE")
+                || upper.equals("NOTICE")
+                || upper.equals("LICENSE.TXT")
+                || upper.equals("NOTICE.TXT");
     }
 
     private static boolean isLegalMetadata(final String name) {

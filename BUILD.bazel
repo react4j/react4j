@@ -12,8 +12,7 @@ java_format_check(
     remediation = "tools/java_format.sh write",
     targets = [
         "//css/core",
-        "//css/processor:processor",
-        "//css/processor:compiler",
+        "//css/processor:processor_impl",
         "//css/processor:compiler_tests",
         "//css/integration-tests:integration_tests",
         "//css/integration-tests:fixture_dependency",

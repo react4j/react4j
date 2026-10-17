@@ -2,8 +2,8 @@
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
-bazel build //css/examples/save-button:styles
-first="$(bazel info bazel-bin)/css/examples/save-button"
+bazel build //css/examples/save-button:styles //css/processor:processor_jar
+first="$(bazel info bazel-bin)"
 scratch="$(mktemp -d "${TMPDIR:-/tmp}/react4j-css-repro.XXXXXX")"
 cleanup() {
   bazel --output_base="$scratch/bazel" shutdown >/dev/null 2>&1
@@ -15,11 +15,12 @@ cleanup() {
   find "$scratch" -depth -delete
 }
 trap cleanup EXIT
-bazel --output_base="$scratch/bazel" build //css/examples/save-button:styles
-second="$(bazel --output_base="$scratch/bazel" info bazel-bin)/css/examples/save-button"
+bazel --output_base="$scratch/bazel" build //css/examples/save-button:styles //css/processor:processor_jar
+second="$(bazel --output_base="$scratch/bazel" info bazel-bin)"
 for suffix in srcjar css; do
-  cmp "$first/styles.$suffix" "$second/styles.$suffix"
+  cmp "$first/css/examples/save-button/styles.$suffix" "$second/css/examples/save-button/styles.$suffix"
 done
+cmp "$first/css/processor/css-processor.jar" "$second/css/processor/css-processor.jar"
 # Restore the ordinary output links before removing the independent checkout.
-bazel build //css/examples/save-button:styles
-echo 'CSS and generated Java source archive match an independent Bazel build'
+bazel build //css/examples/save-button:styles //css/processor:processor_jar
+echo 'Shaded processor, CSS and generated Java source archive match an independent Bazel build'
