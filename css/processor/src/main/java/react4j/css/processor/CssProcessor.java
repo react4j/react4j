@@ -1,5 +1,8 @@
 package react4j.css.processor;
 
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.MethodSpec;
+import com.palantir.javapoet.TypeSpec;
 import com.sun.source.tree.LiteralTree;
 import com.sun.source.util.Trees;
 import java.io.IOException;
@@ -7,9 +10,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -21,15 +24,28 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
+import org.realityforge.proton.AbstractStandardProcessor;
+import org.realityforge.proton.GeneratorUtil;
+import org.realityforge.proton.SuppressWarningsUtil;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
 /** Validates component CSS in the JVM, then emits static bindings and CSS resources. */
 @SupportedAnnotationTypes("react4j.css.Css")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
-public final class CssProcessor extends AbstractProcessor {
+public final class CssProcessor extends AbstractStandardProcessor {
 
     private static final String CSS_ANNOTATION = "react4j.css.Css";
+
+    @Override
+    protected String getOptionPrefix() {
+        return "react4j.css";
+    }
+
+    @Override
+    protected String getIssueTrackerURL() {
+        return "https://github.com/react4j/react4j/issues";
+    }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment round) {
@@ -163,48 +179,43 @@ public final class CssProcessor extends AbstractProcessor {
                 .toString();
         String localName = binaryName.substring(packageName.isEmpty() ? 0 : packageName.length() + 1);
         String generated = "Styled_" + Names.encode(localName);
-        String qualified = packageName.isEmpty() ? generated : packageName + "." + generated;
-        var java = new StringBuilder();
-        if (!packageName.isEmpty()) {
-            java.append("package ").append(packageName).append(";\n\n");
+        var builder =
+                TypeSpec.classBuilder(generated).addModifiers(Modifier.FINAL).superclass(ClassName.get(owner));
+        boolean qualified = false;
+        // Proton omits java.lang imports, so peer and inherited types need explicit qualification.
+        for (var name : List.of("String", "Override", "SuppressWarnings")) {
+            var peer = processingEnv
+                    .getElementUtils()
+                    .getTypeElement(packageName.isEmpty() ? name : packageName + "." + name);
+            boolean inherited = processingEnv.getElementUtils().getAllMembers(owner).stream()
+                    .anyMatch(member -> member instanceof TypeElement
+                            && member.getSimpleName().contentEquals(name));
+            if (null != peer || inherited) {
+                builder.alwaysQualify(name);
+                qualified = true;
+            }
         }
-        var suppressions = new ArrayList<String>();
-        suppressions.add("\"UnnecessarilyFullyQualified\"");
-        if (packageName.isEmpty()) {
-            suppressions.add("\"DefaultPackage\"");
+        GeneratorUtil.addGeneratedAnnotation(processingEnv, builder, CssProcessor.class.getName());
+        GeneratorUtil.addOriginatingTypes(owner, builder);
+        var suppression = SuppressWarningsUtil.maybeSuppressWarningsAnnotation(
+                packageName.isEmpty() ? "DefaultPackage" : null,
+                qualified ? "UnnecessarilyFullyQualified" : null,
+                deprecated ? "deprecation" : null,
+                deprecated ? "removal" : null);
+        if (null != suppression) {
+            builder.addAnnotation(suppression);
         }
-        if (deprecated) {
-            suppressions.add("\"deprecation\"");
-            suppressions.add("\"removal\"");
-        }
-        java.append("@java.lang.SuppressWarnings(")
-                .append(1 == suppressions.size() ? suppressions.get(0) : "{" + String.join(", ", suppressions) + "}")
-                .append(")\n@org.jspecify.annotations.NullMarked\nfinal class ")
-                .append(generated)
-                .append(" extends ")
-                .append(owner.getQualifiedName())
-                .append(" {\n");
         for (var method : methods) {
             String name = method.getSimpleName().toString();
-            String visibility = method.getModifiers().contains(Modifier.PUBLIC)
-                    ? "public "
-                    : method.getModifiers().contains(Modifier.PROTECTED) ? "protected " : "";
-            java.append("  @java.lang.Override\n  ")
-                    .append(visibility)
-                    .append("java.lang.String ")
-                    .append(name)
-                    .append("() { return \"")
-                    .append(root);
-            if (!"style".equals(name)) {
-                java.append(' ').append(root).append("--").append(Names.encode(name));
-            }
-            java.append("\"; }\n");
+            String token = root + ("style".equals(name) ? "" : " " + root + "--" + Names.encode(name));
+            var accessor = MethodSpec.methodBuilder(name)
+                    .addAnnotation(Override.class)
+                    .returns(String.class)
+                    .addStatement("return $S", token);
+            GeneratorUtil.copyAccessModifiers(method, accessor);
+            builder.addMethod(accessor.build());
         }
-        java.append("}\n");
-        try (var writer =
-                processingEnv.getFiler().createSourceFile(qualified, owner).openWriter()) {
-            writer.write(java.toString());
-        }
+        emitTypeSpec(packageName, builder.build());
         String resource = binaryName.replace('.', '/') + ".css";
         String file = resource.substring(resource.lastIndexOf('/') + 1);
         for (var entry : Map.of(resource, result.css() + SourceMap.reference(file), resource + ".map", result.map(file))

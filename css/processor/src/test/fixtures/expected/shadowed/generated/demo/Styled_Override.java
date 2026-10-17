@@ -1,8 +1,14 @@
 package demo;
 
-@java.lang.SuppressWarnings("UnnecessarilyFullyQualified")
-@org.jspecify.annotations.NullMarked
-final class Styled_Override extends demo.Override {
+import javax.annotation.processing.Generated;
+import org.jspecify.annotations.NullMarked;
+
+@Generated("react4j.css.processor.CssProcessor")
+@SuppressWarnings("UnnecessarilyFullyQualified")
+@NullMarked
+final class Styled_Override extends Override {
   @java.lang.Override
-  java.lang.String style() { return "jcss-demo-Override"; }
+  java.lang.String style() {
+    return "jcss-demo-Override";
+  }
 }

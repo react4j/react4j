@@ -1,0 +1,1 @@
+ERROR demo/Button.java:7:6: demo/Button.java:8:5: Unsupported component rule: UNKNOWNRULE

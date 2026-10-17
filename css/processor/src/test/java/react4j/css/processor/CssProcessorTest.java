@@ -46,6 +46,9 @@ public final class CssProcessorTest {
             var names = jar.stream().map(entry -> entry.getName()).toList();
             assertTrue(names.contains("react4j/css/processor/vendor/helger/css/CSSSourceLocation.class"));
             assertTrue(names.contains("react4j/css/processor/vendor/slf4j/Logger.class"));
+            assertTrue(names.contains("react4j/css/processor/vendor/javapoet/TypeSpec.class"));
+            assertTrue(names.contains("react4j/css/processor/vendor/proton/AbstractStandardProcessor.class"));
+            assertTrue(names.contains("react4j/css/processor/vendor/proton/vendor/javaformat/java/Formatter.class"));
             assertFalse(
                     names.stream()
                             .anyMatch(name -> name.endsWith(".class") && !name.startsWith("react4j/css/processor/")),
@@ -66,6 +69,12 @@ public final class CssProcessorTest {
             expectThrows(ClassNotFoundException.class, () -> loader.loadClass("react4j.css.Css"));
             expectThrows(ClassNotFoundException.class, () -> loader.loadClass("com.helger.css.CSSSourceLocation"));
             expectThrows(ClassNotFoundException.class, () -> loader.loadClass("org.slf4j.Logger"));
+            expectThrows(ClassNotFoundException.class, () -> loader.loadClass("com.palantir.javapoet.TypeSpec"));
+            expectThrows(
+                    ClassNotFoundException.class,
+                    () -> loader.loadClass("org.realityforge.proton.AbstractStandardProcessor"));
+            expectThrows(
+                    ClassNotFoundException.class, () -> loader.loadClass("com.palantir.javaformat.java.Formatter"));
         }
     }
 
@@ -102,20 +111,28 @@ public final class CssProcessorTest {
         var names = cases.stream().map(value -> (String) value[1]).collect(Collectors.toCollection(TreeSet::new));
         assertEquals(names.size(), cases.size(), "Fixture names must be unique across families");
         if (!Boolean.getBoolean("react4j.output_fixture_data")) {
-            try (var expected = Files.list(fixtureDir().resolve("expected"))) {
-                assertEquals(
-                        expected.filter(Files::isDirectory)
-                                .map(path -> path.getFileName().toString())
-                                .collect(Collectors.toCollection(TreeSet::new)),
-                        names,
-                        "Complete fixture case set differs");
+            for (var tree : List.of("expected", "expectedFormatted")) {
+                try (var expected = Files.list(fixtureDir().resolve(tree))) {
+                    assertEquals(
+                            expected.filter(Files::isDirectory)
+                                    .map(path -> path.getFileName().toString())
+                                    .collect(Collectors.toCollection(TreeSet::new)),
+                            names,
+                            tree + ": Complete fixture case set differs");
+                }
             }
         }
-        return cases.toArray(Object[][]::new);
+        var modes = new ArrayList<Object[]>();
+        for (var fixture : cases) {
+            for (boolean formatted : List.of(false, true)) {
+                modes.add(new Object[] {fixture[0], fixture[1], formatted});
+            }
+        }
+        return modes.toArray(Object[][]::new);
     }
 
     @Test(dataProvider = "fixtures")
-    public void goldenFixtures(String family, String name) throws Exception {
+    public void goldenFixtures(String family, String name, boolean formatted) throws Exception {
         Path input = fixtureDir().resolve(family).resolve(name);
         var sources = new TreeMap<String, String>();
         try (var files = Files.walk(input)) {
@@ -126,7 +143,7 @@ public final class CssProcessorTest {
             }
         }
         assertFalse(sources.isEmpty(), name);
-        var result = compile(sources);
+        var result = compile(sources, List.of("-Areact4j.css.format_generated_source=" + formatted));
         assertEquals(result.success(), "input".equals(family), name + ": " + result.diagnostics());
         if (result.success()) {
             assertEquals(result.diagnostics(), "", name);
@@ -139,7 +156,9 @@ public final class CssProcessorTest {
             }
         }
         actual.put("diagnostics.txt", result.diagnostics());
-        Path expected = fixtureDir().resolve("expected").resolve(name);
+        Path expected = fixtureDir()
+                .resolve(formatted ? "expectedFormatted" : "expected")
+                .resolve(name);
         if (Boolean.getBoolean("react4j.output_fixture_data")) {
             if (Files.exists(expected)) {
                 delete(expected);
@@ -210,6 +229,11 @@ public final class CssProcessorTest {
     }
 
     private static Result compile(Map<String, String> sources, String... inspect) throws Exception {
+        return compile(sources, List.of(), inspect);
+    }
+
+    private static Result compile(Map<String, String> sources, List<String> processorOptions, String... inspect)
+            throws Exception {
         Path directory = Files.createTempDirectory("css-test-");
         try {
             Path generated = Files.createDirectory(directory.resolve("generated"));
@@ -225,24 +249,21 @@ public final class CssProcessorTest {
             var diagnostics = new DiagnosticCollector<JavaFileObject>();
             boolean success;
             try (var manager = compiler.getStandardFileManager(diagnostics, null, null)) {
+                var options = new ArrayList<>(List.of(
+                        "--release",
+                        "17",
+                        "-Xlint:deprecation,removal",
+                        "-classpath",
+                        applicationClasspath(),
+                        "--processor-path",
+                        processorJar().toString(),
+                        "-d",
+                        classes.toString(),
+                        "-s",
+                        generated.toString()));
+                options.addAll(processorOptions);
                 var task = compiler.getTask(
-                        null,
-                        manager,
-                        diagnostics,
-                        List.of(
-                                "--release",
-                                "17",
-                                "-Xlint:deprecation,removal",
-                                "-classpath",
-                                applicationClasspath(),
-                                "--processor-path",
-                                processorJar().toString(),
-                                "-d",
-                                classes.toString(),
-                                "-s",
-                                generated.toString()),
-                        null,
-                        manager.getJavaFileObjectsFromPaths(paths));
+                        null, manager, diagnostics, options, null, manager.getJavaFileObjectsFromPaths(paths));
                 success = task.call();
             }
             if (success) {
@@ -292,14 +313,98 @@ public final class CssProcessorTest {
     }
 
     @Test
+    public void generatedSourceFormattingIsOptionalAndEnabledByDefault() throws Exception {
+        var sources = Map.of(
+                "Button.java",
+                source("demo", "    color: red;\n    &.success { color: green; }", "abstract String success();")
+                        .replace("@Css(", "@Deprecated\n@Css("));
+        var defaults = compile(sources, "demo.Button");
+        var formatted = compile(sources, List.of("-Areact4j.css.format_generated_source=true"), "demo.Button");
+        var unformatted = compile(sources, List.of("-Areact4j.css.format_generated_source=false"), "demo.Button");
+        for (var result : List.of(defaults, formatted, unformatted)) {
+            assertTrue(result.success(), result.diagnostics());
+            assertEquals(result.diagnostics(), "");
+            assertEquals(result.values(), defaults.values());
+            assertEquals(result.files().keySet(), defaults.files().keySet());
+            for (var file : defaults.files().keySet()) {
+                if (file.endsWith(".css") || file.endsWith(".map")) {
+                    assertEquals(result.files().get(file), defaults.files().get(file), file);
+                }
+            }
+        }
+        assertEquals(defaults.files(), formatted.files());
+        assertNotEquals(
+                formatted.files().get("generated/demo/Styled_Button.java"),
+                unformatted.files().get("generated/demo/Styled_Button.java"));
+    }
+
+    @DataProvider(name = "formattingOptions")
+    public Object[][] formattingOptions() {
+        return new Object[][] {
+            {List.of(), true},
+            {List.of("-Areact4j.css.format_generated_source=true"), true},
+            {List.of("-Areact4j.css.format_generated_source=false"), false}
+        };
+    }
+
+    @Test(dataProvider = "formattingOptions")
+    public void formattingRequiresJdkExportsOnlyWhenEnabled(List<String> options, boolean formatting) throws Exception {
+        Path directory = Files.createTempDirectory("css-format-no-exports-");
+        try {
+            Path input = directory.resolve("Button.java");
+            Files.writeString(input, source("demo", "    color: red;", ""));
+            var command = new ArrayList<>(List.of(
+                    Path.of(System.getProperty("java.home"), "bin", "javac").toString(),
+                    "--release",
+                    "17",
+                    "-classpath",
+                    applicationClasspath(),
+                    "--processor-path",
+                    processorJar().toString(),
+                    "-d",
+                    directory.resolve("classes").toString(),
+                    "-s",
+                    directory.resolve("generated").toString()));
+            command.addAll(options);
+            command.add(input.toString());
+            var process = new ProcessBuilder(command).redirectErrorStream(true).start();
+            var output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            int exitCode = process.waitFor();
+            if (formatting) {
+                assertNotEquals(exitCode, 0, output);
+                assertTrue(output.contains("react4j.css.format_generated_source=true"), output);
+                for (var export : List.of("api", "code", "file", "parser", "tree", "util")) {
+                    assertTrue(
+                            output.contains(
+                                    "--add-exports=jdk.compiler/com.sun.tools.javac." + export + "=ALL-UNNAMED"),
+                            output);
+                }
+            } else {
+                assertEquals(exitCode, 0, output);
+                assertFalse(output.contains("warning:"), output);
+                assertTrue(Files.exists(directory.resolve("classes/demo/Styled_Button.class")));
+                assertTrue(Files.exists(directory.resolve("classes/demo/Button.css.map")));
+            }
+        } finally {
+            delete(directory);
+        }
+    }
+
+    @Test
     public void processorDependenciesAreNotApplicationDependencies() throws Exception {
-        String text = source("demo", "    color: red;", "")
-                .replace(
-                        "abstract String style();",
-                        "abstract String style(); com.helger.css.CSSSourceLocation parser;");
-        var result = compile(Map.of("Button.java", text));
-        assertFalse(result.success());
-        assertTrue(result.diagnostics().contains("package com.helger.css does not exist"), result.diagnostics());
+        for (var type : List.of(
+                "com.helger.css.CSSSourceLocation",
+                "com.palantir.javapoet.TypeSpec",
+                "org.realityforge.proton.AbstractStandardProcessor")) {
+            String text = source("demo", "    color: red;", "")
+                    .replace("abstract String style();", "abstract String style(); " + type + " dependency;");
+            var result = compile(Map.of("Button.java", text));
+            assertFalse(result.success());
+            assertTrue(
+                    result.diagnostics()
+                            .contains("package " + type.substring(0, type.lastIndexOf('.')) + " does not exist"),
+                    result.diagnostics());
+        }
     }
 
     @Test
@@ -723,7 +828,7 @@ public final class CssProcessorTest {
 
     @Test
     public void bindingsDoNotShadowJavaTypes() throws Exception {
-        for (var name : List.of("String", "Override")) {
+        for (var name : List.of("String", "Override", "NullMarked", "Generated", "SuppressWarnings")) {
             String text = source("demo", "    color: red;", "")
                     .replace("class Button", "class " + name)
                     .replace("static Button of()", "static " + name + " of()")
@@ -733,6 +838,40 @@ public final class CssProcessorTest {
             assertTrue(result.success(), result.diagnostics());
             assertEquals(result.values().get("demo." + name + ".style"), "jcss-demo-" + name);
         }
+    }
+
+    @DataProvider(name = "shadowedTypes")
+    public Object[][] shadowedTypes() {
+        var cases = new ArrayList<Object[]>();
+        for (var name : List.of("String", "Override", "SuppressWarnings", "NullMarked", "Generated")) {
+            for (boolean nested : List.of(false, true)) {
+                for (boolean formatted : List.of(false, true)) {
+                    cases.add(new Object[] {name, nested, formatted});
+                }
+            }
+        }
+        return cases.toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "shadowedTypes")
+    public void generatedTypesAvoidPeerAndInheritedTypeNames(String name, boolean nested, boolean formatted)
+            throws Exception {
+        String text = source("demo", "    color: red;", "")
+                .replace("abstract String style()", "abstract java.lang.String style()");
+        // Exercise SuppressWarnings as well as the annotations and return type always emitted.
+        text = text.replace("@Css(", "@Deprecated\n@Css(");
+        if (nested) {
+            text = text.replace("abstract class Button {", "abstract class Button { static class " + name + " {} ");
+        }
+        var sources = new LinkedHashMap<String, String>();
+        sources.put("Button.java", text);
+        if (!nested) {
+            sources.put(name + ".java", "package demo; class " + name + " {}\n");
+        }
+        var result = compile(sources, List.of("-Areact4j.css.format_generated_source=" + formatted), "demo.Button");
+        assertTrue(result.success(), result.diagnostics());
+        assertEquals(result.diagnostics(), "");
+        assertEquals(result.values().get("demo.Button.style"), "jcss-demo-Button");
     }
 
     @Test

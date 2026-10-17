@@ -19,7 +19,6 @@ trees=(expected expectedFormatted)
 if [[ "$1" == css ]]; then
   package=css/processor/src/test/java/react4j/css/processor
   fixture=css/processor/src/test/fixtures
-  trees=(expected)
 fi
 target="//$package:$family"
 bazel build "$target"

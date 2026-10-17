@@ -76,6 +76,8 @@ The [example Java build](examples/save-button/src/main/java/react4j/css/example/
 
 Browser clients can use `core-j2cl` without declaring their own Java library. For javac service discovery, put core, JSpecify and application dependencies on the compilation classpath, and the standalone processor jar on the processor path.
 
+Generated Java uses JavaPoet and is formatted with Palantir by default. Disable formatting with `-Areact4j.css.format_generated_source=false`. The processor jar bundles and relocates JavaPoet, Proton and the formatter; clients need no additional dependencies. When formatting is enabled, the JVM running javac needs the [formatter module exports](../docs/project_setup.md#configure-maven).
+
 ## Subprojects
 
 - [core](core/): client annotation.

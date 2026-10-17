@@ -1,0 +1,1 @@
+ERROR demo/Button.java:10:10: @Css requires an accessible abstract, non-generic style class extending Object; nested classes must be static

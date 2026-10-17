@@ -18,6 +18,8 @@ java_library(
     ],
     deps = [
         "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party/java:javapoet",
         "//third_party/java:ph_css",
+        "//third_party/java:proton_core",
     ],
 )

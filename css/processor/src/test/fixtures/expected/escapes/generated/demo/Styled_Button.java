@@ -1,8 +1,13 @@
 package demo;
 
-@java.lang.SuppressWarnings("UnnecessarilyFullyQualified")
-@org.jspecify.annotations.NullMarked
-final class Styled_Button extends demo.Button {
-  @java.lang.Override
-  java.lang.String style() { return "jcss-demo-Button"; }
+import javax.annotation.processing.Generated;
+import org.jspecify.annotations.NullMarked;
+
+@Generated("react4j.css.processor.CssProcessor")
+@NullMarked
+final class Styled_Button extends Button {
+  @Override
+  String style() {
+    return "jcss-demo-Button";
+  }
 }
