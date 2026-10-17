@@ -24,7 +24,7 @@ public final class CssResourceProcessorTest {
             + "import react4j.css.Css;\n"
             + "import react4j.css.Keyframes;\n"
             + "import react4j.css.CssImport;\n"
-            + "import react4j.css.CssImports;\nimport react4j.css.GlobalCss;\nimport react4j.css.CssIncludes;\n"
+            + "import react4j.css.CssImports;\nimport react4j.css.GlobalCss;\n"
             + "import org.jspecify.annotations.NullMarked;\n";
     private static final String FRAMES = "from { opacity: 0.4; } to { opacity: 1; }";
 
@@ -199,21 +199,19 @@ public final class CssResourceProcessorTest {
                 "INITIAL",
                 "revert-layer")) {
             cases.add(new Object[] {
-                "@CssImport(name=\"" + alias + "\", value=Pulse.class)",
-                "color: red;",
-                "Invalid imported animation name"
+                "@CssImport(name=\"" + alias + "\", value=Pulse.class)", "color: red;", "Invalid imported CSS name"
             });
         }
         cases.add(new Object[] {
             "@CssImport(name=\"beat\", value=Pulse.class)\n@CssImport(name=\"beat\", value=Pulse.class)",
             "color: red;",
-            "Duplicate imported animation name"
+            "Duplicate imported CSS name"
         });
-        for (var type : List.of("int", "String", "String[]", "Button")) {
+        for (var type : List.of("int", "String", "String[]")) {
             cases.add(new Object[] {
                 "@CssImport(name=\"beat\", value=" + type + ".class)",
                 "color: red;",
-                "must reference a @Keyframes class"
+                "must reference a @Css, @GlobalCss or @Keyframes class"
             });
         }
         cases.add(new Object[] {
@@ -306,17 +304,79 @@ public final class CssResourceProcessorTest {
         }
     }
 
+    @Test
+    public void componentImportsResolveThroughFullAndResourceFreeHeaderJars() throws Exception {
+        var dependency = CssProcessorTest.compile(Map.of("Button.java", consumer("", "color: red;")));
+        assertTrue(dependency.success(), dependency.diagnostics());
+        Path directory = Files.createTempDirectory("css-component-header-");
+        try {
+            Path full = directory.resolve("full.jar");
+            Path header = directory.resolve("header.jar");
+            for (var jarPath : List.of(full, header)) {
+                try (var jar = new JarOutputStream(Files.newOutputStream(jarPath))) {
+                    for (var entry : dependency.files().entrySet()) {
+                        if (entry.getKey().startsWith("classes/")
+                                && (full.equals(jarPath) || entry.getKey().endsWith(".class"))) {
+                            jar.putNextEntry(new JarEntry(entry.getKey().substring(8)));
+                            jar.write(Base64.getDecoder().decode(entry.getValue()));
+                            jar.closeEntry();
+                        }
+                    }
+                }
+                String source = consumer("@CssImport(name=\"peer\", value=Button.class)", "color: blue;")
+                        .replace("abstract class Button", "abstract class Consumer");
+                var result = CssProcessorTest.compile(
+                        Map.of("Consumer.java", source),
+                        List.of("-classpath", CssProcessorTest.applicationClasspath() + File.pathSeparator + jarPath));
+                assertTrue(result.success(), result.diagnostics());
+                assertEquals(result.diagnostics(), "");
+                assertEquals(
+                        JsonParser.parseString(text(result, "classes/demo/Consumer.css.json"))
+                                .getAsJsonObject()
+                                .getAsJsonArray("dependencies")
+                                .size(),
+                        0);
+            }
+        } finally {
+            try (var paths = Files.walk(directory)) {
+                for (var path : paths.sorted(Comparator.reverseOrder()).toList()) {
+                    Files.delete(path);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void namedImportsShareOneNamespaceAndAnimationReferencesCheckKinds() throws Exception {
+        for (var entry : Map.of(
+                        "@CssImport(name=\"peer\", value=Button.class)\n@CssImport(name=\"peer\", value=Pulse.class)",
+                                "Duplicate imported CSS name",
+                        "@CssImport(name=\"peer\", value=Button.class)", "must reference imported @Keyframes")
+                .entrySet()) {
+            var result = CssProcessorTest.compile(
+                    Map.of("Pulse.java", frames(), "Button.java", consumer(entry.getKey(), "animation-name: peer;")));
+            assertFalse(result.success());
+            assertTrue(result.diagnostics().contains(entry.getValue()), result.diagnostics());
+            assertFalse(result.files().containsKey("classes/demo/Button.css"));
+        }
+        for (var alias : List.of("none", "default", "INITIAL", "revert-layer")) {
+            var result = CssProcessorTest.compile(Map.of(
+                    "Button.java", consumer("@CssImport(name=\"" + alias + "\", value=Button.class)", "color: red;")));
+            assertTrue(result.success(), result.diagnostics());
+        }
+    }
+
     private static String global(String name, String annotations, String css) {
         return IMPORTS + "@NullMarked\n" + annotations + "\n@GlobalCss(\"\"\"\n" + css
                 + "\n\"\"\")\npublic final class " + name + " {}";
     }
 
     @Test
-    public void globalDeclarationsAndTypedIncludesProduceOnlyResources() throws Exception {
+    public void globalDeclarationsAndTypedImportsProduceOnlyResources() throws Exception {
         String defaults = global("Defaults", "", ":root { --accent: blue; } body { margin: 0; }");
         String theme = global(
                 "Theme",
-                "@CssIncludes(Defaults.class)\n@CssImport(name=\"pulse\", value=Pulse.class)",
+                "@CssImport(Defaults.class)\n@CssImport(name=\"pulse\", value=Pulse.class)",
                 "button:hover { animation: pulse 1s linear infinite; }");
         var result = CssProcessorTest.compile(Map.of(
                 "Pulse.java",
@@ -326,7 +386,7 @@ public final class CssResourceProcessorTest {
                 "Theme.java",
                 theme,
                 "Button.java",
-                consumer("@CssIncludes({Theme.class, Defaults.class})", "color: blue;")));
+                consumer("@CssImport(Theme.class)\n@CssImport(Defaults.class)", "color: blue;")));
         assertTrue(result.success(), result.diagnostics());
         assertEquals(result.diagnostics(), "");
         assertEquals(
@@ -348,26 +408,35 @@ public final class CssResourceProcessorTest {
     }
 
     @DataProvider
-    public Object[][] invalidIncludes() {
+    public Object[][] invalidGlobalImports() {
         var cases = new ArrayList<Object[]>();
-        for (var type : List.of("int", "void", "int[]", "String[]", "String", "Button", "Pulse")) {
+        for (var type : List.of("int", "void", "int[]", "String[]", "String")) {
             cases.add(new Object[] {
-                consumer("@CssIncludes(" + type + ".class)", "color: red;"),
-                "@CssIncludes must reference @GlobalCss classes"
+                consumer("@CssImport(" + type + ".class)", "color: red;"),
+                "@CssImport must reference a @Css, @GlobalCss or @Keyframes class"
             });
         }
+        for (var type : List.of("Button", "Pulse")) {
+            cases.add(
+                    new Object[] {consumer("@CssImport(" + type + ".class)", "color: red;"), "Invalid imported CSS name"
+                    });
+        }
         cases.add(new Object[] {
-            consumer("@CssIncludes({Defaults.class, Defaults.class})", "color: red;"),
-            "Duplicate included global stylesheet"
+            consumer("@CssImport(name=\"defaults\", value=Defaults.class)", "color: red;"), "must not declare a name"
         });
         cases.add(new Object[] {
-            global("Button", "@CssIncludes(Button.class)", "body { margin: 0; }"), "must not include themselves"
+            consumer("@CssImport(Defaults.class)\n@CssImport(Defaults.class)", "color: red;"),
+            "Duplicate imported global stylesheet"
         });
         cases.add(new Object[] {
-            frames().replace("class Pulse", "class Button").replace("@NullMarked", "@NullMarked\n@CssIncludes({})"),
+            global("Button", "@CssImport(Button.class)", "body { margin: 0; }"), "must not import themselves"
+        });
+        cases.add(new Object[] {
+            frames().replace("class Pulse", "class Button")
+                    .replace("@NullMarked", "@NullMarked\n@CssImport(Defaults.class)"),
             "only supported on stylesheet definitions"
         });
-        cases.add(new Object[] {IMPORTS + "@CssIncludes(Defaults.class) class Button {}", "Declare exactly one"});
+        cases.add(new Object[] {IMPORTS + "@CssImport(Defaults.class) class Button {}", "Declare exactly one"});
         cases.add(new Object[] {
             global("Button", "@Css(\"\"\"\ncolor:red;\n\"\"\")", "body { margin: 0; }"), "Declare exactly one"
         });
@@ -411,8 +480,8 @@ public final class CssResourceProcessorTest {
         }
     }
 
-    @Test(dataProvider = "invalidIncludes")
-    public void globalAndIncludeFailuresDoNotEmitTheInvalidOwnersResources(String source, String diagnostic)
+    @Test(dataProvider = "invalidGlobalImports")
+    public void globalAndImportFailuresDoNotEmitTheInvalidOwnersResources(String source, String diagnostic)
             throws Exception {
         var result = CssProcessorTest.compile(Map.of(
                 "Button.java", source, "Defaults.java", global("Defaults", "", "body {}"), "Pulse.java", frames()));
@@ -422,7 +491,7 @@ public final class CssResourceProcessorTest {
     }
 
     @Test
-    public void globalIncludesResolveThroughAResourceFreeHeaderJar() throws Exception {
+    public void globalImportsResolveThroughAResourceFreeHeaderJar() throws Exception {
         var dependency =
                 CssProcessorTest.compile(Map.of("Defaults.java", global("Defaults", "", "body { margin: 0; }")));
         assertTrue(dependency.success(), dependency.diagnostics());
@@ -435,7 +504,7 @@ public final class CssResourceProcessorTest {
                 jar.closeEntry();
             }
             var result = CssProcessorTest.compile(
-                    Map.of("Button.java", consumer("@CssIncludes(Defaults.class)", "color: red;")),
+                    Map.of("Button.java", consumer("@CssImport(Defaults.class)", "color: red;")),
                     List.of("-classpath", CssProcessorTest.applicationClasspath() + File.pathSeparator + header));
             assertTrue(result.success(), result.diagnostics());
             assertEquals(result.diagnostics(), "");

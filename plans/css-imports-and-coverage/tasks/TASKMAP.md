@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: planned
-- Current frontier: T01
+- Status: implementing
+- Current frontier: T02
 - Planning reviewer: imports_coverage_planning (2/3 rounds; passed; final confirmation unused)
 - Plan checkpoint: automatic; latest user implementation authority and passing planning review
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -10,7 +10,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Unified resource imports](T01-unified-imports.md) | pending | None |
+| T01 | [Unified resource imports](T01-unified-imports.md) | complete | None |
 | T02 | [Checked peer selectors and graph semantics](T02-peer-selectors.md) | pending | T01 |
 | T03 | [Measured processor coverage](T03-processor-coverage.md) | pending | T02 |
 | T04 | [Honest runtime coverage pipeline](T04-runtime-measurement.md) | pending | T03 |

@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * The package-access generated subclass provides a singleton through its static {@code get()} method.
  */
 @Target(ElementType.TYPE)
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.CLASS)
 public @interface Css {
     String value();
 }

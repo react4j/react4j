@@ -103,7 +103,7 @@ final class ApplicationDefaults {}
 
 Selectors retain their authored names and require no Java accessors. Global styles support style rules, nesting, `@media` and `@supports`. Conditional blocks require explicit selectors even inside a style rule, for example `body { @media screen { & { color: red; } } }`. Import shared animations with `@CssImport`; inline keyframe definitions and other at-rules, including `@font-face`, are unsupported.
 
-Select application globals through the bundle's `globals` attribute below. Add `@CssIncludes(ApplicationDefaults.class)` to a component or another global definition that requires those defaults. Includes work across separately compiled libraries; duplicate entries in one include list, self-inclusion and incompatible types are errors. The bundler rejects dependency cycles.
+Select application globals through the bundle's `globals` attribute below. Add `@CssImport(ApplicationDefaults.class)` to a component or another global definition that requires those defaults. Global imports work across separately compiled libraries; duplicate imports, self-inclusion, names on global imports and incompatible types are errors. The bundler rejects dependency cycles.
 
 Keyframe and global declaration classes may be concrete or abstract, public or package-access. Inheritance, interfaces, type parameters and sealed classes are unsupported. Nested declarations must be static with accessible enclosing types. They must not declare fields, explicit constructors, initializers or abstract methods; concrete and static helpers are allowed. These definitions produce resources without generated Java bindings.
 

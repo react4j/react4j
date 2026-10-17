@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Set;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
@@ -747,7 +748,13 @@ public final class CssCompilerTest {
 
     @Test
     public void sharedAnimationAliasesRespectShorthandGrammarAndTrackRealReferences() {
-        var imports = Map.of("pulse", "shared-pulse", "linear", "shared-linear", "--custom", "shared-custom");
+        var imports = Map.of(
+                "pulse",
+                new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES),
+                "linear",
+                new CssCompiler.Import("shared.Linear", Kind.KEYFRAMES),
+                "--custom",
+                new CssCompiler.Import("shared.Custom", Kind.KEYFRAMES));
         for (var entry : Map.of(
                         "animation: linear 1s;", List.<String>of(),
                         "animation: linear 1s linear;", List.of("linear"),
@@ -768,16 +775,19 @@ public final class CssCompilerTest {
             assertEquals(sheet.getAllStyleRules().size(), 1);
             for (var alias : entry.getValue()) {
                 assertTrue(
-                        result.output().css().contains(imports.get(alias)),
+                        result.output()
+                                .css()
+                                .contains(Objects.requireNonNull(imports.get(alias))
+                                        .cssName()),
                         result.output().css());
             }
         }
         for (var alias : List.of("pulse", "linear", "éclair", "_pulse", "-pulse", "--pulse", "--")) {
-            CssCompiler.checkAlias(alias);
+            CssCompiler.checkAlias(alias, Kind.KEYFRAMES);
         }
         for (var alias : List.of(
                 "", "0pulse", "-0pulse", "-", "pulse name", "pulse;", "'pulse'", "none", "DEFAULT", "inherit")) {
-            expectThrows(IllegalArgumentException.class, () -> CssCompiler.checkAlias(alias));
+            expectThrows(IllegalArgumentException.class, () -> CssCompiler.checkAlias(alias, Kind.KEYFRAMES));
         }
         expectThrows(
                 CssSyntax.InvalidCss.class,
@@ -842,7 +852,7 @@ public final class CssCompilerTest {
         var result = CssCompiler.global(
                 css,
                 offset -> new SourceMap.Location("Defaults.java", css, 0, offset),
-                Map.of("pulse", "shared-pulse"));
+                Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES)));
         assertEquals(result.imports(), Set.of("pulse"));
         var sheet = parse(result.output().css());
         assertEquals(sheet.getAllRules().size(), 3);
@@ -853,14 +863,15 @@ public final class CssCompilerTest {
         assertEquals(style.getRuleCount(), 2);
         var nested = (CSSStyleRule) style.getAllRules().get(0);
         assertEquals(
-                value(Objects.requireNonNull(nested.getDeclarationOfPropertyName("animation-name"))), "shared-pulse");
+                value(Objects.requireNonNull(nested.getDeclarationOfPropertyName("animation-name"))),
+                "jcss-shared-Pulse--keyframes");
         assertTrue(result.output().css().contains("color:blue;"));
         assertTrue(result.output().map("Defaults.css").contains("Defaults.java"));
         for (var source : List.of("/* empty */", "body {}", "body { content: 'pulse'; --animation: pulse; }")) {
             var empty = CssCompiler.global(
                     source,
                     offset -> new SourceMap.Location("Defaults.java", source, 0, offset),
-                    Map.of("pulse", "shared-pulse"));
+                    Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES)));
             assertTrue(empty.imports().isEmpty());
         }
         for (var source : List.of(
@@ -876,7 +887,7 @@ public final class CssCompilerTest {
                     () -> CssCompiler.global(
                             source,
                             offset -> new SourceMap.Location("Defaults.java", source, 0, offset),
-                            Map.of("pulse", "shared-pulse")));
+                            Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES))));
         }
     }
 }

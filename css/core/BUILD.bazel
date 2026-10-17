@@ -7,7 +7,7 @@ alias(
     actual = "//css/core/src/main/java/react4j/css",
 )
 
-# SOURCE-retained annotations need compiler bytecode, not browser JavaScript.
+# Annotation declarations need compiler bytecode, not browser JavaScript.
 j2cl_import(
     name = "core-j2cl",
     jar = ":core",

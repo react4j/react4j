@@ -4,7 +4,6 @@ import jsinterop.annotations.JsMethod;
 import org.jspecify.annotations.Nullable;
 import react4j.css.Css;
 import react4j.css.CssImport;
-import react4j.css.CssIncludes;
 import react4j.css.GlobalCss;
 import react4j.css.Keyframes;
 import react4j.dom.DOM;
@@ -62,7 +61,7 @@ public final class BrowserExample {
                 container);
     }
 
-    @CssIncludes(Defaults.class)
+    @CssImport(Defaults.class)
     @CssImport(name = "pulse", value = Pulse.class)
     @Css("""
         color: var(--on-accent);
@@ -98,7 +97,7 @@ public final class BrowserExample {
         abstract String busy();
     }
 
-    @CssIncludes(Defaults.class)
+    @CssImport(Defaults.class)
     @CssImport(name = "pulse", value = Pulse.class)
     @Css("""
         color: var(--on-accent);
@@ -145,13 +144,13 @@ public final class BrowserExample {
         """)
     static final class Defaults {}
 
-    @CssIncludes(Defaults.class)
+    @CssImport(Defaults.class)
     @GlobalCss("""
         #base { --cascade: theme; }
         """)
     static final class Theme {}
 
-    @CssIncludes(Defaults.class)
+    @CssImport(Defaults.class)
     @GlobalCss("""
         #base { --cascade: alternate; }
         """)

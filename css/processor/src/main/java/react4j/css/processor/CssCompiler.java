@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
+import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
@@ -40,7 +41,7 @@ final class CssCompiler {
     private final IntFunction<SourceMap.Location> locations;
     private final Set<String> found = new HashSet<>();
     private final Map<String, CSSKeyframesRule> keyframes = new LinkedHashMap<>();
-    private final Map<String, String> imports;
+    private final Map<String, Import> imports;
     private final Set<String> usedImports = new LinkedHashSet<>();
     private final CSSWriterSettings compact = new CSSWriterSettings(true);
     private final SourceMap.Writer output = new SourceMap.Writer();
@@ -51,12 +52,18 @@ final class CssCompiler {
             String root,
             List<String> accessors,
             IntFunction<SourceMap.Location> locations,
-            Map<String, String> imports) {
+            Map<String, Import> imports) {
         syntax = new CssSyntax(source, prefix);
         this.root = root;
         this.accessors = accessors;
         this.locations = locations;
         this.imports = imports;
+    }
+
+    record Import(String owner, Kind kind) {
+        String cssName() {
+            return Names.root(owner) + (Kind.KEYFRAMES == kind ? "--keyframes" : "");
+        }
     }
 
     record Result(SourceMap.Writer output, Set<String> imports) {}
@@ -66,7 +73,7 @@ final class CssCompiler {
             String root,
             List<String> accessors,
             IntFunction<SourceMap.Location> locations,
-            Map<String, String> imports) {
+            Map<String, Import> imports) {
         String prefix = "." + root + " {\n";
         var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, accessors, locations, imports);
         var sheet = compiler.syntax.parse(true);
@@ -112,7 +119,7 @@ final class CssCompiler {
         return new Result(compiler.output, Set.of());
     }
 
-    static Result global(String css, IntFunction<SourceMap.Location> locations, Map<String, String> imports) {
+    static Result global(String css, IntFunction<SourceMap.Location> locations, Map<String, Import> imports) {
         var compiler = new CssCompiler(css, 0, "", List.of(), locations, imports);
         for (var rule : compiler.syntax.parse(false).getAllRules()) {
             compiler.globalRule((ICSSSourceLocationAware) rule);
@@ -154,12 +161,13 @@ final class CssCompiler {
         }
     }
 
-    static void checkAlias(String name) {
+    static void checkAlias(String name, Kind kind) {
         if (!name.matches("(?:--|-?(?:[a-zA-Z_]|[^\\x00-\\x7f]))(?:[a-zA-Z0-9_-]|[^\\x00-\\x7f])*")
-                || "none".equalsIgnoreCase(name)
-                || "default".equalsIgnoreCase(name)
-                || CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))) {
-            throw new IllegalArgumentException("Invalid imported animation name: " + name);
+                || (Kind.KEYFRAMES == kind
+                        && ("none".equalsIgnoreCase(name)
+                                || "default".equalsIgnoreCase(name)
+                                || CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))))) {
+            throw new IllegalArgumentException("Invalid imported CSS name: " + name);
         }
     }
 
@@ -352,8 +360,12 @@ final class CssCompiler {
             }
             if (!"none".equals(lower)) {
                 if (imports.containsKey(name)) {
+                    var binding = imports.get(name);
+                    if (Kind.KEYFRAMES != binding.kind()) {
+                        throw syntax.invalid("Animation name must reference imported @Keyframes: " + name, simple);
+                    }
                     usedImports.add(name);
-                    simple.setValue(imports.get(name));
+                    simple.setValue(binding.cssName());
                 } else if (keyframes.containsKey(name)) {
                     simple.setValue(animationName(name));
                 } else {

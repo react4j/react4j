@@ -42,8 +42,7 @@ import react4j.css.internal.SourceMap;
     "react4j.css.Keyframes",
     "react4j.css.CssImport",
     "react4j.css.CssImports",
-    "react4j.css.GlobalCss",
-    "react4j.css.CssIncludes"
+    "react4j.css.GlobalCss"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public final class CssProcessor extends AbstractStandardProcessor {
@@ -89,10 +88,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
             validateResourceType(owner);
         }
         var imports = imports(owner, kind);
-        var includes = includes(owner, kind);
-        var names = new LinkedHashMap<String, String>();
-        imports.forEach((alias, target) -> names.put(alias, Names.root(target) + "--keyframes"));
-        var result = compileCss(owner, kind, descriptor, names);
+        var result = compileCss(owner, kind, descriptor, imports.named());
         if (null == result) {
             return;
         }
@@ -102,8 +98,13 @@ public final class CssProcessor extends AbstractStandardProcessor {
         String ownerName = binaryName(owner);
         String resource = CssResource.path(ownerName);
         String file = resource.substring(resource.lastIndexOf('/') + 1);
-        var dependencies = new ArrayList<>(includes);
-        result.imports().stream().map(imports::get).distinct().sorted().forEach(dependencies::add);
+        var dependencies = new ArrayList<>(imports.globals());
+        imports.named().entrySet().stream()
+                .filter(entry -> result.imports().contains(entry.getKey()))
+                .map(entry -> entry.getValue().owner())
+                .distinct()
+                .sorted()
+                .forEach(dependencies::add);
         var metadata = new CssResource(ownerName, kind, dependencies);
         var output = result.output();
         for (var entry : Map.of(
@@ -164,38 +165,6 @@ public final class CssProcessor extends AbstractStandardProcessor {
         return kinds.get(0);
     }
 
-    private List<String> includes(TypeElement owner, Kind kind) {
-        var mirror = annotation(owner, "react4j.css.CssIncludes");
-        var includes = new ArrayList<String>();
-        if (null != mirror) {
-            if (Kind.KEYFRAMES == kind) {
-                throw new IllegalArgumentException("@CssIncludes is only supported on stylesheet definitions");
-            }
-            for (var item : (List<?>) value(mirror, "value").getValue()) {
-                Object target = ((AnnotationValue) item).getValue();
-                if (!(target instanceof TypeMirror type)
-                        || !(processingEnv.getTypeUtils().asElement(type) instanceof TypeElement element)
-                        || ElementKind.CLASS != element.getKind()
-                        || null == annotation(element, "react4j.css.GlobalCss")
-                        || Kind.GLOBAL != sourceKind(element)) {
-                    throw new IllegalArgumentException("@CssIncludes must reference @GlobalCss classes: " + target);
-                }
-                String name = binaryName(element);
-                if (name.equals(binaryName(owner))) {
-                    throw new IllegalArgumentException("CSS definitions must not include themselves");
-                }
-                if (includes.contains(name)) {
-                    throw new IllegalArgumentException("Duplicate included global stylesheet: " + name);
-                }
-                if (null != Trees.instance(processingEnv).getPath(element)) {
-                    validateResourceType(element);
-                }
-                includes.add(name);
-            }
-        }
-        return includes;
-    }
-
     private void validateResourceType(TypeElement owner) {
         if (ElementKind.CLASS != owner.getKind()
                 || !owner.getTypeParameters().isEmpty()
@@ -231,7 +200,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private Map<String, String> imports(TypeElement owner, Kind kind) {
+    private record Imports(Map<String, CssCompiler.Import> named, List<String> globals) {}
+
+    private Imports imports(TypeElement owner, Kind kind) {
         var mirrors = new ArrayList<AnnotationMirror>();
         var direct = annotation(owner, "react4j.css.CssImport");
         if (null != direct) {
@@ -246,29 +217,48 @@ public final class CssProcessor extends AbstractStandardProcessor {
         if (Kind.KEYFRAMES == kind && (null != direct || null != container)) {
             throw new IllegalArgumentException("@CssImport is only supported on stylesheet definitions");
         }
-        var imports = new LinkedHashMap<String, String>();
+        var imports = new LinkedHashMap<String, CssCompiler.Import>();
+        var globals = new ArrayList<String>();
         for (var mirror : mirrors) {
             var alias = (String) value(mirror, "name").getValue();
-            CssCompiler.checkAlias(alias);
             Object target = value(mirror, "value").getValue();
             if (!(target instanceof TypeMirror type)
-                    || !(processingEnv.getTypeUtils().asElement(type) instanceof TypeElement element)) {
-                throw new IllegalArgumentException("@CssImport must reference a @Keyframes class");
-            }
-            if (ElementKind.CLASS != element.getKind()
-                    || null == annotation(element, "react4j.css.Keyframes")
-                    || Kind.KEYFRAMES != sourceKind(element)) {
+                    || !(processingEnv.getTypeUtils().asElement(type) instanceof TypeElement element)
+                    || ElementKind.CLASS != element.getKind()
+                    || (null == annotation(element, CSS_ANNOTATION)
+                            && null == annotation(element, "react4j.css.GlobalCss")
+                            && null == annotation(element, "react4j.css.Keyframes"))) {
                 throw new IllegalArgumentException(
-                        "@CssImport must reference a @Keyframes class: " + binaryName(element));
+                        "@CssImport must reference a @Css, @GlobalCss or @Keyframes class: " + target);
             }
+            Kind targetKind = sourceKind(element);
             if (null != Trees.instance(processingEnv).getPath(element)) {
-                validateResourceType(element);
+                if (Kind.COMPONENT == targetKind) {
+                    parse(element);
+                } else {
+                    validateResourceType(element);
+                }
             }
-            if (null != imports.putIfAbsent(alias, binaryName(element))) {
-                throw new IllegalArgumentException("Duplicate imported animation name: " + alias);
+            String name = binaryName(element);
+            if (Kind.GLOBAL == targetKind) {
+                if (!alias.isEmpty()) {
+                    throw new IllegalArgumentException("Global CSS imports must not declare a name: " + name);
+                }
+                if (name.equals(binaryName(owner))) {
+                    throw new IllegalArgumentException("CSS definitions must not import themselves as global styles");
+                }
+                if (globals.contains(name)) {
+                    throw new IllegalArgumentException("Duplicate imported global stylesheet: " + name);
+                }
+                globals.add(name);
+            } else {
+                CssCompiler.checkAlias(alias, targetKind);
+                if (null != imports.putIfAbsent(alias, new CssCompiler.Import(name, targetKind))) {
+                    throw new IllegalArgumentException("Duplicate imported CSS name: " + alias);
+                }
             }
         }
-        return imports;
+        return new Imports(Map.copyOf(imports), List.copyOf(globals));
     }
 
     private CssDescriptor parse(TypeElement owner) {
@@ -352,7 +342,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
     }
 
     private CssCompiler.@Nullable Result compileCss(
-            TypeElement owner, Kind kind, @Nullable CssDescriptor descriptor, Map<String, String> imports)
+            TypeElement owner, Kind kind, @Nullable CssDescriptor descriptor, Map<String, CssCompiler.Import> imports)
             throws IOException {
         var trees = Trees.instance(processingEnv);
         var annotation = owner.getAnnotationMirrors().stream()
