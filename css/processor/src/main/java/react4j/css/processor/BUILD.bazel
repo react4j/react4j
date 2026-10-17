@@ -4,6 +4,8 @@ java_library(
     name = "processor",
     srcs = [
         "CssCompiler.java",
+        "CssDescriptor.java",
+        "CssGenerator.java",
         "CssProcessor.java",
         "Names.java",
         "TextBlock.java",

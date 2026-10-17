@@ -1,9 +1,5 @@
 package react4j.css.processor;
 
-import com.palantir.javapoet.ClassName;
-import com.palantir.javapoet.FieldSpec;
-import com.palantir.javapoet.MethodSpec;
-import com.palantir.javapoet.TypeSpec;
 import com.sun.source.tree.BlockTree;
 import com.sun.source.tree.LiteralTree;
 import com.sun.source.util.Trees;
@@ -12,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.RoundEnvironment;
@@ -27,10 +22,9 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
+import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.ElementsUtil;
-import org.realityforge.proton.GeneratorUtil;
-import org.realityforge.proton.SuppressWarningsUtil;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
@@ -68,6 +62,26 @@ public final class CssProcessor extends AbstractStandardProcessor {
     }
 
     private void process(TypeElement owner) throws IOException {
+        var descriptor = parse(owner);
+        var result = compileCss(descriptor);
+        if (null == result) {
+            return;
+        }
+        emitTypeSpec(descriptor.getPackageName(), CssGenerator.buildType(processingEnv, descriptor));
+        String resource = descriptor.getBinaryName().replace('.', '/') + ".css";
+        String file = resource.substring(resource.lastIndexOf('/') + 1);
+        for (var entry : Map.of(resource, result.css() + SourceMap.reference(file), resource + ".map", result.map(file))
+                .entrySet()) {
+            try (var stream = processingEnv
+                    .getFiler()
+                    .createResource(StandardLocation.CLASS_OUTPUT, "", entry.getKey(), owner)
+                    .openOutputStream()) {
+                stream.write(entry.getValue().getBytes(StandardCharsets.UTF_8));
+            }
+        }
+    }
+
+    private CssDescriptor parse(TypeElement owner) {
         if (ElementKind.CLASS != owner.getKind()
                 || !owner.getModifiers().contains(Modifier.ABSTRACT)
                 || !owner.getTypeParameters().isEmpty()
@@ -93,9 +107,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
         }
         var trees = Trees.instance(processingEnv);
         var methods = new ArrayList<ExecutableElement>();
-        var ownerType = ClassName.get(owner);
-        var factory =
-                MethodSpec.methodBuilder("get").addModifiers(Modifier.STATIC).returns(ownerType);
+        boolean publicFactory = false;
         for (var member : owner.getEnclosedElements()) {
             if (ElementKind.FIELD == member.getKind()) {
                 throw new IllegalArgumentException(
@@ -115,12 +127,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         throw new IllegalArgumentException(
                                 "@Css method get() conflicts with the generated singleton factory");
                     }
-                    if (method.getModifiers().contains(Modifier.PROTECTED)) {
-                        // The checker forbids protected members in a final class.
-                        factory.addModifiers(Modifier.PUBLIC);
-                    } else {
-                        GeneratorUtil.copyAccessModifiers(method, factory);
-                    }
+                    // Preserve public/protected access; the checker forbids protected members in a final class.
+                    publicFactory = method.getModifiers().contains(Modifier.PUBLIC)
+                            || method.getModifiers().contains(Modifier.PROTECTED);
                 }
                 if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
                     continue;
@@ -144,6 +153,17 @@ public final class CssProcessor extends AbstractStandardProcessor {
         if (methods.stream().noneMatch(m -> m.getSimpleName().contentEquals("style"))) {
             throw new IllegalArgumentException("@Css style classes require abstract String style()");
         }
+        return new CssDescriptor(
+                owner,
+                processingEnv.getElementUtils().getBinaryName(owner).toString(),
+                methods,
+                publicFactory,
+                deprecated);
+    }
+
+    private SourceMap.@Nullable Writer compileCss(CssDescriptor descriptor) throws IOException {
+        var owner = descriptor.getElement();
+        var trees = Trees.instance(processingEnv);
         var annotation = owner.getAnnotationMirrors().stream()
                 .filter(a -> CSS_ANNOTATION.equals(a.getAnnotationType().toString()))
                 .findFirst()
@@ -160,8 +180,6 @@ public final class CssProcessor extends AbstractStandardProcessor {
         var start = (int) trees.getSourcePositions().getStartPosition(unit, literal);
         var end = (int) trees.getSourcePositions().getEndPosition(unit, literal);
         var block = TextBlock.decode(source.substring(start, end), start, css);
-        String binaryName = processingEnv.getElementUtils().getBinaryName(owner).toString();
-        String root = Names.root(binaryName);
         String sourceName = processingEnv
                 .getElementUtils()
                 .getPackageOf(owner)
@@ -171,12 +189,13 @@ public final class CssProcessor extends AbstractStandardProcessor {
         sourceName = (sourceName.isEmpty() ? "" : sourceName + "/")
                 + Path.of(unit.getSourceFile().getName()).getFileName();
         final String mappedSource = sourceName;
-        SourceMap.Writer result;
         try {
-            result = CssCompiler.component(
+            return CssCompiler.component(
                     block.value(),
-                    root,
-                    methods.stream().map(m -> m.getSimpleName().toString()).toList(),
+                    descriptor.getRootClassName(),
+                    descriptor.getAccessors().stream()
+                            .map(m -> m.getSimpleName().toString())
+                            .toList(),
                     offset -> {
                         int original =
                                 block.offsets()[Math.min(offset, block.value().length())];
@@ -194,76 +213,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
             processingEnv
                     .getMessager()
                     .printMessage(Diagnostic.Kind.ERROR, location + ": " + e.getMessage(), owner, annotation, value);
-            return;
-        }
-        String packageName = processingEnv
-                .getElementUtils()
-                .getPackageOf(owner)
-                .getQualifiedName()
-                .toString();
-        var generated = GeneratorUtil.getGeneratedClassName(owner, "Styled_", "");
-        var builder =
-                TypeSpec.classBuilder(generated).addModifiers(Modifier.FINAL).superclass(ownerType);
-        builder.addMethod(
-                MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build());
-        // A holder must not hide its owner's top-level type in the unnamed package.
-        String holderName = "Internal".equals(ownerType.topLevelClassName().simpleName()) ? "Internal_" : "Internal";
-        builder.addType(TypeSpec.classBuilder(holderName)
-                .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-                .addField(FieldSpec.builder(ownerType, "INSTANCE", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-                        .initializer("new $T()", generated)
-                        .build())
-                .addMethod(MethodSpec.constructorBuilder()
-                        .addModifiers(Modifier.PRIVATE)
-                        .build())
-                .build());
-        builder.addMethod(factory.addStatement("return $L.$L.INSTANCE", generated.simpleName(), holderName)
-                .build());
-        boolean qualified = false;
-        // Proton omits java.lang imports, so peer and inherited types need explicit qualification.
-        for (var name : List.of("String", "Override", "SuppressWarnings")) {
-            var peer = processingEnv
-                    .getElementUtils()
-                    .getTypeElement(packageName.isEmpty() ? name : packageName + "." + name);
-            boolean inherited = processingEnv.getElementUtils().getAllMembers(owner).stream()
-                    .anyMatch(member -> member instanceof TypeElement
-                            && member.getSimpleName().contentEquals(name));
-            if (null != peer || inherited) {
-                builder.alwaysQualify(name);
-                qualified = true;
-            }
-        }
-        GeneratorUtil.addGeneratedAnnotation(processingEnv, builder, CssProcessor.class.getName());
-        GeneratorUtil.addOriginatingTypes(owner, builder);
-        var suppression = SuppressWarningsUtil.maybeSuppressWarningsAnnotation(
-                packageName.isEmpty() ? "DefaultPackage" : null,
-                qualified ? "UnnecessarilyFullyQualified" : null,
-                deprecated ? "deprecation" : null,
-                deprecated ? "removal" : null);
-        if (null != suppression) {
-            builder.addAnnotation(suppression);
-        }
-        for (var method : methods) {
-            String name = method.getSimpleName().toString();
-            String token = root + ("style".equals(name) ? "" : " " + root + "--" + Names.encode(name));
-            var accessor = MethodSpec.methodBuilder(name)
-                    .addAnnotation(Override.class)
-                    .returns(String.class)
-                    .addStatement("return $S", token);
-            GeneratorUtil.copyAccessModifiers(method, accessor);
-            builder.addMethod(accessor.build());
-        }
-        emitTypeSpec(packageName, builder.build());
-        String resource = binaryName.replace('.', '/') + ".css";
-        String file = resource.substring(resource.lastIndexOf('/') + 1);
-        for (var entry : Map.of(resource, result.css() + SourceMap.reference(file), resource + ".map", result.map(file))
-                .entrySet()) {
-            try (var stream = processingEnv
-                    .getFiler()
-                    .createResource(StandardLocation.CLASS_OUTPUT, "", entry.getKey(), owner)
-                    .openOutputStream()) {
-                stream.write(entry.getValue().getBytes(StandardCharsets.UTF_8));
-            }
+            return null;
         }
     }
 
