@@ -1,1 +1,1 @@
-ERROR com/example/escaped_selector/Button.java:7:6: com/example/escaped_selector/Button.java:8:6: Escaped selector identifiers are outside this proof
+ERROR com/example/escaped_selector/Button.java:7:6: com/example/escaped_selector/Button.java:8:6: Escaped selector identifiers are unsupported

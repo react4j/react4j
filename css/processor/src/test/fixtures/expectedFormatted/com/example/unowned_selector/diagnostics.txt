@@ -1,1 +1,1 @@
-ERROR com/example/unowned_selector/Button.java:7:6: com/example/unowned_selector/Button.java:8:5: Component selectors must target the same owned element
+ERROR com/example/unowned_selector/Button.java:7:6: com/example/unowned_selector/Button.java:8:5: Component combinators must target an imported :css(name) root

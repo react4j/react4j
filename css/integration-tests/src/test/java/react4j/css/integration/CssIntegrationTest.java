@@ -46,9 +46,9 @@ public final class CssIntegrationTest {
         assertEquals(layers.get(1).getRuleCount(), 1);
         var components = layers.get(2);
         assertEquals(components.getAllSelectors(), List.of("components"));
-        assertEquals(components.getRuleCount(), 7);
+        assertEquals(components.getRuleCount(), 9);
         var rules = components.getAllStyleRules();
-        assertEquals(rules.size(), 5);
+        assertEquals(rules.size(), 7);
         assertStyle(rules.get(0), List.of("." + root), "color", "white");
         assertStyle(rules.get(1), List.of("." + root, "." + root + "--success"), "background-color", "green");
         assertStyle(rules.get(2), List.of("." + root, "." + root + "--cancel"), "background-color", "red");
@@ -71,6 +71,25 @@ public final class CssIntegrationTest {
     }
 
     @Test
+    public void peerSelectorsResolveThroughSeparatelyCompiledJ2clHeaders() throws Exception {
+        String css = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.fixture"))));
+        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(css, new CSSReaderSettings()));
+        var peer = sheet.getAllLayerRules().get(2).getAllStyleRules().stream()
+                .filter(rule -> rule.getSelectorsAsCSSString(new CSSWriterSettings(true), 0)
+                        .contains("+"))
+                .findFirst()
+                .orElseThrow();
+        assertEquals(
+                peer.getSelectorsAsCSSString(new CSSWriterSettings(true), 0),
+                ".jcss-react4j-css-integration-PeerStyles:hover+.jcss-react4j-css-integration-SharedLabel");
+        assertEquals(
+                Objects.requireNonNull(peer.getDeclarationOfPropertyName("color"))
+                        .getExpression()
+                        .getAsCSSString(new CSSWriterSettings(true), 0),
+                "blue");
+    }
+
+    @Test
     public void resourcesSurviveJ2clAndBundledMapsPointToTheOriginalJava() throws Exception {
         var tree = Path.of(Objects.requireNonNull(System.getProperty("css.tree")));
         Path fragment = tree.resolve("react4j/css/integration/ButtonStyles.css");
@@ -81,7 +100,7 @@ public final class CssIntegrationTest {
         String css = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.fixture"))));
         String map = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.map"))));
         var indexed = JsonParser.parseString(map).getAsJsonObject();
-        assertEquals(indexed.getAsJsonArray("sections").size(), 4);
+        assertEquals(indexed.getAsJsonArray("sections").size(), 5);
         var consumer = new SourceMapConsumerV3();
         consumer.parse(map);
         String source = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.source"))));

@@ -336,6 +336,18 @@ public final class CssResourceProcessorTest {
                                 .getAsJsonArray("dependencies")
                                 .size(),
                         0);
+                var used = CssProcessorTest.compile(
+                        Map.of("Consumer.java", source.replace("color: blue;", "& + :css(peer) { color: blue; }")),
+                        List.of("-classpath", CssProcessorTest.applicationClasspath() + File.pathSeparator + jarPath));
+                assertTrue(used.success(), used.diagnostics());
+                assertEquals(used.diagnostics(), "");
+                assertTrue(text(used, "classes/demo/Consumer.css").contains(".jcss-demo-Consumer+.jcss-demo-Button"));
+                assertEquals(
+                        JsonParser.parseString(text(used, "classes/demo/Consumer.css.json"))
+                                .getAsJsonObject()
+                                .getAsJsonArray("dependencies")
+                                .toString(),
+                        "[\"demo.Button\"]");
             }
         } finally {
             try (var paths = Files.walk(directory)) {
@@ -364,6 +376,70 @@ public final class CssResourceProcessorTest {
                     "Button.java", consumer("@CssImport(name=\"" + alias + "\", value=Button.class)", "color: red;")));
             assertTrue(result.success(), result.diagnostics());
         }
+    }
+
+    @Test
+    public void checkedPeersMayReferenceEachOtherAndRequireGlobals() throws Exception {
+        String button = consumer(
+                "@CssImport(name=\"label\", value=Label.class)\n@CssImport(Defaults.class)",
+                "&:hover + :css(label) { color: red; }");
+        String label = consumer("@CssImport(name=\"button\", value=Button.class)", "& ~ :css(button) { color: blue; }")
+                .replace("abstract class Button", "abstract class Label");
+        var result = CssProcessorTest.compile(Map.of(
+                "Button.java",
+                button,
+                "Label.java",
+                label,
+                "Defaults.java",
+                global("Defaults", "", "body { margin: 0; }")));
+        assertTrue(result.success(), result.diagnostics());
+        assertEquals(result.diagnostics(), "");
+        for (var entry : Map.of("Button", "[\"demo.Defaults\",\"demo.Label\"]", "Label", "[\"demo.Button\"]")
+                .entrySet()) {
+            assertEquals(
+                    JsonParser.parseString(text(result, "classes/demo/" + entry.getKey() + ".css.json"))
+                            .getAsJsonObject()
+                            .getAsJsonArray("dependencies")
+                            .toString(),
+                    entry.getValue());
+        }
+    }
+
+    @DataProvider
+    public Object[][] invalidPeerReferences() {
+        return List.of(
+                        "& > :css(missing)",
+                        "& > :css(beat)",
+                        "& > :css('peer')",
+                        "& > :css(peer, peer)",
+                        "& > :css(peer other)",
+                        "& > :css()",
+                        "& > :css",
+                        "&:css(peer)",
+                        ":css(peer)",
+                        "& > :css(peer).local",
+                        "&:is(:css(peer))",
+                        "& > :css(peer) .raw",
+                        "& > .raw",
+                        "& > &")
+                .stream()
+                .map(selector -> new Object[] {selector + " { color: red; }"})
+                .toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "invalidPeerReferences")
+    public void invalidPeerReferencesReportAuthoredLocationsWithoutOwnerOutputs(String css) throws Exception {
+        var result = CssProcessorTest.compile(Map.of(
+                "Pulse.java",
+                frames(),
+                "Button.java",
+                consumer(
+                        "@CssImport(name=\"peer\", value=Button.class)\n@CssImport(name=\"beat\", value=Pulse.class)",
+                        css)));
+        assertFalse(result.success());
+        assertTrue(result.diagnostics().contains("Button.java:"), result.diagnostics());
+        assertFalse(result.files().containsKey("classes/demo/Button.css"));
+        assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
     }
 
     private static String global(String name, String annotations, String css) {

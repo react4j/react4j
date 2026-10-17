@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -83,22 +82,48 @@ public final class Bundle {
     static Result assemble(List<Path> trees, List<Path> shared, List<String> globals, String outputName)
             throws IOException {
         var definitions = readResources(trees);
-        var ordered = new ArrayList<Resource>();
-        var visited = new HashSet<String>();
-        var visiting = new LinkedHashSet<String>();
+        var retained = new HashSet<String>();
         for (var owner : globals) {
             var definition = definitions.get(owner);
             if (null == definition || Kind.GLOBAL != definition.metadata().kind()) {
                 throw new IllegalArgumentException(
                         "Global CSS root must reference an available @GlobalCss definition: " + owner);
             }
-            visit(owner, definitions, visited, visiting, ordered);
+            retain(owner, definitions, retained);
         }
         for (var definition : definitions.values()) {
             if (Kind.COMPONENT == definition.metadata().kind()) {
-                visit(definition.metadata().owner(), definitions, visited, visiting, ordered);
+                retain(definition.metadata().owner(), definitions, retained);
             }
         }
+        var ordered = new ArrayList<Resource>();
+        var visited = new HashSet<String>();
+        var visiting = new LinkedHashSet<String>();
+        for (var owner : globals) {
+            orderGlobal(owner, definitions, visited, visiting, ordered);
+        }
+        for (var definition : definitions.values()) {
+            if (Kind.COMPONENT == definition.metadata().kind()) {
+                for (var dependency : definition.metadata().dependencies()) {
+                    if (Kind.GLOBAL
+                            == Objects.requireNonNull(definitions.get(dependency))
+                                    .metadata()
+                                    .kind()) {
+                        orderGlobal(dependency, definitions, visited, visiting, ordered);
+                    }
+                }
+            }
+        }
+        for (var definition : definitions.values()) {
+            String owner = definition.metadata().owner();
+            if (retained.contains(owner) && Kind.GLOBAL == definition.metadata().kind()) {
+                orderGlobal(owner, definitions, visited, visiting, ordered);
+            }
+        }
+        definitions.values().stream()
+                .filter(d -> retained.contains(d.metadata().owner())
+                        && Kind.GLOBAL != d.metadata().kind())
+                .forEach(ordered::add);
         var writer = new StringBuilder("@layer shared,components;\n");
         var sections = new JsonArray();
         int line = 1;
@@ -194,7 +219,7 @@ public final class Bundle {
                 }
             }
         }
-        var definitions = new LinkedHashMap<String, Resource>();
+        var definitions = new TreeMap<String, Resource>();
         for (var entry : resources.entrySet()) {
             String name = entry.getKey();
             if (!name.endsWith(".css")) {
@@ -227,7 +252,20 @@ public final class Bundle {
 
     private record Resource(CssResource metadata, String css, JsonObject map) {}
 
-    private static void visit(
+    private static void retain(String owner, Map<String, Resource> definitions, Set<String> retained) {
+        if (!retained.add(owner)) {
+            return;
+        }
+        var definition = definitions.get(owner);
+        if (null == definition) {
+            throw new IllegalArgumentException("Missing CSS dependency: " + owner);
+        }
+        for (var dependency : definition.metadata().dependencies()) {
+            retain(dependency, definitions, retained);
+        }
+    }
+
+    private static void orderGlobal(
             String owner,
             Map<String, Resource> definitions,
             Set<String> visited,
@@ -236,21 +274,18 @@ public final class Bundle {
         if (visited.contains(owner)) {
             return;
         }
-        var definition = definitions.get(owner);
-        if (null == definition) {
-            throw new IllegalArgumentException("Missing CSS dependency: " + owner);
-        }
+        var definition = Objects.requireNonNull(definitions.get(owner));
         if (!visiting.add(owner)) {
             throw new IllegalArgumentException(
-                    "Cyclic CSS dependency: " + String.join(" -> ", visiting) + " -> " + owner);
+                    "Cyclic global CSS inclusion: " + String.join(" -> ", visiting) + " -> " + owner);
         }
         for (var dependency : definition.metadata().dependencies()) {
-            var target = definitions.get(dependency);
-            if (null != target && Kind.COMPONENT == target.metadata().kind()) {
-                throw new IllegalArgumentException(
-                        "CSS dependencies must reference resource definitions: " + dependency);
+            if (Kind.GLOBAL
+                    == Objects.requireNonNull(definitions.get(dependency))
+                            .metadata()
+                            .kind()) {
+                orderGlobal(dependency, definitions, visited, visiting, ordered);
             }
-            visit(dependency, definitions, visited, visiting, ordered);
         }
         visiting.remove(owner);
         visited.add(owner);

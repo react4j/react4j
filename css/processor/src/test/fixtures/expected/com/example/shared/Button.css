@@ -1,2 +1,2 @@
-.jcss-com-example-shared-Button{animation:jcss-com-example-shared-Pulse--keyframes 1s linear infinite;}
+.jcss-com-example-shared-Button{animation:jcss-com-example-shared-Pulse--keyframes 1s linear infinite;}.jcss-com-example-shared-Button:hover+.jcss-com-example-shared-Button{color:red;}
 /*# sourceMappingURL=Button.css.map */

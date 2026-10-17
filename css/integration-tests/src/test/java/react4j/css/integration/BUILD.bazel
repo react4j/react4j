@@ -10,6 +10,7 @@ java_j2cl_library(
     testonly = True,
     srcs = [
         "SharedDefaults.java",
+        "SharedLabel.java",
         "SharedPulse.java",
         "StyleState.java",
         "UnselectedDefaults.java",

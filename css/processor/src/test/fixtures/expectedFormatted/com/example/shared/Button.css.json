@@ -1,1 +1,1 @@
-{"version":1,"owner":"com.example.shared.Button","kind":"COMPONENT","dependencies":["com.example.shared.Pulse"]}
+{"version":1,"owner":"com.example.shared.Button","kind":"COMPONENT","dependencies":["com.example.shared.Button","com.example.shared.Pulse"]}

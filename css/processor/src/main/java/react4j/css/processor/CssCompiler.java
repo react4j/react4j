@@ -10,13 +10,19 @@ import com.helger.css.decl.CSSMediaRule;
 import com.helger.css.decl.CSSNestedDeclarations;
 import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorAttribute;
+import com.helger.css.decl.CSSSelectorMemberFunctionLike;
+import com.helger.css.decl.CSSSelectorMemberHost;
+import com.helger.css.decl.CSSSelectorMemberHostContext;
 import com.helger.css.decl.CSSSelectorMemberNot;
+import com.helger.css.decl.CSSSelectorMemberPseudoHas;
 import com.helger.css.decl.CSSSelectorMemberPseudoIs;
 import com.helger.css.decl.CSSSelectorMemberPseudoWhere;
+import com.helger.css.decl.CSSSelectorMemberSlotted;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CSSSupportsRule;
 import com.helger.css.decl.ECSSExpressionOperator;
+import com.helger.css.decl.ECSSSelectorCombinator;
 import com.helger.css.writer.CSSWriterSettings;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -101,7 +107,7 @@ final class CssCompiler {
         for (var frames : compiler.keyframes.values()) {
             compiler.keyframes(frames);
         }
-        compiler.style(sheet.getAllStyleRules().get(0), "." + root, true);
+        compiler.style(sheet.getAllStyleRules().get(0), new Scope("." + root, true), true);
         for (var name : accessors) {
             if (!"style".equals(name) && !compiler.found.contains(name)) {
                 throw new CssSyntax.InvalidCss("Accessor " + name + "() has no matching local selector", 0);
@@ -129,7 +135,9 @@ final class CssCompiler {
 
     private void globalRule(ICSSSourceLocationAware rule) {
         if (rule instanceof CSSStyleRule style) {
-            output.append(style.getSelectorsAsCSSString(compact, 0) + "{", location(style));
+            output.append(
+                    style.getAllSelectors().stream().map(this::globalSelector).collect(Collectors.joining(",")) + "{",
+                    location(style));
             writeDeclarations(style.getAllDeclarations());
             for (var child : style.getAllRules()) {
                 globalRule((ICSSSourceLocationAware) child);
@@ -163,6 +171,7 @@ final class CssCompiler {
 
     static void checkAlias(String name, Kind kind) {
         if (!name.matches("(?:--|-?(?:[a-zA-Z_]|[^\\x00-\\x7f]))(?:[a-zA-Z0-9_-]|[^\\x00-\\x7f])*")
+                || "--".equals(name)
                 || (Kind.KEYFRAMES == kind
                         && ("none".equalsIgnoreCase(name)
                                 || "default".equalsIgnoreCase(name)
@@ -171,14 +180,19 @@ final class CssCompiler {
         }
     }
 
-    private void style(CSSStyleRule rule, String parent, boolean implicit) {
-        String selector = implicit
-                ? parent
+    private record Scope(String selector, boolean owned) {}
+
+    private void style(CSSStyleRule rule, Scope parent, boolean implicit) {
+        var selectors = implicit
+                ? List.of(parent)
                 : rule.getAllSelectors().stream()
                         .map(s -> selector(s, parent, true))
-                        .collect(Collectors.joining(","));
+                        .toList();
+        String selector = selectors.stream().map(Scope::selector).collect(Collectors.joining(","));
         declarations(rule.getAllDeclarations(), selector, rule);
-        String nestedParent = rule.getSelectorCount() > 1 ? ":is(" + selector + ")" : selector;
+        var nestedParent = new Scope(
+                rule.getSelectorCount() > 1 ? ":is(" + selector + ")" : selector,
+                selectors.stream().allMatch(Scope::owned));
         for (var nested : rule.getAllRules()) {
             if (nested instanceof CSSStyleRule child) {
                 style(child, nestedParent, false);
@@ -194,7 +208,7 @@ final class CssCompiler {
         }
     }
 
-    private void conditional(AbstractHasTopLevelRules rule, String parent) {
+    private void conditional(AbstractHasTopLevelRules rule, Scope parent) {
         output.append(conditionalHeader(rule) + "{", location((ICSSSourceLocationAware) rule));
         for (var child : rule.getAllRules()) {
             if (child instanceof CSSStyleRule style) {
@@ -376,40 +390,58 @@ final class CssCompiler {
         }
     }
 
-    private String selector(CSSSelector selector, String parent, boolean nested) {
+    private Scope selector(CSSSelector selector, Scope parent, boolean nested) {
         var result = new StringBuilder();
         int index = 0;
+        boolean owned = parent.owned();
+        boolean needsPeer = false;
         for (var member : selector.getAllMembers()) {
             if (nested && 0 == index && !(member instanceof CSSSelectorSimpleMember simple && simple.isNesting())) {
                 throw syntax.invalid("Component selectors must start with &", selector);
             }
-            if (member instanceof CSSSelectorSimpleMember simple) {
+            if (member instanceof ECSSSelectorCombinator combinator && nested && !needsPeer) {
+                result.append(combinator.getAsCSSString(compact, 0));
+                needsPeer = true;
+                owned = false;
+            } else if (member instanceof CSSSelectorMemberFunctionLike function && isReference(function)) {
+                if (!nested || !needsPeer) {
+                    throw syntax.invalid(
+                            "Component peer references must start a compound after a combinator", function);
+                }
+                result.append(reference(function));
+                needsPeer = false;
+            } else if (needsPeer) {
+                throw syntax.invalid("Component combinators must target an imported :css(name) root", selector);
+            } else if (member instanceof CSSSelectorSimpleMember simple) {
                 String value = simple.getValue();
                 if (value.contains("\\")) {
-                    throw syntax.invalid("Escaped selector identifiers are outside this proof", simple);
+                    throw syntax.invalid("Escaped selector identifiers are unsupported", simple);
                 }
                 if (simple.isNesting() && nested && 0 == index) {
-                    result.append(parent);
+                    result.append(parent.selector());
                 } else if (simple.isClass()) {
                     String name = value.substring(1);
+                    if (!owned) {
+                        throw syntax.invalid("Local modifiers cannot qualify imported peers", simple);
+                    }
                     if ("style".equals(name) || !accessors.contains(name)) {
                         throw syntax.invalid("Local selector ." + name + " has no matching modifier accessor", simple);
                     }
                     found.add(name);
                     result.append('.').append(root).append("--").append(Names.encode(name));
                 } else if (simple.isPseudo()
-                        && !Set.of(":global", ":local", ":root", ":scope", ":host")
+                        && !Set.of(":global", ":local", ":root", ":scope", ":host", ":css", ":css()")
                                 .contains(value.toLowerCase(Locale.ROOT))) {
                     result.append(value);
                 } else {
                     throw syntax.invalid("Component selectors must target the same owned element", simple);
                 }
             } else if (member instanceof CSSSelectorMemberNot not) {
-                result.append(function(":not", not.getAllSelectors()));
+                result.append(function(":not", not.getAllSelectors(), owned));
             } else if (member instanceof CSSSelectorMemberPseudoIs is) {
-                result.append(function(":is", is.getAllSelectors()));
+                result.append(function(":is", is.getAllSelectors(), owned));
             } else if (member instanceof CSSSelectorMemberPseudoWhere where) {
-                result.append(function(":where", where.getAllSelectors()));
+                result.append(function(":where", where.getAllSelectors(), owned));
             } else if (member instanceof CSSSelectorAttribute attribute) {
                 result.append(attribute.getAsCSSString(compact, 0));
             } else {
@@ -419,11 +451,84 @@ final class CssCompiler {
             }
             index++;
         }
+        if (needsPeer) {
+            throw syntax.invalid("Component combinators must target an imported :css(name) root", selector);
+        }
+        return new Scope(result.toString(), owned);
+    }
+
+    private String function(String name, List<CSSSelector> selectors, boolean owned) {
+        return name + "("
+                + selectors.stream()
+                        .map(s -> selector(s, new Scope("", owned), false).selector())
+                        .collect(Collectors.joining(","))
+                + ")";
+    }
+
+    private static boolean isReference(CSSSelectorMemberFunctionLike function) {
+        return ":css(".equalsIgnoreCase(function.getFunctionName());
+    }
+
+    private String reference(CSSSelectorMemberFunctionLike function) {
+        var arguments = function.getParameterExpression().getAllMembers();
+        if (1 != arguments.size() || !(arguments.get(0) instanceof CSSExpressionMemberTermSimple simple)) {
+            throw syntax.invalid(":css() requires one imported component name", function);
+        }
+        String alias = simple.getValue();
+        try {
+            checkAlias(alias, Kind.COMPONENT);
+        } catch (IllegalArgumentException e) {
+            throw syntax.invalid(":css() requires an unescaped, unquoted imported component name", function);
+        }
+        var binding = imports.get(alias);
+        if (null == binding || Kind.COMPONENT != binding.kind()) {
+            throw syntax.invalid("Unknown imported component name: " + alias, function);
+        }
+        usedImports.add(alias);
+        return "." + binding.cssName();
+    }
+
+    private String globalSelector(CSSSelector selector) {
+        var result = new StringBuilder();
+        for (var member : selector.getAllMembers()) {
+            if (member instanceof CSSSelector nested) {
+                result.append(globalSelector(nested));
+            } else if (member instanceof CSSSelectorMemberFunctionLike function
+                    && function.getFunctionName().contains("\\")) {
+                throw syntax.invalid("Escaped selector identifiers are unsupported", function);
+            } else if (member instanceof CSSSelectorMemberFunctionLike function && isReference(function)) {
+                result.append(reference(function));
+            } else if (member instanceof CSSSelectorMemberNot not) {
+                result.append(globalFunction(":not", not.getAllSelectors()));
+            } else if (member instanceof CSSSelectorMemberPseudoIs is) {
+                result.append(globalFunction(":is", is.getAllSelectors()));
+            } else if (member instanceof CSSSelectorMemberPseudoWhere where) {
+                result.append(globalFunction(":where", where.getAllSelectors()));
+            } else if (member instanceof CSSSelectorMemberPseudoHas has) {
+                result.append(globalFunction(":has", has.getAllSelectors()));
+            } else if (member instanceof CSSSelectorMemberHost host) {
+                result.append(globalFunction(":host", List.of(host.getSelector())));
+            } else if (member instanceof CSSSelectorMemberHostContext host) {
+                result.append(globalFunction(":host-context", List.of(host.getSelector())));
+            } else if (member instanceof CSSSelectorMemberSlotted slotted) {
+                result.append(globalFunction("::slotted", List.of(slotted.getSelector())));
+            } else if (member instanceof CSSSelectorSimpleMember simple) {
+                if (simple.getValue().contains("\\")) {
+                    throw syntax.invalid("Escaped selector identifiers are unsupported", simple);
+                }
+                if (Set.of(":css", ":css()").contains(simple.getValue().toLowerCase(Locale.ROOT))) {
+                    throw syntax.invalid(":css() requires one imported component name", simple);
+                }
+                result.append(simple.getAsCSSString(compact, 0));
+            } else {
+                result.append(member.getAsCSSString(compact, 0));
+            }
+        }
         return result.toString();
     }
 
-    private String function(String name, List<CSSSelector> selectors) {
-        return name + "(" + selectors.stream().map(s -> selector(s, "", false)).collect(Collectors.joining(",")) + ")";
+    private String globalFunction(String name, List<CSSSelector> selectors) {
+        return name + "(" + selectors.stream().map(this::globalSelector).collect(Collectors.joining(",")) + ")";
     }
 
     private SourceMap.Location location(ICSSSourceLocationAware node) {

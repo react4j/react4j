@@ -185,8 +185,8 @@ public final class CssCompilerTest {
                         Map.entry("&.sucess { color: red; }", "no matching modifier accessor"),
                         Map.entry("/* &.success {} */ color: red;", "no matching local selector"),
                         Map.entry("content: '&.success';", "no matching local selector"),
-                        Map.entry("& .success { color: red; }", "same owned element"),
-                        Map.entry("& + & { color: red; }", "same owned element"),
+                        Map.entry("& .success { color: red; }", "imported :css(name) root"),
+                        Map.entry("& + & { color: red; }", "imported :css(name) root"),
                         Map.entry("&:has(.success) { color: red; }", "same owned element"),
                         Map.entry("&::part(success) { color: red; }", "same owned element"),
                         Map.entry("&:global { color: red; }", "same owned element"),
@@ -782,11 +782,11 @@ public final class CssCompilerTest {
                         result.output().css());
             }
         }
-        for (var alias : List.of("pulse", "linear", "éclair", "_pulse", "-pulse", "--pulse", "--")) {
+        for (var alias : List.of("pulse", "linear", "éclair", "_pulse", "-pulse", "--pulse")) {
             CssCompiler.checkAlias(alias, Kind.KEYFRAMES);
         }
         for (var alias : List.of(
-                "", "0pulse", "-0pulse", "-", "pulse name", "pulse;", "'pulse'", "none", "DEFAULT", "inherit")) {
+                "", "0pulse", "-0pulse", "-", "--", "pulse name", "pulse;", "'pulse'", "none", "DEFAULT", "inherit")) {
             expectThrows(IllegalArgumentException.class, () -> CssCompiler.checkAlias(alias, Kind.KEYFRAMES));
         }
         expectThrows(

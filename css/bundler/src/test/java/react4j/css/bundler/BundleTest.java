@@ -268,21 +268,21 @@ public final class BundleTest {
     }
 
     @Test
-    public void missingWrongKindAndCyclicDependenciesFail() throws Exception {
+    public void missingResourcesAndGlobalInclusionCyclesFail() throws Exception {
         Path input = tree("graph");
         resource(input, "A", CssResource.Kind.COMPONENT, ".a{color:red;}", "Missing");
         var missing = expectThrows(
                 IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), List.of(), "app.css"));
         assertTrue(String.valueOf(missing.getMessage()).contains("Missing CSS dependency: Missing"));
         resource(input, "Missing", CssResource.Kind.COMPONENT, ".b{color:blue;}");
-        var wrongKind = expectThrows(
-                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), List.of(), "app.css"));
-        assertTrue(String.valueOf(wrongKind.getMessage()).contains("resource definitions"));
+        assertTrue(Bundle.assemble(List.of(input), List.of(), List.of(), "app.css")
+                .css()
+                .contains(".b{color:blue;}"));
         resource(input, "Missing", CssResource.Kind.GLOBAL, "body{color:red;}", "Other");
         resource(input, "Other", CssResource.Kind.GLOBAL, "body{color:blue;}", "Missing");
         var cycle = expectThrows(
                 IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), List.of(), "app.css"));
-        assertTrue(String.valueOf(cycle.getMessage()).contains("Cyclic CSS dependency"));
+        assertTrue(String.valueOf(cycle.getMessage()).contains("Cyclic global CSS inclusion"));
         Files.writeString(input.resolve("A.css.json"), "{}");
         expectThrows(
                 IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), List.of(), "app.css"));
@@ -346,6 +346,68 @@ public final class BundleTest {
                 IllegalArgumentException.class,
                 () -> Bundle.assemble(List.of(input), List.of(), List.of("Theme"), "app.css"));
         assertTrue(String.valueOf(cycle.getMessage()).contains("Theme -> Base -> Theme"));
+    }
+
+    @Test
+    public void peerCyclesAndMixedRetentionPathsDoNotDefineGlobalCascadeOrder() throws Exception {
+        Path input = tree("peers");
+        resource(input, "A", CssResource.Kind.COMPONENT, ".a+.b{color:red;}", "B", "Theme");
+        resource(input, "B", CssResource.Kind.COMPONENT, ".b+.a{color:blue;}", "A", "Other");
+        resource(input, "Base", CssResource.Kind.GLOBAL, "body{color:black;}");
+        resource(input, "Theme", CssResource.Kind.GLOBAL, "body{color:red;}", "Base", "B");
+        resource(input, "Other", CssResource.Kind.GLOBAL, "body{color:blue;}", "Base", "A");
+        resource(input, "Unused", CssResource.Kind.GLOBAL, "body{color:pink;}", "Missing");
+        var result = Bundle.assemble(List.of(input), List.of(), List.of("Other"), "app.css");
+        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
+        var globals = sheet.getAllLayerRules().get(1).getAllStyleRules();
+        assertEquals(
+                globals.stream()
+                        .map(r -> Objects.requireNonNull(r.getDeclarationOfPropertyName("color"))
+                                .getExpression()
+                                .getAsCSSString(new CSSWriterSettings(true), 0))
+                        .toList(),
+                List.of("black", "blue", "red"));
+        var peers = sheet.getAllLayerRules().get(2).getAllStyleRules();
+        assertEquals(
+                peers.stream()
+                        .map(r -> r.getSelectorsAsCSSString(new CSSWriterSettings(true), 0))
+                        .toList(),
+                List.of(".a+.b", ".b+.a"));
+        assertEquals(
+                JsonParser.parseString(result.map())
+                        .getAsJsonObject()
+                        .getAsJsonArray("sections")
+                        .size(),
+                5);
+        assertFalse(result.css().contains("pink"));
+        assertEquals(
+                result,
+                Bundle.assemble(List.of(input, input), List.of(), List.of("Other", "Base", "Other"), "app.css"));
+        resource(input, "Base", CssResource.Kind.GLOBAL, "body{color:black;}", "Theme");
+        var cycle = expectThrows(
+                IllegalArgumentException.class,
+                () -> Bundle.assemble(List.of(input), List.of(), List.of("Other"), "app.css"));
+        assertTrue(String.valueOf(cycle.getMessage()).contains("Base -> Theme -> Base"), cycle.getMessage());
+    }
+
+    @Test
+    public void selfPeerReferencesAndGlobalDiamondsEmitOnce() throws Exception {
+        Path input = tree("self");
+        resource(input, "A", CssResource.Kind.COMPONENT, ".a+.a{color:red;}", "A", "Theme");
+        resource(input, "Base", CssResource.Kind.GLOBAL, "body{color:black;}");
+        resource(input, "Left", CssResource.Kind.GLOBAL, "body{color:red;}", "Base");
+        resource(input, "Right", CssResource.Kind.GLOBAL, "body{color:blue;}", "Base");
+        resource(input, "Theme", CssResource.Kind.GLOBAL, "body{color:green;}", "Right", "Left");
+        var result = Bundle.assemble(List.of(input), List.of(), List.of(), "app.css");
+        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
+        assertEquals(
+                sheet.getAllLayerRules().get(1).getAllStyleRules().stream()
+                        .map(r -> Objects.requireNonNull(r.getDeclarationOfPropertyName("color"))
+                                .getExpression()
+                                .getAsCSSString(new CSSWriterSettings(true), 0))
+                        .toList(),
+                List.of("black", "blue", "red", "green"));
+        assertEquals(sheet.getAllLayerRules().get(2).getRuleCount(), 1);
     }
 
     @Test
