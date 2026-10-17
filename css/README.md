@@ -31,7 +31,6 @@ The parsed selector tree must agree with the declared accessors in both directio
 bazel build //css/examples/save-button/src/main/java/react4j/css/example:styles //css/examples/save-button/src/main/java/react4j/css/example:bindings
 bazel test //css:tests //css/examples/save-button/src/test/js/react4j/css/example:browser_tests --test_output=errors
 bazel test -c opt //css/examples/save-button/src/test/js/react4j/css/example:browser_tests --test_output=errors
-css/check_reproducibility.sh
 ```
 
 The annotation has one checked JVM compilation and a bytecode import for J2CL:
