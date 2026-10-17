@@ -1,0 +1,4 @@
+exports_files(
+    ["animation.css"],
+    visibility = ["//examples/heart-rate-monitor:__pkg__"],
+)

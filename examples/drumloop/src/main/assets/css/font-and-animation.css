@@ -1,0 +1,23 @@
+@font-face {
+  font-family: 'Righteous';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/Righteous-Regular.ttf') format('truetype');
+}
+
+@keyframes doubled {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5
+  }
+}
+
+.step_button_doubled {
+  animation: doubled 0.5s linear infinite;
+}

@@ -1,0 +1,20 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//examples/todomvc:__subpackages__",
+])
+
+java_j2cl_library(
+    name = "styles",
+    srcs = [
+        "Styles.java",
+        "package-info.java",
+    ],
+    java_deps = ["//css/core"],
+    plugins = ["//css/processor:plugin"],
+    deps = [
+        "//css/core:core-j2cl",
+        "//third_party/java:jspecify-j2cl",
+    ],
+)

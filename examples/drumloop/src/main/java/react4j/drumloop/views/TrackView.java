@@ -21,12 +21,12 @@ abstract class TrackView {
     ReactNode render() {
         _track.suspendUntilAudioLoaded();
         return div(
-                new HtmlProps().className("track"),
+                new HtmlProps().className(Styles.TRACK.style()),
                 div(
-                        new HtmlProps().className("track_info"),
-                        h2(new HtmlProps().className("track_title"), _track.getName())),
+                        new HtmlProps().className(Styles.TRACK_INFO.style()),
+                        h2(new HtmlProps().className(Styles.TRACK_TITLE.style()), _track.getName())),
                 div(
-                        new HtmlProps().className("step_row"),
+                        new HtmlProps().className(Styles.STEPS.style()),
                         fragment(_track.getStepCells().stream().map(StepButtonBuilder::cell))));
     }
 }

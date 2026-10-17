@@ -150,6 +150,8 @@ speechSynthesis.speak = utterance => {
     const page = /** @type {!Document} */ (frame.contentDocument);
     try {
       asserts.assertEquals('Web Speech Synthesis Demo', page.querySelector('h1').textContent);
+      asserts.assertEquals('480px', view.getComputedStyle(page.querySelector('form')).maxWidth);
+      asserts.assertEquals('rgb(255, 255, 255)', view.getComputedStyle(page.getElementById('textarea')).backgroundColor);
       asserts.assertFalse(button(page, 'Speak').disabled);
       asserts.assertTrue(button(page, 'Pause').disabled);
       asserts.assertTrue(button(page, 'Stop').disabled);
@@ -213,11 +215,15 @@ speechSynthesis.speak = utterance => {
       asserts.assertTrue((/** @type {!HTMLInputElement} */ (page.querySelector('#pitch'))).disabled);
       asserts.assertFalse(button(page, 'Pause').disabled);
       asserts.assertEquals('Hello world', page.querySelector('#textbeingspoken').textContent);
+      await waitFor(() => view.getComputedStyle(page.getElementById('textarea')).backgroundColor === 'rgb(51, 51, 51)');
       boundary(6, 5);
       const marker = /** @type {!HTMLElement} */ (page.querySelector('#textarea > div:last-child'));
-      await waitFor(() => marker.style.display === 'block');
-      asserts.assertTrue(parseFloat(marker.style.width) > 0);
-      asserts.assertTrue(parseFloat(marker.style.height) > 0);
+      await waitFor(() => view.getComputedStyle(marker).display === 'block');
+      asserts.assertTrue(parseFloat(view.getComputedStyle(marker).width) > 0);
+      asserts.assertTrue(parseFloat(view.getComputedStyle(marker).height) > 0);
+      asserts.assertTrue(parseFloat(marker.style.getPropertyValue('--marker-width')) > 0);
+      asserts.assertEquals('fixed', view.getComputedStyle(marker).position);
+      asserts.assertEquals('rgb(255, 165, 0)', view.getComputedStyle(marker).borderTopColor);
       button(page, 'Pause').click();
       await waitFor(() => !!page.querySelector('button[title="Resume"]'));
       button(page, 'Resume').click();

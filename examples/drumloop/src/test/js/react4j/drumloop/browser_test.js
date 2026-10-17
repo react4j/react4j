@@ -56,13 +56,23 @@ testSuite({
       page.open();
       page.write(html.replace('<head>', '<head><base href="' + base + '">' + OBSERVE));
       page.close();
-      await waitFor(() => page.querySelectorAll('.step_button').length === 112 &&
-        page.querySelectorAll('.button').length === 4);
+      await waitFor(() => page.querySelectorAll('button[data-step]').length === 112 &&
+        page.querySelectorAll('button[data-sound]').length === 4);
+      const map = /** @type {!Object<string, *>} */ (await (await fetch(APPLICATION + 'css/index.css.map')).json());
+      asserts.assertEquals(3, map['version']);
+      const sections = /** @type {!Array<!Object<string, *>>} */ (map['sections']);
+      asserts.assertTrue(sections.some(section => {
+        const component = /** @type {!Object<string, *>} */ (section['map']);
+        const sources = /** @type {!Array<string>} */ (component['sources']);
+        return sources.some(name => name.endsWith('Styles.java'));
+      }));
+      asserts.assertEquals('flex', view.getComputedStyle(page.querySelector('h1').parentElement).display);
+      asserts.assertEquals('rgb(51, 51, 51)', view.getComputedStyle(page.body).backgroundColor);
       const errors = /** @type {!Array<string>} */ (view['applicationErrors']);
       const audioStarts = /** @type {!Array<!Object<string, *>>} */ (view['audioStarts']);
       const audioContext = /** @type {!AudioContext} */ (view['audioContext']);
-      asserts.assertEquals('Trap Lord 9000', page.querySelector('.logo').textContent);
-      asserts.assertEquals(7, page.querySelectorAll('.track').length);
+      asserts.assertEquals('Trap Lord 9000', page.querySelector('h1').textContent);
+      asserts.assertEquals(7, page.querySelectorAll('h2').length);
       asserts.assertEquals(0, errors.length);
       await page.fonts.ready;
       asserts.assertTrue(page.fonts.check('28px Righteous'));
@@ -70,49 +80,50 @@ testSuite({
       asserts.assertEquals(11, sounds.length);
       asserts.assertTrue(sounds.every(entry => entry.name.startsWith(base + 'sounds/')));
 
-      const step = page.querySelector('.step_button');
+      const step = page.querySelector('button[data-step]');
       step.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-      await waitFor(() => step.classList.contains('step_button_on'));
+      await waitFor(() => view.getComputedStyle(step).opacity === '1');
       step.dispatchEvent(new MouseEvent('click', {bubbles: true, shiftKey: true}));
-      await waitFor(() => step.classList.contains('step_button_doubled'));
+      await waitFor(() => view.getComputedStyle(step).animationName === 'doubled');
       step.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-      await waitFor(() => !step.classList.contains('step_button_on'));
+      await waitFor(() => view.getComputedStyle(step).opacity === '0.35');
       step.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-      await waitFor(() => step.classList.contains('step_button_on'));
+      await waitFor(() => view.getComputedStyle(step).opacity === '1');
 
-      const bpm = /** @type {!HTMLInputElement} */ (page.querySelector('.bpmInput'));
+      const bpm = /** @type {!HTMLInputElement} */ (page.querySelector('input[type=number]'));
       Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(bpm, '120');
       bpm.dispatchEvent(new Event('input', {bubbles: true}));
       await waitFor(() => bpm.value === '120');
       await audioContext.suspend();
-      const play = page.querySelector('.startButton');
+      const play = page.querySelector('input[type=number] + button');
       const started = view.performance.now();
       play.dispatchEvent(new MouseEvent('click', {bubbles: true}));
       await waitFor(() => play.textContent === 'Stop' && audioStarts.length > 0);
       asserts.assertTrue('Play resumes suspended audio', /** @type {number} */ (view['audioResumes']) > 0);
-      const indicator = /** @type {!HTMLElement} */ (page.querySelector('.indicator'));
-      asserts.assertEquals('0px', indicator.style.left);
+      const indicator = /** @type {!HTMLElement} */ (page.querySelector('[style*="--indicator-left"]'));
+      asserts.assertEquals('0px', view.getComputedStyle(indicator).left);
+      asserts.assertEquals('0px', indicator.style.getPropertyValue('--indicator-left'));
       await new Promise(resolve => setTimeout(resolve, 150));
-      asserts.assertEquals('The beat must not advance at a zero-millisecond interval', '0px', indicator.style.left);
-      await waitFor(() => indicator.style.left !== '0px');
+      asserts.assertEquals('The beat must not advance at a zero-millisecond interval', '0px', view.getComputedStyle(indicator).left);
+      await waitFor(() => view.getComputedStyle(indicator).left !== '0px');
       const elapsed = view.performance.now() - started;
       asserts.assertTrue('120 BPM advances after about 500 ms: ' + elapsed, elapsed >= 400 && elapsed < 850);
       // One beat at 120 BPM is 500 ms (the original 16-step timing convention).
-      asserts.assertEquals('37.5px', indicator.style.left);
+      asserts.assertEquals('37.5px', view.getComputedStyle(indicator).left);
       play.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-      await waitFor(() => play.textContent === 'Play' && !page.querySelector('.indicator'));
+      await waitFor(() => play.textContent === 'Play' && !page.querySelector('[style*="--indicator-left"]'));
       const starts = audioStarts.length;
       await new Promise(resolve => setTimeout(resolve, 600));
       asserts.assertEquals(starts, audioStarts.length);
 
-      const fx = page.querySelector('.button');
+      const fx = page.querySelector('button[data-sound]');
       fx.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, shiftKey: true}));
-      await waitFor(() => fx.classList.contains('button_held'));
+      await waitFor(() => view.getComputedStyle(fx).backgroundColor === 'rgb(253, 114, 114)');
       asserts.assertTrue(audioStarts[audioStarts.length - 1]['loop']);
       fx.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
-      asserts.assertTrue(fx.classList.contains('button_held'));
+      asserts.assertTrue(view.getComputedStyle(fx).backgroundColor === 'rgb(253, 114, 114)');
       fx.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
-      await waitFor(() => !fx.classList.contains('button_held'));
+      await waitFor(() => view.getComputedStyle(fx).backgroundColor === 'rgba(0, 0, 0, 0)');
       const before = audioStarts.length;
       fx.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
       await waitFor(() => audioStarts.length === before + 1);

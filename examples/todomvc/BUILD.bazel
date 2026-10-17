@@ -2,10 +2,6 @@ exports_files(
     [
         "landing.html",
         "public/index.html",
-        "public/css/base.css",
-        "public/css/index.css",
-        "public/css/toggle.svg",
-        "public/css/toggle_checked.svg",
     ],
     visibility = ["//visibility:public"],
 )

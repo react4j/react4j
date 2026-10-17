@@ -13,6 +13,7 @@ import react4j.dom.proptypes.html.InputProps;
 import react4j.dom.proptypes.html.attributeTypes.InputType;
 import react4j.todomvc.arez.model.AppData;
 import react4j.todomvc.browser.HTMLInputElement;
+import react4j.todomvc.styles.Styles;
 
 @View(exportBuilder = true)
 abstract class TodoList {
@@ -24,7 +25,7 @@ abstract class TodoList {
     @Render
     ReactNode render() {
         return div(div(
-                header(new HtmlProps().className("header"), h1("todos"), TodoEntryBuilder.build()),
+                header(h1(new HtmlProps().className(Styles.HEADING.style()), "todos"), TodoEntryBuilder.build()),
                 renderMainSection(),
                 AppData.model.isNotEmpty() ? FooterBuilder.build() : null));
     }
@@ -33,13 +34,12 @@ abstract class TodoList {
     private ReactNode renderMainSection() {
         if (AppData.model.isNotEmpty()) {
             return section(
-                    new HtmlProps().className("header"),
                     input(new InputProps()
-                            .className("toggle-all")
+                            .className(Styles.TOGGLE_ALL.style())
                             .type(InputType.checkbox)
                             .onChange(this::handleToggleAll)),
                     ul(
-                            new HtmlProps().className("todo-list"),
+                            new HtmlProps().className(Styles.LIST.style()),
                             AppData.viewService.filteredTodos().stream().map(TodoItemBuilder::todo)));
         } else {
             return null;

@@ -130,6 +130,8 @@ testSuite({
       await waitFor(() => heart.complete);
       asserts.assertTrue(heart.naturalWidth > 0);
       asserts.assertEquals('160px', view.getComputedStyle(heart).width);
+      asserts.assertEquals('flex', view.getComputedStyle(heart.parentElement).display);
+      asserts.assertEquals('column', view.getComputedStyle(heart.parentElement).flexDirection);
       asserts.assertFalse(button(page, 0).disabled);
       asserts.assertTrue(button(page, 1).disabled);
       asserts.assertFalse(heart.classList.contains('beating'));
@@ -143,7 +145,7 @@ testSuite({
       asserts.assertFalse(button(page, 1).disabled);
       measure(72);
       await waitFor(() => heart.classList.contains('beating'));
-      asserts.assertContains('72', page.querySelector('.hrm_panel').textContent);
+      asserts.assertContains('72', page.getElementById('app').textContent);
       asserts.assertTrue(heart.classList.contains('beating'));
       asserts.assertEquals('beating', view.getComputedStyle(heart).animationName);
       button(page, 1).click();
@@ -151,17 +153,17 @@ testSuite({
       asserts.assertFalse(button(page, 0).disabled);
       asserts.assertTrue(button(page, 1).disabled);
       asserts.assertFalse(heart.classList.contains('beating'));
-      asserts.assertNotContains('72', page.querySelector('.hrm_panel').textContent);
+      asserts.assertNotContains('72', page.getElementById('app').textContent);
       button(page, 0).click();
       await waitFor(() => Number(view['notificationStarts']) === 2);
       measure(81);
-      await waitFor(() => page.querySelector('.hrm_panel').textContent.includes('81'));
-      asserts.assertContains('81', page.querySelector('.hrm_panel').textContent);
+      await waitFor(() => page.getElementById('app').textContent.includes('81'));
+      asserts.assertContains('81', page.getElementById('app').textContent);
       disconnect();
       await waitFor(() => !button(page, 0).disabled);
       asserts.assertFalse(button(page, 0).disabled);
       asserts.assertTrue(button(page, 1).disabled);
-      asserts.assertNotContains('81', page.querySelector('.hrm_panel').textContent);
+      asserts.assertNotContains('81', page.getElementById('app').textContent);
       asserts.assertEquals(0, /** @type {!Array<string>} */ (view['applicationErrors']).length);
     } finally {
       frame.remove();

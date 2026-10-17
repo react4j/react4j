@@ -1,0 +1,7 @@
+exports_files(
+    [
+        "base.css",
+        "shared.css",
+    ],
+    visibility = ["//examples/todomvc:__subpackages__"],
+)

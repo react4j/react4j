@@ -42,7 +42,8 @@ abstract class FxButton {
         _sound.suspendUntilAudioLoaded();
         return button(
                 new BtnProps()
-                        .className("button", held() ? "button_held" : null)
+                        .data("sound", _sound.getName())
+                        .className(held() ? Styles.FX_BUTTON.held() : Styles.FX_BUTTON.style())
                         .onMouseDown(e -> playSound(e.isShiftKey()))
                         .onTouchStart(e -> playSound(e.isShiftKey()))
                         .onTouchEnd(e -> stopSound())

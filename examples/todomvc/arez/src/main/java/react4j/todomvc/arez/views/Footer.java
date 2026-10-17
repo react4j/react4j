@@ -11,6 +11,7 @@ import react4j.dom.proptypes.html.BtnProps;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.todomvc.arez.model.AppData;
 import react4j.todomvc.arez.model.FilterMode;
+import react4j.todomvc.styles.Styles;
 
 @View
 abstract class Footer {
@@ -18,29 +19,44 @@ abstract class Footer {
     ReactNode render() {
         final FilterMode filterMode = AppData.viewService.getFilterMode();
         return footer(
-                new HtmlProps().className("footer"),
+                new HtmlProps().className(Styles.FOOTER.style()),
                 FooterTodoCountBuilder.build(),
                 ul(
-                        new HtmlProps().className("filters"),
-                        li(a(
-                                new AnchorProps()
-                                        .className(FilterMode.ALL == filterMode ? "selected" : null)
-                                        .href("#"),
-                                "All")),
-                        li(a(
-                                new AnchorProps()
-                                        .className(FilterMode.ACTIVE == filterMode ? "selected" : null)
-                                        .href("#active"),
-                                "Active")),
-                        li(a(
-                                new AnchorProps()
-                                        .className(FilterMode.COMPLETED == filterMode ? "selected" : null)
-                                        .href("#completed"),
-                                "Completed"))),
+                        new HtmlProps().className(Styles.FILTERS.style()),
+                        li(
+                                new HtmlProps().className(Styles.FILTER_ITEM.style()),
+                                a(
+                                        new AnchorProps()
+                                                .className(
+                                                        FilterMode.ALL == filterMode
+                                                                ? Styles.FILTER_LINK.selected()
+                                                                : Styles.FILTER_LINK.style())
+                                                .href("#"),
+                                        "All")),
+                        li(
+                                new HtmlProps().className(Styles.FILTER_ITEM.style()),
+                                a(
+                                        new AnchorProps()
+                                                .className(
+                                                        FilterMode.ACTIVE == filterMode
+                                                                ? Styles.FILTER_LINK.selected()
+                                                                : Styles.FILTER_LINK.style())
+                                                .href("#active"),
+                                        "Active")),
+                        li(
+                                new HtmlProps().className(Styles.FILTER_ITEM.style()),
+                                a(
+                                        new AnchorProps()
+                                                .className(
+                                                        FilterMode.COMPLETED == filterMode
+                                                                ? Styles.FILTER_LINK.selected()
+                                                                : Styles.FILTER_LINK.style())
+                                                .href("#completed"),
+                                        "Completed"))),
                 hasCompletedItems()
                         ? button(
                                 new BtnProps()
-                                        .className("clear-completed")
+                                        .className(Styles.CLEAR.style())
                                         .onClick(e -> AppData.service.clearCompleted()),
                                 "Clear Completed")
                         : null);

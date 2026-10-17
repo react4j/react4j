@@ -64,6 +64,7 @@ java_format_check(
         "//examples/todomvc/raw/src/main/java/react4j/todomvc/raw/views:views_java",
         "//examples/todomvc/raw/src/main/java/react4j/todomvc/raw:todomvc_java",
         "//examples/todomvc/src/main/java/react4j/todomvc/browser:browser_java",
+        "//examples/todomvc/src/main/java/react4j/todomvc/styles:styles_java",
         "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/ioc:ioc_java",
         "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/model:model_java",
         "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/views:views_java",

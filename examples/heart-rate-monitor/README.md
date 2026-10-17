@@ -15,3 +15,7 @@ for build setup and other commands.
 Requires a browser with Web Bluetooth, a Bluetooth heart rate sensor, and a secure context
 (HTTPS or localhost). If the page is blank, check the browser console for
 `Bluetooth API not present`.
+
+[Styles.java](src/main/java/react4j/hrm/Styles.java) defines the component layout and heart size.
+The heartbeat remains a separate [CSS asset](src/main/assets/css/animation.css), selected by
+the literal `beating` class, because the CSS processor does not support keyframes or animation bindings.

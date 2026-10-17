@@ -23,7 +23,11 @@ abstract class IndicatorView {
         final int step = _drumMachine.getCurrentStep();
 
         return div(
-                new HtmlProps().className("indicatorContainer"),
-                on ? div(new HtmlProps().className("indicator").style(new CssProps().left(step * 37.5 + "px"))) : null);
+                new HtmlProps().className(Styles.INDICATORS.style()),
+                on
+                        ? div(new HtmlProps()
+                                .className(Styles.INDICATOR.style())
+                                .style(new CssProps().customProperty("--indicator-left", step * 37.5 + "px")))
+                        : null);
     }
 }

@@ -1,0 +1,7 @@
+exports_files(
+    [
+        "toggle.svg",
+        "toggle_checked.svg",
+    ],
+    visibility = ["//examples/todomvc:__subpackages__"],
+)

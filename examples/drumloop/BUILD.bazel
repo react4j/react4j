@@ -1,4 +1,5 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//css:rules.bzl", "css_bundle")
 load("//tools/browser:rules.bzl", "browser_application", "browser_application_variant")
 
 package(default_visibility = ["//visibility:public"])
@@ -11,10 +12,20 @@ closure_js_library(
     deps = ["//examples/drumloop/src/main/java/react4j/drumloop"],
 )
 
+css_bundle(
+    name = "styles",
+    css = "index.css",
+    root = ":drumloop_bundle",
+    shared = ["//examples/drumloop/src/main/css:shared.css"],
+    source_map = "index.css.map",
+)
+
 browser_application(
     name = "drumloop",
     assets = {
-        "public/css/styles.css": "css/styles.css",
+        "//examples/drumloop/src/main/assets/css:font-and-animation.css": "css/font-and-animation.css",
+        ":index.css": "css/index.css",
+        ":index.css.map": "css/index.css.map",
         "public/fonts/OFL.txt": "fonts/OFL.txt",
         "public/fonts/Righteous-Regular.ttf": "fonts/Righteous-Regular.ttf",
         "public/sounds/bass.wav": "sounds/bass.wav",

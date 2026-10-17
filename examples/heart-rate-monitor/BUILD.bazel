@@ -1,4 +1,5 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//css:rules.bzl", "css_bundle")
 load("//tools/browser:rules.bzl", "browser_application", "browser_application_variant")
 
 package(default_visibility = ["//visibility:public"])
@@ -9,10 +10,19 @@ closure_js_library(
     deps = ["//examples/heart-rate-monitor/src/main/java/react4j/hrm"],
 )
 
+css_bundle(
+    name = "styles",
+    css = "index.css",
+    root = ":heart-rate-monitor_bundle",
+    source_map = "index.css.map",
+)
+
 browser_application(
     name = "heart-rate-monitor",
     assets = {
-        "public/css/index.css": "css/index.css",
+        "//examples/heart-rate-monitor/src/main/assets/css:animation.css": "css/animation.css",
+        ":index.css": "css/index.css",
+        ":index.css.map": "css/index.css.map",
         "public/img/heart.svg": "img/heart.svg",
     },
     entry_point = "react4j.hrm.MainEntry",

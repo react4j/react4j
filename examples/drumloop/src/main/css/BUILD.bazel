@@ -1,0 +1,4 @@
+exports_files(
+    ["shared.css"],
+    visibility = ["//examples/drumloop:__pkg__"],
+)

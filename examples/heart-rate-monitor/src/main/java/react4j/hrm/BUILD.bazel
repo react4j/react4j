@@ -8,9 +8,11 @@ java_j2cl_library(
         "Application.java",
         "HeartRateMonitor.java",
         "Main.java",
+        "Styles.java",
         "package-info.java",
     ],
     java_deps = [
+        "//css/core",
         "//:core",
         "//:dom",
         "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/bluetooth:bluetooth_java",
@@ -19,12 +21,14 @@ java_j2cl_library(
         "//third_party/java:jsinterop_annotations",
     ],
     plugins = [
+        "//css/processor:plugin",
         "//:react4j_processor_plugin",
         "@arez//:arez_processor_plugin",
     ],
     deps = [
         "//:core-j2cl",
         "//:dom-j2cl",
+        "//css/core:core-j2cl",
         "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser",
         "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/bluetooth",
         "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/core",

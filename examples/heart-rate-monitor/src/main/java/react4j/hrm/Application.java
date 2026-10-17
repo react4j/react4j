@@ -21,12 +21,12 @@ abstract class Application {
         final boolean connected = _heartRateMonitor.isConnected();
 
         return div(
-                new HtmlProps().className("container"),
+                new HtmlProps().className(Styles.CONTAINER.style()),
                 div(
-                        new HtmlProps().className("hrm_panel"),
+                        new HtmlProps().className(Styles.PANEL.style()),
                         h1("Heart Rate Monitor"),
                         img(new ImgProps()
-                                .className(heartRate > 0 ? "heart beating" : "heart")
+                                .className(Styles.HEART.style(), heartRate > 0 ? "beating" : null)
                                 .src("img/heart.svg")),
                         0 != heartRate ? ReactNode.of(heartRate) : null,
                         button(new BtnProps().disabled(connected).onClick(e -> _heartRateMonitor.connect()), "Start"),

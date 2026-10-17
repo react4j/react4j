@@ -21,7 +21,7 @@ abstract class PlayButton {
         final boolean on = _drumMachine.isRunning();
         return button(
                 new BtnProps()
-                        .className("startButton", on ? null : "startButton_off")
+                        .className(on ? Styles.PLAY.style() : Styles.PLAY.off())
                         .onClick(e -> _drumMachine.toggleRunning()),
                 on ? "Stop" : "Play");
     }

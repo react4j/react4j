@@ -28,7 +28,7 @@ abstract class BpmInput {
     @Render
     ReactNode render() {
         return input(new InputProps()
-                .className("bpmInput")
+                .className(Styles.BPM.style())
                 .type(InputType.number)
                 .value(String.valueOf(_drumMachine.getBpm()))
                 .min("60")

@@ -22,12 +22,12 @@ abstract class StepButton {
 
     @Render
     ReactNode render() {
-        final boolean oddBar = (_cell.beat() / 4) % 2 == 1;
+        final boolean oddBar = 1 == (_cell.beat() / 4) % 2;
         return button(new BtnProps()
+                .data("step", Integer.toString(_cell.beat()))
                 .className(
-                        "step_button",
-                        oddBar ? "step_button_odd" : null,
-                        _cell.on() ? "step_button_on" : null,
+                        _cell.on() ? Styles.STEP.on() : Styles.STEP.style(),
+                        oddBar ? Styles.STEP.odd() : null,
                         _cell.doubled() ? "step_button_doubled" : null)
                 .onClick(e -> toggleCell(e.isShiftKey())));
     }

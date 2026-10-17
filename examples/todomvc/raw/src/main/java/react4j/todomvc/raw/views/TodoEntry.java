@@ -12,6 +12,7 @@ import react4j.dom.events.KeyboardEvent;
 import react4j.dom.proptypes.html.InputProps;
 import react4j.todomvc.browser.HTMLInputElement;
 import react4j.todomvc.raw.model.AppData;
+import react4j.todomvc.styles.Styles;
 
 @View(type = View.Type.STATEFUL)
 abstract class TodoEntry {
@@ -44,7 +45,7 @@ abstract class TodoEntry {
     @Render
     ReactNode render() {
         return input(new InputProps()
-                .className("new-todo")
+                .className(Styles.ENTRY.style())
                 .placeHolder("What needs to be done?")
                 .value(_todoText)
                 .onKeyDown(this::handleNewTodoKeyDown)

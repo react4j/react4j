@@ -26,6 +26,7 @@ import react4j.todomvc.sting.model.Todo;
 import react4j.todomvc.sting.model.TodoRepository;
 import react4j.todomvc.sting.model.TodoService;
 import react4j.todomvc.sting.model.ViewService;
+import react4j.todomvc.styles.Styles;
 
 @View
 abstract class TodoItem {
@@ -136,20 +137,27 @@ abstract class TodoItem {
     @Render
     ReactNode render() {
         final boolean completed = _todo.isCompleted();
+        final boolean editing = isTodoBeingEdited();
         return li(
-                new HtmlProps().className(completed ? "checked" : null, isTodoBeingEdited() ? "editing" : null),
+                new HtmlProps().className(editing ? Styles.ITEM.editing() : Styles.ITEM.style()),
                 div(
-                        new HtmlProps().className("view"),
+                        new HtmlProps().className(editing ? Styles.VIEW.editing() : Styles.VIEW.style()),
                         input(new InputProps()
-                                .className("toggle")
+                                .className(Styles.TOGGLE.style())
                                 .type(InputType.checkbox)
                                 .checked(completed)
                                 .onChange(e -> _todo.toggle())),
-                        label(new LabelProps().onDoubleClick(e -> onEdit(_todo)), _todo.getTitle()),
-                        button(new BtnProps().className("destroy").onClick(e -> _todoRepository.destroy(_todo)))),
+                        label(
+                                new LabelProps()
+                                        .className(completed ? Styles.LABEL.completed() : Styles.LABEL.style())
+                                        .onDoubleClick(e -> onEdit(_todo)),
+                                _todo.getTitle()),
+                        button(new BtnProps()
+                                .className(Styles.DESTROY.style())
+                                .onClick(e -> _todoRepository.destroy(_todo)))),
                 input(new InputProps()
                         .ref(e -> _editField = Js.uncheckedCast(e))
-                        .className("edit")
+                        .className(editing ? Styles.EDIT.editing() : Styles.EDIT.style())
                         .value(getEditText())
                         .onBlur(e -> onSubmitTodo(_todo))
                         .onChange(this::handleChange)

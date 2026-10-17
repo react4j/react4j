@@ -1,4 +1,5 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//css:rules.bzl", "css_bundle")
 load("//tools/browser:rules.bzl", "browser_application", "browser_application_variant")
 
 package(default_visibility = ["//visibility:public"])
@@ -9,13 +10,24 @@ closure_js_library(
     deps = ["//examples/todomvc/raw/src/main/java/react4j/todomvc/raw:todomvc"],
 )
 
+css_bundle(
+    name = "styles",
+    css = "index.css",
+    root = ":raw_bundle",
+    shared = [
+        "//examples/todomvc/src/main/css:base.css",
+        "//examples/todomvc/src/main/css:shared.css",
+    ],
+    source_map = "index.css.map",
+)
+
 browser_application(
     name = "raw",
     assets = {
-        "//examples/todomvc:public/css/base.css": "css/base.css",
-        "//examples/todomvc:public/css/index.css": "css/index.css",
-        "//examples/todomvc:public/css/toggle.svg": "css/toggle.svg",
-        "//examples/todomvc:public/css/toggle_checked.svg": "css/toggle_checked.svg",
+        "//examples/todomvc/src/main/assets/css:toggle.svg": "css/toggle.svg",
+        "//examples/todomvc/src/main/assets/css:toggle_checked.svg": "css/toggle_checked.svg",
+        ":index.css": "css/index.css",
+        ":index.css.map": "css/index.css.map",
     },
     entry_point = "react4j.todomvc.raw.AppEntry",
     html = "//examples/todomvc:public/index.html",

@@ -14,6 +14,7 @@ java_j2cl_library(
         "package-info.java",
     ],
     java_deps = [
+        "//examples/todomvc/src/main/java/react4j/todomvc/styles:styles_java",
         "//:core",
         "//:dom",
         "//examples/todomvc/src/main/java/react4j/todomvc/browser:browser_java",
@@ -28,6 +29,7 @@ java_j2cl_library(
         "//:dom-j2cl",
         "//examples/todomvc/raw/src/main/java/react4j/todomvc/raw/model",
         "//examples/todomvc/src/main/java/react4j/todomvc/browser",
+        "//examples/todomvc/src/main/java/react4j/todomvc/styles",
         "//third_party/java:braincheck_core-j2cl",
         "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jsinterop_base-j2cl",

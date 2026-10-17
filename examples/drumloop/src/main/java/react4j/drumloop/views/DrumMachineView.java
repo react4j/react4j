@@ -19,10 +19,10 @@ abstract class DrumMachineView {
     @Render
     ReactNode render() {
         return div(
-                new HtmlProps().className("container"),
+                new HtmlProps().className(Styles.CONTAINER.style()),
                 div(
-                        new HtmlProps().className("header"),
-                        h1(new HtmlProps().className("logo"), "Trap Lord 9000"),
+                        new HtmlProps().className(Styles.HEADER.style()),
+                        h1(new HtmlProps().className(Styles.LOGO.style()), "Trap Lord 9000"),
                         BpmInputBuilder.build(),
                         PlayButtonBuilder.build()),
                 suspense(
@@ -30,12 +30,12 @@ abstract class DrumMachineView {
                         4000,
                         fragment(
                                 div(
-                                        new HtmlProps().className("stepSequencer"),
+                                        new HtmlProps().className(Styles.SEQUENCER.style()),
                                         IndicatorBuilder.build(),
                                         fragment(_drumMachine.getTracks().stream()
                                                 .map(TrackBuilder::track))),
                                 div(
-                                        new HtmlProps().className("buttonContainer"),
+                                        new HtmlProps().className(Styles.BUTTONS.style()),
                                         fragment(_drumMachine.getEffects().stream()
                                                 .map(FxButtonBuilder::sound))))));
     }

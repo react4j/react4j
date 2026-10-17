@@ -11,11 +11,13 @@ java_j2cl_library(
         "IndicatorView.java",
         "PlayButton.java",
         "StepButton.java",
+        "Styles.java",
         "TrackView.java",
         "ViewsFragment.java",
         "package-info.java",
     ],
     java_deps = [
+        "//css/core",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser:browser_java",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/audio:audio_java",
         "//examples/drumloop/src/main/java/react4j/drumloop/model:model_java",
@@ -24,6 +26,7 @@ java_j2cl_library(
         "//third_party/java:sting_core",
     ],
     plugins = [
+        "//css/processor:plugin",
         "//:react4j_processor_plugin",
         "@arez//:arez_processor_plugin",
         "@sting//:sting_processor_plugin",
@@ -31,6 +34,7 @@ java_j2cl_library(
     deps = [
         "//:core-j2cl",
         "//:dom-j2cl",
+        "//css/core:core-j2cl",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/audio",
         "//examples/drumloop/src/main/java/react4j/drumloop/model",
