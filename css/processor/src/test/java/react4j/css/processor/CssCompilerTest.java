@@ -2,6 +2,7 @@ package react4j.css.processor;
 
 import static org.testng.Assert.*;
 
+import com.helger.css.decl.AbstractHasTopLevelRules;
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSKeyframesRule;
@@ -811,6 +812,25 @@ public final class CssCompilerTest {
                             invalid,
                             "shared-pulse",
                             offset -> new SourceMap.Location("Pulse.java", invalid, 0, offset)));
+        }
+    }
+
+    @Test
+    public void nestedGlobalConditionalsRequireExplicitSelectors() {
+        for (var condition : List.of("@media screen", "@supports (display: grid)")) {
+            String css = "body { " + condition + " { & { color: red; } } }";
+            var result = CssCompiler.global(
+                    css, offset -> new SourceMap.Location("Defaults.java", css, 0, offset), Map.of());
+            var style = parse(result.output().css()).getAllStyleRules().get(0);
+            var conditional = (AbstractHasTopLevelRules) style.getAllRules().get(0);
+            var nested = conditional.getAllStyleRules().get(0);
+            assertEquals(nested.getSelectorsAsCSSString(new CSSWriterSettings(true), 0), "&");
+            assertEquals(value(Objects.requireNonNull(nested.getDeclarationOfPropertyName("color"))), "red");
+            String invalid = "body { " + condition + " { color: red; } }";
+            expectThrows(
+                    CssSyntax.InvalidCss.class,
+                    () -> CssCompiler.global(
+                            invalid, offset -> new SourceMap.Location("Defaults.java", invalid, 0, offset), Map.of()));
         }
     }
 

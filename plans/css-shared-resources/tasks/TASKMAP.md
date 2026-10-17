@@ -5,7 +5,7 @@
 - Current frontier: implementation review
 - Planning reviewer: planning_review (3/3 rounds; passed; final confirmation unused)
 - Plan checkpoint: automatic; latest user implementation authority and passing planning review
-- Implementation reviewer: pending (0/5 rounds; final confirmation unused)
+- Implementation reviewer: implementation_review (1/5 rounds; confirmation pending; final confirmation unused)
 - Authority: latest user instruction authorizes implementation and heavy testing; no human plan checkpoint.
 
 ## Tasks
@@ -26,3 +26,6 @@ Not required unless canonical domain directories are present.
 Round 1: one blocker concerning overlapping root/dependency cascade order. Resolved by specifying first-completed dependency-first traversal, legacy shared files first, and explicit overlapping-root computed-style coverage. Round 2: Findings: none. Complete initial plan coverage and the ordering correction verified.
 
 Implementation evidence requires a plan revision: Bazel header jars omit .css.json resources, so imports cannot read resource sidecars on the compilation classpath. Revised declaration annotations use CLASS retention; sidecars remain the bundler contract. Round 3: Findings: none. Reviewer verified full jars contain CSS sidecars and header jars contain only SharedPulse.class; CLASS-retained declaration contract and testing responsibilities accepted.
+
+## Implementation review history
+Round 1: P2 — global documentation omitted the explicit-selector requirement inside nested media/supports conditionals. Packaged-compiler probes confirmed both the accepted selector form and rejected direct-declaration form. Added the README caveat and focused positive/negative compiler and packaged-processor checks. bazel test //css:tests passed all seven suites and 442 packaged processor cases; tools/java_format.sh check and git diff --check passed. No production behavior changed. Awaiting round-2 confirmation.

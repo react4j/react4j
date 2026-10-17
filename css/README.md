@@ -101,7 +101,7 @@ Use `@GlobalCss` for page defaults and rules that target elements outside a comp
 final class ApplicationDefaults {}
 ```
 
-Selectors retain their authored names and require no Java accessors. Global styles support style rules, nesting, `@media` and `@supports`. Import shared animations with `@CssImport`; inline keyframe definitions and other at-rules, including `@font-face`, are unsupported.
+Selectors retain their authored names and require no Java accessors. Global styles support style rules, nesting, `@media` and `@supports`. Conditional blocks require explicit selectors even inside a style rule, for example `body { @media screen { & { color: red; } } }`. Import shared animations with `@CssImport`; inline keyframe definitions and other at-rules, including `@font-face`, are unsupported.
 
 Select application globals through the bundle's `globals` attribute below. Add `@CssIncludes(ApplicationDefaults.class)` to a component or another global definition that requires those defaults. Includes work across separately compiled libraries; duplicate entries in one include list, self-inclusion and incompatible types are errors. The bundler rejects dependency cycles.
 

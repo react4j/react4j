@@ -391,11 +391,24 @@ public final class CssResourceProcessorTest {
                 "@container (width > 1px) { body {} }",
                 "body { animation-name: unknown; }",
                 "body { animation: var(--animation); }",
+                "body { @media screen { color: red; } }",
+                "body { @supports (display: grid) { color: red; } }",
                 "body { color red; }",
                 "color: red;")) {
             cases.add(new Object[] {global("Button", "", css), "ERROR"});
         }
         return cases.toArray(Object[][]::new);
+    }
+
+    @Test
+    public void nestedGlobalConditionalsAcceptExplicitSelectors() throws Exception {
+        for (var condition : List.of("@media screen", "@supports (display: grid)")) {
+            var result = CssProcessorTest.compile(Map.of(
+                    "Defaults.java", global("Defaults", "", "body { " + condition + " { & { color: red; } } }")));
+            assertTrue(result.success(), result.diagnostics());
+            assertEquals(result.diagnostics(), "");
+            assertTrue(text(result, "classes/demo/Defaults.css").contains("&{color:red;}"));
+        }
     }
 
     @Test(dataProvider = "invalidIncludes")
