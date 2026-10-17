@@ -1,12 +1,12 @@
 {
   "roots": [
-    { "path": "core/src/main/java", "lines": 0, "branches": 0 },
-    { "path": "dom/src/main/java", "lines": 0, "branches": 0 },
-    { "path": "processor/src/main/java", "lines": 0, "branches": 0 },
+    { "path": "core/src/main/java", "lines": 95, "branches": 85 },
+    { "path": "dom/src/main/java", "lines": 95, "branches": 85 },
+    { "path": "processor/src/main/java", "lines": 95, "branches": 85 },
     {
       "path": "css/processor/src/main/java",
-      "lines": 0,
-      "branches": 0,
+      "lines": 95,
+      "branches": 85,
       "classes": [
         { "path": "react4j/css/processor/Names.java", "lines": 95, "branches": 85 },
         { "path": "react4j/css/processor/TextBlock.java", "lines": 95, "branches": 85 },
@@ -15,8 +15,8 @@
     },
     {
       "path": "css/internal/src/main/java",
-      "lines": 0,
-      "branches": 0,
+      "lines": 95,
+      "branches": 85,
       "classes": [
         { "path": "react4j/css/internal/SourceMap.java", "lines": 95, "branches": 85 },
         { "path": "react4j/css/internal/CssResource.java", "lines": 95, "branches": 85 }
@@ -24,8 +24,8 @@
     },
     {
       "path": "css/bundler/src/main/java",
-      "lines": 0,
-      "branches": 0,
+      "lines": 95,
+      "branches": 85,
       "classes": [
         { "path": "react4j/css/bundler/Bundle.java", "lines": 95, "branches": 85 }
       ]
