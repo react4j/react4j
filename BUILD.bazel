@@ -27,6 +27,7 @@ java_format_check(
         "//processor",
         "//processor/src/test/java/react4j/processor:test_classes",
         "//tools/testing/src/main/java/react4j/testing:golden_updater",
+        "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
         "//tools/browser:preview",
         "//tools/browser:assets",
         "//tools/consumer:config",

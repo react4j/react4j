@@ -132,9 +132,12 @@ public final class CssProcessor extends AbstractProcessor {
         if (!packageName.isEmpty()) {
             java.append("package ").append(packageName).append(";\n\n");
         }
-        java.append("@java.lang.SuppressWarnings(\"UnnecessarilyFullyQualified\")\n"
-                        + "@org.jspecify.annotations.NullMarked\n"
-                        + "final class ")
+        java.append("@java.lang.SuppressWarnings(")
+                .append(
+                        packageName.isEmpty()
+                                ? "{\"UnnecessarilyFullyQualified\", \"DefaultPackage\"}"
+                                : "\"UnnecessarilyFullyQualified\"")
+                .append(")\n@org.jspecify.annotations.NullMarked\nfinal class ")
                 .append(generated)
                 .append(" extends ")
                 .append(owner.getQualifiedName())

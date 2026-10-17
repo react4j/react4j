@@ -1,0 +1,9 @@
+filegroup(
+    name = "fixtures",
+    srcs = glob([
+        "input/**",
+        "bad_input/**",
+        "expected/**",
+    ]),
+    visibility = ["//css/processor:__pkg__"],
+)

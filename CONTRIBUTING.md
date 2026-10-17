@@ -37,7 +37,7 @@ The processor distinguishes required builder calls from nullable values. Nullabl
 
 Edit generator sources and regenerate expected output; do not hand-edit generated Java. DOM templates and Java generators are in `tools/generation/`. React and ReactDOM inputs are checksum-pinned in `MODULE.bazel` and patched by the Java asset tool.
 
-Processor fixtures are in `processor/src/test/fixtures`. The harness checks complete output sets and exact formatted/unformatted goldens, then compiles every emitted body with the full checker policy, including integrated Arez/Sting output. Update only the affected family with `tools/update_goldens.sh generated`, `jspecify` or `regressions`. The updater protects concurrent edits, copies only changed candidate outputs and reruns the family. Review the resulting diff, including diagnostics and file additions/removals.
+Processor fixtures are in `processor/src/test/fixtures`. The harness checks complete output sets and exact formatted/unformatted goldens, then compiles every emitted body with the full checker policy, including integrated Arez/Sting output. Update only the affected family with `tools/update_goldens.sh generated`, `jspecify` or `regressions`. The updater protects concurrent edits, copies only changed candidate outputs and reruns the family. Review the resulting diff, including diagnostics and file additions/removals. CSS fixtures use `css/processor/src/test/fixtures` and `tools/update_goldens.sh css`, with one output mode covering generated Java, CSS resources and diagnostics.
 
 ## Browser and distribution boundaries
 

@@ -12,7 +12,11 @@ java_library(
     testonly = True,
     srcs = ["StrictGeneratedCode.java"],
     data = ["//third_party/java:strict_checker_options"],
-    visibility = ["//processor:__subpackages__"],
+    visibility = [
+        "//:__pkg__",
+        "//css/processor:__pkg__",
+        "//processor:__subpackages__",
+    ],
     deps = [
         "//third_party/java:dataflow_errorprone",
         "//third_party/java:error_prone_core",

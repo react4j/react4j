@@ -13,16 +13,22 @@ import java.util.Base64;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 import javax.annotation.processing.Processor;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 import org.jspecify.annotations.NullMarked;
 import org.realityforge.css.Css;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import react4j.testing.StrictGeneratedCode;
 
 @NullMarked
 public final class CssProcessorTest {
@@ -79,6 +85,139 @@ public final class CssProcessorTest {
         }
     }
 
+    private static String applicationClasspath() throws Exception {
+        return Path.of(Css.class
+                        .getProtectionDomain()
+                        .getCodeSource()
+                        .getLocation()
+                        .toURI())
+                + File.pathSeparator
+                + Path.of(NullMarked.class
+                        .getProtectionDomain()
+                        .getCodeSource()
+                        .getLocation()
+                        .toURI());
+    }
+
+    private static Path fixtureDir() {
+        return Path.of(System.getProperty("react4j.fixture_dir", "css/processor/src/test/fixtures"));
+    }
+
+    @DataProvider(name = "fixtures")
+    public Object[][] fixtures() throws Exception {
+        var cases = new ArrayList<Object[]>();
+        for (var family : List.of("input", "bad_input")) {
+            try (var directories = Files.list(fixtureDir().resolve(family))) {
+                for (var directory :
+                        directories.filter(Files::isDirectory).sorted().toList()) {
+                    cases.add(new Object[] {family, directory.getFileName().toString()});
+                }
+            }
+        }
+        assertFalse(cases.isEmpty(), "No CSS fixtures found");
+        var names = cases.stream().map(value -> (String) value[1]).collect(Collectors.toCollection(TreeSet::new));
+        assertEquals(names.size(), cases.size(), "Fixture names must be unique across families");
+        if (!Boolean.getBoolean("react4j.output_fixture_data")) {
+            try (var expected = Files.list(fixtureDir().resolve("expected"))) {
+                assertEquals(
+                        expected.filter(Files::isDirectory)
+                                .map(path -> path.getFileName().toString())
+                                .collect(Collectors.toCollection(TreeSet::new)),
+                        names,
+                        "Complete fixture case set differs");
+            }
+        }
+        return cases.toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "fixtures")
+    public void goldenFixtures(String family, String name) throws Exception {
+        Path input = fixtureDir().resolve(family).resolve(name);
+        var sources = new TreeMap<String, String>();
+        try (var files = Files.walk(input)) {
+            for (var file : files.filter(path -> path.toString().endsWith(".java"))
+                    .sorted()
+                    .toList()) {
+                sources.put(input.relativize(file).toString(), Files.readString(file));
+            }
+        }
+        assertFalse(sources.isEmpty(), name);
+        var result = compile(sources);
+        assertEquals(result.success(), family.equals("input"), name + ": " + result.diagnostics());
+        if (result.success()) {
+            assertEquals(result.diagnostics(), "", name);
+        }
+        var actual = new TreeMap<String, String>();
+        for (var file : result.files().entrySet()) {
+            if (!file.getKey().endsWith(".class")) {
+                actual.put(
+                        file.getKey(), new String(Base64.getDecoder().decode(file.getValue()), StandardCharsets.UTF_8));
+            }
+        }
+        actual.put("diagnostics.txt", result.diagnostics());
+        Path expected = fixtureDir().resolve("expected").resolve(name);
+        if (Boolean.getBoolean("react4j.output_fixture_data")) {
+            if (Files.exists(expected)) {
+                delete(expected);
+            }
+            for (var entry : actual.entrySet()) {
+                Path target = expected.resolve(entry.getKey());
+                Files.createDirectories(target.getParent());
+                Files.writeString(target, entry.getValue());
+            }
+        } else {
+            var maintained = new TreeMap<String, String>();
+            try (var files = Files.walk(expected)) {
+                for (var file : files.filter(Files::isRegularFile).sorted().toList()) {
+                    maintained.put(expected.relativize(file).toString(), Files.readString(file));
+                }
+            }
+            assertEquals(actual.keySet(), maintained.keySet(), name + ": Complete generated output set differs");
+            for (var entry : actual.entrySet()) {
+                assertEquals(entry.getValue(), maintained.get(entry.getKey()), name + "/" + entry.getKey());
+            }
+        }
+    }
+
+    @Test
+    public void strictCheckerRejectsInvalidGeneratedBody() throws Exception {
+        var compiled = compile(Map.of("Button.java", source("demo", "    color: red;", "")));
+        assertTrue(compiled.success(), compiled.diagnostics());
+        Path directory = Files.createTempDirectory("css-checker-control-");
+        try {
+            for (var entry : compiled.files().entrySet()) {
+                Path path = directory.resolve(entry.getKey());
+                Files.createDirectories(path.getParent());
+                Files.write(path, Base64.getDecoder().decode(entry.getValue()));
+            }
+            Path source = directory.resolve("generated/demo/Styled_Button.java");
+            String text = Files.readString(source);
+            int end = text.lastIndexOf('}');
+            Files.writeString(
+                    source,
+                    text.substring(0, end) + "static java.lang.String invalidBody() { return null; }\n"
+                            + text.substring(end));
+            var failure = expectThrows(
+                    AssertionError.class,
+                    () -> StrictGeneratedCode.check(
+                            directory.resolve("generated"), directory.resolve("classes"), applicationClasspath()));
+            String message = failure.getMessage();
+            assertNotNull(message);
+            assert message != null;
+            assertTrue(message.contains("[NullAway] returning @Nullable expression"), message);
+        } finally {
+            delete(directory);
+        }
+    }
+
+    private static void delete(Path directory) throws Exception {
+        try (var files = Files.walk(directory)) {
+            for (var file : files.sorted(Comparator.reverseOrder()).toList()) {
+                Files.delete(file);
+            }
+        }
+    }
+
     private static String source(String packageName, String css, String methods) {
         return "package " + packageName + ";\nimport org.realityforge.css.Css;\n@Css(\"\"\"\n"
                 + css + "\n    \"\"\")\nabstract class Button {\n"
@@ -110,17 +249,7 @@ public final class CssProcessorTest {
                                 "--release",
                                 "17",
                                 "-classpath",
-                                Path.of(Css.class
-                                                .getProtectionDomain()
-                                                .getCodeSource()
-                                                .getLocation()
-                                                .toURI())
-                                        + File.pathSeparator
-                                        + Path.of(NullMarked.class
-                                                .getProtectionDomain()
-                                                .getCodeSource()
-                                                .getLocation()
-                                                .toURI()),
+                                applicationClasspath(),
                                 "--processor-path",
                                 processorJar().toString(),
                                 "-d",
@@ -130,6 +259,9 @@ public final class CssProcessorTest {
                         null,
                         manager.getJavaFileObjectsFromPaths(paths));
                 success = task.call();
+            }
+            if (success) {
+                StrictGeneratedCode.check(generated, classes, applicationClasspath());
             }
             var files = new LinkedHashMap<String, String>();
             for (var root : List.of(generated, classes)) {
@@ -157,13 +289,20 @@ public final class CssProcessorTest {
                     }
                 }
             }
-            return new Result(success, diagnostics.getDiagnostics().toString(), files, values);
+            String messages = diagnostics.getDiagnostics().stream()
+                    .map(diagnostic -> {
+                        var source = diagnostic.getSource();
+                        String location = source == null
+                                ? ""
+                                : source.getName().replace(directory + "/", "") + ":" + diagnostic.getLineNumber() + ":"
+                                        + diagnostic.getColumnNumber() + ": ";
+                        return diagnostic.getKind() + " " + location
+                                + diagnostic.getMessage(Locale.ROOT).replace(directory + "/", "") + "\n";
+                    })
+                    .collect(Collectors.joining());
+            return new Result(success, messages, files, values);
         } finally {
-            try (var files = Files.walk(directory)) {
-                for (var file : files.sorted(Comparator.reverseOrder()).toList()) {
-                    Files.delete(file);
-                }
-            }
+            delete(directory);
         }
     }
 

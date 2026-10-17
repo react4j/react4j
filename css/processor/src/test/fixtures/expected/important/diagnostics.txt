@@ -1,0 +1,1 @@
+ERROR demo/Button.java:4:6: demo/Button.java:5:16: !important declarations defeat shared/component precedence

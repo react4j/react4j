@@ -30,24 +30,33 @@ public final class StrictGeneratedCode {
 
     /** Checks every generated Java source using the compiled fixture declarations. */
     public static void check(final Compilation fixture, final List<String> fixtureOptions) throws IOException {
-        final var sourceNames = fixture.sourceOutputFilenames().stream()
-                .filter(name -> name.endsWith(".java"))
-                .map(name -> fixture.sourceOutput().resolve(name).toString())
-                .toList();
+        final int classpathIndex = fixtureOptions.indexOf("-classpath");
+        final String fixtureClasspath =
+                classpathIndex < 0 ? System.getProperty("java.class.path") : fixtureOptions.get(classpathIndex + 1);
+        check(fixture.sourceOutput(), fixture.classOutput(), fixtureClasspath);
+    }
+
+    /** Checks emitted Java bodies against already compiled fixture declarations. */
+    public static void check(final Path sourceOutput, final Path classOutput, final String fixtureClasspath)
+            throws IOException {
+        final List<String> sourceNames;
+        try (final var files = Files.walk(sourceOutput)) {
+            sourceNames = files.filter(path -> path.toString().endsWith(".java"))
+                    .sorted()
+                    .map(Path::toString)
+                    .toList();
+        }
         if (sourceNames.isEmpty()) {
             return;
         }
         final var options = new ArrayList<>(Files.readAllLines(Path.of("third_party/java/strict_checker_options.txt")));
-        final int classpathIndex = fixtureOptions.indexOf("-classpath");
-        final String fixtureClasspath =
-                classpathIndex < 0 ? System.getProperty("java.class.path") : fixtureOptions.get(classpathIndex + 1);
         options.addAll(List.of(
                 "-proc:none",
                 "-sourcepath",
                 "",
                 "-XDcompilePolicy=simple",
                 "-classpath",
-                fixtureClasspath + File.pathSeparator + fixture.classOutput()));
+                fixtureClasspath + File.pathSeparator + classOutput));
         final var compiler = new BaseErrorProneJavaCompiler(BuiltInCheckerSuppliers.defaultChecks()
                 .plus(ScannerSupplier.fromBugCheckerClasses(
                         NullAway.class,
