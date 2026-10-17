@@ -1,1 +1,0 @@
-ERROR demo/Button.java:7:6: demo/Button.java:9:5: Unsupported animation shorthand function; use animation-name and separate longhands for dynamic values

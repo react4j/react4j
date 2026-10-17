@@ -17,8 +17,6 @@ import react4j.todomvc.sting.model.TodoService;
 
 @View
 abstract class TodoEntry {
-    private static final EntryStyle ENTRY = new Styled_TodoEntry_0024_EntryStyle();
-
     private final TodoService _todoService;
     private String _todoText = "";
 
@@ -60,7 +58,7 @@ abstract class TodoEntry {
     @Render
     ReactNode render() {
         return input(new InputProps()
-                .className(ENTRY.style())
+                .className(TodoEntry_Styled_EntryStyle.get().style())
                 .placeHolder("What needs to be done?")
                 .value(getTodoText())
                 .onKeyDown(this::handleNewTodoKeyDown)

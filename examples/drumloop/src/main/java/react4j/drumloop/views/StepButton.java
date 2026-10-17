@@ -14,8 +14,6 @@ import react4j.drumloop.model.StepCell;
 
 @View(type = View.Type.TRACKING)
 abstract class StepButton {
-    private static final StepStyle STEP = new Styled_StepButton_0024_StepStyle();
-
     @ComponentDependency
     final StepCell _cell;
 
@@ -25,13 +23,14 @@ abstract class StepButton {
 
     @Render
     ReactNode render() {
+        var stepStyle = StepButton_Styled_StepStyle.get();
         final boolean oddBar = 1 == (_cell.beat() / 4) % 2;
         return button(new BtnProps()
                 .data("step", Integer.toString(_cell.beat()))
                 .className(
-                        _cell.on() ? STEP.on() : STEP.style(),
-                        oddBar ? STEP.odd() : null,
-                        _cell.doubled() ? STEP.doubled() : null)
+                        _cell.on() ? stepStyle.on() : stepStyle.style(),
+                        oddBar ? stepStyle.odd() : null,
+                        _cell.doubled() ? stepStyle.doubled() : null)
                 .onClick(e -> toggleCell(e.isShiftKey())));
     }
 

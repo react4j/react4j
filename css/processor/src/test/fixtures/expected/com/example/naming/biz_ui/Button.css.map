@@ -1,0 +1,1 @@
+{"version":3,"file":"Button.css","sources":["com/example/naming/biz_ui/Button.java"],"sourcesContent":["package com.example.naming.biz_ui;\n\nimport org.jspecify.annotations.NullMarked;\nimport react4j.css.Css;\n\n@NullMarked\n@Css(\"\"\"\n    color: red;\n    \"\"\")\nabstract class Button {\n    abstract String style();\n}\n"],"names":[],"mappings":"AAOI,4CAAA,U,C"}

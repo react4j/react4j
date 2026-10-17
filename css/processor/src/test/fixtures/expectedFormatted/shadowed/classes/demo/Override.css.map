@@ -1,1 +1,0 @@
-{"version":3,"file":"Override.css","sources":["demo/Override.java"],"sourcesContent":["package demo;\n\nimport org.jspecify.annotations.NullMarked;\nimport react4j.css.Css;\n\n@NullMarked\n@Css(\"\"\"\n    color: blue;\n    \"\"\")\nabstract class Override {\n    abstract java.lang.String style();\n}\n"],"names":[],"mappings":"AAOI,oBAAA,W,C"}

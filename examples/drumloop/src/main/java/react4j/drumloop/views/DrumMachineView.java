@@ -11,12 +11,6 @@ import react4j.drumloop.model.DrumMachine;
 
 @View(exportBuilder = true)
 abstract class DrumMachineView {
-    private static final ContainerStyle CONTAINER = new Styled_DrumMachineView_0024_ContainerStyle();
-    private static final HeaderStyle HEADER = new Styled_DrumMachineView_0024_HeaderStyle();
-    private static final LogoStyle LOGO = new Styled_DrumMachineView_0024_LogoStyle();
-    private static final ButtonsStyle BUTTONS = new Styled_DrumMachineView_0024_ButtonsStyle();
-    private static final SequencerStyle SEQUENCER = new Styled_DrumMachineView_0024_SequencerStyle();
-
     private final DrumMachine _drumMachine;
 
     DrumMachineView(final DrumMachine drumMachine) {
@@ -26,10 +20,17 @@ abstract class DrumMachineView {
     @Render
     ReactNode render() {
         return div(
-                new HtmlProps().className(CONTAINER.style()),
+                new HtmlProps()
+                        .className(DrumMachineView_Styled_ContainerStyle.get().style()),
                 div(
-                        new HtmlProps().className(HEADER.style()),
-                        h1(new HtmlProps().className(LOGO.style()), "Trap Lord 9000"),
+                        new HtmlProps()
+                                .className(
+                                        DrumMachineView_Styled_HeaderStyle.get().style()),
+                        h1(
+                                new HtmlProps()
+                                        .className(DrumMachineView_Styled_LogoStyle.get()
+                                                .style()),
+                                "Trap Lord 9000"),
                         BpmInputBuilder.build(),
                         PlayButtonBuilder.build()),
                 suspense(
@@ -37,12 +38,16 @@ abstract class DrumMachineView {
                         4000,
                         fragment(
                                 div(
-                                        new HtmlProps().className(SEQUENCER.style()),
+                                        new HtmlProps()
+                                                .className(DrumMachineView_Styled_SequencerStyle.get()
+                                                        .style()),
                                         IndicatorBuilder.build(),
                                         fragment(_drumMachine.getTracks().stream()
                                                 .map(TrackBuilder::track))),
                                 div(
-                                        new HtmlProps().className(BUTTONS.style()),
+                                        new HtmlProps()
+                                                .className(DrumMachineView_Styled_ButtonsStyle.get()
+                                                        .style()),
                                         fragment(_drumMachine.getEffects().stream()
                                                 .map(FxButtonBuilder::sound))))));
     }

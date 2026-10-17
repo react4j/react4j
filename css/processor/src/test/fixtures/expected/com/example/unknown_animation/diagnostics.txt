@@ -1,0 +1,1 @@
+ERROR com/example/unknown_animation/Button.java:7:6: com/example/unknown_animation/Button.java:9:16: Unknown local animation name: pluse

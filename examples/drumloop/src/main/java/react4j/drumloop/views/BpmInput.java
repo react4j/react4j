@@ -15,8 +15,6 @@ import react4j.drumloop.model.DrumMachine;
 
 @View(type = View.Type.TRACKING)
 abstract class BpmInput {
-    private static final BpmStyle BPM = new Styled_BpmInput_0024_BpmStyle();
-
     private final DrumMachine _drumMachine;
 
     BpmInput(final DrumMachine drumMachine) {
@@ -31,7 +29,7 @@ abstract class BpmInput {
     @Render
     ReactNode render() {
         return input(new InputProps()
-                .className(BPM.style())
+                .className(BpmInput_Styled_BpmStyle.get().style())
                 .type(InputType.number)
                 .value(String.valueOf(_drumMachine.getBpm()))
                 .min("60")

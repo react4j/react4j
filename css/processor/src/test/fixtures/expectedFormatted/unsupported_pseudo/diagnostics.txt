@@ -1,1 +1,0 @@
-ERROR demo/Button.java:7:6: demo/Button.java:8:6: Component selectors must target the same owned element

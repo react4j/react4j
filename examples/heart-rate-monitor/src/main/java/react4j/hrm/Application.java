@@ -13,25 +13,24 @@ import react4j.dom.proptypes.html.ImgProps;
 
 @View(type = View.Type.TRACKING)
 abstract class Application {
-    private static final ContainerStyle CONTAINER = new Styled_Application_0024_ContainerStyle();
-    private static final PanelStyle PANEL = new Styled_Application_0024_PanelStyle();
-    private static final HeartStyle HEART = new Styled_Application_0024_HeartStyle();
-
     @CascadeDispose
     final HeartRateMonitor _heartRateMonitor = HeartRateMonitor.create();
 
     @Render
     ReactNode render() {
+        var heartStyle = Application_Styled_HeartStyle.get();
         final int heartRate = _heartRateMonitor.getHeartRate();
         final boolean connected = _heartRateMonitor.isConnected();
 
         return div(
-                new HtmlProps().className(CONTAINER.style()),
+                new HtmlProps()
+                        .className(Application_Styled_ContainerStyle.get().style()),
                 div(
-                        new HtmlProps().className(PANEL.style()),
+                        new HtmlProps()
+                                .className(Application_Styled_PanelStyle.get().style()),
                         h1("Heart Rate Monitor"),
                         img(new ImgProps()
-                                .className(heartRate > 0 ? HEART.beating() : HEART.style())
+                                .className(heartRate > 0 ? heartStyle.beating() : heartStyle.style())
                                 .src("img/heart.svg")),
                         0 != heartRate ? ReactNode.of(heartRate) : null,
                         button(new BtnProps().disabled(connected).onClick(e -> _heartRateMonitor.connect()), "Start"),

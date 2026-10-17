@@ -1,0 +1,2 @@
+@media (width > 1px){.jcss-com-example-conditions-Button.jcss-com-example-conditions-Button--success{color:green;}}:is(.jcss-com-example-conditions-Button:hover,.jcss-com-example-conditions-Button.jcss-com-example-conditions-Button--success):disabled{opacity:0.5;}@supports (display:grid) and (color:red){.jcss-com-example-conditions-Button.jcss-com-example-conditions-Button--success{display:grid;}}
+/*# sourceMappingURL=Button.css.map */

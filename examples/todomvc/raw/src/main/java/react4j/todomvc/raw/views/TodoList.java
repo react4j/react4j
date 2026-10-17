@@ -21,10 +21,6 @@ import react4j.todomvc.raw.model.AppData;
 
 @View(type = View.Type.STATEFUL, exportBuilder = true)
 abstract class TodoList {
-    private static final HeadingStyle HEADING = new Styled_TodoList_0024_HeadingStyle();
-    private static final ToggleAllStyle TOGGLE_ALL = new Styled_TodoList_0024_ToggleAllStyle();
-    private static final ListStyle LIST = new Styled_TodoList_0024_ListStyle();
-
     private final SafeProcedure _onChange = this::scheduleRender;
 
     @ScheduleRender
@@ -44,7 +40,13 @@ abstract class TodoList {
     @Render
     ReactNode render() {
         return div(div(
-                header(h1(new HtmlProps().className(HEADING.style()), "todos"), TodoEntryBuilder.build()),
+                header(
+                        h1(
+                                new HtmlProps()
+                                        .className(TodoList_Styled_HeadingStyle.get()
+                                                .style()),
+                                "todos"),
+                        TodoEntryBuilder.build()),
                 renderMainSection(),
                 AppData.service.isNotEmpty() ? FooterBuilder.build() : null));
     }
@@ -60,11 +62,12 @@ abstract class TodoList {
         if (AppData.service.isNotEmpty()) {
             return section(
                     input(new InputProps()
-                            .className(TOGGLE_ALL.style())
+                            .className(TodoList_Styled_ToggleAllStyle.get().style())
                             .type(InputType.checkbox)
                             .onChange(this::handleToggleAll)),
                     ul(
-                            new HtmlProps().className(LIST.style()),
+                            new HtmlProps()
+                                    .className(TodoList_Styled_ListStyle.get().style()),
                             AppData.viewService.filteredTodos().stream().map(TodoItemBuilder::todo)));
         } else {
             return null;

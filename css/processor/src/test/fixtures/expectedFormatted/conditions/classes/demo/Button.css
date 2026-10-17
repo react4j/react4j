@@ -1,2 +1,0 @@
-@media (width > 1px){.jcss-demo-Button.jcss-demo-Button--success{color:green;}}:is(.jcss-demo-Button:hover,.jcss-demo-Button.jcss-demo-Button--success):disabled{opacity:0.5;}@supports (display:grid) and (color:red){.jcss-demo-Button.jcss-demo-Button--success{display:grid;}}
-/*# sourceMappingURL=Button.css.map */

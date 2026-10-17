@@ -1,0 +1,1 @@
+ERROR com/example/missing_selector/Button.java:7:6: com/example/missing_selector/Button.java:8:5: Accessor success() has no matching local selector

@@ -22,6 +22,7 @@ public final class CssIntegrationTest {
     @Test
     public void j2clCompilationAndDependencyGraphAssemblyUseDeclaredInputs() throws Exception {
         var styles = ButtonStyles.of();
+        assertSame(styles, ButtonStyles.of());
         String root = "jcss-react4j-css-integration-ButtonStyles";
         assertEquals(styles.style(), root);
         assertEquals(styles.forState(StyleState.SUCCESS), root + " " + root + "--success");

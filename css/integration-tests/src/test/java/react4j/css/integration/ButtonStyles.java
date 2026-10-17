@@ -11,7 +11,7 @@ import react4j.css.Css;
     """)
 abstract class ButtonStyles {
     static ButtonStyles of() {
-        return new Styled_ButtonStyles();
+        return Styled_ButtonStyles.get();
     }
 
     final String forState(StyleState state) {

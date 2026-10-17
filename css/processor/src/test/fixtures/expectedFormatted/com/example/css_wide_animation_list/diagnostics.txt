@@ -1,0 +1,1 @@
+ERROR com/example/css_wide_animation_list/Button.java:7:6: com/example/css_wide_animation_list/Button.java:9:28: CSS-wide animation keywords must stand alone

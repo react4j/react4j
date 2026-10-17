@@ -5,6 +5,7 @@ import static org.testng.Assert.*;
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
 import java.io.File;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import javax.annotation.processing.Processor;
@@ -53,6 +56,20 @@ public final class CssProcessorTest {
                     names.stream()
                             .anyMatch(name -> name.endsWith(".class") && !name.startsWith("react4j/css/processor/")),
                     names.toString());
+            for (var name : names) {
+                if (name.startsWith("META-INF/services/")) {
+                    try (var stream = jar.getInputStream(jar.getJarEntry(name))) {
+                        for (var provider : new String(stream.readAllBytes(), StandardCharsets.UTF_8)
+                                .lines()
+                                .toList()) {
+                            String type = provider.split("#", 2)[0].trim();
+                            assertTrue(
+                                    type.isEmpty() || names.contains(type.replace('.', '/') + ".class"),
+                                    name + ": " + type);
+                        }
+                    }
+                }
+            }
             var service = jar.getJarEntry("META-INF/services/javax.annotation.processing.Processor");
             assertNotNull(service);
             assert null != service;
@@ -98,32 +115,91 @@ public final class CssProcessorTest {
 
     @DataProvider(name = "fixtures")
     public Object[][] fixtures() throws Exception {
-        var cases = new ArrayList<Object[]>();
+        Object[][] fixtures = {
+            new Object[] {"bad_input", List.of("com/example/bad_accessor/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/bare_conditional/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/constant/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/constructor/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/css_wide_animation_list/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/duplicate_keyframes/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/dynamic_animation_name/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/dynamic_animation_shorthand/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/escaped_animation_property/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/escaped_selector/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/extra_animation_time/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/factory_conflict/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/generic_owner/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/important/Button.java")},
+            new Object[] {
+                "bad_input", List.of("com/example/inheritance/Base.java", "com/example/inheritance/Button.java")
+            },
+            new Object[] {"bad_input", List.of("com/example/instance_field/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/instance_initializer/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/keyframe_animation_binding/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/keyframe_important/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/keyframe_percentage/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/malformed/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/missing_selector/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/missing_style/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/multiple_animation_names/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/negative_animation_duration/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/negative_animation_iterations/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/nested_keyframes/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/nonstatic_nested/Outer.java")},
+            new Object[] {"bad_input", List.of("com/example/plain_literal/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/prefixed_animation/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/prefixed_keyframe/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/private_constructor/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/private_enclosing/Outer.java")},
+            new Object[] {"bad_input", List.of("com/example/private_nested/Outer.java")},
+            new Object[] {"bad_input", List.of("com/example/quoted_animation/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/reserved_keyframe/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/sealed_owner/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/selector_typo/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/static_field/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/unknown_animation/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/unowned_selector/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/unsupported_at_rule/Button.java")},
+            new Object[] {"bad_input", List.of("com/example/unsupported_pseudo/Button.java")},
+            new Object[] {"input", List.of("com/example/basic/Button.java")},
+            new Object[] {"input", List.of("com/example/conditions/Button.java")},
+            new Object[] {"input", List.of("Button.java")},
+            new Object[] {"input", List.of("com/example/deprecated/Button.java")},
+            new Object[] {"input", List.of("com/example/escapes/Button.java")},
+            new Object[] {"input", List.of("com/example/keyframes/Button.java")},
+            new Object[] {
+                "input", List.of("com/example/naming/biz_ui/Button.java", "com/example/naming_biz/ui/Button.java")
+            },
+            new Object[] {"input", List.of("com/example/nested/Owner.java")},
+            new Object[] {"input", List.of("com/example/selectors/Button.java")},
+            new Object[] {"input", List.of("com/example/shadowed/Override.java", "com/example/shadowed/String.java")},
+            new Object[] {
+                "input",
+                List.of(
+                        "com/example/singleton/Owner.java",
+                        "com/example/singleton/PackageStyle.java",
+                        "com/example/singleton/PublicStyle.java")
+            },
+        };
         for (var family : List.of("input", "bad_input")) {
-            try (var directories = Files.list(fixtureDir().resolve(family))) {
-                for (var directory :
-                        directories.filter(Files::isDirectory).sorted().toList()) {
-                    cases.add(new Object[] {family, directory.getFileName().toString()});
+            try (var files = Files.walk(fixtureDir().resolve(family))) {
+                var actual = files.filter(path -> path.toString().endsWith(".java"))
+                        .map(path ->
+                                fixtureDir().resolve(family).relativize(path).toString())
+                        .collect(Collectors.toCollection(TreeSet::new));
+                var expected = new TreeSet<String>();
+                for (var fixture : fixtures) {
+                    if (family.equals(fixture[0])) {
+                        for (var file : (List<?>) fixture[1]) {
+                            expected.add((String) file);
+                        }
+                    }
                 }
-            }
-        }
-        assertFalse(cases.isEmpty(), "No CSS fixtures found");
-        var names = cases.stream().map(value -> (String) value[1]).collect(Collectors.toCollection(TreeSet::new));
-        assertEquals(names.size(), cases.size(), "Fixture names must be unique across families");
-        if (!Boolean.getBoolean("react4j.output_fixture_data")) {
-            for (var tree : List.of("expected", "expectedFormatted")) {
-                try (var expected = Files.list(fixtureDir().resolve(tree))) {
-                    assertEquals(
-                            expected.filter(Files::isDirectory)
-                                    .map(path -> path.getFileName().toString())
-                                    .collect(Collectors.toCollection(TreeSet::new)),
-                            names,
-                            tree + ": Complete fixture case set differs");
-                }
+                assertEquals(actual, expected, "Complete " + family + " fixture set differs");
             }
         }
         var modes = new ArrayList<Object[]>();
-        for (var fixture : cases) {
+        for (var fixture : fixtures) {
             for (boolean formatted : List.of(false, true)) {
                 modes.add(new Object[] {fixture[0], fixture[1], formatted});
             }
@@ -132,36 +208,47 @@ public final class CssProcessorTest {
     }
 
     @Test(dataProvider = "fixtures")
-    public void goldenFixtures(String family, String name, boolean formatted) throws Exception {
-        Path input = fixtureDir().resolve(family).resolve(name);
+    public void goldenFixtures(String family, List<String> names, boolean formatted) throws Exception {
         var sources = new TreeMap<String, String>();
-        try (var files = Files.walk(input)) {
-            for (var file : files.filter(path -> path.toString().endsWith(".java"))
-                    .sorted()
-                    .toList()) {
-                sources.put(input.relativize(file).toString(), Files.readString(file));
-            }
+        var packages = new TreeSet<Path>();
+        for (var name : names) {
+            sources.put(name, Files.readString(fixtureDir().resolve(family).resolve(name)));
+            Path parent = Path.of(name).getParent();
+            packages.add(null == parent ? Path.of("") : parent);
         }
-        assertFalse(sources.isEmpty(), name);
+        String label = names.toString();
         var result = compile(sources, List.of("-Areact4j.css.format_generated_source=" + formatted));
-        assertEquals(result.success(), "input".equals(family), name + ": " + result.diagnostics());
+        assertEquals(result.success(), "input".equals(family), label + ": " + result.diagnostics());
         if (result.success()) {
-            assertEquals(result.diagnostics(), "", name);
+            assertEquals(result.diagnostics(), "", label);
         }
         var actual = new TreeMap<String, String>();
         for (var file : result.files().entrySet()) {
             if (!file.getKey().endsWith(".class")) {
                 actual.put(
-                        file.getKey(), new String(Base64.getDecoder().decode(file.getValue()), StandardCharsets.UTF_8));
+                        file.getKey().substring(file.getKey().indexOf('/') + 1),
+                        new String(Base64.getDecoder().decode(file.getValue()), StandardCharsets.UTF_8));
             }
         }
-        actual.put("diagnostics.txt", result.diagnostics());
-        Path expected = fixtureDir()
-                .resolve(formatted ? "expectedFormatted" : "expected")
-                .resolve(name);
+        if (!result.success()) {
+            assertTrue(actual.isEmpty(), label + ": Invalid input generated files");
+            actual.put(packages.first().resolve("diagnostics.txt").toString(), result.diagnostics());
+        }
+        Path expected = fixtureDir().resolve(formatted ? "expectedFormatted" : "expected");
+        var maintained = new TreeMap<String, String>();
+        for (var packageName : packages) {
+            try (var files = Files.list(expected.resolve(packageName))) {
+                for (var file : files.filter(Files::isRegularFile)
+                        .filter(path -> !path.getFileName().toString().equals("BUILD.bazel"))
+                        .sorted()
+                        .toList()) {
+                    maintained.put(expected.relativize(file).toString(), Files.readString(file));
+                }
+            }
+        }
         if (Boolean.getBoolean("react4j.output_fixture_data")) {
-            if (Files.exists(expected)) {
-                delete(expected);
+            for (var name : maintained.keySet()) {
+                Files.delete(expected.resolve(name));
             }
             for (var entry : actual.entrySet()) {
                 Path target = expected.resolve(entry.getKey());
@@ -169,15 +256,9 @@ public final class CssProcessorTest {
                 Files.writeString(target, entry.getValue());
             }
         } else {
-            var maintained = new TreeMap<String, String>();
-            try (var files = Files.walk(expected)) {
-                for (var file : files.filter(Files::isRegularFile).sorted().toList()) {
-                    maintained.put(expected.relativize(file).toString(), Files.readString(file));
-                }
-            }
-            assertEquals(actual.keySet(), maintained.keySet(), name + ": Complete generated output set differs");
+            assertEquals(actual.keySet(), maintained.keySet(), label + ": Complete generated output set differs");
             for (var entry : actual.entrySet()) {
-                assertEquals(entry.getValue(), maintained.get(entry.getKey()), name + "/" + entry.getKey());
+                assertEquals(entry.getValue(), maintained.get(entry.getKey()), label + "/" + entry.getKey());
             }
         }
     }
@@ -224,7 +305,7 @@ public final class CssProcessorTest {
     private static String source(String packageName, String css, String methods) {
         return "package " + packageName + ";\nimport react4j.css.Css;\n@Css(\"\"\"\n"
                 + css + "\n    \"\"\")\nabstract class Button {\n"
-                + "static Button of() { return new Styled_Button(); }\n"
+                + "static Button of() { return Styled_Button.get(); }\n"
                 + "abstract String style();\n" + methods + "\n}\n";
     }
 
@@ -289,6 +370,9 @@ public final class CssProcessorTest {
                         factory.setAccessible(true);
                         var instance = factory.invoke(null);
                         for (var method : instance.getClass().getDeclaredMethods()) {
+                            if (Modifier.isStatic(method.getModifiers()) || String.class != method.getReturnType()) {
+                                continue;
+                            }
                             method.setAccessible(true);
                             values.put(name + "." + method.getName(), (String) method.invoke(instance));
                         }
@@ -606,11 +690,11 @@ public final class CssProcessorTest {
     @DataProvider
     public Object[][] invalidJavaContracts() {
         String base =
-                source("demo", "    color: red;", "").replace("static Button of() { return new Styled_Button(); }", "");
+                source("demo", "    color: red;", "").replace("static Button of() { return Styled_Button.get(); }", "");
         String owner =
                 "@Css requires an accessible abstract, non-generic style class extending Object; nested classes must"
                         + " be static";
-        String constructor = "@Css style classes require an accessible no-argument constructor without throws";
+        String constructor = "@Css style classes must not declare constructors";
         String accessor =
                 "CSS accessor style must take no arguments and return String without type parameters or throws";
         var cases = new ArrayList<Object[]>();
@@ -656,7 +740,14 @@ public final class CssProcessorTest {
             "@Css style classes must be accessible from their package"
         });
         for (var declaration : List.of(
+                "Button() {}",
+                "public Button() {}",
+                "protected Button() {}",
                 "private Button() {}",
+                "@Deprecated Button() {}",
+                "@Deprecated(forRemoval = true) Button() {}",
+                "<T> Button() {}",
+                "Button() {} private Button(int value) {}",
                 "Button(int value) {}",
                 "Button(String... values) {}",
                 "Button() throws Exception {}",
@@ -667,6 +758,55 @@ public final class CssProcessorTest {
                 base.replace("abstract String style();", declaration + " abstract String style();"),
                 constructor
             });
+        }
+        for (var visibility : List.of("", "public ", "protected ", "private ")) {
+            for (var modifiers : List.of("", "final ", "static ", "static final ", "static volatile ", "transient ")) {
+                cases.add(new Object[] {
+                    "field " + visibility + modifiers,
+                    base.replace(
+                            "abstract String style();",
+                            visibility + modifiers + "int value = 1; abstract String style();"),
+                    "@Css style classes must not declare fields"
+                });
+            }
+        }
+        for (var declaration : List.of(
+                "String value;",
+                "static final String VALUE = \"constant\";",
+                "final int[] values = {};",
+                "int first, second;",
+                "int value; { value = 1; }")) {
+            cases.add(new Object[] {
+                declaration,
+                base.replace("abstract String style();", declaration + " abstract String style();"),
+                "@Css style classes must not declare fields"
+            });
+        }
+        cases.add(new Object[] {
+            "instance initializer",
+            base.replace("abstract String style();", "{ System.nanoTime(); } abstract String style();"),
+            "@Css style classes must not declare instance initializers"
+        });
+        for (var method : List.of(
+                "abstract String get();",
+                "String get() { return style(); }",
+                "public final String get() { return style(); }",
+                "static String get() { return \"\"; }",
+                "static int get() { return 1; }",
+                "static void get() {}",
+                "static final Button get() { return null; }",
+                "static <T> T get() { return null; }")) {
+            cases.add(new Object[] {
+                "factory conflict " + method,
+                base.replace("abstract String style();", method + " abstract String style();"),
+                "@Css method get() conflicts with the generated singleton factory"
+            });
+        }
+        for (var prefix : List.of("", "public ", "protected ")) {
+            String text = base.replace("@Css(", "class Outer { class Middle { @Css(")
+                            .replace("abstract class Button", prefix + "abstract class Button")
+                    + "}}";
+            cases.add(new Object[] {"deep inner " + prefix, text, owner});
         }
         for (var method : List.of(
                 "abstract int style();",
@@ -711,25 +851,13 @@ public final class CssProcessorTest {
     @DataProvider
     public Object[][] validJavaContracts() {
         var cases = new ArrayList<Object[]>();
-        for (var constructor : List.of("", "public ", "protected ")) {
-            for (var accessor : List.of("", "public ", "protected ")) {
-                String text = source("demo", "    color: red;", "")
-                        .replace(
-                                "abstract String style();",
-                                constructor + "Button() {} " + accessor + "abstract String style();");
-                cases.add(new Object[] {constructor + "/" + accessor, text});
-            }
+        for (var accessor : List.of("", "public ", "protected ")) {
+            String text = source("demo", "    color: red;", "")
+                    .replace("abstract String style();", accessor + "abstract String style();");
+            cases.add(new Object[] {accessor, text});
         }
         String base = source("demo", "    color: red;", "");
-        cases.add(new Object[] {
-            "generic constructor", base.replace("abstract String style();", "<T> Button() {} abstract String style();")
-        });
         cases.add(new Object[] {"public owner", base.replace("abstract class Button", "public abstract class Button")});
-        cases.add(new Object[] {
-            "constructor overload",
-            base.replace(
-                    "abstract String style();", "Button() {} private Button(int value) {} abstract String style();")
-        });
         cases.add(new Object[] {
             "concrete helpers",
             base.replace(
@@ -754,14 +882,10 @@ public final class CssProcessorTest {
                 base.replace("abstract String style();", annotation + " abstract String style();")
             });
             cases.add(new Object[] {
-                annotation + " constructor",
-                base.replace("abstract String style();", annotation + " Button() {} abstract String style();")
-            });
-            cases.add(new Object[] {
                 annotation + " enclosing",
                 base.replace("@Css(", annotation + " class Outer { @Css(")
                                 .replace("abstract class Button", "abstract static class Button")
-                                .replace("Styled_Button", "Styled_Outer_0024_Button")
+                                .replace("Styled_Button", "Outer_Styled_Button")
                         + "}"
             });
         }
@@ -769,14 +893,31 @@ public final class CssProcessorTest {
             "generic enclosing",
             base.replace("@Css(", "class Outer<T> { @Css(")
                             .replace("abstract class Button", "abstract static class Button")
-                            .replace("Styled_Button", "Styled_Outer_0024_Button")
+                            .replace("Styled_Button", "Outer_Styled_Button")
                     + "}"
         });
         cases.add(new Object[] {
             "protected enclosing",
             base.replace("@Css(", "class Outer { protected static class Middle { @Css(")
                             .replace("abstract class Button", "abstract static class Button")
-                            .replace("Styled_Button", "Styled_Outer_0024_Middle_0024_Button")
+                            .replace("Styled_Button", "Outer_Middle_Styled_Button")
+                    + "}}"
+        });
+        for (var enclosing : List.of("interface Outer", "enum Outer {; }", "record Outer()")) {
+            String wrapper = enclosing.replace(" {; }", "") + " {" + (enclosing.startsWith("enum") ? ";" : "");
+            cases.add(new Object[] {
+                enclosing,
+                base.replace("@Css(", wrapper + " @Css(")
+                                .replace("abstract class Button", "abstract static class Button")
+                                .replace("Styled_Button", "Outer_Styled_Button")
+                        + "}"
+            });
+        }
+        cases.add(new Object[] {
+            "static style inside inner enclosing",
+            base.replace("@Css(", "class Outer { class Middle { @Css(")
+                            .replace("abstract class Button", "abstract static class Button")
+                            .replace("Styled_Button", "Outer_Middle_Styled_Button")
                     + "}}"
         });
         return cases.toArray(Object[][]::new);
@@ -784,7 +925,7 @@ public final class CssProcessorTest {
 
     @Test(dataProvider = "validJavaContracts")
     public void validJavaContractsCompileWithoutDiagnostics(String label, String text) throws Exception {
-        var result = compile(Map.of(text.contains("class Outer") ? "Outer.java" : "Button.java", text));
+        var result = compile(Map.of(text.contains(" Outer") ? "Outer.java" : "Button.java", text));
         assertTrue(result.success(), label + ": " + result.diagnostics());
         assertEquals(result.diagnostics(), "", label);
         assertFalse(result.files().isEmpty(), label);
@@ -820,30 +961,50 @@ public final class CssProcessorTest {
     public void nestedTypesUseTheirBinaryOwnerIdentity() throws Exception {
         String nested = "package demo;\nimport react4j.css.Css;\nclass Outer {\n"
                 + "@Css(\"\"\"\ncolor: red;\n\"\"\")\nabstract static class Button {\n"
-                + "static Button of() { return new Styled_Outer_0024_Button(); }\nabstract String style();\n}\n}\n";
+                + "static Button of() { return Outer_Styled_Button.get(); }\nabstract String style();\n}\n}\n";
         var result = compile(Map.of("Outer.java", nested), "demo.Outer$Button");
         assertTrue(result.success(), result.diagnostics());
         assertEquals(result.values().get("demo.Outer$Button.style"), "jcss-demo-Outer_0024_Button");
     }
 
     @Test
+    public void defaultPackageEnclosingTypeDoesNotShadowHolder() throws Exception {
+        String text = source("demo", "    color: red;", "")
+                        .replace("package demo;\n", "")
+                        .replace("@Css(", "class Internal { @Css(")
+                        .replace("abstract class Button", "abstract static class Button")
+                        .replace("Styled_Button", "Internal_Styled_Button")
+                + "}";
+        var result = compile(Map.of("Internal.java", text), "Internal$Button");
+        assertTrue(result.success(), result.diagnostics());
+        assertEquals(result.values().get("Internal$Button.style"), "jcss-Internal_0024_Button");
+    }
+
+    @Test
     public void bindingsDoNotShadowJavaTypes() throws Exception {
-        for (var name : List.of("String", "Override", "NullMarked", "Generated", "SuppressWarnings")) {
-            String text = source("demo", "    color: red;", "")
-                    .replace("class Button", "class " + name)
-                    .replace("static Button of()", "static " + name + " of()")
-                    .replace("Styled_Button", "Styled_" + name)
-                    .replace("abstract String style()", "abstract java.lang.String style()");
-            var result = compile(Map.of(name + ".java", text), "demo." + name);
-            assertTrue(result.success(), result.diagnostics());
-            assertEquals(result.values().get("demo." + name + ".style"), "jcss-demo-" + name);
+        for (var packageName : List.of("demo", "")) {
+            for (var name : List.of("String", "Override", "NullMarked", "Generated", "SuppressWarnings", "Internal")) {
+                String text = source("demo", "    color: red;", "")
+                        .replace("class Button", "class " + name)
+                        .replace("static Button of()", "static " + name + " of()")
+                        .replace("Styled_Button", "Styled_" + name)
+                        .replace("abstract String style()", "abstract java.lang.String style()");
+                if (packageName.isEmpty()) {
+                    text = text.replace("package demo;\n", "");
+                }
+                String owner = packageName.isEmpty() ? name : packageName + "." + name;
+                var result = compile(Map.of(name + ".java", text), owner);
+                assertTrue(result.success(), result.diagnostics());
+                assertEquals(
+                        result.values().get(owner + ".style"), "jcss-" + (packageName.isEmpty() ? "" : "demo-") + name);
+            }
         }
     }
 
     @DataProvider(name = "shadowedTypes")
     public Object[][] shadowedTypes() {
         var cases = new ArrayList<Object[]>();
-        for (var name : List.of("String", "Override", "SuppressWarnings", "NullMarked", "Generated")) {
+        for (var name : List.of("String", "Override", "SuppressWarnings", "NullMarked", "Generated", "Internal")) {
             for (boolean nested : List.of(false, true)) {
                 for (boolean formatted : List.of(false, true)) {
                     cases.add(new Object[] {name, nested, formatted});
@@ -872,6 +1033,273 @@ public final class CssProcessorTest {
         assertTrue(result.success(), result.diagnostics());
         assertEquals(result.diagnostics(), "");
         assertEquals(result.values().get("demo.Button.style"), "jcss-demo-Button");
+    }
+
+    @DataProvider(name = "singletonOwners")
+    public Object[][] singletonOwners() {
+        var cases = new ArrayList<Object[]>();
+        for (var packageName : List.of("demo", "")) {
+            for (var access : List.of("", "public ")) {
+                for (var enclosing : List.of("", "Outer", "Outer.Middle")) {
+                    for (boolean formatted : List.of(false, true)) {
+                        cases.add(new Object[] {packageName, access, enclosing, formatted});
+                    }
+                }
+            }
+        }
+        return cases.toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "singletonOwners")
+    public void singletonVisibilityIdentityAndNestedNames(
+            String packageName, String access, String enclosing, boolean formatted) throws Exception {
+        String generatedName = enclosing.isEmpty() ? "Styled_Button" : enclosing.replace('.', '_') + "_Styled_Button";
+        String text = source("demo", "    color: red;", "").replace("Styled_Button", generatedName);
+        if (packageName.isEmpty()) {
+            text = text.replace("package demo;\n", "");
+        }
+        text = text.replace(
+                "abstract class Button",
+                access + "abstract " + (enclosing.isEmpty() ? "" : "static ") + "class Button");
+        if (!enclosing.isEmpty()) {
+            String wrappers = access + "class Outer { "
+                    + ("Outer.Middle".equals(enclosing) ? access + "static class Middle { " : "");
+            text = text.replace("@Css(", wrappers + "@Css(") + ("Outer.Middle".equals(enclosing) ? "}}" : "}");
+        }
+        String sourceName = enclosing.isEmpty() ? "Button.java" : "Outer.java";
+        var result = compile(Map.of(sourceName, text), List.of("-Areact4j.css.format_generated_source=" + formatted));
+        assertTrue(result.success(), result.diagnostics());
+        assertEquals(result.diagnostics(), "");
+        String prefix = packageName.isEmpty() ? "" : packageName + ".";
+        String ownerName = prefix + (enclosing.isEmpty() ? "" : enclosing.replace('.', '$') + "$") + "Button";
+        Path directory = Files.createTempDirectory("css-singleton-");
+        try {
+            for (var entry : result.files().entrySet()) {
+                if (entry.getKey().endsWith(".class")) {
+                    Path target = directory.resolve(entry.getKey().substring("classes/".length()));
+                    Files.createDirectories(target.getParent());
+                    Files.write(target, Base64.getDecoder().decode(entry.getValue()));
+                }
+            }
+            try (var loader = new URLClassLoader(
+                    new URL[] {directory.toUri().toURL()}, CssProcessorTest.class.getClassLoader())) {
+                var owner = loader.loadClass(ownerName);
+                var generated = loader.loadClass(prefix + generatedName);
+                assertEquals(Modifier.isPublic(owner.getModifiers()), !access.isEmpty());
+                assertEquals(generated.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE), 0);
+                assertTrue(Modifier.isFinal(generated.getModifiers()));
+                var constructors = generated.getDeclaredConstructors();
+                assertEquals(constructors.length, 1);
+                assertTrue(Modifier.isPrivate(constructors[0].getModifiers()));
+                assertEquals(constructors[0].getParameterCount(), 0);
+                assertEquals(generated.getDeclaredFields().length, 0);
+                var nested = generated.getDeclaredClasses();
+                assertEquals(nested.length, 1);
+                assertEquals(nested[0].getSimpleName(), "Internal");
+                assertTrue(Modifier.isPrivate(nested[0].getModifiers()));
+                assertTrue(Modifier.isStatic(nested[0].getModifiers()));
+                assertTrue(Modifier.isFinal(nested[0].getModifiers()));
+                var fields = nested[0].getDeclaredFields();
+                assertEquals(fields.length, 1);
+                assertSame(fields[0].getType(), owner);
+                assertTrue(Modifier.isPrivate(fields[0].getModifiers()));
+                assertTrue(Modifier.isStatic(fields[0].getModifiers()));
+                assertTrue(Modifier.isFinal(fields[0].getModifiers()));
+                var factory = generated.getDeclaredMethod("get");
+                assertSame(factory.getReturnType(), owner);
+                assertTrue(Modifier.isStatic(factory.getModifiers()));
+                assertEquals(factory.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE), 0);
+                factory.setAccessible(true);
+                var tasks = new ArrayList<Callable<Object>>();
+                for (int i = 0; i < 32; i++) {
+                    tasks.add(() -> factory.invoke(null));
+                }
+                var executor = Executors.newFixedThreadPool(8);
+                try {
+                    var answers = executor.invokeAll(tasks);
+                    var singleton = factory.invoke(null);
+                    assertNotNull(singleton);
+                    assertSame(singleton.getClass(), generated);
+                    for (var answer : answers) {
+                        assertSame(answer.get(), singleton);
+                    }
+                } finally {
+                    executor.shutdownNow();
+                }
+            }
+        } finally {
+            delete(directory);
+        }
+    }
+
+    @Test
+    public void singletonAllocationWaitsForTheFirstGet() throws Exception {
+        for (boolean formatted : List.of(false, true)) {
+            String owner = source("demo", "    color: red;", "");
+            var result = compile(
+                    Map.of("Button.java", owner), List.of("-Areact4j.css.format_generated_source=" + formatted));
+            assertTrue(result.success(), result.diagnostics());
+            var generated = new String(
+                    Base64.getDecoder().decode(result.files().get("generated/demo/Styled_Button.java")),
+                    StandardCharsets.UTF_8);
+            // Instrument the emitted constructor to observe allocation without adding authored state.
+            String instrumented =
+                    generated.replace("private Styled_Button() {", "private Styled_Button() { Probe.count++;");
+            assertNotEquals(instrumented, generated);
+            Path directory = Files.createTempDirectory("css-lazy-singleton-");
+            try {
+                Path classes = Files.createDirectory(directory.resolve("classes"));
+                Path input = directory.resolve("Button.java");
+                Path implementation = directory.resolve("Styled_Button.java");
+                Path probe = directory.resolve("Probe.java");
+                Files.writeString(input, owner);
+                Files.writeString(implementation, instrumented);
+                Files.writeString(probe, "package demo; public class Probe { public static int count; }");
+                var compiler = ToolProvider.getSystemJavaCompiler();
+                var diagnostics = new DiagnosticCollector<JavaFileObject>();
+                try (var manager = compiler.getStandardFileManager(diagnostics, null, null)) {
+                    assertTrue(
+                            compiler.getTask(
+                                            null,
+                                            manager,
+                                            diagnostics,
+                                            List.of(
+                                                    "--release",
+                                                    "17",
+                                                    "-proc:none",
+                                                    "-classpath",
+                                                    applicationClasspath(),
+                                                    "-d",
+                                                    classes.toString()),
+                                            null,
+                                            manager.getJavaFileObjectsFromPaths(List.of(input, implementation, probe)))
+                                    .call(),
+                            diagnostics.getDiagnostics().toString());
+                }
+                try (var loader = new URLClassLoader(
+                        new URL[] {classes.toUri().toURL()}, CssProcessorTest.class.getClassLoader())) {
+                    var counter = loader.loadClass("demo.Probe").getField("count");
+                    var type = Class.forName("demo.Styled_Button", true, loader);
+                    assertEquals(counter.getInt(null), 0);
+                    var factory = type.getDeclaredMethod("get");
+                    factory.setAccessible(true);
+                    var singleton = factory.invoke(null);
+                    assertEquals(counter.getInt(null), 1);
+                    assertSame(factory.invoke(null), singleton);
+                    assertEquals(counter.getInt(null), 1);
+                }
+            } finally {
+                delete(directory);
+            }
+        }
+    }
+
+    @DataProvider(name = "helperMethods")
+    public Object[][] helperMethods() {
+        var cases = new ArrayList<Object[]>();
+        for (var access : List.of("", "public ", "protected ", "private ")) {
+            for (var modifiers : List.of("", "final ", "static ", "static final ")) {
+                for (boolean formatted : List.of(false, true)) {
+                    String method = access + modifiers + "String helper() { return \"helper\"; }";
+                    cases.add(new Object[] {method, "helper()", formatted});
+                }
+            }
+        }
+        for (var access : List.of("", "public ", "protected ")) {
+            for (boolean formatted : List.of(false, true)) {
+                cases.add(new Object[] {
+                    access + "static Button get() { return Styled_Button.get(); }", "get().style()", formatted
+                });
+                cases.add(new Object[] {
+                    access + "static Object get() { return Styled_Button.get(); }",
+                    "((Button) get()).style()",
+                    formatted
+                });
+                cases.add(new Object[] {
+                    access + "static <T> Button get() { return Styled_Button.get(); }", "get().style()", formatted
+                });
+                cases.add(new Object[] {
+                    access + "static <T> Object get() { return Styled_Button.get(); }",
+                    "((Button) get()).style()",
+                    formatted
+                });
+            }
+        }
+        for (boolean formatted : List.of(false, true)) {
+            cases.add(new Object[] {
+                "static Button get() throws Exception { return Styled_Button.get(); }", "get().style()", formatted
+            });
+            cases.add(new Object[] {"private String get() { return style(); }", "get()", formatted});
+            cases.add(new Object[] {"static String get(int value) { return \"overload\"; }", "get(1)", formatted});
+            cases.add(new Object[] {
+                "<T> String helper(T value) throws Exception { return style(); }", "helper(1)", formatted
+            });
+        }
+        return cases.toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "helperMethods")
+    public void concreteAndStaticHelpersRemainCallable(String method, String invocation, boolean formatted)
+            throws Exception {
+        String text = source("demo", "    color: red;", method)
+                .replace(
+                        "static Button of() { return Styled_Button.get(); }",
+                        "static Button of() throws Exception { Button value = Styled_Button.get(); value.check();"
+                                + " return value; }")
+                .replace(
+                        "abstract String style();",
+                        "void check() throws Exception { if (" + invocation
+                                + ".isEmpty()) throw new AssertionError(); } abstract String style();");
+        var result = compile(
+                Map.of("Button.java", text),
+                List.of("-Areact4j.css.format_generated_source=" + formatted),
+                "demo.Button");
+        assertTrue(result.success(), result.diagnostics());
+        assertEquals(result.diagnostics(), "");
+        assertEquals(result.values().get("demo.Button.style"), "jcss-demo-Button");
+    }
+
+    @Test
+    public void generatedConstructorCannotBeCalledByPackagePeers() throws Exception {
+        for (var access : List.of("", "public ")) {
+            String text = source("demo", "    color: red;", "")
+                    .replace("abstract class Button", access + "abstract class Button");
+            var result = compile(Map.of(
+                    "Button.java",
+                    text,
+                    "Client.java",
+                    "package demo; class Client { Button value = new Styled_Button(); }"));
+            assertFalse(result.success());
+            assertTrue(result.diagnostics().contains("Styled_Button() has private access"), result.diagnostics());
+        }
+    }
+
+    @Test
+    public void publicStyleIsUsableFromAnotherPackageThroughAuthoredApi() throws Exception {
+        String text = source("demo", "    color: red;", "")
+                .replace("abstract class Button", "public abstract class Button")
+                .replace("abstract String style()", "public abstract String style()")
+                .replace("static Button of()", "public static Button of()");
+        var result = compile(Map.of(
+                "Button.java",
+                text,
+                "other/Client.java",
+                "package other; import demo.Button; class Client { String style() { return Button.of().style(); } }"));
+        assertTrue(result.success(), result.diagnostics());
+        assertEquals(result.diagnostics(), "");
+    }
+
+    @Test
+    public void publicStyleDoesNotExposeGeneratedImplementationAcrossPackages() throws Exception {
+        String text =
+                source("demo", "    color: red;", "").replace("abstract class Button", "public abstract class Button");
+        var result = compile(Map.of(
+                "Button.java",
+                text,
+                "Client.java",
+                "package other; import demo.Styled_Button; class Client { Styled_Button value; }"));
+        assertFalse(result.success());
+        assertTrue(result.diagnostics().contains("Styled_Button is not public"), result.diagnostics());
     }
 
     @Test

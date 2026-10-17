@@ -1,1 +1,0 @@
-ERROR demo/Button.java:7:6: demo/Button.java:9:22: Animation duration must not be negative

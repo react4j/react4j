@@ -1,0 +1,1 @@
+ERROR com/example/factory_conflict/Button.java:10:10: @Css method get() conflicts with the generated singleton factory

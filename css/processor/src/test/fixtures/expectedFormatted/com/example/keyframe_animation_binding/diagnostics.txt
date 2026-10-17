@@ -1,0 +1,1 @@
+ERROR com/example/keyframe_animation_binding/Button.java:7:6: com/example/keyframe_animation_binding/Button.java:9:12: Animation bindings are not allowed inside keyframes

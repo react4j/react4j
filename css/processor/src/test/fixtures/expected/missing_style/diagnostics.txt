@@ -1,1 +1,0 @@
-ERROR demo/Button.java:10:10: @Css style classes require abstract String style()

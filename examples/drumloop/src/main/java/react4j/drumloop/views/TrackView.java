@@ -12,11 +12,6 @@ import react4j.drumloop.model.Track;
 
 @View
 abstract class TrackView {
-    private static final TrackStyle TRACK = new Styled_TrackView_0024_TrackStyle();
-    private static final TrackInfoStyle TRACK_INFO = new Styled_TrackView_0024_TrackInfoStyle();
-    private static final TrackTitleStyle TRACK_TITLE = new Styled_TrackView_0024_TrackTitleStyle();
-    private static final StepsStyle STEPS = new Styled_TrackView_0024_StepsStyle();
-
     final Track _track;
 
     TrackView(@Input final Track track) {
@@ -27,12 +22,18 @@ abstract class TrackView {
     ReactNode render() {
         _track.suspendUntilAudioLoaded();
         return div(
-                new HtmlProps().className(TRACK.style()),
+                new HtmlProps().className(TrackView_Styled_TrackStyle.get().style()),
                 div(
-                        new HtmlProps().className(TRACK_INFO.style()),
-                        h2(new HtmlProps().className(TRACK_TITLE.style()), _track.getName())),
+                        new HtmlProps()
+                                .className(TrackView_Styled_TrackInfoStyle.get().style()),
+                        h2(
+                                new HtmlProps()
+                                        .className(TrackView_Styled_TrackTitleStyle.get()
+                                                .style()),
+                                _track.getName())),
                 div(
-                        new HtmlProps().className(STEPS.style()),
+                        new HtmlProps()
+                                .className(TrackView_Styled_StepsStyle.get().style()),
                         fragment(_track.getStepCells().stream().map(StepButtonBuilder::cell))));
     }
 

@@ -1,0 +1,12 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "Override.css",
+        "Override.css.map",
+        "String.css",
+        "String.css.map",
+        "Styled_Override.java",
+        "Styled_String.java",
+    ],
+    visibility = ["//css/processor/src/test/fixtures:__pkg__"],
+)

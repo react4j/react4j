@@ -15,53 +15,53 @@ import react4j.todomvc.arez.model.FilterMode;
 
 @View
 abstract class Footer {
-    private static final FooterStyle FOOTER = new Styled_Footer_0024_FooterStyle();
-    private static final FiltersStyle FILTERS = new Styled_Footer_0024_FiltersStyle();
-    private static final FilterItemStyle FILTER_ITEM = new Styled_Footer_0024_FilterItemStyle();
-    private static final FilterLinkStyle FILTER_LINK = new Styled_Footer_0024_FilterLinkStyle();
-    private static final ClearStyle CLEAR = new Styled_Footer_0024_ClearStyle();
-
     @Render
     ReactNode render() {
+        var filterItemStyle = Footer_Styled_FilterItemStyle.get();
+        var filterLinkStyle = Footer_Styled_FilterLinkStyle.get();
         final FilterMode filterMode = AppData.viewService.getFilterMode();
         return footer(
-                new HtmlProps().className(FOOTER.style()),
+                new HtmlProps().className(Footer_Styled_FooterStyle.get().style()),
                 FooterTodoCountBuilder.build(),
                 ul(
-                        new HtmlProps().className(FILTERS.style()),
+                        new HtmlProps()
+                                .className(Footer_Styled_FiltersStyle.get().style()),
                         li(
-                                new HtmlProps().className(FILTER_ITEM.style()),
+                                new HtmlProps().className(filterItemStyle.style()),
                                 a(
                                         new AnchorProps()
                                                 .className(
                                                         FilterMode.ALL == filterMode
-                                                                ? FILTER_LINK.selected()
-                                                                : FILTER_LINK.style())
+                                                                ? filterLinkStyle.selected()
+                                                                : filterLinkStyle.style())
                                                 .href("#"),
                                         "All")),
                         li(
-                                new HtmlProps().className(FILTER_ITEM.style()),
+                                new HtmlProps().className(filterItemStyle.style()),
                                 a(
                                         new AnchorProps()
                                                 .className(
                                                         FilterMode.ACTIVE == filterMode
-                                                                ? FILTER_LINK.selected()
-                                                                : FILTER_LINK.style())
+                                                                ? filterLinkStyle.selected()
+                                                                : filterLinkStyle.style())
                                                 .href("#active"),
                                         "Active")),
                         li(
-                                new HtmlProps().className(FILTER_ITEM.style()),
+                                new HtmlProps().className(filterItemStyle.style()),
                                 a(
                                         new AnchorProps()
                                                 .className(
                                                         FilterMode.COMPLETED == filterMode
-                                                                ? FILTER_LINK.selected()
-                                                                : FILTER_LINK.style())
+                                                                ? filterLinkStyle.selected()
+                                                                : filterLinkStyle.style())
                                                 .href("#completed"),
                                         "Completed"))),
                 hasCompletedItems()
                         ? button(
-                                new BtnProps().className(CLEAR.style()).onClick(e -> AppData.service.clearCompleted()),
+                                new BtnProps()
+                                        .className(
+                                                Footer_Styled_ClearStyle.get().style())
+                                        .onClick(e -> AppData.service.clearCompleted()),
                                 "Clear Completed")
                         : null);
     }

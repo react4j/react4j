@@ -11,8 +11,6 @@ import react4j.drumloop.model.DrumMachine;
 
 @View(type = View.Type.TRACKING)
 abstract class PlayButton {
-    private static final PlayStyle PLAY = new Styled_PlayButton_0024_PlayStyle();
-
     private final DrumMachine _drumMachine;
 
     PlayButton(final DrumMachine drumMachine) {
@@ -21,9 +19,12 @@ abstract class PlayButton {
 
     @Render
     ReactNode render() {
+        var playStyle = PlayButton_Styled_PlayStyle.get();
         final boolean on = _drumMachine.isRunning();
         return button(
-                new BtnProps().className(on ? PLAY.style() : PLAY.off()).onClick(e -> _drumMachine.toggleRunning()),
+                new BtnProps()
+                        .className(on ? playStyle.style() : playStyle.off())
+                        .onClick(e -> _drumMachine.toggleRunning()),
                 on ? "Stop" : "Play");
     }
 

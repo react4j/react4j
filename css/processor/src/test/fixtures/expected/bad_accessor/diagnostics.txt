@@ -1,1 +1,0 @@
-ERROR demo/Button.java:10:10: CSS accessor success must take no arguments and return String without type parameters or throws

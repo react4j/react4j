@@ -1,0 +1,1 @@
+ERROR com/example/missing_style/Button.java:10:10: @Css style classes require abstract String style()

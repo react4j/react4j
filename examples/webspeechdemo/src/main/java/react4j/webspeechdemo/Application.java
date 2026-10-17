@@ -35,19 +35,6 @@ import react4j.webspeechdemo.browser.speech.SpeechSynthesisVoice;
 
 @View(type = View.Type.TRACKING)
 abstract class Application {
-    private static final TitleStyle TITLE = new Styled_Application_0024_TitleStyle();
-    private static final FormStyle FORM = new Styled_Application_0024_FormStyle();
-    private static final ArgumentStyle ARGUMENT = new Styled_Application_0024_ArgumentStyle();
-    private static final LabelStyle LABEL = new Styled_Application_0024_LabelStyle();
-    private static final RangeStyle RANGE = new Styled_Application_0024_RangeStyle();
-    private static final SelectStyle SELECT = new Styled_Application_0024_SelectStyle();
-    private static final ResetStyle RESET = new Styled_Application_0024_ResetStyle();
-    private static final ActionsStyle ACTIONS = new Styled_Application_0024_ActionsStyle();
-    private static final ActionStyle ACTION = new Styled_Application_0024_ActionStyle();
-    private static final EditorStyle EDITOR = new Styled_Application_0024_EditorStyle();
-    private static final TextStyle TEXT = new Styled_Application_0024_TextStyle();
-    private static final MarkerStyle MARKER = new Styled_Application_0024_MarkerStyle();
-
     private static final float DEFAULT_PITCH = 0.5F;
     private static final float DEFAULT_RATE = 0.0F;
     private static final float DEFAULT_VOLUME = 1.0F;
@@ -69,41 +56,57 @@ abstract class Application {
 
     @Render
     ReactNode render() {
+        var editorStyle = Application_Styled_EditorStyle.get();
+        var textStyle = Application_Styled_TextStyle.get();
+        var markerStyle = Application_Styled_MarkerStyle.get();
+        var argumentStyle = Application_Styled_ArgumentStyle.get();
+        var labelStyle = Application_Styled_LabelStyle.get();
+        var rangeStyle = Application_Styled_RangeStyle.get();
+        var resetStyle = Application_Styled_ResetStyle.get();
+        var actionStyle = Application_Styled_ActionStyle.get();
         final SpeechSynthesisVoice voice = _speechData.getVoice();
         return div(
-                h1(new HtmlProps().className(TITLE.style()), "Web Speech Synthesis Demo"),
+                h1(new HtmlProps().className(Application_Styled_TitleStyle.get().style()), "Web Speech Synthesis Demo"),
                 form(
-                        new FormProps().className(FORM.style()),
+                        new FormProps()
+                                .className(Application_Styled_FormStyle.get().style()),
                         div(
                                 new HtmlProps()
                                         .id("textarea")
-                                        .className(_speechData.isSpeaking() ? EDITOR.speaking() : EDITOR.style()),
+                                        .className(
+                                                _speechData.isSpeaking()
+                                                        ? editorStyle.speaking()
+                                                        : editorStyle.style()),
                                 _speechData.isSpeaking()
                                         ? fragment(
                                                 div(
                                                         new HtmlProps()
                                                                 .ref(e -> _textContent = Js.uncheckedCast(e))
                                                                 .id("textbeingspoken")
-                                                                .className(TEXT.spoken()),
+                                                                .className(textStyle.spoken()),
                                                         _speechData.getText()),
                                                 div(new HtmlProps()
                                                         .className(
                                                                 0 == _speechData.utteredWordLength()
-                                                                        ? MARKER.style()
-                                                                        : MARKER.visible())
+                                                                        ? markerStyle.style()
+                                                                        : markerStyle.visible())
                                                         .style(markerCssProps())))
                                         : textarea(new TextAreaProps()
-                                                .className(TEXT.style())
+                                                .className(textStyle.style())
                                                 .value(_speechData.getText())
                                                 .disabled(_speechData.isSpeaking())
                                                 .onChange(e -> _speechData.setText(
                                                         Js.<HTMLTextAreaElement>uncheckedCast(e.getTarget())
                                                                 .value())))),
                         div(
-                                new HtmlProps().className(ARGUMENT.style()),
-                                label(new LabelProps().className(LABEL.style()).htmlFor("pitch"), "Pitch"),
+                                new HtmlProps().className(argumentStyle.style()),
+                                label(
+                                        new LabelProps()
+                                                .className(labelStyle.style())
+                                                .htmlFor("pitch"),
+                                        "Pitch"),
                                 input(new InputProps()
-                                        .className(RANGE.style())
+                                        .className(rangeStyle.style())
                                         .id("pitch")
                                         .type(InputType.range)
                                         .value(String.valueOf(_speechData.getPitch()))
@@ -116,7 +119,7 @@ abstract class Application {
                                                         .value())))),
                                 button(
                                         new BtnProps()
-                                                .className(RESET.style())
+                                                .className(resetStyle.style())
                                                 .type(ButtonType.button)
                                                 .prop("aria-label", Js.asAny("Reset pitch"))
                                                 .title("Reset pitch")
@@ -124,10 +127,14 @@ abstract class Application {
                                                 .onClick(e -> _speechData.setPitch(DEFAULT_PITCH)),
                                         "\u21b6")),
                         div(
-                                new HtmlProps().className(ARGUMENT.style()),
-                                label(new LabelProps().className(LABEL.style()).htmlFor("rate"), "Rate"),
+                                new HtmlProps().className(argumentStyle.style()),
+                                label(
+                                        new LabelProps()
+                                                .className(labelStyle.style())
+                                                .htmlFor("rate"),
+                                        "Rate"),
                                 input(new InputProps()
-                                        .className(RANGE.style())
+                                        .className(rangeStyle.style())
                                         .id("rate")
                                         .type(InputType.range)
                                         .value(String.valueOf(_speechData.getRate()))
@@ -140,7 +147,7 @@ abstract class Application {
                                                         .value())))),
                                 button(
                                         new BtnProps()
-                                                .className(RESET.style())
+                                                .className(resetStyle.style())
                                                 .type(ButtonType.button)
                                                 .prop("aria-label", Js.asAny("Reset rate"))
                                                 .title("Reset rate")
@@ -148,10 +155,14 @@ abstract class Application {
                                                 .onClick(e -> _speechData.setRate(DEFAULT_RATE)),
                                         "\u21b6")),
                         div(
-                                new HtmlProps().className(ARGUMENT.style()),
-                                label(new LabelProps().className(LABEL.style()).htmlFor("volume"), "Volume"),
+                                new HtmlProps().className(argumentStyle.style()),
+                                label(
+                                        new LabelProps()
+                                                .className(labelStyle.style())
+                                                .htmlFor("volume"),
+                                        "Volume"),
                                 input(new InputProps()
-                                        .className(RANGE.style())
+                                        .className(rangeStyle.style())
                                         .id("volume")
                                         .type(InputType.range)
                                         .value(String.valueOf(_speechData.getVolume()))
@@ -164,7 +175,7 @@ abstract class Application {
                                                         .value())))),
                                 button(
                                         new BtnProps()
-                                                .className(RESET.style())
+                                                .className(resetStyle.style())
                                                 .type(ButtonType.button)
                                                 .prop("aria-label", Js.asAny("Reset volume"))
                                                 .title("Reset volume")
@@ -172,18 +183,23 @@ abstract class Application {
                                                 .onClick(e -> _speechData.setVolume(DEFAULT_VOLUME)),
                                         "\u21b6")),
                         div(
-                                new HtmlProps().className(ARGUMENT.style()),
-                                label(new LabelProps().className(LABEL.style()).htmlFor("voice"), "Voice"),
+                                new HtmlProps().className(argumentStyle.style()),
+                                label(
+                                        new LabelProps()
+                                                .className(labelStyle.style())
+                                                .htmlFor("voice"),
+                                        "Voice"),
                                 select(
                                         new SelectProps()
-                                                .className(SELECT.style())
+                                                .className(Application_Styled_SelectStyle.get()
+                                                        .style())
                                                 .onChange(this::onVoiceChange)
                                                 .disabled(_speechData.isSpeaking())
                                                 .value(null == voice ? "" : voice.voiceURI()),
                                         _speechData.getVoices().stream().map(this::renderVoiceOption)),
                                 button(
                                         new BtnProps()
-                                                .className(RESET.style())
+                                                .className(resetStyle.style())
                                                 .type(ButtonType.button)
                                                 .prop("aria-label", Js.asAny("Reset voice"))
                                                 .title("Reset voice")
@@ -191,10 +207,12 @@ abstract class Application {
                                                 .onClick(e -> _speechData.resetVoice()),
                                         "\u21b6")),
                         div(
-                                new HtmlProps().className(ACTIONS.style()),
+                                new HtmlProps()
+                                        .className(Application_Styled_ActionsStyle.get()
+                                                .style()),
                                 button(
                                         new BtnProps()
-                                                .className(ACTION.style())
+                                                .className(actionStyle.style())
                                                 .type(ButtonType.button)
                                                 .prop("aria-label", Js.asAny("Speak"))
                                                 .title("Speak")
@@ -203,7 +221,7 @@ abstract class Application {
                                         "Speak"),
                                 button(
                                         new BtnProps()
-                                                .className(ACTION.style())
+                                                .className(actionStyle.style())
                                                 .type(ButtonType.button)
                                                 .prop(
                                                         "aria-label",
@@ -220,7 +238,7 @@ abstract class Application {
                                         _speechData.isPaused() ? "Resume" : "Pause"),
                                 button(
                                         new BtnProps()
-                                                .className(ACTION.style())
+                                                .className(actionStyle.style())
                                                 .type(ButtonType.button)
                                                 .prop("aria-label", Js.asAny("Stop"))
                                                 .title("Stop")

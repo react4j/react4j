@@ -1,0 +1,1 @@
+ERROR com/example/nested_keyframes/Button.java:7:6: com/example/nested_keyframes/Button.java:9:7: Keyframes must be declared at the component's outer level

@@ -1,0 +1,1 @@
+ERROR com/example/unsupported_at_rule/Button.java:7:6: com/example/unsupported_at_rule/Button.java:8:5: Unsupported component rule: UNKNOWNRULE

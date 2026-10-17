@@ -53,6 +53,9 @@ testSuite({
     container.remove();
     style.remove();
   },
+  testGeneratedBindingsAreSingletons() {
+    asserts.assertTrue(Example.bindingsAreSingletons());
+  },
   testGeneratedBindingsAndCascade() {
     asserts.assertEquals('rgb(255, 255, 255)', computed('base').color);
     asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);

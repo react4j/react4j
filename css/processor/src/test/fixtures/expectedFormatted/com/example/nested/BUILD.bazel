@@ -1,0 +1,9 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "Owner$Inner.css",
+        "Owner$Inner.css.map",
+        "Owner_Styled_Inner.java",
+    ],
+    visibility = ["//css/processor/src/test/fixtures:__pkg__"],
+)

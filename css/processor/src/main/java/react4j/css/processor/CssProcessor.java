@@ -1,8 +1,10 @@
 package react4j.css.processor;
 
 import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.FieldSpec;
 import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.TypeSpec;
+import com.sun.source.tree.BlockTree;
 import com.sun.source.tree.LiteralTree;
 import com.sun.source.util.Trees;
 import java.io.IOException;
@@ -22,9 +24,11 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
 import org.realityforge.proton.AbstractStandardProcessor;
+import org.realityforge.proton.ElementsUtil;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.SuppressWarningsUtil;
 import react4j.css.internal.CssSyntax;
@@ -87,19 +91,40 @@ public final class CssProcessor extends AbstractStandardProcessor {
             }
             deprecated |= processingEnv.getElementUtils().isDeprecated(enclosing);
         }
+        var trees = Trees.instance(processingEnv);
         var methods = new ArrayList<ExecutableElement>();
-        boolean constructor = false;
+        var ownerType = ClassName.get(owner);
+        var factory =
+                MethodSpec.methodBuilder("get").addModifiers(Modifier.STATIC).returns(ownerType);
         for (var member : owner.getEnclosedElements()) {
-            if (ElementKind.CONSTRUCTOR == member.getKind()) {
-                var candidate = (ExecutableElement) member;
-                boolean accessible = candidate.getParameters().isEmpty()
-                        && candidate.getThrownTypes().isEmpty()
-                        && !candidate.getModifiers().contains(Modifier.PRIVATE);
-                constructor |= accessible;
-                deprecated |= accessible && processingEnv.getElementUtils().isDeprecated(candidate);
-            } else if (ElementKind.METHOD == member.getKind()
-                    && member.getModifiers().contains(Modifier.ABSTRACT)) {
+            if (ElementKind.FIELD == member.getKind()) {
+                throw new IllegalArgumentException(
+                        "@Css style classes must not declare fields: " + member.getSimpleName());
+            } else if (ElementKind.CONSTRUCTOR == member.getKind()) {
+                if (Elements.Origin.EXPLICIT == ElementsUtil.getOrigin(processingEnv.getElementUtils(), member)) {
+                    throw new IllegalArgumentException("@Css style classes must not declare constructors");
+                }
+            } else if (ElementKind.METHOD == member.getKind()) {
                 var method = (ExecutableElement) member;
+                if (method.getSimpleName().contentEquals("get")
+                        && method.getParameters().isEmpty()
+                        && !method.getModifiers().contains(Modifier.PRIVATE)) {
+                    if (!method.getModifiers().contains(Modifier.STATIC)
+                            || method.getModifiers().contains(Modifier.FINAL)
+                            || !processingEnv.getTypeUtils().isSubtype(owner.asType(), method.getReturnType())) {
+                        throw new IllegalArgumentException(
+                                "@Css method get() conflicts with the generated singleton factory");
+                    }
+                    if (method.getModifiers().contains(Modifier.PROTECTED)) {
+                        // The checker forbids protected members in a final class.
+                        factory.addModifiers(Modifier.PUBLIC);
+                    } else {
+                        GeneratorUtil.copyAccessModifiers(method, factory);
+                    }
+                }
+                if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
+                    continue;
+                }
                 if (!method.getParameters().isEmpty()
                         || !method.getTypeParameters().isEmpty()
                         || !method.getThrownTypes().isEmpty()
@@ -111,9 +136,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 deprecated |= processingEnv.getElementUtils().isDeprecated(method);
             }
         }
-        if (!constructor) {
-            throw new IllegalArgumentException(
-                    "@Css style classes require an accessible no-argument constructor without throws");
+        if (trees.getTree(owner).getMembers().stream()
+                .anyMatch(member -> member instanceof BlockTree block && !block.isStatic())) {
+            throw new IllegalArgumentException("@Css style classes must not declare instance initializers");
         }
         methods.sort(Comparator.comparing(m -> m.getSimpleName().toString()));
         if (methods.stream().noneMatch(m -> m.getSimpleName().contentEquals("style"))) {
@@ -124,7 +149,6 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 .findFirst()
                 .orElseThrow();
         var value = annotation.getElementValues().values().iterator().next();
-        var trees = Trees.instance(processingEnv);
         var path = trees.getPath(owner);
         var unit = path.getCompilationUnit();
         var literal = trees.getTree(owner, annotation, value);
@@ -177,10 +201,24 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 .getPackageOf(owner)
                 .getQualifiedName()
                 .toString();
-        String localName = binaryName.substring(packageName.isEmpty() ? 0 : packageName.length() + 1);
-        String generated = "Styled_" + Names.encode(localName);
+        var generated = GeneratorUtil.getGeneratedClassName(owner, "Styled_", "");
         var builder =
-                TypeSpec.classBuilder(generated).addModifiers(Modifier.FINAL).superclass(ClassName.get(owner));
+                TypeSpec.classBuilder(generated).addModifiers(Modifier.FINAL).superclass(ownerType);
+        builder.addMethod(
+                MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build());
+        // A holder must not hide its owner's top-level type in the unnamed package.
+        String holderName = "Internal".equals(ownerType.topLevelClassName().simpleName()) ? "Internal_" : "Internal";
+        builder.addType(TypeSpec.classBuilder(holderName)
+                .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+                .addField(FieldSpec.builder(ownerType, "INSTANCE", Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+                        .initializer("new $T()", generated)
+                        .build())
+                .addMethod(MethodSpec.constructorBuilder()
+                        .addModifiers(Modifier.PRIVATE)
+                        .build())
+                .build());
+        builder.addMethod(factory.addStatement("return $L.$L.INSTANCE", generated.simpleName(), holderName)
+                .build());
         boolean qualified = false;
         // Proton omits java.lang imports, so peer and inherited types need explicit qualification.
         for (var name : List.of("String", "Override", "SuppressWarnings")) {

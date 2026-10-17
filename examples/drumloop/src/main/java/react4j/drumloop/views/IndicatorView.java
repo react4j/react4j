@@ -12,9 +12,6 @@ import react4j.drumloop.model.DrumMachine;
 
 @View(type = View.Type.MAYBE_TRACKING)
 abstract class IndicatorView {
-    private static final IndicatorsStyle INDICATORS = new Styled_IndicatorView_0024_IndicatorsStyle();
-    private static final IndicatorStyle INDICATOR = new Styled_IndicatorView_0024_IndicatorStyle();
-
     private final DrumMachine _drumMachine;
 
     IndicatorView(final DrumMachine drumMachine) {
@@ -27,10 +24,12 @@ abstract class IndicatorView {
         final int step = _drumMachine.getCurrentStep();
 
         return div(
-                new HtmlProps().className(INDICATORS.style()),
+                new HtmlProps()
+                        .className(IndicatorView_Styled_IndicatorsStyle.get().style()),
                 on
                         ? div(new HtmlProps()
-                                .className(INDICATOR.style())
+                                .className(IndicatorView_Styled_IndicatorStyle.get()
+                                        .style())
                                 .style(new CssProps().customProperty("--indicator-left", step * 37.5 + "px")))
                         : null);
     }

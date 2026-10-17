@@ -15,9 +15,6 @@ import react4j.todomvc.raw.model.AppData;
 
 @View(type = View.Type.STATEFUL)
 abstract class FooterTodoCount {
-    private static final CountStyle COUNT = new Styled_FooterTodoCount_0024_CountStyle();
-    private static final CountNumberStyle COUNT_NUMBER = new Styled_FooterTodoCount_0024_CountNumberStyle();
-
     private final SafeProcedure _onChange = this::scheduleRender;
 
     @ScheduleRender
@@ -37,8 +34,13 @@ abstract class FooterTodoCount {
     ReactNode render() {
         final int count = AppData.service.activeCount();
         return span(
-                new HtmlProps().className(COUNT.style()),
-                strong(new HtmlProps().className(COUNT_NUMBER.style()), ReactNode.of(count)),
+                new HtmlProps()
+                        .className(FooterTodoCount_Styled_CountStyle.get().style()),
+                strong(
+                        new HtmlProps()
+                                .className(FooterTodoCount_Styled_CountNumberStyle.get()
+                                        .style()),
+                        ReactNode.of(count)),
                 text(" item" + (1 == count ? "" : "s") + " left"));
     }
 

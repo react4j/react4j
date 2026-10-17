@@ -27,13 +27,6 @@ import react4j.todomvc.raw.model.Todo;
 
 @View(type = View.Type.STATEFUL)
 abstract class TodoItem {
-    private static final ItemStyle ITEM = new Styled_TodoItem_0024_ItemStyle();
-    private static final ViewStyle VIEW = new Styled_TodoItem_0024_ViewStyle();
-    private static final ToggleStyle TOGGLE = new Styled_TodoItem_0024_ToggleStyle();
-    private static final LabelStyle LABEL = new Styled_TodoItem_0024_LabelStyle();
-    private static final DestroyStyle DESTROY = new Styled_TodoItem_0024_DestroyStyle();
-    private static final EditStyle EDIT = new Styled_TodoItem_0024_EditStyle();
-
     private final SafeProcedure _onChange = this::scheduleRender;
 
     private final Todo _todo;
@@ -134,26 +127,32 @@ abstract class TodoItem {
 
     @Render
     ReactNode render() {
+        var itemStyle = TodoItem_Styled_ItemStyle.get();
+        var viewStyle = TodoItem_Styled_ViewStyle.get();
+        var labelStyle = TodoItem_Styled_LabelStyle.get();
+        var editStyle = TodoItem_Styled_EditStyle.get();
         final boolean completed = _todo.isCompleted();
         final boolean editing = isTodoBeingEdited();
         return li(
-                new HtmlProps().className(editing ? ITEM.editing() : ITEM.style()),
+                new HtmlProps().className(editing ? itemStyle.editing() : itemStyle.style()),
                 div(
-                        new HtmlProps().className(editing ? VIEW.editing() : VIEW.style()),
+                        new HtmlProps().className(editing ? viewStyle.editing() : viewStyle.style()),
                         input(new InputProps()
-                                .className(TOGGLE.style())
+                                .className(TodoItem_Styled_ToggleStyle.get().style())
                                 .type(InputType.checkbox)
                                 .checked(completed)
                                 .onChange(e -> onToggle())),
                         label(
                                 new LabelProps()
-                                        .className(completed ? LABEL.completed() : LABEL.style())
+                                        .className(completed ? labelStyle.completed() : labelStyle.style())
                                         .onDoubleClick(e -> onEdit()),
                                 _todo.getTitle()),
-                        button(new BtnProps().className(DESTROY.style()).onClick(e -> onDestroy()))),
+                        button(new BtnProps()
+                                .className(TodoItem_Styled_DestroyStyle.get().style())
+                                .onClick(e -> onDestroy()))),
                 input(new InputProps()
                         .ref(e -> _editField = Js.uncheckedCast(e))
-                        .className(editing ? EDIT.editing() : EDIT.style())
+                        .className(editing ? editStyle.editing() : editStyle.style())
                         .value(_editText)
                         .onBlur(e -> onSubmitTodo())
                         .onChange(this::handleChange)

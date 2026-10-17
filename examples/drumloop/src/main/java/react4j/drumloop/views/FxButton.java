@@ -19,8 +19,6 @@ import react4j.drumloop.model.SoundEffect;
 
 @View(type = View.Type.TRACKING)
 abstract class FxButton {
-    private static final FxButtonStyle FX_BUTTON = new Styled_FxButton_0024_FxButtonStyle();
-
     private final SoundEffect _sound;
 
     @Nullable
@@ -42,11 +40,12 @@ abstract class FxButton {
 
     @Render
     ReactNode render() {
+        var fxButtonStyle = FxButton_Styled_FxButtonStyle.get();
         _sound.suspendUntilAudioLoaded();
         return button(
                 new BtnProps()
                         .data("sound", _sound.getName())
-                        .className(held() ? FX_BUTTON.held() : FX_BUTTON.style())
+                        .className(held() ? fxButtonStyle.held() : fxButtonStyle.style())
                         .onMouseDown(e -> playSound(e.isShiftKey()))
                         .onTouchStart(e -> playSound(e.isShiftKey()))
                         .onTouchEnd(e -> stopSound())

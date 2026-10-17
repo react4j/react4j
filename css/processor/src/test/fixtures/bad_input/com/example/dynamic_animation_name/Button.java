@@ -1,0 +1,12 @@
+package com.example.dynamic_animation_name;
+
+import org.jspecify.annotations.NullMarked;
+import react4j.css.Css;
+
+@NullMarked
+@Css("""
+    animation-name: var(--animation);
+    """)
+abstract class Button {
+    abstract String style();
+}

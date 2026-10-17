@@ -17,8 +17,6 @@ import react4j.todomvc.browser.HTMLInputElement;
 
 @View
 abstract class TodoEntry {
-    private static final EntryStyle ENTRY = new Styled_TodoEntry_0024_EntryStyle();
-
     private String _todoText = "";
 
     @Observable
@@ -55,7 +53,7 @@ abstract class TodoEntry {
     @Render
     ReactNode render() {
         return input(new InputProps()
-                .className(ENTRY.style())
+                .className(TodoEntry_Styled_EntryStyle.get().style())
                 .placeHolder("What needs to be done?")
                 .value(getTodoText())
                 .onKeyDown(this::handleNewTodoKeyDown)
