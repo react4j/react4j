@@ -1,5 +1,0 @@
-# T02 — Global selection
-
-Status: complete. Blocked by: T01. Coverage: R2, R3; AC2, AC3.
-
-Deliver @GlobalCss, @CssIncludes and ordered css_bundle global roots. Use the resource graph from T01 and keep resource marker types free of generated Java. Validate separate compilation, annotation/type/literal constraint matrices, global import grammar, missing/wrong-kind roots and dependencies, cycle diagnostics, order, unselected resources, map pairing, source maps and deduplication. Run focused processor/bundler/integration checks. Evidence: tools/update_goldens.sh css passed all 439 packaged processor cases, including formatted/unformatted global and diagnostic goldens. Focused compiler, metadata, bundler and separate javac/J2CL integration suites passed. Integration compares two bundles over one candidate graph; tests cover explicit roots, typed global dependencies, missing/wrong-kind roots, deduplication, dependency-first order, cycles, empty and unselected globals, header jars and source maps. Java/Bazel formatting checks passed.
