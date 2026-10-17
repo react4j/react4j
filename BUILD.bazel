@@ -15,6 +15,8 @@ java_format_check(
         "//css/processor/src/test/fixtures:inputs",
         "//css/processor/src/main/java/react4j/css/processor",
         "//css/processor/src/test/java/react4j/css/processor:compiler_tests",
+        "//css/processor/src/test/java/react4j/css/processor:names_tests",
+        "//css/processor/src/test/java/react4j/css/processor:text_block_tests",
         "//css/integration-tests/src/test/java/react4j/css/integration:integration_tests",
         "//css/integration-tests/src/test/java/react4j/css/integration:fixture_dependency",
         "//css/integration-tests/src/test/java/react4j/css/integration:fixture_bindings",
@@ -33,6 +35,7 @@ java_format_check(
         "//tools/browser:assets",
         "//tools/consumer:config",
         "//tools/verification:coverage_check",
+        "//tools/verification/src/test/java/react4j/verification:coverage_tests",
         "//doc-examples:java",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/audio:audio_java",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/core:core_java",
@@ -163,6 +166,8 @@ test_suite(
     name = "jvm_tests",
     tests = [
         "//core:tests",
+        # Keep CSS coverage independent of packaged processor/golden tests.
+        "//css/processor/src/test/java/react4j/css/processor:unit_tests",
         "//dom:tests",
         "//processor:all_tests",
     ],
@@ -174,10 +179,10 @@ test_suite(
         ":browser_tests",
         ":jvm_tests",
         "//css/integration-tests/src/test/java/react4j/css/integration:integration_tests",
-        "//css/processor/src/test/java/react4j/css/processor:compiler_tests",
         "//css/processor/src/test/java/react4j/css/processor:processor_tests",
         "//third_party/java:verify_config_sha256",
         "//tools/release:tests",
         "//tools/site:tests",
+        "//tools/verification/src/test/java/react4j/verification:coverage_tests",
     ],
 )

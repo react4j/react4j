@@ -37,3 +37,26 @@ java_testng(
         "//third_party/java:ph_css",
     ],
 )
+
+java_testng(
+    name = "names_tests",
+    srcs = ["NamesTest.java"],
+    test_class = "react4j.css.processor.NamesTest",
+    deps = ["//css/processor/src/main/java/react4j/css/processor"],
+)
+
+java_testng(
+    name = "text_block_tests",
+    srcs = ["TextBlockTest.java"],
+    test_class = "react4j.css.processor.TextBlockTest",
+    deps = ["//css/processor/src/main/java/react4j/css/processor"],
+)
+
+test_suite(
+    name = "unit_tests",
+    tests = [
+        ":compiler_tests",
+        ":names_tests",
+        ":text_block_tests",
+    ],
+)

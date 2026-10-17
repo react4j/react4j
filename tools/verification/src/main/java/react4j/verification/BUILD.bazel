@@ -7,5 +7,6 @@ java_binary(
     visibility = [
         "//:__pkg__",
         "//tools/verification:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
     ],
 )

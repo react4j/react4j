@@ -10,6 +10,7 @@ import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorAttribute;
 import com.helger.css.decl.CSSSelectorMemberNot;
 import com.helger.css.decl.CSSSelectorMemberPseudoIs;
+import com.helger.css.decl.CSSSelectorMemberPseudoWhere;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CSSSupportsConditionDeclaration;
@@ -268,12 +269,126 @@ public final class CssCompilerTest {
     }
 
     @Test
-    public void javaTextBlockMappingMatchesCompilerSemantics() {
-        String token =
-                "\"\"\"\r\n\t color: red;  \r\n\t content: \"\\141\\s\\\\a\";\\\r\n\t opacity: 0.5;\r\n\t \"\"\"";
-        var result = TextBlock.decode(token, 10, "color: red;\ncontent: \"a \\a\";opacity: 0.5;\n");
-        assertEquals(result.offsets()[result.value().indexOf("opacity")], 10 + token.indexOf("opacity"));
-        String unicode = "\"\"\"\n  color: r" + "\\" + "u0065d;\n  \"\"\"";
-        assertEquals(TextBlock.decode(unicode, 0, "color: red;\n").value(), "color: red;\n");
+    public void nestedConditionalsKeepTheirOrderAndOwnedSelectors() {
+        var sheet = parse(component(
+                "@media screen, print { @media (color) { &:hover { color: red; } }"
+                        + " @supports (display: grid) { &.success { display: grid; } } }"
+                        + " @supports (color: red) { @media (color) { &:focus { color: blue; } }"
+                        + " @supports (display: flex) { &:disabled { display: flex; } } }",
+                "style",
+                "success"));
+        assertEquals(sheet.getRuleCount(), 2);
+        var media = (CSSMediaRule) sheet.getAllRules().get(0);
+        assertEquals(media.getMediaQueryCount(), 2);
+        assertEquals(media.getRuleCount(), 2);
+        var innerMedia = (CSSMediaRule) media.getAllRules().get(0);
+        assertEquals(
+                selectorValues(
+                        innerMedia.getAllStyleRules().get(0).getAllSelectors().get(0)),
+                List.of("." + ROOT, ":hover"));
+        var innerSupports = (CSSSupportsRule) media.getAllRules().get(1);
+        assertEquals(
+                selectorValues(innerSupports
+                        .getAllStyleRules()
+                        .get(0)
+                        .getAllSelectors()
+                        .get(0)),
+                List.of("." + ROOT, "." + ROOT + "--success"));
+        var supports = (CSSSupportsRule) sheet.getAllRules().get(1);
+        assertEquals(supports.getRuleCount(), 2);
+        assertEquals(
+                selectorValues(((CSSMediaRule) supports.getAllRules().get(0))
+                        .getAllStyleRules()
+                        .get(0)
+                        .getAllSelectors()
+                        .get(0)),
+                List.of("." + ROOT, ":focus"));
+        assertEquals(
+                selectorValues(((CSSSupportsRule) supports.getAllRules().get(1))
+                        .getAllStyleRules()
+                        .get(0)
+                        .getAllSelectors()
+                        .get(0)),
+                List.of("." + ROOT, ":disabled"));
+    }
+
+    @Test
+    public void whereSelectorsNamespaceUnicodeModifiersAndPreserveAttributes() {
+        var sheet = parse(component("&:where(.π, [data-state='π']):focus-visible { color: red; }", "style", "π"));
+        var members = sheet.getAllStyleRules().get(0).getAllSelectors().get(0).getAllMembers();
+        assertEquals(members.size(), 3);
+        assertEquals(((CSSSelectorSimpleMember) members.get(0)).getValue(), "." + ROOT);
+        var alternatives = ((CSSSelectorMemberPseudoWhere) members.get(1)).getAllSelectors();
+        assertEquals(alternatives.size(), 2);
+        assertEquals(selectorValues(alternatives.get(0)), List.of("." + ROOT + "--_03c0_"));
+        var attribute =
+                (CSSSelectorAttribute) alternatives.get(1).getAllMembers().get(0);
+        assertEquals(attribute.getAttrName(), "data-state");
+        assertEquals(attribute.getAttrValue(), "'π'");
+        assertEquals(((CSSSelectorSimpleMember) members.get(2)).getValue(), ":focus-visible");
+    }
+
+    @Test
+    public void rejectsRootEscapesReservedModifiersAndUnanchoredSelectors() {
+        for (var css : List.of("} body { color: red; } .other {", "} @media screen {")) {
+            var error = expectThrows(CssCompiler.InvalidCss.class, () -> component(css, "style"));
+            assertEquals(error.getMessage(), "Component CSS must remain inside its implicit root");
+            assertEquals(error.offset(), 0);
+        }
+        for (var css : List.of(".success { color: red; }", "button { color: red; }")) {
+            var error = expectThrows(CssCompiler.InvalidCss.class, () -> component(css, "style", "success"));
+            assertEquals(error.getMessage(), "Component selectors must start with &");
+            assertEquals(error.offset(), 0);
+        }
+        var reserved = expectThrows(CssCompiler.InvalidCss.class, () -> component("&.style { color: red; }", "style"));
+        assertEquals(reserved.getMessage(), "Local selector .style has no matching modifier accessor");
+        assertEquals(reserved.offset(), 1);
+        assertEquals(component("/* no declarations */", "style"), "");
+    }
+
+    @Test
+    public void sharedFilesKeepInputOrderAndConditionalRules() {
+        var sheet = parse(CssCompiler.bundle(
+                List.of(
+                        "button { color: red; }",
+                        "@media screen { button { color: green; } } @supports (display: grid) { body { display: grid;"
+                                + " } }",
+                        "button { color: blue; }"),
+                List.of()));
+        var shared = sheet.getAllLayerRules().get(1);
+        assertEquals(shared.getRuleCount(), 4);
+        assertEquals(
+                value(Objects.requireNonNull(
+                        ((CSSStyleRule) shared.getAllRules().get(0)).getDeclarationOfPropertyName("color"))),
+                "red");
+        assertTrue(shared.getAllRules().get(1) instanceof CSSMediaRule);
+        assertTrue(shared.getAllRules().get(2) instanceof CSSSupportsRule);
+        assertEquals(
+                value(Objects.requireNonNull(
+                        ((CSSStyleRule) shared.getAllRules().get(3)).getDeclarationOfPropertyName("color"))),
+                "blue");
+    }
+
+    @Test
+    public void parserDiagnosticsRejectPropertyHacksAndIllegalCharacters() {
+        var hack = expectThrows(CssCompiler.InvalidCss.class, () -> component("*color: red;", "style"));
+        assertTrue(String.valueOf(hack.getMessage()).startsWith("Invalid CSS:"), hack.getMessage());
+        assertEquals(hack.offset(), 1);
+        String source = "color: red;\u0001";
+        var illegal = expectThrows(CssCompiler.InvalidCss.class, () -> component(source, "style"));
+        assertEquals(illegal.getMessage(), "Illegal CSS character");
+        assertEquals(illegal.offset(), source.length() - 1);
+    }
+
+    @Test
+    public void sharedSyntaxErrorsUseParserLocationsWithoutComponentPrefix() {
+        String source = "button { color red; }";
+        var error = expectThrows(CssCompiler.InvalidCss.class, () -> CssCompiler.bundle(List.of(source), List.of()));
+        assertTrue(String.valueOf(error.getMessage()).startsWith("Invalid CSS:"), error.getMessage());
+        assertEquals(error.offset(), source.indexOf(';'));
+        String incomplete = "button { color:";
+        var eof = expectThrows(CssCompiler.InvalidCss.class, () -> CssCompiler.bundle(List.of(incomplete), List.of()));
+        assertTrue(String.valueOf(eof.getMessage()).startsWith("Invalid CSS:"), eof.getMessage());
+        assertEquals(eof.offset(), incomplete.indexOf(':'));
     }
 }

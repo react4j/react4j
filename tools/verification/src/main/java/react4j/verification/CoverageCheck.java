@@ -16,7 +16,7 @@ public final class CoverageCheck {
     private CoverageCheck() {}
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 2) {
+        if (2 != args.length) {
             throw new IllegalArgumentException("Expected LCOV report and summary output");
         }
         final var output = Path.of(args[1]);
@@ -29,8 +29,12 @@ public final class CoverageCheck {
 
     static String summarize(String report) {
         final var modules = new LinkedHashMap<String, Counts>();
-        for (final var module : List.of("core", "dom", "processor")) {
+        for (final var module : List.of("core", "dom", "processor", "css/processor")) {
             modules.put(module, new Counts());
+        }
+        final var cssUnits = new LinkedHashMap<String, Counts>();
+        for (final var name : List.of("Names", "TextBlock", "CssCompiler")) {
+            cssUnits.put("css/processor/src/main/java/react4j/css/processor/" + name + ".java", new Counts());
         }
         final var sources = new HashSet<String>();
         for (final var record : report.split("end_of_record")) {
@@ -38,7 +42,7 @@ public final class CoverageCheck {
             for (final var line : record.split("\\R")) {
                 final var separator = line.indexOf(':');
                 if (separator > 0 && Set.of("SF", "LF", "LH", "BRF", "BRH").contains(line.substring(0, separator))) {
-                    if (fields.putIfAbsent(line.substring(0, separator), line.substring(separator + 1)) != null) {
+                    if (null != fields.putIfAbsent(line.substring(0, separator), line.substring(separator + 1))) {
                         throw new IllegalArgumentException("Duplicate coverage counter");
                     }
                 }
@@ -51,29 +55,46 @@ public final class CoverageCheck {
                         throw new IllegalArgumentException("Duplicate coverage source: " + source);
                     }
                     module.getValue().add(fields, source);
+                    final var unit = cssUnits.get(source);
+                    if (null != unit) {
+                        unit.add(fields, source);
+                    }
                 }
             }
         }
         final var result = new StringBuilder();
         for (final var entry : modules.entrySet()) {
+            appendSummary(result, entry.getKey(), entry.getValue());
+        }
+        for (final var entry : cssUnits.entrySet()) {
             final var counts = entry.getValue();
-            if (counts.files == 0 || counts.lines == 0 || counts.hits == 0) {
-                throw new IllegalArgumentException("Missing or empty owned JVM coverage for " + entry.getKey());
+            appendSummary(result, entry.getKey(), counts);
+            if (counts.hits * 100 < counts.lines * 95
+                    || counts.branchHits * 100 < counts.branches * 85
+                    || 0 == counts.branches) {
+                throw new IllegalArgumentException(
+                        "CSS unit coverage must reach 95% lines and 85% branches: " + entry.getKey());
             }
-            result.append(entry.getKey())
-                    .append(": ")
-                    .append(counts.files)
-                    .append(" sources, ")
-                    .append(counts.hits)
-                    .append('/')
-                    .append(counts.lines)
-                    .append(" lines, ")
-                    .append(counts.branchHits)
-                    .append('/')
-                    .append(counts.branches)
-                    .append(" branches\n");
         }
         return result.toString();
+    }
+
+    private static void appendSummary(StringBuilder result, String label, Counts counts) {
+        if (0 == counts.files || 0 == counts.lines || 0 == counts.hits) {
+            throw new IllegalArgumentException("Missing or empty owned JVM coverage for " + label);
+        }
+        result.append(label)
+                .append(": ")
+                .append(counts.files)
+                .append(" sources, ")
+                .append(counts.hits)
+                .append('/')
+                .append(counts.lines)
+                .append(" lines, ")
+                .append(counts.branchHits)
+                .append('/')
+                .append(counts.branches)
+                .append(" branches\n");
     }
 
     private static final class Counts {
@@ -100,7 +121,7 @@ public final class CoverageCheck {
 
         private static long counter(Map<String, String> fields, String key, String source) {
             final var value = fields.get(key);
-            if (value == null) {
+            if (null == value) {
                 throw new IllegalArgumentException("Missing " + key + " for " + source);
             }
             return Long.parseLong(value);

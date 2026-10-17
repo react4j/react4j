@@ -4,8 +4,8 @@ test_suite(
     name = "tests",
     tests = [
         "//css/integration-tests/src/test/java/react4j/css/integration:integration_tests",
-        "//css/processor/src/test/java/react4j/css/processor:compiler_tests",
         "//css/processor/src/test/java/react4j/css/processor:processor_tests",
+        "//css/processor/src/test/java/react4j/css/processor:unit_tests",
     ],
     visibility = ["//visibility:public"],
 )
