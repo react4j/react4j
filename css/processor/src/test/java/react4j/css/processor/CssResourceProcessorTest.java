@@ -442,6 +442,20 @@ public final class CssResourceProcessorTest {
         assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
     }
 
+    @Test
+    public void authoredTypesCannotBeOverwrittenByGeneratedBindings() throws Exception {
+        var result = CssProcessorTest.compile(Map.of(
+                "Button.java",
+                consumer("", "color: red;"),
+                "Styled_Button.java",
+                "package demo; final class Styled_Button {}"));
+        assertFalse(result.success());
+        assertTrue(
+                result.diagnostics().contains("Attempt to recreate a file for type demo.Styled_Button"),
+                result.diagnostics());
+        assertTrue(result.files().isEmpty(), result.files().keySet().toString());
+    }
+
     private static String global(String name, String annotations, String css) {
         return IMPORTS + "@NullMarked\n" + annotations + "\n@GlobalCss(\"\"\"\n" + css
                 + "\n\"\"\")\npublic final class " + name + " {}";

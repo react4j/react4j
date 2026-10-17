@@ -2,10 +2,21 @@ load("//third_party/java:rules.bzl", "FORMATTER_JVM_FLAGS", "java_testng")
 
 package(default_visibility = ["//visibility:public"])
 
+_PROCESSOR_JVM_FLAGS = FORMATTER_JVM_FLAGS + [
+    "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED",
+    "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+    "--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+]
+
 java_testng(
     name = "processor_tests",
     size = "medium",
     srcs = [
+        "CssProcessorArtifactTest.java",
         "CssProcessorTest.java",
         "CssResourceProcessorTest.java",
     ],
@@ -14,22 +25,39 @@ java_testng(
         "//css/processor/src/test/fixtures",
         "//third_party/java:strict_checker_options",
     ],
-    jvm_flags = FORMATTER_JVM_FLAGS + [
-        "-Dcss.processor.jar=$(rootpath //css/processor:processor_jar)",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
-        "--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
-        "--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+    jvm_flags = _PROCESSOR_JVM_FLAGS + ["-Dcss.processor.jar=$(rootpath //css/processor:processor_jar)"],
+    test_classes = [
+        "react4j.css.processor.CssProcessorArtifactTest",
+        "react4j.css.processor.CssProcessorTest",
+        "react4j.css.processor.CssResourceProcessorTest",
     ],
+    deps = [
+        "//css/core",
+        "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:com_google_javascript_closure_compiler_unshaded",
+    ],
+)
+
+java_testng(
+    name = "implementation_tests",
+    size = "medium",
+    srcs = [
+        "CssProcessorTest.java",
+        "CssResourceProcessorTest.java",
+    ],
+    data = [
+        "//css/processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
+    jvm_flags = _PROCESSOR_JVM_FLAGS + ["-Dcss.processor.implementation=true"],
     test_classes = [
         "react4j.css.processor.CssProcessorTest",
         "react4j.css.processor.CssResourceProcessorTest",
     ],
     deps = [
         "//css/core",
+        "//css/processor/src/main/java/react4j/css/processor",
         "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
         "@maven//:com_google_code_gson_gson",
         "@maven//:com_google_javascript_closure_compiler_unshaded",

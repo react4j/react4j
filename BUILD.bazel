@@ -171,10 +171,10 @@ test_suite(
     name = "jvm_tests",
     tests = [
         "//core:tests",
-        # Keep CSS coverage independent of packaged processor/golden tests.
-        "//css/processor/src/test/java/react4j/css/processor:unit_tests",
-        "//css/internal/src/test/java/react4j/css/internal:tests",
         "//css/bundler/src/test/java/react4j/css/bundler:tests",
+        "//css/internal/src/test/java/react4j/css/internal:tests",
+        "//css/processor/src/test/java/react4j/css/processor:implementation_tests",
+        "//css/processor/src/test/java/react4j/css/processor:unit_tests",
         "//dom:tests",
         "//processor:all_tests",
     ],

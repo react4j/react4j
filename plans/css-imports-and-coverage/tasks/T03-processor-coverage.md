@@ -1,7 +1,7 @@
 # T03 — Measured processor coverage
 
-Status: pending. Blocked by: T02. Coverage: R4; AC4.
+Status: complete. Blocked by: T02. Coverage: R4; AC4.
 
 Fix the instrumented implementation test boundary without replacing assembled-jar contract coverage. Exercise processor/generator/descriptor error and valid paths through real javac and generation, cover remaining meaningful branches, and verify CSS processor/internal/bundler roots and class floors at 95/85. Keep actual packaged tests as distribution coverage. Run narrow measured suites then root checks.
 
-Evidence: pending.
+Evidence: focused bazel coverage -c dbg of implementation_tests, unit_tests, internal and bundler passed all seven targets. The configured 95/85 rules and class floors passed CoverageCheck using the same CSS rules selected unchanged from coverage.json: processor 779/785 lines (99.24%), 579/597 branches (96.98%); internal 217/222 (97.75%), 123/132 (93.18%); bundler 216/220 (98.18%), 130/139 (93.53%). Actual generator coverage is 57/57 lines and 30/30 branches; processor is 248/249 and 177/183. Artifact checks were split into a separate class after coverage exposed offline-instrumented standalone jars lacking the JaCoCo runtime; implementation tests now depend only on the instrumented source implementation, while packaged tests retain their isolated processor path. Added a real javac generated-type collision failure case. bazel test //css:tests passed all nine targets; Java format and buildifier checks pass. Focused report is reports/coverage/css.lcov; raw full JVM evidence remains separate.
