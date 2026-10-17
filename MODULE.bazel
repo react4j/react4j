@@ -32,14 +32,11 @@ single_version_override(
 bazel_dep(name = "buildifier_prebuilt", version = "10.0.1", dev_dependency = True)
 bazel_dep(name = "ahab", version = "0.4.0", dev_dependency = True)
 
-bazel_dep(name = "rules_palantir_java_format", version = "0.1.1")
-archive_override(
+bazel_dep(name = "rules_palantir_java_format")
+git_override(
     module_name = "rules_palantir_java_format",
-    integrity = "sha256-4h/h0cVmPQ/7jkXnvW69rmABbfXOOzoXuBh3gMJDMk8=",
-    patch_strip = 1,
-    patches = ["//third_party/bazel/patches:rules_palantir_java_format_filegroups.patch"],
-    strip_prefix = "rules_palantir_java_format-0.1.1",
-    urls = ["https://github.com/realityforge/rules_palantir_java_format/releases/download/v0.1.1/rules_palantir_java_format-v0.1.1.tar.gz"],
+    commit = "e480c70bd6fe1ac12424756a6b3a22e30b93a6f0",
+    remote = "https://github.com/realityforge/rules_palantir_java_format.git",
 )
 
 bazel_dep(name = "j2cl", version = "20260918")
