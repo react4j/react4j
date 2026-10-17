@@ -26,7 +26,7 @@ abstract class Application {
                         new HtmlProps().className(Styles.PANEL.style()),
                         h1("Heart Rate Monitor"),
                         img(new ImgProps()
-                                .className(Styles.HEART.style(), heartRate > 0 ? "beating" : null)
+                                .className(heartRate > 0 ? Styles.HEART.beating() : Styles.HEART.style())
                                 .src("img/heart.svg")),
                         0 != heartRate ? ReactNode.of(heartRate) : null,
                         button(new BtnProps().disabled(connected).onClick(e -> _heartRateMonitor.connect()), "Start"),

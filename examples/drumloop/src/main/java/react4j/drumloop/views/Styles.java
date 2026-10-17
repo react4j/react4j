@@ -225,6 +225,15 @@ final class Styles {
         &.odd {
           background: #25CCF7;
         }
+
+        @keyframes doubled {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+
+        &.doubled {
+          animation: doubled 0.5s linear infinite;
+        }
         """)
     abstract static class Step {
         abstract String style();
@@ -232,5 +241,7 @@ final class Styles {
         abstract String on();
 
         abstract String odd();
+
+        abstract String doubled();
     }
 }

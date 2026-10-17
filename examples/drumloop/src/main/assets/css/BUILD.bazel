@@ -1,4 +1,4 @@
 exports_files(
-    ["font-and-animation.css"],
+    ["font.css"],
     visibility = ["//examples/drumloop:__pkg__"],
 )

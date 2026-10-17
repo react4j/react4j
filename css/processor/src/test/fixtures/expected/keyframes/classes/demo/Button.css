@@ -1,0 +1,2 @@
+@keyframes jcss-demo-Button--keyframes-pulse{from,50%{opacity:0.5;}to{opacity:1;}}@keyframes jcss-demo-Button--keyframes-linear{0%{transform:scale(1);}100%{transform:scale(0.9);}}.jcss-demo-Button{animation-name:jcss-demo-Button--keyframes-pulse;animation-duration:var(--duration);}.jcss-demo-Button.jcss-demo-Button--active{animation:jcss-demo-Button--keyframes-pulse 1s ease infinite,2s linear jcss-demo-Button--keyframes-linear;}@media (prefers-reduced-motion:reduce){.jcss-demo-Button.jcss-demo-Button--active{animation:none;}}
+/*# sourceMappingURL=Button.css.map */

@@ -12,9 +12,31 @@ The processor generates a package-access subclass, such as `Styled_SaveButton`, 
 
 ## Supported CSS
 
-Component styles support root declarations, nested selectors on the same element, and the functional pseudo-classes `:is`, `:not` and `:where`. `@media` and `@supports` blocks must contain explicit nested selectors rather than bare declarations. State pseudo-classes such as `:focus-visible` need no accessor.
+Component styles support root declarations, nested selectors on the same element, and the functional pseudo-classes `:is`, `:not` and `:where`. `@media` and `@supports` blocks must contain explicit nested selectors rather than bare declarations. State pseudo-classes such as `:focus-visible` need no accessor. Component styles also support owner-local `@keyframes`.
 
-Descendant and sibling selectors, global escapes, escaped selector identifiers, `:has`, keyframe bindings, `@container` and other at-rules are unsupported. Java constants, concatenation and interpolation cannot replace the literal text block. Validation checks CSS syntax and selector/accessor agreement; it does not validate property semantics or transform CSS for browser compatibility.
+Descendant and sibling selectors, global escapes, escaped selector identifiers, `:has`, `@container` and other at-rules are unsupported. Java constants, concatenation and interpolation cannot replace the literal text block. Validation checks CSS syntax and selector/accessor agreement; it does not validate property semantics or transform CSS for browser compatibility.
+
+Declare owner-local keyframes at the outer level of the text block, and reference their local names in `animation` or `animation-name`:
+
+```java
+@Css("""
+    @keyframes beat {
+      from { transform: scale(1); }
+      to { transform: scale(0.9); }
+    }
+    &.beating {
+      animation: beat 0.8s ease-in-out infinite alternate;
+    }
+    """)
+abstract class HeartStyles {
+    abstract String style();
+    abstract String beating();
+}
+```
+
+Keyframe names derive from the Java owner and local name, for example `jcss-com-biz-ui-HeartStyles--keyframes-beat`. They remain stable when the animation body changes. The processor rewrites parsed animation references, including comma-separated lists and shorthand, and reports duplicate definitions or unknown local names. Shorthand resolves keywords using CSS Animations Level 1 precedence. No Java accessor is needed for an animation name.
+
+Definitions must use unprefixed `@keyframes` and unescaped, unquoted identifiers. Animation references must use unprefixed properties. Definitions inside selectors or conditional rules, cross-owner references and animation bindings inside keyframes are unsupported. Animation names must be static; for dynamic timing values, use `animation-name: beat` with longhands such as `animation-duration: var(--duration)`. Functions in shorthand are limited to `steps()`, `cubic-bezier()` and `linear()` timing functions. Shared stylesheets cannot define keyframes.
 
 Shared stylesheets support style rules, `@media` and `@supports`. Bundles place shared styles before component styles using the `shared` and `components` cascade layers. `!important` is rejected because it reverses layer precedence. Processed CSS sources belong in `src/main/css`; assets copied unchanged belong in `src/main/assets`.
 
@@ -48,7 +70,7 @@ css_bundle(
 )
 ```
 
-Load the generated CSS with the application. The CSS references its source map, which uses indexed source-map v3 sections to preserve component mappings back to Java and shared mappings back to CSS. Java mappings identify selectors, declarations and conditional-rule headers; synthetic layer wrappers are unmapped. Maps include original source content. Component CSS is emitted compactly; shared CSS retains its formatting with normalized line endings. Collection includes all styles in reachable build targets.
+Load the generated CSS with the application. The CSS references its source map, which uses indexed source-map v3 sections to preserve component mappings back to Java and shared mappings back to CSS. Java mappings identify selectors, declarations, conditional-rule headers and keyframe blocks; synthetic layer wrappers are unmapped. Maps include original source content. Component CSS is emitted compactly; shared CSS retains its formatting with normalized line endings. Collection includes all styles in reachable build targets.
 
 The [example Java build](examples/save-button/src/main/java/react4j/css/example/BUILD.bazel) shows processor wiring, and its [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) assembles CSS from the Closure binary. The checked `java_j2cl_library` macro runs the same plugin during JVM checks and J2CL compilation without feeding generated implementations back through the processor.
 

@@ -20,7 +20,6 @@ css_bundle(
 browser_application(
     name = "heart-rate-monitor",
     assets = {
-        "//examples/heart-rate-monitor/src/main/assets/css:animation.css": "css/animation.css",
         ":index.css": "css/index.css",
         ":index.css.map": "css/index.css.map",
         "public/img/heart.svg": "img/heart.svg",

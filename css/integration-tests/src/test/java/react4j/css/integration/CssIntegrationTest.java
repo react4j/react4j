@@ -5,6 +5,7 @@ import static org.testng.Assert.*;
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
+import com.helger.css.decl.CSSKeyframesRule;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.reader.CSSReader;
@@ -13,6 +14,7 @@ import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.testng.annotations.Test;
 
@@ -39,12 +41,28 @@ public final class CssIntegrationTest {
         assertEquals(layers.get(0).getRuleCount(), 0);
         var components = layers.get(1);
         assertEquals(components.getAllSelectors(), List.of("components"));
-        assertEquals(components.getRuleCount(), 4);
+        assertEquals(components.getRuleCount(), 7);
         var rules = components.getAllStyleRules();
-        assertEquals(rules.size(), 4);
+        assertEquals(rules.size(), 5);
         assertStyle(rules.get(0), List.of("." + root), "color", "white");
         assertStyle(rules.get(1), List.of("." + root, "." + root + "--success"), "background-color", "green");
         assertStyle(rules.get(2), List.of("." + root, "." + root + "--cancel"), "background-color", "red");
+        assertStyle(rules.get(3), List.of("." + root, ":hover"), "animation-name", root + "--keyframes-pulse");
+        String peer = "jcss-react4j-css-integration-PeerStyles--keyframes-pulse";
+        assertEquals(
+                components.getAllRules().stream()
+                        .filter(CSSKeyframesRule.class::isInstance)
+                        .map(rule -> ((CSSKeyframesRule) rule).getAnimationName())
+                        .toList(),
+                List.of(root + "--keyframes-pulse", peer));
+        assertEquals(
+                ((CSSExpressionMemberTermSimple)
+                                Objects.requireNonNull(rules.get(4).getDeclarationOfPropertyName("animation-name"))
+                                        .getExpression()
+                                        .getAllMembers()
+                                        .get(0))
+                        .getValue(),
+                peer);
     }
 
     @Test
@@ -60,22 +78,31 @@ public final class CssIntegrationTest {
         assertEquals(indexed.getAsJsonArray("sections").size(), 2);
         var consumer = new SourceMapConsumerV3();
         consumer.parse(map);
-        int index = css.indexOf("background-color:green");
-        assertTrue(index >= 0);
-        int line = (int) css.substring(0, index).chars().filter(c -> '\n' == c).count() + 1;
-        int column = index - css.lastIndexOf('\n', index - 1);
-        var location = Objects.requireNonNull(consumer.getMappingForLine(line, column));
-        assertEquals(location.getOriginalFile(), "react4j/css/integration/ButtonStyles.java");
         String source = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.source"))));
-        int original = source.indexOf("background-color: green");
-        assertEquals(
-                location.getLineNumber(),
-                (int) source.substring(0, original)
-                                .chars()
-                                .filter(c -> '\n' == c)
-                                .count()
-                        + 1);
-        assertEquals(location.getColumnPosition(), original - source.lastIndexOf('\n', original - 1));
+        for (var pair : Map.of(
+                        "background-color:green", "background-color: green",
+                        "@keyframes jcss-react4j-css-integration-ButtonStyles--keyframes-pulse", "@keyframes pulse",
+                        "opacity:0.5", "opacity: 0.5",
+                        "animation-name:jcss-react4j-css-integration-ButtonStyles--keyframes-pulse",
+                                "animation-name: pulse")
+                .entrySet()) {
+            int index = css.indexOf(pair.getKey());
+            assertTrue(index >= 0, css);
+            int line =
+                    (int) css.substring(0, index).chars().filter(c -> '\n' == c).count() + 1;
+            int column = index - css.lastIndexOf('\n', index - 1);
+            var location = Objects.requireNonNull(consumer.getMappingForLine(line, column));
+            assertEquals(location.getOriginalFile(), "react4j/css/integration/ButtonStyles.java");
+            int original = source.indexOf(pair.getValue());
+            assertEquals(
+                    location.getLineNumber(),
+                    (int) source.substring(0, original)
+                                    .chars()
+                                    .filter(c -> '\n' == c)
+                                    .count()
+                            + 1);
+            assertEquals(location.getColumnPosition(), original - source.lastIndexOf('\n', original - 1));
+        }
         var componentMap =
                 indexed.getAsJsonArray("sections").get(0).getAsJsonObject().getAsJsonObject("map");
         assertEquals(componentMap.getAsJsonArray("sourcesContent").get(0).getAsString(), source);

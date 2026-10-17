@@ -23,7 +23,7 @@ css_bundle(
 browser_application(
     name = "drumloop",
     assets = {
-        "//examples/drumloop/src/main/assets/css:font-and-animation.css": "css/font-and-animation.css",
+        "//examples/drumloop/src/main/assets/css:font.css": "css/font.css",
         ":index.css": "css/index.css",
         ":index.css.map": "css/index.css.map",
         "public/fonts/OFL.txt": "fonts/OFL.txt",

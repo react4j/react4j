@@ -3,6 +3,9 @@ package react4j.css.processor;
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.AbstractHasTopLevelRules;
 import com.helger.css.decl.CSSDeclaration;
+import com.helger.css.decl.CSSExpressionMemberFunction;
+import com.helger.css.decl.CSSExpressionMemberTermSimple;
+import com.helger.css.decl.CSSKeyframesRule;
 import com.helger.css.decl.CSSMediaRule;
 import com.helger.css.decl.CSSNestedDeclarations;
 import com.helger.css.decl.CSSSelector;
@@ -13,10 +16,13 @@ import com.helger.css.decl.CSSSelectorMemberPseudoWhere;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CSSSupportsRule;
+import com.helger.css.decl.ECSSExpressionOperator;
 import com.helger.css.writer.CSSWriterSettings;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
@@ -25,11 +31,14 @@ import react4j.css.internal.SourceMap;
 
 /** In-process CSS parsing, ownership checks and static output. */
 final class CssCompiler {
+    private static final String NUMBER = "[+-]?(?:[0-9]*\\.[0-9]+|[0-9]+)(?:[eE][+-]?[0-9]+)?";
+    private static final Set<String> CSS_WIDE = Set.of("initial", "inherit", "unset", "revert", "revert-layer");
     private final CssSyntax syntax;
     private final String root;
     private final List<String> accessors;
     private final IntFunction<SourceMap.Location> locations;
     private final Set<String> found = new HashSet<>();
+    private final Map<String, CSSKeyframesRule> keyframes = new LinkedHashMap<>();
     private final CSSWriterSettings compact = new CSSWriterSettings(true);
     private final SourceMap.Writer output = new SourceMap.Writer();
 
@@ -46,10 +55,27 @@ final class CssCompiler {
         String prefix = "." + root + " {\n";
         var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, accessors, locations);
         var sheet = compiler.syntax.parse(true);
-        if (1 != sheet.getRuleCount() || !(sheet.getRuleAtIndex(0) instanceof CSSStyleRule style)) {
-            throw new CssSyntax.InvalidCss("Component CSS must remain inside its implicit root", 0);
+        for (var rule : sheet.getAllRules()) {
+            if (rule instanceof CSSKeyframesRule frames) {
+                String name = frames.getAnimationName();
+                if (!"@keyframes".equalsIgnoreCase(frames.getDeclaration())) {
+                    throw compiler.syntax.invalid("Only unprefixed @keyframes definitions are supported", frames);
+                }
+                compiler.checkAnimationName(name, frames);
+                if ("none".equalsIgnoreCase(name)
+                        || "default".equalsIgnoreCase(name)
+                        || CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))) {
+                    throw compiler.syntax.invalid("Reserved keyframe name: " + name, frames);
+                }
+                if (null != compiler.keyframes.putIfAbsent(name, frames)) {
+                    throw compiler.syntax.invalid("Duplicate local keyframe name: " + name, frames);
+                }
+            }
         }
-        compiler.style(style, "." + root, true);
+        for (var frames : compiler.keyframes.values()) {
+            compiler.keyframes(frames);
+        }
+        compiler.style(sheet.getAllStyleRules().get(0), "." + root, true);
         for (var name : accessors) {
             if (!"style".equals(name) && !compiler.found.contains(name)) {
                 throw new CssSyntax.InvalidCss("Accessor " + name + "() has no matching local selector", 0);
@@ -116,13 +142,135 @@ final class CssCompiler {
         }
         output.append(selector + "{", location(rule));
         for (var declaration : declarations) {
-            if (Set.of("animation", "animation-name")
-                    .contains(declaration.getProperty().toLowerCase(Locale.ROOT))) {
-                throw syntax.invalid("Component keyframe bindings are outside this proof", declaration);
-            }
+            animation(declaration);
             output.append(declaration.getAsCSSString(compact, 0) + ";", location(declaration));
         }
         output.append("}");
+    }
+
+    private String animationName(String name) {
+        return root + "--keyframes-" + Names.encode(name);
+    }
+
+    private void checkAnimationName(String name, ICSSSourceLocationAware node) {
+        if (name.contains("\\") || name.startsWith("\"") || name.startsWith("'")) {
+            throw syntax.invalid("Animation names must be unescaped, unquoted identifiers", node);
+        }
+    }
+
+    private void keyframes(CSSKeyframesRule rule) {
+        output.append("@keyframes " + animationName(rule.getAnimationName()) + "{", location(rule));
+        for (var block : rule.getAllBlocks()) {
+            for (var selector : block.getAllKeyframesSelectors()) {
+                if (selector.endsWith("%") && Double.parseDouble(selector.substring(0, selector.length() - 1)) > 100) {
+                    throw syntax.invalid("Keyframe percentages must be from 0% to 100%", block);
+                }
+            }
+            output.append(String.join(",", block.getAllKeyframesSelectors()) + "{", location(block));
+            for (var declaration : block.getAllDeclarations()) {
+                if (animationBinding(declaration)) {
+                    throw syntax.invalid("Animation bindings are not allowed inside keyframes", declaration);
+                }
+                output.append(declaration.getAsCSSString(compact, 0) + ";", location(declaration));
+            }
+            output.append("}");
+        }
+        output.append("}");
+    }
+
+    private boolean animationBinding(CSSDeclaration declaration) {
+        String property = declaration.getProperty().toLowerCase(Locale.ROOT);
+        if (property.startsWith("-")
+                && !property.startsWith("--")
+                && (property.endsWith("-animation") || property.endsWith("-animation-name"))) {
+            throw syntax.invalid("Use unprefixed animation or animation-name for local keyframes", declaration);
+        }
+        return "animation".equals(property) || "animation-name".equals(property);
+    }
+
+    private void animation(CSSDeclaration declaration) {
+        if (!animationBinding(declaration)) {
+            return;
+        }
+        boolean shorthand = "animation".equalsIgnoreCase(declaration.getProperty());
+        var members = declaration.getExpression().getAllMembers();
+        if (1 == members.size()
+                && members.get(0) instanceof CSSExpressionMemberTermSimple simple
+                && CSS_WIDE.contains(simple.getValue().toLowerCase(Locale.ROOT))) {
+            return;
+        }
+        var used = new HashSet<String>();
+        boolean named = false;
+        for (var member : members) {
+            if (ECSSExpressionOperator.COMMA == member) {
+                used.clear();
+                named = false;
+                continue;
+            }
+            if (shorthand && member instanceof CSSExpressionMemberFunction function) {
+                if (Set.of("steps", "cubic-bezier", "linear")
+                                .contains(function.getFunctionName().toLowerCase(Locale.ROOT))
+                        && used.add("timing")) {
+                    continue;
+                }
+                throw syntax.invalid(
+                        "Unsupported animation shorthand function; use animation-name and separate longhands for"
+                                + " dynamic values",
+                        declaration);
+            }
+            if (!(member instanceof CSSExpressionMemberTermSimple simple)) {
+                throw syntax.invalid("Animation names must be static identifiers", declaration);
+            }
+            String name = simple.getValue();
+            checkAnimationName(name, simple);
+            String lower = name.toLowerCase(Locale.ROOT);
+            if (CSS_WIDE.contains(lower)) {
+                throw syntax.invalid("CSS-wide animation keywords must stand alone", simple);
+            }
+            if (shorthand) {
+                String category =
+                        switch (lower) {
+                            case "ease", "linear", "ease-in", "ease-out", "ease-in-out", "step-start", "step-end" ->
+                                "timing";
+                            case "infinite" -> "iteration";
+                            case "normal", "reverse", "alternate", "alternate-reverse" -> "direction";
+                            case "none", "forwards", "backwards", "both" -> "fill";
+                            case "running", "paused" -> "play";
+                            default -> "";
+                        };
+                if (!category.isEmpty() && used.add(category)) {
+                    continue;
+                }
+                if (lower.matches(NUMBER + "(?:ms|s)")) {
+                    if (used.add("duration")) {
+                        if (Double.parseDouble(lower.substring(
+                                        0, lower.endsWith("ms") ? lower.length() - 2 : lower.length() - 1))
+                                < 0) {
+                            throw syntax.invalid("Animation duration must not be negative", simple);
+                        }
+                    } else if (!used.add("delay")) {
+                        throw syntax.invalid("Animation shorthand accepts at most two times", simple);
+                    }
+                    continue;
+                }
+                if (lower.matches(NUMBER)) {
+                    if (!used.add("iteration") || Double.parseDouble(lower) < 0) {
+                        throw syntax.invalid("Invalid animation iteration count", simple);
+                    }
+                    continue;
+                }
+            }
+            if (named) {
+                throw syntax.invalid("Each animation accepts one name", simple);
+            }
+            if (!"none".equals(lower)) {
+                if (!keyframes.containsKey(name)) {
+                    throw syntax.invalid("Unknown local animation name: " + name, simple);
+                }
+                simple.setValue(animationName(name));
+            }
+            named = true;
+        }
     }
 
     private String selector(CSSSelector selector, String parent, boolean nested) {

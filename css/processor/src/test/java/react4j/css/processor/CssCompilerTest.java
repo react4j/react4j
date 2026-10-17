@@ -4,6 +4,7 @@ import static org.testng.Assert.*;
 
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
+import com.helger.css.decl.CSSKeyframesRule;
 import com.helger.css.decl.CSSMediaRule;
 import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorAttribute;
@@ -20,9 +21,11 @@ import com.helger.css.decl.ECSSSupportsConditionOperator;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
+import com.helger.css.writer.CSSWriterSettings;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
@@ -179,7 +182,6 @@ public final class CssCompilerTest {
                         Map.entry("&:is(body) { color: red; }", "same owned element"),
                         Map.entry("&.\\73 uccess { color: red; }", "Escaped selector"),
                         Map.entry("color: red !important;", "precedence"),
-                        Map.entry("@keyframes pulse { to { opacity: 0; } }", "rule"),
                         Map.entry("@font-face { font-family: test; src: url(test.woff); }", "rule"),
                         Map.entry(
                                 "@container (width > 1px) { &.success { color: red; } }", "Unsupported component rule"),
@@ -195,7 +197,9 @@ public final class CssCompilerTest {
                     entry.getKey() + ": " + error.getMessage());
         }
         var animation = expectThrows(CssSyntax.InvalidCss.class, () -> component("ANIMATION: pulse 1s;", "style"));
-        assertTrue(String.valueOf(animation.getMessage()).contains("keyframe bindings"), animation.getMessage());
+        assertTrue(
+                String.valueOf(animation.getMessage()).contains("Unknown local animation name"),
+                animation.getMessage());
     }
 
     @Test
@@ -294,5 +298,212 @@ public final class CssCompilerTest {
         var illegal = expectThrows(CssSyntax.InvalidCss.class, () -> component(source, "style"));
         assertEquals(illegal.getMessage(), "Illegal CSS character");
         assertEquals(illegal.offset(), source.length() - 1);
+    }
+
+    @Test
+    public void localKeyframesAreHoistedNamespacedAndKeepTheirBlocks() {
+        String source = "width: 10em; &.beating { animation: beat 800ms ease-in-out infinite alternate; }"
+                + " @keyframes beat { from, 50% { transform: scale(1); } to { transform: scale(0.9); } }";
+        var sheet = parse(component(source, "style", "beating"));
+        assertEquals(sheet.getRuleCount(), 3);
+        var frames = (CSSKeyframesRule) sheet.getAllRules().get(0);
+        assertEquals(frames.getAnimationName(), ROOT + "--keyframes-beat");
+        assertEquals(frames.getBlockCount(), 2);
+        assertEquals(frames.getAllBlocks().get(0).getAllKeyframesSelectors(), List.of("from", "50%"));
+        assertEquals(frames.getAllBlocks().get(1).getAllKeyframesSelectors(), List.of("to"));
+        assertEquals(frames.getAllBlocks().get(0).getAllDeclarations().get(0).getProperty(), "transform");
+        assertEquals(
+                Objects.requireNonNull(sheet.getAllStyleRules().get(1).getDeclarationOfPropertyName("animation"))
+                        .getExpression()
+                        .getAllSimpleMembers()
+                        .get(0)
+                        .getValue(),
+                ROOT + "--keyframes-beat");
+        var other = parse(CssCompiler.component(
+                        source,
+                        "jcss-demo-Other",
+                        List.of("style", "beating"),
+                        offset -> new SourceMap.Location("Other.java", source, 0, offset))
+                .css());
+        assertEquals(
+                ((CSSKeyframesRule) other.getAllRules().get(0)).getAnimationName(), "jcss-demo-Other--keyframes-beat");
+        var edited = parse(component(source.replace("scale(0.9)", "scale(0.8)"), "style", "beating"));
+        assertEquals(((CSSKeyframesRule) edited.getAllRules().get(0)).getAnimationName(), frames.getAnimationName());
+    }
+
+    @Test
+    public void animationReferencesResolveInsideConditionalAndNestedRules() {
+        var sheet = parse(component(
+                "@keyframes pulse {}"
+                        + " @media (color) { &:hover { animation: pulse 1s; } }"
+                        + " @supports (display: grid) { &:focus { animation-name: pulse; } }",
+                "style"));
+        var media = (CSSMediaRule) sheet.getAllRules().get(1);
+        var supports = (CSSSupportsRule) sheet.getAllRules().get(2);
+        for (var conditional : List.of(media, supports)) {
+            var declaration =
+                    conditional.getAllStyleRules().get(0).getAllDeclarations().get(0);
+            assertEquals(
+                    declaration.getExpression().getAllSimpleMembers().get(0).getValue(), ROOT + "--keyframes-pulse");
+        }
+    }
+
+    @Test
+    public void animationListsAndLonghandsResolveOnlyNames() {
+        var sheet = parse(component(
+                "@keyframes pulse {} @keyframes glow {} animation-name: pulse, none, glow; animation-duration:"
+                        + " var(--duration); content: 'pulse'; --animation: pulse; -webkit-transform: scale(1);",
+                "style"));
+        var declarations = sheet.getAllStyleRules().get(0);
+        assertEquals(
+                Objects.requireNonNull(declarations.getDeclarationOfPropertyName("animation-name"))
+                        .getExpression()
+                        .getAllSimpleMembers()
+                        .stream()
+                        .map(CSSExpressionMemberTermSimple::getValue)
+                        .toList(),
+                List.of(ROOT + "--keyframes-pulse", "none", ROOT + "--keyframes-glow"));
+        assertEquals(value(Objects.requireNonNull(declarations.getDeclarationOfPropertyName("content"))), "'pulse'");
+        assertEquals(value(Objects.requireNonNull(declarations.getDeclarationOfPropertyName("--animation"))), "pulse");
+        assertEquals(
+                Objects.requireNonNull(declarations.getDeclarationOfPropertyName("animation-duration"))
+                        .getExpression()
+                        .getAsCSSString(new CSSWriterSettings(true), 0),
+                "var(--duration)");
+        for (var property : List.of("animation", "animation-name", "ANIMATION-NAME")) {
+            for (var reset : List.of("initial", "INHERIT", "unset", "revert", "revert-layer", "none")) {
+                var resetSheet = parse(component(property + ": " + reset + ";", "style"));
+                assertEquals(
+                        value(resetSheet
+                                .getAllStyleRules()
+                                .get(0)
+                                .getAllDeclarations()
+                                .get(0)),
+                        reset);
+            }
+        }
+        var unicode = parse(component("@keyframes π-Beat {} animation-name: π-Beat;", "style"));
+        assertEquals(
+                ((CSSKeyframesRule) unicode.getAllRules().get(0)).getAnimationName(),
+                ROOT + "--keyframes-_03c0__002d_Beat");
+        var uppercase = parse(component(
+                "@KEYFRAMES Pulse { FROM { opacity: 0; } TO { opacity: 1; } } ANIMATION: Pulse 1S EASE;", "style"));
+        assertEquals(
+                ((CSSKeyframesRule) uppercase.getAllRules().get(0)).getAnimationName(), ROOT + "--keyframes-Pulse");
+        var distinct =
+                parse(component("@keyframes pulse {} @keyframes Pulse {} animation-name: pulse, Pulse;", "style"));
+        assertEquals(distinct.getAllRules().size(), 3);
+    }
+
+    @Test
+    public void shorthandSeparatesNamesFromTimingAndOtherKeywords() {
+        for (var timing : List.of(
+                "ease",
+                "linear",
+                "ease-in",
+                "ease-out",
+                "ease-in-out",
+                "step-start",
+                "step-end",
+                "steps(2,end)",
+                "cubic-bezier(0,0,1,1)",
+                "linear(0,1)")) {
+            var sheet = parse(component(
+                    "@keyframes pulse {} animation: pulse 1s " + timing + " -200ms 2 alternate both paused;", "style"));
+            assertEquals(
+                    sheet.getAllStyleRules()
+                            .get(0)
+                            .getAllDeclarations()
+                            .get(0)
+                            .getExpression()
+                            .getAllSimpleMembers()
+                            .get(0)
+                            .getValue(),
+                    ROOT + "--keyframes-pulse");
+        }
+        for (var keyword : List.of("linear", "infinite", "normal", "forwards", "running")) {
+            var sheet = parse(
+                    component("@keyframes " + keyword + " {} animation: " + keyword + " 1s " + keyword + ";", "style"));
+            var members = sheet.getAllStyleRules()
+                    .get(0)
+                    .getAllDeclarations()
+                    .get(0)
+                    .getExpression()
+                    .getAllSimpleMembers();
+            assertEquals(members.get(0).getValue(), keyword);
+            assertEquals(members.get(2).getValue(), ROOT + "--keyframes-" + keyword);
+            var longhand = parse(component("@keyframes " + keyword + " {} animation-name: " + keyword + ";", "style"));
+            assertEquals(
+                    value(longhand.getAllStyleRules()
+                            .get(0)
+                            .getAllDeclarations()
+                            .get(0)),
+                    ROOT + "--keyframes-" + keyword);
+        }
+        for (var css : List.of(
+                "animation: 1s ease infinite alternate both paused;",
+                "animation: none none;",
+                "animation: -0s -0;",
+                "@keyframes pulse {} animation: pulse .5s, pulse 1e2ms reverse backwards running;")) {
+            assertFalse(component(css, "style").isEmpty());
+        }
+    }
+
+    @DataProvider
+    public Object[][] invalidAnimations() {
+        return Map.ofEntries(
+                        Map.entry("@keyframes pulse {} @keyframes pulse {}", "Duplicate local keyframe"),
+                        Map.entry("@keyframes none {}", "Reserved keyframe"),
+                        Map.entry("@keyframes default {}", "Reserved keyframe"),
+                        Map.entry("@keyframes INITIAL {}", "Reserved keyframe"),
+                        Map.entry("@keyframes \"pulse\" {}", "Invalid CSS"),
+                        Map.entry("@keyframes 'pulse' {}", "Invalid CSS"),
+                        Map.entry("@keyframes pu\\6c se {}", "unescaped, unquoted"),
+                        Map.entry("@-webkit-keyframes pulse {}", "unprefixed"),
+                        Map.entry("@keyframes pulse {} -webkit-animation: pulse 1s;", "unprefixed animation"),
+                        Map.entry("@keyframes pulse {} -moz-animation-name: pulse;", "unprefixed animation"),
+                        Map.entry("&:hover { @keyframes pulse {} }", "outer level"),
+                        Map.entry("@media (color) { @keyframes pulse {} }", "outer level"),
+                        Map.entry("@keyframes pulse { 101% { opacity: 0; } }", "percentages"),
+                        Map.entry("@keyframes pulse { -1% { opacity: 0; } }", "Invalid CSS"),
+                        Map.entry("@keyframes pulse { middle { opacity: 0; } }", "Invalid CSS"),
+                        Map.entry("@keyframes pulse { to { animation-name: pulse; } }", "inside keyframes"),
+                        Map.entry("@keyframes pulse { to { -webkit-animation: pulse 1s; } }", "unprefixed animation"),
+                        Map.entry("animation-name: missing;", "Unknown local animation"),
+                        Map.entry("@keyframes pulse {} animation-name: Pulse;", "Unknown local animation"),
+                        Map.entry("animation-name: var(--animation);", "static identifiers"),
+                        Map.entry("animation-name: 'pulse';", "unescaped, unquoted"),
+                        Map.entry("animation-name: pulse glow;", "Unknown local animation"),
+                        Map.entry("animation-name: none none;", "one name"),
+                        Map.entry("animation: inherit 1s;", "stand alone"),
+                        Map.entry("animation: unknown 1s;", "Unknown local animation"),
+                        Map.entry("animation: none / none;", "static identifiers"),
+                        Map.entry("animation: steps(2,end) steps(2,end);", "shorthand function"),
+                        Map.entry("animation: var(--animation);", "separate longhands"),
+                        Map.entry("animation: calc(1s);", "static identifiers"),
+                        Map.entry("animation: -1s;", "duration"),
+                        Map.entry("animation: 1s 2s 3s;", "two times"),
+                        Map.entry("animation: -1;", "iteration"),
+                        Map.entry("animation: 1 2;", "iteration"),
+                        Map.entry("@keyframes pulse {} animation: pulse pulse;", "one name"),
+                        Map.entry("animation: , none;", "Invalid CSS"),
+                        Map.entry("animation: none,;", "Invalid CSS"))
+                .entrySet()
+                .stream()
+                .map(entry -> new Object[] {entry.getKey(), entry.getValue()})
+                .toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "invalidAnimations")
+    public void invalidKeyframesAndAnimationBindingsFail(String css, String message) {
+        var error = expectThrows(CssSyntax.InvalidCss.class, () -> component(css, "style"));
+        assertTrue(String.valueOf(error.getMessage()).contains(message), css + ": " + error.getMessage());
+    }
+
+    @Test
+    public void animationDiagnosticsUseOriginalNameOffsets() {
+        String source = "@keyframes pulse {}\n&:hover { animation-name: typo; }";
+        var error = expectThrows(CssSyntax.InvalidCss.class, () -> component(source, "style"));
+        assertEquals(error.offset(), source.indexOf("typo"));
     }
 }

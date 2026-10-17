@@ -28,7 +28,7 @@ abstract class StepButton {
                 .className(
                         _cell.on() ? Styles.STEP.on() : Styles.STEP.style(),
                         oddBar ? Styles.STEP.odd() : null,
-                        _cell.doubled() ? "step_button_doubled" : null)
+                        _cell.doubled() ? Styles.STEP.doubled() : null)
                 .onClick(e -> toggleCell(e.isShiftKey())));
     }
 

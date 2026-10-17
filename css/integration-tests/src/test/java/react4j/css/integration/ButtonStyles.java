@@ -6,6 +6,8 @@ import react4j.css.Css;
     color: white;
     &.success { background-color: green; }
     &.cancel { background-color: red; }
+    @keyframes pulse { to { opacity: 0.5; } }
+    &:hover { animation-name: pulse; }
     """)
 abstract class ButtonStyles {
     static ButtonStyles of() {

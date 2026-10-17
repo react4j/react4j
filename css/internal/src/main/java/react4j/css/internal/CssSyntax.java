@@ -15,6 +15,7 @@ import com.helger.css.parser.TokenMgrException;
 import com.helger.css.reader.errorhandler.ICSSInterpretErrorHandler;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
 import java.io.StringReader;
+import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
 public final class CssSyntax {
@@ -45,6 +46,10 @@ public final class CssSyntax {
         var handler = new ThrowingCSSParseErrorHandler() {
             @Override
             public void onCSSUnexpectedRule(Token token, String rule, String message) {
+                // The component's implicit wrapper is removed before keyframes reach the CSS model.
+                if (component && "@keyframes".equals(rule)) {
+                    return;
+                }
                 throw new InvalidCss(
                         "Unsupported CSS rule " + rule + ": " + message, offset(token.beginLine, token.beginColumn));
             }
@@ -84,7 +89,10 @@ public final class CssSyntax {
                     offset(stream.getEndLine(), stream.getEndColumn()));
         }
         // Model conversion can discard unsupported nested rules. Validate the syntax tree first.
-        checkSyntaxTree(tree, component);
+        if (component) {
+            tree = liftKeyframes(tree);
+        }
+        checkSyntaxTree(tree, component, 0);
         return CSSHandler.readCascadingStyleSheetFromNode(
                 new ICSSInterpretErrorHandler() {
                     @Override
@@ -101,23 +109,62 @@ public final class CssSyntax {
                 tree);
     }
 
-    private void checkSyntaxTree(CSSNode node, boolean component) {
+    // ph-css omits keyframes in style rules during model conversion. Lift parsed nodes without losing token locations.
+    private CSSNode liftKeyframes(CSSNode tree) {
+        if (1 != tree.jjtGetNumChildren() || !ECSSNodeType.STYLERULE.isNode(tree.jjtGetChild(0))) {
+            throw new InvalidCss("Component CSS must remain inside its implicit root", 0);
+        }
+        var result = shell(tree);
+        var owner = tree.jjtGetChild(0);
+        var style = shell(owner);
+        append(result, style);
+        for (var child : owner) {
+            if (ECSSNodeType.STYLEDECLARATIONLISTWITHNESTED.isNode(child)) {
+                var declarations = shell(child);
+                append(style, declarations);
+                for (var declaration : child) {
+                    append(ECSSNodeType.KEYFRAMESRULE.isNode(declaration) ? result : declarations, declaration);
+                }
+            } else {
+                append(style, child);
+            }
+        }
+        return result;
+    }
+
+    private static CSSNode shell(CSSNode node) {
+        var result = new CSSNode(node.getId());
+        result.jjtSetFirstToken(Objects.requireNonNull(node.jjtGetFirstToken()));
+        result.jjtSetLastToken(Objects.requireNonNull(node.jjtGetLastToken()));
+        return result;
+    }
+
+    private static void append(CSSNode parent, CSSNode child) {
+        parent.jjtAddChild(child, parent.jjtGetNumChildren());
+        child.jjtSetParent(parent);
+    }
+
+    private void checkSyntaxTree(CSSNode node, boolean component, int depth) {
         if (ECSSNodeType.IMPORTANT.isNode(node)) {
             throw invalid("!important declarations defeat shared/component precedence", node.getSourceLocation());
+        }
+        if (component && ECSSNodeType.KEYFRAMESRULE.isNode(node) && 1 != depth) {
+            throw invalid("Keyframes must be declared at the component's outer level", node.getSourceLocation());
         }
         for (var type : ECSSNodeType.values()) {
             if (type.isNode(node)
                     && (type.name().endsWith("RULE") || ECSSNodeType.CHARSET == type)
                     && ECSSNodeType.STYLERULE != type
                     && ECSSNodeType.MEDIARULE != type
-                    && ECSSNodeType.SUPPORTSRULE != type) {
+                    && ECSSNodeType.SUPPORTSRULE != type
+                    && !(component && ECSSNodeType.KEYFRAMESRULE == type)) {
                 throw invalid(
                         (component ? "Unsupported component rule: " : "Unsupported shared rule: ") + type.name(),
                         node.getSourceLocation());
             }
         }
         for (var child : node) {
-            checkSyntaxTree(child, component);
+            checkSyntaxTree(child, component, depth + 1);
         }
     }
 

@@ -398,6 +398,46 @@ public final class CssProcessorTest {
     }
 
     @Test
+    public void keyframeSourceMapsIncludeDefinitionsFramesAndRenamedReferences() throws Exception {
+        String text = source("demo", """
+            @keyframes pulse {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            &:hover { animation: pulse 1s ease; }
+            """, "");
+        var result = compile(Map.of("Button.java", text));
+        assertTrue(result.success(), result.diagnostics());
+        var css = new String(
+                Base64.getDecoder().decode(result.files().get("classes/demo/Button.css")), StandardCharsets.UTF_8);
+        var map = new String(
+                Base64.getDecoder().decode(result.files().get("classes/demo/Button.css.map")), StandardCharsets.UTF_8);
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(map);
+        for (var pair : Map.of(
+                        "@keyframes jcss-demo-Button--keyframes-pulse", "@keyframes pulse",
+                        "from{", "from",
+                        "to{", "to",
+                        "opacity:0", "opacity: 0",
+                        "animation:jcss-demo-Button--keyframes-pulse", "animation: pulse")
+                .entrySet()) {
+            int generated = css.indexOf(pair.getKey());
+            int original = text.indexOf(pair.getValue());
+            assertTrue(generated >= 0, css);
+            var location = Objects.requireNonNull(consumer.getMappingForLine(1, generated + 1));
+            assertEquals(location.getOriginalFile(), "demo/Button.java");
+            assertEquals(
+                    location.getLineNumber(),
+                    (int) text.substring(0, original)
+                                    .chars()
+                                    .filter(c -> '\n' == c)
+                                    .count()
+                            + 1);
+            assertEquals(location.getColumnPosition(), original - text.lastIndexOf('\n', original - 1));
+        }
+    }
+
+    @Test
     public void invalidJavaContractsFailClearly() throws Exception {
         for (var method : List.of(
                 "abstract int success();", "abstract String success(int value);", "abstract <T> String success();")) {

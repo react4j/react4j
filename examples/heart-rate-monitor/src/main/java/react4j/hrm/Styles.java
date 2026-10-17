@@ -29,8 +29,23 @@ final class Styles {
 
     @Css("""
         width: 10em;
+
+        @keyframes beat {
+          from { transform: scale(1); }
+          to { transform: scale(0.9); }
+        }
+
+        &.beating {
+          animation-name: beat;
+          animation-direction: alternate;
+          animation-iteration-count: infinite;
+          animation-timing-function: ease-in-out;
+          animation-duration: 0.8s;
+        }
         """)
     abstract static class Heart {
         abstract String style();
+
+        abstract String beating();
     }
 }

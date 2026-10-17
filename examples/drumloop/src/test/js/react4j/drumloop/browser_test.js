@@ -84,9 +84,13 @@ testSuite({
       step.dispatchEvent(new MouseEvent('click', {bubbles: true}));
       await waitFor(() => view.getComputedStyle(step).opacity === '1');
       step.dispatchEvent(new MouseEvent('click', {bubbles: true, shiftKey: true}));
-      await waitFor(() => view.getComputedStyle(step).animationName === 'doubled');
+      await waitFor(() => step.getAnimations().length === 1);
+      asserts.assertEquals('0.5s', view.getComputedStyle(step).animationDuration);
+      asserts.assertEquals('linear', view.getComputedStyle(step).animationTimingFunction);
+      asserts.assertEquals('infinite', view.getComputedStyle(step).animationIterationCount);
       step.dispatchEvent(new MouseEvent('click', {bubbles: true}));
       await waitFor(() => view.getComputedStyle(step).opacity === '0.35');
+      asserts.assertEquals(0, step.getAnimations().length);
       step.dispatchEvent(new MouseEvent('click', {bubbles: true}));
       await waitFor(() => view.getComputedStyle(step).opacity === '1');
 
