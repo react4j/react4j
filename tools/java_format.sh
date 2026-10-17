@@ -9,9 +9,11 @@ case "$mode" in
 esac
 cd "$root"
 paths=(
-  css/src/main/java
-  css/src/test/java
-  css/example
+  css/core/src/main/java
+  css/processor/src/main/java
+  css/processor/src/test/java
+  css/integration-tests/src/test/java
+  css/examples/save-button
   tools/generation/src/main/java
   tools/site/src/main/java
   tools/site/src/test/java

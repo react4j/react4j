@@ -38,7 +38,7 @@
         "reproducibility": "always"
       }
     },
-    "//css/compiler": {
+    "//css/processor/compiler": {
       "spec": {
         "reproducibility": "always"
       }

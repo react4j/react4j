@@ -1,12 +1,19 @@
 # CSS-in-Java — work in progress
 
-This branch is being refined from a feasibility spike into a production implementation of static CSS extraction with checked Java style accessors. It remains a draft and is not ready to merge or publish. Parsing, validation and output run inside the JVM; the CSS toolchain does not require Node, npm or native executables. `org.realityforge.css` is a provisional namespace; directory layout, final product name, repository and publication artifacts remain open. The annotation and processor targets are separate so the parser dependencies do not enter the application annotation classpath.
+This branch is being refined from a feasibility spike into a production implementation of static CSS extraction with checked Java style accessors. It remains a draft and is not ready to merge or publish. Parsing, validation and output run inside the JVM; the CSS toolchain does not require Node, npm or native executables. `org.realityforge.css` is a provisional namespace; final product name, repository and publication artifacts remain open. The annotation and processor targets are separate so the parser dependencies do not enter the application annotation classpath.
 
 WorldBuilder's [authoring architecture](https://github.com/realityforge/WorldBuilder/blob/ad52a87/docs/adr/0020-extract-static-client-styles.md) and [separate-product boundary](https://github.com/realityforge/WorldBuilder/blob/ad52a87/docs/adr/0021-consume-a-separate-style-generator.md) provide the consumer context. The JVM-only requirement supersedes that experiment's Node-based tool selection. This proof does not migrate WorldBuilder or publish a release.
 
+## Layout
+
+- `core/`: client annotation and JSpecify package contract.
+- `processor/`: JVM parser, processor, extraction adapter and unit tests.
+- `examples/save-button/`: checked React4j and browser example.
+- `integration-tests/`: application dependency and extraction integration.
+
 ## Authoring and generated API
 
-See [SaveButton.java](example/src/main/java/org/realityforge/css/example/SaveButton.java) and [BrowserExample.java](example/src/main/java/org/realityforge/css/example/BrowserExample.java) for the complete checked example. A style definition is an accessible abstract class with an accessible no-argument constructor, `abstract String style()`, and zero-argument abstract `String` modifier accessors. A literal `@Css` text block supplies root declarations and nested same-element rules such as `&:focus-visible` and `&.success`. Java interpolation, constant concatenation and runtime stylesheet generation are unsupported. Static nested definition classes are supported; inheritance and generic style definitions are outside this proof.
+See [SaveButton.java](examples/save-button/src/main/java/org/realityforge/css/example/SaveButton.java) and [BrowserExample.java](examples/save-button/src/main/java/org/realityforge/css/example/BrowserExample.java) for the complete checked example. A style definition is an accessible abstract class with an accessible no-argument constructor, `abstract String style()`, and zero-argument abstract `String` modifier accessors. A literal `@Css` text block supplies root declarations and nested same-element rules such as `&:focus-visible` and `&.success`. Java interpolation, constant concatenation and runtime stylesheet generation are unsupported. Static nested definition classes are supported; inheritance and generic style definitions are outside this proof.
 
 The processor generates a package-access `Styled_SaveButton` subclass. `style()` returns the root class token; `success()` returns a space-separated root and namespaced success token. The factory remains ordinary author-written Java. The modifier methods select static classes and allocate no CSS. Applying conflicting modifiers follows authored CSS order, independently of class-token order. Fragment independence assumes that an element uses one component owner; the String API does not prevent callers from combining roots from different owners.
 
@@ -17,9 +24,9 @@ The parsed selector tree must agree with the declared accessors in both directio
 ## Build and parser
 
 ```sh
-bazel build //css/example:styles //css/example:bindings
-bazel test //css:compiler_tests //css:processor_tests //css:integration_tests //css/example:browser_tests --test_output=errors
-bazel test -c opt //css/example:browser_tests --test_output=errors
+bazel build //css/examples/save-button:styles //css/examples/save-button:bindings
+bazel test //css/processor:compiler_tests //css/processor:processor_tests //css/integration-tests:integration_tests //css/examples/save-button:browser_tests --test_output=errors
+bazel test -c opt //css/examples/save-button:browser_tests --test_output=errors
 css/check_reproducibility.sh
 ```
 
@@ -27,13 +34,13 @@ css/check_reproducibility.sh
 
 The processor calls [ph-css 8.2.3](https://github.com/phax/ph-css/tree/ph-css-parent-pom-8.2.3) in-process. Its JavaCC parser supplies the syntax and selector trees. Recovery is disabled and unsupported rule types are rejected in the syntax tree before conversion to the higher-level model, which can otherwise omit unsupported nested rules. Selector nodes are checked and namespaced, nesting is flattened while preserving declaration order and selector-list specificity, and the library's compact writer serializes declaration values. Shared styles precede component rules through explicit `shared, components` cascade layers. `!important` is rejected in both inputs because it reverses layer precedence. Shared inputs support style rules, `@media` and `@supports`; imports, author layers and other at-rules are outside this proof.
 
-The dependency graph is checksum-pinned through `third_party/java/dependencies.yml` and the generated Bazel declarations. The processor runtime includes ph-css, nine ph-commons modules, SLF4J API and the existing JSpecify annotations. These are JVM build dependencies; they do not enter generated bindings or browser output. The source and final artifact layout remain open despite the separate annotation and processor build targets.
+The dependency graph is checksum-pinned through `third_party/java/dependencies.yml` and the generated Bazel declarations. The processor runtime includes ph-css, nine ph-commons modules, SLF4J API and the existing JSpecify annotations. These are JVM build dependencies; they do not enter generated bindings or browser output. The annotation, processor, examples and integration tests now have separate source roots. Processor dependency shading remains the next refinement.
 
 The annotation processor reads javac's cooked text-block value and parses the original token to retain per-character Java offsets. The mapper handles incidental indentation, trailing whitespace, CRLF, Java escapes, octal escapes, Unicode escapes and continued lines, and checks its result against javac before reporting CSS locations. Diagnostics include the original Java path, line and column; javac's attached caret covers the annotation value. This uses javac's public tree API and has not been verified under Turbine. A direct Bazel `java_plugin` integration is not yet supplied; the extraction action still runs before checked Java/J2CL compilation.
 
 ## Evidence and remaining product work
 
-The processor jar registers `org.realityforge.css.CssProcessor` through `META-INF/services/javax.annotation.processing.Processor`. Conventional javac users place the annotation library and their application dependencies on `--class-path`, and the processor with its dependencies on `--processor-path`. The processor tests use that service discovery with an annotation-only application classpath; a negative control verifies that parser types are unavailable to application code. This is processor registration, not a published Maven artifact or a complete build-plugin distribution.
+The processor jar registers `org.realityforge.css.processor.CssProcessor` through `META-INF/services/javax.annotation.processing.Processor`. Conventional javac users place the annotation library and their application dependencies on `--class-path`, and the processor with its dependencies on `--processor-path`. The processor tests use that service discovery with an annotation-only application classpath; a negative control verifies that parser types are unavailable to application code. This is processor registration, not a published Maven artifact or a complete build-plugin distribution.
 
 The maintained JVM tests exercise generated methods, complete CSS resources, independent and reversed compilation order, clean compiler outputs, nested owners, encoding collisions, syntax and ownership failures, functional selectors, conditional rules, declaration order and source diagnostics. The browser case exercises real React4j props, custom-property assignment, shared/component precedence, focus and disabled states, conflicting modifiers, nested instances and independent fragment reordering while preserving order inside each component. It uses pinned Chromium with `--headless=new`; Firefox and WebKit runtime behavior remain unverified.
 

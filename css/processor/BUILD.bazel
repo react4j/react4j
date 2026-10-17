@@ -1,0 +1,44 @@
+load("//third_party/java:rules.bzl", "java_binary", "java_library", "java_testng")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "processor",
+    srcs = [
+        "src/main/java/org/realityforge/css/processor/CssCompiler.java",
+        "src/main/java/org/realityforge/css/processor/CssProcessor.java",
+        "src/main/java/org/realityforge/css/processor/Names.java",
+        "src/main/java/org/realityforge/css/processor/TextBlock.java",
+        "src/main/java/org/realityforge/css/processor/package-info.java",
+    ],
+    resource_strip_prefix = "css/processor/src/main/resources",
+    resources = ["src/main/resources/META-INF/services/javax.annotation.processing.Processor"],
+    deps = [
+        "//css/core",
+        "//third_party/java:ph_css",
+    ],
+)
+
+java_binary(
+    name = "compiler",
+    srcs = ["src/main/java/org/realityforge/css/processor/Compile.java"],
+    main_class = "org.realityforge.css.processor.Compile",
+    deps = [":processor"],
+)
+
+java_testng(
+    name = "processor_tests",
+    srcs = ["src/test/java/org/realityforge/css/processor/CssProcessorTest.java"],
+    test_class = "org.realityforge.css.processor.CssProcessorTest",
+    deps = [
+        ":processor",
+        "//css/core",
+    ],
+)
+
+java_testng(
+    name = "compiler_tests",
+    srcs = ["src/test/java/org/realityforge/css/processor/CssCompilerTest.java"],
+    test_class = "org.realityforge.css.processor.CssCompilerTest",
+    deps = [":processor"],
+)

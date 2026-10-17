@@ -29,7 +29,7 @@ styles = rule(
         "deps": attr.label_list(providers = [JavaInfo]),
         "shared": attr.label_list(allow_files = [".css"]),
         "srcs": attr.label_list(allow_files = [".java"], mandatory = True),
-        "_annotations": attr.label(default = Label("//css:annotations"), providers = [JavaInfo]),
-        "_compiler": attr.label(default = Label("//css:compiler"), executable = True, cfg = "exec"),
+        "_annotations": attr.label(default = Label("//css/core"), providers = [JavaInfo]),
+        "_compiler": attr.label(default = Label("//css/processor:compiler"), executable = True, cfg = "exec"),
     },
 )

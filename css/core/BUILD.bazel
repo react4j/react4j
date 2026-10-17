@@ -1,0 +1,17 @@
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("//third_party/java:rules.bzl", "java_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "core",
+    srcs = [
+        "src/main/java/org/realityforge/css/Css.java",
+        "src/main/java/org/realityforge/css/package-info.java",
+    ],
+)
+
+j2cl_library(
+    name = "core-j2cl",
+    srcs = ["src/main/java/org/realityforge/css/Css.java"],
+)

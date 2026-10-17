@@ -1,8 +1,8 @@
 # Task map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: planned
-- Current frontier: T01
+- Status: implementing
+- Current frontier: T02
 - Planning reviewer: /root/planning_review (1/3 rounds), Findings: none
 - Plan checkpoint: automatic — accepted immediate scope and latest user execution instruction; passing planning review
 - Implementation reviewer: pending (0/5 rounds)
@@ -16,7 +16,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Subproject layout](T01-layout.md) | pending | None |
+| T01 | [Subproject layout](T01-layout.md) | complete | None |
 | T02 | [Standalone shaded artifact](T02-artifact.md) | pending | T01 |
 | T03 | [Golden harness and delivery](T03-goldens.md) | pending | T02 |
 
