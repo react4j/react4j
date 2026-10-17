@@ -60,7 +60,7 @@ Reference the value with `var(--accent)` in CSS and pass `custom` through the el
 
 Apply `//css/processor:plugin` to the `j2cl_library` that owns the style definitions. The processor generates implementation classes and emits package-relative CSS and source-map resources, such as `com/biz/ui/SaveButton.css` and `SaveButton.css.map`. Generated Java names follow the enclosing-type convention used by the React4j processor, while CSS names encode the binary owner identity. J2CL must preserve these generated resources in its JavaScript output tree; the repository's pinned J2CL patch supplies this behavior.
 
-The [css_bundle rule](rules.bzl) starts at a Closure linking target and collects J2CL resources through its transitive `deps` and `exports`. Shared files retain their declared order; component resources are ordered by binary owner path. A dependency reached through multiple paths contributes its resources once; duplicate owner paths from different libraries fail the build.
+The [css_bundle rule](defs.bzl) starts at a Closure linking target and collects J2CL resources through its transitive `deps` and `exports`. Shared files retain their declared order; component resources are ordered by binary owner path. A dependency reached through multiple paths contributes its resources once; duplicate owner paths from different libraries fail the build.
 
 ```starlark
 css_bundle(

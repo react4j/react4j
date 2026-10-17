@@ -1,4 +1,4 @@
-load("//css:rules.bzl", "css_bundle")
+load("//css:defs.bzl", "css_bundle")
 load("//tools/browser:rules.bzl", "browser_test")
 
 package(default_visibility = ["//:__pkg__"])

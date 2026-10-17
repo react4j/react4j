@@ -1,4 +1,4 @@
-exports_files(["rules.bzl"])
+exports_files(["defs.bzl"])
 
 test_suite(
     name = "tests",

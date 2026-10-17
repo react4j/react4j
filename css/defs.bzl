@@ -1,4 +1,4 @@
-"""Collect processor resources through the JavaScript dependency graph."""
+"""Bazel rules for CSS-in-Java."""
 
 _CssInfo = provider("Transitive J2CL output trees containing processor CSS resources.", fields = ["trees"])
 
