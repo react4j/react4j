@@ -48,7 +48,7 @@ css_bundle(
 )
 ```
 
-Load the generated CSS with the application. The CSS references its source map, which uses indexed source-map v3 sections to preserve component mappings back to Java and shared mappings back to CSS. Java mappings identify selectors, declarations and conditional-rule headers; synthetic wrappers are unmapped. Maps include original source content. Component CSS is emitted compactly; shared CSS retains its formatting with normalized line endings. Collection includes all styles in reachable build targets.
+Load the generated CSS with the application. The CSS references its source map, which uses indexed source-map v3 sections to preserve component mappings back to Java and shared mappings back to CSS. Java mappings identify selectors, declarations and conditional-rule headers; synthetic layer wrappers are unmapped. Maps include original source content. Component CSS is emitted compactly; shared CSS retains its formatting with normalized line endings. Collection includes all styles in reachable build targets.
 
 The [example Java build](examples/save-button/src/main/java/react4j/css/example/BUILD.bazel) shows processor wiring, and its [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) assembles CSS from the Closure binary. The checked `java_j2cl_library` macro runs the same plugin during JVM checks and J2CL compilation without feeding generated implementations back through the processor.
 
