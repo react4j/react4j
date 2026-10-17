@@ -3,7 +3,8 @@ load("//third_party/java:rules.bzl", "java_testng")
 java_testng(
     name = "coverage_tests",
     srcs = ["CoverageCheckTest.java"],
+    data = ["//tools/verification:coverage.json"],
     test_class = "react4j.verification.CoverageCheckTest",
     visibility = ["//:__pkg__"],
-    deps = ["//tools/verification/src/main/java/react4j/verification:coverage_check"],
+    deps = ["//tools/verification/src/main/java/react4j/verification:coverage"],
 )

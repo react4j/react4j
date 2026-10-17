@@ -1,3 +1,8 @@
+exports_files(
+    ["coverage.json"],
+    visibility = ["//tools/verification/src/test/java/react4j/verification:__pkg__"],
+)
+
 alias(
     name = "coverage_check",
     actual = "//tools/verification/src/main/java/react4j/verification:coverage_check",
