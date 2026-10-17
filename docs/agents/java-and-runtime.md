@@ -2,6 +2,8 @@
 
 Use Java 17 language/output for owned APIs and generated code. The formatter and strict compiler policy are canonical in the build graph; [CONTRIBUTING.md](../../CONTRIBUTING.md) owns their commands.
 
+Use Yoda conditions for equality checks: put enum constants, literals and `null` on the left of `==` and `!=`. Call `equals` on the constant String when comparing it with a variable.
+
 Owned contracts use JSpecify. Place `@NullMarked` on packages/types; preserve `@NullUnmarked` declaration scopes and explicit qualifiers when generating APIs. Type variables are conditionally nullable unless their bounds establish a stronger contract. Qualifiers on array elements and array references are separate. Legacy annotations are deliberately ignored by processor inference.
 
 Keep dynamic validation of React props/context and conversions from nullable values. Static non-null parameters and initialized internal state need no repeated `Objects.requireNonNull`. Native JavaScript fields may need narrow initialization suppressions because Java constructors do not populate them.

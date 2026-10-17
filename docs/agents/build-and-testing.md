@@ -8,6 +8,6 @@ Hermeticity declarations must describe the action being run. Browser tests need 
 
 Compilation mode propagates through dependencies. When the site includes development and production applications together, preserve explicit mode transitions: an optimized site build must still emit development applications.
 
-The CSS browser proof uses Chromium's `--headless=new` through a dedicated browser configuration. With the pinned Chromium 123 runtime on macOS, the default old headless mode reports an unfocused document even after an element becomes `activeElement`; neither `:focus` nor `:focus-visible` then matches. Keep the actual focus assertions and the configured browser together.
+Browser tests use the shared `//tools/webtesting:chromium` configuration with `--headless=new`. With the pinned Chromium 123 runtime on macOS, the default old headless mode reports an unfocused document even after an element becomes `activeElement`; neither `:focus` nor `:focus-visible` then matches. Keep browser metadata in `tools/webtesting` so suites share the same runtime settings; retain the CSS example's focus assertions.
 
 Declare Java and Closure libraries in the BUILD file beside their package sources, with explicit source lists; do not use globs for libraries. Keep Java package paths and Closure module names aligned, and put browser tests under `src/test/js/<package>`. Root subproject BUILD files may expose module handles, imports and build actions. CSS inputs that are parsed/transformed belong in `src/main/css`; assets copied unchanged belong in `src/main/assets`.

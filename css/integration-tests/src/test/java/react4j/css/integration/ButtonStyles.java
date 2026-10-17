@@ -13,7 +13,7 @@ abstract class ButtonStyles {
     }
 
     final String forState(StyleState state) {
-        return state == StyleState.SUCCESS ? success() : cancel();
+        return StyleState.SUCCESS == state ? success() : cancel();
     }
 
     abstract String style();

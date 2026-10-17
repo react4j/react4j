@@ -68,12 +68,12 @@ final class CssCompiler {
         String prefix = "." + root + " {\n";
         var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, accessors);
         var sheet = compiler.parse(true);
-        if (sheet.getRuleCount() != 1 || !(sheet.getRuleAtIndex(0) instanceof CSSStyleRule style)) {
+        if (1 != sheet.getRuleCount() || !(sheet.getRuleAtIndex(0) instanceof CSSStyleRule style)) {
             throw new InvalidCss("Component CSS must remain inside its implicit root", 0);
         }
         String result = compiler.style(style, "." + root, true);
         for (var name : accessors) {
-            if (!name.equals("style") && !compiler.found.contains(name)) {
+            if (!"style".equals(name) && !compiler.found.contains(name)) {
                 throw new InvalidCss("Accessor " + name + "() has no matching local selector", 0);
             }
         }
@@ -132,13 +132,13 @@ final class CssCompiler {
             tree = parser.styleSheet();
         } catch (ParseException e) {
             var token = e.currentToken;
-            if (token != null && token.next != null) {
+            if (null != token && null != token.next) {
                 token = token.next;
             }
             throw new InvalidCss(
                     "Invalid CSS: "
                             + String.valueOf(e.getMessage()).lines().findFirst().orElse(""),
-                    token == null ? 0 : offset(token.beginLine, token.beginColumn));
+                    null == token ? 0 : offset(token.beginLine, token.beginColumn));
         } catch (TokenMgrException e) {
             throw new InvalidCss(
                     "Invalid CSS token or unterminated comment/string",
@@ -167,10 +167,10 @@ final class CssCompiler {
         }
         for (var type : ECSSNodeType.values()) {
             if (type.isNode(node)
-                    && (type.name().endsWith("RULE") || type == ECSSNodeType.CHARSET)
-                    && type != ECSSNodeType.STYLERULE
-                    && type != ECSSNodeType.MEDIARULE
-                    && type != ECSSNodeType.SUPPORTSRULE) {
+                    && (type.name().endsWith("RULE") || ECSSNodeType.CHARSET == type)
+                    && ECSSNodeType.STYLERULE != type
+                    && ECSSNodeType.MEDIARULE != type
+                    && ECSSNodeType.SUPPORTSRULE != type) {
                 throw invalid(
                         (component ? "Unsupported component rule: " : "Unsupported shared rule: ") + type.name(),
                         node.getSourceLocation());
@@ -253,7 +253,7 @@ final class CssCompiler {
         var result = new StringBuilder();
         int index = 0;
         for (var member : selector.getAllMembers()) {
-            if (nested && index == 0 && !(member instanceof CSSSelectorSimpleMember simple && simple.isNesting())) {
+            if (nested && 0 == index && !(member instanceof CSSSelectorSimpleMember simple && simple.isNesting())) {
                 throw invalid("Component selectors must start with &", selector);
             }
             if (member instanceof CSSSelectorSimpleMember simple) {
@@ -261,11 +261,11 @@ final class CssCompiler {
                 if (value.contains("\\")) {
                     throw invalid("Escaped selector identifiers are outside this proof", simple);
                 }
-                if (simple.isNesting() && nested && index == 0) {
+                if (simple.isNesting() && nested && 0 == index) {
                     result.append(parent);
                 } else if (simple.isClass()) {
                     String name = value.substring(1);
-                    if (name.equals("style") || !accessors.contains(name)) {
+                    if ("style".equals(name) || !accessors.contains(name)) {
                         throw invalid("Local selector ." + name + " has no matching modifier accessor", simple);
                     }
                     found.add(name);
@@ -306,7 +306,7 @@ final class CssCompiler {
     private InvalidCss invalid(String message, @Nullable CSSSourceLocation location) {
         return new InvalidCss(
                 message,
-                location == null
+                null == location
                         ? 0
                         : offset(location.getFirstTokenBeginLineNumber(), location.getFirstTokenBeginColumnNumber()));
     }

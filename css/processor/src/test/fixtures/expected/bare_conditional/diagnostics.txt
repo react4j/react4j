@@ -1,1 +1,1 @@
-ERROR demo/Button.java:4:6: demo/Button.java:5:34: Invalid CSS: Encountered unexpected token: " " <S>
+ERROR demo/Button.java:7:6: demo/Button.java:8:34: Invalid CSS: Encountered unexpected token: " " <S>

@@ -11,7 +11,7 @@ final class Names {
             char c = name.charAt(i);
             if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
                 result.append(c);
-            } else if (c == '.') {
+            } else if ('.' == c) {
                 result.append('-');
             } else {
                 result.append('_')

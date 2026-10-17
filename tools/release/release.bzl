@@ -34,8 +34,6 @@ def _release_jar_impl(ctx):
     args = ctx.actions.args()
     args.add("merge")
     args.add("--output", out)
-    if ctx.attr.preserve_dependency_notices:
-        args.add("--preserve-dependency-notices")
     args.add_all(input_jars, before_each = "--input")
     args.add_all(ctx.attr.relocations, before_each = "--relocate")
     args.add_all(ctx.attr.exclude_prefixes, before_each = "--exclude-prefix")
@@ -60,7 +58,6 @@ release_jar = rule(
         "jars": attr.label_list(allow_files = [".jar"]),
         "java_targets": attr.label_list(providers = [JavaInfo]),
         "out": attr.string(mandatory = True),
-        "preserve_dependency_notices": attr.bool(),
         "relocations": attr.string_list(),
         "resource_entries": attr.string_list(),
         "resource_files": attr.label_list(allow_files = True),

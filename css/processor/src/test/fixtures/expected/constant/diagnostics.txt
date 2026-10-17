@@ -1,1 +1,1 @@
-ERROR demo/Button.java:5:10: @Css requires a literal Java text block; constants and concatenation are unsupported
+ERROR demo/Button.java:8:10: @Css requires a literal Java text block; constants and concatenation are unsupported

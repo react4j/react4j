@@ -11,6 +11,8 @@ cd "$root"
 paths=(
   css/core/src/main/java
   css/processor/src/main/java
+  css/processor/src/test/fixtures/input
+  css/processor/src/test/fixtures/bad_input
   css/processor/src/test/java
   css/integration-tests/src/test/java
   css/examples/save-button

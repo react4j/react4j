@@ -1,12 +1,16 @@
 package demo;
+
+import org.jspecify.annotations.NullMarked;
 import react4j.css.Css;
-@org.jspecify.annotations.NullMarked
+
+@NullMarked
 final class Owner {
     @Css("""
         &._ready { color: green; }
         """)
-    static abstract class Inner {
+    abstract static class Inner {
         abstract String style();
+
         abstract String _ready();
     }
 }

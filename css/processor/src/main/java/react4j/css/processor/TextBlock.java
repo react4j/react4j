@@ -16,12 +16,12 @@ record TextBlock(String value, int[] offsets) {
             char c = token.charAt(i);
             int offset = start + i;
             boolean translated = false;
-            if (c == '\\'
-                    && (slashes % 2 == 0 || fromUnicode)
+            if ('\\' == c
+                    && (0 == slashes % 2 || fromUnicode)
                     && i + 1 < token.length()
-                    && token.charAt(i + 1) == 'u') {
+                    && 'u' == token.charAt(i + 1)) {
                 int j = i + 1;
-                while (token.charAt(j) == 'u') {
+                while ('u' == token.charAt(j)) {
                     j++;
                 }
                 c = (char) Integer.parseInt(token.substring(j, j + 4), 16);
@@ -29,7 +29,7 @@ record TextBlock(String value, int[] offsets) {
                 translated = true;
             }
             unicode.add(new Character(c, offset));
-            slashes = c == '\\' ? slashes + 1 : 0;
+            slashes = '\\' == c ? slashes + 1 : 0;
             fromUnicode = translated;
         }
         String translated = string(unicode);
@@ -37,18 +37,18 @@ record TextBlock(String value, int[] offsets) {
             throw new IllegalArgumentException("@Css requires a literal Java text block");
         }
         int body = 3;
-        while (translated.charAt(body) != '\r' && translated.charAt(body) != '\n') {
+        while ('\r' != translated.charAt(body) && '\n' != translated.charAt(body)) {
             body++;
         }
-        if (translated.charAt(body++) == '\r' && translated.charAt(body) == '\n') {
+        if ('\r' == translated.charAt(body++) && '\n' == translated.charAt(body)) {
             body++;
         }
         var normalized = new ArrayList<Character>();
         for (int i = body; i < unicode.size() - 3; i++) {
             var c = unicode.get(i);
-            if (c.value() == '\r') {
+            if ('\r' == c.value()) {
                 normalized.add(new Character('\n', c.offset()));
-                if (i + 1 < unicode.size() - 3 && unicode.get(i + 1).value() == '\n') {
+                if (i + 1 < unicode.size() - 3 && '\n' == unicode.get(i + 1).value()) {
                     i++;
                 }
             } else {
@@ -58,7 +58,7 @@ record TextBlock(String value, int[] offsets) {
         var lines = new ArrayList<List<Character>>();
         int lineStart = 0;
         for (int i = 0; i < normalized.size(); i++) {
-            if (normalized.get(i).value() == '\n') {
+            if ('\n' == normalized.get(i).value()) {
                 lines.add(normalized.subList(lineStart, i));
                 lineStart = i + 1;
             }
@@ -99,12 +99,12 @@ record TextBlock(String value, int[] offsets) {
         var cooked = new ArrayList<Character>();
         for (int i = 0; i < stripped.size(); i++) {
             var c = stripped.get(i);
-            if (c.value() != '\\') {
+            if ('\\' != c.value()) {
                 cooked.add(c);
                 continue;
             }
             char escaped = stripped.get(++i).value();
-            if (escaped == '\n') {
+            if ('\n' == escaped) {
                 continue;
             }
             char value;

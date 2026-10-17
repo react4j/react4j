@@ -1,1 +1,1 @@
-ERROR demo/Button.java:4:6: demo/Button.java:5:14: Invalid CSS: Encountered unexpected token: ";" ";"
+ERROR demo/Button.java:7:6: demo/Button.java:8:14: Invalid CSS: Encountered unexpected token: ";" ";"

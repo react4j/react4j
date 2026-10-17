@@ -18,7 +18,7 @@ public final class Compile {
 
     public static void main(String[] args) {
         try {
-            if (args.length != 1 || !args[0].startsWith("@")) {
+            if (1 != args.length || !args[0].startsWith("@")) {
                 throw new IllegalArgumentException("Usage: compiler @argument-file");
             }
             compile(Files.readAllLines(Path.of(args[0].substring(1))).toArray(String[]::new));

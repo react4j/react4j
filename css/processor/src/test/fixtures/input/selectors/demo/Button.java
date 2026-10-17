@@ -1,6 +1,9 @@
 package demo;
+
+import org.jspecify.annotations.NullMarked;
 import react4j.css.Css;
-@org.jspecify.annotations.NullMarked
+
+@NullMarked
 @Css("""
     /* .fake is not an accessor */
     content: ".fake";
@@ -9,7 +12,9 @@ import react4j.css.Css;
     color: blue;
     """)
 abstract class Button {
-    abstract java.lang.String style();
+    abstract String style();
+
     abstract String success();
+
     abstract String cancel();
 }

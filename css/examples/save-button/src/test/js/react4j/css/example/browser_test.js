@@ -45,7 +45,7 @@ testSuite({
     container = /** @type {!HTMLElement} */ (document.createElement('div'));
     document.body.appendChild(container);
     style = /** @type {!HTMLStyleElement} */ (document.createElement('style'));
-    style.textContent = await (await fetch('/css/examples/save-button/styles.css')).text();
+    style.textContent = await (await fetch('/css/examples/save-button/src/main/java/react4j/css/example/styles.css')).text();
     document.head.appendChild(style);
     Example.render(container, "#04c", "true");
   },

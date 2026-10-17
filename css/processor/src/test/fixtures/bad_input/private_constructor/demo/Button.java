@@ -1,10 +1,14 @@
 package demo;
+
+import org.jspecify.annotations.NullMarked;
 import react4j.css.Css;
-@org.jspecify.annotations.NullMarked
+
+@NullMarked
 @Css("""
     color: red;
     """)
 abstract class Button {
-    abstract java.lang.String style();
+    abstract String style();
+
     private Button() {}
 }

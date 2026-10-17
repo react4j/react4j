@@ -36,8 +36,8 @@ public final class GoldenUpdater {
                         throw new IllegalArgumentException(
                                 "Declare and review the new golden before copying: " + target);
                     }
-                    if (Files.mismatch(file, original) != -1 && Files.mismatch(file, target) != -1) {
-                        if (Files.mismatch(original, target) != -1) {
+                    if (-1 != Files.mismatch(file, original) && -1 != Files.mismatch(file, target)) {
+                        if (-1 != Files.mismatch(original, target)) {
                             throw new IllegalArgumentException("Golden changed during generation: " + target);
                         }
                         changed.add(relative);

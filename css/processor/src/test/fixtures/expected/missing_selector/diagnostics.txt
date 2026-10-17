@@ -1,1 +1,1 @@
-ERROR demo/Button.java:4:6: demo/Button.java:5:5: Accessor success() has no matching local selector
+ERROR demo/Button.java:7:6: demo/Button.java:8:5: Accessor success() has no matching local selector

@@ -44,30 +44,13 @@ public final class CssProcessorTest {
             var names = jar.stream().map(entry -> entry.getName()).toList();
             assertTrue(names.contains("react4j/css/processor/vendor/helger/css/CSSSourceLocation.class"));
             assertTrue(names.contains("react4j/css/processor/vendor/slf4j/Logger.class"));
-            assertTrue(names.contains("META-INF/LICENSE"));
-            assertTrue(names.contains("META-INF/licenses/ph-css-8.2.3.jar/NOTICE"));
-            assertTrue(names.contains("META-INF/licenses/ph-base-12.5.1.jar/NOTICE"));
-            assertTrue(names.contains("META-INF/licenses/slf4j-api-2.0.18.jar/META-INF/LICENSE.txt"));
             assertFalse(
                     names.stream()
                             .anyMatch(name -> name.endsWith(".class") && !name.startsWith("react4j/css/processor/")),
                     names.toString());
-            for (var entry : Map.of(
-                            "META-INF/licenses/ph-css-8.2.3.jar/NOTICE", "phloc systems",
-                            "META-INF/licenses/ph-base-12.5.1.jar/NOTICE", "Robert Harder",
-                            "META-INF/licenses/slf4j-api-2.0.18.jar/META-INF/LICENSE.txt",
-                                    "Permission is hereby granted")
-                    .entrySet()) {
-                var notice = jar.getJarEntry(entry.getKey());
-                assertNotNull(notice);
-                assert notice != null;
-                try (var stream = jar.getInputStream(notice)) {
-                    assertTrue(new String(stream.readAllBytes(), StandardCharsets.UTF_8).contains(entry.getValue()));
-                }
-            }
             var service = jar.getJarEntry("META-INF/services/javax.annotation.processing.Processor");
             assertNotNull(service);
-            assert service != null;
+            assert null != service;
             try (var stream = jar.getInputStream(service)) {
                 assertEquals(
                         new String(stream.readAllBytes(), StandardCharsets.UTF_8),
@@ -142,7 +125,7 @@ public final class CssProcessorTest {
         }
         assertFalse(sources.isEmpty(), name);
         var result = compile(sources);
-        assertEquals(result.success(), family.equals("input"), name + ": " + result.diagnostics());
+        assertEquals(result.success(), "input".equals(family), name + ": " + result.diagnostics());
         if (result.success()) {
             assertEquals(result.diagnostics(), "", name);
         }
@@ -202,7 +185,7 @@ public final class CssProcessorTest {
                             directory.resolve("generated"), directory.resolve("classes"), applicationClasspath()));
             String message = failure.getMessage();
             assertNotNull(message);
-            assert message != null;
+            assert null != message;
             assertTrue(message.contains("[NullAway] returning @Nullable expression"), message);
         } finally {
             delete(directory);
@@ -291,7 +274,7 @@ public final class CssProcessorTest {
             String messages = diagnostics.getDiagnostics().stream()
                     .map(diagnostic -> {
                         var source = diagnostic.getSource();
-                        String location = source == null
+                        String location = null == source
                                 ? ""
                                 : source.getName().replace(directory + "/", "") + ":" + diagnostic.getLineNumber() + ":"
                                         + diagnostic.getColumnNumber() + ": ";

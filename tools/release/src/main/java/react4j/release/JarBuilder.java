@@ -31,7 +31,7 @@ public final class JarBuilder {
 
     /** Merges the declared jars and resources into one release archive. */
     public static void main(final String[] args) throws Exception {
-        if (args.length == 0 || !"merge".equals(args[0])) {
+        if (0 == args.length || !"merge".equals(args[0])) {
             throw new IllegalArgumentException("Usage: merge --output <jar> --input <jar>...");
         }
 
@@ -39,13 +39,9 @@ public final class JarBuilder {
         final var resources = new ArrayList<Resource>();
         final var relocations = new LinkedHashMap<String, String>();
         final var exclusions = new LinkedHashSet<String>();
-        boolean preserveDependencyNotices = false;
         Path output = null;
         for (int i = 1; i < args.length; i++) {
             switch (args[i]) {
-                case "--preserve-dependency-notices":
-                    preserveDependencyNotices = true;
-                    break;
                 case "--output":
                     output = Path.of(args[++i]);
                     break;
@@ -70,10 +66,10 @@ public final class JarBuilder {
                     throw new IllegalArgumentException("Unknown argument: " + args[i]);
             }
         }
-        if (output == null) {
+        if (null == output) {
             throw new IllegalArgumentException("Missing --output");
         }
-        merge(output, inputs, resources, relocations, exclusions, preserveDependencyNotices);
+        merge(output, inputs, resources, relocations, exclusions);
     }
 
     private static Resource parseResource(final String arg) {
@@ -89,13 +85,12 @@ public final class JarBuilder {
             final List<Path> inputs,
             final List<Resource> resources,
             final Map<String, String> relocations,
-            final LinkedHashSet<String> exclusions,
-            final boolean preserveDependencyNotices)
+            final LinkedHashSet<String> exclusions)
             throws IOException {
         final var entries = new LinkedHashMap<String, byte[]>();
         final var services = new TreeMap<String, LinkedHashSet<String>>();
         for (final Path input : inputs) {
-            mergeJar(input, entries, services, relocations, exclusions, preserveDependencyNotices);
+            mergeJar(input, entries, services, relocations, exclusions);
         }
         for (final Resource resource : resources) {
             entries.put(resource.entryName(), Files.readAllBytes(resource.path()));
@@ -122,22 +117,12 @@ public final class JarBuilder {
             final Map<String, byte[]> entries,
             final Map<String, LinkedHashSet<String>> services,
             final Map<String, String> relocations,
-            final LinkedHashSet<String> exclusions,
-            final boolean preserveDependencyNotices)
+            final LinkedHashSet<String> exclusions)
             throws IOException {
         try (JarFile jar = new JarFile(input.toFile())) {
             final var jarEntries = Collections.list(jar.entries());
             jarEntries.sort(Comparator.comparing(ZipEntry::getName));
             for (final JarEntry entry : jarEntries) {
-                final String originalName = entry.getName();
-                if (preserveDependencyNotices && !entry.isDirectory() && isDependencyNotice(originalName)) {
-                    addEntry(
-                            entries,
-                            "META-INF/licenses/" + input.getFileName() + "/" + originalName,
-                            read(jar, entry),
-                            false);
-                    continue;
-                }
                 final String name = relocate(relocate(entry.getName(), relocations, '/'), relocations, '.');
                 if (entry.isDirectory()
                         || shouldSkip(name)
@@ -177,7 +162,7 @@ public final class JarBuilder {
     private static byte[] relocateClass(final byte[] content, final Map<String, String> relocations)
             throws IOException {
         // Rewrite names in constant-pool strings while leaving class structure and bytecode intact.
-        if (content.length < 10 || readU4(content, 0) != 0xCAFEBABEL) {
+        if (content.length < 10 || 0xCAFEBABEL != readU4(content, 0)) {
             throw new IOException("Invalid class file in release jar");
         }
         final int count = readU2(content, 8);
@@ -187,7 +172,7 @@ public final class JarBuilder {
         for (int index = 1; index < count; index++) {
             final int tag = content[offset++];
             output.write(tag);
-            if (tag == 1) {
+            if (1 == tag) {
                 final int length = readU2(content, offset);
                 offset += 2;
                 byte[] value = Arrays.copyOfRange(content, offset, offset + length);
@@ -216,7 +201,7 @@ public final class JarBuilder {
                         };
                 output.write(content, offset, size);
                 offset += size;
-                if (tag == 5 || tag == 6) {
+                if (5 == tag || 6 == tag) {
                     index++;
                 }
             }
@@ -266,15 +251,6 @@ public final class JarBuilder {
                 || (name.startsWith("META-INF/versions/") && name.endsWith("/module-info.class"));
     }
 
-    private static boolean isDependencyNotice(final String name) {
-        final String upper = name.toUpperCase(Locale.ROOT);
-        return isLegalMetadata(name)
-                || upper.equals("LICENSE")
-                || upper.equals("NOTICE")
-                || upper.equals("LICENSE.TXT")
-                || upper.equals("NOTICE.TXT");
-    }
-
     private static boolean isLegalMetadata(final String name) {
         final var upper = name.toUpperCase(Locale.ROOT);
         return upper.startsWith("META-INF/LICENSE")
@@ -304,7 +280,7 @@ public final class JarBuilder {
             final Map<String, byte[]> entries, final String name, final byte[] content, final boolean keepFirst)
             throws IOException {
         final byte[] existing = entries.get(name);
-        if (existing == null) {
+        if (null == existing) {
             entries.put(name, content);
         } else if (keepFirst || Arrays.equals(existing, content)) {
             return;

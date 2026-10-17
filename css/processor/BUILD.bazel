@@ -9,11 +9,15 @@ release_jar(
     out = "css-processor.jar",
     exclude_prefixes = [
         "org/jspecify/",
+        "LICENSE",
+        "NOTICE",
+        "META-INF/LICENSE",
+        "META-INF/NOTICE",
+        "META-INF/DEPENDENCIES",
         "META-INF/versions/",
         "META-INF/buildinfo.xml",
         "META-INF/sbom/",
     ],
-    preserve_dependency_notices = True,
     relocations = [
         "com.helger=react4j.css.processor.vendor.helger",
         "org.slf4j=react4j.css.processor.vendor.slf4j",

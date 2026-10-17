@@ -30,7 +30,7 @@ public final class CssProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment round) {
         var annotationType = processingEnv.getElementUtils().getTypeElement(CSS_ANNOTATION);
-        if (annotationType == null) {
+        if (null == annotationType) {
             return false;
         }
         for (var element : round.getElementsAnnotatedWith(annotationType)) {
@@ -44,7 +44,7 @@ public final class CssProcessor extends AbstractProcessor {
     }
 
     private void process(TypeElement owner) throws IOException {
-        if (owner.getKind() != ElementKind.CLASS
+        if (ElementKind.CLASS != owner.getKind()
                 || !owner.getModifiers().contains(Modifier.ABSTRACT)
                 || !owner.getTypeParameters().isEmpty()
                 || !owner.getInterfaces().isEmpty()
@@ -58,12 +58,12 @@ public final class CssProcessor extends AbstractProcessor {
         var methods = new ArrayList<ExecutableElement>();
         boolean constructor = false;
         for (var member : owner.getEnclosedElements()) {
-            if (member.getKind() == ElementKind.CONSTRUCTOR) {
+            if (ElementKind.CONSTRUCTOR == member.getKind()) {
                 var candidate = (ExecutableElement) member;
                 constructor |= candidate.getParameters().isEmpty()
                         && candidate.getThrownTypes().isEmpty()
                         && !candidate.getModifiers().contains(Modifier.PRIVATE);
-            } else if (member.getKind() == ElementKind.METHOD
+            } else if (ElementKind.METHOD == member.getKind()
                     && member.getModifiers().contains(Modifier.ABSTRACT)) {
                 var method = (ExecutableElement) member;
                 if (!method.getParameters().isEmpty()
@@ -85,7 +85,7 @@ public final class CssProcessor extends AbstractProcessor {
             throw new IllegalArgumentException("@Css style classes require abstract String style()");
         }
         var annotation = owner.getAnnotationMirrors().stream()
-                .filter(a -> a.getAnnotationType().toString().equals(CSS_ANNOTATION))
+                .filter(a -> CSS_ANNOTATION.equals(a.getAnnotationType().toString()))
                 .findFirst()
                 .orElseThrow();
         var value = annotation.getElementValues().values().iterator().next();
@@ -101,8 +101,8 @@ public final class CssProcessor extends AbstractProcessor {
         var start = (int) trees.getSourcePositions().getStartPosition(unit, literal);
         var end = (int) trees.getSourcePositions().getEndPosition(unit, literal);
         var block = TextBlock.decode(source.substring(start, end), start, css);
-        String root =
-                Names.root(processingEnv.getElementUtils().getBinaryName(owner).toString());
+        String binaryName = processingEnv.getElementUtils().getBinaryName(owner).toString();
+        String root = Names.root(binaryName);
         String result;
         try {
             result = CssCompiler.component(
@@ -124,7 +124,6 @@ public final class CssProcessor extends AbstractProcessor {
                 .getPackageOf(owner)
                 .getQualifiedName()
                 .toString();
-        String binaryName = processingEnv.getElementUtils().getBinaryName(owner).toString();
         String localName = binaryName.substring(packageName.isEmpty() ? 0 : packageName.length() + 1);
         String generated = "Styled_" + Names.encode(localName);
         String qualified = packageName.isEmpty() ? generated : packageName + "." + generated;
@@ -153,7 +152,7 @@ public final class CssProcessor extends AbstractProcessor {
                     .append(name)
                     .append("() { return \"")
                     .append(root);
-            if (!name.equals("style")) {
+            if (!"style".equals(name)) {
                 java.append(' ').append(root).append("--").append(Names.encode(name));
             }
             java.append("\"; }\n");
