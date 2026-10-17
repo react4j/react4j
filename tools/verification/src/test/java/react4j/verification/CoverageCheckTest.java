@@ -20,6 +20,8 @@ public final class CoverageCheckTest {
         for (var module : List.of("core", "dom", "processor")) {
             result.append(record(module + "/src/main/java/demo/Example.java", 10, 1, 2, 1));
         }
+        result.append(record("css/internal/src/main/java/react4j/css/internal/SourceMap.java", 100, 100, 100, 100));
+        result.append(record("css/bundler/src/main/java/react4j/css/bundler/Bundle.java", 100, 100, 100, 100));
         result.append(record(CSS + "Names.java", 12, 12, 16, 16));
         result.append(record(CSS + "CssCompiler.java", 176, 169, 120, 107));
         return result.append(textBlockRecord).toString();

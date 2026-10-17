@@ -1,0 +1,214 @@
+package react4j.css.bundler;
+
+import static org.testng.Assert.*;
+
+import com.google.debugging.sourcemap.SourceMapConsumerV3;
+import com.google.gson.JsonParser;
+import com.helger.css.reader.CSSReader;
+import com.helger.css.reader.CSSReaderSettings;
+import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import org.jspecify.annotations.Nullable;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import react4j.css.internal.SourceMap;
+
+public final class BundleTest {
+    private @Nullable Path directory;
+
+    @BeforeMethod
+    public void prepare() throws Exception {
+        directory = Files.createTempDirectory("css-bundle-test-");
+    }
+
+    @AfterMethod
+    public void clean() throws Exception {
+        try (var files = Files.walk(dir())) {
+            for (var path : files.sorted(Comparator.reverseOrder()).toList()) {
+                Files.delete(path);
+            }
+        }
+    }
+
+    private Path dir() {
+        return Objects.requireNonNull(directory);
+    }
+
+    private Path tree(String name) throws Exception {
+        return Files.createDirectories(dir().resolve(name));
+    }
+
+    private static void component(Path tree, String name, String css) throws Exception {
+        var mapped = new SourceMap.Writer()
+                .append(css, new SourceMap.Location(name + ".java", "class A {\n  // " + css + "\n}\n", 1, 5));
+        Path path = tree.resolve(name + ".css");
+        Files.createDirectories(Objects.requireNonNull(path.getParent()));
+        Files.writeString(path, css + SourceMap.reference(path.getFileName().toString()));
+        Files.writeString(Path.of(path + ".map"), mapped.map(path.getFileName().toString()));
+    }
+
+    @Test
+    public void assemblyDeduplicatesTreesSortsOwnersAndComposesReadableMaps() throws Exception {
+        Path one = tree("one");
+        Path two = tree("two");
+        component(one, "demo/Z", ".z{color:green;}");
+        component(two, "demo/A", ".a{color:red;}");
+        Files.writeString(one.resolve("unused.js"), "ignored");
+        Files.writeString(one.resolve("unused.js.map"), "ignored");
+        Path shared = dir().resolve("base.css");
+        String original = "button {\r\n  color: blue;\r\n}\r\n";
+        Files.writeString(shared, original);
+        var result = Bundle.assemble(List.of(one, two, one), List.of(shared), "application.css");
+        assertEquals(result, Bundle.assemble(List.of(two, one), List.of(shared), "application.css"));
+        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
+                result.css(), new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+        var layers = sheet.getAllLayerRules();
+        assertEquals(layers.size(), 3);
+        assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "components"));
+        assertEquals(layers.get(1).getAllSelectors(), List.of("shared"));
+        assertEquals(layers.get(1).getRuleCount(), 1);
+        assertEquals(layers.get(2).getAllSelectors(), List.of("components"));
+        assertEquals(layers.get(2).getRuleCount(), 2);
+    }
+
+    @Test
+    public void layersAndSourceMapSectionsRetainInputOrder() throws Exception {
+        Path one = tree("one");
+        component(one, "demo/Z", ".z{color:green;}");
+        component(one, "demo/A", ".a{color:red;}");
+        Path first = dir().resolve("first.css");
+        Path second = dir().resolve("second.css");
+        Files.writeString(first, "button { color: red; }\r\n");
+        Files.writeString(second, "@media screen { button { color: blue; } }\n");
+        var result = Bundle.assemble(List.of(one), List.of(first, second), "app.css");
+        assertTrue(result.css().indexOf("color: red") < result.css().indexOf("@media"));
+        assertTrue(result.css().indexOf(".a{") < result.css().indexOf(".z{"));
+        var parsed = JsonParser.parseString(result.map()).getAsJsonObject();
+        assertEquals(parsed.get("file").getAsString(), "app.css");
+        assertEquals(parsed.getAsJsonArray("sections").size(), 4);
+        assertEquals(
+                parsed.getAsJsonArray("sections")
+                        .get(0)
+                        .getAsJsonObject()
+                        .getAsJsonObject("map")
+                        .getAsJsonArray("sourcesContent")
+                        .get(0)
+                        .getAsString(),
+                Files.readString(first));
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(result.map());
+        int start = result.css().indexOf(".z{");
+        int line = (int) result.css()
+                        .substring(0, start)
+                        .chars()
+                        .filter(c -> '\n' == c)
+                        .count()
+                + 1;
+        var original = Objects.requireNonNull(consumer.getMappingForLine(line, 1));
+        assertEquals(original.getOriginalFile(), "demo/Z.java");
+        assertEquals(original.getLineNumber(), 2);
+        assertEquals(original.getColumnPosition(), 6);
+    }
+
+    @Test
+    public void emptyInputsRetainPrecedenceWithoutEmptyLayers() throws Exception {
+        Path empty = tree("empty");
+        Path shared = dir().resolve("comments.css");
+        Files.writeString(shared, "/* comments */");
+        component(empty, "Empty", "");
+        for (var result : List.of(
+                Bundle.assemble(List.of(), List.of(), "empty.css"),
+                Bundle.assemble(List.of(empty), List.of(shared), "empty.css"))) {
+            assertEquals(result.css(), "@layer shared,components;\n");
+            assertEquals(
+                    JsonParser.parseString(result.map())
+                            .getAsJsonObject()
+                            .getAsJsonArray("sections")
+                            .size(),
+                    0);
+        }
+    }
+
+    @Test
+    public void sharedRulesCannotOverrideTheLayerContract() throws Exception {
+        Path shared = dir().resolve("bad.css");
+        for (var css : List.of(
+                "button { color: red !important; }",
+                "@import 'missing.css';",
+                "@layer components { body { color: red; } }",
+                "button { color red; }")) {
+            Files.writeString(shared, css);
+            var error = expectThrows(
+                    IllegalArgumentException.class, () -> Bundle.assemble(List.of(), List.of(shared), "app.css"));
+            assertTrue(String.valueOf(error.getMessage()).startsWith(shared.toString()), error.getMessage());
+        }
+    }
+
+    @Test
+    public void rejectsMissingConflictingAndMalformedResourcePairs() throws Exception {
+        Path one = tree("one");
+        Path two = tree("two");
+        component(one, "A", ".a{color:red;}");
+        component(two, "A", ".a{color:red;}");
+        var duplicate = expectThrows(
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(one, two), List.of(), "app.css"));
+        assertTrue(String.valueOf(duplicate.getMessage()).contains("Duplicate CSS resource"));
+        Files.delete(two.resolve("A.css.map"));
+        expectThrows(IllegalArgumentException.class, () -> Bundle.assemble(List.of(two), List.of(), "app.css"));
+        Files.delete(two.resolve("A.css"));
+        Files.writeString(two.resolve("A.css.map"), "{}");
+        expectThrows(IllegalArgumentException.class, () -> Bundle.assemble(List.of(two), List.of(), "app.css"));
+        Path map = one.resolve("A.css.map");
+        for (var invalid : List.of("{", "[]", "{}", "{\"version\":2}", "{\"version\":3,\"file\":\"wrong.css\"}")) {
+            Files.writeString(map, invalid);
+            expectThrows(IllegalArgumentException.class, () -> Bundle.assemble(List.of(one), List.of(), "app.css"));
+        }
+        component(one, "A", ".a{color:red;}");
+        Files.writeString(one.resolve("A.css"), ".a{color:red;}");
+        expectThrows(IllegalArgumentException.class, () -> Bundle.assemble(List.of(one), List.of(), "app.css"));
+    }
+
+    @Test
+    public void commandUsesExplicitOutputNamesAndRejectsInvalidArguments() throws Exception {
+        Path css = dir().resolve("theme.css");
+        Path map = dir().resolve("theme.map");
+        Path input = tree("input");
+        component(input, "A", ".a{color:red;}");
+        Path shared = dir().resolve("base.css");
+        Files.writeString(shared, "button { color: blue; }");
+        Path arguments = dir().resolve("arguments");
+        Files.writeString(
+                arguments,
+                String.join(
+                        "\n",
+                        "--css",
+                        css.toString(),
+                        "--map",
+                        map.toString(),
+                        "--input",
+                        input.toString(),
+                        "--shared",
+                        shared.toString()));
+        Bundle.main(new String[] {"@" + arguments});
+        assertTrue(Files.readString(css).endsWith("/*# sourceMappingURL=theme.map */\n"));
+        assertEquals(
+                JsonParser.parseString(Files.readString(map))
+                        .getAsJsonObject()
+                        .get("file")
+                        .getAsString(),
+                "theme.css");
+        for (var args : List.of(
+                List.of("--css"),
+                List.<String>of(),
+                List.of("--unknown", "x"),
+                List.of("--css", "x", "--css", "y"),
+                List.of("--css", "x", "--map", "x"))) {
+            expectThrows(IllegalArgumentException.class, () -> Bundle.run(args));
+        }
+    }
+}

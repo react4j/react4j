@@ -3,7 +3,6 @@ package react4j.css.processor;
 import static org.testng.Assert.*;
 
 import com.helger.css.decl.CSSDeclaration;
-import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSMediaRule;
 import com.helger.css.decl.CSSSelector;
@@ -25,12 +24,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.testng.annotations.Test;
+import react4j.css.internal.CssSyntax;
+import react4j.css.internal.SourceMap;
 
 public final class CssCompilerTest {
     private static final String ROOT = "jcss-demo-Button";
 
     private static String component(String css, String... modifiers) {
-        return CssCompiler.component(css, ROOT, List.of(modifiers));
+        return CssCompiler.component(
+                        css, ROOT, List.of(modifiers), offset -> new SourceMap.Location("Button.java", css, 0, offset))
+                .css();
     }
 
     private static CascadingStyleSheet parse(String css) {
@@ -186,86 +189,22 @@ public final class CssCompilerTest {
                         Map.entry("} body { color: red; } /*", "Invalid CSS"),
                         Map.entry("@media (width > 1px) { color: red; }", "Invalid CSS"))
                 .entrySet()) {
-            var error = expectThrows(CssCompiler.InvalidCss.class, () -> component(entry.getKey(), "style", "success"));
+            var error = expectThrows(CssSyntax.InvalidCss.class, () -> component(entry.getKey(), "style", "success"));
             assertTrue(
                     String.valueOf(error.getMessage()).contains(entry.getValue()),
                     entry.getKey() + ": " + error.getMessage());
         }
-        var animation = expectThrows(CssCompiler.InvalidCss.class, () -> component("ANIMATION: pulse 1s;", "style"));
+        var animation = expectThrows(CssSyntax.InvalidCss.class, () -> component("ANIMATION: pulse 1s;", "style"));
         assertTrue(String.valueOf(animation.getMessage()).contains("keyframe bindings"), animation.getMessage());
     }
 
     @Test
     public void diagnosticsUseOriginalCssOffsets() {
         String source = "color: red;\n\t&.typo { color: blue; }";
-        var error = expectThrows(CssCompiler.InvalidCss.class, () -> component(source, "style"));
+        var error = expectThrows(CssSyntax.InvalidCss.class, () -> component(source, "style"));
         assertEquals(error.offset(), source.indexOf(".typo"));
-        var malformed = expectThrows(CssCompiler.InvalidCss.class, () -> component("color red;", "style"));
+        var malformed = expectThrows(CssSyntax.InvalidCss.class, () -> component("color red;", "style"));
         assertTrue(String.valueOf(malformed.getMessage()).contains("Invalid CSS"), malformed.getMessage());
-    }
-
-    @Test
-    public void sharedAndComponentLayersAreDeterministicAndChecked() {
-        String fragment = component("color: var(--color);", "style");
-        var shared = List.of(":root { --color: red; } button { color: blue; }");
-        String bundled = CssCompiler.bundle(shared, List.of(fragment));
-        assertEquals(bundled, CssCompiler.bundle(shared, List.of(fragment)));
-        var sheet = parse(bundled);
-        assertEquals(sheet.getRuleCount(), 3);
-        // CSSLayerRule.equals compares only the class, so assert layer contents explicitly.
-        var layers = sheet.getAllLayerRules();
-        assertEquals(layers.size(), 3);
-        assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "components"));
-        assertEquals(layers.get(0).getRuleCount(), 0);
-        assertEquals(layers.get(1).getAllSelectors(), List.of("shared"));
-        assertEquals(layers.get(1).getRuleCount(), 2);
-        var sharedRules = layers.get(1).getAllStyleRules();
-        assertEquals(value(Objects.requireNonNull(sharedRules.get(0).getDeclarationOfPropertyName("--color"))), "red");
-        assertEquals(value(Objects.requireNonNull(sharedRules.get(1).getDeclarationOfPropertyName("color"))), "blue");
-        var components = layers.get(2);
-        assertEquals(components.getAllSelectors(), List.of("components"));
-        assertEquals(components.getRuleCount(), 1);
-        var rule = components.getAllStyleRules().get(0);
-        assertEquals(selectorValues(rule.getAllSelectors().get(0)), List.of("." + ROOT));
-        var declaration = Objects.requireNonNull(rule.getDeclarationOfPropertyName("color"));
-        var function = (CSSExpressionMemberFunction)
-                declaration.getExpression().getAllMembers().get(0);
-        assertEquals(function.getFunctionName(), "var");
-        assertEquals(
-                Objects.requireNonNull(function.getExpression())
-                        .getAllSimpleMembers()
-                        .get(0)
-                        .getValue(),
-                "--color");
-        expectThrows(
-                CssCompiler.InvalidCss.class,
-                () -> CssCompiler.bundle(List.of("button { color: red !important; }"), List.of(fragment)));
-        expectThrows(
-                CssCompiler.InvalidCss.class,
-                () -> CssCompiler.bundle(List.of("@import 'missing.css';"), List.of(fragment)));
-        expectThrows(
-                CssCompiler.InvalidCss.class,
-                () -> CssCompiler.bundle(List.of("@layer components { body { color: red; } }"), List.of(fragment)));
-    }
-
-    @Test
-    public void emptyLayerBodiesRetainDeclaredPrecedence() {
-        for (var css : List.of(
-                CssCompiler.bundle(List.of(), List.of()),
-                CssCompiler.bundle(List.of("/* no shared rules */"), List.of("")))) {
-            var sheet = parse(css);
-            assertEquals(sheet.getRuleCount(), 1);
-            var layers = sheet.getAllLayerRules();
-            assertEquals(layers.size(), 1);
-            assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "components"));
-            assertEquals(layers.get(0).getRuleCount(), 0);
-        }
-        var sheet = parse(CssCompiler.bundle(List.of("button { color: blue; }"), List.of()));
-        assertEquals(sheet.getRuleCount(), 2);
-        var layers = sheet.getAllLayerRules();
-        assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "components"));
-        assertEquals(layers.get(1).getAllSelectors(), List.of("shared"));
-        assertEquals(layers.get(1).getStyleRuleCount(), 1);
     }
 
     @Test
@@ -331,64 +270,29 @@ public final class CssCompilerTest {
     @Test
     public void rejectsRootEscapesReservedModifiersAndUnanchoredSelectors() {
         for (var css : List.of("} body { color: red; } .other {", "} @media screen {")) {
-            var error = expectThrows(CssCompiler.InvalidCss.class, () -> component(css, "style"));
+            var error = expectThrows(CssSyntax.InvalidCss.class, () -> component(css, "style"));
             assertEquals(error.getMessage(), "Component CSS must remain inside its implicit root");
             assertEquals(error.offset(), 0);
         }
         for (var css : List.of(".success { color: red; }", "button { color: red; }")) {
-            var error = expectThrows(CssCompiler.InvalidCss.class, () -> component(css, "style", "success"));
+            var error = expectThrows(CssSyntax.InvalidCss.class, () -> component(css, "style", "success"));
             assertEquals(error.getMessage(), "Component selectors must start with &");
             assertEquals(error.offset(), 0);
         }
-        var reserved = expectThrows(CssCompiler.InvalidCss.class, () -> component("&.style { color: red; }", "style"));
+        var reserved = expectThrows(CssSyntax.InvalidCss.class, () -> component("&.style { color: red; }", "style"));
         assertEquals(reserved.getMessage(), "Local selector .style has no matching modifier accessor");
         assertEquals(reserved.offset(), 1);
         assertEquals(component("/* no declarations */", "style"), "");
     }
 
     @Test
-    public void sharedFilesKeepInputOrderAndConditionalRules() {
-        var sheet = parse(CssCompiler.bundle(
-                List.of(
-                        "button { color: red; }",
-                        "@media screen { button { color: green; } } @supports (display: grid) { body { display: grid;"
-                                + " } }",
-                        "button { color: blue; }"),
-                List.of()));
-        var shared = sheet.getAllLayerRules().get(1);
-        assertEquals(shared.getRuleCount(), 4);
-        assertEquals(
-                value(Objects.requireNonNull(
-                        ((CSSStyleRule) shared.getAllRules().get(0)).getDeclarationOfPropertyName("color"))),
-                "red");
-        assertTrue(shared.getAllRules().get(1) instanceof CSSMediaRule);
-        assertTrue(shared.getAllRules().get(2) instanceof CSSSupportsRule);
-        assertEquals(
-                value(Objects.requireNonNull(
-                        ((CSSStyleRule) shared.getAllRules().get(3)).getDeclarationOfPropertyName("color"))),
-                "blue");
-    }
-
-    @Test
     public void parserDiagnosticsRejectPropertyHacksAndIllegalCharacters() {
-        var hack = expectThrows(CssCompiler.InvalidCss.class, () -> component("*color: red;", "style"));
+        var hack = expectThrows(CssSyntax.InvalidCss.class, () -> component("*color: red;", "style"));
         assertTrue(String.valueOf(hack.getMessage()).startsWith("Invalid CSS:"), hack.getMessage());
         assertEquals(hack.offset(), 1);
         String source = "color: red;\u0001";
-        var illegal = expectThrows(CssCompiler.InvalidCss.class, () -> component(source, "style"));
+        var illegal = expectThrows(CssSyntax.InvalidCss.class, () -> component(source, "style"));
         assertEquals(illegal.getMessage(), "Illegal CSS character");
         assertEquals(illegal.offset(), source.length() - 1);
-    }
-
-    @Test
-    public void sharedSyntaxErrorsUseParserLocationsWithoutComponentPrefix() {
-        String source = "button { color red; }";
-        var error = expectThrows(CssCompiler.InvalidCss.class, () -> CssCompiler.bundle(List.of(source), List.of()));
-        assertTrue(String.valueOf(error.getMessage()).startsWith("Invalid CSS:"), error.getMessage());
-        assertEquals(error.offset(), source.indexOf(';'));
-        String incomplete = "button { color:";
-        var eof = expectThrows(CssCompiler.InvalidCss.class, () -> CssCompiler.bundle(List.of(incomplete), List.of()));
-        assertTrue(String.valueOf(eof.getMessage()).startsWith("Invalid CSS:"), eof.getMessage());
-        assertEquals(eof.offset(), incomplete.indexOf(':'));
     }
 }

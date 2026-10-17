@@ -4,8 +4,10 @@ import com.sun.source.tree.LiteralTree;
 import com.sun.source.util.Trees;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -19,6 +21,8 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
+import react4j.css.internal.CssSyntax;
+import react4j.css.internal.SourceMap;
 
 /** Validates component CSS in the JVM, then emits static bindings and CSS resources. */
 @SupportedAnnotationTypes("react4j.css.Css")
@@ -103,13 +107,31 @@ public final class CssProcessor extends AbstractProcessor {
         var block = TextBlock.decode(source.substring(start, end), start, css);
         String binaryName = processingEnv.getElementUtils().getBinaryName(owner).toString();
         String root = Names.root(binaryName);
-        String result;
+        String sourceName = processingEnv
+                .getElementUtils()
+                .getPackageOf(owner)
+                .getQualifiedName()
+                .toString()
+                .replace('.', '/');
+        sourceName = (sourceName.isEmpty() ? "" : sourceName + "/")
+                + Path.of(unit.getSourceFile().getName()).getFileName();
+        final String mappedSource = sourceName;
+        SourceMap.Writer result;
         try {
             result = CssCompiler.component(
                     block.value(),
                     root,
-                    methods.stream().map(m -> m.getSimpleName().toString()).toList());
-        } catch (CssCompiler.InvalidCss e) {
+                    methods.stream().map(m -> m.getSimpleName().toString()).toList(),
+                    offset -> {
+                        int original =
+                                block.offsets()[Math.min(offset, block.value().length())];
+                        return new SourceMap.Location(
+                                mappedSource,
+                                source,
+                                (int) unit.getLineMap().getLineNumber(original) - 1,
+                                (int) unit.getLineMap().getColumnNumber(original) - 1);
+                    });
+        } catch (CssSyntax.InvalidCss e) {
             int offset = block.offsets()[Math.max(0, Math.min(block.value().length(), e.offset()))];
             String location =
                     unit.getSourceFile().getName() + ":" + unit.getLineMap().getLineNumber(offset) + ":"
@@ -162,11 +184,16 @@ public final class CssProcessor extends AbstractProcessor {
                 processingEnv.getFiler().createSourceFile(qualified, owner).openWriter()) {
             writer.write(java.toString());
         }
-        try (var stream = processingEnv
-                .getFiler()
-                .createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/jcss/" + root + ".css", owner)
-                .openOutputStream()) {
-            stream.write(result.getBytes(StandardCharsets.UTF_8));
+        String resource = binaryName.replace('.', '/') + ".css";
+        String file = resource.substring(resource.lastIndexOf('/') + 1);
+        for (var entry : Map.of(resource, result.css() + SourceMap.reference(file), resource + ".map", result.map(file))
+                .entrySet()) {
+            try (var stream = processingEnv
+                    .getFiler()
+                    .createResource(StandardLocation.CLASS_OUTPUT, "", entry.getKey(), owner)
+                    .openOutputStream()) {
+                stream.write(entry.getValue().getBytes(StandardCharsets.UTF_8));
+            }
         }
     }
 

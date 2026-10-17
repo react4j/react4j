@@ -29,13 +29,15 @@ public final class CoverageCheck {
 
     static String summarize(String report) {
         final var modules = new LinkedHashMap<String, Counts>();
-        for (final var module : List.of("core", "dom", "processor", "css/processor")) {
+        for (final var module : List.of("core", "dom", "processor", "css/processor", "css/internal", "css/bundler")) {
             modules.put(module, new Counts());
         }
         final var cssUnits = new LinkedHashMap<String, Counts>();
         for (final var name : List.of("Names", "TextBlock", "CssCompiler")) {
             cssUnits.put("css/processor/src/main/java/react4j/css/processor/" + name + ".java", new Counts());
         }
+        cssUnits.put("css/internal/src/main/java/react4j/css/internal/SourceMap.java", new Counts());
+        cssUnits.put("css/bundler/src/main/java/react4j/css/bundler/Bundle.java", new Counts());
         final var sources = new HashSet<String>();
         for (final var record : report.split("end_of_record")) {
             final var fields = new HashMap<String, String>();

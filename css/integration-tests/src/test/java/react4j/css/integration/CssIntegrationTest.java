@@ -2,6 +2,8 @@ package react4j.css.integration;
 
 import static org.testng.Assert.*;
 
+import com.google.debugging.sourcemap.SourceMapConsumerV3;
+import com.google.gson.JsonParser;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
@@ -16,7 +18,7 @@ import org.testng.annotations.Test;
 
 public final class CssIntegrationTest {
     @Test
-    public void extractionUsesDeclaredApplicationClasspath() throws Exception {
+    public void j2clCompilationAndDependencyGraphAssemblyUseDeclaredInputs() throws Exception {
         var styles = ButtonStyles.of();
         String root = "jcss-react4j-css-integration-ButtonStyles";
         assertEquals(styles.style(), root);
@@ -37,12 +39,47 @@ public final class CssIntegrationTest {
         assertEquals(layers.get(0).getRuleCount(), 0);
         var components = layers.get(1);
         assertEquals(components.getAllSelectors(), List.of("components"));
-        assertEquals(components.getRuleCount(), 3);
+        assertEquals(components.getRuleCount(), 4);
         var rules = components.getAllStyleRules();
-        assertEquals(rules.size(), 3);
+        assertEquals(rules.size(), 4);
         assertStyle(rules.get(0), List.of("." + root), "color", "white");
         assertStyle(rules.get(1), List.of("." + root, "." + root + "--success"), "background-color", "green");
         assertStyle(rules.get(2), List.of("." + root, "." + root + "--cancel"), "background-color", "red");
+    }
+
+    @Test
+    public void resourcesSurviveJ2clAndBundledMapsPointToTheOriginalJava() throws Exception {
+        var tree = Path.of(Objects.requireNonNull(System.getProperty("css.tree")));
+        Path fragment = tree.resolve("react4j/css/integration/ButtonStyles.css");
+        assertTrue(Files.isRegularFile(fragment));
+        assertTrue(Files.isRegularFile(Path.of(fragment + ".map")));
+        assertTrue(Files.isRegularFile(tree.resolve("react4j/css/integration/ButtonStyles.impl.java.js")));
+        String css = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.fixture"))));
+        String map = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.map"))));
+        var indexed = JsonParser.parseString(map).getAsJsonObject();
+        assertEquals(indexed.getAsJsonArray("sections").size(), 2);
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(map);
+        int index = css.indexOf("background-color:green");
+        assertTrue(index >= 0);
+        int line = (int) css.substring(0, index).chars().filter(c -> '\n' == c).count() + 1;
+        int column = index - css.lastIndexOf('\n', index - 1);
+        var location = Objects.requireNonNull(consumer.getMappingForLine(line, column));
+        assertEquals(location.getOriginalFile(), "react4j/css/integration/ButtonStyles.java");
+        String source = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.source"))));
+        int original = source.indexOf("background-color: green");
+        assertEquals(
+                location.getLineNumber(),
+                (int) source.substring(0, original)
+                                .chars()
+                                .filter(c -> '\n' == c)
+                                .count()
+                        + 1);
+        assertEquals(location.getColumnPosition(), original - source.lastIndexOf('\n', original - 1));
+        var componentMap =
+                indexed.getAsJsonArray("sections").get(0).getAsJsonObject().getAsJsonObject("map");
+        assertEquals(componentMap.getAsJsonArray("sourcesContent").get(0).getAsString(), source);
+        assertTrue(css.endsWith("/*# sourceMappingURL=fixture.css.map */\n"));
     }
 
     private static void assertStyle(CSSStyleRule rule, List<String> selectors, String property, String value) {

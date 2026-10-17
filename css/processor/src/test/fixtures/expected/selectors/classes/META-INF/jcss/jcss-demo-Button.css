@@ -1,1 +1,0 @@
-.jcss-demo-Button{content:".fake";}.jcss-demo-Button:is(.jcss-demo-Button--success,:not(.jcss-demo-Button--cancel))[data-label=".fake"]{color:green;}.jcss-demo-Button:where(.jcss-demo-Button--cancel){color:red;}.jcss-demo-Button{color:blue;}

@@ -1,0 +1,18 @@
+load("//third_party/java:rules.bzl", "java_testng")
+
+java_testng(
+    name = "tests",
+    srcs = ["BundleTest.java"],
+    test_class = "react4j.css.bundler.BundleTest",
+    visibility = [
+        "//:__pkg__",
+        "//css:__pkg__",
+    ],
+    deps = [
+        "//css/bundler/src/main/java/react4j/css/bundler",
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party/java:ph_css",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:com_google_javascript_closure_compiler_unshaded",
+    ],
+)

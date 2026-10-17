@@ -1,35 +1,48 @@
-"""Declared JVM action for static CSS extraction."""
+"""Collect processor resources through the JavaScript dependency graph."""
 
-load("@rules_java//java/common:java_info.bzl", "JavaInfo")
+_CssInfo = provider("Transitive J2CL output trees containing processor CSS resources.", fields = ["trees"])
 
-def _styles_impl(ctx):
-    sources = ctx.actions.declare_file(ctx.label.name + ".srcjar")
-    css = ctx.actions.declare_file(ctx.label.name + ".css")
-    classpath = depset(transitive = [dep[JavaInfo].transitive_compile_time_jars for dep in [ctx.attr._annotations] + ctx.attr.deps])
+def _collect_impl(target, ctx):
+    transitive = []
+    for attribute in ["deps", "exports"]:
+        for dep in getattr(ctx.rule.attr, attribute, []):
+            if _CssInfo in dep:
+                transitive.append(dep[_CssInfo].trees)
+
+    # J2CL declares its per-library JavaScript directory as a tree artifact.
+    trees = [file for file in target[DefaultInfo].files.to_list() if file.is_directory and file.basename.endswith(".js")]
+    return [_CssInfo(trees = depset(trees, transitive = transitive))]
+
+_collect = aspect(implementation = _collect_impl, attr_aspects = ["deps", "exports"])
+
+def _bundle_impl(ctx):
+    trees = ctx.attr.root[_CssInfo].trees
     args = ctx.actions.args()
     args.use_param_file("@%s", use_always = True)
     args.set_param_file_format("multiline")
-    args.add(sources)
-    args.add(css)
-    args.add_all(classpath, before_each = "--classpath")
-    args.add_all(ctx.files.srcs, before_each = "--source")
+    args.add("--css", ctx.outputs.css)
+    args.add("--map", ctx.outputs.source_map)
+    args.add_all(trees, before_each = "--input", expand_directories = False)
     args.add_all(ctx.files.shared, before_each = "--shared")
     ctx.actions.run(
-        executable = ctx.executable._compiler,
-        inputs = depset(ctx.files.srcs + ctx.files.shared, transitive = [classpath]),
-        outputs = [sources, css],
+        executable = ctx.executable._bundler,
+        inputs = depset(ctx.files.shared, transitive = [trees]),
+        outputs = [ctx.outputs.css, ctx.outputs.source_map],
         arguments = [args],
-        mnemonic = "JavaCss",
+        mnemonic = "CssBundle",
     )
-    return [DefaultInfo(files = depset([sources, css])), OutputGroupInfo(sources = depset([sources]), css = depset([css]))]
+    return [
+        DefaultInfo(files = depset([ctx.outputs.css, ctx.outputs.source_map])),
+        OutputGroupInfo(css = depset([ctx.outputs.css]), source_map = depset([ctx.outputs.source_map])),
+    ]
 
-styles = rule(
-    implementation = _styles_impl,
+css_bundle = rule(
+    implementation = _bundle_impl,
     attrs = {
-        "deps": attr.label_list(providers = [JavaInfo]),
+        "css": attr.output(mandatory = True),
+        "root": attr.label(mandatory = True, aspects = [_collect]),
         "shared": attr.label_list(allow_files = [".css"]),
-        "srcs": attr.label_list(allow_files = [".java"], mandatory = True),
-        "_annotations": attr.label(default = Label("//css/core"), providers = [JavaInfo]),
-        "_compiler": attr.label(default = Label("//css/processor:compiler"), executable = True, cfg = "exec"),
+        "source_map": attr.output(mandatory = True),
+        "_bundler": attr.label(default = Label("//css/bundler"), executable = True, cfg = "exec"),
     },
 )

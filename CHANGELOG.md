@@ -3,7 +3,7 @@
 ### Unreleased
 
 * Add String-based `CssProps.customProperty` and HTML `data` fluent APIs for CSS custom properties and data attributes, including nullable removal without JavaScript casts.
-* Add experimental CSS-in-Java authoring with `@react4j.css.Css`: define component styles in Java text blocks and use generated class-name accessors. CSS class names derive from Java package and class names, and compilation reports invalid CSS and mismatches between modifier selectors and accessors. Styles are extracted into CSS files using a JVM-only toolchain.
+* Add experimental CSS-in-Java authoring with `@react4j.css.Css`: define component styles in Java text blocks and use generated class-name accessors. CSS class names derive from Java package and class names, and compilation reports invalid CSS and mismatches between modifier selectors and accessors. Normal J2CL compilation emits component CSS with source maps back to Java; a JVM bundler collects styles across application dependencies into a stylesheet with a composed source map.
 * Import the raw, Arez and Sting TodoMVC examples with checked Bazel/J2CL builds, shared assets, browser coverage and local preview commands. Correct the remaining-task counts and raw view subscriptions. Build the existing site routes here and retire the separately hosted Dagger demo.
 * Correct implicit default constructor handling under Turbine using Proton's origin query, preserving validation and diagnostics for explicitly written constructors.
 * Import Heart Rate Monitor under `examples/heart-rate-monitor` with checked package-level Bazel/J2CL builds, browser tests, preview commands, and site integration at `/heart-rate-monitor/`.

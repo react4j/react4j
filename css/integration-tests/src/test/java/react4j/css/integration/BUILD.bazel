@@ -1,50 +1,84 @@
-load("//css:rules.bzl", "styles")
-load("//third_party/java:rules.bzl", "java_library", "java_testng")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//css:rules.bzl", "css_bundle")
+load("//third_party/java:rules.bzl", "java_testng")
+load("//tools/browser:java.bzl", "java_j2cl_library")
 
 package(default_visibility = ["//visibility:public"])
 
-java_library(
+java_j2cl_library(
     name = "fixture_dependency",
     testonly = True,
     srcs = [
         "StyleState.java",
         "package-info.java",
     ],
+    deps = ["//third_party/java:jspecify-j2cl"],
 )
 
-styles(
-    name = "fixture_styles",
-    testonly = True,
-    srcs = ["ButtonStyles.java"],
-    deps = [":fixture_dependency"],
-)
-
-filegroup(
-    name = "fixture_sources",
-    testonly = True,
-    srcs = [":fixture_styles"],
-    output_group = "sources",
-)
-
-filegroup(
-    name = "fixture_css",
-    testonly = True,
-    srcs = [":fixture_styles"],
-    output_group = "css",
-)
-
-java_library(
+java_j2cl_library(
     name = "fixture_bindings",
     testonly = True,
     srcs = [
         "ButtonStyles.java",
         "package-info.java",
-        ":fixture_sources",
     ],
-    deps = [
-        ":fixture_dependency",
+    java_deps = [
+        ":fixture_dependency_java",
         "//css/core",
     ],
+    plugins = ["//css/processor:plugin"],
+    deps = [
+        ":fixture_dependency",
+        "//css/core:core-j2cl",
+        "//third_party/java:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
+    name = "peer_bindings",
+    testonly = True,
+    srcs = [
+        "PeerStyles.java",
+        "package-info.java",
+    ],
+    java_deps = ["//css/core"],
+    plugins = ["//css/processor:plugin"],
+    deps = [
+        "//css/core:core-j2cl",
+        "//third_party/java:jspecify-j2cl",
+    ],
+)
+
+closure_js_library(
+    name = "left",
+    testonly = True,
+    exports = [
+        ":fixture_bindings",
+        ":peer_bindings",
+    ],
+)
+
+closure_js_library(
+    name = "right",
+    testonly = True,
+    exports = [":fixture_bindings"],
+)
+
+closure_js_library(
+    name = "graph",
+    testonly = True,
+    exports = [
+        ":left",
+        ":right",
+    ],
+)
+
+css_bundle(
+    name = "fixture_styles",
+    testonly = True,
+    css = "fixture.css",
+    root = ":graph",
+    source_map = "fixture.css.map",
 )
 
 java_testng(
@@ -53,12 +87,24 @@ java_testng(
         "CssIntegrationTest.java",
         "package-info.java",
     ],
-    data = [":fixture_css"],
-    jvm_flags = ["-Dcss.fixture=$(rootpath :fixture_css)"],
+    data = [
+        "ButtonStyles.java",
+        ":fixture.css",
+        ":fixture.css.map",
+        ":fixture_bindings.js",
+    ],
+    jvm_flags = [
+        "-Dcss.fixture=$(rootpath :fixture.css)",
+        "-Dcss.map=$(rootpath :fixture.css.map)",
+        "-Dcss.tree=$(rootpath :fixture_bindings.js)",
+        "-Dcss.source=$(rootpath ButtonStyles.java)",
+    ],
     test_class = "react4j.css.integration.CssIntegrationTest",
     deps = [
-        ":fixture_bindings",
-        ":fixture_dependency",
+        ":fixture_bindings_java",
+        ":fixture_dependency_java",
         "//third_party/java:ph_css",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:com_google_javascript_closure_compiler_unshaded",
     ],
 )

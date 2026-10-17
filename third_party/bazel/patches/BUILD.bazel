@@ -1,6 +1,7 @@
 exports_files([
     "rules_cc_allowlist_macos_sdk_root.patch",
     "j2cl_configure_class_output.patch",
+    "j2cl_preserve_css_resources.patch",
     "j2cl_forward_test_defs.patch",
     "j2cl_configurable_test_compilation.patch",
     "j2cl_pin_java_runtime_21.patch",

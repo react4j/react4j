@@ -1,0 +1,24 @@
+load("//third_party/java:rules.bzl", "java_binary", "java_library")
+
+java_library(
+    name = "bundler",
+    srcs = [
+        "Bundle.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css:__subpackages__",
+    ],
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "@maven//:com_google_code_gson_gson",
+    ],
+)
+
+java_binary(
+    name = "tool",
+    main_class = "react4j.css.bundler.Bundle",
+    visibility = ["//css/bundler:__pkg__"],
+    runtime_deps = [":bundler"],
+)

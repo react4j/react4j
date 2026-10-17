@@ -38,7 +38,7 @@
         "reproducibility": "always"
       }
     },
-    "//css/processor/compiler": {
+    "//css/bundler/src/main/java/react4j/css/bundler/tool": {
       "spec": {
         "reproducibility": "always"
       }

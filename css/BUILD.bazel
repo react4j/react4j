@@ -3,7 +3,9 @@ exports_files(["rules.bzl"])
 test_suite(
     name = "tests",
     tests = [
+        "//css/bundler/src/test/java/react4j/css/bundler:tests",
         "//css/integration-tests/src/test/java/react4j/css/integration:integration_tests",
+        "//css/internal/src/test/java/react4j/css/internal:tests",
         "//css/processor/src/test/java/react4j/css/processor:processor_tests",
         "//css/processor/src/test/java/react4j/css/processor:unit_tests",
     ],

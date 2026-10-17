@@ -1,4 +1,4 @@
 exports_files(
     ["shared.css"],
-    visibility = ["//css/examples/save-button/src/main/java/react4j/css/example:__pkg__"],
+    visibility = ["//css/examples/save-button/src/test/js/react4j/css/example:__pkg__"],
 )

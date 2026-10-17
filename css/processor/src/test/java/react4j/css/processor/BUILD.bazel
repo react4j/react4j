@@ -25,6 +25,8 @@ java_testng(
     deps = [
         "//css/core",
         "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:com_google_javascript_closure_compiler_unshaded",
     ],
 )
 
@@ -33,6 +35,7 @@ java_testng(
     srcs = ["CssCompilerTest.java"],
     test_class = "react4j.css.processor.CssCompilerTest",
     deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
         "//css/processor/src/main/java/react4j/css/processor",
         "//third_party/java:ph_css",
     ],

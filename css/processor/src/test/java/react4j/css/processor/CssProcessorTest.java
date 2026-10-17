@@ -2,6 +2,8 @@ package react4j.css.processor;
 
 import static org.testng.Assert.*;
 
+import com.google.debugging.sourcemap.SourceMapConsumerV3;
+import com.google.gson.JsonParser;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -353,6 +355,46 @@ public final class CssProcessorTest {
         var result = compile(Map.of("Button.java", text));
         assertFalse(result.success());
         assertTrue(result.diagnostics().contains("Button.java:6:6: Local selector .sucess"), result.diagnostics());
+    }
+
+    @Test
+    public void sourceMapsFollowJavaEscapesContinuedLinesAndNestedRules() throws Exception {
+        String text = source(
+                        "demo",
+                        "    color: r" + "\\" + "u0065d;\\\n    background-color: white;\n"
+                                + "    @media (color) {\n      &.success { color: green; }\n    }",
+                        "abstract String success();")
+                .replace("\n", "\r\n");
+        var result = compile(Map.of("Button.java", text));
+        assertTrue(result.success(), result.diagnostics());
+        var css = new String(
+                Base64.getDecoder().decode(result.files().get("classes/demo/Button.css")), StandardCharsets.UTF_8);
+        var map = new String(
+                Base64.getDecoder().decode(result.files().get("classes/demo/Button.css.map")), StandardCharsets.UTF_8);
+        var parsed = JsonParser.parseString(map).getAsJsonObject();
+        assertEquals(parsed.getAsJsonArray("sourcesContent").get(0).getAsString(), text);
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(map);
+        for (var pair : Map.of(
+                        "background-color:white", "background-color: white",
+                        "@media", "@media",
+                        ".jcss-demo-Button.jcss-demo-Button--success", "&.success",
+                        "color:green", "color: green")
+                .entrySet()) {
+            int generated = css.indexOf(pair.getKey());
+            int original = text.indexOf(pair.getValue());
+            assertTrue(generated >= 0, css);
+            var location = Objects.requireNonNull(consumer.getMappingForLine(1, generated + 1));
+            assertEquals(location.getOriginalFile(), "demo/Button.java");
+            assertEquals(
+                    location.getLineNumber(),
+                    (int) text.substring(0, original)
+                                    .chars()
+                                    .filter(c -> '\n' == c)
+                                    .count()
+                            + 1);
+            assertEquals(location.getColumnPosition(), original - text.lastIndexOf('\n', original - 1));
+        }
     }
 
     @Test

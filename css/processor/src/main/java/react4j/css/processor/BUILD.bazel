@@ -3,7 +3,6 @@ load("//third_party/java:rules.bzl", "java_library")
 java_library(
     name = "processor",
     srcs = [
-        "Compile.java",
         "CssCompiler.java",
         "CssProcessor.java",
         "Names.java",
@@ -18,6 +17,7 @@ java_library(
         "//css/processor/src/test/java/react4j/css/processor:__pkg__",
     ],
     deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
         "//third_party/java:ph_css",
     ],
 )

@@ -1,0 +1,2 @@
+.jcss-demo-Button{color:var(--on-accent);}.jcss-demo-Button:focus-visible{outline:2px solid var(--focus);}.jcss-demo-Button.jcss-demo-Button--success{background-color:var(--success);}.jcss-demo-Button.jcss-demo-Button--cancel{background-color:var(--cancel);border:2px dotted currentColor;}
+/*# sourceMappingURL=Button.css.map */

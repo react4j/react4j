@@ -1,4 +1,3 @@
-load("//css:rules.bzl", "styles")
 load("//tools/browser:java.bzl", "java_j2cl_library")
 
 package(default_visibility = [
@@ -6,37 +5,15 @@ package(default_visibility = [
     "//css/examples/save-button/src/test/js/react4j/css/example:__pkg__",
 ])
 
-styles(
-    name = "styles",
-    srcs = [
-        "SaveButton.java",
-        "Status.java",
-    ],
-    shared = ["//css/examples/save-button/src/main/css:shared.css"],
-)
-
-filegroup(
-    name = "generated",
-    srcs = [":styles"],
-    output_group = "sources",
-    visibility = ["//visibility:private"],
-)
-
-filegroup(
-    name = "css",
-    srcs = [":styles"],
-    output_group = "css",
-)
-
 java_j2cl_library(
     name = "bindings",
     srcs = [
         "SaveButton.java",
         "Status.java",
         "package-info.java",
-        ":generated",
     ],
     java_deps = ["//css/core"],
+    plugins = ["//css/processor:plugin"],
     deps = [
         "//css/core:core-j2cl",
         "//third_party/java:jspecify-j2cl",

@@ -1,3 +1,4 @@
+load("//css:rules.bzl", "css_bundle")
 load("//tools/browser:rules.bzl", "browser_test")
 
 package(default_visibility = ["//:__pkg__"])
@@ -5,10 +6,19 @@ package(default_visibility = ["//:__pkg__"])
 browser_test(
     name = "browser_tests",
     srcs = ["browser_test.js"],
-    data = ["//css/examples/save-button/src/main/java/react4j/css/example:css"],
+    data = [":styles"],
     entry_point = "react4j.css.example.BrowserTest",
     deps = [
         "//css/examples/save-button/src/main/java/react4j/css/example:browser",
         "@rules_closure//closure/testing/library:testcase",
     ],
+)
+
+css_bundle(
+    name = "styles",
+    testonly = True,
+    css = "styles.css",
+    root = ":browser_tests_bin",
+    shared = ["//css/examples/save-button/src/main/css:shared.css"],
+    source_map = "styles.css.map",
 )

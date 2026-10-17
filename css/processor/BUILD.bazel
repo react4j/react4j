@@ -1,5 +1,4 @@
-load("@rules_java//java:defs.bzl", "java_import")
-load("//third_party/java:rules.bzl", "java_binary")
+load("@rules_java//java:defs.bzl", "java_import", "java_plugin")
 load("//tools/release:release.bzl", "release_jar")
 
 package(default_visibility = ["//visibility:public"])
@@ -21,6 +20,8 @@ release_jar(
     relocations = [
         "com.helger=react4j.css.processor.vendor.helger",
         "org.slf4j=react4j.css.processor.vendor.slf4j",
+        "com.google.gson=react4j.css.processor.vendor.gson",
+        "react4j.css.internal=react4j.css.processor.internal",
     ],
     resource_entries = ["META-INF/LICENSE"],
     resource_files = ["//:LICENSE"],
@@ -32,9 +33,10 @@ java_import(
     jars = [":processor_jar"],
 )
 
-# The adapter is included in the assembled jar so it can share package-private compiler code.
-java_binary(
-    name = "compiler",
-    main_class = "react4j.css.processor.Compile",
-    runtime_deps = [":processor"],
+java_plugin(
+    name = "plugin",
+    # Generated subclasses implement authored APIs; javac Trees are needed only in full compilation.
+    generates_api = False,
+    processor_class = "react4j.css.processor.CssProcessor",
+    deps = [":processor"],
 )

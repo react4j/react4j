@@ -1,0 +1,22 @@
+load("//third_party/java:rules.bzl", "java_testng")
+
+java_testng(
+    name = "tests",
+    srcs = [
+        "CssSyntaxTest.java",
+        "SourceMapTest.java",
+    ],
+    test_classes = [
+        "react4j.css.internal.SourceMapTest",
+        "react4j.css.internal.CssSyntaxTest",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css:__pkg__",
+    ],
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "@maven//:com_google_code_gson_gson",
+        "@maven//:com_google_javascript_closure_compiler_unshaded",
+    ],
+)

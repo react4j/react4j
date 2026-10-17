@@ -1,0 +1,18 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+java_library(
+    name = "internal",
+    srcs = [
+        "CssSyntax.java",
+        "SourceMap.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css:__subpackages__",
+    ],
+    deps = [
+        "//third_party/java:ph_css",
+        "@maven//:com_google_code_gson_gson",
+    ],
+)
