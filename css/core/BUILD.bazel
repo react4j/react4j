@@ -1,17 +1,14 @@
-load("@j2cl//build_defs:rules.bzl", "j2cl_library")
-load("//third_party/java:rules.bzl", "java_library")
+load("@j2cl//build_defs:rules.bzl", "j2cl_import")
 
 package(default_visibility = ["//visibility:public"])
 
-java_library(
+alias(
     name = "core",
-    srcs = [
-        "src/main/java/org/realityforge/css/Css.java",
-        "src/main/java/org/realityforge/css/package-info.java",
-    ],
+    actual = "//css/core/src/main/java/react4j/css",
 )
 
-j2cl_library(
+# SOURCE-retained annotations need compiler bytecode, not browser JavaScript.
+j2cl_import(
     name = "core-j2cl",
-    srcs = ["src/main/java/org/realityforge/css/Css.java"],
+    jar = ":core",
 )

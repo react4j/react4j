@@ -14,3 +14,5 @@ Core APIs live under `react4j`, internal helpers under `react4j.internal`, and D
 - `doc-examples/src/test/js/react4j/examples/browser_test.js`: live configuration and rendering contracts.
 
 The package-private `GwtIncompatible` annotation is a J2CL pruning marker recognized by simple name. It removes JVM-only System.getProperty overrides from browser sources. Keep it independent of any compiler dependency. The browser runtime retains React/ReactDOM 16.6.0 and the React.Element symbol patch; changing these needs asset and both-mode browser validation.
+
+CSS authoring annotations live under `react4j.css`, with build-only implementation in `react4j.css.processor`. For dynamic browser props, use `CssProps.customProperty("--name", value)` and `HtmlGlobalFields.data("suffix", value)` with String values (nullable for removal). Keep JavaScript conversion details inside the DOM API.

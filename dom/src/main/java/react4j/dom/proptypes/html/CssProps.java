@@ -4,6 +4,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import org.jspecify.annotations.Nullable;
 import react4j.dom.proptypes.cssPropertyTypes.AnimationFillMode;
 import react4j.dom.proptypes.cssPropertyTypes.Visibility;
@@ -17,6 +18,13 @@ import react4j.dom.proptypes.cssPropertyTypes.Visibility;
 @SuppressWarnings("unused")
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class CssProps {
+    /** Sets a CSS custom property using its full name, such as {@code --accent}; null removes it. */
+    @JsOverlay
+    public final CssProps customProperty(final String name, @Nullable final String value) {
+        Js.asPropertyMap(this).set(name, value);
+        return this;
+    }
+
     @JsProperty
     public native @Nullable String getAnimationFillMode();
 

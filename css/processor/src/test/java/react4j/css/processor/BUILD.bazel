@@ -1,0 +1,39 @@
+load("//third_party/java:rules.bzl", "FORMATTER_JVM_FLAGS", "java_testng")
+
+package(default_visibility = ["//visibility:public"])
+
+java_testng(
+    name = "processor_tests",
+    size = "medium",
+    srcs = ["CssProcessorTest.java"],
+    data = [
+        "//css/processor:processor_jar",
+        "//css/processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
+    jvm_flags = FORMATTER_JVM_FLAGS + [
+        "-Dcss.processor.jar=$(rootpath //css/processor:processor_jar)",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED",
+        "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+        "--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+    ],
+    test_class = "react4j.css.processor.CssProcessorTest",
+    deps = [
+        "//css/core",
+        "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
+    ],
+)
+
+java_testng(
+    name = "compiler_tests",
+    srcs = ["CssCompilerTest.java"],
+    test_class = "react4j.css.processor.CssCompilerTest",
+    deps = [
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//third_party/java:ph_css",
+    ],
+)

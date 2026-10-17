@@ -3,9 +3,9 @@ exports_files(["rules.bzl"])
 test_suite(
     name = "tests",
     tests = [
-        "//css/integration-tests:integration_tests",
-        "//css/processor:compiler_tests",
-        "//css/processor:processor_tests",
+        "//css/integration-tests/src/test/java/react4j/css/integration:integration_tests",
+        "//css/processor/src/test/java/react4j/css/processor:compiler_tests",
+        "//css/processor/src/test/java/react4j/css/processor:processor_tests",
     ],
     visibility = ["//visibility:public"],
 )

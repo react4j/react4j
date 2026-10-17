@@ -67,6 +67,13 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
         return self();
     }
 
+    /** Sets a data attribute by suffix: {@code data("shared", "true")} sets data-shared; null removes it. */
+    @JsOverlay
+    public final T data(final String name, @Nullable final String value) {
+        Js.asPropertyMap(this).set("data-" + name, value);
+        return self();
+    }
+
     @JsProperty
     protected native void setDangerouslySetInnerHTML(JsPropertyMap<Object> __html);
 

@@ -1,0 +1,42 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "SaveButton.java",
+    "Status.java",
+])
+
+java_j2cl_library(
+    name = "bindings",
+    srcs = [
+        "SaveButton.java",
+        "Status.java",
+        "package-info.java",
+        "//css/examples/save-button:generated",
+    ],
+    java_deps = ["//css/core"],
+    deps = [
+        "//css/core:core-j2cl",
+        "//third_party/java:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
+    name = "browser",
+    srcs = [
+        "BrowserExample.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        ":bindings_java",
+        "//:core",
+        "//:dom",
+    ],
+    deps = [
+        ":bindings",
+        "//:core-j2cl",
+        "//:dom-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+    ],
+)

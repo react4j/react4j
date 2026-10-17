@@ -14,7 +14,7 @@ java_library(
     data = ["//third_party/java:strict_checker_options"],
     visibility = [
         "//:__pkg__",
-        "//css/processor:__pkg__",
+        "//css/processor/src/test/java/react4j/css/processor:__pkg__",
         "//processor:__subpackages__",
     ],
     deps = [

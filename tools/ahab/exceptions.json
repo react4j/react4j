@@ -39,7 +39,7 @@
       "reason": "The CSS integration browser test uses the existing WebDriver loopback runner; filesystem sandboxing remains enabled",
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",
-      "target": "//css/examples/save-button:browser_tests",
+      "target": "//css/examples/save-button/src/test/js/react4j/css/example:browser_tests",
       "requirement": "requires-network"
     }
   ]

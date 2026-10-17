@@ -1,0 +1,64 @@
+load("//css:rules.bzl", "styles")
+load("//third_party/java:rules.bzl", "java_library", "java_testng")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "fixture_dependency",
+    testonly = True,
+    srcs = [
+        "StyleState.java",
+        "package-info.java",
+    ],
+)
+
+styles(
+    name = "fixture_styles",
+    testonly = True,
+    srcs = ["ButtonStyles.java"],
+    deps = [":fixture_dependency"],
+)
+
+filegroup(
+    name = "fixture_sources",
+    testonly = True,
+    srcs = [":fixture_styles"],
+    output_group = "sources",
+)
+
+filegroup(
+    name = "fixture_css",
+    testonly = True,
+    srcs = [":fixture_styles"],
+    output_group = "css",
+)
+
+java_library(
+    name = "fixture_bindings",
+    testonly = True,
+    srcs = [
+        "ButtonStyles.java",
+        "package-info.java",
+        ":fixture_sources",
+    ],
+    deps = [
+        ":fixture_dependency",
+        "//css/core",
+    ],
+)
+
+java_testng(
+    name = "integration_tests",
+    srcs = [
+        "CssIntegrationTest.java",
+        "package-info.java",
+    ],
+    data = [":fixture_css"],
+    jvm_flags = ["-Dcss.fixture=$(rootpath :fixture_css)"],
+    test_class = "react4j.css.integration.CssIntegrationTest",
+    deps = [
+        ":fixture_bindings",
+        ":fixture_dependency",
+        "//third_party/java:ph_css",
+    ],
+)

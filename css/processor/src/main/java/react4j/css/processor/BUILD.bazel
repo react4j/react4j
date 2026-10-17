@@ -1,0 +1,23 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+java_library(
+    name = "processor",
+    srcs = [
+        "Compile.java",
+        "CssCompiler.java",
+        "CssProcessor.java",
+        "Names.java",
+        "TextBlock.java",
+        "package-info.java",
+    ],
+    resource_strip_prefix = "css/processor/src/main/resources",
+    resources = ["//css/processor/src/main/resources/META-INF/services:javax.annotation.processing.Processor"],
+    visibility = [
+        "//:__pkg__",
+        "//css/processor:__pkg__",
+        "//css/processor/src/test/java/react4j/css/processor:__pkg__",
+    ],
+    deps = [
+        "//third_party/java:ph_css",
+    ],
+)

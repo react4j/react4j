@@ -1,0 +1,22 @@
+load("@rules_webtesting//web:web.bzl", "custom_browser")
+load("//tools/browser:rules.bzl", "browser_test")
+
+package(default_visibility = ["//visibility:public"])
+
+custom_browser(
+    name = "chromium",
+    browser = "@rules_webtesting//browsers:chromium-local",
+    metadata = "chromium.json",
+)
+
+browser_test(
+    name = "browser_tests",
+    srcs = ["browser_test.js"],
+    browser = ":chromium",
+    data = ["//css/examples/save-button:css"],
+    entry_point = "react4j.css.example.BrowserTest",
+    deps = [
+        "//css/examples/save-button/src/main/java/react4j/css/example:browser",
+        "@rules_closure//closure/testing/library:testcase",
+    ],
+)

@@ -1,0 +1,11 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+package(default_visibility = ["//visibility:public"])
+
+java_library(
+    name = "css",
+    srcs = [
+        "Css.java",
+        "package-info.java",
+    ],
+)
