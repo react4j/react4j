@@ -8,12 +8,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.function.IntFunction;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -25,11 +31,14 @@ import javax.tools.StandardLocation;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.ElementsUtil;
+import react4j.css.internal.CssResource;
+import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
 /** Validates component CSS in the JVM, then emits static bindings and CSS resources. */
-@SupportedAnnotationTypes("react4j.css.Css")
+@SupportedAnnotationTypes({"react4j.css.Css", "react4j.css.Keyframes", "react4j.css.CssImport", "react4j.css.CssImports"
+})
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public final class CssProcessor extends AbstractStandardProcessor {
 
@@ -47,30 +56,57 @@ public final class CssProcessor extends AbstractStandardProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment round) {
-        var annotationType = processingEnv.getElementUtils().getTypeElement(CSS_ANNOTATION);
-        if (null == annotationType) {
-            return false;
+        var owners = new TreeMap<String, TypeElement>();
+        for (var name : getSupportedAnnotationTypes()) {
+            var annotationType = processingEnv.getElementUtils().getTypeElement(name);
+            if (null != annotationType) {
+                for (var element : round.getElementsAnnotatedWith(annotationType)) {
+                    var owner = (TypeElement) element;
+                    owners.put(binaryName(owner), owner);
+                }
+            }
         }
-        for (var element : round.getElementsAnnotatedWith(annotationType)) {
+        for (var owner : owners.values()) {
             try {
-                process((TypeElement) element);
+                process(owner);
             } catch (IllegalArgumentException | IOException e) {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), element);
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), owner);
             }
         }
         return true;
     }
 
     private void process(TypeElement owner) throws IOException {
-        var descriptor = parse(owner);
-        var result = compileCss(descriptor);
+        Kind kind = sourceKind(owner);
+        CssDescriptor descriptor = Kind.COMPONENT == kind ? parse(owner) : null;
+        if (Kind.KEYFRAMES == kind) {
+            validateResourceType(owner);
+        }
+        var imports = imports(owner, kind);
+        var names = new LinkedHashMap<String, String>();
+        imports.forEach((alias, target) -> names.put(alias, Names.root(target) + "--keyframes"));
+        var result = compileCss(owner, kind, descriptor, names);
         if (null == result) {
             return;
         }
-        emitTypeSpec(descriptor.getPackageName(), CssGenerator.buildType(processingEnv, descriptor));
-        String resource = descriptor.getBinaryName().replace('.', '/') + ".css";
+        if (null != descriptor) {
+            emitTypeSpec(descriptor.getPackageName(), CssGenerator.buildType(processingEnv, descriptor));
+        }
+        String ownerName = binaryName(owner);
+        String resource = CssResource.path(ownerName);
         String file = resource.substring(resource.lastIndexOf('/') + 1);
-        for (var entry : Map.of(resource, result.css() + SourceMap.reference(file), resource + ".map", result.map(file))
+        var metadata = new CssResource(
+                ownerName,
+                kind,
+                result.imports().stream().map(imports::get).distinct().sorted().toList());
+        var output = result.output();
+        for (var entry : Map.of(
+                        resource,
+                        output.css() + SourceMap.reference(file),
+                        resource + ".map",
+                        output.map(file),
+                        resource + ".json",
+                        metadata.json())
                 .entrySet()) {
             try (var stream = processingEnv
                     .getFiler()
@@ -79,6 +115,109 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 stream.write(entry.getValue().getBytes(StandardCharsets.UTF_8));
             }
         }
+    }
+
+    private String binaryName(TypeElement owner) {
+        return processingEnv.getElementUtils().getBinaryName(owner).toString();
+    }
+
+    private @Nullable AnnotationMirror annotation(TypeElement owner, String name) {
+        return owner.getAnnotationMirrors().stream()
+                .filter(a -> a.getAnnotationType().toString().equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private AnnotationValue value(AnnotationMirror annotation, String name) {
+        return processingEnv.getElementUtils().getElementValuesWithDefaults(annotation).entrySet().stream()
+                .filter(e -> e.getKey().getSimpleName().contentEquals(name))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Missing annotation value: " + name));
+    }
+
+    private Kind sourceKind(TypeElement owner) {
+        boolean component = null != annotation(owner, CSS_ANNOTATION);
+        boolean frames = null != annotation(owner, "react4j.css.Keyframes");
+        if (component == frames) {
+            throw new IllegalArgumentException("Declare exactly one of @Css or @Keyframes on a CSS definition");
+        }
+        return component ? Kind.COMPONENT : Kind.KEYFRAMES;
+    }
+
+    private void validateResourceType(TypeElement owner) {
+        if (ElementKind.CLASS != owner.getKind()
+                || !owner.getTypeParameters().isEmpty()
+                || !owner.getInterfaces().isEmpty()
+                || !isType(owner.getSuperclass(), "java.lang.Object")
+                || owner.getModifiers().contains(Modifier.PRIVATE)
+                || owner.getModifiers().contains(Modifier.SEALED)
+                || (owner.getNestingKind().isNested() && !owner.getModifiers().contains(Modifier.STATIC))) {
+            throw new IllegalArgumentException(
+                    "CSS resource definitions require an accessible, non-generic class extending Object; nested"
+                            + " classes must be static");
+        }
+        for (var enclosing = owner.getEnclosingElement();
+                enclosing instanceof TypeElement;
+                enclosing = enclosing.getEnclosingElement()) {
+            if (enclosing.getModifiers().contains(Modifier.PRIVATE)) {
+                throw new IllegalArgumentException("CSS resource definitions must be accessible from their package");
+            }
+        }
+        for (var member : owner.getEnclosedElements()) {
+            if (ElementKind.FIELD == member.getKind()
+                    || (ElementKind.CONSTRUCTOR == member.getKind()
+                            && Elements.Origin.EXPLICIT
+                                    == ElementsUtil.getOrigin(processingEnv.getElementUtils(), member))
+                    || (ElementKind.METHOD == member.getKind()
+                            && member.getModifiers().contains(Modifier.ABSTRACT))) {
+                throw new IllegalArgumentException(
+                        "CSS resource definitions must not declare fields, constructors or abstract methods");
+            }
+        }
+        if (Trees.instance(processingEnv).getTree(owner).getMembers().stream().anyMatch(BlockTree.class::isInstance)) {
+            throw new IllegalArgumentException("CSS resource definitions must not declare initializers");
+        }
+    }
+
+    private Map<String, String> imports(TypeElement owner, Kind kind) {
+        var mirrors = new ArrayList<AnnotationMirror>();
+        var direct = annotation(owner, "react4j.css.CssImport");
+        if (null != direct) {
+            mirrors.add(direct);
+        }
+        var container = annotation(owner, "react4j.css.CssImports");
+        if (null != container) {
+            for (var item : (List<?>) value(container, "value").getValue()) {
+                mirrors.add((AnnotationMirror) ((AnnotationValue) item).getValue());
+            }
+        }
+        if (Kind.KEYFRAMES == kind && (null != direct || null != container)) {
+            throw new IllegalArgumentException("@CssImport is only supported on stylesheet definitions");
+        }
+        var imports = new LinkedHashMap<String, String>();
+        for (var mirror : mirrors) {
+            var alias = (String) value(mirror, "name").getValue();
+            CssCompiler.checkAlias(alias);
+            Object target = value(mirror, "value").getValue();
+            if (!(target instanceof TypeMirror type)
+                    || !(processingEnv.getTypeUtils().asElement(type) instanceof TypeElement element)) {
+                throw new IllegalArgumentException("@CssImport must reference a @Keyframes class");
+            }
+            if (ElementKind.CLASS != element.getKind()
+                    || null == annotation(element, "react4j.css.Keyframes")
+                    || Kind.KEYFRAMES != sourceKind(element)) {
+                throw new IllegalArgumentException(
+                        "@CssImport must reference a @Keyframes class: " + binaryName(element));
+            }
+            if (null != Trees.instance(processingEnv).getPath(element)) {
+                validateResourceType(element);
+            }
+            if (null != imports.putIfAbsent(alias, binaryName(element))) {
+                throw new IllegalArgumentException("Duplicate imported animation name: " + alias);
+            }
+        }
+        return imports;
     }
 
     private CssDescriptor parse(TypeElement owner) {
@@ -161,20 +300,22 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 deprecated);
     }
 
-    private SourceMap.@Nullable Writer compileCss(CssDescriptor descriptor) throws IOException {
-        var owner = descriptor.getElement();
+    private CssCompiler.@Nullable Result compileCss(
+            TypeElement owner, Kind kind, @Nullable CssDescriptor descriptor, Map<String, String> imports)
+            throws IOException {
         var trees = Trees.instance(processingEnv);
         var annotation = owner.getAnnotationMirrors().stream()
-                .filter(a -> CSS_ANNOTATION.equals(a.getAnnotationType().toString()))
+                .filter(a -> (Kind.COMPONENT == kind ? CSS_ANNOTATION : "react4j.css.Keyframes")
+                        .equals(a.getAnnotationType().toString()))
                 .findFirst()
                 .orElseThrow();
-        var value = annotation.getElementValues().values().iterator().next();
+        var value = value(annotation, "value");
         var path = trees.getPath(owner);
         var unit = path.getCompilationUnit();
         var literal = trees.getTree(owner, annotation, value);
         if (!(literal instanceof LiteralTree text) || !(text.getValue() instanceof String css)) {
-            throw new IllegalArgumentException(
-                    "@Css requires a literal Java text block; constants and concatenation are unsupported");
+            throw new IllegalArgumentException((Kind.COMPONENT == kind ? "@Css" : "@Keyframes")
+                    + " requires a literal Java text block; constants and concatenation are unsupported");
         }
         String source = unit.getSourceFile().getCharContent(true).toString();
         var start = (int) trees.getSourcePositions().getStartPosition(unit, literal);
@@ -190,21 +331,26 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 + Path.of(unit.getSourceFile().getName()).getFileName();
         final String mappedSource = sourceName;
         try {
+            IntFunction<SourceMap.Location> locations = offset -> {
+                int original = block.offsets()[Math.min(offset, block.value().length())];
+                return new SourceMap.Location(
+                        mappedSource,
+                        source,
+                        (int) unit.getLineMap().getLineNumber(original) - 1,
+                        (int) unit.getLineMap().getColumnNumber(original) - 1);
+            };
+            if (Kind.KEYFRAMES == kind) {
+                return CssCompiler.keyframes(block.value(), Names.root(binaryName(owner)) + "--keyframes", locations);
+            }
+            assert null != descriptor;
             return CssCompiler.component(
                     block.value(),
                     descriptor.getRootClassName(),
                     descriptor.getAccessors().stream()
                             .map(m -> m.getSimpleName().toString())
                             .toList(),
-                    offset -> {
-                        int original =
-                                block.offsets()[Math.min(offset, block.value().length())];
-                        return new SourceMap.Location(
-                                mappedSource,
-                                source,
-                                (int) unit.getLineMap().getLineNumber(original) - 1,
-                                (int) unit.getLineMap().getColumnNumber(original) - 1);
-                    });
+                    locations,
+                    imports);
         } catch (CssSyntax.InvalidCss e) {
             int offset = block.offsets()[Math.max(0, Math.min(block.value().length(), e.offset()))];
             String location =

@@ -9,9 +9,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
+import react4j.css.internal.CssResource;
+import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
@@ -76,7 +82,9 @@ public final class Bundle {
         for (var tree : trees.stream().distinct().toList()) {
             try (var files = Files.walk(tree)) {
                 for (var path : files.filter(Files::isRegularFile).sorted().toList()) {
-                    if (path.toString().endsWith(".css") || path.toString().endsWith(".css.map")) {
+                    if (path.toString().endsWith(".css")
+                            || path.toString().endsWith(".css.map")
+                            || path.toString().endsWith(".css.json")) {
                         String name = tree.relativize(path).toString().replace('\\', '/');
                         if (null != resources.putIfAbsent(name, path)) {
                             throw new IllegalArgumentException("Duplicate CSS resource: " + name);
@@ -123,24 +131,45 @@ public final class Bundle {
             writer.append("}\n");
             line++;
         }
-        var components = resources.entrySet().stream()
-                .filter(entry -> entry.getKey().endsWith(".css"))
-                .toList();
-        boolean componentsOpen = false;
-        for (var entry : components) {
-            Path path = entry.getValue();
-            Path map = resources.get(entry.getKey() + ".map");
-            if (null == map) {
-                throw new IllegalArgumentException("Missing source map: " + entry.getKey());
+        var definitions = new LinkedHashMap<String, Resource>();
+        for (var entry : resources.entrySet()) {
+            String name = entry.getKey();
+            if (!name.endsWith(".css")) {
+                if (!resources.containsKey(name.substring(0, name.lastIndexOf('.')))) {
+                    throw new IllegalArgumentException("CSS metadata or source map without CSS: " + name);
+                }
+                continue;
             }
+            Path path = entry.getValue();
+            Path mapPath = resources.get(name + ".map");
+            Path metadataPath = resources.get(name + ".json");
+            if (null == mapPath || null == metadataPath) {
+                throw new IllegalArgumentException("Missing CSS source map or metadata: " + name);
+            }
+            String owner = name.substring(0, name.length() - 4).replace('/', '.');
+            var metadata = CssResource.read(Files.readString(metadataPath), owner);
             String file = path.getFileName().toString();
             String css = Files.readString(path);
             String reference = SourceMap.reference(file);
             if (!css.endsWith(reference)) {
-                throw new IllegalArgumentException("Missing component sourceMappingURL: " + entry.getKey());
+                throw new IllegalArgumentException("Missing component sourceMappingURL: " + name);
             }
-            css = css.substring(0, css.length() - reference.length());
-            var parsed = readMap(map, file);
+            definitions.put(
+                    owner,
+                    new Resource(
+                            metadata, css.substring(0, css.length() - reference.length()), readMap(mapPath, file)));
+        }
+        var ordered = new ArrayList<Resource>();
+        var visited = new HashSet<String>();
+        var visiting = new HashSet<String>();
+        for (var definition : definitions.values()) {
+            if (Kind.COMPONENT == definition.metadata().kind()) {
+                visit(definition.metadata().owner(), definitions, visited, visiting, ordered);
+            }
+        }
+        boolean componentsOpen = false;
+        for (var definition : ordered) {
+            String css = definition.css();
             if (css.isEmpty()) {
                 continue;
             }
@@ -149,23 +178,49 @@ public final class Bundle {
                 line++;
                 componentsOpen = true;
             }
-            sections.add(section(line, parsed));
+            sections.add(section(line, definition.map()));
             writer.append(css).append('\n');
             line += (int) css.chars().filter(c -> '\n' == c).count() + 1;
         }
         if (componentsOpen) {
             writer.append("}\n");
         }
-        for (var name : resources.keySet()) {
-            if (name.endsWith(".css.map") && !resources.containsKey(name.substring(0, name.length() - 4))) {
-                throw new IllegalArgumentException("Source map without component CSS: " + name);
-            }
-        }
         var map = new JsonObject();
         map.addProperty("version", 3);
         map.addProperty("file", outputName);
         map.add("sections", sections);
         return new Result(writer.toString(), map + "\n");
+    }
+
+    private record Resource(CssResource metadata, String css, JsonObject map) {}
+
+    private static void visit(
+            String owner,
+            Map<String, Resource> definitions,
+            Set<String> visited,
+            Set<String> visiting,
+            List<Resource> ordered) {
+        if (visited.contains(owner)) {
+            return;
+        }
+        var definition = definitions.get(owner);
+        if (null == definition) {
+            throw new IllegalArgumentException("Missing CSS dependency: " + owner);
+        }
+        if (!visiting.add(owner)) {
+            throw new IllegalArgumentException("Cyclic CSS dependency: " + owner);
+        }
+        for (var dependency : definition.metadata().dependencies()) {
+            var target = definitions.get(dependency);
+            if (null != target && Kind.COMPONENT == target.metadata().kind()) {
+                throw new IllegalArgumentException(
+                        "CSS dependencies must reference resource definitions: " + dependency);
+            }
+            visit(dependency, definitions, visited, visiting, ordered);
+        }
+        visiting.remove(owner);
+        visited.add(owner);
+        ordered.add(definition);
     }
 
     private static JsonObject readMap(Path path, String cssName) throws IOException {

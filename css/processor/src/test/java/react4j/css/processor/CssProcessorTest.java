@@ -37,7 +37,7 @@ import react4j.testing.StrictGeneratedCode;
 
 @NullMarked
 public final class CssProcessorTest {
-    private record Result(boolean success, String diagnostics, Map<String, String> files, Map<String, String> values) {}
+    record Result(boolean success, String diagnostics, Map<String, String> files, Map<String, String> values) {}
 
     private static Path processorJar() {
         return Path.of(Objects.requireNonNull(System.getProperty("css.processor.jar")));
@@ -95,7 +95,7 @@ public final class CssProcessorTest {
         }
     }
 
-    private static String applicationClasspath() throws Exception {
+    static String applicationClasspath() throws Exception {
         return Path.of(Css.class
                         .getProtectionDomain()
                         .getCodeSource()
@@ -172,6 +172,7 @@ public final class CssProcessorTest {
             },
             new Object[] {"input", List.of("com/example/nested/Owner.java")},
             new Object[] {"input", List.of("com/example/selectors/Button.java")},
+            new Object[] {"input", List.of("com/example/shared/Button.java", "com/example/shared/Pulse.java")},
             new Object[] {"input", List.of("com/example/shadowed/Override.java", "com/example/shadowed/String.java")},
             new Object[] {
                 "input",
@@ -309,11 +310,11 @@ public final class CssProcessorTest {
                 + "abstract String style();\n" + methods + "\n}\n";
     }
 
-    private static Result compile(Map<String, String> sources, String... inspect) throws Exception {
+    static Result compile(Map<String, String> sources, String... inspect) throws Exception {
         return compile(sources, List.of(), inspect);
     }
 
-    private static Result compile(Map<String, String> sources, List<String> processorOptions, String... inspect)
+    static Result compile(Map<String, String> sources, List<String> processorOptions, String... inspect)
             throws Exception {
         Path directory = Files.createTempDirectory("css-test-");
         try {

@@ -4,6 +4,7 @@ import static org.testng.Assert.*;
 
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
+import com.helger.css.decl.CSSKeyframesRule;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
@@ -16,6 +17,7 @@ import org.jspecify.annotations.Nullable;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import react4j.css.internal.CssResource;
 import react4j.css.internal.SourceMap;
 
 public final class BundleTest {
@@ -50,6 +52,9 @@ public final class BundleTest {
         Files.createDirectories(Objects.requireNonNull(path.getParent()));
         Files.writeString(path, css + SourceMap.reference(path.getFileName().toString()));
         Files.writeString(Path.of(path + ".map"), mapped.map(path.getFileName().toString()));
+        Files.writeString(
+                Path.of(path + ".json"),
+                new CssResource(name.replace('/', '.'), CssResource.Kind.COMPONENT, List.of()).json());
     }
 
     @Test
@@ -210,5 +215,70 @@ public final class BundleTest {
                 List.of("--css", "x", "--map", "x"))) {
             expectThrows(IllegalArgumentException.class, () -> Bundle.run(args));
         }
+    }
+
+    private static void resource(Path tree, String owner, CssResource.Kind kind, String css, String... dependencies)
+            throws Exception {
+        component(tree, owner.replace('.', '/'), css);
+        Files.writeString(
+                tree.resolve(CssResource.path(owner) + ".json"),
+                new CssResource(owner, kind, List.of(dependencies)).json());
+    }
+
+    @Test
+    public void sharedKeyframesAreIncludedOnceOnlyWhenReferenced() throws Exception {
+        Path input = tree("shared");
+        resource(input, "demo.Pulse", CssResource.Kind.KEYFRAMES, "@keyframes pulse{from{opacity:0;}to{opacity:1;}}");
+        resource(input, "demo.Unused", CssResource.Kind.KEYFRAMES, "@keyframes unused{from{opacity:0;}}");
+        resource(input, "demo.A", CssResource.Kind.COMPONENT, ".a{animation-name:pulse;}", "demo.Pulse");
+        resource(input, "demo.B", CssResource.Kind.COMPONENT, ".b{animation:pulse 1s;}", "demo.Pulse");
+        var result = Bundle.assemble(List.of(input, input), List.of(), "app.css");
+        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
+        var layer = sheet.getAllLayerRules().get(1);
+        assertEquals(
+                layer.getAllRules().stream()
+                        .filter(rule -> rule instanceof CSSKeyframesRule)
+                        .count(),
+                1L);
+        assertEquals(layer.getAllStyleRules().size(), 2);
+        assertFalse(result.css().contains("unused"));
+        assertEquals(
+                JsonParser.parseString(result.map())
+                        .getAsJsonObject()
+                        .getAsJsonArray("sections")
+                        .size(),
+                3);
+        assertEquals(result, Bundle.assemble(List.of(input), List.of(), "app.css"));
+        Files.delete(input.resolve("demo/A.css"));
+        Files.delete(input.resolve("demo/A.css.map"));
+        Files.delete(input.resolve("demo/A.css.json"));
+        Files.delete(input.resolve("demo/B.css"));
+        Files.delete(input.resolve("demo/B.css.map"));
+        Files.delete(input.resolve("demo/B.css.json"));
+        assertEquals(Bundle.assemble(List.of(input), List.of(), "app.css").css(), "@layer shared,components;\n");
+    }
+
+    @Test
+    public void missingWrongKindAndCyclicDependenciesFail() throws Exception {
+        Path input = tree("graph");
+        resource(input, "A", CssResource.Kind.COMPONENT, ".a{color:red;}", "Missing");
+        var missing = expectThrows(
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
+        assertTrue(String.valueOf(missing.getMessage()).contains("Missing CSS dependency: Missing"));
+        resource(input, "Missing", CssResource.Kind.COMPONENT, ".b{color:blue;}");
+        var wrongKind = expectThrows(
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
+        assertTrue(String.valueOf(wrongKind.getMessage()).contains("resource definitions"));
+        resource(input, "Missing", CssResource.Kind.KEYFRAMES, "@keyframes b{}", "Other");
+        resource(input, "Other", CssResource.Kind.KEYFRAMES, "@keyframes c{}", "Missing");
+        var cycle = expectThrows(
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
+        assertTrue(String.valueOf(cycle.getMessage()).contains("Cyclic CSS dependency"));
+        Files.writeString(input.resolve("A.css.json"), "{}");
+        expectThrows(IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
+        Files.delete(input.resolve("A.css.json"));
+        var absent = expectThrows(
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
+        assertTrue(String.valueOf(absent.getMessage()).contains("Missing CSS source map or metadata"));
     }
 }

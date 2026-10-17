@@ -2,6 +2,7 @@ filegroup(
     name = "files",
     srcs = [
         "Owner$Inner.css",
+        "Owner$Inner.css.json",
         "Owner$Inner.css.map",
         "Owner_Styled_Inner.java",
     ],

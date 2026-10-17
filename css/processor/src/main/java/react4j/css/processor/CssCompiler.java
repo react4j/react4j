@@ -20,6 +20,7 @@ import com.helger.css.decl.ECSSExpressionOperator;
 import com.helger.css.writer.CSSWriterSettings;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,21 +40,40 @@ final class CssCompiler {
     private final IntFunction<SourceMap.Location> locations;
     private final Set<String> found = new HashSet<>();
     private final Map<String, CSSKeyframesRule> keyframes = new LinkedHashMap<>();
+    private final Map<String, String> imports;
+    private final Set<String> usedImports = new LinkedHashSet<>();
     private final CSSWriterSettings compact = new CSSWriterSettings(true);
     private final SourceMap.Writer output = new SourceMap.Writer();
 
     private CssCompiler(
-            String source, int prefix, String root, List<String> accessors, IntFunction<SourceMap.Location> locations) {
+            String source,
+            int prefix,
+            String root,
+            List<String> accessors,
+            IntFunction<SourceMap.Location> locations,
+            Map<String, String> imports) {
         syntax = new CssSyntax(source, prefix);
         this.root = root;
         this.accessors = accessors;
         this.locations = locations;
+        this.imports = imports;
     }
+
+    record Result(SourceMap.Writer output, Set<String> imports) {}
 
     static SourceMap.Writer component(
             String css, String root, List<String> accessors, IntFunction<SourceMap.Location> locations) {
+        return component(css, root, accessors, locations, Map.of()).output();
+    }
+
+    static Result component(
+            String css,
+            String root,
+            List<String> accessors,
+            IntFunction<SourceMap.Location> locations,
+            Map<String, String> imports) {
         String prefix = "." + root + " {\n";
-        var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, accessors, locations);
+        var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, accessors, locations, imports);
         var sheet = compiler.syntax.parse(true);
         for (var rule : sheet.getAllRules()) {
             if (rule instanceof CSSKeyframesRule frames) {
@@ -62,6 +82,10 @@ final class CssCompiler {
                     throw compiler.syntax.invalid("Only unprefixed @keyframes definitions are supported", frames);
                 }
                 compiler.checkAnimationName(name, frames);
+                if (imports.containsKey(name)) {
+                    throw compiler.syntax.invalid(
+                            "Local keyframe name conflicts with imported animation: " + name, frames);
+                }
                 if ("none".equalsIgnoreCase(name)
                         || "default".equalsIgnoreCase(name)
                         || CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))) {
@@ -81,7 +105,25 @@ final class CssCompiler {
                 throw new CssSyntax.InvalidCss("Accessor " + name + "() has no matching local selector", 0);
             }
         }
-        return compiler.output;
+        return new Result(compiler.output, Set.copyOf(compiler.usedImports));
+    }
+
+    static Result keyframes(String css, String name, IntFunction<SourceMap.Location> locations) {
+        String prefix = "@keyframes shared {\n";
+        var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), "", List.of(), locations, Map.of());
+        var sheet = compiler.syntax.parseKeyframes();
+        var frames = (CSSKeyframesRule) sheet.getAllRules().get(0);
+        compiler.writeKeyframes(frames, name);
+        return new Result(compiler.output, Set.of());
+    }
+
+    static void checkAlias(String name) {
+        if (!name.matches("(?:--|-?(?:[a-zA-Z_]|[^\\x00-\\x7f]))(?:[a-zA-Z0-9_-]|[^\\x00-\\x7f])*")
+                || "none".equalsIgnoreCase(name)
+                || "default".equalsIgnoreCase(name)
+                || CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))) {
+            throw new IllegalArgumentException("Invalid imported animation name: " + name);
+        }
     }
 
     private void style(CSSStyleRule rule, String parent, boolean implicit) {
@@ -159,7 +201,11 @@ final class CssCompiler {
     }
 
     private void keyframes(CSSKeyframesRule rule) {
-        output.append("@keyframes " + animationName(rule.getAnimationName()) + "{", location(rule));
+        writeKeyframes(rule, animationName(rule.getAnimationName()));
+    }
+
+    private void writeKeyframes(CSSKeyframesRule rule, String name) {
+        output.append("@keyframes " + name + "{", location(rule));
         for (var block : rule.getAllBlocks()) {
             for (var selector : block.getAllKeyframesSelectors()) {
                 if (selector.endsWith("%") && Double.parseDouble(selector.substring(0, selector.length() - 1)) > 100) {
@@ -267,10 +313,14 @@ final class CssCompiler {
                 throw syntax.invalid("Each animation accepts one name", simple);
             }
             if (!"none".equals(lower)) {
-                if (!keyframes.containsKey(name)) {
+                if (imports.containsKey(name)) {
+                    usedImports.add(name);
+                    simple.setValue(imports.get(name));
+                } else if (keyframes.containsKey(name)) {
+                    simple.setValue(animationName(name));
+                } else {
                     throw syntax.invalid("Unknown local animation name: " + name, simple);
                 }
-                simple.setValue(animationName(name));
             }
             named = true;
         }

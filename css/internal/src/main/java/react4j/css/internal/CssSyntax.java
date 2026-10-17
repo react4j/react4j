@@ -41,6 +41,14 @@ public final class CssSyntax {
     }
 
     public CascadingStyleSheet parse(boolean component) {
+        return parse(component, false);
+    }
+
+    public CascadingStyleSheet parseKeyframes() {
+        return parse(false, true);
+    }
+
+    private CascadingStyleSheet parse(boolean component, boolean framesOnly) {
         var stream = new CSSCharStream(new StringReader(source));
         stream.setTabSize(1);
         var handler = new ThrowingCSSParseErrorHandler() {
@@ -92,7 +100,10 @@ public final class CssSyntax {
         if (component) {
             tree = liftKeyframes(tree);
         }
-        checkSyntaxTree(tree, component, 0);
+        if (framesOnly && (1 != tree.jjtGetNumChildren() || !ECSSNodeType.KEYFRAMESRULE.isNode(tree.jjtGetChild(0)))) {
+            throw new InvalidCss("@Keyframes requires a single animation frame body", 0);
+        }
+        checkSyntaxTree(tree, component || framesOnly, 0);
         return CSSHandler.readCascadingStyleSheetFromNode(
                 new ICSSInterpretErrorHandler() {
                     @Override

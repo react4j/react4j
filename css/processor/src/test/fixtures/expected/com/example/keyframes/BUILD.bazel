@@ -2,6 +2,7 @@ filegroup(
     name = "files",
     srcs = [
         "Button.css",
+        "Button.css.json",
         "Button.css.map",
         "Styled_Button.java",
     ],

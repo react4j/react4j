@@ -5,7 +5,10 @@ package(default_visibility = ["//visibility:public"])
 java_testng(
     name = "processor_tests",
     size = "medium",
-    srcs = ["CssProcessorTest.java"],
+    srcs = [
+        "CssProcessorTest.java",
+        "CssResourceProcessorTest.java",
+    ],
     data = [
         "//css/processor:processor_jar",
         "//css/processor/src/test/fixtures",
@@ -21,7 +24,10 @@ java_testng(
         "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
         "--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
     ],
-    test_class = "react4j.css.processor.CssProcessorTest",
+    test_classes = [
+        "react4j.css.processor.CssProcessorTest",
+        "react4j.css.processor.CssResourceProcessorTest",
+    ],
     deps = [
         "//css/core",
         "//tools/testing/src/main/java/react4j/testing:strict_generated_code",

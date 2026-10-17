@@ -23,6 +23,7 @@ import com.helger.css.reader.CSSReaderSettings;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
 import com.helger.css.writer.CSSWriterSettings;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -732,6 +733,76 @@ public final class CssCompilerTest {
             assertEquals(((CSSKeyframesRule) sheet.getAllRules().get(0)).getAnimationName(), expected);
             assertEquals(
                     value(sheet.getAllStyleRules().get(0).getAllDeclarations().get(0)), expected);
+        }
+    }
+
+    @Test
+    public void sharedAnimationAliasesRespectShorthandGrammarAndTrackRealReferences() {
+        var imports = Map.of("pulse", "shared-pulse", "linear", "shared-linear", "--custom", "shared-custom");
+        for (var entry : Map.of(
+                        "animation: linear 1s;", List.<String>of(),
+                        "animation: linear 1s linear;", List.of("linear"),
+                        "animation: pulse 1s steps(2), linear 2s linear;", List.of("pulse", "linear"),
+                        "animation-name: --custom;", List.of("--custom"),
+                        "animation-name: pulse, pulse;", List.of("pulse"),
+                        "content: 'pulse'; --value: pulse;", List.<String>of())
+                .entrySet()) {
+            String source = entry.getKey();
+            var result = CssCompiler.component(
+                    source,
+                    ROOT,
+                    List.of("style"),
+                    offset -> new SourceMap.Location("Button.java", source, 0, offset),
+                    imports);
+            assertEquals(result.imports(), new HashSet<>(entry.getValue()));
+            var sheet = parse(result.output().css());
+            assertEquals(sheet.getAllStyleRules().size(), 1);
+            for (var alias : entry.getValue()) {
+                assertTrue(
+                        result.output().css().contains(imports.get(alias)),
+                        result.output().css());
+            }
+        }
+        for (var alias : List.of("pulse", "linear", "éclair", "_pulse", "-pulse", "--pulse", "--")) {
+            CssCompiler.checkAlias(alias);
+        }
+        for (var alias : List.of(
+                "", "0pulse", "-0pulse", "-", "pulse name", "pulse;", "'pulse'", "none", "DEFAULT", "inherit")) {
+            expectThrows(IllegalArgumentException.class, () -> CssCompiler.checkAlias(alias));
+        }
+        expectThrows(
+                CssSyntax.InvalidCss.class,
+                () -> CssCompiler.component(
+                        "@keyframes pulse { from { opacity: 0; } }",
+                        ROOT,
+                        List.of("style"),
+                        offset -> new SourceMap.Location("Button.java", "", 0, offset),
+                        imports));
+    }
+
+    @Test
+    public void standaloneKeyframesReuseValidationAndMapAuthoredFrames() {
+        String source = "from, 50% { opacity: 0.4; } to { opacity: 1; }";
+        var result = CssCompiler.keyframes(
+                source, "shared-pulse", offset -> new SourceMap.Location("Pulse.java", source, 0, offset));
+        var frames =
+                (CSSKeyframesRule) parse(result.output().css()).getAllRules().get(0);
+        assertEquals(frames.getAnimationName(), "shared-pulse");
+        assertEquals(frames.getAllBlocks().size(), 2);
+        assertTrue(result.imports().isEmpty());
+        assertTrue(result.output().map("Pulse.css").contains("Pulse.java"));
+        for (var invalid : List.of(
+                "from { animation-name: none; }",
+                "101% { opacity: 1; }",
+                "from { opacity: 0 !important; }",
+                "from { opacity 0; }",
+                "} body { color: red; } @keyframes extra {")) {
+            expectThrows(
+                    CssSyntax.InvalidCss.class,
+                    () -> CssCompiler.keyframes(
+                            invalid,
+                            "shared-pulse",
+                            offset -> new SourceMap.Location("Pulse.java", invalid, 0, offset)));
         }
     }
 }

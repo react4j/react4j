@@ -2,8 +2,10 @@ filegroup(
     name = "files",
     srcs = [
         "Override.css",
+        "Override.css.json",
         "Override.css.map",
         "String.css",
+        "String.css.json",
         "String.css.map",
         "Styled_Override.java",
         "Styled_String.java",

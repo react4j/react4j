@@ -49,7 +49,7 @@ public final class CssIntegrationTest {
         assertStyle(rules.get(1), List.of("." + root, "." + root + "--success"), "background-color", "green");
         assertStyle(rules.get(2), List.of("." + root, "." + root + "--cancel"), "background-color", "red");
         assertStyle(rules.get(3), List.of("." + root, ":hover"), "animation-name", root + "--keyframes-pulse");
-        String peer = "jcss-react4j-css-integration-PeerStyles--keyframes-pulse";
+        String peer = "jcss-react4j-css-integration-SharedPulse--keyframes";
         assertEquals(
                 components.getAllRules().stream()
                         .filter(CSSKeyframesRule.class::isInstance)
@@ -72,11 +72,12 @@ public final class CssIntegrationTest {
         Path fragment = tree.resolve("react4j/css/integration/ButtonStyles.css");
         assertTrue(Files.isRegularFile(fragment));
         assertTrue(Files.isRegularFile(Path.of(fragment + ".map")));
+        assertTrue(Files.isRegularFile(Path.of(fragment + ".json")));
         assertTrue(Files.isRegularFile(tree.resolve("react4j/css/integration/ButtonStyles.impl.java.js")));
         String css = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.fixture"))));
         String map = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.map"))));
         var indexed = JsonParser.parseString(map).getAsJsonObject();
-        assertEquals(indexed.getAsJsonArray("sections").size(), 2);
+        assertEquals(indexed.getAsJsonArray("sections").size(), 3);
         var consumer = new SourceMapConsumerV3();
         consumer.parse(map);
         String source = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.source"))));

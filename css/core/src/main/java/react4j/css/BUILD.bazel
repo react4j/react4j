@@ -6,6 +6,9 @@ java_library(
     name = "css",
     srcs = [
         "Css.java",
+        "CssImport.java",
+        "CssImports.java",
+        "Keyframes.java",
         "package-info.java",
     ],
 )
