@@ -1,11 +1,11 @@
 # Task map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementation-review
-- Current frontier: None (implementation review)
+- Status: reviewed
+- Current frontier: None (closeout)
 - Planning reviewer: /root/planning_review (1/3 rounds), Findings: none
 - Plan checkpoint: automatic — accepted immediate scope and latest user execution instruction; passing planning review
-- Implementation reviewer: pending (0/5 rounds)
+- Implementation reviewer: /root/implementation_review (1/5 rounds), Findings: none. Reran all three CSS targets uncached; release checks passed cached. Inspected complete delivery and supplied full-gate/reproducibility/updater/drift evidence.
 
 ## Full-scope validation
 
