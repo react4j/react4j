@@ -15,6 +15,3 @@ for build setup and other commands.
 Requires a browser with Web Bluetooth, a Bluetooth heart rate sensor, and a secure context
 (HTTPS or localhost). If the page is blank, check the browser console for
 `Bluetooth API not present`.
-
-[Application.java](src/main/java/react4j/hrm/Application.java) colocates its layout, heart size
-and heartbeat keyframes in static nested style classes. The `beating()` modifier applies the animation while a heart rate is available.

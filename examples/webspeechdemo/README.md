@@ -16,8 +16,3 @@ Available voices and word highlighting depend on the browser and operating syste
 page is blank, check the browser console for `Speech API not present`.
 
 Inspired by [eeejay/webspeechdemos](https://github.com/eeejay/webspeechdemos).
-
-Component styles live in static nested classes in [Application.java](src/main/java/react4j/webspeechdemo/Application.java),
-with page and control defaults in [shared.css](src/main/css/shared.css). The editor receives
-its speaking modifier directly. The word marker uses a visibility modifier and four custom
-properties for its measured position and size.
