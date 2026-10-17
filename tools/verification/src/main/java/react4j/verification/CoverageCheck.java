@@ -37,6 +37,7 @@ public final class CoverageCheck {
             cssUnits.put("css/processor/src/main/java/react4j/css/processor/" + name + ".java", new Counts());
         }
         cssUnits.put("css/internal/src/main/java/react4j/css/internal/SourceMap.java", new Counts());
+        cssUnits.put("css/internal/src/main/java/react4j/css/internal/CssResource.java", new Counts());
         cssUnits.put("css/bundler/src/main/java/react4j/css/bundler/Bundle.java", new Counts());
         final var sources = new HashSet<String>();
         for (final var record : report.split("end_of_record")) {

@@ -80,10 +80,6 @@ public final class Bundle {
 
     record Result(String css, String map) {}
 
-    static Result assemble(List<Path> trees, List<Path> shared, String outputName) throws IOException {
-        return assemble(trees, shared, List.of(), outputName);
-    }
-
     static Result assemble(List<Path> trees, List<Path> shared, List<String> globals, String outputName)
             throws IOException {
         var definitions = readResources(trees);

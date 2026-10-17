@@ -150,6 +150,8 @@ speechSynthesis.speak = utterance => {
     const page = /** @type {!Document} */ (frame.contentDocument);
     try {
       asserts.assertEquals('Web Speech Synthesis Demo', page.querySelector('h1').textContent);
+      asserts.assertEquals('rgb(51, 51, 51)', view.getComputedStyle(page.body).backgroundColor);
+      asserts.assertEquals('rgb(255, 255, 255)', view.getComputedStyle(page.body).color);
       asserts.assertEquals('480px', view.getComputedStyle(page.querySelector('form')).maxWidth);
       asserts.assertEquals('rgb(255, 255, 255)', view.getComputedStyle(page.getElementById('textarea')).backgroundColor);
       asserts.assertFalse(button(page, 'Speak').disabled);

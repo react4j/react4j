@@ -13,8 +13,8 @@ closure_js_library(
 css_bundle(
     name = "styles",
     css = "index.css",
+    globals = ["react4j.webspeechdemo.Main$Defaults"],
     root = ":webspeechdemo_bundle",
-    shared = ["//examples/webspeechdemo/src/main/css:shared.css"],
     source_map = "index.css.map",
 )
 

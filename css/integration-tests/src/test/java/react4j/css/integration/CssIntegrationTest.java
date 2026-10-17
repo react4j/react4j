@@ -4,6 +4,7 @@ import static org.testng.Assert.*;
 
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
+import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSKeyframesRule;
 import com.helger.css.decl.CSSSelectorSimpleMember;
@@ -142,6 +143,41 @@ public final class CssIntegrationTest {
                         .getExpression()
                         .getAsCSSString(new CSSWriterSettings(true), 0),
                 "shared");
+    }
+
+    @Test
+    public void separatelyCompiledResourcesMapToTheirDefiningJavaSources() throws Exception {
+        String css = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.fixture"))));
+        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(css, new CSSReaderSettings()));
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.map")))));
+        var defaults = Objects.requireNonNull(
+                sheet.getAllLayerRules().get(1).getAllStyleRules().get(0).getDeclarationOfPropertyName("--defaults"));
+        assertOrigin(consumer, defaults, "css.globals_source", "--defaults: shared");
+        var frames = sheet.getAllLayerRules().get(2).getAllRules().stream()
+                .filter(CSSKeyframesRule.class::isInstance)
+                .map(CSSKeyframesRule.class::cast)
+                .filter(rule -> "jcss-react4j-css-integration-SharedPulse--keyframes".equals(rule.getAnimationName()))
+                .findFirst()
+                .orElseThrow();
+        assertOrigin(
+                consumer, frames.getAllBlocks().get(0).getAllDeclarations().get(0), "css.frames_source", "opacity: 0");
+    }
+
+    private static void assertOrigin(
+            SourceMapConsumerV3 consumer, CSSDeclaration declaration, String property, String token) throws Exception {
+        var position = Objects.requireNonNull(declaration.getSourceLocation());
+        var mapped = Objects.requireNonNull(consumer.getMappingForLine(
+                position.getFirstTokenBeginLineNumber(), position.getFirstTokenBeginColumnNumber()));
+        var file = Path.of(Objects.requireNonNull(System.getProperty(property)));
+        String source = Files.readString(file);
+        int offset = source.indexOf(token);
+        assertTrue(offset >= 0);
+        assertEquals(mapped.getOriginalFile(), "react4j/css/integration/" + file.getFileName());
+        assertEquals(
+                mapped.getLineNumber(),
+                (int) source.substring(0, offset).chars().filter(c -> '\n' == c).count() + 1);
+        assertEquals(mapped.getColumnPosition(), offset - source.lastIndexOf('\n', offset - 1));
     }
 
     private static void assertStyle(CSSStyleRule rule, List<String> selectors, String property, String value) {

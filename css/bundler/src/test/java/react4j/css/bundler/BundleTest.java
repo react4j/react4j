@@ -69,8 +69,8 @@ public final class BundleTest {
         Path shared = dir().resolve("base.css");
         String original = "button {\r\n  color: blue;\r\n}\r\n";
         Files.writeString(shared, original);
-        var result = Bundle.assemble(List.of(one, two, one), List.of(shared), "application.css");
-        assertEquals(result, Bundle.assemble(List.of(two, one), List.of(shared), "application.css"));
+        var result = Bundle.assemble(List.of(one, two, one), List.of(shared), List.of(), "application.css");
+        assertEquals(result, Bundle.assemble(List.of(two, one), List.of(shared), List.of(), "application.css"));
         var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
                 result.css(), new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
         var layers = sheet.getAllLayerRules();
@@ -91,7 +91,7 @@ public final class BundleTest {
         Path second = dir().resolve("second.css");
         Files.writeString(first, "button { color: red; }\r\n");
         Files.writeString(second, "@media screen { button { color: blue; } }\n");
-        var result = Bundle.assemble(List.of(one), List.of(first, second), "app.css");
+        var result = Bundle.assemble(List.of(one), List.of(first, second), List.of(), "app.css");
         assertTrue(result.css().indexOf("color: red") < result.css().indexOf("@media"));
         assertTrue(result.css().indexOf(".a{") < result.css().indexOf(".z{"));
         var parsed = JsonParser.parseString(result.map()).getAsJsonObject();
@@ -128,8 +128,8 @@ public final class BundleTest {
         Files.writeString(shared, "/* comments */");
         component(empty, "Empty", "");
         for (var result : List.of(
-                Bundle.assemble(List.of(), List.of(), "empty.css"),
-                Bundle.assemble(List.of(empty), List.of(shared), "empty.css"))) {
+                Bundle.assemble(List.of(), List.of(), List.of(), "empty.css"),
+                Bundle.assemble(List.of(empty), List.of(shared), List.of(), "empty.css"))) {
             assertEquals(result.css(), "@layer shared,components;\n");
             assertEquals(
                     JsonParser.parseString(result.map())
@@ -150,7 +150,8 @@ public final class BundleTest {
                 "button { color red; }")) {
             Files.writeString(shared, css);
             var error = expectThrows(
-                    IllegalArgumentException.class, () -> Bundle.assemble(List.of(), List.of(shared), "app.css"));
+                    IllegalArgumentException.class,
+                    () -> Bundle.assemble(List.of(), List.of(shared), List.of(), "app.css"));
             assertTrue(String.valueOf(error.getMessage()).startsWith(shared.toString()), error.getMessage());
         }
     }
@@ -162,21 +163,27 @@ public final class BundleTest {
         component(one, "A", ".a{color:red;}");
         component(two, "A", ".a{color:red;}");
         var duplicate = expectThrows(
-                IllegalArgumentException.class, () -> Bundle.assemble(List.of(one, two), List.of(), "app.css"));
+                IllegalArgumentException.class,
+                () -> Bundle.assemble(List.of(one, two), List.of(), List.of(), "app.css"));
         assertTrue(String.valueOf(duplicate.getMessage()).contains("Duplicate CSS resource"));
         Files.delete(two.resolve("A.css.map"));
-        expectThrows(IllegalArgumentException.class, () -> Bundle.assemble(List.of(two), List.of(), "app.css"));
+        expectThrows(
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(two), List.of(), List.of(), "app.css"));
         Files.delete(two.resolve("A.css"));
         Files.writeString(two.resolve("A.css.map"), "{}");
-        expectThrows(IllegalArgumentException.class, () -> Bundle.assemble(List.of(two), List.of(), "app.css"));
+        expectThrows(
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(two), List.of(), List.of(), "app.css"));
         Path map = one.resolve("A.css.map");
         for (var invalid : List.of("{", "[]", "{}", "{\"version\":2}", "{\"version\":3,\"file\":\"wrong.css\"}")) {
             Files.writeString(map, invalid);
-            expectThrows(IllegalArgumentException.class, () -> Bundle.assemble(List.of(one), List.of(), "app.css"));
+            expectThrows(
+                    IllegalArgumentException.class,
+                    () -> Bundle.assemble(List.of(one), List.of(), List.of(), "app.css"));
         }
         component(one, "A", ".a{color:red;}");
         Files.writeString(one.resolve("A.css"), ".a{color:red;}");
-        expectThrows(IllegalArgumentException.class, () -> Bundle.assemble(List.of(one), List.of(), "app.css"));
+        expectThrows(
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(one), List.of(), List.of(), "app.css"));
     }
 
     @Test
@@ -233,7 +240,7 @@ public final class BundleTest {
         resource(input, "demo.Unused", CssResource.Kind.KEYFRAMES, "@keyframes unused{from{opacity:0;}}");
         resource(input, "demo.A", CssResource.Kind.COMPONENT, ".a{animation-name:pulse;}", "demo.Pulse");
         resource(input, "demo.B", CssResource.Kind.COMPONENT, ".b{animation:pulse 1s;}", "demo.Pulse");
-        var result = Bundle.assemble(List.of(input, input), List.of(), "app.css");
+        var result = Bundle.assemble(List.of(input, input), List.of(), List.of(), "app.css");
         var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
         var layer = sheet.getAllLayerRules().get(1);
         assertEquals(
@@ -249,14 +256,15 @@ public final class BundleTest {
                         .getAsJsonArray("sections")
                         .size(),
                 3);
-        assertEquals(result, Bundle.assemble(List.of(input), List.of(), "app.css"));
+        assertEquals(result, Bundle.assemble(List.of(input), List.of(), List.of(), "app.css"));
         Files.delete(input.resolve("demo/A.css"));
         Files.delete(input.resolve("demo/A.css.map"));
         Files.delete(input.resolve("demo/A.css.json"));
         Files.delete(input.resolve("demo/B.css"));
         Files.delete(input.resolve("demo/B.css.map"));
         Files.delete(input.resolve("demo/B.css.json"));
-        assertEquals(Bundle.assemble(List.of(input), List.of(), "app.css").css(), "@layer shared,components;\n");
+        assertEquals(
+                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(), "@layer shared,components;\n");
     }
 
     @Test
@@ -264,22 +272,23 @@ public final class BundleTest {
         Path input = tree("graph");
         resource(input, "A", CssResource.Kind.COMPONENT, ".a{color:red;}", "Missing");
         var missing = expectThrows(
-                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), List.of(), "app.css"));
         assertTrue(String.valueOf(missing.getMessage()).contains("Missing CSS dependency: Missing"));
         resource(input, "Missing", CssResource.Kind.COMPONENT, ".b{color:blue;}");
         var wrongKind = expectThrows(
-                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), List.of(), "app.css"));
         assertTrue(String.valueOf(wrongKind.getMessage()).contains("resource definitions"));
         resource(input, "Missing", CssResource.Kind.GLOBAL, "body{color:red;}", "Other");
         resource(input, "Other", CssResource.Kind.GLOBAL, "body{color:blue;}", "Missing");
         var cycle = expectThrows(
-                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), List.of(), "app.css"));
         assertTrue(String.valueOf(cycle.getMessage()).contains("Cyclic CSS dependency"));
         Files.writeString(input.resolve("A.css.json"), "{}");
-        expectThrows(IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
+        expectThrows(
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), List.of(), "app.css"));
         Files.delete(input.resolve("A.css.json"));
         var absent = expectThrows(
-                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
+                IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), List.of(), "app.css"));
         assertTrue(String.valueOf(absent.getMessage()).contains("Missing CSS source map or metadata"));
     }
 
@@ -292,7 +301,8 @@ public final class BundleTest {
         resource(input, "Empty", CssResource.Kind.GLOBAL, "");
         Path legacy = dir().resolve("legacy.css");
         Files.writeString(legacy, "body{color:black;}");
-        assertEquals(Bundle.assemble(List.of(input), List.of(), "app.css").css(), "@layer shared,components;\n");
+        assertEquals(
+                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(), "@layer shared,components;\n");
         var result =
                 Bundle.assemble(List.of(input), List.of(legacy), List.of("Theme", "Base", "Theme", "Empty"), "app.css");
         var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
@@ -327,7 +337,7 @@ public final class BundleTest {
                     IllegalArgumentException.class,
                     () -> Bundle.assemble(List.of(input), List.of(), List.of(owner), "app.css"));
         }
-        var implicit = Bundle.assemble(List.of(input), List.of(), "app.css");
+        var implicit = Bundle.assemble(List.of(input), List.of(), List.of(), "app.css");
         assertTrue(implicit.css().contains("color:red"));
         assertTrue(implicit.css().contains("color:blue"));
         assertFalse(implicit.css().contains("color:green"));

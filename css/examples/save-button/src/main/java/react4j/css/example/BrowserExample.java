@@ -3,6 +3,10 @@ package react4j.css.example;
 import jsinterop.annotations.JsMethod;
 import org.jspecify.annotations.Nullable;
 import react4j.css.Css;
+import react4j.css.CssImport;
+import react4j.css.CssIncludes;
+import react4j.css.GlobalCss;
+import react4j.css.Keyframes;
 import react4j.dom.DOM;
 import react4j.dom.ReactDOM;
 import react4j.dom.proptypes.html.BtnProps;
@@ -52,10 +56,14 @@ public final class BrowserExample {
                                                 .data("shared", shared)
                                                 .className(button.style()),
                                         "Nested"),
-                                DOM.span(new HtmlProps().id("status").className(status.success()), "Status"))),
+                                DOM.span(new HtmlProps().id("status").className(status.success()), "Status")),
+                        DOM.button(new BtnProps().id("busy-button").className(button.busy()), "Saving"),
+                        DOM.span(new HtmlProps().id("busy-status").className(status.busy()), "Saving status")),
                 container);
     }
 
+    @CssIncludes(Defaults.class)
+    @CssImport(name = "pulse", value = Pulse.class)
     @Css("""
         color: var(--on-accent);
 
@@ -75,6 +83,10 @@ public final class BrowserExample {
           background-color: var(--cancel);
           border: 2px dotted currentcolor;
         }
+
+        &.busy {
+          animation: pulse 0.8s ease-in-out infinite alternate;
+        }
         """)
     abstract static class SaveButton {
         abstract String style();
@@ -82,18 +94,71 @@ public final class BrowserExample {
         abstract String success();
 
         abstract String cancel();
+
+        abstract String busy();
     }
 
+    @CssIncludes(Defaults.class)
+    @CssImport(name = "pulse", value = Pulse.class)
     @Css("""
         color: var(--on-accent);
 
         &.success {
           border: 3px solid var(--success);
         }
+
+        &.busy {
+          animation-name: pulse;
+          animation-duration: 0.8s;
+          animation-timing-function: ease-in-out;
+          animation-iteration-count: infinite;
+          animation-direction: alternate;
+        }
         """)
     abstract static class Status {
         abstract String style();
 
         abstract String success();
+
+        abstract String busy();
     }
+
+    @Keyframes("""
+        from { opacity: 0.4; }
+        to { opacity: 1; }
+        """)
+    abstract static class Pulse {}
+
+    @Keyframes("""
+        to { transform: rotate(360deg); }
+        """)
+    abstract static class UnusedAnimation {}
+
+    @GlobalCss("""
+        :root {
+          --on-accent: #fff;
+          --focus: #06f;
+          --success: #080;
+          --cancel: #a00;
+        }
+        #base { --cascade: defaults; }
+        """)
+    static final class Defaults {}
+
+    @CssIncludes(Defaults.class)
+    @GlobalCss("""
+        #base { --cascade: theme; }
+        """)
+    static final class Theme {}
+
+    @CssIncludes(Defaults.class)
+    @GlobalCss("""
+        #base { --cascade: alternate; }
+        """)
+    static final class AlternateTheme {}
+
+    @GlobalCss("""
+        #base { --excluded: unwanted; }
+        """)
+    static final class UnusedGlobals {}
 }

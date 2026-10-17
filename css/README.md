@@ -67,7 +67,45 @@ abstract class HeartStyles {
 
 Keyframe names are namespaced automatically and remain stable when the animation body changes. No Java accessor is needed for an animation name. Duplicate definitions and unknown animation names are errors. [StepButton.java](../examples/drumloop/src/main/java/react4j/drumloop/views/StepButton.java) shows an animation colocated with its view.
 
-Use unprefixed `@keyframes`, `animation` and `animation-name`, with unescaped, unquoted names. Keyframe definitions inside selectors or conditional rules, references to another style class's animations, and animation bindings inside keyframes are unsupported. Names must be static. For dynamic timing, use `animation-name: beat` with longhands such as `animation-duration: var(--duration)`. Shorthand accepts only `steps()`, `cubic-bezier()` and `linear()` functions.
+For reuse across style definitions, declare a `@Keyframes` class and import it under a local name:
+
+```java
+@Keyframes("""
+    from { opacity: 0.4; }
+    to { opacity: 1; }
+    """)
+abstract class Pulse {}
+
+@CssImport(name = "pulse", value = Pulse.class)
+@Css("""
+    animation: pulse 0.8s ease-in-out infinite alternate;
+    """)
+abstract class StatusStyles {
+    abstract String style();
+}
+```
+
+The shared animation's name derives from its Java class. Multiple consumers emit one definition. Imports work across separately compiled libraries and are checked even when unused; only animation references retain their definitions. Repeat `@CssImport` to import more names. Aliases must be distinct and cannot conflict with local keyframe definitions. Use `animation-name` to avoid shorthand ambiguity when an alias is also a timing or direction keyword.
+
+Use unprefixed `@keyframes`, `animation` and `animation-name`, with unescaped, unquoted names. Keyframe definitions inside selectors or conditional rules and animation bindings inside keyframes are unsupported. Names must be static. For dynamic timing, use `animation-name: pulse` with longhands such as `animation-duration: var(--duration)`. Shorthand accepts only `steps()`, `cubic-bezier()` and `linear()` functions.
+
+### Global styles
+
+Use `@GlobalCss` for page defaults and rules that target elements outside a component:
+
+```java
+@GlobalCss("""
+    body { margin: 0; }
+    button, select { border-radius: 2px; }
+    """)
+final class ApplicationDefaults {}
+```
+
+Selectors retain their authored names and require no Java accessors. Global styles support style rules, nesting, `@media` and `@supports`. Import shared animations with `@CssImport`; inline keyframe definitions and other at-rules, including `@font-face`, are unsupported.
+
+Select application globals through the bundle's `globals` attribute below. Add `@CssIncludes(ApplicationDefaults.class)` to a component or another global definition that requires those defaults. Includes work across separately compiled libraries; duplicate entries in one include list, self-inclusion and incompatible types are errors. The bundler rejects dependency cycles.
+
+Keyframe and global declaration classes may be concrete or abstract, public or package-access. Inheritance, interfaces, type parameters and sealed classes are unsupported. Nested declarations must be static with accessible enclosing types. They must not declare fields, explicit constructors, initializers or abstract methods; concrete and static helpers are allowed. These definitions produce resources without generated Java bindings.
 
 ### Runtime values
 
@@ -94,14 +132,19 @@ css_bundle(
     name = "styles",
     root = ":application_bundle",
     shared = [":shared.css"],
+    globals = ["com.biz.ui.ApplicationDefaults"],
     css = "application.css",
     source_map = "application.css.map",
 )
 ```
 
-Load the generated CSS with the application and serve its source map alongside it. Maps include the original Java and shared CSS source content. The [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) shows complete bundle wiring. Bundling includes all styles in reachable build targets, even if their accessors are unused.
+Load the generated CSS with the application and serve its source map alongside it. Maps include the original Java and shared CSS source content. The [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) shows two bundles selecting different globals from the same dependencies.
 
-Shared stylesheets support style rules, `@media` and `@supports`, but cannot define keyframes. Put processed CSS in `src/main/css` and assets copied unchanged in `src/main/assets`. Shared files retain their declared order; component styles are ordered by Java owner name. The `shared` and `components` cascade layers give component styles precedence over shared styles. Both reject `!important`, which would reverse that precedence.
+Global roots use binary Java names; nested classes use `$`, such as `com.biz.ui.Main$Defaults`. Shared CSS files emit first in declared order, followed by globals. Globals are visited dependency-first, starting with declared roots and then component requirements. Each definition emits once: listing a dependency again as a later root does not move it. Components are visited in Java owner order. The `shared` and `components` cascade layers give component styles precedence over shared files and globals. All inputs reject `!important`, which would reverse that precedence.
+
+All component styles in reachable build targets are included, even if their accessors are unused. Shared animations and global styles are included only when referenced by retained styles or, for globals, selected explicitly. Collection does not yet use Closure liveness.
+
+Shared CSS files support style rules, `@media` and `@supports`, but cannot define keyframes. Put processed CSS sources in `src/main/css` and assets copied unchanged in `src/main/assets`. When packaging compiled style libraries, retain their generated `.css`, `.css.map` and `.css.json` resources.
 
 For direct javac use, put the core annotation jar, JSpecify and application dependencies on the compilation classpath, and the standalone processor jar on the processor path. Parser and formatter dependencies are bundled with the processor.
 

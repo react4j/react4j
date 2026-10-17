@@ -21,6 +21,7 @@ public final class CoverageCheckTest {
             result.append(record(module + "/src/main/java/demo/Example.java", 10, 1, 2, 1));
         }
         result.append(record("css/internal/src/main/java/react4j/css/internal/SourceMap.java", 100, 100, 100, 100));
+        result.append(record("css/internal/src/main/java/react4j/css/internal/CssResource.java", 100, 100, 100, 100));
         result.append(record("css/bundler/src/main/java/react4j/css/bundler/Bundle.java", 100, 100, 100, 100));
         result.append(record(CSS + "Names.java", 12, 12, 16, 16));
         result.append(record(CSS + "CssCompiler.java", 176, 169, 120, 107));
@@ -55,5 +56,17 @@ public final class CoverageCheckTest {
                 expectThrows(IllegalArgumentException.class, () -> CoverageCheck.summarize(report(unit + unit)));
         assertTrue(
                 String.valueOf(duplicate.getMessage()).contains("Duplicate coverage source"), duplicate.getMessage());
+    }
+
+    @Test
+    public void metadataCoverageCannotBeHiddenByOtherInternalClasses() {
+        String source = "css/internal/src/main/java/react4j/css/internal/CssResource.java";
+        String valid = report(record(CSS + "TextBlock.java", 100, 100, 100, 100));
+        for (var replacement : List.of("", record(source, 100, 94, 100, 100), record(source, 100, 100, 100, 84))) {
+            var error = expectThrows(
+                    IllegalArgumentException.class,
+                    () -> CoverageCheck.summarize(valid.replace(record(source, 100, 100, 100, 100), replacement)));
+            assertTrue(String.valueOf(error.getMessage()).contains("CssResource.java"));
+        }
     }
 }

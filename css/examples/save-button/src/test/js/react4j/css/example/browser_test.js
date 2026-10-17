@@ -56,6 +56,44 @@ testSuite({
   testGeneratedBindingsAreSingletons() {
     asserts.assertTrue(Example.bindingsAreSingletons());
   },
+  async testSharedKeyframesAreReusedAndUnreferencedDefinitionsAreExcluded() {
+    const button = /** @type {!HTMLElement} */ (container.querySelector('#busy-button'));
+    const status = /** @type {!HTMLElement} */ (container.querySelector('#busy-status'));
+    const name = computed('busy-button').animationName;
+    asserts.assertNotEquals('none', name);
+    asserts.assertEquals(name, computed('busy-status').animationName);
+    asserts.assertEquals('0.8s', computed('busy-button').animationDuration);
+    asserts.assertEquals('0.8s', computed('busy-status').animationDuration);
+    asserts.assertEquals('infinite', computed('busy-status').animationIterationCount);
+    asserts.assertEquals(1, button.getAnimations().length);
+    asserts.assertEquals(1, status.getAnimations().length);
+    const animation = button.getAnimations()[0];
+    animation.pause();
+    await animation.ready;
+    animation.currentTime = 400;
+    const opacity = Number(computed('busy-button').opacity);
+    asserts.assertTrue(opacity > 0.4 && opacity < 1);
+    const sheet = /** @type {!CSSStyleSheet} */ (style.sheet);
+    /** @type {!Array<string>} */
+    const names = [];
+    for (const rule of ruleArray(/** @type {!CSSRuleList} */ (sheet.cssRules))) {
+      if (!rule.cssText.startsWith('@layer components {')) continue;
+      const layer = /** @type {!CSSGroupingRule} */ (rule);
+      for (const child of ruleArray(layer.cssRules)) {
+        if (child.cssText.startsWith('@keyframes')) names.push(/** @type {!CSSKeyframesRule} */ (child).name);
+      }
+    }
+    asserts.assertArrayEquals([name], names);
+  },
+  async testExplicitGlobalSelectionAndDependencyFirstCascade() {
+    // Defaults is also a later explicit root; its first visit precedes Theme.
+    asserts.assertEquals('theme', computed('base').getPropertyValue('--cascade').trim());
+    asserts.assertEquals('', computed('base').getPropertyValue('--excluded'));
+    style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/alternate.css')).text();
+    asserts.assertEquals('alternate', computed('base').getPropertyValue('--cascade').trim());
+    asserts.assertEquals('', computed('base').getPropertyValue('--excluded'));
+    asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);
+  },
   testGeneratedBindingsAndCascade() {
     asserts.assertEquals('rgb(255, 255, 255)', computed('base').color);
     asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);
@@ -123,8 +161,14 @@ testSuite({
     const groups = new Map();
     /** @type {!Array<!Array<string>>} */
     const ordered = [];
+    /** @type {!Array<string>} */
+    const animations = [];
     const rules = ruleArray(componentRules);
     for (let i = 0; i < rules.length; i++) {
+      if (rules[i].cssText.startsWith('@keyframes')) {
+        animations.push(rules[i].cssText);
+        continue;
+      }
       const match = rules[i].cssText.match(/\.([A-Za-z0-9_-]+)/);
       if (match === null) throw new Error('Expected a scoped component selector');
       const captured = /** @type {string} */ (match[1]);
@@ -135,6 +179,7 @@ testSuite({
     }
     asserts.assertEquals(2, groups.size);
     while (componentRules.length) layer.deleteRule(0);
+    for (const animation of animations) layer.insertRule(animation, componentRules.length);
     for (let i = ordered.length - 1; i >= 0; i--) {
       const group = ordered[i];
       for (let j = 0; j < group.length; j++) layer.insertRule(group[j], componentRules.length);

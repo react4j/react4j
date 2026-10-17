@@ -61,11 +61,6 @@ final class CssCompiler {
 
     record Result(SourceMap.Writer output, Set<String> imports) {}
 
-    static SourceMap.Writer component(
-            String css, String root, List<String> accessors, IntFunction<SourceMap.Location> locations) {
-        return component(css, root, accessors, locations, Map.of()).output();
-    }
-
     static Result component(
             String css,
             String root,

@@ -39,7 +39,12 @@ public final class CssCompilerTest {
 
     private static String component(String css, String... modifiers) {
         return CssCompiler.component(
-                        css, ROOT, List.of(modifiers), offset -> new SourceMap.Location("Button.java", css, 0, offset))
+                        css,
+                        ROOT,
+                        List.of(modifiers),
+                        offset -> new SourceMap.Location("Button.java", css, 0, offset),
+                        Map.of())
+                .output()
                 .css();
     }
 
@@ -327,7 +332,9 @@ public final class CssCompilerTest {
                         source,
                         "jcss-demo-Other",
                         List.of("style", "beating"),
-                        offset -> new SourceMap.Location("Other.java", source, 0, offset))
+                        offset -> new SourceMap.Location("Other.java", source, 0, offset),
+                        Map.of())
+                .output()
                 .css());
         assertEquals(
                 ((CSSKeyframesRule) other.getAllRules().get(0)).getAnimationName(), "jcss-demo-Other--keyframes-beat");
