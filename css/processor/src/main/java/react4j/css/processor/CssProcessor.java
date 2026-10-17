@@ -37,7 +37,13 @@ import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
 /** Validates component CSS in the JVM, then emits static bindings and CSS resources. */
-@SupportedAnnotationTypes({"react4j.css.Css", "react4j.css.Keyframes", "react4j.css.CssImport", "react4j.css.CssImports"
+@SupportedAnnotationTypes({
+    "react4j.css.Css",
+    "react4j.css.Keyframes",
+    "react4j.css.CssImport",
+    "react4j.css.CssImports",
+    "react4j.css.GlobalCss",
+    "react4j.css.CssIncludes"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public final class CssProcessor extends AbstractStandardProcessor {
@@ -79,10 +85,11 @@ public final class CssProcessor extends AbstractStandardProcessor {
     private void process(TypeElement owner) throws IOException {
         Kind kind = sourceKind(owner);
         CssDescriptor descriptor = Kind.COMPONENT == kind ? parse(owner) : null;
-        if (Kind.KEYFRAMES == kind) {
+        if (Kind.COMPONENT != kind) {
             validateResourceType(owner);
         }
         var imports = imports(owner, kind);
+        var includes = includes(owner, kind);
         var names = new LinkedHashMap<String, String>();
         imports.forEach((alias, target) -> names.put(alias, Names.root(target) + "--keyframes"));
         var result = compileCss(owner, kind, descriptor, names);
@@ -95,10 +102,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
         String ownerName = binaryName(owner);
         String resource = CssResource.path(ownerName);
         String file = resource.substring(resource.lastIndexOf('/') + 1);
-        var metadata = new CssResource(
-                ownerName,
-                kind,
-                result.imports().stream().map(imports::get).distinct().sorted().toList());
+        var dependencies = new ArrayList<>(includes);
+        result.imports().stream().map(imports::get).distinct().sorted().forEach(dependencies::add);
+        var metadata = new CssResource(ownerName, kind, dependencies);
         var output = result.output();
         for (var entry : Map.of(
                         resource,
@@ -136,13 +142,58 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 .orElseThrow(() -> new IllegalArgumentException("Missing annotation value: " + name));
     }
 
+    private static String annotationName(Kind kind) {
+        return switch (kind) {
+            case COMPONENT -> CSS_ANNOTATION;
+            case GLOBAL -> "react4j.css.GlobalCss";
+            case KEYFRAMES -> "react4j.css.Keyframes";
+        };
+    }
+
     private Kind sourceKind(TypeElement owner) {
-        boolean component = null != annotation(owner, CSS_ANNOTATION);
-        boolean frames = null != annotation(owner, "react4j.css.Keyframes");
-        if (component == frames) {
-            throw new IllegalArgumentException("Declare exactly one of @Css or @Keyframes on a CSS definition");
+        var kinds = new ArrayList<Kind>();
+        for (var kind : Kind.values()) {
+            if (null != annotation(owner, annotationName(kind))) {
+                kinds.add(kind);
+            }
         }
-        return component ? Kind.COMPONENT : Kind.KEYFRAMES;
+        if (1 != kinds.size()) {
+            throw new IllegalArgumentException(
+                    "Declare exactly one of @Css, @GlobalCss or @Keyframes on a CSS definition");
+        }
+        return kinds.get(0);
+    }
+
+    private List<String> includes(TypeElement owner, Kind kind) {
+        var mirror = annotation(owner, "react4j.css.CssIncludes");
+        var includes = new ArrayList<String>();
+        if (null != mirror) {
+            if (Kind.KEYFRAMES == kind) {
+                throw new IllegalArgumentException("@CssIncludes is only supported on stylesheet definitions");
+            }
+            for (var item : (List<?>) value(mirror, "value").getValue()) {
+                Object target = ((AnnotationValue) item).getValue();
+                if (!(target instanceof TypeMirror type)
+                        || !(processingEnv.getTypeUtils().asElement(type) instanceof TypeElement element)
+                        || ElementKind.CLASS != element.getKind()
+                        || null == annotation(element, "react4j.css.GlobalCss")
+                        || Kind.GLOBAL != sourceKind(element)) {
+                    throw new IllegalArgumentException("@CssIncludes must reference @GlobalCss classes: " + target);
+                }
+                String name = binaryName(element);
+                if (name.equals(binaryName(owner))) {
+                    throw new IllegalArgumentException("CSS definitions must not include themselves");
+                }
+                if (includes.contains(name)) {
+                    throw new IllegalArgumentException("Duplicate included global stylesheet: " + name);
+                }
+                if (null != Trees.instance(processingEnv).getPath(element)) {
+                    validateResourceType(element);
+                }
+                includes.add(name);
+            }
+        }
+        return includes;
     }
 
     private void validateResourceType(TypeElement owner) {
@@ -305,8 +356,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
             throws IOException {
         var trees = Trees.instance(processingEnv);
         var annotation = owner.getAnnotationMirrors().stream()
-                .filter(a -> (Kind.COMPONENT == kind ? CSS_ANNOTATION : "react4j.css.Keyframes")
-                        .equals(a.getAnnotationType().toString()))
+                .filter(a -> annotationName(kind).equals(a.getAnnotationType().toString()))
                 .findFirst()
                 .orElseThrow();
         var value = value(annotation, "value");
@@ -314,7 +364,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
         var unit = path.getCompilationUnit();
         var literal = trees.getTree(owner, annotation, value);
         if (!(literal instanceof LiteralTree text) || !(text.getValue() instanceof String css)) {
-            throw new IllegalArgumentException((Kind.COMPONENT == kind ? "@Css" : "@Keyframes")
+            throw new IllegalArgumentException("@" + annotationName(kind).substring("react4j.css.".length())
                     + " requires a literal Java text block; constants and concatenation are unsupported");
         }
         String source = unit.getSourceFile().getCharContent(true).toString();
@@ -341,6 +391,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
             };
             if (Kind.KEYFRAMES == kind) {
                 return CssCompiler.keyframes(block.value(), Names.root(binaryName(owner)) + "--keyframes", locations);
+            }
+            if (Kind.GLOBAL == kind) {
+                return CssCompiler.global(block.value(), locations, imports);
             }
             assert null != descriptor;
             return CssCompiler.component(

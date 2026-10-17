@@ -11,10 +11,13 @@ public final class CssResourceTest {
     @Test
     public void metadataRoundTripsAndCopiesDependencies() {
         for (var kind : CssResource.Kind.values()) {
-            var dependencies = new ArrayList<>(List.of("demo.Pulse", "demo.Outer$Defaults"));
+            var expected = CssResource.Kind.KEYFRAMES == kind
+                    ? List.<String>of()
+                    : List.of("demo.Pulse", "demo.Outer$Defaults");
+            var dependencies = new ArrayList<>(expected);
             var resource = new CssResource("demo.Button", kind, dependencies);
             dependencies.clear();
-            assertEquals(resource.dependencies(), List.of("demo.Pulse", "demo.Outer$Defaults"));
+            assertEquals(resource.dependencies(), expected);
             assertEquals(CssResource.read(resource.json(), "demo.Button"), resource);
             expectThrows(
                     UnsupportedOperationException.class,
@@ -64,5 +67,7 @@ public final class CssResourceTest {
         expectThrows(
                 IllegalArgumentException.class,
                 () -> new CssResource("A", CssResource.Kind.COMPONENT, List.of("B", "B")));
+        expectThrows(
+                IllegalArgumentException.class, () -> new CssResource("A", CssResource.Kind.KEYFRAMES, List.of("B")));
     }
 }

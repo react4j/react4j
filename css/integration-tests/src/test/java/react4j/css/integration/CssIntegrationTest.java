@@ -11,6 +11,7 @@ import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
+import com.helger.css.writer.CSSWriterSettings;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -35,12 +36,14 @@ public final class CssIntegrationTest {
                         .setCustomExceptionHandler(error -> {
                             throw new AssertionError(error);
                         })));
-        assertEquals(sheet.getRuleCount(), 2);
+        assertEquals(sheet.getRuleCount(), 3);
         var layers = sheet.getAllLayerRules();
-        assertEquals(layers.size(), 2);
+        assertEquals(layers.size(), 3);
         assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "components"));
         assertEquals(layers.get(0).getRuleCount(), 0);
-        var components = layers.get(1);
+        assertEquals(layers.get(1).getAllSelectors(), List.of("shared"));
+        assertEquals(layers.get(1).getRuleCount(), 1);
+        var components = layers.get(2);
         assertEquals(components.getAllSelectors(), List.of("components"));
         assertEquals(components.getRuleCount(), 7);
         var rules = components.getAllStyleRules();
@@ -77,7 +80,7 @@ public final class CssIntegrationTest {
         String css = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.fixture"))));
         String map = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.map"))));
         var indexed = JsonParser.parseString(map).getAsJsonObject();
-        assertEquals(indexed.getAsJsonArray("sections").size(), 3);
+        assertEquals(indexed.getAsJsonArray("sections").size(), 4);
         var consumer = new SourceMapConsumerV3();
         consumer.parse(map);
         String source = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.source"))));
@@ -105,10 +108,40 @@ public final class CssIntegrationTest {
                             + 1);
             assertEquals(location.getColumnPosition(), original - source.lastIndexOf('\n', original - 1));
         }
-        var componentMap =
-                indexed.getAsJsonArray("sections").get(0).getAsJsonObject().getAsJsonObject("map");
+        var componentMap = indexed.getAsJsonArray("sections").asList().stream()
+                .map(section -> section.getAsJsonObject().getAsJsonObject("map"))
+                .filter(section -> "ButtonStyles.css".equals(section.get("file").getAsString()))
+                .findFirst()
+                .orElseThrow();
         assertEquals(componentMap.getAsJsonArray("sourcesContent").get(0).getAsString(), source);
         assertTrue(css.endsWith("/*# sourceMappingURL=fixture.css.map */\n"));
+    }
+
+    @Test
+    public void globalDefinitionsRequireExplicitRootsOrTypedDependencies() throws Exception {
+        String implicit = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.fixture"))));
+        String selected = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.selected"))));
+        var defaults = Objects.requireNonNull(CSSReader.readFromStringReader(implicit, new CSSReaderSettings()));
+        var explicit = Objects.requireNonNull(CSSReader.readFromStringReader(selected, new CSSReaderSettings()));
+        var implicitRules = defaults.getAllLayerRules().get(1).getAllStyleRules();
+        assertEquals(implicitRules.size(), 1);
+        assertEquals(
+                Objects.requireNonNull(implicitRules.get(0).getDeclarationOfPropertyName("--defaults"))
+                        .getExpression()
+                        .getAsCSSString(new CSSWriterSettings(true), 0),
+                "shared");
+        var explicitRules = explicit.getAllLayerRules().get(1).getAllStyleRules();
+        assertEquals(explicitRules.size(), 2);
+        assertEquals(
+                Objects.requireNonNull(explicitRules.get(0).getDeclarationOfPropertyName("--defaults"))
+                        .getExpression()
+                        .getAsCSSString(new CSSWriterSettings(true), 0),
+                "explicitly-selected");
+        assertEquals(
+                Objects.requireNonNull(explicitRules.get(1).getDeclarationOfPropertyName("--defaults"))
+                        .getExpression()
+                        .getAsCSSString(new CSSWriterSettings(true), 0),
+                "shared");
     }
 
     private static void assertStyle(CSSStyleRule rule, List<String> selectors, String property, String value) {

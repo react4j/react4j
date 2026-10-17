@@ -9,8 +9,10 @@ java_j2cl_library(
     name = "fixture_dependency",
     testonly = True,
     srcs = [
+        "SharedDefaults.java",
         "SharedPulse.java",
         "StyleState.java",
+        "UnselectedDefaults.java",
         "package-info.java",
     ],
     java_deps = ["//css/core"],
@@ -91,6 +93,15 @@ css_bundle(
     source_map = "fixture.css.map",
 )
 
+css_bundle(
+    name = "selected_styles",
+    testonly = True,
+    css = "selected.css",
+    globals = ["react4j.css.integration.UnselectedDefaults"],
+    root = ":graph",
+    source_map = "selected.css.map",
+)
+
 java_testng(
     name = "integration_tests",
     srcs = [
@@ -102,12 +113,15 @@ java_testng(
         ":fixture.css",
         ":fixture.css.map",
         ":fixture_bindings.js",
+        ":selected.css",
+        ":selected.css.map",
     ],
     jvm_flags = [
         "-Dcss.fixture=$(rootpath :fixture.css)",
         "-Dcss.map=$(rootpath :fixture.css.map)",
         "-Dcss.tree=$(rootpath :fixture_bindings.js)",
         "-Dcss.source=$(rootpath ButtonStyles.java)",
+        "-Dcss.selected=$(rootpath :selected.css)",
     ],
     test_class = "react4j.css.integration.CssIntegrationTest",
     deps = [

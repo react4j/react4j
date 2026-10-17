@@ -117,6 +117,48 @@ final class CssCompiler {
         return new Result(compiler.output, Set.of());
     }
 
+    static Result global(String css, IntFunction<SourceMap.Location> locations, Map<String, String> imports) {
+        var compiler = new CssCompiler(css, 0, "", List.of(), locations, imports);
+        for (var rule : compiler.syntax.parse(false).getAllRules()) {
+            compiler.globalRule((ICSSSourceLocationAware) rule);
+        }
+        return new Result(compiler.output, Set.copyOf(compiler.usedImports));
+    }
+
+    private void globalRule(ICSSSourceLocationAware rule) {
+        if (rule instanceof CSSStyleRule style) {
+            output.append(style.getSelectorsAsCSSString(compact, 0) + "{", location(style));
+            writeDeclarations(style.getAllDeclarations());
+            for (var child : style.getAllRules()) {
+                globalRule((ICSSSourceLocationAware) child);
+            }
+            output.append("}");
+        } else if (rule instanceof CSSNestedDeclarations declarations) {
+            writeDeclarations(declarations.getAllDeclarations());
+        } else if (rule instanceof CSSMediaRule media) {
+            globalConditional(media);
+        } else if (rule instanceof CSSSupportsRule supports) {
+            globalConditional(supports);
+        } else {
+            throw syntax.invalid("Unsupported global rule", rule);
+        }
+    }
+
+    private void globalConditional(AbstractHasTopLevelRules rule) {
+        output.append(conditionalHeader(rule) + "{", location((ICSSSourceLocationAware) rule));
+        for (var child : rule.getAllRules()) {
+            globalRule((ICSSSourceLocationAware) child);
+        }
+        output.append("}");
+    }
+
+    private void writeDeclarations(List<CSSDeclaration> declarations) {
+        for (var declaration : declarations) {
+            animation(declaration);
+            output.append(declaration.getAsCSSString(compact, 0) + ";", location(declaration));
+        }
+    }
+
     static void checkAlias(String name) {
         if (!name.matches("(?:--|-?(?:[a-zA-Z_]|[^\\x00-\\x7f]))(?:[a-zA-Z0-9_-]|[^\\x00-\\x7f])*")
                 || "none".equalsIgnoreCase(name)
@@ -150,20 +192,7 @@ final class CssCompiler {
     }
 
     private void conditional(AbstractHasTopLevelRules rule, String parent) {
-        String header;
-        if (rule instanceof CSSMediaRule media) {
-            header = "@media "
-                    + media.getAllMediaQueries().stream()
-                            .map(q -> q.getAsCSSString(compact, 0))
-                            .collect(Collectors.joining(","));
-        } else {
-            var supports = (CSSSupportsRule) rule;
-            header = "@supports "
-                    + supports.getAllSupportConditionMembers().stream()
-                            .map(q -> q.getAsCSSString(compact, 0))
-                            .collect(Collectors.joining(" "));
-        }
-        output.append(header + "{", location((ICSSSourceLocationAware) rule));
+        output.append(conditionalHeader(rule) + "{", location((ICSSSourceLocationAware) rule));
         for (var child : rule.getAllRules()) {
             if (child instanceof CSSStyleRule style) {
                 style(style, parent, false);
@@ -178,15 +207,29 @@ final class CssCompiler {
         output.append("}");
     }
 
+    private String conditionalHeader(AbstractHasTopLevelRules rule) {
+        String header;
+        if (rule instanceof CSSMediaRule media) {
+            header = "@media "
+                    + media.getAllMediaQueries().stream()
+                            .map(q -> q.getAsCSSString(compact, 0))
+                            .collect(Collectors.joining(","));
+        } else {
+            var supports = (CSSSupportsRule) rule;
+            header = "@supports "
+                    + supports.getAllSupportConditionMembers().stream()
+                            .map(q -> q.getAsCSSString(compact, 0))
+                            .collect(Collectors.joining(" "));
+        }
+        return header;
+    }
+
     private void declarations(List<CSSDeclaration> declarations, String selector, ICSSSourceLocationAware rule) {
         if (declarations.isEmpty()) {
             return;
         }
         output.append(selector + "{", location(rule));
-        for (var declaration : declarations) {
-            animation(declaration);
-            output.append(declaration.getAsCSSString(compact, 0) + ";", location(declaration));
-        }
+        writeDeclarations(declarations);
         output.append("}");
     }
 

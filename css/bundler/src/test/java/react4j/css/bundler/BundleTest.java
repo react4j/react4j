@@ -8,6 +8,7 @@ import com.helger.css.decl.CSSKeyframesRule;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
+import com.helger.css.writer.CSSWriterSettings;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -269,8 +270,8 @@ public final class BundleTest {
         var wrongKind = expectThrows(
                 IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
         assertTrue(String.valueOf(wrongKind.getMessage()).contains("resource definitions"));
-        resource(input, "Missing", CssResource.Kind.KEYFRAMES, "@keyframes b{}", "Other");
-        resource(input, "Other", CssResource.Kind.KEYFRAMES, "@keyframes c{}", "Missing");
+        resource(input, "Missing", CssResource.Kind.GLOBAL, "body{color:red;}", "Other");
+        resource(input, "Other", CssResource.Kind.GLOBAL, "body{color:blue;}", "Missing");
         var cycle = expectThrows(
                 IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
         assertTrue(String.valueOf(cycle.getMessage()).contains("Cyclic CSS dependency"));
@@ -280,5 +281,97 @@ public final class BundleTest {
         var absent = expectThrows(
                 IllegalArgumentException.class, () -> Bundle.assemble(List.of(input), List.of(), "app.css"));
         assertTrue(String.valueOf(absent.getMessage()).contains("Missing CSS source map or metadata"));
+    }
+
+    @Test
+    public void globalsAreExplicitOrderedRootsWithDependencyFirstDeduplication() throws Exception {
+        Path input = tree("globals");
+        resource(input, "Base", CssResource.Kind.GLOBAL, "body{color:red;}");
+        resource(input, "Theme", CssResource.Kind.GLOBAL, "body{color:blue;}", "Base");
+        resource(input, "Other", CssResource.Kind.GLOBAL, "body{color:green;}");
+        resource(input, "Empty", CssResource.Kind.GLOBAL, "");
+        Path legacy = dir().resolve("legacy.css");
+        Files.writeString(legacy, "body{color:black;}");
+        assertEquals(Bundle.assemble(List.of(input), List.of(), "app.css").css(), "@layer shared,components;\n");
+        var result =
+                Bundle.assemble(List.of(input), List.of(legacy), List.of("Theme", "Base", "Theme", "Empty"), "app.css");
+        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
+        var layers = sheet.getAllLayerRules();
+        assertEquals(layers.size(), 2);
+        var rules = layers.get(1).getAllStyleRules();
+        assertEquals(
+                rules.stream()
+                        .map(rule -> Objects.requireNonNull(rule.getDeclarationOfPropertyName("color"))
+                                .getExpression()
+                                .getAsCSSString(new CSSWriterSettings(true), 0))
+                        .toList(),
+                List.of("black", "red", "blue"));
+        var alternate = Bundle.assemble(List.of(input), List.of(), List.of("Other"), "app.css");
+        assertTrue(alternate.css().contains("color:green"));
+        assertFalse(alternate.css().contains("color:blue"));
+        assertFalse(alternate.css().contains("color:red"));
+        assertEquals(
+                Bundle.assemble(List.of(input), List.of(), List.of("Empty"), "app.css")
+                        .css(),
+                "@layer shared,components;\n");
+        for (var owner : List.of("Missing", "../Base")) {
+            var error = expectThrows(
+                    IllegalArgumentException.class,
+                    () -> Bundle.assemble(List.of(input), List.of(), List.of(owner), "app.css"));
+            assertTrue(String.valueOf(error.getMessage()).contains("Global CSS root"));
+        }
+        resource(input, "Component", CssResource.Kind.COMPONENT, ".component{color:white;}", "Theme");
+        resource(input, "Animation", CssResource.Kind.KEYFRAMES, "@keyframes a{}");
+        for (var owner : List.of("Component", "Animation")) {
+            expectThrows(
+                    IllegalArgumentException.class,
+                    () -> Bundle.assemble(List.of(input), List.of(), List.of(owner), "app.css"));
+        }
+        var implicit = Bundle.assemble(List.of(input), List.of(), "app.css");
+        assertTrue(implicit.css().contains("color:red"));
+        assertTrue(implicit.css().contains("color:blue"));
+        assertFalse(implicit.css().contains("color:green"));
+        resource(input, "Base", CssResource.Kind.GLOBAL, "body{color:red;}", "Theme");
+        var cycle = expectThrows(
+                IllegalArgumentException.class,
+                () -> Bundle.assemble(List.of(input), List.of(), List.of("Theme"), "app.css"));
+        assertTrue(String.valueOf(cycle.getMessage()).contains("Theme -> Base -> Theme"));
+    }
+
+    @Test
+    public void globalRootsKeepReferencedKeyframesAndCommandLineSelection() throws Exception {
+        Path input = tree("global-animation");
+        resource(input, "demo.Pulse", CssResource.Kind.KEYFRAMES, "@keyframes pulse{to{opacity:0;}}");
+        resource(input, "demo.Outer$Defaults", CssResource.Kind.GLOBAL, "body{animation:pulse 1s;}", "demo.Pulse");
+        var result = Bundle.assemble(List.of(input), List.of(), List.of("demo.Outer$Defaults"), "app.css");
+        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
+        assertEquals(sheet.getAllLayerRules().size(), 3);
+        assertEquals(sheet.getAllLayerRules().get(1).getAllStyleRules().size(), 1);
+        assertEquals(sheet.getAllLayerRules().get(2).getAllRules().size(), 1);
+        Path css = dir().resolve("selected.css");
+        Path map = dir().resolve("selected.map");
+        Bundle.run(List.of(
+                "--input",
+                input.toString(),
+                "--global",
+                "demo.Outer$Defaults",
+                "--css",
+                css.toString(),
+                "--map",
+                map.toString()));
+        assertTrue(Files.readString(css).contains("@keyframes pulse"));
+        assertTrue(Files.readString(css).contains("animation:pulse"));
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(Files.readString(map));
+        int index = result.css().indexOf("body{");
+        int line = (int) result.css()
+                        .substring(0, index)
+                        .chars()
+                        .filter(c -> '\n' == c)
+                        .count()
+                + 1;
+        assertEquals(
+                Objects.requireNonNull(consumer.getMappingForLine(line, 1)).getOriginalFile(),
+                "demo/Outer$Defaults.java");
     }
 }

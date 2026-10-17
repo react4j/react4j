@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import react4j.css.internal.CssSyntax;
@@ -803,6 +804,52 @@ public final class CssCompilerTest {
                             invalid,
                             "shared-pulse",
                             offset -> new SourceMap.Location("Pulse.java", invalid, 0, offset)));
+        }
+    }
+
+    @Test
+    public void globalRulesPreserveSelectorsNestingOrderAndCheckedAnimationReferences() {
+        String css = ":root { --accent: blue; } body > button[data-value='pulse']:hover {"
+                + " color: red; &.active { animation-name: pulse; } color: blue; }"
+                + " @media screen { @supports (display: grid) { body .child { animation: pulse 1s linear; } } }";
+        var result = CssCompiler.global(
+                css,
+                offset -> new SourceMap.Location("Defaults.java", css, 0, offset),
+                Map.of("pulse", "shared-pulse"));
+        assertEquals(result.imports(), Set.of("pulse"));
+        var sheet = parse(result.output().css());
+        assertEquals(sheet.getAllRules().size(), 3);
+        var root = sheet.getAllStyleRules().get(0);
+        assertEquals(root.getSelectorsAsCSSString(new CSSWriterSettings(true), 0), ":root");
+        assertEquals(value(Objects.requireNonNull(root.getDeclarationOfPropertyName("--accent"))), "blue");
+        var style = sheet.getAllStyleRules().get(1);
+        assertEquals(style.getRuleCount(), 2);
+        var nested = (CSSStyleRule) style.getAllRules().get(0);
+        assertEquals(
+                value(Objects.requireNonNull(nested.getDeclarationOfPropertyName("animation-name"))), "shared-pulse");
+        assertTrue(result.output().css().contains("color:blue;"));
+        assertTrue(result.output().map("Defaults.css").contains("Defaults.java"));
+        for (var source : List.of("/* empty */", "body {}", "body { content: 'pulse'; --animation: pulse; }")) {
+            var empty = CssCompiler.global(
+                    source,
+                    offset -> new SourceMap.Location("Defaults.java", source, 0, offset),
+                    Map.of("pulse", "shared-pulse"));
+            assertTrue(empty.imports().isEmpty());
+        }
+        for (var source : List.of(
+                "@import 'other.css';",
+                "@keyframes pulse { to {opacity:0;} }",
+                "@font-face {font-family:test;}",
+                "body {color: red !important;}",
+                "body {animation-name: missing;}",
+                "body {animation-name: var(--name);}",
+                "@media screen { body {animation: pulse 1s var(--timing);} }")) {
+            expectThrows(
+                    CssSyntax.InvalidCss.class,
+                    () -> CssCompiler.global(
+                            source,
+                            offset -> new SourceMap.Location("Defaults.java", source, 0, offset),
+                            Map.of("pulse", "shared-pulse")));
         }
     }
 }

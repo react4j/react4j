@@ -34,7 +34,7 @@ record TextBlock(String value, int[] offsets) {
         }
         String translated = string(unicode);
         if (!translated.startsWith("\"\"\"") || !translated.endsWith("\"\"\"")) {
-            throw new IllegalArgumentException("@Css requires a literal Java text block");
+            throw new IllegalArgumentException("CSS definitions require a literal Java text block");
         }
         int body = 3;
         while ('\r' != translated.charAt(body) && '\n' != translated.charAt(body)) {

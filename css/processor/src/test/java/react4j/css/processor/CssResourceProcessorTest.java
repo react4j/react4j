@@ -24,7 +24,7 @@ public final class CssResourceProcessorTest {
             + "import react4j.css.Css;\n"
             + "import react4j.css.Keyframes;\n"
             + "import react4j.css.CssImport;\n"
-            + "import react4j.css.CssImports;\n"
+            + "import react4j.css.CssImports;\nimport react4j.css.GlobalCss;\nimport react4j.css.CssIncludes;\n"
             + "import org.jspecify.annotations.NullMarked;\n";
     private static final String FRAMES = "from { opacity: 0.4; } to { opacity: 1; }";
 
@@ -166,6 +166,13 @@ public final class CssResourceProcessorTest {
             frames("sealed class Pulse permits Child", "", FRAMES) + "final class Child extends Pulse {}",
             "CSS resource definitions require"
         });
+        var globals = new ArrayList<Object[]>();
+        for (var entry : cases) {
+            globals.add(new Object[] {
+                ((String) entry[0]).replace("@Keyframes", "@GlobalCss").replace(FRAMES, "body { margin: 0; }"), entry[1]
+            });
+        }
+        cases.addAll(globals);
         return cases.toArray(Object[][]::new);
     }
 
@@ -290,6 +297,141 @@ public final class CssResourceProcessorTest {
             assertTrue(result.success(), result.diagnostics());
             assertEquals(result.diagnostics(), "");
             assertTrue(text(result, "classes/demo/Button.css").contains("jcss-demo-Pulse--keyframes"));
+        } finally {
+            try (var paths = Files.walk(directory)) {
+                for (var path : paths.sorted(Comparator.reverseOrder()).toList()) {
+                    Files.delete(path);
+                }
+            }
+        }
+    }
+
+    private static String global(String name, String annotations, String css) {
+        return IMPORTS + "@NullMarked\n" + annotations + "\n@GlobalCss(\"\"\"\n" + css
+                + "\n\"\"\")\npublic final class " + name + " {}";
+    }
+
+    @Test
+    public void globalDeclarationsAndTypedIncludesProduceOnlyResources() throws Exception {
+        String defaults = global("Defaults", "", ":root { --accent: blue; } body { margin: 0; }");
+        String theme = global(
+                "Theme",
+                "@CssIncludes(Defaults.class)\n@CssImport(name=\"pulse\", value=Pulse.class)",
+                "button:hover { animation: pulse 1s linear infinite; }");
+        var result = CssProcessorTest.compile(Map.of(
+                "Pulse.java",
+                frames(),
+                "Defaults.java",
+                defaults,
+                "Theme.java",
+                theme,
+                "Button.java",
+                consumer("@CssIncludes({Theme.class, Defaults.class})", "color: blue;")));
+        assertTrue(result.success(), result.diagnostics());
+        assertEquals(result.diagnostics(), "");
+        assertEquals(
+                JsonParser.parseString(text(result, "classes/demo/Theme.css.json"))
+                        .getAsJsonObject()
+                        .getAsJsonArray("dependencies")
+                        .toString(),
+                "[\"demo.Defaults\",\"demo.Pulse\"]");
+        assertEquals(
+                JsonParser.parseString(text(result, "classes/demo/Button.css.json"))
+                        .getAsJsonObject()
+                        .getAsJsonArray("dependencies")
+                        .toString(),
+                "[\"demo.Theme\",\"demo.Defaults\"]");
+        assertTrue(text(result, "classes/demo/Theme.css").contains("animation:jcss-demo-Pulse--keyframes"));
+        assertTrue(text(result, "classes/demo/Defaults.css").startsWith(":root{--accent:blue;}body{margin:0;}"));
+        assertFalse(result.files().keySet().stream().anyMatch(p -> p.startsWith("generated/demo/Styled_Theme")));
+        assertFalse(result.files().keySet().stream().anyMatch(p -> p.startsWith("generated/demo/Styled_Defaults")));
+    }
+
+    @DataProvider
+    public Object[][] invalidIncludes() {
+        var cases = new ArrayList<Object[]>();
+        for (var type : List.of("int", "void", "int[]", "String[]", "String", "Button", "Pulse")) {
+            cases.add(new Object[] {
+                consumer("@CssIncludes(" + type + ".class)", "color: red;"),
+                "@CssIncludes must reference @GlobalCss classes"
+            });
+        }
+        cases.add(new Object[] {
+            consumer("@CssIncludes({Defaults.class, Defaults.class})", "color: red;"),
+            "Duplicate included global stylesheet"
+        });
+        cases.add(new Object[] {
+            global("Button", "@CssIncludes(Button.class)", "body { margin: 0; }"), "must not include themselves"
+        });
+        cases.add(new Object[] {
+            frames().replace("class Pulse", "class Button").replace("@NullMarked", "@NullMarked\n@CssIncludes({})"),
+            "only supported on stylesheet definitions"
+        });
+        cases.add(new Object[] {IMPORTS + "@CssIncludes(Defaults.class) class Button {}", "Declare exactly one"});
+        cases.add(new Object[] {
+            global("Button", "@Css(\"\"\"\ncolor:red;\n\"\"\")", "body { margin: 0; }"), "Declare exactly one"
+        });
+        cases.add(new Object[] {
+            global("Button", "@Keyframes(\"\"\"\nfrom {opacity:0;}\n\"\"\")", "body { margin: 0; }"),
+            "Declare exactly one"
+        });
+        for (var expression : List.of("\"body {}\"", "Constants.CSS", "\"body\" + \" {}\"")) {
+            cases.add(new Object[] {
+                IMPORTS + "@GlobalCss(" + expression
+                        + ") class Button {} class Constants { static final String CSS=\"body {}\"; }",
+                "text block"
+            });
+        }
+        for (var css : List.of(
+                "body { color: red !important; }",
+                "@keyframes pulse { to { opacity:0; } }",
+                "@import 'external.css';",
+                "@font-face { font-family: font; src: url(font.woff); }",
+                "@layer x { body {} }",
+                "@container (width > 1px) { body {} }",
+                "body { animation-name: unknown; }",
+                "body { animation: var(--animation); }",
+                "body { color red; }",
+                "color: red;")) {
+            cases.add(new Object[] {global("Button", "", css), "ERROR"});
+        }
+        return cases.toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "invalidIncludes")
+    public void globalAndIncludeFailuresDoNotEmitTheInvalidOwnersResources(String source, String diagnostic)
+            throws Exception {
+        var result = CssProcessorTest.compile(Map.of(
+                "Button.java", source, "Defaults.java", global("Defaults", "", "body {}"), "Pulse.java", frames()));
+        assertFalse(result.success());
+        assertTrue(result.diagnostics().contains(diagnostic), result.diagnostics());
+        assertFalse(result.files().containsKey("classes/demo/Button.css"));
+    }
+
+    @Test
+    public void globalIncludesResolveThroughAResourceFreeHeaderJar() throws Exception {
+        var dependency =
+                CssProcessorTest.compile(Map.of("Defaults.java", global("Defaults", "", "body { margin: 0; }")));
+        assertTrue(dependency.success(), dependency.diagnostics());
+        Path directory = Files.createTempDirectory("css-global-header-");
+        try {
+            Path header = directory.resolve("header.jar");
+            try (var jar = new JarOutputStream(Files.newOutputStream(header))) {
+                jar.putNextEntry(new JarEntry("demo/Defaults.class"));
+                jar.write(Base64.getDecoder().decode(dependency.files().get("classes/demo/Defaults.class")));
+                jar.closeEntry();
+            }
+            var result = CssProcessorTest.compile(
+                    Map.of("Button.java", consumer("@CssIncludes(Defaults.class)", "color: red;")),
+                    List.of("-classpath", CssProcessorTest.applicationClasspath() + File.pathSeparator + header));
+            assertTrue(result.success(), result.diagnostics());
+            assertEquals(result.diagnostics(), "");
+            assertEquals(
+                    JsonParser.parseString(text(result, "classes/demo/Button.css.json"))
+                            .getAsJsonObject()
+                            .getAsJsonArray("dependencies")
+                            .toString(),
+                    "[\"demo.Defaults\"]");
         } finally {
             try (var paths = Files.walk(directory)) {
                 for (var path : paths.sorted(Comparator.reverseOrder()).toList()) {

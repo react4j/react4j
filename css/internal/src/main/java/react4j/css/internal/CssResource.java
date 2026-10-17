@@ -16,12 +16,16 @@ public record CssResource(String owner, Kind kind, List<String> dependencies) {
 
     public enum Kind {
         COMPONENT,
+        GLOBAL,
         KEYFRAMES
     }
 
     public CssResource {
         path(owner);
         dependencies = List.copyOf(dependencies);
+        if (Kind.KEYFRAMES == kind && !dependencies.isEmpty()) {
+            throw new IllegalArgumentException("Keyframe resources must not declare dependencies");
+        }
         var unique = new HashSet<String>();
         for (var dependency : dependencies) {
             path(dependency);

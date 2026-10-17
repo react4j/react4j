@@ -1,0 +1,1 @@
+ERROR com/example/import_wrong_kind/Button.java:10:10: @CssImport must reference a @Keyframes class: java.lang.String

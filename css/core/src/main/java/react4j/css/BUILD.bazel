@@ -8,6 +8,8 @@ java_library(
         "Css.java",
         "CssImport.java",
         "CssImports.java",
+        "CssIncludes.java",
+        "GlobalCss.java",
         "Keyframes.java",
         "package-info.java",
     ],

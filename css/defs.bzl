@@ -24,6 +24,7 @@ def _bundle_impl(ctx):
     args.add("--map", ctx.outputs.source_map)
     args.add_all(trees, before_each = "--input", expand_directories = False)
     args.add_all(ctx.files.shared, before_each = "--shared")
+    args.add_all(ctx.attr.globals, before_each = "--global")
     ctx.actions.run(
         executable = ctx.executable._bundler,
         inputs = depset(ctx.files.shared, transitive = [trees]),
@@ -40,6 +41,7 @@ css_bundle = rule(
     implementation = _bundle_impl,
     attrs = {
         "css": attr.output(mandatory = True),
+        "globals": attr.string_list(doc = "Binary Java names of @GlobalCss roots, visited in order after their dependencies."),
         "root": attr.label(mandatory = True, aspects = [_collect]),
         "shared": attr.label_list(allow_files = [".css"]),
         "source_map": attr.output(mandatory = True),

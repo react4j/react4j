@@ -91,7 +91,7 @@ public final class TextBlockTest {
     public void rejectsNonTextBlocksUnsupportedEscapesAndMappingDisagreement() {
         for (var token : List.of("\"ordinary string\"", "\"\"\"\na")) {
             var error = expectThrows(IllegalArgumentException.class, () -> TextBlock.decode(token, 0, "a"));
-            assertEquals(error.getMessage(), "@Css requires a literal Java text block");
+            assertEquals(error.getMessage(), "CSS definitions require a literal Java text block");
         }
         var escape = expectThrows(IllegalArgumentException.class, () -> TextBlock.decode("\"\"\"\n\\q\"\"\"", 0, "q"));
         assertEquals(escape.getMessage(), "Unsupported Java escape in @Css");

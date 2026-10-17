@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,6 +41,7 @@ public final class Bundle {
     static void run(List<String> args) throws IOException {
         var trees = new ArrayList<Path>();
         var shared = new ArrayList<Path>();
+        var globals = new ArrayList<String>();
         var outputs = new HashMap<String, Path>();
         for (int i = 0; i < args.size(); i += 2) {
             if (i + 1 == args.size()) {
@@ -50,6 +52,7 @@ public final class Bundle {
             switch (option) {
                 case "--input" -> trees.add(path);
                 case "--shared" -> shared.add(path);
+                case "--global" -> globals.add(args.get(i + 1));
                 case "--css", "--map" -> {
                     if (null != outputs.putIfAbsent(option, path)) {
                         throw new IllegalArgumentException("Repeated output " + option);
@@ -66,7 +69,7 @@ public final class Bundle {
         if (css.equals(map)) {
             throw new IllegalArgumentException("CSS and source-map outputs must differ");
         }
-        var result = assemble(trees, shared, css.getFileName().toString());
+        var result = assemble(trees, shared, globals, css.getFileName().toString());
         Files.writeString(map, result.map());
         String reference = Objects.requireNonNull(css.toAbsolutePath().getParent())
                 .relativize(map.toAbsolutePath())
@@ -78,19 +81,26 @@ public final class Bundle {
     record Result(String css, String map) {}
 
     static Result assemble(List<Path> trees, List<Path> shared, String outputName) throws IOException {
-        var resources = new TreeMap<String, Path>();
-        for (var tree : trees.stream().distinct().toList()) {
-            try (var files = Files.walk(tree)) {
-                for (var path : files.filter(Files::isRegularFile).sorted().toList()) {
-                    if (path.toString().endsWith(".css")
-                            || path.toString().endsWith(".css.map")
-                            || path.toString().endsWith(".css.json")) {
-                        String name = tree.relativize(path).toString().replace('\\', '/');
-                        if (null != resources.putIfAbsent(name, path)) {
-                            throw new IllegalArgumentException("Duplicate CSS resource: " + name);
-                        }
-                    }
-                }
+        return assemble(trees, shared, List.of(), outputName);
+    }
+
+    static Result assemble(List<Path> trees, List<Path> shared, List<String> globals, String outputName)
+            throws IOException {
+        var definitions = readResources(trees);
+        var ordered = new ArrayList<Resource>();
+        var visited = new HashSet<String>();
+        var visiting = new LinkedHashSet<String>();
+        for (var owner : globals) {
+            var definition = definitions.get(owner);
+            if (null == definition || Kind.GLOBAL != definition.metadata().kind()) {
+                throw new IllegalArgumentException(
+                        "Global CSS root must reference an available @GlobalCss definition: " + owner);
+            }
+            visit(owner, definitions, visited, visiting, ordered);
+        }
+        for (var definition : definitions.values()) {
+            if (Kind.COMPONENT == definition.metadata().kind()) {
+                visit(definition.metadata().owner(), definitions, visited, visiting, ordered);
             }
         }
         var writer = new StringBuilder("@layer shared,components;\n");
@@ -127,9 +137,66 @@ public final class Bundle {
             writer.append(css).append('\n');
             line += (int) css.chars().filter(c -> '\n' == c).count() + 1;
         }
+        for (var definition : ordered) {
+            if (Kind.GLOBAL != definition.metadata().kind() || definition.css().isEmpty()) {
+                continue;
+            }
+            if (!sharedOpen) {
+                writer.append("@layer shared{\n");
+                line++;
+                sharedOpen = true;
+            }
+            sections.add(section(line, definition.map()));
+            writer.append(definition.css()).append('\n');
+            line += (int) definition.css().chars().filter(c -> '\n' == c).count() + 1;
+        }
         if (sharedOpen) {
             writer.append("}\n");
             line++;
+        }
+        boolean componentsOpen = false;
+        for (var definition : ordered) {
+            if (Kind.GLOBAL == definition.metadata().kind()) {
+                continue;
+            }
+            String css = definition.css();
+            if (css.isEmpty()) {
+                continue;
+            }
+            if (!componentsOpen) {
+                writer.append("@layer components{\n");
+                line++;
+                componentsOpen = true;
+            }
+            sections.add(section(line, definition.map()));
+            writer.append(css).append('\n');
+            line += (int) css.chars().filter(c -> '\n' == c).count() + 1;
+        }
+        if (componentsOpen) {
+            writer.append("}\n");
+        }
+        var map = new JsonObject();
+        map.addProperty("version", 3);
+        map.addProperty("file", outputName);
+        map.add("sections", sections);
+        return new Result(writer.toString(), map + "\n");
+    }
+
+    private static Map<String, Resource> readResources(List<Path> trees) throws IOException {
+        var resources = new TreeMap<String, Path>();
+        for (var tree : trees.stream().distinct().toList()) {
+            try (var files = Files.walk(tree)) {
+                for (var path : files.filter(Files::isRegularFile).sorted().toList()) {
+                    if (path.toString().endsWith(".css")
+                            || path.toString().endsWith(".css.map")
+                            || path.toString().endsWith(".css.json")) {
+                        String name = tree.relativize(path).toString().replace('\\', '/');
+                        if (null != resources.putIfAbsent(name, path)) {
+                            throw new IllegalArgumentException("Duplicate CSS resource: " + name);
+                        }
+                    }
+                }
+            }
         }
         var definitions = new LinkedHashMap<String, Resource>();
         for (var entry : resources.entrySet()) {
@@ -159,37 +226,7 @@ public final class Bundle {
                     new Resource(
                             metadata, css.substring(0, css.length() - reference.length()), readMap(mapPath, file)));
         }
-        var ordered = new ArrayList<Resource>();
-        var visited = new HashSet<String>();
-        var visiting = new HashSet<String>();
-        for (var definition : definitions.values()) {
-            if (Kind.COMPONENT == definition.metadata().kind()) {
-                visit(definition.metadata().owner(), definitions, visited, visiting, ordered);
-            }
-        }
-        boolean componentsOpen = false;
-        for (var definition : ordered) {
-            String css = definition.css();
-            if (css.isEmpty()) {
-                continue;
-            }
-            if (!componentsOpen) {
-                writer.append("@layer components{\n");
-                line++;
-                componentsOpen = true;
-            }
-            sections.add(section(line, definition.map()));
-            writer.append(css).append('\n');
-            line += (int) css.chars().filter(c -> '\n' == c).count() + 1;
-        }
-        if (componentsOpen) {
-            writer.append("}\n");
-        }
-        var map = new JsonObject();
-        map.addProperty("version", 3);
-        map.addProperty("file", outputName);
-        map.add("sections", sections);
-        return new Result(writer.toString(), map + "\n");
+        return definitions;
     }
 
     private record Resource(CssResource metadata, String css, JsonObject map) {}
@@ -208,7 +245,8 @@ public final class Bundle {
             throw new IllegalArgumentException("Missing CSS dependency: " + owner);
         }
         if (!visiting.add(owner)) {
-            throw new IllegalArgumentException("Cyclic CSS dependency: " + owner);
+            throw new IllegalArgumentException(
+                    "Cyclic CSS dependency: " + String.join(" -> ", visiting) + " -> " + owner);
         }
         for (var dependency : definition.metadata().dependencies()) {
             var target = definitions.get(dependency);

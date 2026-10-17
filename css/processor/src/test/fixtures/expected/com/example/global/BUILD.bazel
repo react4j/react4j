@@ -1,0 +1,12 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "Defaults.css",
+        "Defaults.css.json",
+        "Defaults.css.map",
+        "Theme.css",
+        "Theme.css.json",
+        "Theme.css.map",
+    ],
+    visibility = ["//css/processor/src/test/fixtures:__pkg__"],
+)

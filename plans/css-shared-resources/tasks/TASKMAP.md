@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: implementing
-- Current frontier: T02
+- Current frontier: T03
 - Planning reviewer: planning_review (3/3 rounds; passed; final confirmation unused)
 - Plan checkpoint: automatic; latest user implementation authority and passing planning review
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -13,7 +13,7 @@
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
 | T01 | [Shared keyframes](T01-keyframes.md) | complete | None |
-| T02 | [Global selection](T02-globals.md) | pending | T01 |
+| T02 | [Global selection](T02-globals.md) | complete | T01 |
 | T03 | [Examples and complete validation](T03-examples.md) | pending | T02 |
 
 ## Full-scope validation
