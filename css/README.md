@@ -1,24 +1,53 @@
 # CSS-in-Java
 
-`react4j.css.Css` defines static component styles in Java text blocks. Annotation processing checks the CSS and generates class-name accessors and a stylesheet. CSS processing runs entirely on the JVM; parser dependencies stay on the processor classpath.
+Define component styles alongside Java views with `react4j.css.Css`. The annotation processor checks selectors against Java accessors and generates namespaced CSS. Processing and bundling run entirely on the JVM.
 
 ## Authoring
 
-See [BrowserExample.java](examples/save-button/src/main/java/react4j/css/example/BrowserExample.java) for style definitions alongside the code that renders them. Application examples colocate styles in static nested classes inside their views; [StepButton.java](../examples/drumloop/src/main/java/react4j/drumloop/views/StepButton.java) includes its styles and animation.
+Declare an abstract style class with a literal CSS text block:
 
-A definition is an abstract class annotated with a literal `@Css` text block. It declares `abstract String style()` and zero-argument abstract `String` methods for modifiers such as `success()`. Each modifier must have a corresponding local selector, such as `&.success`, and each local selector must have an accessor. Definitions may have public or package access and must not declare fields, constructors or instance initializers. Concrete and static helper methods are supported; abstract accessor methods cannot have parameters, type parameters or throws. Inheritance, type parameters and sealed classes are unsupported. Nested definitions must be static, and their enclosing types must be accessible from the package.
+```java
+import react4j.css.Css;
 
-The processor generates a final, package-access subclass, such as `BrowserExample_Styled_SaveButton` for `BrowserExample.SaveButton`. Its static `get()` method returns the authored abstract type. The constructor is private; a private nested holder creates the singleton on the first `get()` call. Views can call `get()` inline or cache its result in a render-local variable. An authored factory can also delegate to `get()`. Keep nested style classes accessible from their package so generated subclasses can extend them. A non-private zero-argument helper named `get` must be a non-final static method returning the style type or a supertype; incompatible declarations are diagnosed.
+@Css("""
+    color: var(--on-accent);
 
-`style()` returns the root class token; a modifier accessor returns both the root and its namespaced modifier token. Names derive from the Java package, class and enclosing classes, so authors do not allocate globally unique CSS names. Conflicting modifiers follow stylesheet order, independently of class-token order. Apply one component's root to each styled element.
+    &:focus-visible {
+      outline: 2px solid var(--focus);
+    }
+
+    &.success {
+      background-color: var(--success);
+    }
+    """)
+abstract class SaveButton {
+    abstract String style();
+
+    abstract String success();
+}
+```
+
+Use the generated singleton in the same package:
+
+```java
+DOM.button(new BtnProps().className(Styled_SaveButton.get().success()), "Saved");
+```
+
+`style()` returns the root class token. Each modifier accessor returns both the root and its modifier token, so `success()` applies both sets of declarations. Every modifier must match a local selector such as `&.success`, and every local class selector must have an accessor. State pseudo-classes such as `:focus-visible` need no accessor.
+
+CSS names derive from the Java package and class, including enclosing classes. The generated subclass is always package-access, including for public definitions. To keep styles in a view's source file, use a static nested class: `View.Styles` generates `View_Styled_Styles`. See [BrowserExample.java](examples/save-button/src/main/java/react4j/css/example/BrowserExample.java) for a complete rendering example.
+
+Style definitions must be abstract, public or package-access, and stateless: no fields, explicit constructors or instance initializers. Inheritance, interfaces, type parameters and sealed classes are unsupported. Nested definitions must be static with accessible enclosing types. Abstract accessors must return `String` and have no parameters, type parameters or throws. Concrete and static helpers are allowed; use names other than `get()` for helper factories to avoid conflicts with the generated method.
 
 ## Supported CSS
 
-Component styles support root declarations, nested selectors on the same element, and the functional pseudo-classes `:is`, `:not` and `:where`. `@media` and `@supports` blocks must contain explicit nested selectors rather than bare declarations. State pseudo-classes such as `:focus-visible` need no accessor. Component styles also support owner-local `@keyframes`.
+Component styles support root declarations and nested selectors beginning with `&` that target the same element, including attributes and `:is`, `:not` and `:where`. `@media` and `@supports` blocks require explicit nested selectors. Apply one component's root to each styled element. When modifiers conflict, stylesheet order determines precedence, regardless of class-token order.
 
-Descendant and sibling selectors, global escapes, escaped selector or component property identifiers, `:has`, `@container` and other at-rules are unsupported. Java constants, concatenation and interpolation cannot replace the literal text block. Validation checks CSS syntax and selector/accessor agreement; it does not validate property semantics or transform CSS for browser compatibility.
+Descendant and sibling selectors, global escapes, escaped selector or property identifiers, `:has`, `@container` and other at-rules are unsupported, except for the keyframes described below. CSS must be a literal Java text block. Validation checks syntax and selector/accessor agreement; it does not check property semantics or transform CSS for browser compatibility.
 
-Declare owner-local keyframes at the outer level of the text block, and reference their local names in `animation` or `animation-name`:
+### Animations
+
+Declare local keyframes at the outer level of the text block and reference them in `animation` or `animation-name`:
 
 ```java
 @Css("""
@@ -36,33 +65,31 @@ abstract class HeartStyles {
 }
 ```
 
-Keyframe names derive from the Java owner and local name, for example `jcss-com-biz-ui-HeartStyles--keyframes-beat`. They remain stable when the animation body changes. The processor rewrites parsed animation references, including comma-separated lists and shorthand, and reports duplicate definitions or unknown local names. Shorthand resolves keywords using CSS Animations Level 1 precedence. No Java accessor is needed for an animation name.
+Keyframe names are namespaced automatically and remain stable when the animation body changes. No Java accessor is needed for an animation name. Duplicate definitions and unknown animation names are errors. [StepButton.java](../examples/drumloop/src/main/java/react4j/drumloop/views/StepButton.java) shows an animation colocated with its view.
 
-Definitions must use unprefixed `@keyframes` and unescaped, unquoted identifiers. Animation references must use unprefixed properties. Definitions inside selectors or conditional rules, cross-owner references and animation bindings inside keyframes are unsupported. Animation names must be static; for dynamic timing values, use `animation-name: beat` with longhands such as `animation-duration: var(--duration)`. Functions in shorthand are limited to `steps()`, `cubic-bezier()` and `linear()` timing functions. Shared stylesheets cannot define keyframes.
+Use unprefixed `@keyframes`, `animation` and `animation-name`, with unescaped, unquoted names. Keyframe definitions inside selectors or conditional rules, references to another style class's animations, and animation bindings inside keyframes are unsupported. Names must be static. For dynamic timing, use `animation-name: beat` with longhands such as `animation-duration: var(--duration)`. Shorthand accepts only `steps()`, `cubic-bezier()` and `linear()` functions.
 
-Shared stylesheets support style rules, `@media` and `@supports`. Bundles place shared styles before component styles using the `shared` and `components` cascade layers. `!important` is rejected because it reverses layer precedence. Processed CSS sources belong in `src/main/css`; assets copied unchanged belong in `src/main/assets`.
+### Runtime values
 
-For values that change at runtime, use CSS custom properties:
+Use CSS custom properties for values that change at runtime. Reference them with `var(--success)` in CSS and set them through the element's `style` prop:
 
 ```java
-var custom = new CssProps().customProperty("--accent", "#04c");
+new BtnProps()
+        .className(Styled_SaveButton.get().success())
+        .style(new CssProps().customProperty("--success", "#04c"));
 ```
 
-Reference the value with `var(--accent)` in CSS and pass `custom` through the element's `style` prop. Values are CSS text, including any units; null removes a previously rendered value.
+Values are CSS text, including any units. Passing null removes a previously rendered value.
 
 ## Build integration
 
-| Target | Use |
-| --- | --- |
-| `//css/core` | JVM annotation classpath. |
-| `//css/core:core-j2cl` | J2CL annotation dependency; imports bytecode without emitting annotation JavaScript. |
-| `//css/processor` | Standalone shaded annotation processor. |
+Apply `//css/processor:plugin` to the J2CL target that owns the style definitions and add `//css/core:core-j2cl` to its dependencies. Browser clients do not need to declare a separate Java library. See the [example Java build](examples/save-button/src/main/java/react4j/css/example/BUILD.bazel) for processor and dependency configuration.
 
-Apply `//css/processor:plugin` to the `j2cl_library` that owns the style definitions. The processor generates implementation classes and emits package-relative CSS and source-map resources, such as `com/biz/ui/SaveButton.css` and `SaveButton.css.map`. Generated Java names follow the enclosing-type convention used by the React4j processor, while CSS names encode the binary owner identity. J2CL must preserve these generated resources in its JavaScript output tree; the repository's pinned J2CL patch supplies this behavior.
-
-The [css_bundle rule](defs.bzl) starts at a Closure linking target and collects J2CL resources through its transitive `deps` and `exports`. Shared files retain their declared order; component resources are ordered by binary owner path. A dependency reached through multiple paths contributes its resources once; duplicate owner paths from different libraries fail the build.
+Use [css_bundle](defs.bzl) to collect styles from the application's Closure linking target:
 
 ```starlark
+load("//css:defs.bzl", "css_bundle")
+
 css_bundle(
     name = "styles",
     root = ":application_bundle",
@@ -72,21 +99,10 @@ css_bundle(
 )
 ```
 
-Load the generated CSS with the application. The CSS references its source map, which uses indexed source-map v3 sections to preserve component mappings back to Java and shared mappings back to CSS. Java mappings identify selectors, declarations, conditional-rule headers and keyframe blocks; synthetic layer wrappers are unmapped. Maps include original source content. Component CSS is emitted compactly; shared CSS retains its formatting with normalized line endings. Collection includes all styles in reachable build targets.
+Load the generated CSS with the application and serve its source map alongside it. Maps include the original Java and shared CSS source content. The [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) shows complete bundle wiring. Bundling includes all styles in reachable build targets, even if their accessors are unused.
 
-The [example Java build](examples/save-button/src/main/java/react4j/css/example/BUILD.bazel) shows processor wiring, and its [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) assembles CSS from the Closure binary. The checked `java_j2cl_library` macro runs the same plugin during JVM checks and J2CL compilation without feeding generated implementations back through the processor.
+Shared stylesheets support style rules, `@media` and `@supports`, but cannot define keyframes. Put processed CSS in `src/main/css` and assets copied unchanged in `src/main/assets`. Shared files retain their declared order; component styles are ordered by Java owner name. The `shared` and `components` cascade layers give component styles precedence over shared styles. Both reject `!important`, which would reverse that precedence.
 
-Browser clients can use `core-j2cl` without declaring their own Java library. For javac service discovery, put core, JSpecify and application dependencies on the compilation classpath, and the standalone processor jar on the processor path.
+For direct javac use, put the core annotation jar, JSpecify and application dependencies on the compilation classpath, and the standalone processor jar on the processor path. Parser and formatter dependencies are bundled with the processor.
 
-Generated Java uses JavaPoet and is formatted with Palantir by default. Disable formatting with `-Areact4j.css.format_generated_source=false`. The processor jar bundles and relocates JavaPoet, Proton and the formatter; clients need no additional dependencies. When formatting is enabled, the JVM running javac needs the [formatter module exports](../docs/project_setup.md#configure-maven).
-
-## Subprojects
-
-- [core](core/): client annotation.
-- [processor](processor/): isolated annotation processor.
-- [bundler](bundler/): JVM CSS and source-map assembly.
-- [internal](internal/): shared build-time CSS parsing and source-map emission.
-- [examples/save-button](examples/save-button/): React4j usage example.
-- [integration-tests](integration-tests/): J2CL resource retention and dependency-graph assembly.
-
-Development commands and fixture updates are documented in [CONTRIBUTING.md](../CONTRIBUTING.md).
+Generated Java is formatted with Palantir by default. The JVM running javac needs the [formatter module exports](../docs/project_setup.md#configure-maven). Disable formatting with `-Areact4j.css.format_generated_source=false`.
