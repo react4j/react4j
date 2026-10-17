@@ -232,6 +232,7 @@ public final class CssProcessorTest {
                         List.of(
                                 "--release",
                                 "17",
+                                "-Xlint:deprecation,removal",
                                 "-classpath",
                                 applicationClasspath(),
                                 "--processor-path",
@@ -358,6 +359,48 @@ public final class CssProcessorTest {
     }
 
     @Test
+    public void animationDiagnosticsMapMultilineListsThroughJavaEscapesAndCrLf() throws Exception {
+        String text = source(
+                        "demo",
+                        "    @keyframes pulse {}\n    animation: pu\\\n    lse 1s;\n"
+                                + "    animation-name:\n      pulse,\n      typo;",
+                        "")
+                .replace("\n", "\r\n");
+        var result = compile(Map.of("Button.java", text));
+        assertFalse(result.success());
+        assertTrue(
+                result.diagnostics().contains("Button.java:9:7: Unknown local animation name: typo"),
+                result.diagnostics());
+        assertTrue(result.files().isEmpty(), result.files().keySet().toString());
+    }
+
+    @Test
+    public void authorErrorsCannotBeSuppressedAndRemainLocalToTheirOwner() throws Exception {
+        String peer = source("demo", "    @keyframes pulse {}", "").replace("Button", "Peer");
+        for (var name : List.of("pulse", "jcss-demo-Peer--keyframes-pulse")) {
+            String bad = source("demo", "    animation-name: " + name + ";", "")
+                    .replace("@Css(", "@SuppressWarnings(\"all\") @Css(");
+            var result = compile(Map.of("Button.java", bad, "Peer.java", peer));
+            assertFalse(result.success());
+            assertEquals(
+                    result.diagnostics()
+                            .lines()
+                            .filter(line -> line.startsWith("ERROR "))
+                            .count(),
+                    1L,
+                    result.diagnostics());
+            assertFalse(result.diagnostics().contains("WARNING "), result.diagnostics());
+            assertTrue(result.diagnostics().contains("Unknown local animation name: " + name), result.diagnostics());
+            assertTrue(result.files().containsKey("classes/demo/Peer.css"));
+            assertTrue(result.files().containsKey("classes/demo/Peer.css.map"));
+            assertTrue(result.files().containsKey("generated/demo/Styled_Peer.java"));
+            assertFalse(
+                    result.files().keySet().stream().anyMatch(path -> path.contains("Button")),
+                    result.files().keySet().toString());
+        }
+    }
+
+    @Test
     public void sourceMapsFollowJavaEscapesContinuedLinesAndNestedRules() throws Exception {
         String text = source(
                         "demo",
@@ -453,6 +496,219 @@ public final class CssProcessorTest {
                         .replace("@Css(\"\"\"\n    color: red;\n    \"\"\")", "@Css(\"color: \" + \"red;\")")));
         assertFalse(expression.success());
         assertTrue(expression.diagnostics().contains("literal Java text block"), expression.diagnostics());
+    }
+
+    @DataProvider
+    public Object[][] invalidJavaContracts() {
+        String base =
+                source("demo", "    color: red;", "").replace("static Button of() { return new Styled_Button(); }", "");
+        String owner =
+                "@Css requires an accessible abstract, non-generic style class extending Object; nested classes must"
+                        + " be static";
+        String constructor = "@Css style classes require an accessible no-argument constructor without throws";
+        String accessor =
+                "CSS accessor style must take no arguments and return String without type parameters or throws";
+        var cases = new ArrayList<Object[]>();
+        for (var declaration : List.of(
+                "class Button",
+                "abstract class Button<T>",
+                "abstract class Button implements Runnable",
+                "interface Button",
+                "@interface Button",
+                "enum Button")) {
+            String text = base.replace("abstract class Button", declaration);
+            if ("enum Button".equals(declaration)) {
+                text = text.replace("enum Button {", "enum Button {;");
+            }
+            cases.add(new Object[] {declaration, text, owner});
+        }
+        cases.add(new Object[] {
+            "subclass",
+            base.replace("abstract class Button", "abstract class Button extends Parent") + "class Parent {}",
+            owner
+        });
+        cases.add(new Object[] {
+            "record",
+            base.replace("abstract class Button", "record Button()").replace("abstract String style();", ""),
+            owner
+        });
+        cases.add(new Object[] {
+            "sealed",
+            base.replace("abstract class Button", "sealed abstract class Button permits Child")
+                    + "final class Child extends Button { String style() { return \"\"; } }",
+            "@Css style classes must not be sealed"
+        });
+        String nested = base.replace("@Css(", "class Outer { @Css(") + "}";
+        cases.add(new Object[] {"nonstatic nested", nested, owner});
+        cases.add(new Object[] {
+            "private nested", nested.replace("abstract class Button", "private abstract static class Button"), owner
+        });
+        cases.add(new Object[] {
+            "private enclosing",
+            nested.replace("@Css(", "private static class Hidden { @Css(")
+                            .replace("abstract class Button", "abstract static class Button")
+                    + "}",
+            "@Css style classes must be accessible from their package"
+        });
+        for (var declaration : List.of(
+                "private Button() {}",
+                "Button(int value) {}",
+                "Button(String... values) {}",
+                "Button() throws Exception {}",
+                "Button() throws RuntimeException {}",
+                "private Button() {} Button(int value) {}")) {
+            cases.add(new Object[] {
+                declaration,
+                base.replace("abstract String style();", declaration + " abstract String style();"),
+                constructor
+            });
+        }
+        for (var method : List.of(
+                "abstract int style();",
+                "abstract String[] style();",
+                "abstract Object style();",
+                "abstract CharSequence style();",
+                "abstract String style(int value);",
+                "abstract String style(String... values);",
+                "abstract <T> String style();",
+                "abstract String style() throws Exception;",
+                "abstract String style() throws RuntimeException;")) {
+            cases.add(new Object[] {method, base.replace("abstract String style();", method), accessor});
+        }
+        for (var method : List.of("", "String style() { return \"\"; }", "static String style() { return \"\"; }")) {
+            cases.add(new Object[] {
+                "nonabstract root " + method,
+                base.replace("abstract String style();", method),
+                "@Css style classes require abstract String style()"
+            });
+        }
+        return cases.toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "invalidJavaContracts")
+    public void invalidJavaContractsReportOneAuthorErrorWithoutGeneratingFiles(
+            String label, String text, String message) throws Exception {
+        var result = compile(Map.of("Button.java", text));
+        assertFalse(result.success(), label);
+        assertEquals(
+                result.diagnostics()
+                        .lines()
+                        .filter(line -> line.startsWith("ERROR "))
+                        .count(),
+                1L,
+                result.diagnostics());
+        assertTrue(result.diagnostics().contains(message), label + ": " + result.diagnostics());
+        assertFalse(result.diagnostics().contains("WARNING "), result.diagnostics());
+        assertFalse(result.diagnostics().contains("generated/"), result.diagnostics());
+        assertTrue(result.files().isEmpty(), label + ": " + result.files().keySet());
+    }
+
+    @DataProvider
+    public Object[][] validJavaContracts() {
+        var cases = new ArrayList<Object[]>();
+        for (var constructor : List.of("", "public ", "protected ")) {
+            for (var accessor : List.of("", "public ", "protected ")) {
+                String text = source("demo", "    color: red;", "")
+                        .replace(
+                                "abstract String style();",
+                                constructor + "Button() {} " + accessor + "abstract String style();");
+                cases.add(new Object[] {constructor + "/" + accessor, text});
+            }
+        }
+        String base = source("demo", "    color: red;", "");
+        cases.add(new Object[] {
+            "generic constructor", base.replace("abstract String style();", "<T> Button() {} abstract String style();")
+        });
+        cases.add(new Object[] {"public owner", base.replace("abstract class Button", "public abstract class Button")});
+        cases.add(new Object[] {
+            "constructor overload",
+            base.replace(
+                    "abstract String style();", "Button() {} private Button(int value) {} abstract String style();")
+        });
+        cases.add(new Object[] {
+            "concrete helpers",
+            base.replace(
+                    "abstract String style();",
+                    "abstract String style(); static String helper() { return \"\"; } final int size() { return 0; }")
+        });
+        cases.add(new Object[] {
+            "nullable accessor",
+            base.replace(
+                            "import react4j.css.Css;",
+                            "import react4j.css.Css;\nimport org.jspecify.annotations.Nullable;")
+                    .replace("abstract String style();", "abstract @Nullable String style();")
+        });
+        for (var annotation : List.of("@Deprecated", "@Deprecated(forRemoval = true)")) {
+            cases.add(new Object[] {annotation + " owner", base.replace("@Css(", annotation + " @Css(")});
+            cases.add(new Object[] {
+                annotation + " default package",
+                base.replace("package demo;\n", "").replace("@Css(", annotation + " @Css(")
+            });
+            cases.add(new Object[] {
+                annotation + " accessor",
+                base.replace("abstract String style();", annotation + " abstract String style();")
+            });
+            cases.add(new Object[] {
+                annotation + " constructor",
+                base.replace("abstract String style();", annotation + " Button() {} abstract String style();")
+            });
+            cases.add(new Object[] {
+                annotation + " enclosing",
+                base.replace("@Css(", annotation + " class Outer { @Css(")
+                                .replace("abstract class Button", "abstract static class Button")
+                                .replace("Styled_Button", "Styled_Outer_0024_Button")
+                        + "}"
+            });
+        }
+        cases.add(new Object[] {
+            "generic enclosing",
+            base.replace("@Css(", "class Outer<T> { @Css(")
+                            .replace("abstract class Button", "abstract static class Button")
+                            .replace("Styled_Button", "Styled_Outer_0024_Button")
+                    + "}"
+        });
+        cases.add(new Object[] {
+            "protected enclosing",
+            base.replace("@Css(", "class Outer { protected static class Middle { @Css(")
+                            .replace("abstract class Button", "abstract static class Button")
+                            .replace("Styled_Button", "Styled_Outer_0024_Middle_0024_Button")
+                    + "}}"
+        });
+        return cases.toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "validJavaContracts")
+    public void validJavaContractsCompileWithoutDiagnostics(String label, String text) throws Exception {
+        var result = compile(Map.of(text.contains("class Outer") ? "Outer.java" : "Button.java", text));
+        assertTrue(result.success(), label + ": " + result.diagnostics());
+        assertEquals(result.diagnostics(), "", label);
+        assertFalse(result.files().isEmpty(), label);
+    }
+
+    @Test
+    public void generatedSuppressionsPreserveDeprecationWarningsAndSuppressionInAuthoredClients() throws Exception {
+        for (var annotation : List.of("@Deprecated", "@Deprecated(forRemoval = true)")) {
+            for (var owner : List.of(false, true)) {
+                String text = source("demo", "    color: red;", "");
+                text = owner
+                        ? text.replace("@Css(", annotation + " @Css(")
+                        : text.replace("abstract String style();", annotation + " abstract String style();");
+                String client = "package demo; class Client { String style() { return Button.of().style(); } }";
+                var result = compile(Map.of("Button.java", text, "Client.java", client));
+                assertTrue(result.success(), result.diagnostics());
+                assertEquals(result.diagnostics().lines().count(), 1L, result.diagnostics());
+                assertTrue(result.diagnostics().contains("WARNING Client.java:"), result.diagnostics());
+                assertTrue(result.diagnostics().contains(owner ? "demo.Button" : "style()"), result.diagnostics());
+                var suppressed = compile(Map.of(
+                        "Button.java",
+                        text,
+                        "Client.java",
+                        client.replace(
+                                "class Client", "@SuppressWarnings({\"deprecation\", \"removal\"}) class Client")));
+                assertTrue(suppressed.success(), suppressed.diagnostics());
+                assertEquals(suppressed.diagnostics(), "");
+            }
+        }
     }
 
     @Test

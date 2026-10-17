@@ -180,6 +180,9 @@ final class CssCompiler {
 
     private boolean animationBinding(CSSDeclaration declaration) {
         String property = declaration.getProperty().toLowerCase(Locale.ROOT);
+        if (property.contains("\\")) {
+            throw syntax.invalid("Escaped component property identifiers are unsupported", declaration);
+        }
         if (property.startsWith("-")
                 && !property.startsWith("--")
                 && (property.endsWith("-animation") || property.endsWith("-animation-name"))) {

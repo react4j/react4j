@@ -46,8 +46,8 @@ public final class CssSyntax {
         var handler = new ThrowingCSSParseErrorHandler() {
             @Override
             public void onCSSUnexpectedRule(Token token, String rule, String message) {
-                // The component's implicit wrapper is removed before keyframes reach the CSS model.
-                if (component && "@keyframes".equals(rule)) {
+                // Check placement in the syntax tree so diagnostics identify the keyframes header.
+                if ("@keyframes".equals(rule)) {
                     return;
                 }
                 throw new InvalidCss(

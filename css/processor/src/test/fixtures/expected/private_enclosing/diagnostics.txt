@@ -1,0 +1,1 @@
+ERROR demo/Outer.java:12:25: @Css style classes must be accessible from their package

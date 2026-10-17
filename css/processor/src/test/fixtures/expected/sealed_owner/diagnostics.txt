@@ -1,0 +1,1 @@
+ERROR demo/Button.java:10:17: @Css style classes must not be sealed

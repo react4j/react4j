@@ -22,7 +22,9 @@ import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
 import com.helger.css.writer.CSSWriterSettings;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import org.testng.annotations.DataProvider;
@@ -470,6 +472,8 @@ public final class CssCompilerTest {
                         Map.entry("@keyframes pulse { to { animation-name: pulse; } }", "inside keyframes"),
                         Map.entry("@keyframes pulse { to { -webkit-animation: pulse 1s; } }", "unprefixed animation"),
                         Map.entry("animation-name: missing;", "Unknown local animation"),
+                        Map.entry("anim\\61 tion-name: missing;", "Escaped component property"),
+                        Map.entry("anim\\61 tion: missing 1s;", "Escaped component property"),
                         Map.entry("@keyframes pulse {} animation-name: Pulse;", "Unknown local animation"),
                         Map.entry("animation-name: var(--animation);", "static identifiers"),
                         Map.entry("animation-name: 'pulse';", "unescaped, unquoted"),
@@ -505,5 +509,229 @@ public final class CssCompilerTest {
         String source = "@keyframes pulse {}\n&:hover { animation-name: typo; }";
         var error = expectThrows(CssSyntax.InvalidCss.class, () -> component(source, "style"));
         assertEquals(error.offset(), source.indexOf("typo"));
+    }
+
+    @DataProvider
+    public Object[][] animationKeywords() {
+        return List.of(
+                        "ease",
+                        "linear",
+                        "ease-in",
+                        "ease-out",
+                        "ease-in-out",
+                        "step-start",
+                        "step-end",
+                        "infinite",
+                        "normal",
+                        "reverse",
+                        "alternate",
+                        "alternate-reverse",
+                        "forwards",
+                        "backwards",
+                        "both",
+                        "running",
+                        "paused")
+                .stream()
+                .map(keyword -> new Object[] {keyword})
+                .toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "animationKeywords")
+    public void everyShorthandKeywordRetainsItsMeaningUntilItsSlotIsFilled(String keyword) {
+        var unnamed = parse(component("animation: " + keyword + ";", "style"));
+        assertEquals(
+                value(unnamed.getAllStyleRules().get(0).getAllDeclarations().get(0)), keyword);
+        String definition = "@keyframes " + keyword + " {} ";
+        var named = parse(component(definition + "animation: " + keyword + " 1s " + keyword + ";", "style"));
+        var terms = named.getAllStyleRules()
+                .get(0)
+                .getAllDeclarations()
+                .get(0)
+                .getExpression()
+                .getAllSimpleMembers();
+        assertEquals(
+                terms.stream().map(CSSExpressionMemberTermSimple::getValue).toList(),
+                List.of(keyword, "1s", ROOT + "--keyframes-" + Names.encode(keyword)));
+        var longhand = parse(component(definition + "animation-name: " + keyword + ";", "style"));
+        assertEquals(
+                value(longhand.getAllStyleRules().get(0).getAllDeclarations().get(0)),
+                ROOT + "--keyframes-" + Names.encode(keyword));
+    }
+
+    @DataProvider
+    public Object[][] animationShorthands() {
+        return new Object[][] {
+            {
+                "pulse 1s ease 200ms 2 alternate both paused",
+                ROOT + "--keyframes-pulse 1s ease 200ms 2 alternate both paused"
+            },
+            {
+                "200ms pulse ease 1s infinite normal none running",
+                "200ms " + ROOT + "--keyframes-pulse ease 1s infinite normal none running"
+            },
+            {"pulse 1e2MS +.5s .5", ROOT + "--keyframes-pulse 1e2MS +.5s .5"},
+            {"+0s -0ms pulse +0", "+0s -0ms " + ROOT + "--keyframes-pulse +0"},
+            {
+                ".5s steps(2,end) pulse,glow 1s cubic-bezier(0,0,1,1)",
+                ".5s steps(2,end) " + ROOT + "--keyframes-pulse," + ROOT + "--keyframes-glow 1s cubic-bezier(0,0,1,1)"
+            },
+            {"pulse 1s steps(var(--count),end)", ROOT + "--keyframes-pulse 1s steps(var(--count),end)"},
+            {"none,pulse 1s,glow 2s", "none," + ROOT + "--keyframes-pulse 1s," + ROOT + "--keyframes-glow 2s"},
+            {"pulse,pulse", ROOT + "--keyframes-pulse," + ROOT + "--keyframes-pulse"},
+            {"pulse/**/1s/**/ease-in", ROOT + "--keyframes-pulse 1s ease-in"}
+        };
+    }
+
+    @Test(dataProvider = "animationShorthands")
+    public void shorthandOrderingNumbersFunctionsAndListsKeepTheirSemantics(String authored, String expected) {
+        var sheet = parse(component("@keyframes pulse {} @keyframes glow {} animation: " + authored + ";", "style"));
+        assertEquals(
+                sheet.getAllStyleRules()
+                        .get(0)
+                        .getAllDeclarations()
+                        .get(0)
+                        .getExpression()
+                        .getAsCSSString(new CSSWriterSettings(true), 0),
+                expected);
+    }
+
+    @DataProvider
+    public Object[][] invalidAnimationVariations() {
+        var cases = new ArrayList<Object[]>();
+        for (var keyword : List.of("none", "default", "initial", "inherit", "unset", "revert", "revert-layer")) {
+            for (var name : List.of(keyword, keyword.toUpperCase(Locale.ROOT))) {
+                cases.add(new Object[] {
+                    "@keyframes " + name + " {}", "inherit".equals(keyword) ? "Invalid CSS" : "Reserved keyframe"
+                });
+            }
+        }
+        for (var property : List.of("animation", "animation-name", "ANIMATION", "ANIMATION-NAME")) {
+            for (var value : List.of("'pulse'", "\"pulse\"", "pu\\6c se", "pu\\00006cse")) {
+                cases.add(new Object[] {"@keyframes pulse {} " + property + ": " + value + ";", "unescaped, unquoted"});
+            }
+            for (var value : List.of("", ",pulse", "pulse,", "pulse,,pulse")) {
+                cases.add(new Object[] {property + ": " + value + ";", "Invalid CSS"});
+            }
+            for (var keyword : List.of("initial", "inherit", "unset", "revert", "revert-layer")) {
+                for (var value : List.of(keyword + ",pulse", "pulse," + keyword, "pulse " + keyword)) {
+                    cases.add(new Object[] {"@keyframes pulse {} " + property + ": " + value + ";", "stand alone"});
+                }
+            }
+            cases.add(new Object[] {"@keyframes pulse { to { " + property + ": none; } }", "inside keyframes"});
+            cases.add(new Object[] {"@keyframes pulse { to { " + property + ": initial; } }", "inside keyframes"});
+        }
+        for (var prefix : List.of("-webkit-", "-moz-", "-ms-", "-o-")) {
+            cases.add(new Object[] {"@" + prefix + "keyframes pulse {}", "unprefixed"});
+            for (var property : List.of("animation", "animation-name")) {
+                cases.add(new Object[] {prefix + property + ": none;", "unprefixed animation"});
+                cases.add(new Object[] {
+                    "@keyframes pulse { to { " + prefix + property + ": none; } }", "unprefixed animation"
+                });
+            }
+        }
+        for (var wrapper : List.of(
+                "&:hover { %s }",
+                "&.active { %s }",
+                "@media (color) { %s }",
+                "@supports (display: grid) { %s }",
+                "@media (color) { @supports (display: grid) { %s } }")) {
+            cases.add(new Object[] {wrapper.formatted("@keyframes pulse {}"), "outer level"});
+        }
+        for (var selector : List.of("100.01%", "101%", "1e3%")) {
+            cases.add(new Object[] {"@keyframes pulse { " + selector + " { opacity: 0; } }", "percentages"});
+        }
+        for (var selector : List.of("-1%", "middle", "50", "from to", "from,", ",to")) {
+            cases.add(new Object[] {"@keyframes pulse { " + selector + " { opacity: 0; } }", "Invalid CSS"});
+        }
+        for (var shorthand : List.of("pulse -0.01s", "pulse -1e2ms")) {
+            cases.add(new Object[] {"@keyframes pulse {} animation: " + shorthand + ";", "duration must not be negative"
+            });
+        }
+        for (var shorthand : List.of("pulse -.1", "pulse 1 2", "pulse infinite 2")) {
+            cases.add(new Object[] {"@keyframes pulse {} animation: " + shorthand + ";", "iteration count"});
+        }
+        for (var property : List.of("animation", "animation-name", "color", "--value")) {
+            cases.add(new Object[] {"@keyframes pulse {} " + property + ": pulse !important;", "precedence"});
+            cases.add(new Object[] {"@keyframes pulse { to { " + property + ": pulse !important; } }", "precedence"});
+        }
+        for (var property : List.of("anim\\61 tion", "anim\\000061tion-name", "-webkit-anim\\61 tion", "c\\6f lor")) {
+            cases.add(new Object[] {property + ": pulse;", "Escaped component property"});
+            cases.add(new Object[] {"@keyframes pulse { to { " + property + ": pulse; } }", "Escaped component property"
+            });
+        }
+        cases.add(new Object[] {"} @keyframes pulse {} .other {", "inside its implicit root"});
+        cases.add(new Object[] {
+            "@keyframes pulse {} &:hover { color: red; } @keyframes pulse {}", "Duplicate local keyframe"
+        });
+        return cases.toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "invalidAnimationVariations")
+    public void invalidAnimationVariationsAreRejected(String css, String message) {
+        var error = expectThrows(CssSyntax.InvalidCss.class, () -> component(css, "style", "active"));
+        assertTrue(String.valueOf(error.getMessage()).contains(message), css + ": " + error.getMessage());
+    }
+
+    @Test
+    public void keyframeBlocksPreserveRepeatedOffsetsEasingAndDeclarationOrder() {
+        var sheet = parse(component(
+                "@keyframes pulse { from,0%,0.5%,1e2% { opacity: 0; animation-timing-function: steps(2,end); }"
+                        + " 50% { opacity: 0.5; opacity: 0.6; } 50% { transform: scale(0.9); } to { opacity: 1; } }"
+                        + " animation-name: pulse;",
+                "style"));
+        var frames = (CSSKeyframesRule) sheet.getAllRules().get(0);
+        var blocks = frames.getAllBlocks();
+        assertEquals(blocks.size(), 4);
+        assertEquals(blocks.get(0).getAllKeyframesSelectors(), List.of("from", "0%", "0.5%", "1e2%"));
+        assertEquals(blocks.get(0).getAllDeclarations().get(1).getProperty(), "animation-timing-function");
+        assertEquals(
+                blocks.get(1).getAllDeclarations().stream()
+                        .map(CssCompilerTest::value)
+                        .toList(),
+                List.of("0.5", "0.6"));
+        assertEquals(blocks.get(2).getAllKeyframesSelectors(), List.of("50%"));
+        assertEquals(blocks.get(2).getAllDeclarations().get(0).getProperty(), "transform");
+        assertEquals(blocks.get(3).getAllKeyframesSelectors(), List.of("to"));
+    }
+
+    @Test
+    public void animationNamesAreCaseSensitiveAndStringsAndCustomPropertiesRemainUntouched() {
+        var sheet = parse(component(
+                "@keyframes Pulse {} @keyframes pulse {} animation-name: Pulse,pulse;"
+                        + " content: 'pulse Pulse'; --animation-name: pulse;",
+                "style"));
+        var declarations = sheet.getAllStyleRules().get(0).getAllDeclarations();
+        assertEquals(
+                declarations.get(0).getExpression().getAllSimpleMembers().stream()
+                        .map(CSSExpressionMemberTermSimple::getValue)
+                        .toList(),
+                List.of(ROOT + "--keyframes-Pulse", ROOT + "--keyframes-pulse"));
+        assertEquals(value(declarations.get(1)), "'pulse Pulse'");
+        assertEquals(value(declarations.get(2)), "pulse");
+    }
+
+    @DataProvider
+    public Object[][] localAnimationIdentifiers() {
+        return new Object[][] {
+            {"pulse-out", "pulse_002d_out"},
+            {"pulse_out", "pulse_005f_out"},
+            {"-pulse", "_002d_pulse"},
+            {"--pulse", "_002d__002d_pulse"},
+            {"_002d_pulse", "_005f_002d_005f_pulse"},
+            {"π", "_03c0_"},
+            {"é", "_00e9_"},
+            {"𝄞", "_d834__dd1e_"}
+        };
+    }
+
+    @Test(dataProvider = "localAnimationIdentifiers")
+    public void localIdentifiersAndTheirReferencesAreEncodedWithoutCollisions(String name, String encoded) {
+        for (var property : List.of("animation-name", "animation")) {
+            var sheet = parse(component("@keyframes " + name + " {} " + property + ": " + name + ";", "style"));
+            String expected = ROOT + "--keyframes-" + encoded;
+            assertEquals(((CSSKeyframesRule) sheet.getAllRules().get(0)).getAnimationName(), expected);
+            assertEquals(
+                    value(sheet.getAllStyleRules().get(0).getAllDeclarations().get(0)), expected);
+        }
     }
 }

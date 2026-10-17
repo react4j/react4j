@@ -59,14 +59,28 @@ public final class CssProcessor extends AbstractProcessor {
                     "@Css requires an accessible abstract, non-generic style class extending Object; nested classes"
                             + " must be static");
         }
+        if (owner.getModifiers().contains(Modifier.SEALED)) {
+            throw new IllegalArgumentException("@Css style classes must not be sealed");
+        }
+        boolean deprecated = processingEnv.getElementUtils().isDeprecated(owner);
+        for (var enclosing = owner.getEnclosingElement();
+                enclosing instanceof TypeElement;
+                enclosing = enclosing.getEnclosingElement()) {
+            if (enclosing.getModifiers().contains(Modifier.PRIVATE)) {
+                throw new IllegalArgumentException("@Css style classes must be accessible from their package");
+            }
+            deprecated |= processingEnv.getElementUtils().isDeprecated(enclosing);
+        }
         var methods = new ArrayList<ExecutableElement>();
         boolean constructor = false;
         for (var member : owner.getEnclosedElements()) {
             if (ElementKind.CONSTRUCTOR == member.getKind()) {
                 var candidate = (ExecutableElement) member;
-                constructor |= candidate.getParameters().isEmpty()
+                boolean accessible = candidate.getParameters().isEmpty()
                         && candidate.getThrownTypes().isEmpty()
                         && !candidate.getModifiers().contains(Modifier.PRIVATE);
+                constructor |= accessible;
+                deprecated |= accessible && processingEnv.getElementUtils().isDeprecated(candidate);
             } else if (ElementKind.METHOD == member.getKind()
                     && member.getModifiers().contains(Modifier.ABSTRACT)) {
                 var method = (ExecutableElement) member;
@@ -78,6 +92,7 @@ public final class CssProcessor extends AbstractProcessor {
                             + " must take no arguments and return String without type parameters or throws");
                 }
                 methods.add(method);
+                deprecated |= processingEnv.getElementUtils().isDeprecated(method);
             }
         }
         if (!constructor) {
@@ -153,11 +168,17 @@ public final class CssProcessor extends AbstractProcessor {
         if (!packageName.isEmpty()) {
             java.append("package ").append(packageName).append(";\n\n");
         }
+        var suppressions = new ArrayList<String>();
+        suppressions.add("\"UnnecessarilyFullyQualified\"");
+        if (packageName.isEmpty()) {
+            suppressions.add("\"DefaultPackage\"");
+        }
+        if (deprecated) {
+            suppressions.add("\"deprecation\"");
+            suppressions.add("\"removal\"");
+        }
         java.append("@java.lang.SuppressWarnings(")
-                .append(
-                        packageName.isEmpty()
-                                ? "{\"UnnecessarilyFullyQualified\", \"DefaultPackage\"}"
-                                : "\"UnnecessarilyFullyQualified\"")
+                .append(1 == suppressions.size() ? suppressions.get(0) : "{" + String.join(", ", suppressions) + "}")
                 .append(")\n@org.jspecify.annotations.NullMarked\nfinal class ")
                 .append(generated)
                 .append(" extends ")

@@ -4,9 +4,27 @@ import static org.testng.Assert.*;
 
 import com.helger.css.decl.CSSKeyframesRule;
 import java.util.List;
+import java.util.Locale;
 import org.testng.annotations.Test;
 
 public final class CssSyntaxTest {
+    @Test
+    public void sharedKeyframesAreRejectedAtEverySupportedNestingLevel() {
+        for (var wrapper : List.of(
+                "%s",
+                "button { %s }",
+                "@media (color) { %s }",
+                "@supports (display: grid) { %s }",
+                "@media (color) { @supports (display: grid) { %s } }")) {
+            String source = wrapper.formatted("@keyframes pulse { to { opacity: 0; } }");
+            var error = expectThrows(CssSyntax.InvalidCss.class, () -> new CssSyntax(source, 0).parse(false));
+            assertTrue(
+                    String.valueOf(error.getMessage()).toLowerCase(Locale.ROOT).contains("keyframes"),
+                    error.getMessage());
+            assertEquals(error.offset(), source.indexOf("@keyframes"));
+        }
+    }
+
     @Test
     public void sharedRulesAreValidatedBeforeModelConversionCanDiscardThem() {
         for (var css : List.of(

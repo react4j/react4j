@@ -1,0 +1,1 @@
+ERROR demo/Button.java:7:6: demo/Button.java:9:5: Use unprefixed animation or animation-name for local keyframes
