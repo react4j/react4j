@@ -2,7 +2,6 @@
 
 ### Unreleased
 
-* Report `@Css` errors for sealed style classes, private enclosing types and escaped property names before generating output. Deprecated style classes, accessors and constructors compile without deprecation warnings in generated implementations.
 * Restore grey, struck-through labels for completed tasks in all three TodoMVC examples.
 * Add String-based `CssProps.customProperty` and HTML `data` fluent APIs for CSS custom properties and data attributes, including nullable removal without JavaScript casts.
 * Add experimental CSS-in-Java authoring with `@react4j.css.Css`: define component styles in Java text blocks and use generated class-name accessors. CSS class names derive from Java package and class names, and compilation reports invalid CSS and mismatches between modifier selectors and accessors. Owner-local keyframes have stable namespaced names, with checked `animation` and `animation-name` references. Normal J2CL compilation emits component CSS with source maps back to Java; a JVM bundler collects styles across application dependencies into a stylesheet with a composed source map.
