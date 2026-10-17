@@ -211,6 +211,7 @@ public final class CssCompilerTest {
         assertEquals(bundled, CssCompiler.bundle(shared, List.of(fragment)));
         var sheet = parse(bundled);
         assertEquals(sheet.getRuleCount(), 3);
+        // CSSLayerRule.equals compares only the class, so assert layer contents explicitly.
         var layers = sheet.getAllLayerRules();
         assertEquals(layers.size(), 3);
         assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "components"));

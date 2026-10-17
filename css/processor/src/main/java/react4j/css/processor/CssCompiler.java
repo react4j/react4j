@@ -144,6 +144,7 @@ final class CssCompiler {
                     "Invalid CSS token or unterminated comment/string",
                     offset(stream.getEndLine(), stream.getEndColumn()));
         }
+        // Model conversion can discard unsupported nested rules. Validate the syntax tree first.
         checkSyntaxTree(tree, component);
         return CSSHandler.readCascadingStyleSheetFromNode(
                 new ICSSInterpretErrorHandler() {
