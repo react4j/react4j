@@ -5,18 +5,36 @@ import static react4j.dom.DOM.*;
 import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import react4j.css.Css;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.todomvc.arez.model.AppData;
-import react4j.todomvc.styles.Styles;
 
 @View
 abstract class FooterTodoCount {
+    private static final CountStyle COUNT = new Styled_FooterTodoCount_0024_CountStyle();
+    private static final CountNumberStyle COUNT_NUMBER = new Styled_FooterTodoCount_0024_CountNumberStyle();
+
     @Render
     ReactNode render() {
         final int count = AppData.model.activeCount();
         return span(
-                new HtmlProps().className(Styles.COUNT.style()),
-                strong(new HtmlProps().className(Styles.COUNT_NUMBER.style()), ReactNode.of(count)),
+                new HtmlProps().className(COUNT.style()),
+                strong(new HtmlProps().className(COUNT_NUMBER.style()), ReactNode.of(count)),
                 text(" item" + (1 == count ? "" : "s") + " left"));
+    }
+
+    @Css("""
+        float: left;
+        text-align: left;
+        """)
+    abstract static class CountStyle {
+        abstract String style();
+    }
+
+    @Css("""
+        font-weight: 300;
+        """)
+    abstract static class CountNumberStyle {
+        abstract String style();
     }
 }

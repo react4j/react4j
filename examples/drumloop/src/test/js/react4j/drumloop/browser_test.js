@@ -61,11 +61,18 @@ testSuite({
       const map = /** @type {!Object<string, *>} */ (await (await fetch(APPLICATION + 'css/index.css.map')).json());
       asserts.assertEquals(3, map['version']);
       const sections = /** @type {!Array<!Object<string, *>>} */ (map['sections']);
-      asserts.assertTrue(sections.some(section => {
+      /** @type {!Set<string>} */
+      const javaSources = new Set();
+      sections.forEach(section => {
         const component = /** @type {!Object<string, *>} */ (section['map']);
         const sources = /** @type {!Array<string>} */ (component['sources']);
-        return sources.some(name => name.endsWith('Styles.java'));
-      }));
+        sources.filter(name => name.endsWith('.java')).forEach(name => javaSources.add(name));
+      });
+      /** @type {!Array<string>} */
+      const owners = [
+        'BpmInput', 'DrumMachineView', 'FxButton', 'IndicatorView', 'PlayButton', 'StepButton', 'TrackView'
+      ];
+      asserts.assertArrayEquals(owners.map(name => 'react4j/drumloop/views/' + name + '.java').sort(), Array.from(javaSources).sort());
       asserts.assertEquals('flex', view.getComputedStyle(page.querySelector('h1').parentElement).display);
       asserts.assertEquals('rgb(51, 51, 51)', view.getComputedStyle(page.body).backgroundColor);
       const errors = /** @type {!Array<string>} */ (view['applicationErrors']);

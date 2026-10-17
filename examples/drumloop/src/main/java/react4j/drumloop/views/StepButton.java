@@ -8,11 +8,14 @@ import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import react4j.css.Css;
 import react4j.dom.proptypes.html.BtnProps;
 import react4j.drumloop.model.StepCell;
 
 @View(type = View.Type.TRACKING)
 abstract class StepButton {
+    private static final StepStyle STEP = new Styled_StepButton_0024_StepStyle();
+
     @ComponentDependency
     final StepCell _cell;
 
@@ -26,9 +29,9 @@ abstract class StepButton {
         return button(new BtnProps()
                 .data("step", Integer.toString(_cell.beat()))
                 .className(
-                        _cell.on() ? Styles.STEP.on() : Styles.STEP.style(),
-                        oddBar ? Styles.STEP.odd() : null,
-                        _cell.doubled() ? Styles.STEP.doubled() : null)
+                        _cell.on() ? STEP.on() : STEP.style(),
+                        oddBar ? STEP.odd() : null,
+                        _cell.doubled() ? STEP.doubled() : null)
                 .onClick(e -> toggleCell(e.isShiftKey())));
     }
 
@@ -48,5 +51,39 @@ abstract class StepButton {
                 _cell.setOn();
             }
         }
+    }
+
+    @Css("""
+        flex: 1;
+        background: #FD7272;
+        opacity: 0.35;
+        border-radius: 2px;
+        margin: 2px;
+
+        &.on {
+          opacity: 1;
+        }
+
+        &.odd {
+          background: #25CCF7;
+        }
+
+        @keyframes doubled {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+
+        &.doubled {
+          animation: doubled 0.5s linear infinite;
+        }
+        """)
+    abstract static class StepStyle {
+        abstract String style();
+
+        abstract String on();
+
+        abstract String odd();
+
+        abstract String doubled();
     }
 }

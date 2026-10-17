@@ -13,6 +13,7 @@ import react4j.annotations.PostUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.ScheduleRender;
 import react4j.annotations.View;
+import react4j.css.Css;
 import react4j.dom.events.FormEvent;
 import react4j.dom.events.KeyboardEvent;
 import react4j.dom.proptypes.html.BtnProps;
@@ -23,10 +24,16 @@ import react4j.dom.proptypes.html.attributeTypes.InputType;
 import react4j.todomvc.browser.HTMLInputElement;
 import react4j.todomvc.raw.model.AppData;
 import react4j.todomvc.raw.model.Todo;
-import react4j.todomvc.styles.Styles;
 
 @View(type = View.Type.STATEFUL)
 abstract class TodoItem {
+    private static final ItemStyle ITEM = new Styled_TodoItem_0024_ItemStyle();
+    private static final ViewStyle VIEW = new Styled_TodoItem_0024_ViewStyle();
+    private static final ToggleStyle TOGGLE = new Styled_TodoItem_0024_ToggleStyle();
+    private static final LabelStyle LABEL = new Styled_TodoItem_0024_LabelStyle();
+    private static final DestroyStyle DESTROY = new Styled_TodoItem_0024_DestroyStyle();
+    private static final EditStyle EDIT = new Styled_TodoItem_0024_EditStyle();
+
     private final SafeProcedure _onChange = this::scheduleRender;
 
     private final Todo _todo;
@@ -130,26 +137,180 @@ abstract class TodoItem {
         final boolean completed = _todo.isCompleted();
         final boolean editing = isTodoBeingEdited();
         return li(
-                new HtmlProps().className(editing ? Styles.ITEM.editing() : Styles.ITEM.style()),
+                new HtmlProps().className(editing ? ITEM.editing() : ITEM.style()),
                 div(
-                        new HtmlProps().className(editing ? Styles.VIEW.editing() : Styles.VIEW.style()),
+                        new HtmlProps().className(editing ? VIEW.editing() : VIEW.style()),
                         input(new InputProps()
-                                .className(Styles.TOGGLE.style())
+                                .className(TOGGLE.style())
                                 .type(InputType.checkbox)
                                 .checked(completed)
                                 .onChange(e -> onToggle())),
                         label(
                                 new LabelProps()
-                                        .className(completed ? Styles.LABEL.completed() : Styles.LABEL.style())
+                                        .className(completed ? LABEL.completed() : LABEL.style())
                                         .onDoubleClick(e -> onEdit()),
                                 _todo.getTitle()),
-                        button(new BtnProps().className(Styles.DESTROY.style()).onClick(e -> onDestroy()))),
+                        button(new BtnProps().className(DESTROY.style()).onClick(e -> onDestroy()))),
                 input(new InputProps()
                         .ref(e -> _editField = Js.uncheckedCast(e))
-                        .className(editing ? Styles.EDIT.editing() : Styles.EDIT.style())
+                        .className(editing ? EDIT.editing() : EDIT.style())
                         .value(_editText)
                         .onBlur(e -> onSubmitTodo())
                         .onChange(this::handleChange)
                         .onKeyDown(this::handleKeyDown)));
+    }
+
+    @Css("""
+        position: relative;
+        font-size: 24px;
+        border-bottom: 1px solid #ededed;
+        --todo-destroy-display: none;
+        &:hover {
+          --todo-destroy-display: block;
+        }
+        &:last-child {
+          border-bottom: none;
+        }
+        &.editing {
+          border-bottom: none;
+          padding: 0;
+        }
+        &.editing:last-child {
+          margin-bottom: -1px;
+        }
+        """)
+    abstract static class ItemStyle {
+        abstract String style();
+
+        abstract String editing();
+    }
+
+    @Css("""
+        &.editing {
+          display: none;
+        }
+        """)
+    abstract static class ViewStyle {
+        abstract String style();
+
+        abstract String editing();
+    }
+
+    @Css("""
+        text-align: center;
+        width: 40px;
+        height: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        margin: auto 0;
+        border: none;
+        -webkit-appearance: none;
+        appearance: none;
+        &:after {
+          content: url('toggle.svg');
+        }
+        &:checked:after {
+          content: url('toggle_checked.svg');
+        }
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+          & {
+            background: none;
+            height: 40px;
+          }
+        }
+        """)
+    abstract static class ToggleStyle {
+        abstract String style();
+    }
+
+    @Css("""
+        white-space: pre-line;
+        word-break: break-all;
+        padding: 15px 60px 15px 15px;
+        margin-left: 45px;
+        display: block;
+        line-height: 1.2;
+        transition: color 0.4s;
+        &.completed {
+          color: #d9d9d9;
+          text-decoration: line-through;
+        }
+        """)
+    abstract static class LabelStyle {
+        abstract String style();
+
+        abstract String completed();
+    }
+
+    @Css("""
+        display: var(--todo-destroy-display);
+        position: absolute;
+        top: 0;
+        right: 10px;
+        bottom: 0;
+        width: 40px;
+        height: 40px;
+        margin: auto 0;
+        font-size: 30px;
+        color: #cc9a9a;
+        margin-bottom: 11px;
+        transition: color 0.2s ease-out;
+        &:hover {
+          color: #af5b5e;
+        }
+        &:after {
+          content: '\\00D7';
+        }
+        """)
+    abstract static class DestroyStyle {
+        abstract String style();
+    }
+
+    @Css("""
+        position: relative;
+        margin: 0;
+        width: 100%;
+        font-size: 24px;
+        font-family: inherit;
+        font-weight: inherit;
+        line-height: 1.4em;
+        outline: none;
+        color: inherit;
+        padding: 6px;
+        border: 1px solid #999;
+        box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        -moz-font-smoothing: antialiased;
+        font-smoothing: antialiased;
+        display: none;
+        &.editing {
+          display: block;
+          width: 506px;
+          padding: 13px 17px 12px 17px;
+          margin: 0 0 0 43px;
+        }
+
+        &::-webkit-input-placeholder {
+          font-style: italic;
+          font-weight: 300;
+          color: #e6e6e6;
+        }
+        &::-moz-placeholder {
+          font-style: italic;
+          font-weight: 300;
+          color: #e6e6e6;
+        }
+        &::input-placeholder {
+          font-style: italic;
+          font-weight: 300;
+          color: #e6e6e6;
+        }
+        """)
+    abstract static class EditStyle {
+        abstract String style();
+
+        abstract String editing();
     }
 }

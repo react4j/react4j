@@ -9,12 +9,15 @@ import react4j.annotations.PostMount;
 import react4j.annotations.Render;
 import react4j.annotations.ScheduleRender;
 import react4j.annotations.View;
+import react4j.css.Css;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.todomvc.raw.model.AppData;
-import react4j.todomvc.styles.Styles;
 
 @View(type = View.Type.STATEFUL)
 abstract class FooterTodoCount {
+    private static final CountStyle COUNT = new Styled_FooterTodoCount_0024_CountStyle();
+    private static final CountNumberStyle COUNT_NUMBER = new Styled_FooterTodoCount_0024_CountNumberStyle();
+
     private final SafeProcedure _onChange = this::scheduleRender;
 
     @ScheduleRender
@@ -34,8 +37,23 @@ abstract class FooterTodoCount {
     ReactNode render() {
         final int count = AppData.service.activeCount();
         return span(
-                new HtmlProps().className(Styles.COUNT.style()),
-                strong(new HtmlProps().className(Styles.COUNT_NUMBER.style()), ReactNode.of(count)),
+                new HtmlProps().className(COUNT.style()),
+                strong(new HtmlProps().className(COUNT_NUMBER.style()), ReactNode.of(count)),
                 text(" item" + (1 == count ? "" : "s") + " left"));
+    }
+
+    @Css("""
+        float: left;
+        text-align: left;
+        """)
+    abstract static class CountStyle {
+        abstract String style();
+    }
+
+    @Css("""
+        font-weight: 300;
+        """)
+    abstract static class CountNumberStyle {
+        abstract String style();
     }
 }

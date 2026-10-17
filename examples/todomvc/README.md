@@ -21,7 +21,8 @@ for build setup and other commands.
 Tasks are kept in memory and disappear on reload. While editing, Enter saves, Escape
 cancels, and an empty title deletes the task.
 
-All three variants use the same [CSS-in-Java definitions](src/main/java/react4j/todomvc/styles/Styles.java).
+Each variant colocates its CSS-in-Java definitions in static nested classes inside its views,
+such as [TodoItem.java](raw/src/main/java/react4j/todomvc/raw/views/TodoItem.java). The variants use identical CSS rules.
 [Shared CSS](src/main/css/shared.css) styles the page and static HTML; the checkbox images are
 [unchanged assets](src/main/assets/css/). Component modifiers control completed and editing
 states. Row hover sets an inherited `--todo-destroy-display` custom property to reveal the delete button.

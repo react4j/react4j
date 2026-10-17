@@ -4,11 +4,11 @@
 
 ## Authoring
 
-See [SaveButton.java](examples/save-button/src/main/java/react4j/css/example/SaveButton.java) for a style definition and [BrowserExample.java](examples/save-button/src/main/java/react4j/css/example/BrowserExample.java) for its use in React4j.
+See [BrowserExample.java](examples/save-button/src/main/java/react4j/css/example/BrowserExample.java) for style definitions alongside the code that renders them. Application examples colocate styles in static nested classes inside their views; [StepButton.java](../examples/drumloop/src/main/java/react4j/drumloop/views/StepButton.java) includes its styles and animation.
 
 A definition is an abstract class annotated with a literal `@Css` text block. It declares `abstract String style()` and zero-argument abstract `String` methods for modifiers such as `success()`. Each modifier must have a corresponding local selector, such as `&.success`, and each local selector must have an accessor. Definitions need an accessible no-argument constructor without throws; accessor methods cannot have parameters, type parameters or throws. Inheritance, type parameters and sealed classes are unsupported. Nested definitions must be static, and their enclosing types must be accessible from the package.
 
-The processor generates a package-access subclass, such as `Styled_SaveButton`, that an ordinary Java factory can instantiate. `style()` returns the root class token; a modifier accessor returns both the root and its namespaced modifier token. Names derive from the Java package, class and enclosing classes, so authors do not allocate globally unique CSS names. Conflicting modifiers follow stylesheet order, independently of class-token order. Apply one component's root to each styled element.
+The processor generates a package-access subclass, such as `Styled_BrowserExample_0024_SaveButton` for `BrowserExample.SaveButton`, that an ordinary Java factory can instantiate. Views can cache generated implementations in private static final fields. Keep the nested style classes accessible from their package so the generated subclasses can extend them. `style()` returns the root class token; a modifier accessor returns both the root and its namespaced modifier token. Names derive from the Java package, class and enclosing classes, so authors do not allocate globally unique CSS names. Conflicting modifiers follow stylesheet order, independently of class-token order. Apply one component's root to each styled element.
 
 ## Supported CSS
 

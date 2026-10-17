@@ -2,6 +2,7 @@ package react4j.css.example;
 
 import jsinterop.annotations.JsMethod;
 import org.jspecify.annotations.Nullable;
+import react4j.css.Css;
 import react4j.dom.DOM;
 import react4j.dom.ReactDOM;
 import react4j.dom.proptypes.html.BtnProps;
@@ -46,5 +47,54 @@ public final class BrowserExample {
                                         "Nested"),
                                 DOM.span(new HtmlProps().id("status").className(status.success()), "Status"))),
                 container);
+    }
+
+    @Css("""
+        color: var(--on-accent);
+
+        &:focus-visible {
+          outline: 2px solid var(--focus);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+        }
+
+        &.success {
+          background-color: var(--success);
+        }
+
+        &.cancel {
+          background-color: var(--cancel);
+          border: 2px dotted currentcolor;
+        }
+        """)
+    abstract static class SaveButton {
+        static SaveButton of() {
+            return new Styled_BrowserExample_0024_SaveButton();
+        }
+
+        abstract String style();
+
+        abstract String success();
+
+        abstract String cancel();
+    }
+
+    @Css("""
+        color: var(--on-accent);
+
+        &.success {
+          border: 3px solid var(--success);
+        }
+        """)
+    abstract static class Status {
+        static Status of() {
+            return new Styled_BrowserExample_0024_Status();
+        }
+
+        abstract String style();
+
+        abstract String success();
     }
 }

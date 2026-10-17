@@ -10,6 +10,7 @@ import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import react4j.css.Css;
 import react4j.dom.proptypes.html.BtnProps;
 import react4j.drumloop.browser.audio.AudioBufferSourceNode;
 import react4j.drumloop.browser.audio.AudioContext;
@@ -18,6 +19,8 @@ import react4j.drumloop.model.SoundEffect;
 
 @View(type = View.Type.TRACKING)
 abstract class FxButton {
+    private static final FxButtonStyle FX_BUTTON = new Styled_FxButton_0024_FxButtonStyle();
+
     private final SoundEffect _sound;
 
     @Nullable
@@ -43,7 +46,7 @@ abstract class FxButton {
         return button(
                 new BtnProps()
                         .data("sound", _sound.getName())
-                        .className(held() ? Styles.FX_BUTTON.held() : Styles.FX_BUTTON.style())
+                        .className(held() ? FX_BUTTON.held() : FX_BUTTON.style())
                         .onMouseDown(e -> playSound(e.isShiftKey()))
                         .onTouchStart(e -> playSound(e.isShiftKey()))
                         .onTouchEnd(e -> stopSound())
@@ -119,5 +122,33 @@ abstract class FxButton {
             _node.disconnect();
             _node = null;
         }
+    }
+
+    @Css("""
+        background: none;
+        flex: 1;
+        border: 2px solid #fd7272;
+        color: #fd7272;
+        display: inline-block;
+        font-size: 24px;
+        border-radius: 2px;
+        padding: 20px;
+        font-family: 'Righteous', cursive;
+        margin: 2px;
+
+        &.held {
+          background: #fd7272;
+          color: black;
+        }
+
+        &:active {
+          background: #fd7272;
+          color: black;
+        }
+        """)
+    abstract static class FxButtonStyle {
+        abstract String style();
+
+        abstract String held();
     }
 }

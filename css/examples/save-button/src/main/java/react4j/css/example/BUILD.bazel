@@ -6,35 +6,22 @@ package(default_visibility = [
 ])
 
 java_j2cl_library(
-    name = "bindings",
-    srcs = [
-        "SaveButton.java",
-        "Status.java",
-        "package-info.java",
-    ],
-    java_deps = ["//css/core"],
-    plugins = ["//css/processor:plugin"],
-    deps = [
-        "//css/core:core-j2cl",
-        "//third_party/java:jspecify-j2cl",
-    ],
-)
-
-java_j2cl_library(
     name = "browser",
     srcs = [
         "BrowserExample.java",
         "package-info.java",
     ],
     java_deps = [
-        ":bindings_java",
+        "//css/core",
         "//:core",
         "//:dom",
     ],
+    plugins = ["//css/processor:plugin"],
     deps = [
-        ":bindings",
         "//:core-j2cl",
         "//:dom-j2cl",
+        "//css/core:core-j2cl",
         "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jspecify-j2cl",
     ],
 )
