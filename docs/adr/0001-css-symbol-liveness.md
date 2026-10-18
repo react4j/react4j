@@ -1,0 +1,5 @@
+# Preserve symbolic style values through Closure optimization
+
+Generated accessor methods can disappear through inlining before CSS reachability is known. Represent their values as compiler-only symbols during a single JVM Closure compilation, collect surviving values after its final optimization passes, and lower them to ordinary strings. This avoids guessing from method names or scanning arbitrary final string literals, and avoids a second JavaScript compilation.
+
+The annotation processor owns the catalogue connecting generated bindings to each [CSS symbol](../glossary/README.md#css-symbol). A separately invoked JVM CSS bundler consumes the resulting [Liveness report](../glossary/README.md#liveness-report) and applies each [CSS variant](../glossary/README.md#css-variant)'s roots. Keeping variant selection outside the JavaScript link permits multiple themes to share one compilation. The Closure rules extension provides a generic compiler factory boundary; React4j-specific analysis remains in React4j.
