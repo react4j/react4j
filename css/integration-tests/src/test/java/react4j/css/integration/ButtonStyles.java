@@ -9,18 +9,8 @@ import react4j.css.Css;
     @keyframes pulse { to { opacity: 0.5; } }
     &:hover { animation-name: pulse; }
     """)
-abstract class ButtonStyles {
+abstract class ButtonStyles implements StyleContracts.Button {
     static ButtonStyles get() {
         return Styled_ButtonStyles.get();
     }
-
-    final String forState(StyleState state) {
-        return StyleState.SUCCESS == state ? success() : cancel();
-    }
-
-    abstract String style();
-
-    abstract String success();
-
-    abstract String cancel();
 }

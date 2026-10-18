@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementing
-- Current frontier: T03
+- Status: implementation-review
+- Current frontier: implementation review
 - Planning reviewer: /root/interfaces_planning_review — Findings: none (1/3 rounds; final confirmation unused)
 - Plan checkpoint: automatic — user-authorized implementation, final grill-me confirmation and passing planning review; no human plan checkpoint requested
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -10,7 +10,7 @@
 ## Full-scope validation
 
 - Gate: tools/check.sh
-- Evidence: pending
+- Evidence: tools/check.sh passed after the final implementation change; all 37 development targets, six optimized browser targets, unchanged coverage policy, isolated consumer, site/release validation and 13 reproducible artifacts. CSS processor root: 1244/1254 lines and 890/926 branches. See T03 for focused evidence and simplify results.
 
 ## Tasks
 
@@ -18,7 +18,7 @@
 | --- | --- | --- | --- |
 | T01 | [Inherited Java accessors](T01-inherited-accessors.md) | complete | None |
 | T02 | [Inherited symbol contracts](T02-symbol-contracts.md) | complete | T01 |
-| T03 | [Separate compilation and full validation](T03-integration-validation.md) | pending | T02 |
+| T03 | [Separate compilation and full validation](T03-integration-validation.md) | complete | T02 |
 
 ## Sequencing notes
 

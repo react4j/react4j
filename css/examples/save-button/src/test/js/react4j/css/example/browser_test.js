@@ -56,6 +56,15 @@ testSuite({
   testGeneratedBindingsAreSingletons() {
     asserts.assertTrue(Example.bindingsAreSingletons());
   },
+  testInterfaceImplementationsKeepIndependentClasses() {
+    const button = /** @type {!HTMLElement} */ (container.querySelector('#success'));
+    const status = /** @type {!HTMLElement} */ (container.querySelector('#status'));
+    asserts.assertNotEquals(button.classList.item(0), status.classList.item(0));
+    asserts.assertNotEquals(button.classList.item(1), status.classList.item(1));
+    asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);
+    asserts.assertEquals('rgb(0, 136, 0)', computed('status').borderTopColor);
+    asserts.assertEquals('3px', computed('status').borderTopWidth);
+  },
   async testSharedKeyframesAreReusedAndUnreferencedDefinitionsAreExcluded() {
     const button = /** @type {!HTMLElement} */ (container.querySelector('#busy-button'));
     const status = /** @type {!HTMLElement} */ (container.querySelector('#busy-status'));

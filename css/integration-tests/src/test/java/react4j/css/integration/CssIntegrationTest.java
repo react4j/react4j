@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
 public final class CssIntegrationTest {
     @Test
     public void j2clCompilationAndDependencyGraphAssemblyUseDeclaredInputs() throws Exception {
-        var styles = ButtonStyles.get();
+        StyleContracts.Button styles = ButtonStyles.get();
         assertSame(styles, ButtonStyles.get());
         String root = "jcss-react4j-css-integration-ButtonStyles";
         assertEquals(styles.style(), root);
@@ -197,12 +197,14 @@ public final class CssIntegrationTest {
 
     @Test
     public void symbolBindingsAgreeWithSeparatelyCompiledResourcesAndTheirMaps() throws Exception {
-        var styles = SymbolStyles.get();
+        StyleContracts.Symbols<String> styles = SymbolStyles.get();
         assertSame(styles, SymbolStyles.get());
         assertSame(SharedDefaults.get(), SharedDefaults.get());
         assertSame(SharedPulse.get(), SharedPulse.get());
-        assertEquals(styles.foreground(), SharedDefaults.get().accent());
-        assertEquals(styles.animation(), SharedPulse.get().name());
+        StyleContracts.Defaults defaults = SharedDefaults.get();
+        StyleContracts.Pulse pulse = SharedPulse.get();
+        assertEquals(styles.foreground(), defaults.accent());
+        assertEquals(styles.animation(), pulse.name());
         String css = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.fixture"))));
         var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(css, new CSSReaderSettings()));
         var rules = sheet.getAllLayerRules().get(2).getAllStyleRules();

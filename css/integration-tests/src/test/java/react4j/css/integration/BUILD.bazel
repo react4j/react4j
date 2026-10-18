@@ -6,6 +6,22 @@ load("//tools/browser:java.bzl", "java_j2cl_library")
 package(default_visibility = ["//visibility:public"])
 
 java_j2cl_library(
+    name = "fixture_contracts",
+    testonly = True,
+    srcs = [
+        "StyleContracts.java",
+        "StyleState.java",
+        "package-info.java",
+    ],
+    java_deps = ["//css/core"],
+    plugins = ["//css/processor:plugin"],
+    deps = [
+        "//css/core:core-j2cl",
+        "//third_party/java:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
     name = "fixture_dependency",
     testonly = True,
     srcs = [
@@ -13,13 +29,16 @@ java_j2cl_library(
         "SharedDefaults.java",
         "SharedLabel.java",
         "SharedPulse.java",
-        "StyleState.java",
         "UnselectedDefaults.java",
         "package-info.java",
     ],
-    java_deps = ["//css/core"],
+    java_deps = [
+        ":fixture_contracts_java",
+        "//css/core",
+    ],
     plugins = ["//css/processor:plugin"],
     deps = [
+        ":fixture_contracts",
         "//css/core:core-j2cl",
         "//third_party/java:jspecify-j2cl",
     ],
@@ -34,11 +53,13 @@ java_j2cl_library(
         "package-info.java",
     ],
     java_deps = [
+        ":fixture_contracts_java",
         ":fixture_dependency_java",
         "//css/core",
     ],
     plugins = ["//css/processor:plugin"],
     deps = [
+        ":fixture_contracts",
         ":fixture_dependency",
         "//css/core:core-j2cl",
         "//third_party/java:jspecify-j2cl",
@@ -136,6 +157,7 @@ java_testng(
     test_class = "react4j.css.integration.CssIntegrationTest",
     deps = [
         ":fixture_bindings_java",
+        ":fixture_contracts_java",
         ":fixture_dependency_java",
         "//third_party/java:ph_css",
         "@maven//:com_google_code_gson_gson",

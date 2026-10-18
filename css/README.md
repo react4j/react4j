@@ -50,7 +50,48 @@ Keep references to the generated subclass inside the style definition's forwardi
 
 CSS names derive from the Java package and class, including enclosing classes. The generated subclass is always package-access, including for public definitions. To keep styles in a view's source file, use a static nested class: `View.Styles` generates `View_Styled_Styles`. See [BrowserExample.java](examples/save-button/src/main/java/react4j/css/example/BrowserExample.java) for a complete rendering example.
 
-Style definitions must be abstract, public or package-access, and stateless: no fields, explicit constructors or instance initializers. Inheritance, interfaces, type parameters and sealed classes are unsupported. Nested definitions must be static with accessible enclosing types. Abstract accessors must return `String` and have no parameters, type parameters or throws. Concrete and static helpers are allowed.
+Style definitions must be abstract, public or package-access, and stateless: no fields, explicit constructors or instance initializers. Extending another class, type parameters and sealed classes are unsupported. Nested definitions must be static with accessible enclosing types. Abstract accessors must return `String` and have no parameters, type parameters or throws. Concrete and static helpers are allowed.
+
+### Shared interfaces
+
+Use ordinary Java interfaces to share a style contract. Each definition keeps its own CSS names:
+
+```java
+interface ActionStyle {
+    String style();
+    String success();
+
+    default String forSuccess(boolean success) {
+        return success ? success() : style();
+    }
+}
+
+@Css("""
+    color: white;
+    &.success { background-color: green; }
+    """)
+abstract class PrimaryAction implements ActionStyle {
+    static PrimaryAction get() {
+        return Styled_PrimaryAction.get();
+    }
+}
+
+@Css("""
+    border: 1px solid;
+    &.success { border-color: green; }
+    """)
+abstract class SecondaryAction implements ActionStyle {
+    static SecondaryAction get() {
+        return Styled_SecondaryAction.get();
+    }
+}
+```
+
+Accessors inherited from interfaces need no redeclaration and generate public overrides. Generic interfaces work when their substituted accessor signatures satisfy the rules above, such as `Styles<String>`. Interface constants and default, static and private helpers are allowed. A component still needs an abstract `style()`; redeclare a default `style()` as abstract to generate it.
+
+Interfaces can also declare `@CssId`, `@CssAnimation` and `@CssCustomProperty` accessors, including for `@GlobalCss` and `@Keyframes` implementations. Names and CSS occurrences are checked in each consuming definition, including through separately compiled libraries. A standalone interface produces no CSS or bindings.
+
+An unannotated override inherits its symbol annotation. An explicitly annotated override may refine the local name within the same symbol kind. Matching inherited contracts merge; differing inherited names require an explicit annotated redeclaration to choose the mapping. Conflicting symbol kinds always fail. Plain declarations do not erase symbol annotations. The effective symbol method must stay abstract; a concrete/default implementation is an error, while re-abstraction permits generation. Ordinary unannotated helpers retain their Java behavior. Resource interfaces with only helpers need no Java binding.
 
 ## Supported CSS
 
@@ -162,7 +203,7 @@ Selectors retain their authored names except for checked component references an
 
 Select application globals through the bundle's `globals` attribute below. Add `@CssImport(ApplicationDefaults.class)` to a component or another global definition that requires those defaults. Global imports work across separately compiled libraries; duplicate imports, self-inclusion, names on global imports and incompatible types are errors. The bundler rejects cycles among global inclusion edges.
 
-Keyframe and global declaration classes may be concrete or abstract, public or package-access. Inheritance, interfaces, type parameters and sealed classes are unsupported. Nested declarations must be static with accessible enclosing types. They must not declare fields, explicit constructors or initializers. Concrete and static helpers are allowed. Abstract methods must be annotated symbol accessors as described below. Definitions with accessors must be abstract and generate lazy Java bindings; definitions without accessors produce resources only.
+Keyframe and global declaration classes may be concrete or abstract, public or package-access. Extending another class, type parameters and sealed classes are unsupported. Nested declarations must be static with accessible enclosing types. They must not declare fields, explicit constructors or initializers. Concrete and static helpers are allowed. Abstract methods must be annotated symbol accessors as described below. Definitions with accessors must be abstract and generate lazy Java bindings; definitions without accessors produce resources only.
 
 ### CSS names in Java
 

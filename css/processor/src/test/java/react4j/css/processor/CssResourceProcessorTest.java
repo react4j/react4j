@@ -142,8 +142,7 @@ public final class CssResourceProcessorTest {
                 "private Pulse() {}",
                 "public Pulse(int value) {}")) {
             cases.add(new Object[] {
-                frames("abstract class Pulse", member, FRAMES),
-                "must not declare fields, constructors or abstract methods"
+                frames("abstract class Pulse", member, FRAMES), "must not declare fields or constructors"
             });
         }
         cases.add(new Object[] {

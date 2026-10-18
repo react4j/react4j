@@ -28,6 +28,18 @@ final class CssMethods {
         interfaces(environment, owner, new HashSet<>(), declarations);
         declarations.sort(Comparator.comparing(method -> method.getEnclosingElement() + "." + method));
         var candidates = new ArrayList<>(ElementFilter.methodsIn(elements.getAllMembers(owner)));
+        // javac can hide a public Object implementation behind an interface redeclaration.
+        var object = elements.getTypeElement("java.lang.Object");
+        assert null != object;
+        for (var method : ElementFilter.methodsIn(object.getEnclosedElements())) {
+            if (method.getModifiers().contains(Modifier.PUBLIC)
+                    && declarations.stream()
+                            .noneMatch(declaration -> owner.equals(declaration.getEnclosingElement())
+                                    && elements.overrides(declaration, method, owner))
+                    && !candidates.contains(method)) {
+                candidates.add(method);
+            }
+        }
         candidates.sort(Comparator.comparing(method -> method.getEnclosingElement() + "." + method));
         for (var candidate : candidates) {
             var type = (ExecutableType) types.asMemberOf((DeclaredType) owner.asType(), candidate);
@@ -55,19 +67,13 @@ final class CssMethods {
                 methods.add(method);
             } else {
                 var previous = methods.get(index);
-                if (elements.overrides(candidate, previous.element(), owner)
-                        || (!elements.overrides(previous.element(), candidate, owner)
-                                && ((!candidate.getModifiers().contains(Modifier.ABSTRACT)
-                                                && previous.element()
-                                                        .getModifiers()
-                                                        .contains(Modifier.ABSTRACT))
-                                        || (candidate.getModifiers().contains(Modifier.ABSTRACT)
-                                                        == previous.element()
-                                                                .getModifiers()
-                                                                .contains(Modifier.ABSTRACT)
-                                                && types.isSubtype(
-                                                        method.type().getReturnType(),
-                                                        previous.type().getReturnType()))))) {
+                boolean candidateAbstract = candidate.getModifiers().contains(Modifier.ABSTRACT);
+                boolean previousAbstract = previous.element().getModifiers().contains(Modifier.ABSTRACT);
+                // getAllMembers already removes overridden declarations; unrelated signatures remain.
+                if (candidateAbstract != previousAbstract
+                        ? !candidateAbstract
+                        : types.isSubtype(
+                                method.type().getReturnType(), previous.type().getReturnType())) {
                     methods.set(index, method);
                 }
             }

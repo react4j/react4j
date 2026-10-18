@@ -218,8 +218,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                     || (ElementKind.CONSTRUCTOR == member.getKind()
                             && Elements.Origin.EXPLICIT
                                     == ElementsUtil.getOrigin(processingEnv.getElementUtils(), member))) {
-                throw new IllegalArgumentException(
-                        "CSS resource definitions must not declare fields, constructors or abstract methods");
+                throw new IllegalArgumentException("CSS resource definitions must not declare fields or constructors");
             }
         }
         if (Trees.instance(processingEnv).getTree(owner).getMembers().stream().anyMatch(BlockTree.class::isInstance)) {
@@ -386,7 +385,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 }
             }
         }
-        for (var inherited : CssMethods.collect(processingEnv, owner)) {
+        var inheritedMethods = CssMethods.collect(processingEnv, owner);
+        for (var inherited : inheritedMethods) {
             var method = inherited.element();
             if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
                 if (null != symbolAnnotation(owner, inherited)) {
@@ -417,7 +417,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 owner,
                 processingEnv.getElementUtils().getBinaryName(owner).toString(),
                 parseAccessors(owner, methods, Kind.COMPONENT),
-                publicFactory(owner, "@Css"),
+                publicFactory(owner, inheritedMethods, "@Css"),
                 deprecated);
     }
 
@@ -457,6 +457,15 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 .filter(declaration -> annotated.stream()
                         .noneMatch(other -> processingEnv.getElementUtils().overrides(other, declaration, owner)))
                 .toList();
+        if ("react4j.css.CssAnimation".equals(kinds.get(0))
+                && null != annotation(owner, "react4j.css.Keyframes")
+                && specific.stream()
+                        .anyMatch(declaration -> !"<default>"
+                                .equals(value(Objects.requireNonNull(symbolAnnotation(declaration)), "name")
+                                        .getValue()))) {
+            throw new IllegalArgumentException(
+                    "@CssAnimation on @Keyframes exposes its own name and must not declare name");
+        }
         var names = specific.stream()
                 .map(declaration -> symbolName(declaration, Objects.requireNonNull(symbolAnnotation(declaration))))
                 .distinct()
@@ -491,10 +500,6 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 if (CssAccessor.Kind.PROPERTY == kind) {
                     CssProperties.checkName(name);
                 } else if (CssAccessor.Kind.ANIMATION == kind && Kind.KEYFRAMES == ownerKind) {
-                    if (!"<default>".equals(value(annotation, "name").getValue())) {
-                        throw new IllegalArgumentException(
-                                "@CssAnimation on @Keyframes exposes its own name and must not declare name");
-                    }
                     name = "";
                 } else {
                     CssCompiler.checkAlias(name, CssAccessor.Kind.ANIMATION == kind ? Kind.KEYFRAMES : Kind.COMPONENT);
@@ -527,7 +532,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 enclosing = enclosing.getEnclosingElement()) {
             deprecated |= processingEnv.getElementUtils().isDeprecated(enclosing);
         }
-        for (var inherited : CssMethods.collect(processingEnv, owner)) {
+        var inheritedMethods = CssMethods.collect(processingEnv, owner);
+        for (var inherited : inheritedMethods) {
             var method = inherited.element();
             if (null != symbolAnnotation(owner, inherited)) {
                 if (!method.getModifiers().contains(Modifier.ABSTRACT)
@@ -558,12 +564,12 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 owner,
                 binaryName(owner),
                 parseAccessors(owner, methods, sourceKind(owner)),
-                publicFactory(owner, "CSS"),
+                publicFactory(owner, inheritedMethods, "CSS"),
                 deprecated);
     }
 
-    private boolean publicFactory(TypeElement owner, String label) {
-        for (var inherited : CssMethods.collect(processingEnv, owner)) {
+    private boolean publicFactory(TypeElement owner, List<CssMethods.Method> methods, String label) {
+        for (var inherited : methods) {
             var method = inherited.element();
             if (method.getSimpleName().contentEquals("get")
                     && method.getParameters().isEmpty()

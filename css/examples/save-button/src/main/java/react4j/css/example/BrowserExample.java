@@ -34,17 +34,19 @@ public final class BrowserExample {
     public static void render(Object container, @Nullable String success, @Nullable String shared) {
         var button = SaveButton.get();
         var status = Status.get();
-        var custom = new CssProps().customProperty(button.successProperty(), success);
+        StateStyle<String> buttonStates = button;
+        StateStyle<String> statusStates = status;
+        var custom = new CssProps().customProperty(buttonStates.successProperty(), success);
         ReactDOM.render(
                 DOM.div(
                         DOM.button(
                                 new BtnProps().id("base").data("shared", shared).className(button.style()), "Save"),
-                        DOM.button(new BtnProps().id("success").className(button.success()), "Saved"),
+                        DOM.button(new BtnProps().id("success").className(buttonStates.success()), "Saved"),
                         DOM.button(new BtnProps().id("cancel").className(button.cancel()), "Cancel"),
                         DOM.button(
                                 new BtnProps()
                                         .id("custom")
-                                        .className(button.success())
+                                        .className(buttonStates.success())
                                         .style(custom),
                                 "Custom"),
                         DOM.button(
@@ -63,9 +65,11 @@ public final class BrowserExample {
                                                 .data("shared", shared)
                                                 .className(button.style()),
                                         "Nested"),
-                                DOM.span(new HtmlProps().id("status").className(status.success()), "Status")),
-                        DOM.button(new BtnProps().id("busy-button").className(button.busy()), "Saving"),
-                        DOM.span(new HtmlProps().id("busy-status").className(status.busy()), "Saving status"),
+                                DOM.span(new HtmlProps().id("status").className(statusStates.success()), "Status")),
+                        DOM.button(new BtnProps().id("busy-button").className(buttonStates.forBusy(true)), "Saving"),
+                        DOM.span(
+                                new HtmlProps().id("busy-status").className(statusStates.forBusy(true)),
+                                "Saving status"),
                         DOM.button(new BtnProps().id("peer-button").className(button.style()), "Focus to show status"),
                         DOM.span(
                                 new HtmlProps()
@@ -120,6 +124,21 @@ public final class BrowserExample {
                 container);
     }
 
+    interface StateStyle<T> {
+        String style();
+
+        String success();
+
+        String busy();
+
+        @CssCustomProperty(name = "success")
+        T successProperty();
+
+        default String forBusy(boolean busy) {
+            return busy ? busy() : style();
+        }
+    }
+
     @CssImport(Defaults.class)
     @CssImport(value = Defaults.class, property = "on-accent")
     @CssImport(value = Defaults.class, property = "success")
@@ -162,21 +181,12 @@ public final class BrowserExample {
           animation: pulse 0.8s ease-in-out infinite alternate;
         }
         """)
-    abstract static class SaveButton {
+    abstract static class SaveButton implements StateStyle<String> {
         static SaveButton get() {
             return BrowserExample_Styled_SaveButton.get();
         }
 
-        abstract String style();
-
-        abstract String success();
-
         abstract String cancel();
-
-        abstract String busy();
-
-        @CssCustomProperty(name = "success")
-        abstract String successProperty();
 
         @CssId(name = "control")
         abstract String controlId();
@@ -208,16 +218,10 @@ public final class BrowserExample {
           animation-direction: alternate;
         }
         """)
-    abstract static class Status {
+    abstract static class Status implements StateStyle<String> {
         static Status get() {
             return BrowserExample_Styled_Status.get();
         }
-
-        abstract String style();
-
-        abstract String success();
-
-        abstract String busy();
 
         @CssAnimation(name = "accessor-pulse")
         abstract String externalAnimation();

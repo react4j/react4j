@@ -2,8 +2,11 @@ package react4j.css.processor;
 
 import static org.testng.Assert.*;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.jspecify.annotations.NullMarked;
@@ -376,5 +379,264 @@ public final class CssInterfaceProcessorTest {
         assertFalse(consumer.success());
         assertTrue(consumer.diagnostics().contains("must take no arguments and return String"), consumer.diagnostics());
         assertFalse(consumer.files().containsKey("classes/demo/Button.css"));
+    }
+
+    @Test
+    public void sharedAncestorDiamondsAndOverloadedHelpersRetainJavaBehavior() throws Exception {
+        for (var order : List.of("Left, Right", "Right, Left")) {
+            var result = CssProcessorTest.compile(
+                    Map.of(
+                            "Button.java",
+                            source(
+                                    "Css",
+                                    "color: var(--accent);",
+                                    "abstract class Button implements " + order,
+                                    "static Button of() { return Styled_Button.get(); }",
+                                    "interface Base<T> { T style(); @CssCustomProperty String accent(); default String"
+                                        + " style(int ignored) { return style().toString(); } private String get() {"
+                                        + " return \"private\"; } }interface Left extends Base<String> {} interface"
+                                        + " Right extends Base<String> {}")),
+                    "demo.Button");
+            assertTrue(result.success(), result.diagnostics());
+            assertEquals(result.values().get("demo.Button.accent"), "--jcss-demo-Button--accent");
+            assertFalse(text(result, "generated/demo/Styled_Button.java").contains("style(int"));
+        }
+    }
+
+    @Test
+    public void inheritedNullableAndDeprecatedAccessorsCompileUnderStrictChecks() throws Exception {
+        for (var kind : List.of("Css", "GlobalCss", "Keyframes")) {
+            String css = "color: var(--accent);";
+            if (!"Css".equals(kind)) {
+                css = ("Keyframes".equals(kind) ? "to" : "body") + " { " + css + " }";
+            }
+            var result = CssProcessorTest.compile(Map.of(
+                    "Button.java",
+                    source(
+                            kind,
+                            css,
+                            "abstract class Button implements Contract",
+                            "Css".equals(kind) ? "abstract String style();" : "",
+                            "interface Contract { @Deprecated @CssCustomProperty"
+                                    + " @org.jspecify.annotations.Nullable String accent(); }")));
+            assertTrue(result.success(), result.diagnostics());
+            assertTrue(text(result, "generated/demo/Styled_Button.java").contains("\"deprecation\""));
+        }
+    }
+
+    @Test
+    public void inheritedMemberTypesCannotShadowGeneratedTypeReferences() throws Exception {
+        for (var packageName : List.of("demo", "")) {
+            for (boolean formatted : List.of(false, true)) {
+                String input = source(
+                        "Css",
+                        "color: red;",
+                        "abstract class Button implements Contract",
+                        "",
+                        "interface Contract { class Button {} class String {} @interface Override {}"
+                                + " @interface SuppressWarnings {} @interface Generated {} @interface NullMarked {}"
+                                + " java.lang.String style(); }");
+                if (packageName.isEmpty()) {
+                    input = input.replace("package demo;", "");
+                }
+                var result = CssProcessorTest.compile(
+                        Map.of("Button.java", input), List.of("-Areact4j.css.format_generated_source=" + formatted));
+                assertTrue(result.success(), result.diagnostics());
+            }
+        }
+    }
+
+    @Test
+    public void inheritedSymbolSignaturesAreCheckedForEveryDefinitionKind() throws Exception {
+        for (var kind : List.of("Css", "GlobalCss", "Keyframes")) {
+            String css = "color: var(--accent);";
+            if (!"Css".equals(kind)) {
+                css = ("Keyframes".equals(kind) ? "to" : "body") + " { " + css + " }";
+            }
+            for (var signature : List.of(
+                    "int accent();",
+                    "Object accent();",
+                    "String accent(int value);",
+                    "<T> String accent();",
+                    "String accent() throws Exception;")) {
+                var result = CssProcessorTest.compile(Map.of(
+                        "Button.java",
+                        source(
+                                kind,
+                                css,
+                                "abstract class Button implements Contract",
+                                "Css".equals(kind) ? "abstract String style();" : "",
+                                "interface Contract { @CssCustomProperty " + signature + " }")));
+                assertFalse(result.success(), kind + ": " + signature);
+                assertTrue(result.diagnostics().contains("take no arguments and return String"), result.diagnostics());
+                assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
+            }
+        }
+    }
+
+    @Test
+    public void inheritedSymbolNamesAndOccurrencesAreCheckedAtEachConsumer() throws Exception {
+        for (var kind : List.of("Css", "GlobalCss", "Keyframes")) {
+            String css = "color: red;";
+            if (!"Css".equals(kind)) {
+                css = ("Keyframes".equals(kind) ? "to" : "body") + " { " + css + " }";
+            }
+            for (var contract : List.of(
+                    "@CssId(name=\"#invalid\") String id();",
+                    "@CssCustomProperty(name=\"--invalid\") String property();",
+                    "@CssId @CssCustomProperty String ambiguous();",
+                    "@CssId String missing();",
+                    "@CssCustomProperty String missing();")) {
+                var result = CssProcessorTest.compile(Map.of(
+                        "Button.java",
+                        source(
+                                kind,
+                                css,
+                                "abstract class Button implements Contract",
+                                "Css".equals(kind) ? "abstract String style();" : "",
+                                "interface Contract { " + contract + " }")));
+                assertFalse(result.success(), kind + ": " + contract);
+                assertFalse(result.diagnostics().contains("Unexpected"), result.diagnostics());
+                assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
+            }
+        }
+    }
+
+    @Test
+    public void resourceBindingsRejectInheritedInstanceFactories() throws Exception {
+        for (var kind : List.of("GlobalCss", "Keyframes")) {
+            for (var member : List.of("String get();", "default String get() { return \"manual\"; }")) {
+                var result = CssProcessorTest.compile(Map.of(
+                        "Button.java",
+                        source(
+                                kind,
+                                "Keyframes".equals(kind) ? "to { --accent: red; }" : "body { --accent: red; }",
+                                "abstract class Button implements Contract",
+                                "",
+                                "interface Contract { @CssCustomProperty String accent(); " + member + " }")));
+                assertFalse(result.success());
+                // An unannotated abstract resource method is invalid before factory generation.
+                assertTrue(
+                        result.diagnostics()
+                                .contains(
+                                        member.startsWith("default")
+                                                ? "conflicts with the generated singleton factory"
+                                                : "require a symbol annotation: get"),
+                        result.diagnostics());
+            }
+        }
+    }
+
+    @Test
+    public void binaryContractsPreserveConflictAndAuthorValidation() throws Exception {
+        String declarations = IMPORTS + "interface A { @CssCustomProperty(name=\"first\") String value(); }"
+                + "interface B { @CssCustomProperty(name=\"second\") String value(); }"
+                + "interface WrongKind extends A { @CssId String value(); }"
+                + "interface Invalid { @CssCustomProperty String value(int ignored); }"
+                + "interface Concrete { @CssCustomProperty default String value() { return \"manual\"; } }";
+        var dependency = CssProcessorTest.compile(Map.of("Contracts.java", declarations));
+        assertTrue(dependency.success(), dependency.diagnostics());
+        var directory = Files.createTempDirectory("css-interface-contracts-");
+        try {
+            for (var entry : dependency.files().entrySet()) {
+                assertTrue(
+                        entry.getKey().startsWith("classes/") && entry.getKey().endsWith(".class"));
+                var file = directory.resolve(entry.getKey().substring(8));
+                Files.createDirectories(file.getParent());
+                Files.write(file, Base64.getDecoder().decode(entry.getValue()));
+            }
+            for (var entry : Map.of(
+                            "A, B",
+                            "inherits conflicting CSS names",
+                            "B, A",
+                            "inherits conflicting CSS names",
+                            "WrongKind",
+                            "inherits conflicting symbol kinds",
+                            "Invalid",
+                            "take no arguments and return String",
+                            "Concrete",
+                            "must be abstract")
+                    .entrySet()) {
+                var result = CssProcessorTest.compile(
+                        Map.of(
+                                "Button.java",
+                                source(
+                                        "Css",
+                                        "--first: red;",
+                                        "abstract class Button implements " + entry.getKey(),
+                                        "abstract String style();",
+                                        "")),
+                        List.of(
+                                "-classpath",
+                                CssProcessorTest.applicationClasspath() + File.pathSeparator + directory));
+                assertFalse(result.success(), entry.getKey());
+                assertTrue(result.diagnostics().contains(entry.getValue()), result.diagnostics());
+                assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
+            }
+        } finally {
+            try (var paths = Files.walk(directory)) {
+                for (var path : paths.sorted(Comparator.reverseOrder()).toList()) {
+                    Files.delete(path);
+                }
+            }
+        }
+    }
+
+    @Test
+    public void objectImplementationsAndExplicitReabstractionFollowJavaRules() throws Exception {
+        var result = CssProcessorTest.compile(
+                Map.of(
+                        "Button.java",
+                        source(
+                                "Css",
+                                "&.clone { color: red; }",
+                                "abstract class Button implements Contract",
+                                "public abstract String clone(); static Button of() { return Styled_Button.get(); }",
+                                "interface Contract { String style(); String clone(); String toString(); }")),
+                "demo.Button");
+        assertTrue(result.success(), result.diagnostics());
+        assertEquals(result.values().get("demo.Button.clone"), "jcss-demo-Button jcss-demo-Button--clone");
+        assertFalse(text(result, "generated/demo/Styled_Button.java").contains("String toString()"));
+        var reabstracted = CssProcessorTest.compile(Map.of(
+                "Button.java",
+                source(
+                        "Css",
+                        "&.toString { color: red; }",
+                        "abstract class Button implements Contract",
+                        "public abstract String toString();",
+                        "interface Contract { String style(); String toString(); }")));
+        assertTrue(reabstracted.success(), reabstracted.diagnostics());
+    }
+
+    @Test
+    public void everyEffectiveKeyframeContractMustLeaveItsOwnAnimationNameUnset() throws Exception {
+        String contracts = "interface A { @CssAnimation String getPulse(); }"
+                + "interface B { @CssAnimation(name=\"pulse\") String getPulse(); }";
+        for (var order : List.of("A, B", "B, A")) {
+            var invalid = CssProcessorTest.compile(Map.of(
+                    "Button.java",
+                    source(
+                            "Keyframes",
+                            "to { opacity: 0; }",
+                            "abstract class Button implements " + order,
+                            "",
+                            contracts)));
+            assertFalse(invalid.success());
+            assertTrue(invalid.diagnostics().contains("must not declare name"), invalid.diagnostics());
+            assertFalse(invalid.files().containsKey("generated/demo/Styled_Button.java"));
+            var refined = CssProcessorTest.compile(
+                    Map.of(
+                            "Button.java",
+                            source(
+                                    "Keyframes",
+                                    "to { opacity: 0; }",
+                                    "abstract class Button implements " + order,
+                                    "@CssAnimation public abstract String getPulse();"
+                                            + "static Button of() { return Styled_Button.get(); }",
+                                    contracts)),
+                    "demo.Button");
+            assertTrue(refined.success(), refined.diagnostics());
+            assertEquals(refined.values().get("demo.Button.getPulse"), "jcss-demo-Button--keyframes");
+        }
     }
 }
