@@ -1,0 +1,1 @@
+ERROR com/example/missing_property/Button.java:11:10: Custom property accessor accent() has no matching CSS occurrence: accent

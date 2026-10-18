@@ -21,6 +21,7 @@ import com.helger.css.decl.CSSSelectorMemberSlotted;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CSSSupportsRule;
+import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.ECSSExpressionOperator;
 import com.helger.css.decl.ECSSSelectorCombinator;
 import com.helger.css.writer.CSSWriterSettings;
@@ -72,17 +73,45 @@ final class CssCompiler {
         }
     }
 
-    record Result(SourceMap.Writer output, Set<String> imports) {}
+    record Result(
+            SourceMap.Writer output,
+            Set<String> imports,
+            Map<String, String> properties,
+            Set<String> propertyImports) {}
+
+    private final Map<String, String> properties = new LinkedHashMap<>();
+    private final Set<String> usedProperties = new LinkedHashSet<>();
+
+    private void properties(CascadingStyleSheet sheet, Map<String, CssProperties.Import> imported) {
+        CssProperties.rewrite(sheet, syntax, name -> {
+            var binding = imported.get(name);
+            String resolved;
+            if (null == binding) {
+                resolved = "--" + root + "--" + Names.encode(name);
+            } else {
+                usedProperties.add(name);
+                resolved = binding.binding().cssName();
+            }
+            properties.put(name, resolved);
+            return resolved.substring(2);
+        });
+    }
+
+    private Result result() {
+        return new Result(output, Set.copyOf(usedImports), Map.copyOf(properties), Set.copyOf(usedProperties));
+    }
 
     static Result component(
             String css,
             String root,
             List<String> accessors,
             IntFunction<SourceMap.Location> locations,
-            Map<String, Import> imports) {
+            Map<String, Import> imports,
+            Map<String, CssProperties.Import> properties) {
         String prefix = "." + root + " {\n";
         var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, accessors, locations, imports);
         var sheet = compiler.syntax.parse(true);
+        compiler.properties(sheet, properties);
         for (var rule : sheet.getAllRules()) {
             if (rule instanceof CSSKeyframesRule frames) {
                 String name = frames.getAnimationName();
@@ -113,24 +142,42 @@ final class CssCompiler {
                 throw new CssSyntax.InvalidCss("Accessor " + name + "() has no matching local selector", 0);
             }
         }
-        return new Result(compiler.output, Set.copyOf(compiler.usedImports));
+        return compiler.result();
     }
 
-    static Result keyframes(String css, String name, IntFunction<SourceMap.Location> locations) {
+    static Result keyframes(
+            String css,
+            String name,
+            IntFunction<SourceMap.Location> locations,
+            Map<String, CssProperties.Import> properties) {
         String prefix = "@keyframes shared {\n";
-        var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), "", List.of(), locations, Map.of());
+        var compiler = new CssCompiler(
+                prefix + css + "\n}",
+                prefix.length(),
+                name.endsWith("--keyframes") ? name.substring(0, name.length() - "--keyframes".length()) : name,
+                List.of(),
+                locations,
+                Map.of());
         var sheet = compiler.syntax.parseKeyframes();
+        compiler.properties(sheet, properties);
         var frames = (CSSKeyframesRule) sheet.getAllRules().get(0);
         compiler.writeKeyframes(frames, name);
-        return new Result(compiler.output, Set.of());
+        return compiler.result();
     }
 
-    static Result global(String css, IntFunction<SourceMap.Location> locations, Map<String, Import> imports) {
-        var compiler = new CssCompiler(css, 0, "", List.of(), locations, imports);
-        for (var rule : compiler.syntax.parse(false).getAllRules()) {
+    static Result global(
+            String css,
+            String root,
+            IntFunction<SourceMap.Location> locations,
+            Map<String, Import> imports,
+            Map<String, CssProperties.Import> properties) {
+        var compiler = new CssCompiler(css, 0, root, List.of(), locations, imports);
+        var sheet = compiler.syntax.parse(false);
+        compiler.properties(sheet, properties);
+        for (var rule : sheet.getAllRules()) {
             compiler.globalRule((ICSSSourceLocationAware) rule);
         }
-        return new Result(compiler.output, Set.copyOf(compiler.usedImports));
+        return compiler.result();
     }
 
     private void globalRule(ICSSSourceLocationAware rule) {

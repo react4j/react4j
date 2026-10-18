@@ -63,6 +63,8 @@ public final class CssProcessorTest {
     @DataProvider(name = "fixtures")
     public Object[][] fixtures() throws Exception {
         Object[][] fixtures = {
+            new Object[] {"input", List.of("com/example/properties/Owner.java")},
+            new Object[] {"bad_input", List.of("com/example/missing_property/Button.java")},
             new Object[] {"input", List.of("com/example/global/Defaults.java", "com/example/global/Theme.java")},
             new Object[] {"bad_input", List.of("com/example/global_important/Defaults.java")},
             new Object[] {"bad_input", List.of("com/example/import_wrong_kind/Button.java")},

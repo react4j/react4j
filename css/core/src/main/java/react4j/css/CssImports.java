@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /** Container for repeated {@link CssImport} declarations. */
 @Target(ElementType.TYPE)
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.CLASS)
 public @interface CssImports {
     CssImport[] value();
 }

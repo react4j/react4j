@@ -127,9 +127,9 @@ testSuite({
       play.dispatchEvent(new MouseEvent('click', {bubbles: true}));
       await waitFor(() => play.textContent === 'Stop' && audioStarts.length > 0);
       asserts.assertTrue('Play resumes suspended audio', /** @type {number} */ (view['audioResumes']) > 0);
-      const indicator = /** @type {!HTMLElement} */ (page.querySelector('[style*="--indicator-left"]'));
+      const indicator = /** @type {!HTMLElement} */ (page.querySelector('[style*="--jcss-react4j-drumloop-views-IndicatorView_0024_IndicatorStyle--indicator_002d_left"]'));
       asserts.assertEquals('0px', view.getComputedStyle(indicator).left);
-      asserts.assertEquals('0px', indicator.style.getPropertyValue('--indicator-left'));
+      asserts.assertEquals('0px', indicator.style.getPropertyValue('--jcss-react4j-drumloop-views-IndicatorView_0024_IndicatorStyle--indicator_002d_left'));
       asserts.assertEquals(600, indicator.parentElement.getBoundingClientRect().width);
       asserts.assertEquals(38, indicator.getBoundingClientRect().width);
       await new Promise(resolve => setTimeout(resolve, 150));
@@ -140,7 +140,7 @@ testSuite({
       // One beat at 120 BPM is 500 ms (the original 16-step timing convention).
       asserts.assertEquals('37.5px', view.getComputedStyle(indicator).left);
       play.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-      await waitFor(() => play.textContent === 'Play' && !page.querySelector('[style*="--indicator-left"]'));
+      await waitFor(() => play.textContent === 'Play' && !page.querySelector('[style*="--jcss-react4j-drumloop-views-IndicatorView_0024_IndicatorStyle--indicator_002d_left"]'));
       const starts = audioStarts.length;
       await new Promise(resolve => setTimeout(resolve, 600));
       asserts.assertEquals(starts, audioStarts.length);

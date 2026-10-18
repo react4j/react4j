@@ -87,17 +87,17 @@ testSuite({
   },
   async testExplicitGlobalSelectionAndDependencyFirstCascade() {
     // Defaults is also a later explicit root; its first visit precedes Theme.
-    asserts.assertEquals('theme', computed('base').getPropertyValue('--cascade').trim());
-    asserts.assertEquals('', computed('base').getPropertyValue('--excluded'));
+    asserts.assertEquals('3px', computed('base').borderTopWidth);
+    asserts.assertEquals('', computed('base').getPropertyValue('--jcss-react4j-css-example-BrowserExample_0024_UnusedGlobals--excluded'));
     style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/alternate.css')).text();
-    asserts.assertEquals('alternate', computed('base').getPropertyValue('--cascade').trim());
-    asserts.assertEquals('', computed('base').getPropertyValue('--excluded'));
+    asserts.assertEquals('4px', computed('base').borderTopWidth);
+    asserts.assertEquals('', computed('base').getPropertyValue('--jcss-react4j-css-example-BrowserExample_0024_UnusedGlobals--excluded'));
     asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);
   },
   async testComponentImportsRetainGlobalsWithoutExplicitRoots() {
     style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/component.css')).text();
-    asserts.assertEquals('defaults', computed('base').getPropertyValue('--cascade').trim());
-    asserts.assertEquals('', computed('base').getPropertyValue('--excluded'));
+    asserts.assertEquals('2px', computed('base').borderTopWidth);
+    asserts.assertEquals('', computed('base').getPropertyValue('--jcss-react4j-css-example-BrowserExample_0024_UnusedGlobals--excluded'));
     asserts.assertEquals('rgb(255, 255, 255)', computed('base').color);
     asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);
   },
@@ -130,26 +130,26 @@ testSuite({
   testTypedPropertiesUpdateAndRemoveValues() {
     const custom = /** @type {!HTMLElement} */ (container.querySelector('#custom'));
     const base = /** @type {!HTMLElement} */ (container.querySelector('#base'));
-    asserts.assertEquals('#04c', custom.style.getPropertyValue('--success'));
+    asserts.assertEquals('#04c', custom.style.getPropertyValue(Example.successProperty()));
     asserts.assertEquals('true', base.getAttribute('data-shared'));
 
     Example.render(container, '#a0c', 'false');
     asserts.assertEquals(custom, container.querySelector('#custom'));
     asserts.assertEquals(base, container.querySelector('#base'));
-    asserts.assertEquals('#a0c', custom.style.getPropertyValue('--success'));
+    asserts.assertEquals('#a0c', custom.style.getPropertyValue(Example.successProperty()));
     asserts.assertEquals('rgb(170, 0, 204)', computed('custom').backgroundColor);
     asserts.assertEquals('false', base.getAttribute('data-shared'));
 
     Example.render(container, null, null);
     asserts.assertEquals(custom, container.querySelector('#custom'));
     asserts.assertEquals(base, container.querySelector('#base'));
-    asserts.assertEquals('', custom.style.getPropertyValue('--success'));
+    asserts.assertEquals('', custom.style.getPropertyValue(Example.successProperty()));
     asserts.assertEquals('rgb(0, 136, 0)', computed('custom').backgroundColor);
     asserts.assertFalse(base.hasAttribute('data-shared'));
     asserts.assertFalse(/** @type {!Element} */ (container.querySelector('#nested')).hasAttribute('data-shared'));
 
     Example.render(container, '', '');
-    asserts.assertEquals('', custom.style.getPropertyValue('--success'));
+    asserts.assertEquals('', custom.style.getPropertyValue(Example.successProperty()));
     asserts.assertTrue(base.hasAttribute('data-shared'));
     asserts.assertEquals('', base.getAttribute('data-shared'));
   },

@@ -5,6 +5,7 @@ import com.palantir.javapoet.FieldSpec;
 import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.TypeSpec;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -14,10 +15,12 @@ import org.realityforge.proton.SuppressWarningsUtil;
 final class CssGenerator {
     private CssGenerator() {}
 
-    static TypeSpec buildType(final ProcessingEnvironment processingEnv, final CssDescriptor descriptor) {
+    static TypeSpec buildType(
+            final ProcessingEnvironment processingEnv,
+            final CssDescriptor descriptor,
+            final Map<String, String> values) {
         var owner = descriptor.element();
         String packageName = descriptor.packageName();
-        String root = descriptor.rootClassName();
         var ownerType = ClassName.get(owner);
         var factory =
                 MethodSpec.methodBuilder("get").addModifiers(Modifier.STATIC).returns(ownerType);
@@ -68,7 +71,7 @@ final class CssGenerator {
         }
         for (var method : descriptor.accessors()) {
             String name = method.getSimpleName().toString();
-            String token = root + ("style".equals(name) ? "" : " " + root + "--" + Names.encode(name));
+            String token = values.get(name);
             var accessor = MethodSpec.methodBuilder(name)
                     .addAnnotation(Override.class)
                     .returns(String.class)

@@ -6,6 +6,7 @@ import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 import react4j.css.Css;
+import react4j.css.CssCustomProperty;
 import react4j.dom.proptypes.html.CssProps;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.drumloop.model.DrumMachine;
@@ -28,7 +29,8 @@ abstract class IndicatorView {
                 on
                         ? div(new HtmlProps()
                                 .className(IndicatorStyle.get().style())
-                                .style(new CssProps().customProperty("--indicator-left", step * 37.5 + "px")))
+                                .style(new CssProps()
+                                        .customProperty(IndicatorStyle.get().left(), step * 37.5 + "px")))
                         : null);
     }
 
@@ -64,5 +66,8 @@ abstract class IndicatorView {
         }
 
         abstract String style();
+
+        @CssCustomProperty(name = "indicator-left")
+        abstract String left();
     }
 }

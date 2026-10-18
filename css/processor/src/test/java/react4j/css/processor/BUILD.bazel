@@ -19,6 +19,7 @@ java_testng(
         "CssProcessorArtifactTest.java",
         "CssProcessorTest.java",
         "CssResourceProcessorTest.java",
+        "CssSymbolProcessorTest.java",
     ],
     data = [
         "//css/processor:processor_jar",
@@ -30,6 +31,7 @@ java_testng(
         "react4j.css.processor.CssProcessorArtifactTest",
         "react4j.css.processor.CssProcessorTest",
         "react4j.css.processor.CssResourceProcessorTest",
+        "react4j.css.processor.CssSymbolProcessorTest",
     ],
     deps = [
         "//css/core",
@@ -45,6 +47,7 @@ java_testng(
     srcs = [
         "CssProcessorTest.java",
         "CssResourceProcessorTest.java",
+        "CssSymbolProcessorTest.java",
     ],
     data = [
         "//css/processor/src/test/fixtures",
@@ -54,6 +57,7 @@ java_testng(
     test_classes = [
         "react4j.css.processor.CssProcessorTest",
         "react4j.css.processor.CssResourceProcessorTest",
+        "react4j.css.processor.CssSymbolProcessorTest",
     ],
     deps = [
         "//css/core",
@@ -88,6 +92,17 @@ java_testng(
 )
 
 java_testng(
+    name = "properties_tests",
+    srcs = ["CssPropertiesTest.java"],
+    test_class = "react4j.css.processor.CssPropertiesTest",
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//third_party/java:ph_css",
+    ],
+)
+
+java_testng(
     name = "names_tests",
     srcs = ["NamesTest.java"],
     test_class = "react4j.css.processor.NamesTest",
@@ -107,6 +122,7 @@ test_suite(
         ":compiler_tests",
         ":names_tests",
         ":peer_compiler_tests",
+        ":properties_tests",
         ":text_block_tests",
     ],
 )

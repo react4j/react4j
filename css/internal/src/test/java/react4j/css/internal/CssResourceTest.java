@@ -11,11 +11,9 @@ public final class CssResourceTest {
     @Test
     public void metadataRoundTripsAndCopiesDependencies() {
         for (var kind : CssResource.Kind.values()) {
-            var expected = CssResource.Kind.KEYFRAMES == kind
-                    ? List.<String>of()
-                    : List.of("demo.Pulse", "demo.Outer$Defaults");
+            var expected = List.of("demo.Pulse", "demo.Outer$Defaults");
             var dependencies = new ArrayList<>(expected);
-            var resource = new CssResource("demo.Button", kind, dependencies);
+            var resource = new CssResource("demo.Button", kind, dependencies, List.of("demo.Pulse"), true);
             dependencies.clear();
             assertEquals(resource.dependencies(), expected);
             assertEquals(CssResource.read(resource.json(), "demo.Button"), resource);
@@ -30,15 +28,15 @@ public final class CssResourceTest {
 
     @Test
     public void malformedMetadataAndUnsafeIdentitiesAreRejected() {
-        String valid = new CssResource("demo.Button", CssResource.Kind.COMPONENT, List.of()).json();
+        String valid = new CssResource("demo.Button", CssResource.Kind.COMPONENT, List.of(), List.of(), false).json();
         for (var input : List.of(
                 "{",
                 "[]",
                 "null",
                 "1",
                 "{}",
-                valid.replace("\"version\":1", "\"version\":1.1"),
-                valid.replace("\"version\":1", "\"version\":\"1\""),
+                valid.replace("\"version\":2", "\"version\":2.1"),
+                valid.replace("\"version\":2", "\"version\":\"1\""),
                 valid.replace("COMPONENT", "UNKNOWN"),
                 valid.replace("[]", "[1]"),
                 valid.replace("[]", "[null]"),
@@ -49,7 +47,7 @@ public final class CssResourceTest {
                 valid.replace("demo.Button", "other.Button"))) {
             expectThrows(IllegalArgumentException.class, () -> CssResource.read(input, "demo.Button"));
         }
-        for (var key : List.of("version", "kind", "owner", "dependencies")) {
+        for (var key : List.of("version", "kind", "owner", "dependencies", "includes")) {
             var json = JsonParser.parseString(valid).getAsJsonObject();
             json.remove(key);
             expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "demo.Button"));
@@ -58,16 +56,28 @@ public final class CssResourceTest {
                 expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "demo.Button"));
             }
         }
+        for (var replacement : List.of("null", "{}", "7", "\"true\"")) {
+            var json = JsonParser.parseString(valid).getAsJsonObject();
+            json.add("bindings", JsonParser.parseString(replacement));
+            expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "demo.Button"));
+        }
+        var json = JsonParser.parseString(valid).getAsJsonObject();
+        json.remove("bindings");
+        expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "demo.Button"));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> new CssResource("A", CssResource.Kind.GLOBAL, List.of("B"), List.of("B", "B"), false));
         for (var owner : List.of("", ".A", "A.", "a..B", "a/b", "a\\b", "1A", "a-B", "a B")) {
             expectThrows(IllegalArgumentException.class, () -> CssResource.path(owner));
             expectThrows(
                     IllegalArgumentException.class,
-                    () -> new CssResource("A", CssResource.Kind.COMPONENT, List.of(owner)));
+                    () -> new CssResource("A", CssResource.Kind.COMPONENT, List.of(owner), List.of(), false));
         }
         expectThrows(
                 IllegalArgumentException.class,
-                () -> new CssResource("A", CssResource.Kind.COMPONENT, List.of("B", "B")));
+                () -> new CssResource("A", CssResource.Kind.COMPONENT, List.of("B", "B"), List.of(), false));
         expectThrows(
-                IllegalArgumentException.class, () -> new CssResource("A", CssResource.Kind.KEYFRAMES, List.of("B")));
+                IllegalArgumentException.class,
+                () -> new CssResource("A", CssResource.Kind.KEYFRAMES, List.of("B"), List.of("Missing"), false));
     }
 }

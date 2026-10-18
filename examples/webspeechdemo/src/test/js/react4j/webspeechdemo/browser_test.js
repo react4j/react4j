@@ -240,7 +240,7 @@ speechSynthesis.speak = utterance => {
       await waitFor(() => view.getComputedStyle(marker).display === 'block');
       asserts.assertTrue(parseFloat(view.getComputedStyle(marker).width) > 0);
       asserts.assertTrue(parseFloat(view.getComputedStyle(marker).height) > 0);
-      asserts.assertTrue(parseFloat(marker.style.getPropertyValue('--marker-width')) > 0);
+      asserts.assertTrue(parseFloat(marker.style.getPropertyValue('--jcss-react4j-webspeechdemo-Application_0024_MarkerStyle--marker_002d_width')) > 0);
       asserts.assertEquals('fixed', view.getComputedStyle(marker).position);
       asserts.assertEquals('rgb(255, 165, 0)', view.getComputedStyle(marker).borderTopColor);
       button(page, 'Pause').click();

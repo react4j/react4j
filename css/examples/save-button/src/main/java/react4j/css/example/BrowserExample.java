@@ -3,6 +3,7 @@ package react4j.css.example;
 import jsinterop.annotations.JsMethod;
 import org.jspecify.annotations.Nullable;
 import react4j.css.Css;
+import react4j.css.CssCustomProperty;
 import react4j.css.CssImport;
 import react4j.css.GlobalCss;
 import react4j.css.Keyframes;
@@ -23,10 +24,15 @@ public final class BrowserExample {
     }
 
     @JsMethod
+    public static String successProperty() {
+        return SaveButton.get().successProperty();
+    }
+
+    @JsMethod
     public static void render(Object container, @Nullable String success, @Nullable String shared) {
         var button = SaveButton.get();
         var status = Status.get();
-        var custom = new CssProps().customProperty("--success", success);
+        var custom = new CssProps().customProperty(button.successProperty(), success);
         ReactDOM.render(
                 DOM.div(
                         DOM.button(
@@ -69,8 +75,12 @@ public final class BrowserExample {
     }
 
     @CssImport(Defaults.class)
+    @CssImport(value = Defaults.class, property = "on-accent")
+    @CssImport(value = Defaults.class, property = "success")
     @CssImport(name = "pulse", value = Pulse.class)
     @CssImport(name = "status", value = Status.class)
+    @CssImport(value = Defaults.class, property = "focus")
+    @CssImport(value = Defaults.class, property = "cancel")
     @Css("""
         color: var(--on-accent);
 
@@ -111,9 +121,14 @@ public final class BrowserExample {
         abstract String cancel();
 
         abstract String busy();
+
+        @CssCustomProperty(name = "success")
+        abstract String successProperty();
     }
 
     @CssImport(Defaults.class)
+    @CssImport(value = Defaults.class, property = "on-accent")
+    @CssImport(value = Defaults.class, property = "success")
     @CssImport(name = "pulse", value = Pulse.class)
     @Css("""
         color: var(--on-accent);
@@ -160,19 +175,19 @@ public final class BrowserExample {
           --success: #080;
           --cancel: #a00;
         }
-        #base { --cascade: defaults; }
+        #base { border-top-width: 2px; }
         """)
     static final class Defaults {}
 
     @CssImport(Defaults.class)
     @GlobalCss("""
-        #base { --cascade: theme; }
+        #base { border-top-width: 3px; }
         """)
     static final class Theme {}
 
     @CssImport(Defaults.class)
     @GlobalCss("""
-        #base { --cascade: alternate; }
+        #base { border-top-width: 4px; }
         """)
     static final class AlternateTheme {}
 

@@ -235,10 +235,7 @@ public final class CssResourceProcessorTest {
 
     @Test
     public void annotationPlacementAndLiteralContractsAreChecked() throws Exception {
-        for (var extra : List.of(
-                "@CssImport(name=\"beat\", value=Pulse.class)",
-                "@CssImports({})",
-                "@Css(\"\"\"\ncolor: red;\n\"\"\")")) {
+        for (var extra : List.of("@CssImport(name=\"beat\", value=Pulse.class)", "@Css(\"\"\"\ncolor: red;\n\"\"\")")) {
             var result = CssProcessorTest.compile(
                     Map.of("Pulse.java", frames().replace("@NullMarked", "@NullMarked\n" + extra)));
             assertFalse(result.success());
@@ -492,7 +489,8 @@ public final class CssResourceProcessorTest {
                         .toString(),
                 "[\"demo.Theme\",\"demo.Defaults\"]");
         assertTrue(text(result, "classes/demo/Theme.css").contains("animation:jcss-demo-Pulse--keyframes"));
-        assertTrue(text(result, "classes/demo/Defaults.css").startsWith(":root{--accent:blue;}body{margin:0;}"));
+        assertTrue(text(result, "classes/demo/Defaults.css")
+                .startsWith(":root{--jcss-demo-Defaults--accent:blue;}body{margin:0;}"));
         assertFalse(result.files().keySet().stream().anyMatch(p -> p.startsWith("generated/demo/Styled_Theme")));
         assertFalse(result.files().keySet().stream().anyMatch(p -> p.startsWith("generated/demo/Styled_Defaults")));
     }

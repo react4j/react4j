@@ -10,6 +10,7 @@ import react4j.annotations.PostMount;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 import react4j.css.Css;
+import react4j.css.CssCustomProperty;
 import react4j.dom.events.FormEvent;
 import react4j.dom.proptypes.html.BtnProps;
 import react4j.dom.proptypes.html.CssProps;
@@ -278,19 +279,19 @@ abstract class Application {
         final int marginInPixels = 8;
         return new CssProps()
                 .customProperty(
-                        "--marker-top",
+                        MarkerStyle.get().top(),
                         null == markerRect
                                 ? "0"
                                 : ((markerRect.top() - 1 + body.clientHeight() - body.scrollHeight() - marginInPixels)
                                         + "px"))
                 .customProperty(
-                        "--marker-left",
+                        MarkerStyle.get().left(),
                         null == markerRect
                                 ? "0"
                                 : ((markerRect.left() - 1 + body.clientWidth() - body.scrollWidth() - marginInPixels)
                                         + "px"))
-                .customProperty("--marker-width", null == markerRect ? "0" : (markerRect.width + "px"))
-                .customProperty("--marker-height", null == markerRect ? "0" : (markerRect.height + "px"));
+                .customProperty(MarkerStyle.get().width(), null == markerRect ? "0" : (markerRect.width + "px"))
+                .customProperty(MarkerStyle.get().height(), null == markerRect ? "0" : (markerRect.height + "px"));
     }
 
     @Css("""
@@ -519,6 +520,18 @@ abstract class Application {
         static MarkerStyle get() {
             return Application_Styled_MarkerStyle.get();
         }
+
+        @CssCustomProperty(name = "marker-top")
+        abstract String top();
+
+        @CssCustomProperty(name = "marker-left")
+        abstract String left();
+
+        @CssCustomProperty(name = "marker-width")
+        abstract String width();
+
+        @CssCustomProperty(name = "marker-height")
+        abstract String height();
 
         abstract String style();
 

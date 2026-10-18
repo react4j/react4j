@@ -1,4 +1,4 @@
-#base { --cascade: shared; }
+#base { border-top: 1px solid; }
 
 button[data-shared][data-shared] {
   background-color: #333;

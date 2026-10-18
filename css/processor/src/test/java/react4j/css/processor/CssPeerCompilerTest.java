@@ -29,11 +29,17 @@ public final class CssPeerCompilerTest {
                 "jcss-demo-Button",
                 List.of("style"),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
-                IMPORTS);
+                IMPORTS,
+                Map.of());
     }
 
     private static CssCompiler.Result global(String css) {
-        return CssCompiler.global(css, offset -> new SourceMap.Location("Global.java", css, 0, offset), IMPORTS);
+        return CssCompiler.global(
+                css,
+                "jcss-demo-Global",
+                offset -> new SourceMap.Location("Global.java", css, 0, offset),
+                IMPORTS,
+                Map.of());
     }
 
     @Test
@@ -143,7 +149,8 @@ public final class CssPeerCompilerTest {
                                 "jcss-demo-Button",
                                 List.of("style", "active"),
                                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
-                                IMPORTS));
+                                IMPORTS,
+                                Map.of()));
                 assertEquals(error.getMessage(), "Local modifiers cannot qualify imported peers");
             }
         }
@@ -212,7 +219,8 @@ public final class CssPeerCompilerTest {
                     "root",
                     List.of("style"),
                     offset -> new SourceMap.Location("Button.java", source, 0, offset),
-                    Map.of(alias, new CssCompiler.Import("demo.Label", Kind.COMPONENT)));
+                    Map.of(alias, new CssCompiler.Import("demo.Label", Kind.COMPONENT)),
+                    Map.of());
             assertEquals(imported.imports(), Set.of(alias));
         }
     }

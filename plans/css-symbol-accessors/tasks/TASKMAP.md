@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: planned
-- Current frontier: T01
+- Status: implementing
+- Current frontier: T02
 - Planning reviewer: passed (2/3 rounds; final confirmation unused)
 - Plan checkpoint: automatic — accepted implementation scope, final interview confirmation and passing independent planning review
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -16,7 +16,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Property symbols and imports](T01-properties.md) | pending | None |
+| T01 | [Property symbols and imports](T01-properties.md) | complete | None |
 | T02 | [ID and animation exports](T02-ids-animations.md) | pending | T01 |
 | T03 | [Coverage, documentation and full validation](T03-validation.md) | pending | T02 |
 

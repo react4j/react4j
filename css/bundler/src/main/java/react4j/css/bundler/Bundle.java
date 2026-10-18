@@ -92,7 +92,8 @@ public final class Bundle {
             retain(owner, definitions, retained);
         }
         for (var definition : definitions.values()) {
-            if (Kind.COMPONENT == definition.metadata().kind()) {
+            if (Kind.COMPONENT == definition.metadata().kind()
+                    || definition.metadata().bindings()) {
                 retain(definition.metadata().owner(), definitions, retained);
             }
         }
@@ -100,10 +101,19 @@ public final class Bundle {
         var visited = new HashSet<String>();
         var visiting = new LinkedHashSet<String>();
         for (var owner : globals) {
+            checkInclusions(owner, definitions, visited, visiting);
+        }
+        for (var owner : definitions.keySet()) {
+            if (retained.contains(owner)) {
+                checkInclusions(owner, definitions, visited, visiting);
+            }
+        }
+        visited.clear();
+        for (var owner : globals) {
             orderGlobal(owner, definitions, visited, visiting, ordered);
         }
         for (var definition : definitions.values()) {
-            if (Kind.COMPONENT == definition.metadata().kind()) {
+            if (retained.contains(definition.metadata().owner())) {
                 for (var dependency : definition.metadata().dependencies()) {
                     if (Kind.GLOBAL
                             == Objects.requireNonNull(definitions.get(dependency))
@@ -112,6 +122,12 @@ public final class Bundle {
                         orderGlobal(dependency, definitions, visited, visiting, ordered);
                     }
                 }
+            }
+        }
+        for (var definition : definitions.values()) {
+            if (retained.contains(definition.metadata().owner())
+                    && Kind.GLOBAL == definition.metadata().kind()) {
+                orderGlobal(definition.metadata().owner(), definitions, visited, visiting, ordered);
             }
         }
         definitions.values().stream()
@@ -259,20 +275,38 @@ public final class Bundle {
         }
     }
 
+    private static void checkInclusions(
+            String owner, Map<String, Resource> definitions, Set<String> visited, Set<String> visiting) {
+        if (visited.contains(owner)) {
+            return;
+        }
+        if (!visiting.add(owner)) {
+            throw new IllegalArgumentException(
+                    "Cyclic global CSS inclusion: " + String.join(" -> ", visiting) + " -> " + owner);
+        }
+        var definition = Objects.requireNonNull(definitions.get(owner));
+        for (var included : definition.metadata().includes()) {
+            if (Kind.GLOBAL
+                    == Objects.requireNonNull(definitions.get(included))
+                            .metadata()
+                            .kind()) {
+                checkInclusions(included, definitions, visited, visiting);
+            }
+        }
+        visiting.remove(owner);
+        visited.add(owner);
+    }
+
     private static void orderGlobal(
             String owner,
             Map<String, Resource> definitions,
             Set<String> visited,
             Set<String> visiting,
             List<Resource> ordered) {
-        if (visited.contains(owner)) {
+        if (visited.contains(owner) || !visiting.add(owner)) {
             return;
         }
         var definition = Objects.requireNonNull(definitions.get(owner));
-        if (!visiting.add(owner)) {
-            throw new IllegalArgumentException(
-                    "Cyclic global CSS inclusion: " + String.join(" -> ", visiting) + " -> " + owner);
-        }
         for (var dependency : definition.metadata().dependencies()) {
             if (Kind.GLOBAL
                     == Objects.requireNonNull(definitions.get(dependency))

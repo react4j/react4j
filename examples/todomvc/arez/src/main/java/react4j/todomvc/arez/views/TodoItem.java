@@ -15,6 +15,7 @@ import react4j.annotations.PostUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 import react4j.css.Css;
+import react4j.css.CssImport;
 import react4j.dom.events.FormEvent;
 import react4j.dom.events.KeyboardEvent;
 import react4j.dom.proptypes.html.BtnProps;
@@ -232,6 +233,7 @@ abstract class TodoItem {
         abstract String style();
     }
 
+    @CssImport(value = ItemStyle.class, property = "todo-destroy-display")
     @Css("""
         white-space: pre-line;
         word-break: break-all;

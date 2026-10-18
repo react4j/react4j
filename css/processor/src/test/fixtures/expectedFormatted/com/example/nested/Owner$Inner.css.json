@@ -1,1 +1,1 @@
-{"version":1,"owner":"com.example.nested.Owner$Inner","kind":"COMPONENT","dependencies":[]}
+{"version":2,"bindings":true,"owner":"com.example.nested.Owner$Inner","kind":"COMPONENT","dependencies":[],"includes":[]}

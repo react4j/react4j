@@ -6,6 +6,7 @@ java_library(
     name = "css",
     srcs = [
         "Css.java",
+        "CssCustomProperty.java",
         "CssImport.java",
         "CssImports.java",
         "GlobalCss.java",

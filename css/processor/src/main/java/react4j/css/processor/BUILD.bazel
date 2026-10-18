@@ -5,8 +5,10 @@ java_library(
     srcs = [
         "CssCompiler.java",
         "CssDescriptor.java",
+        "CssExpressions.java",
         "CssGenerator.java",
         "CssProcessor.java",
+        "CssProperties.java",
         "Names.java",
         "TextBlock.java",
         "package-info.java",

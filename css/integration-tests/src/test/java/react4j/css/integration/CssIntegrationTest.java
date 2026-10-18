@@ -146,19 +146,28 @@ public final class CssIntegrationTest {
         var implicitRules = defaults.getAllLayerRules().get(1).getAllStyleRules();
         assertEquals(implicitRules.size(), 1);
         assertEquals(
-                Objects.requireNonNull(implicitRules.get(0).getDeclarationOfPropertyName("--defaults"))
+                Objects.requireNonNull(implicitRules
+                                .get(0)
+                                .getDeclarationOfPropertyName(
+                                        "--jcss-react4j-css-integration-SharedDefaults--defaults"))
                         .getExpression()
                         .getAsCSSString(new CSSWriterSettings(true), 0),
                 "shared");
         var explicitRules = explicit.getAllLayerRules().get(1).getAllStyleRules();
         assertEquals(explicitRules.size(), 2);
         assertEquals(
-                Objects.requireNonNull(explicitRules.get(0).getDeclarationOfPropertyName("--defaults"))
+                Objects.requireNonNull(explicitRules
+                                .get(0)
+                                .getDeclarationOfPropertyName(
+                                        "--jcss-react4j-css-integration-UnselectedDefaults--defaults"))
                         .getExpression()
                         .getAsCSSString(new CSSWriterSettings(true), 0),
                 "explicitly-selected");
         assertEquals(
-                Objects.requireNonNull(explicitRules.get(1).getDeclarationOfPropertyName("--defaults"))
+                Objects.requireNonNull(explicitRules
+                                .get(1)
+                                .getDeclarationOfPropertyName(
+                                        "--jcss-react4j-css-integration-SharedDefaults--defaults"))
                         .getExpression()
                         .getAsCSSString(new CSSWriterSettings(true), 0),
                 "shared");
@@ -170,8 +179,11 @@ public final class CssIntegrationTest {
         var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(css, new CSSReaderSettings()));
         var consumer = new SourceMapConsumerV3();
         consumer.parse(Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.map")))));
-        var defaults = Objects.requireNonNull(
-                sheet.getAllLayerRules().get(1).getAllStyleRules().get(0).getDeclarationOfPropertyName("--defaults"));
+        var defaults = Objects.requireNonNull(sheet.getAllLayerRules()
+                .get(1)
+                .getAllStyleRules()
+                .get(0)
+                .getDeclarationOfPropertyName("--jcss-react4j-css-integration-SharedDefaults--defaults"));
         assertOrigin(consumer, defaults, "css.globals_source", "--defaults: shared");
         var frames = sheet.getAllLayerRules().get(2).getAllRules().stream()
                 .filter(CSSKeyframesRule.class::isInstance)
