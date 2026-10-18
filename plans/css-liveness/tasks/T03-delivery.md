@@ -12,6 +12,8 @@ All supported build entrypoints use the correct retention boundary; downstream d
 
 - [ ] Separately compiled providers/interfaces and explicitly exported optimized library links work; unlinked library bundles retain complete intended resources.
 - [ ] Unknown/missing/bad/version/stale report/catalogue and recognized uninstrumented binary fail meaningfully; actual action dependency enforces report production. No variant roots leak into link evidence.
+- [ ] Bind reports to the actual linked JavaScript bytes as well as the catalogue and target identity. A prior report from the same target with unchanged CSS but changed JavaScript must fail. Use a bounded generic factory completion hook after the stock runner writes output; keep final symbol collection in the compiler. Verify alias roots against the output artifact's owning link.
+- [ ] Catalogue arguments use a parameter file, and generated-source resolution uses an index rather than scanning every style for every JavaScript input. Verify these bounded scaling details with the existing tests.
 - [ ] README/changelog explain downstream opt behavior and closed-world limits; examples demonstrate it; no temporary tooling or redundant docs remain.
 - [ ] Domain artifacts re-audited against implementation and local links validated; configured coverage and full gate pass.
 - [ ] Simplify pass and independent implementation review pass within budget; full evidence committed before review. After pass remove exact active plan, closeout commit, push PR #112 and report checks. No merge.

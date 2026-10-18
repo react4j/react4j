@@ -4,7 +4,7 @@
 
 ### CSS symbol
 
-A generated class, ID, animation or custom-property name exposed by a checked style accessor. One accessor value can contain several CSS symbols, such as a component root and modifier.
+A generated class, ID, animation or custom-property name owned by a CSS definition. Checked Java accessors expose these names to application code; one accessor value can contain several CSS symbols, such as a component root and modifier.
 
 ### Style owner
 

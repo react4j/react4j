@@ -1,4 +1,4 @@
-package react4j.css.processor;
+package react4j.css.internal;
 
 import com.helger.css.ICSSWriteable;
 import com.helger.css.decl.CSSDeclaration;
@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /** Walks expression trees, including the parser's separate calc arithmetic model. */
-final class CssExpressions {
+public final class CssExpressions {
     private CssExpressions() {}
 
-    static void supports(List<ICSSSupportsConditionMember> conditions, Consumer<CSSDeclaration> visitor) {
+    public static void supports(List<ICSSSupportsConditionMember> conditions, Consumer<CSSDeclaration> visitor) {
         for (var condition : conditions) {
             if (condition instanceof CSSSupportsConditionDeclaration declaration) {
                 visitor.accept(declaration.getDeclaration());
@@ -27,7 +27,7 @@ final class CssExpressions {
         }
     }
 
-    static void visit(ICSSWriteable member, Consumer<ICSSWriteable> visitor) {
+    public static void visit(ICSSWriteable member, Consumer<ICSSWriteable> visitor) {
         visitor.accept(member);
         if (member instanceof CSSExpression expression) {
             expression.getAllMembers().forEach(child -> visit(child, visitor));

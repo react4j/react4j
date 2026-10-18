@@ -63,6 +63,8 @@ testSuite({
     const optimized = Mode.environment === 'production';
     asserts.assertEquals(!optimized, style.textContent.includes('outline-width:17px'));
     asserts.assertEquals(!optimized, style.textContent.includes('98,76,54'));
+    asserts.assertEquals(!optimized, style.textContent.includes('--keyframes-unused'));
+    asserts.assertEquals(!optimized, style.textContent.includes('47px'));
     asserts.assertFalse(style.textContent.includes('$react4j$css$'));
   },
   testInterfaceImplementationsKeepIndependentClasses() {
@@ -104,7 +106,9 @@ testSuite({
     const expected = [name, computed('direct-animation').animationName,
       computed('local-animation').animationName, computed('accessor-animation').animationName];
     asserts.assertEquals(4, new Set(expected).size);
-    asserts.assertArrayEquals(expected.sort(), names.sort());
+    asserts.assertEquals(Mode.environment === 'production' ? 0 : 1,
+      names.filter(name => name.endsWith('--keyframes-unused')).length);
+    asserts.assertArrayEquals(expected.sort(), names.filter(name => !name.endsWith('--keyframes-unused')).sort());
   },
   testCheckedIdsFragmentsAndJavaOnlyResourceBindings() {
     const control = /** @type {!HTMLElement} */ (container.querySelector('[data-symbol=control]'));

@@ -19,7 +19,7 @@ public record CssResource(
         List<String> includes,
         String implementation,
         List<Binding> bindings,
-        Map<String, String> providers) {
+        Map<String, List<String>> providers) {
     private static final Pattern OWNER = Pattern.compile(
             "\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*(?:\\.\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)*");
 
@@ -49,7 +49,19 @@ public record CssResource(
         dependencies = List.copyOf(dependencies);
         includes = List.copyOf(includes);
         bindings = List.copyOf(bindings);
-        providers = Map.copyOf(providers);
+        var copied = new TreeMap<String, List<String>>();
+        for (var entry : providers.entrySet()) {
+            String symbol = entry.getKey();
+            var owners = entry.getValue();
+            if (symbol.isBlank()
+                    || owners.isEmpty()
+                    || new HashSet<>(owners).size() != owners.size()
+                    || !dependencies.containsAll(owners)) {
+                throw new IllegalArgumentException("CSS symbol providers must be distinct dependencies");
+            }
+            copied.put(symbol, List.copyOf(owners));
+        }
+        providers = Map.copyOf(copied);
         if (bindings.isEmpty() != implementation.isEmpty()) {
             throw new IllegalArgumentException("CSS bindings require their generated implementation");
         }
@@ -61,10 +73,6 @@ public record CssResource(
             if (!methods.add(binding.method())) {
                 throw new IllegalArgumentException("Duplicate CSS binding: " + binding.method());
             }
-        }
-        if (!dependencies.containsAll(providers.values())
-                || providers.keySet().stream().anyMatch(String::isBlank)) {
-            throw new IllegalArgumentException("CSS symbol providers must be dependencies");
         }
         if (!dependencies.containsAll(includes) || new HashSet<>(includes).size() != includes.size()) {
             throw new IllegalArgumentException("CSS inclusions must be distinct dependencies");
@@ -107,7 +115,11 @@ public record CssResource(
         }
         json.add("bindings", methods);
         var references = new JsonObject();
-        new TreeMap<>(providers).forEach(references::addProperty);
+        new TreeMap<>(providers).forEach((symbol, owners) -> {
+            var values = new JsonArray();
+            owners.forEach(values::add);
+            references.add(symbol, values);
+        });
         json.add("providers", references);
         return json + "\n";
     }
@@ -128,9 +140,9 @@ public record CssResource(
                 bindings.add(new Binding(
                         string(method, "method"), SymbolKind.valueOf(string(method, "kind")), string(method, "value")));
             }
-            var providers = new TreeMap<String, String>();
+            var providers = new TreeMap<String, List<String>>();
             var references = json.getAsJsonObject("providers");
-            references.keySet().forEach(key -> providers.put(key, string(references, key)));
+            references.keySet().forEach(key -> providers.put(key, names(references, key)));
             return new CssResource(
                     owner,
                     Kind.valueOf(string(json, "kind")),

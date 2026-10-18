@@ -4,6 +4,7 @@ import static org.testng.Assert.*;
 
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
+import java.util.List;
 import org.testng.annotations.Test;
 
 public final class SourceMapTest {
@@ -56,5 +57,58 @@ public final class SourceMapTest {
         expectThrows(
                 IllegalArgumentException.class, () -> writer.append("b", new SourceMap.Location("B.java", "b", 0, -1)));
         assertEquals(SourceMap.reference("Button.css"), "\n/*# sourceMappingURL=Button.css.map */\n");
+    }
+
+    @Test
+    public void projectionPreservesSignedLocationsAndUnmappedUtf16Spans() throws Exception {
+        var writer = new SourceMap.Writer()
+                .append("drop ")
+                .append("é😀\n", new SourceMap.Location("A.java", "source A", 20, 4096))
+                .append("b", new SourceMap.Location("B.java", "source B", 4, 100))
+                .append("c", new SourceMap.Location("A.java", "source A", 1, 2))
+                .append(" ");
+        var map = JsonParser.parseString(writer.map("input.css")).getAsJsonObject();
+        var projected = SourceMap.project(
+                writer.css(), map, List.of(new SourceMap.Span(5, writer.css().length())));
+        assertEquals(projected.css(), "é😀\nbc ");
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(projected.map("output.css"));
+        var first = consumer.getMappingForLine(1, 1);
+        assertNotNull(first);
+        assert null != first;
+        assertEquals(first.getLineNumber(), 21);
+        assertEquals(first.getColumnPosition(), 4097);
+        var reversed = consumer.getMappingForLine(2, 2);
+        assertNotNull(reversed);
+        assert null != reversed;
+        assertEquals(reversed.getOriginalFile(), "A.java");
+        assertEquals(reversed.getLineNumber(), 2);
+        assertEquals(reversed.getColumnPosition(), 3);
+        assertNull(consumer.getMappingForLine(2, 3));
+        assertEquals(SourceMap.project(writer.css(), map, List.of()).css(), "");
+        var emptyMap =
+                JsonParser.parseString(new SourceMap.Writer().map("input.css")).getAsJsonObject();
+        assertEquals(
+                SourceMap.project("x", emptyMap, List.of(new SourceMap.Span(0, 1)))
+                        .css(),
+                "x");
+    }
+
+    @Test
+    public void projectionRejectsInvalidSpansAndMalformedVlqSegments() {
+        var writer = new SourceMap.Writer().append("abc");
+        var map = JsonParser.parseString(writer.map("input.css")).getAsJsonObject();
+        expectThrows(IllegalArgumentException.class, () -> new SourceMap.Span(-1, 0));
+        expectThrows(IllegalArgumentException.class, () -> new SourceMap.Span(2, 1));
+        for (var spans : List.of(
+                List.of(new SourceMap.Span(0, 4)), List.of(new SourceMap.Span(1, 2), new SourceMap.Span(0, 1)))) {
+            expectThrows(IllegalArgumentException.class, () -> SourceMap.project(writer.css(), map, spans));
+        }
+        for (var encoded : List.of("!", "g", "ggggggggA", "AA")) {
+            map.addProperty("mappings", encoded);
+            expectThrows(
+                    IllegalArgumentException.class,
+                    () -> SourceMap.project(writer.css(), map, List.of(new SourceMap.Span(0, 3))));
+        }
     }
 }

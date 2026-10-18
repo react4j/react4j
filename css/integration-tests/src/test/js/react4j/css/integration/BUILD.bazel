@@ -1,0 +1,43 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//css:defs.bzl", "css_bundle", "css_js_binary")
+
+package(default_visibility = ["//css/integration-tests/src/test/java/react4j/css/integration:__pkg__"])
+
+closure_js_library(
+    name = "entry",
+    testonly = True,
+    srcs = ["entry.js"],
+    deps = ["//css/integration-tests/src/test/java/react4j/css/integration:liveness_entry"],
+)
+
+css_js_binary(
+    name = "optimized",
+    testonly = True,
+    compilation_level = "ADVANCED",
+    entry_points = ["react4j.css.integration.LivenessLink"],
+    deps = [":entry"],
+)
+
+css_bundle(
+    name = "optimized_styles",
+    testonly = True,
+    css = "optimized.css",
+    root = ":optimized",
+    source_map = "optimized.css.map",
+)
+
+css_js_binary(
+    name = "development",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    entry_points = ["react4j.css.integration.LivenessLink"],
+    deps = [":entry"],
+)
+
+css_bundle(
+    name = "development_styles",
+    testonly = True,
+    css = "development.css",
+    root = ":development",
+    source_map = "development.css.map",
+)

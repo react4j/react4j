@@ -5,6 +5,7 @@ java_library(
     srcs = [
         "Bundle.java",
         "CssPruner.java",
+        "CssReachability.java",
         "package-info.java",
     ],
     visibility = [

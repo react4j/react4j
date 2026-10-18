@@ -12,6 +12,7 @@ import com.helger.css.decl.visit.DefaultCSSVisitor;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.UnaryOperator;
+import react4j.css.internal.CssExpressions;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
 

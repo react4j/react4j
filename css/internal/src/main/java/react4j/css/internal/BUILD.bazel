@@ -4,6 +4,7 @@ java_library(
     name = "internal",
     srcs = [
         "CssCatalogue.java",
+        "CssExpressions.java",
         "CssLink.java",
         "CssResource.java",
         "CssSyntax.java",

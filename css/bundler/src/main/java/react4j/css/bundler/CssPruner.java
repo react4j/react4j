@@ -3,43 +3,70 @@ package react4j.css.bundler;
 import com.google.gson.JsonParser;
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.AbstractHasTopLevelRules;
+import com.helger.css.decl.CSSDeclaration;
+import com.helger.css.decl.CSSExpressionMemberTermSimple;
+import com.helger.css.decl.CSSKeyframesRule;
+import com.helger.css.decl.CSSNestedDeclarations;
 import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorMemberPseudoIs;
 import com.helger.css.decl.CSSSelectorMemberPseudoWhere;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
+import com.helger.css.decl.CSSSupportsRule;
+import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import react4j.css.internal.CssCatalogue.Resource;
+import react4j.css.internal.CssExpressions;
 import react4j.css.internal.SourceMap;
 
-/** Proves impossible selectors and removes their complete byte spans. */
+/** Proves impossible selectors and copies surviving bytes with their original mappings. */
 final class CssPruner {
-    private final String css;
-    private final Set<String> known;
-    private final Set<String> live;
-    private final List<SourceMap.Span> removed = new ArrayList<>();
+    record Selection(Resource resource, Set<String> references) {}
 
-    private CssPruner(String css, Set<String> known, Set<String> live) {
-        this.css = css;
+    private final Resource resource;
+    private final Set<String> known;
+    private final Set<String> present;
+    private final CascadingStyleSheet sheet;
+    private final List<Integer> lines = new ArrayList<>();
+    private final List<SourceMap.Span> removed = new ArrayList<>();
+    private final Set<String> references = new HashSet<>();
+
+    CssPruner(Resource resource, Set<String> known, Set<String> present) {
+        this.resource = resource;
         this.known = known;
-        this.live = live;
+        this.present = present;
+        sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
+                resource.css(), new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+        lines.add(0);
+        for (int i = 0; i < resource.css().length(); i++) {
+            if ('\n' == resource.css().charAt(i)) {
+                lines.add(i + 1);
+            }
+        }
     }
 
-    static Resource prune(Resource resource, Set<String> known, Set<String> live) {
-        var pruner = new CssPruner(resource.css(), known, live);
-        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
-                resource.css(), new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
-        pruner.rules(sheet.getAllRules());
+    Set<String> animations() {
+        return sheet.getAllKeyframesRules().stream()
+                .map(CSSKeyframesRule::getAnimationName)
+                .collect(Collectors.toSet());
+    }
+
+    Selection prune(Set<String> animations) {
+        removed.clear();
+        references.clear();
+        rules(sheet.getAllRules(), animations);
         var spans = new ArrayList<SourceMap.Span>();
         int offset = 0;
-        for (var span : pruner.removed.stream()
+        for (var span : removed.stream()
                 .sorted(Comparator.comparingInt(SourceMap.Span::start))
                 .toList()) {
             if (span.start() > offset) {
@@ -49,24 +76,77 @@ final class CssPruner {
         }
         spans.add(new SourceMap.Span(offset, resource.css().length()));
         var output = SourceMap.project(resource.css(), resource.map(), spans);
-        return new Resource(
-                resource.metadata(),
-                output.css(),
-                JsonParser.parseString(output.map(resource.map().get("file").getAsString()))
-                        .getAsJsonObject());
+        return new Selection(
+                new Resource(
+                        resource.metadata(),
+                        output.css(),
+                        JsonParser.parseString(
+                                        output.map(resource.map().get("file").getAsString()))
+                                .getAsJsonObject()),
+                Set.copyOf(references));
     }
 
-    private void rules(List<?> rules) {
+    private boolean rules(List<?> rules, Set<String> animations) {
+        boolean retained = false;
         for (var rule : rules) {
             if (rule instanceof CSSStyleRule style) {
                 if (style.getAllSelectors().stream().noneMatch(this::possible)) {
                     remove(style);
-                } else {
-                    rules(style.getAllRules());
+                    continue;
                 }
+                selectors(style.getAllSelectors());
+                style.getAllDeclarations().forEach(this::declaration);
+                rules(style.getAllRules(), animations);
+            } else if (rule instanceof CSSKeyframesRule frames) {
+                if (!animations.contains(frames.getAnimationName())) {
+                    remove(frames);
+                    continue;
+                }
+                frames.getAllBlocks()
+                        .forEach(block -> block.getAllDeclarations().forEach(this::declaration));
             } else if (rule instanceof AbstractHasTopLevelRules nested) {
-                rules(nested.getAllRules());
+                if (!rules(nested.getAllRules(), animations)) {
+                    remove((ICSSSourceLocationAware) rule);
+                    continue;
+                }
+                if (rule instanceof CSSSupportsRule supports) {
+                    CssExpressions.supports(supports.getAllSupportConditionMembers(), this::declaration);
+                }
+            } else if (rule instanceof CSSNestedDeclarations declarations) {
+                declarations.getAllDeclarations().forEach(this::declaration);
             }
+            retained = true;
+        }
+        return retained;
+    }
+
+    private void declaration(CSSDeclaration declaration) {
+        if (declaration.getProperty().startsWith("--")) {
+            references.add(declaration.getProperty());
+        }
+        CssExpressions.visit(declaration.getExpression(), member -> {
+            if (member instanceof CSSExpressionMemberTermSimple simple) {
+                references.add(simple.getValue());
+            }
+        });
+    }
+
+    private void selectors(List<CSSSelector> selectors) {
+        int i = 0;
+        while (i < selectors.size()) {
+            if (possible(selectors.get(i))) {
+                i++;
+                continue;
+            }
+            int first = i;
+            while (i < selectors.size() && !possible(selectors.get(i))) {
+                i++;
+            }
+            // Only top-level list branches are deleted. Function arguments retain their specificity.
+            removed.add(
+                    i < selectors.size()
+                            ? new SourceMap.Span(start(selectors.get(first)), start(selectors.get(i)))
+                            : new SourceMap.Span(end(selectors.get(first - 1)), end(selectors.get(i - 1))));
         }
     }
 
@@ -74,7 +154,7 @@ final class CssPruner {
         for (var member : selector.getAllMembers()) {
             if (member instanceof CSSSelectorSimpleMember simple && (simple.isClass() || simple.isHash())) {
                 String name = simple.getValue();
-                if (known.contains(name) && !live.contains(name)) {
+                if (known.contains(name) && !present.contains(name)) {
                     return false;
                 }
             } else if (member instanceof CSSSelector nested && !possible(nested)) {
@@ -86,23 +166,22 @@ final class CssPruner {
                     && function.getAllSelectors().stream().noneMatch(this::possible)) {
                 return false;
             }
-            // Negation and unrecognized functions are uncertain. Preserve their spelling and specificity.
+            // Negation and unrecognized functions are uncertain; preserve their spelling and specificity.
         }
         return true;
     }
 
-    private void remove(ICSSSourceLocationAware rule) {
-        var location = Objects.requireNonNull(rule.getSourceLocation());
-        removed.add(new SourceMap.Span(
-                offset(location.getFirstTokenBeginLineNumber(), location.getFirstTokenBeginColumnNumber()),
-                offset(location.getLastTokenEndLineNumber(), location.getLastTokenEndColumnNumber()) + 1));
+    private void remove(ICSSSourceLocationAware node) {
+        removed.add(new SourceMap.Span(start(node), end(node)));
     }
 
-    private int offset(int line, int column) {
-        int result = 0;
-        for (int i = 1; i < line; i++) {
-            result = css.indexOf('\n', result) + 1;
-        }
-        return result + column - 1;
+    private int start(ICSSSourceLocationAware node) {
+        var location = Objects.requireNonNull(node.getSourceLocation());
+        return lines.get(location.getFirstTokenBeginLineNumber() - 1) + location.getFirstTokenBeginColumnNumber() - 1;
+    }
+
+    private int end(ICSSSourceLocationAware node) {
+        var location = Objects.requireNonNull(node.getSourceLocation());
+        return lines.get(location.getLastTokenEndLineNumber() - 1) + location.getLastTokenEndColumnNumber();
     }
 }

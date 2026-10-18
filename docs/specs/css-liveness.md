@@ -6,7 +6,7 @@ Reduce generated CSS for a [Complete link](../glossary/README.md#complete-link) 
 
 ## Requirements
 
-1. Development builds and libraries without a Complete link retain every component and generated binding, together with explicitly selected global styles and their dependencies. Discovery alone does not activate an otherwise unused global definition.
+1. Development builds and libraries without a Complete link retain every component and generated binding, together with explicitly selected global styles and their dependencies. A global definition without a generated binding is included only when selected explicitly or required by a retained definition.
 2. An optimized Complete link removes unused style owners and selectors proven unable to match. Uncertain selectors remain. Retained rules preserve specificity, cascade order and declaration values.
 3. Liveness follows generated accessor values through inlining, interface dispatch and ordinary Java helpers. A modifier value keeps both its component root and modifier [CSS symbol](../glossary/README.md#css-symbol) live.
 4. Every live checked accessor activates its [Style owner](../glossary/README.md#style-owner) and that owner's unconditional global inclusions, including when the accessor returns an imported CSS symbol. Activation alone does not make the owner's other CSS symbols live.

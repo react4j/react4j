@@ -40,6 +40,77 @@ public final class CssResourceTest {
     }
 
     @Test
+    public void bindingsAndMultipleProvidersAreValidatedAndImmutable() {
+        var bindings = new ArrayList<>(List.of(new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root")));
+        var owners = new ArrayList<>(List.of("Defaults", "Theme"));
+        var resource = new CssResource(
+                "Button",
+                CssResource.Kind.COMPONENT,
+                owners,
+                List.of(),
+                "Styled_Button",
+                bindings,
+                Map.of("--accent", owners));
+        owners.clear();
+        bindings.clear();
+        assertEquals(resource.bindings().size(), 1);
+        assertEquals(resource.providers().get("--accent"), List.of("Defaults", "Theme"));
+        assertEquals(CssResource.read(resource.json(), "Button"), resource);
+        for (var method : List.of("bad/name", "a.b", "")) {
+            expectThrows(
+                    IllegalArgumentException.class,
+                    () -> new CssResource.Binding(method, CssResource.SymbolKind.ID, "node"));
+        }
+        expectThrows(
+                IllegalArgumentException.class, () -> new CssResource.Binding("id", CssResource.SymbolKind.ID, " "));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> new CssResource(
+                        "Button", CssResource.Kind.COMPONENT, List.of(), List.of(), "", resource.bindings(), Map.of()));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> new CssResource(
+                        "Button",
+                        CssResource.Kind.COMPONENT,
+                        List.of(),
+                        List.of(),
+                        "Styled_Button",
+                        List.of(),
+                        Map.of()));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> new CssResource(
+                        "Button",
+                        CssResource.Kind.COMPONENT,
+                        List.of(),
+                        List.of(),
+                        "Styled_Button",
+                        List.of(resource.bindings().get(0), resource.bindings().get(0)),
+                        Map.of()));
+        for (var providers : List.of(
+                Map.of("", List.of("Defaults")),
+                Map.of("--accent", List.<String>of()),
+                Map.of("--accent", List.of("Missing")),
+                Map.of("--accent", List.of("Defaults", "Defaults")))) {
+            expectThrows(
+                    IllegalArgumentException.class,
+                    () -> new CssResource(
+                            "Button",
+                            CssResource.Kind.GLOBAL,
+                            List.of("Defaults"),
+                            List.of(),
+                            "",
+                            List.of(),
+                            providers));
+        }
+        for (var key : List.of("implementation", "bindings", "providers")) {
+            var json = JsonParser.parseString(resource.json()).getAsJsonObject();
+            json.remove(key);
+            expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "Button"));
+        }
+    }
+
+    @Test
     public void malformedMetadataAndUnsafeIdentitiesAreRejected() {
         String valid = metadata("demo.Button", CssResource.Kind.COMPONENT, List.of(), List.of(), false)
                 .json();

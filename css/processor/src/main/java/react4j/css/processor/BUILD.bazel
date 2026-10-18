@@ -6,7 +6,6 @@ java_library(
         "CssAccessor.java",
         "CssCompiler.java",
         "CssDescriptor.java",
-        "CssExpressions.java",
         "CssGenerator.java",
         "CssIds.java",
         "CssMethods.java",

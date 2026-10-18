@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import react4j.css.internal.CssExpressions;
 import react4j.css.internal.CssSyntax;
 
 /** Rewrites explicitly bound ID selectors and same-document fragments. */

@@ -5,10 +5,12 @@ java_testng(
     srcs = [
         "BundleTest.java",
         "CssPrunerTest.java",
+        "CssReachabilityTest.java",
     ],
     test_classes = [
         "react4j.css.bundler.BundleTest",
         "react4j.css.bundler.CssPrunerTest",
+        "react4j.css.bundler.CssReachabilityTest",
     ],
     visibility = [
         "//:__pkg__",

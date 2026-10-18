@@ -152,9 +152,13 @@ public final class BrowserExample {
         }
     }
 
+    @CssImport(value = DeadPropertyDefaults.class, property = "padding")
     @Css("""
+        @keyframes unused {
+          to { opacity: 0.25; }
+        }
         color: rgb(12, 34, 56);
-        &.unused { outline-width: 17px; }
+        &.unused { outline-width: 17px; padding: var(--padding); animation: unused 1s; }
         &.active { border-width: 7px; }
         """)
     abstract static class ModifierOnly implements ActiveStyle<String> {
@@ -173,6 +177,11 @@ public final class BrowserExample {
     abstract static class UnusedOwner {
         abstract String style();
     }
+
+    @GlobalCss("""
+        :root { --padding: 47px; }
+        """)
+    static final class DeadPropertyDefaults {}
 
     @CssImport(Defaults.class)
     @CssImport(value = Defaults.class, property = "on-accent")

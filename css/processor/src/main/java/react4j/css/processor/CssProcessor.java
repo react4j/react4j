@@ -148,13 +148,19 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 .map(CssProperties.Import::provider)
                 .sorted()
                 .forEach(dependencies::add);
-        var providers = new TreeMap<String, String>();
+        var providers = new TreeMap<String, List<String>>();
         imports.named().values().stream()
                 .filter(binding -> Kind.KEYFRAMES == binding.kind() && dependencies.contains(binding.owner()))
-                .forEach(binding -> providers.put(binding.cssName(), binding.owner()));
+                .forEach(binding -> providers
+                        .computeIfAbsent(binding.cssName(), ignored -> new ArrayList<>())
+                        .add(binding.owner()));
         imports.properties()
                 .values()
-                .forEach(binding -> providers.put(binding.binding().cssName(), binding.provider()));
+                .forEach(binding -> providers
+                        .computeIfAbsent(binding.binding().cssName(), ignored -> new ArrayList<>())
+                        .add(binding.provider()));
+        providers.replaceAll(
+                (symbol, owners) -> owners.stream().distinct().sorted().toList());
         var metadata = new CssResource(
                 ownerName, kind, List.copyOf(dependencies), imports.globals(), implementation, bound, providers);
         var output = result.output();

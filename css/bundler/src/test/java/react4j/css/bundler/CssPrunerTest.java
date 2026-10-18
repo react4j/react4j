@@ -21,13 +21,17 @@ public final class CssPrunerTest {
                 JsonParser.parseString(writer.map("Button.css")).getAsJsonObject());
     }
 
+    private static Resource prune(Resource resource, Set<String> known, Set<String> present) {
+        return new CssPruner(resource, known, present).prune(Set.of()).resource();
+    }
+
     @Test
     public void removesImpossibleSelectorsAndPreservesUncertainFunctionsAndSpecificity() {
         var known = Set.of(".root", ".dead", ".peer", "#absent");
         for (var selector : List.of(
                 ".root.dead", ".peer>.root", ".root#absent", ":is(.dead,.peer)", ".root:where(.dead,#absent)")) {
-            var pruned = CssPruner.prune(
-                    resource(new SourceMap.Writer().append(selector + "{color:red;}")), known, Set.of(".root"));
+            var pruned =
+                    prune(resource(new SourceMap.Writer().append(selector + "{color:red;}")), known, Set.of(".root"));
             assertEquals(pruned.css(), "", selector);
         }
         for (var selector : List.of(
@@ -37,15 +41,41 @@ public final class CssPrunerTest {
                 ".root:where(.dead,:not(.peer))",
                 ".root[data-name='.dead']",
                 ".unknown",
-                ".dead,.root",
                 ".root:nth-child(2n+1)",
                 ".root::before")) {
             String css = selector + "{content:'.dead';}";
             assertEquals(
-                    CssPruner.prune(resource(new SourceMap.Writer().append(css)), known, Set.of(".root"))
+                    prune(resource(new SourceMap.Writer().append(css)), known, Set.of(".root"))
                             .css(),
                     css,
                     selector);
+        }
+    }
+
+    @Test
+    public void deletesOnlyImpossibleTopLevelBranchesAndEmptyGroups() {
+        for (var selectors : List.of(
+                ".dead,.root",
+                ".root,.dead",
+                ".dead,.peer,.root",
+                ".root,.dead,.peer",
+                ".dead,.root,.peer",
+                ".root,.dead,.root")) {
+            String expected = selectors.equals(".root,.dead,.root") ? ".root,.root" : ".root";
+            assertEquals(
+                    prune(
+                                    resource(new SourceMap.Writer().append(selectors + "{color:blue;}")),
+                                    Set.of(".root", ".dead", ".peer"),
+                                    Set.of(".root"))
+                            .css(),
+                    expected + "{color:blue;}");
+        }
+        for (var css : List.of(
+                "@media screen{.dead{color:red;}}", "@supports (display:grid){@media screen{.dead{color:red;}}}")) {
+            assertEquals(
+                    prune(resource(new SourceMap.Writer().append(css)), Set.of(".dead"), Set.of())
+                            .css(),
+                    "");
         }
     }
 
@@ -57,7 +87,7 @@ public final class CssPrunerTest {
                 .append(".root{", new SourceMap.Location("View.java", "authored", 9, 8))
                 .append("color:blue;", new SourceMap.Location("View.java", "authored", 10, 10))
                 .append("}\n.dead{color:red;}\n}\n");
-        var pruned = CssPruner.prune(resource(writer), Set.of(".dead", ".root"), Set.of(".root"));
+        var pruned = prune(resource(writer), Set.of(".dead", ".root"), Set.of(".root"));
         assertEquals(pruned.css(), "\n@media screen{\n.root{color:blue;}\n\n}\n");
         var consumer = new SourceMapConsumerV3();
         consumer.parse(pruned.map().toString());

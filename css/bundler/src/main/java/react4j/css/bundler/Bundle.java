@@ -116,8 +116,10 @@ public final class Bundle {
             @Nullable CssLink link,
             Set<String> live)
             throws IOException {
-        var definitions = catalogue.resources();
         boolean optimized = null != link && link.optimized();
+        var definitions = optimized
+                ? CssReachability.prune(catalogue, Objects.requireNonNull(link), live, globals)
+                : catalogue.resources();
         var retained = new HashSet<String>();
         for (var owner : globals) {
             var definition = definitions.get(owner);
@@ -125,35 +127,25 @@ public final class Bundle {
                 throw new IllegalArgumentException(
                         "Global CSS root must reference an available @GlobalCss definition: " + owner);
             }
-            retain(owner, definitions, retained);
-        }
-        var active = new HashSet<String>();
-        var present = new HashSet<String>();
-        var known = new HashSet<String>();
-        for (var definition : definitions.values()) {
-            for (var binding : definition.metadata().bindings()) {
-                if (CssResource.SymbolKind.CLASS == binding.kind() || CssResource.SymbolKind.ID == binding.kind()) {
-                    String prefix = CssResource.SymbolKind.CLASS == binding.kind() ? "." : "#";
-                    for (var token : binding.value().split(" ")) {
-                        known.add(prefix + token);
-                        if (live.contains(definition.metadata().owner() + "#" + binding.method())) {
-                            present.add(prefix + token);
-                        }
-                    }
-                }
-                if (live.contains(definition.metadata().owner() + "#" + binding.method())) {
-                    active.add(definition.metadata().owner());
-                }
+            if (optimized) {
+                retained.add(owner);
+            } else {
+                retain(owner, definitions, retained);
             }
         }
         for (var definition : definitions.values()) {
             if (optimized
-                    ? active.contains(definition.metadata().owner())
-                    : (Kind.COMPONENT == definition.metadata().kind()
-                            || !definition.metadata().bindings().isEmpty())) {
-                retain(definition.metadata().owner(), definitions, retained);
+                    || Kind.COMPONENT == definition.metadata().kind()
+                    || !definition.metadata().bindings().isEmpty()) {
+                if (optimized) {
+                    retained.add(definition.metadata().owner());
+                } else {
+                    retain(definition.metadata().owner(), definitions, retained);
+                }
             }
         }
+        Function<CssResource, List<String>> dependencies = metadata ->
+                metadata.dependencies().stream().filter(retained::contains).toList();
         var ordered = new ArrayList<Resource>();
         var visited = new HashSet<String>();
         var visiting = new LinkedHashSet<String>();
@@ -167,16 +159,16 @@ public final class Bundle {
         }
         visited.clear();
         for (var owner : globals) {
-            orderGlobal(owner, definitions, visited, visiting, ordered, CssResource::dependencies);
+            orderGlobal(owner, definitions, visited, visiting, ordered, dependencies);
         }
         for (var definition : definitions.values()) {
             if (retained.contains(definition.metadata().owner())) {
-                for (var dependency : definition.metadata().dependencies()) {
+                for (var dependency : dependencies.apply(definition.metadata())) {
                     if (Kind.GLOBAL
                             == Objects.requireNonNull(definitions.get(dependency))
                                     .metadata()
                                     .kind()) {
-                        orderGlobal(dependency, definitions, visited, visiting, ordered, CssResource::dependencies);
+                        orderGlobal(dependency, definitions, visited, visiting, ordered, dependencies);
                     }
                 }
             }
@@ -184,13 +176,7 @@ public final class Bundle {
         for (var definition : definitions.values()) {
             if (retained.contains(definition.metadata().owner())
                     && Kind.GLOBAL == definition.metadata().kind()) {
-                orderGlobal(
-                        definition.metadata().owner(),
-                        definitions,
-                        visited,
-                        visiting,
-                        ordered,
-                        CssResource::dependencies);
+                orderGlobal(definition.metadata().owner(), definitions, visited, visiting, ordered, dependencies);
             }
         }
         // Cyclic property dependencies must still respect the acyclic inclusion constraints.
@@ -205,11 +191,6 @@ public final class Bundle {
                 .filter(d -> retained.contains(d.metadata().owner())
                         && Kind.GLOBAL != d.metadata().kind())
                 .forEach(ordered::add);
-        if (optimized) {
-            ordered = new ArrayList<>(ordered.stream()
-                    .map(resource -> CssPruner.prune(resource, known, present))
-                    .toList());
-        }
         var writer = new StringBuilder("@layer shared,components;\n");
         var sections = new JsonArray();
         int line = 1;

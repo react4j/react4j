@@ -31,6 +31,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
@@ -196,9 +197,14 @@ final class CssCompiler {
 
     private void globalRule(ICSSSourceLocationAware rule) {
         if (rule instanceof CSSStyleRule style) {
-            output.append(
-                    style.getAllSelectors().stream().map(this::globalSelector).collect(Collectors.joining(",")) + "{",
-                    location(style));
+            for (int i = 0; i < style.getSelectorCount(); i++) {
+                if (0 != i) {
+                    output.append(",");
+                }
+                var selector = Objects.requireNonNull(style.getSelectorAtIndex(i));
+                output.append(globalSelector(selector), location(selector));
+            }
+            output.append("{");
             writeDeclarations(style.getAllDeclarations());
             for (var child : style.getAllRules()) {
                 globalRule((ICSSSourceLocationAware) child);
@@ -250,7 +256,7 @@ final class CssCompiler {
                         .map(s -> selector(s, parent, true))
                         .toList();
         String selector = selectors.stream().map(Scope::selector).collect(Collectors.joining(","));
-        declarations(rule.getAllDeclarations(), selector, rule);
+        declarations(rule.getAllDeclarations(), selectors, rule);
         var nestedParent = new Scope(
                 rule.getSelectorCount() > 1 ? ":is(" + selector + ")" : selector,
                 selectors.stream().allMatch(Scope::owned));
@@ -258,7 +264,7 @@ final class CssCompiler {
             if (nested instanceof CSSStyleRule child) {
                 style(child, nestedParent, false);
             } else if (nested instanceof CSSNestedDeclarations declarations) {
-                declarations(declarations.getAllDeclarations(), selector, declarations);
+                declarations(declarations.getAllDeclarations(), selectors, rule);
             } else if (nested instanceof CSSMediaRule media) {
                 conditional(media, nestedParent);
             } else if (nested instanceof CSSSupportsRule supports) {
@@ -302,11 +308,17 @@ final class CssCompiler {
         return header;
     }
 
-    private void declarations(List<CSSDeclaration> declarations, String selector, ICSSSourceLocationAware rule) {
+    private void declarations(List<CSSDeclaration> declarations, List<Scope> selectors, CSSStyleRule rule) {
         if (declarations.isEmpty()) {
             return;
         }
-        output.append(selector + "{", location(rule));
+        for (int i = 0; i < selectors.size(); i++) {
+            if (0 != i) {
+                output.append(",");
+            }
+            output.append(selectors.get(i).selector(), location(Objects.requireNonNull(rule.getSelectorAtIndex(i))));
+        }
+        output.append("{");
         writeDeclarations(declarations);
         output.append("}");
     }

@@ -130,10 +130,12 @@ java_testng(
     name = "integration_tests",
     srcs = [
         "CssIntegrationTest.java",
+        "CssLivenessIntegrationTest.java",
         "package-info.java",
     ],
     data = [
         "ButtonStyles.java",
+        "LivenessEntry.java",
         "PropertyTheme.java",
         "SharedDefaults.java",
         "SharedPulse.java",
@@ -143,8 +145,17 @@ java_testng(
         ":fixture_bindings.js",
         ":selected.css",
         ":selected.css.map",
+        "//css/integration-tests/src/test/js/react4j/css/integration:development.css",
+        "//css/integration-tests/src/test/js/react4j/css/integration:optimized.css",
+        "//css/integration-tests/src/test/js/react4j/css/integration:optimized.css.map",
+        "//css/integration-tests/src/test/js/react4j/css/integration:optimized.js",
     ],
     jvm_flags = [
+        "-Dcss.liveness.source=$(rootpath LivenessEntry.java)",
+        "-Dcss.liveness.development=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:development.css)",
+        "-Dcss.liveness.optimized=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.css)",
+        "-Dcss.liveness.map=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.css.map)",
+        "-Dcss.liveness.javascript=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.js)",
         "-Dcss.fixture=$(rootpath :fixture.css)",
         "-Dcss.map=$(rootpath :fixture.css.map)",
         "-Dcss.tree=$(rootpath :fixture_bindings.js)",
@@ -154,7 +165,10 @@ java_testng(
         "-Dcss.globals_source=$(rootpath SharedDefaults.java)",
         "-Dcss.selected=$(rootpath :selected.css)",
     ],
-    test_class = "react4j.css.integration.CssIntegrationTest",
+    test_classes = [
+        "react4j.css.integration.CssIntegrationTest",
+        "react4j.css.integration.CssLivenessIntegrationTest",
+    ],
     deps = [
         ":fixture_bindings_java",
         ":fixture_contracts_java",
@@ -162,5 +176,28 @@ java_testng(
         "//third_party/java:ph_css",
         "@maven//:com_google_code_gson_gson",
         "@maven//:com_google_javascript_closure_compiler_unshaded",
+    ],
+)
+
+java_j2cl_library(
+    name = "liveness_entry",
+    testonly = True,
+    srcs = [
+        "LivenessEntry.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        ":fixture_bindings_java",
+        ":fixture_contracts_java",
+        "//css/core",
+        "//third_party/java:jsinterop_annotations",
+    ],
+    plugins = ["//css/processor:plugin"],
+    deps = [
+        ":fixture_bindings",
+        ":fixture_contracts",
+        "//css/core:core-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jspecify-j2cl",
     ],
 )
