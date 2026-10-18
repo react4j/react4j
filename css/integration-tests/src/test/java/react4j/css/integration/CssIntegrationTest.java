@@ -23,8 +23,8 @@ import org.testng.annotations.Test;
 public final class CssIntegrationTest {
     @Test
     public void j2clCompilationAndDependencyGraphAssemblyUseDeclaredInputs() throws Exception {
-        var styles = ButtonStyles.of();
-        assertSame(styles, ButtonStyles.of());
+        var styles = ButtonStyles.get();
+        assertSame(styles, ButtonStyles.get());
         String root = "jcss-react4j-css-integration-ButtonStyles";
         assertEquals(styles.style(), root);
         assertEquals(styles.forState(StyleState.SUCCESS), root + " " + root + "--success");

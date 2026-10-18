@@ -23,7 +23,7 @@ abstract class StepButton {
 
     @Render
     ReactNode render() {
-        var stepStyle = StepButton_Styled_StepStyle.get();
+        var stepStyle = StepStyle.get();
         final boolean oddBar = 1 == (_cell.beat() / 4) % 2;
         return button(new BtnProps()
                 .data("step", Integer.toString(_cell.beat()))
@@ -77,6 +77,10 @@ abstract class StepButton {
         }
         """)
     abstract static class StepStyle {
+        static StepStyle get() {
+            return StepButton_Styled_StepStyle.get();
+        }
+
         abstract String style();
 
         abstract String on();

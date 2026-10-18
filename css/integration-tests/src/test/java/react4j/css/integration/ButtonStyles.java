@@ -10,7 +10,7 @@ import react4j.css.Css;
     &:hover { animation-name: pulse; }
     """)
 abstract class ButtonStyles {
-    static ButtonStyles of() {
+    static ButtonStyles get() {
         return Styled_ButtonStyles.get();
     }
 

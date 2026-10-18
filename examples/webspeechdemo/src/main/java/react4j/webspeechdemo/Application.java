@@ -56,22 +56,20 @@ abstract class Application {
 
     @Render
     ReactNode render() {
-        var editorStyle = Application_Styled_EditorStyle.get();
-        var textStyle = Application_Styled_TextStyle.get();
-        var markerStyle = Application_Styled_MarkerStyle.get();
-        var argumentStyle = Application_Styled_ArgumentStyle.get();
-        var labelStyle = Application_Styled_LabelStyle.get();
-        var rangeStyle = Application_Styled_RangeStyle.get();
-        var resetStyle = Application_Styled_ResetStyle.get();
-        var actionStyle = Application_Styled_ActionStyle.get();
+        var editorStyle = EditorStyle.get();
+        var textStyle = TextStyle.get();
+        var markerStyle = MarkerStyle.get();
+        var argumentStyle = ArgumentStyle.get();
+        var labelStyle = LabelStyle.get();
+        var rangeStyle = RangeStyle.get();
+        var resetStyle = ResetStyle.get();
+        var actionStyle = ActionStyle.get();
         final SpeechSynthesisVoice voice = _speechData.getVoice();
         return div(
-                new HtmlProps()
-                        .className(Application_Styled_ContainerStyle.get().style()),
-                h1(new HtmlProps().className(Application_Styled_TitleStyle.get().style()), "Web Speech Synthesis Demo"),
+                new HtmlProps().className(ContainerStyle.get().style()),
+                h1(new HtmlProps().className(TitleStyle.get().style()), "Web Speech Synthesis Demo"),
                 form(
-                        new FormProps()
-                                .className(Application_Styled_FormStyle.get().style()),
+                        new FormProps().className(FormStyle.get().style()),
                         div(
                                 new HtmlProps()
                                         .id("textarea")
@@ -193,8 +191,7 @@ abstract class Application {
                                         "Voice"),
                                 select(
                                         new SelectProps()
-                                                .className(Application_Styled_SelectStyle.get()
-                                                        .style())
+                                                .className(SelectStyle.get().style())
                                                 .onChange(this::onVoiceChange)
                                                 .disabled(_speechData.isSpeaking())
                                                 .value(null == voice ? "" : voice.voiceURI()),
@@ -209,9 +206,7 @@ abstract class Application {
                                                 .onClick(e -> _speechData.resetVoice()),
                                         "\u21b6")),
                         div(
-                                new HtmlProps()
-                                        .className(Application_Styled_ActionsStyle.get()
-                                                .style()),
+                                new HtmlProps().className(ActionsStyle.get().style()),
                                 button(
                                         new BtnProps()
                                                 .className(actionStyle.style())
@@ -302,6 +297,10 @@ abstract class Application {
         color: #fff;
         """)
     abstract static class ContainerStyle {
+        static ContainerStyle get() {
+            return Application_Styled_ContainerStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -311,6 +310,10 @@ abstract class Application {
         font-size: 150%;
         """)
     abstract static class TitleStyle {
+        static TitleStyle get() {
+            return Application_Styled_TitleStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -319,6 +322,10 @@ abstract class Application {
         margin: 0 auto;
         """)
     abstract static class FormStyle {
+        static FormStyle get() {
+            return Application_Styled_FormStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -329,6 +336,10 @@ abstract class Application {
         align-items: center;
         """)
     abstract static class ArgumentStyle {
+        static ArgumentStyle get() {
+            return Application_Styled_ArgumentStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -337,6 +348,10 @@ abstract class Application {
         width: 20%;
         """)
     abstract static class LabelStyle {
+        static LabelStyle get() {
+            return Application_Styled_LabelStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -357,6 +372,10 @@ abstract class Application {
         }
         """)
     abstract static class RangeStyle {
+        static RangeStyle get() {
+            return Application_Styled_RangeStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -371,6 +390,10 @@ abstract class Application {
         appearance: none;
         """)
     abstract static class SelectStyle {
+        static SelectStyle get() {
+            return Application_Styled_SelectStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -385,6 +408,10 @@ abstract class Application {
         padding: 0;
         """)
     abstract static class ResetStyle {
+        static ResetStyle get() {
+            return Application_Styled_ResetStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -394,6 +421,10 @@ abstract class Application {
         justify-content: space-between;
         """)
     abstract static class ActionsStyle {
+        static ActionsStyle get() {
+            return Application_Styled_ActionsStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -406,6 +437,10 @@ abstract class Application {
         padding: 0;
         """)
     abstract static class ActionStyle {
+        static ActionStyle get() {
+            return Application_Styled_ActionStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -423,6 +458,10 @@ abstract class Application {
         }
         """)
     abstract static class EditorStyle {
+        static EditorStyle get() {
+            return Application_Styled_EditorStyle.get();
+        }
+
         abstract String style();
 
         abstract String speaking();
@@ -450,6 +489,10 @@ abstract class Application {
         }
         """)
     abstract static class TextStyle {
+        static TextStyle get() {
+            return Application_Styled_TextStyle.get();
+        }
+
         abstract String style();
 
         abstract String spoken();
@@ -473,6 +516,10 @@ abstract class Application {
         }
         """)
     abstract static class MarkerStyle {
+        static MarkerStyle get() {
+            return Application_Styled_MarkerStyle.get();
+        }
+
         abstract String style();
 
         abstract String visible();

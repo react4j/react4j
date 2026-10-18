@@ -34,13 +34,8 @@ abstract class FooterTodoCount {
     ReactNode render() {
         final int count = AppData.service.activeCount();
         return span(
-                new HtmlProps()
-                        .className(FooterTodoCount_Styled_CountStyle.get().style()),
-                strong(
-                        new HtmlProps()
-                                .className(FooterTodoCount_Styled_CountNumberStyle.get()
-                                        .style()),
-                        ReactNode.of(count)),
+                new HtmlProps().className(CountStyle.get().style()),
+                strong(new HtmlProps().className(CountNumberStyle.get().style()), ReactNode.of(count)),
                 text(" item" + (1 == count ? "" : "s") + " left"));
     }
 
@@ -49,6 +44,10 @@ abstract class FooterTodoCount {
         text-align: left;
         """)
     abstract static class CountStyle {
+        static CountStyle get() {
+            return FooterTodoCount_Styled_CountStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -56,6 +55,10 @@ abstract class FooterTodoCount {
         font-weight: 300;
         """)
     abstract static class CountNumberStyle {
+        static CountNumberStyle get() {
+            return FooterTodoCount_Styled_CountNumberStyle.get();
+        }
+
         abstract String style();
     }
 }

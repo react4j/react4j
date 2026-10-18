@@ -22,17 +22,10 @@ abstract class DrumMachineView {
     @Render
     ReactNode render() {
         return div(
-                new HtmlProps()
-                        .className(DrumMachineView_Styled_ContainerStyle.get().style()),
+                new HtmlProps().className(ContainerStyle.get().style()),
                 div(
-                        new HtmlProps()
-                                .className(
-                                        DrumMachineView_Styled_HeaderStyle.get().style()),
-                        h1(
-                                new HtmlProps()
-                                        .className(DrumMachineView_Styled_LogoStyle.get()
-                                                .style()),
-                                "Trap Lord 9000"),
+                        new HtmlProps().className(HeaderStyle.get().style()),
+                        h1(new HtmlProps().className(LogoStyle.get().style()), "Trap Lord 9000"),
                         BpmInputBuilder.build(),
                         PlayButtonBuilder.build()),
                 suspense(
@@ -41,15 +34,13 @@ abstract class DrumMachineView {
                         fragment(
                                 div(
                                         new HtmlProps()
-                                                .className(DrumMachineView_Styled_SequencerStyle.get()
-                                                        .style()),
+                                                .className(SequencerStyle.get().style()),
                                         IndicatorBuilder.build(),
                                         fragment(_drumMachine.getTracks().stream()
                                                 .map(TrackBuilder::track))),
                                 div(
                                         new HtmlProps()
-                                                .className(DrumMachineView_Styled_ButtonsStyle.get()
-                                                        .style()),
+                                                .className(ButtonsStyle.get().style()),
                                         fragment(_drumMachine.getEffects().stream()
                                                 .map(FxButtonBuilder::sound))))));
     }
@@ -78,6 +69,10 @@ abstract class DrumMachineView {
         flex-direction: column;
         """)
     abstract static class ContainerStyle {
+        static ContainerStyle get() {
+            return DrumMachineView_Styled_ContainerStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -89,6 +84,10 @@ abstract class DrumMachineView {
         align-items: center;
         """)
     abstract static class HeaderStyle {
+        static HeaderStyle get() {
+            return DrumMachineView_Styled_HeaderStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -102,6 +101,10 @@ abstract class DrumMachineView {
         display: inline-block;
         """)
     abstract static class LogoStyle {
+        static LogoStyle get() {
+            return DrumMachineView_Styled_LogoStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -115,6 +118,10 @@ abstract class DrumMachineView {
         display: flex;
         """)
     abstract static class ButtonsStyle {
+        static ButtonsStyle get() {
+            return DrumMachineView_Styled_ButtonsStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -128,6 +135,10 @@ abstract class DrumMachineView {
         position: relative;
         """)
     abstract static class SequencerStyle {
+        static SequencerStyle get() {
+            return DrumMachineView_Styled_SequencerStyle.get();
+        }
+
         abstract String style();
     }
 }

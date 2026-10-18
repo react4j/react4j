@@ -22,18 +22,12 @@ abstract class TrackView {
     ReactNode render() {
         _track.suspendUntilAudioLoaded();
         return div(
-                new HtmlProps().className(TrackView_Styled_TrackStyle.get().style()),
+                new HtmlProps().className(TrackStyle.get().style()),
                 div(
-                        new HtmlProps()
-                                .className(TrackView_Styled_TrackInfoStyle.get().style()),
-                        h2(
-                                new HtmlProps()
-                                        .className(TrackView_Styled_TrackTitleStyle.get()
-                                                .style()),
-                                _track.getName())),
+                        new HtmlProps().className(TrackInfoStyle.get().style()),
+                        h2(new HtmlProps().className(TrackTitleStyle.get().style()), _track.getName())),
                 div(
-                        new HtmlProps()
-                                .className(TrackView_Styled_StepsStyle.get().style()),
+                        new HtmlProps().className(StepsStyle.get().style()),
                         fragment(_track.getStepCells().stream().map(StepButtonBuilder::cell))));
     }
 
@@ -42,6 +36,10 @@ abstract class TrackView {
         flex: 1;
         """)
     abstract static class TrackStyle {
+        static TrackStyle get() {
+            return TrackView_Styled_TrackStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -52,6 +50,10 @@ abstract class TrackView {
         border: 1px solid #555;
         """)
     abstract static class TrackInfoStyle {
+        static TrackInfoStyle get() {
+            return TrackView_Styled_TrackInfoStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -64,6 +66,10 @@ abstract class TrackView {
         line-height: 50px;
         """)
     abstract static class TrackTitleStyle {
+        static TrackTitleStyle get() {
+            return TrackView_Styled_TrackTitleStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -72,6 +78,10 @@ abstract class TrackView {
         flex: 1;
         """)
     abstract static class StepsStyle {
+        static StepsStyle get() {
+            return TrackView_Styled_StepsStyle.get();
+        }
+
         abstract String style();
     }
 }

@@ -40,13 +40,7 @@ abstract class TodoList {
     @Render
     ReactNode render() {
         return div(div(
-                header(
-                        h1(
-                                new HtmlProps()
-                                        .className(TodoList_Styled_HeadingStyle.get()
-                                                .style()),
-                                "todos"),
-                        TodoEntryBuilder.build()),
+                header(h1(new HtmlProps().className(HeadingStyle.get().style()), "todos"), TodoEntryBuilder.build()),
                 renderMainSection(),
                 AppData.service.isNotEmpty() ? FooterBuilder.build() : null));
     }
@@ -62,12 +56,11 @@ abstract class TodoList {
         if (AppData.service.isNotEmpty()) {
             return section(
                     input(new InputProps()
-                            .className(TodoList_Styled_ToggleAllStyle.get().style())
+                            .className(ToggleAllStyle.get().style())
                             .type(InputType.checkbox)
                             .onChange(this::handleToggleAll)),
                     ul(
-                            new HtmlProps()
-                                    .className(TodoList_Styled_ListStyle.get().style()),
+                            new HtmlProps().className(ListStyle.get().style()),
                             AppData.viewService.filteredTodos().stream().map(TodoItemBuilder::todo)));
         } else {
             return null;
@@ -87,6 +80,10 @@ abstract class TodoList {
         text-rendering: optimizeLegibility;
         """)
     abstract static class HeadingStyle {
+        static HeadingStyle get() {
+            return TodoList_Styled_HeadingStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -119,6 +116,10 @@ abstract class TodoList {
         }
         """)
     abstract static class ToggleAllStyle {
+        static ToggleAllStyle get() {
+            return TodoList_Styled_ToggleAllStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -128,6 +129,10 @@ abstract class TodoList {
         list-style: none;
         """)
     abstract static class ListStyle {
+        static ListStyle get() {
+            return TodoList_Styled_ListStyle.get();
+        }
+
         abstract String style();
     }
 }

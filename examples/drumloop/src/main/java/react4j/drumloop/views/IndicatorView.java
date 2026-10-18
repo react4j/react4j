@@ -24,12 +24,10 @@ abstract class IndicatorView {
         final int step = _drumMachine.getCurrentStep();
 
         return div(
-                new HtmlProps()
-                        .className(IndicatorView_Styled_IndicatorsStyle.get().style()),
+                new HtmlProps().className(IndicatorsStyle.get().style()),
                 on
                         ? div(new HtmlProps()
-                                .className(IndicatorView_Styled_IndicatorStyle.get()
-                                        .style())
+                                .className(IndicatorStyle.get().style())
                                 .style(new CssProps().customProperty("--indicator-left", step * 37.5 + "px")))
                         : null);
     }
@@ -45,6 +43,10 @@ abstract class IndicatorView {
         pointer-events: none;
         """)
     abstract static class IndicatorsStyle {
+        static IndicatorsStyle get() {
+            return IndicatorView_Styled_IndicatorsStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -57,6 +59,10 @@ abstract class IndicatorView {
         left: var(--indicator-left);
         """)
     abstract static class IndicatorStyle {
+        static IndicatorStyle get() {
+            return IndicatorView_Styled_IndicatorStyle.get();
+        }
+
         abstract String style();
     }
 }

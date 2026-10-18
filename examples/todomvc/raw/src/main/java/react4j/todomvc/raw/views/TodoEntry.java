@@ -45,7 +45,7 @@ abstract class TodoEntry {
     @Render
     ReactNode render() {
         return input(new InputProps()
-                .className(TodoEntry_Styled_EntryStyle.get().style())
+                .className(EntryStyle.get().style())
                 .placeHolder("What needs to be done?")
                 .value(_todoText)
                 .onKeyDown(this::handleNewTodoKeyDown)
@@ -89,6 +89,10 @@ abstract class TodoEntry {
         }
         """)
     abstract static class EntryStyle {
+        static EntryStyle get() {
+            return TodoEntry_Styled_EntryStyle.get();
+        }
+
         abstract String style();
     }
 }

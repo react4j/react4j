@@ -29,7 +29,7 @@ abstract class BpmInput {
     @Render
     ReactNode render() {
         return input(new InputProps()
-                .className(BpmInput_Styled_BpmStyle.get().style())
+                .className(BpmStyle.get().style())
                 .type(InputType.number)
                 .value(String.valueOf(_drumMachine.getBpm()))
                 .min("60")
@@ -50,6 +50,10 @@ abstract class BpmInput {
         align-self: center;
         """)
     abstract static class BpmStyle {
+        static BpmStyle get() {
+            return BpmInput_Styled_BpmStyle.get();
+        }
+
         abstract String style();
     }
 }

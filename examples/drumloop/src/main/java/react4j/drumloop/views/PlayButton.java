@@ -19,7 +19,7 @@ abstract class PlayButton {
 
     @Render
     ReactNode render() {
-        var playStyle = PlayButton_Styled_PlayStyle.get();
+        var playStyle = PlayStyle.get();
         final boolean on = _drumMachine.isRunning();
         return button(
                 new BtnProps()
@@ -46,6 +46,10 @@ abstract class PlayButton {
         }
         """)
     abstract static class PlayStyle {
+        static PlayStyle get() {
+            return PlayButton_Styled_PlayStyle.get();
+        }
+
         abstract String style();
 
         abstract String off();

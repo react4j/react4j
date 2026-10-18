@@ -40,7 +40,7 @@ abstract class FxButton {
 
     @Render
     ReactNode render() {
-        var fxButtonStyle = FxButton_Styled_FxButtonStyle.get();
+        var fxButtonStyle = FxButtonStyle.get();
         _sound.suspendUntilAudioLoaded();
         return button(
                 new BtnProps()
@@ -146,6 +146,10 @@ abstract class FxButton {
         }
         """)
     abstract static class FxButtonStyle {
+        static FxButtonStyle get() {
+            return FxButton_Styled_FxButtonStyle.get();
+        }
+
         abstract String style();
 
         abstract String held();

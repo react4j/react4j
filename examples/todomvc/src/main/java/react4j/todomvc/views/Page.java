@@ -22,20 +22,19 @@ abstract class Page {
 
     @Render
     ReactNode render() {
-        var paragraphStyle = Page_Styled_ParagraphStyle.get();
+        var paragraphStyle = ParagraphStyle.get();
         return div(
-                new HtmlProps().className(Page_Styled_PageStyle.get().style()),
-                article(new HtmlProps().className(Page_Styled_PanelStyle.get().style()), _content),
+                new HtmlProps().className(PageStyle.get().style()),
+                article(new HtmlProps().className(PanelStyle.get().style()), _content),
                 footer(
-                        new HtmlProps().className(Page_Styled_InfoStyle.get().style()),
+                        new HtmlProps().className(InfoStyle.get().style()),
                         p(new HtmlProps().className(paragraphStyle.style()), "Double-click to edit a todo"),
                         p(
                                 new HtmlProps().className(paragraphStyle.style()),
                                 text("Part of "),
                                 a(
                                         new AnchorProps()
-                                                .className(Page_Styled_LinkStyle.get()
-                                                        .style())
+                                                .className(LinkStyle.get().style())
                                                 .href("http://todomvc.com"),
                                         "TodoMVC"))));
     }
@@ -62,6 +61,10 @@ abstract class Page {
         font-weight: 300;
         """)
     abstract static class PageStyle {
+        static PageStyle get() {
+            return Page_Styled_PageStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -73,6 +76,10 @@ abstract class Page {
           0 25px 50px 0 rgba(0, 0, 0, 0.1);
         """)
     abstract static class PanelStyle {
+        static PanelStyle get() {
+            return Page_Styled_PanelStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -84,6 +91,10 @@ abstract class Page {
         text-align: center;
         """)
     abstract static class InfoStyle {
+        static InfoStyle get() {
+            return Page_Styled_InfoStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -91,6 +102,10 @@ abstract class Page {
         line-height: 1;
         """)
     abstract static class ParagraphStyle {
+        static ParagraphStyle get() {
+            return Page_Styled_ParagraphStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -103,6 +118,10 @@ abstract class Page {
         }
         """)
     abstract static class LinkStyle {
+        static LinkStyle get() {
+            return Page_Styled_LinkStyle.get();
+        }
+
         abstract String style();
     }
 }

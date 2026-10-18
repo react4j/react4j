@@ -29,15 +29,14 @@ abstract class Footer {
 
     @Render
     ReactNode render() {
-        var filterItemStyle = Footer_Styled_FilterItemStyle.get();
-        var filterLinkStyle = Footer_Styled_FilterLinkStyle.get();
+        var filterItemStyle = FilterItemStyle.get();
+        var filterLinkStyle = FilterLinkStyle.get();
         final FilterMode filterMode = _viewService.getFilterMode();
         return footer(
-                new HtmlProps().className(Footer_Styled_FooterStyle.get().style()),
+                new HtmlProps().className(FooterStyle.get().style()),
                 FooterTodoCountBuilder.build(),
                 ul(
-                        new HtmlProps()
-                                .className(Footer_Styled_FiltersStyle.get().style()),
+                        new HtmlProps().className(FiltersStyle.get().style()),
                         li(
                                 new HtmlProps().className(filterItemStyle.style()),
                                 a(
@@ -71,8 +70,7 @@ abstract class Footer {
                 hasCompletedItems()
                         ? button(
                                 new BtnProps()
-                                        .className(
-                                                Footer_Styled_ClearStyle.get().style())
+                                        .className(ClearStyle.get().style())
                                         .onClick(e -> _todoService.clearCompleted()),
                                 "Clear Completed")
                         : null);
@@ -110,6 +108,10 @@ abstract class Footer {
         }
         """)
     abstract static class FooterStyle {
+        static FooterStyle get() {
+            return Footer_Styled_FooterStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -127,6 +129,10 @@ abstract class Footer {
         }
         """)
     abstract static class FiltersStyle {
+        static FiltersStyle get() {
+            return Footer_Styled_FiltersStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -134,6 +140,10 @@ abstract class Footer {
         display: inline;
         """)
     abstract static class FilterItemStyle {
+        static FilterItemStyle get() {
+            return Footer_Styled_FilterItemStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -152,6 +162,10 @@ abstract class Footer {
         }
         """)
     abstract static class FilterLinkStyle {
+        static FilterLinkStyle get() {
+            return Footer_Styled_FilterLinkStyle.get();
+        }
+
         abstract String style();
 
         abstract String selected();
@@ -183,6 +197,10 @@ abstract class Footer {
         }
         """)
     abstract static class ClearStyle {
+        static ClearStyle get() {
+            return Footer_Styled_ClearStyle.get();
+        }
+
         abstract String style();
     }
 }

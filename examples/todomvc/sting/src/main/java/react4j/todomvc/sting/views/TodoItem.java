@@ -136,10 +136,10 @@ abstract class TodoItem {
 
     @Render
     ReactNode render() {
-        var itemStyle = TodoItem_Styled_ItemStyle.get();
-        var viewStyle = TodoItem_Styled_ViewStyle.get();
-        var labelStyle = TodoItem_Styled_LabelStyle.get();
-        var editStyle = TodoItem_Styled_EditStyle.get();
+        var itemStyle = ItemStyle.get();
+        var viewStyle = ViewStyle.get();
+        var labelStyle = LabelStyle.get();
+        var editStyle = EditStyle.get();
         final boolean completed = _todo.isCompleted();
         final boolean editing = isTodoBeingEdited();
         return li(
@@ -147,7 +147,7 @@ abstract class TodoItem {
                 div(
                         new HtmlProps().className(editing ? viewStyle.editing() : viewStyle.style()),
                         input(new InputProps()
-                                .className(TodoItem_Styled_ToggleStyle.get().style())
+                                .className(ToggleStyle.get().style())
                                 .type(InputType.checkbox)
                                 .checked(completed)
                                 .onChange(e -> _todo.toggle())),
@@ -157,7 +157,7 @@ abstract class TodoItem {
                                         .onDoubleClick(e -> onEdit(_todo)),
                                 _todo.getTitle()),
                         button(new BtnProps()
-                                .className(TodoItem_Styled_DestroyStyle.get().style())
+                                .className(DestroyStyle.get().style())
                                 .onClick(e -> _todoRepository.destroy(_todo)))),
                 input(new InputProps()
                         .ref(e -> _editField = Js.uncheckedCast(e))
@@ -188,6 +188,10 @@ abstract class TodoItem {
         }
         """)
     abstract static class ItemStyle {
+        static ItemStyle get() {
+            return TodoItem_Styled_ItemStyle.get();
+        }
+
         abstract String style();
 
         abstract String editing();
@@ -199,6 +203,10 @@ abstract class TodoItem {
         }
         """)
     abstract static class ViewStyle {
+        static ViewStyle get() {
+            return TodoItem_Styled_ViewStyle.get();
+        }
+
         abstract String style();
 
         abstract String editing();
@@ -230,6 +238,10 @@ abstract class TodoItem {
         }
         """)
     abstract static class ToggleStyle {
+        static ToggleStyle get() {
+            return TodoItem_Styled_ToggleStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -247,6 +259,10 @@ abstract class TodoItem {
         }
         """)
     abstract static class LabelStyle {
+        static LabelStyle get() {
+            return TodoItem_Styled_LabelStyle.get();
+        }
+
         abstract String style();
 
         abstract String completed();
@@ -285,6 +301,10 @@ abstract class TodoItem {
         }
         """)
     abstract static class DestroyStyle {
+        static DestroyStyle get() {
+            return TodoItem_Styled_DestroyStyle.get();
+        }
+
         abstract String style();
     }
 
@@ -330,6 +350,10 @@ abstract class TodoItem {
         }
         """)
     abstract static class EditStyle {
+        static EditStyle get() {
+            return TodoItem_Styled_EditStyle.get();
+        }
+
         abstract String style();
 
         abstract String editing();

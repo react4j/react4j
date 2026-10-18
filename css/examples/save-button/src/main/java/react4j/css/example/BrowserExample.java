@@ -17,15 +17,15 @@ public final class BrowserExample {
 
     @JsMethod
     public static boolean bindingsAreSingletons() {
-        var button = BrowserExample_Styled_SaveButton.get();
-        var status = BrowserExample_Styled_Status.get();
-        return button == BrowserExample_Styled_SaveButton.get() && status == BrowserExample_Styled_Status.get();
+        var button = SaveButton.get();
+        var status = Status.get();
+        return button == SaveButton.get() && status == Status.get();
     }
 
     @JsMethod
     public static void render(Object container, @Nullable String success, @Nullable String shared) {
-        var button = BrowserExample_Styled_SaveButton.get();
-        var status = BrowserExample_Styled_Status.get();
+        var button = SaveButton.get();
+        var status = Status.get();
         var custom = new CssProps().customProperty("--success", success);
         ReactDOM.render(
                 DOM.div(
@@ -100,6 +100,10 @@ public final class BrowserExample {
         }
         """)
     abstract static class SaveButton {
+        static SaveButton get() {
+            return BrowserExample_Styled_SaveButton.get();
+        }
+
         abstract String style();
 
         abstract String success();
@@ -127,6 +131,10 @@ public final class BrowserExample {
         }
         """)
     abstract static class Status {
+        static Status get() {
+            return BrowserExample_Styled_Status.get();
+        }
+
         abstract String style();
 
         abstract String success();
