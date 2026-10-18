@@ -17,7 +17,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
@@ -55,13 +54,13 @@ abstract class React4j_TrackingView extends TrackingView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "Tracking" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "Tracking" );
     }
     return viewConstructor;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     return ViewState.SCHEDULED == $$react4j$$_state;
   }
@@ -83,7 +82,6 @@ abstract class React4j_TrackingView extends TrackingView {
     $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
-  @Nullable
   @Observe(
       name = "render",
       priority = Priority.LOW,
@@ -92,7 +90,7 @@ abstract class React4j_TrackingView extends TrackingView {
       observeLowerPriorityDependencies = true,
       reportResult = false
   )
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
     SchedulerUtil.pauseUntilRenderLoopComplete();
@@ -145,11 +143,10 @@ abstract class React4j_TrackingView extends TrackingView {
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_TrackingView view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    LiteNativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_TrackingView( this );
     }
@@ -165,8 +162,7 @@ abstract class React4j_TrackingView extends TrackingView {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }
@@ -175,11 +171,10 @@ abstract class React4j_TrackingView extends TrackingView {
       OnComponentDidUpdate,
       OnShouldComponentUpdate,
       OnComponentWillUnmount {
-    @NonNull
     private final React4j_TrackingView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_TrackingView( this );
     }
@@ -205,8 +200,7 @@ abstract class React4j_TrackingView extends TrackingView {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

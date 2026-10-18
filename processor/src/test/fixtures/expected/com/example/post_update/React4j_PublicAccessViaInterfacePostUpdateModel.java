@@ -8,7 +8,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -39,7 +38,7 @@ abstract class React4j_PublicAccessViaInterfacePostUpdateModel extends PublicAcc
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "PublicAccessViaInterfacePostUpdateModel" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "PublicAccessViaInterfacePostUpdateModel" );
     }
     return viewConstructor;
   }
@@ -52,8 +51,7 @@ abstract class React4j_PublicAccessViaInterfacePostUpdateModel extends PublicAcc
     ((Arez_React4j_PublicAccessViaInterfacePostUpdateModel) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -66,11 +64,10 @@ abstract class React4j_PublicAccessViaInterfacePostUpdateModel extends PublicAcc
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidUpdate, OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_PublicAccessViaInterfacePostUpdateModel view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_PublicAccessViaInterfacePostUpdateModel( this );
     }
@@ -91,8 +88,7 @@ abstract class React4j_PublicAccessViaInterfacePostUpdateModel extends PublicAcc
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

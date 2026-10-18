@@ -1,5 +1,6 @@
 package com.example.input;
 
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
@@ -90,8 +91,11 @@ final class InputOrderingBuilder {
     @Contract(pure = true)
     private final ReactNode build() {
       final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
-      _element.setKey(String.valueOf((boolean) inputs.get(React4j_InputOrderingView.Inputs.paramZ))
-          + "-" + String.valueOf((boolean) inputs.get(React4j_InputOrderingView.Inputs.paramP))
+      _element.setKey(String.valueOf(
+              (boolean) Objects.requireNonNull(inputs.get(React4j_InputOrderingView.Inputs.paramZ)))
+          + "-"
+          + String.valueOf(
+              (boolean) Objects.requireNonNull(inputs.get(React4j_InputOrderingView.Inputs.paramP)))
           + (React.enableViewNames()
               ? "_InputOrderingView_5e9a9eff"
               : InputOrderingView.class.getName()));

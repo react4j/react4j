@@ -51,12 +51,9 @@ final class React4j_ConstructorContractViewFactory {
       assert null != c_factory;
       @Nullable String[] values;
       if (React.shouldCheckInvariants()) {
-        values =
-            null != view.requireInputs().getAsAny(React4j_ConstructorContractView.Inputs.values)
-                ? view.requireInputs()
-                    .getAsAny(React4j_ConstructorContractView.Inputs.values)
-                    .cast()
-                : null;
+        final var raw$values =
+            view.requireInputs().getAsAny(React4j_ConstructorContractView.Inputs.values);
+        values = null != raw$values ? raw$values.cast() : null;
       } else {
         values = Js.uncheckedCast(
             view.requireInputs().getAsAny(React4j_ConstructorContractView.Inputs.values));

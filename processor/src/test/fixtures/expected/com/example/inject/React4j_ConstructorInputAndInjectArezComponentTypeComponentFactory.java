@@ -1,5 +1,6 @@
 package com.example.inject;
 
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -43,7 +44,7 @@ final class React4j_ConstructorInputAndInjectArezComponentTypeComponentFactory {
         Guards.invariant( () -> null != c_factory, () -> "Attempted to create an instance of the React4j view named 'ConstructorInputAndInjectArezComponentTypeComponent' before the view factory has been initialized. Please see the documentation at https://react4j.github.io/dependency_injection for directions how to configure dependency injection." );
       }
       assert null != c_factory;
-      final ConstructorInputAndInjectArezComponentTypeComponent.Model model = view.requireInputs().getAsAny( React4j_ConstructorInputAndInjectArezComponentTypeComponent.Inputs.model ).cast();
+      final ConstructorInputAndInjectArezComponentTypeComponent.Model model = Objects.requireNonNull( view.requireInputs().getAsAny( React4j_ConstructorInputAndInjectArezComponentTypeComponent.Inputs.model ) ).cast();
       return new Arez_React4j_ConstructorInputAndInjectArezComponentTypeComponent( view, c_factory.someParam, model );
     }
   }

@@ -36,7 +36,7 @@ abstract class React4j_ImmutablePropTypeArezComponentWithExplicitRequireId
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor)
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
           .set("displayName", "ImmutablePropTypeArezComponentWithExplicitRequireId");
     }
     return viewConstructor;
@@ -66,18 +66,16 @@ abstract class React4j_ImmutablePropTypeArezComponentWithExplicitRequireId
 
   private static final class NativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nullable
-    private final React4j_ImmutablePropTypeArezComponentWithExplicitRequireId view;
+    private final @Nullable React4j_ImmutablePropTypeArezComponentWithExplicitRequireId view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       assert null != inputs;
       ImmutablePropTypeArezComponentWithExplicitRequireId.MyComponent myProp;
       if (React.shouldCheckInvariants()) {
-        myProp = null != inputs.getAsAny(Inputs.myProp)
-            ? inputs.getAsAny(Inputs.myProp).cast()
-            : null;
+        final var raw$myProp = inputs.getAsAny(Inputs.myProp);
+        myProp = null != raw$myProp ? raw$myProp.cast() : null;
       } else {
         myProp = Js.uncheckedCast(inputs.getAsAny(Inputs.myProp));
       }
@@ -99,8 +97,7 @@ abstract class React4j_ImmutablePropTypeArezComponentWithExplicitRequireId
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       if (null != view && Disposable.isNotDisposed(view)) {
         return view.$$react4j$$_render();
       } else {

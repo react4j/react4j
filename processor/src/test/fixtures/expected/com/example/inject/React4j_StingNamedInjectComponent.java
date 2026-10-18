@@ -8,7 +8,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -39,7 +38,7 @@ abstract class React4j_StingNamedInjectComponent extends StingNamedInjectCompone
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "StingNamedInjectComponent" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "StingNamedInjectComponent" );
     }
     return viewConstructor;
   }
@@ -48,8 +47,7 @@ abstract class React4j_StingNamedInjectComponent extends StingNamedInjectCompone
     ((Arez_React4j_StingNamedInjectComponent) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -62,11 +60,10 @@ abstract class React4j_StingNamedInjectComponent extends StingNamedInjectCompone
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_StingNamedInjectComponent view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = React4j_StingNamedInjectComponentFactory.create( this );
     }
@@ -82,8 +79,7 @@ abstract class React4j_StingNamedInjectComponent extends StingNamedInjectCompone
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

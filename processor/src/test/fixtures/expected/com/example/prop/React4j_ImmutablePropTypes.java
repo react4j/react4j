@@ -4,6 +4,7 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
@@ -41,7 +42,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ImmutablePropTypes" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "ImmutablePropTypes" );
     }
     return viewConstructor;
   }
@@ -55,7 +56,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if ( React.shouldValidateInputValues() ) {
       $$react4j$$_validateInputValues( nextInputs );
@@ -67,8 +68,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     ((Arez_React4j_ImmutablePropTypes) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -98,41 +98,45 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nullable
-    private final React4j_ImmutablePropTypes view;
+    private final @Nullable React4j_ImmutablePropTypes view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       assert null != inputs;
       ImmutablePropTypes.MyComponent myProp;
       if ( React.shouldCheckInvariants() ) {
-        myProp = null != inputs.getAsAny( Inputs.myProp ) ? inputs.getAsAny( Inputs.myProp ).cast() : null;
+        final var raw$myProp = inputs.getAsAny( Inputs.myProp );
+        myProp = null != raw$myProp ? raw$myProp.cast() : null;
       } else {
         myProp = Js.uncheckedCast( inputs.getAsAny( Inputs.myProp ) );
       }
       String myOtherProp;
       if ( React.shouldCheckInvariants() ) {
-        myOtherProp = null != inputs.getAsAny( Inputs.myOtherProp ) ? inputs.getAsAny( Inputs.myOtherProp ).asString() : null;
+        final var raw$myOtherProp = inputs.getAsAny( Inputs.myOtherProp );
+        myOtherProp = null != raw$myOtherProp ? raw$myOtherProp.asString() : null;
       } else {
         myOtherProp = Js.uncheckedCast( inputs.getAsAny( Inputs.myOtherProp ) );
       }
-      final int stillAnotherProp = inputs.getAsAny( Inputs.stillAnotherProp ).asInt();
+      final int stillAnotherProp = Objects.requireNonNull( inputs.getAsAny( Inputs.stillAnotherProp ) ).asInt();
       ImmutablePropTypes.KeyedComponent bobsProp;
       if ( React.shouldCheckInvariants() ) {
-        bobsProp = null != inputs.getAsAny( Inputs.bobsProp ) ? inputs.getAsAny( Inputs.bobsProp ).cast() : null;
+        final var raw$bobsProp = inputs.getAsAny( Inputs.bobsProp );
+        bobsProp = null != raw$bobsProp ? raw$bobsProp.cast() : null;
       } else {
         bobsProp = Js.uncheckedCast( inputs.getAsAny( Inputs.bobsProp ) );
       }
       ImmutablePropTypes.Foo someProp;
       if ( React.shouldCheckInvariants() ) {
-        someProp = null != inputs.getAsAny( Inputs.someProp ) ? inputs.getAsAny( Inputs.someProp ).cast() : null;
+        final var raw$someProp = inputs.getAsAny( Inputs.someProp );
+        someProp = null != raw$someProp ? raw$someProp.cast() : null;
       } else {
         someProp = Js.uncheckedCast( inputs.getAsAny( Inputs.someProp ) );
       }
       Object object;
       if ( React.shouldCheckInvariants() ) {
-        object = null != inputs.getAsAny( Inputs.object ) ? inputs.getAsAny( Inputs.object ).cast() : null;
+        final var raw$object = inputs.getAsAny( Inputs.object );
+        object = null != raw$object ? raw$object.cast() : null;
       } else {
         object = Js.uncheckedCast( inputs.getAsAny( Inputs.object ) );
       }
@@ -160,8 +164,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       if ( null != view && Disposable.isNotDisposed( view ) ) {
         return view.$$react4j$$_render();
       } else {

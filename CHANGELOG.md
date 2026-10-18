@@ -5,6 +5,11 @@
 * Restore grey, struck-through labels for completed tasks in all three TodoMVC examples.
 * Add String-based `CssProps.customProperty` and HTML `data` fluent APIs for CSS custom properties and data attributes, including nullable removal without JavaScript casts.
 * Add experimental CSS-in-Java authoring with `react4j.css`: define component styles in Java text blocks and use generated singleton class-name accessors through `get()`. Names derive from Java owners; compilation checks CSS syntax and selector/accessor agreement. Share animations through `@Keyframes`, select component peers with checked `:css(alias)` selectors, and include global rules transitively through `@CssImport` or select `@GlobalCss` bundle roots. Import kinds derive from the referenced annotations; aliases stay local to each style definition. Bundles emit each required resource once, omit unused shared animations and unselected globals, and provide source maps back to Java. Processing and bundling run on the JVM. Generated Java is formatted with Palantir by default; `-Areact4j.css.format_generated_source=false` disables formatting.
+* Upgrade JSpecify to version `1.0.1`.
+* Build against pinned Braincheck and Zemeckis publication archives in Bazel.
+
+* Support JsInterop 1.2 nullness contracts when reading required JavaScript inputs and context components. Emit JSpecify qualifiers directly on generated types so consumer builds pass AnnotationPosition. Accept an absent inline style in DOM props and a null context children array, including generated context providers without a render method.
+
 * Import the raw, Arez and Sting TodoMVC examples with checked Bazel/J2CL builds, shared assets, browser coverage and local preview commands. Correct the remaining-task counts and raw view subscriptions. Build the existing site routes here and retire the separately hosted Dagger demo.
 * Correct implicit default constructor handling under Turbine using Proton's origin query, preserving validation and diagnostics for explicitly written constructors.
 * Import Heart Rate Monitor under `examples/heart-rate-monitor` with checked package-level Bazel/J2CL builds, browser tests, preview commands, and site integration at `/heart-rate-monitor/`.

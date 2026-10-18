@@ -21,7 +21,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
@@ -61,7 +60,8 @@ abstract class React4j_ObservableProp extends ObservableProp {
             ? NativeView::new
             : LiteNativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "ObservableProp");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "ObservableProp");
     }
     return viewConstructor;
   }
@@ -71,9 +71,8 @@ abstract class React4j_ObservableProp extends ObservableProp {
   @Nullable
   Object getValue() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.value)
-          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.value).cast()
-          : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.value);
+      return null != value ? value.cast() : null;
     } else {
       return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.value));
     }
@@ -84,7 +83,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
 
   @Action(verifyRequired = false, skipIfDisposed = Feature.DISABLE, reportParameters = false)
   boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     boolean modified = false;
@@ -112,7 +111,6 @@ abstract class React4j_ObservableProp extends ObservableProp {
     $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
-  @Nullable
   @Observe(
       name = "render",
       priority = Priority.LOW,
@@ -120,6 +118,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
       depType = DepType.AREZ_OR_NONE,
       observeLowerPriorityDependencies = true,
       reportResult = false)
+  @Nullable
   ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed(this);
@@ -185,11 +184,10 @@ abstract class React4j_ObservableProp extends ObservableProp {
 
   private static final class LiteNativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_ObservableProp view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    LiteNativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_ObservableProp(this);
     }
@@ -205,8 +203,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }
@@ -216,11 +213,10 @@ abstract class React4j_ObservableProp extends ObservableProp {
           OnComponentDidUpdate,
           OnShouldComponentUpdate,
           OnComponentWillUnmount {
-    @NonNull
     private final React4j_ObservableProp view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_ObservableProp(this);
     }
@@ -246,8 +242,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

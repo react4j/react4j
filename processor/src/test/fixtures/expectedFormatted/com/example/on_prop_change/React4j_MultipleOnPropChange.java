@@ -4,11 +4,11 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
@@ -38,28 +38,30 @@ abstract class React4j_MultipleOnPropChange extends MultipleOnPropChange {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "MultipleOnPropChange");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "MultipleOnPropChange");
     }
     return viewConstructor;
   }
 
   @Override
   boolean getMyProp1() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp1).asBoolean();
+    return Objects.requireNonNull($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp1))
+        .asBoolean();
   }
 
   @Override
   int getMyProp3() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp3).asInt();
+    return Objects.requireNonNull($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp3))
+        .asInt();
   }
 
   @Override
   @Nullable
   String getMyProp2() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp2)
-          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp2).asString()
-          : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp2);
+      return null != value ? value.asString() : null;
     } else {
       return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.myProp2));
     }
@@ -84,7 +86,7 @@ abstract class React4j_MultipleOnPropChange extends MultipleOnPropChange {
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if (React.shouldValidateInputValues()) {
       $$react4j$$_validateInputValues(nextInputs);
@@ -103,7 +105,7 @@ abstract class React4j_MultipleOnPropChange extends MultipleOnPropChange {
   }
 
   private void $$react4j$$_componentPreUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> prevInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if (null != prevInputs) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
       final boolean myProp1 =
@@ -114,9 +116,9 @@ abstract class React4j_MultipleOnPropChange extends MultipleOnPropChange {
           !Js.isTripleEqual(inputs.get(Inputs.myProp3), prevInputs.get(Inputs.myProp3));
       if (myProp1 && myProp2 && myProp3) {
         onPropChange(
-            inputs.getAsAny(Inputs.myProp1).asBoolean(),
+            Objects.requireNonNull(inputs.getAsAny(Inputs.myProp1)).asBoolean(),
             Js.uncheckedCast(inputs.getAsAny(Inputs.myProp2)),
-            inputs.getAsAny(Inputs.myProp3).asInt());
+            Objects.requireNonNull(inputs.getAsAny(Inputs.myProp3)).asInt());
       }
     }
   }
@@ -149,11 +151,10 @@ abstract class React4j_MultipleOnPropChange extends MultipleOnPropChange {
 
   private static final class NativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount, OnGetSnapshotBeforeUpdate {
-    @NonNull
     private final React4j_MultipleOnPropChange view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_MultipleOnPropChange(this);
       if (React.shouldValidateInputValues()) {
@@ -168,8 +169,7 @@ abstract class React4j_MultipleOnPropChange extends MultipleOnPropChange {
     }
 
     @Override
-    @Nullable
-    public final Object getSnapshotBeforeUpdate(
+    public final @Nullable Object getSnapshotBeforeUpdate(
         final JsPropertyMap<@Nullable Object> prevInputs,
         final JsPropertyMap<@Nullable Object> prevState) {
       view.$$react4j$$_componentPreUpdate(prevInputs);
@@ -182,8 +182,7 @@ abstract class React4j_MultipleOnPropChange extends MultipleOnPropChange {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

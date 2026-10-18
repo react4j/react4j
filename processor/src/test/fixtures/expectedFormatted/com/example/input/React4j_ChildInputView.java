@@ -17,7 +17,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
@@ -57,7 +56,8 @@ abstract class React4j_ChildInputView extends ChildInputView {
             ? NativeView::new
             : LiteNativeView::new;
     if (React.enableViewNames()) {
-      Js.asPropertyMap(viewConstructor).set("displayName", "ChildInput");
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "ChildInput");
     }
     return viewConstructor;
   }
@@ -66,16 +66,15 @@ abstract class React4j_ChildInputView extends ChildInputView {
   @Nullable
   ReactNode getChild() {
     if (React.shouldCheckInvariants()) {
-      return null != $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.child)
-          ? $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.child).cast()
-          : null;
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.child);
+      return null != value ? value.cast() : null;
     } else {
       return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.child));
     }
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
     if (!Js.isTripleEqual(inputs.get(Inputs.child), nextInputs.get(Inputs.child))) {
@@ -101,7 +100,6 @@ abstract class React4j_ChildInputView extends ChildInputView {
     $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
-  @Nullable
   @Observe(
       name = "render",
       priority = Priority.LOW,
@@ -109,6 +107,7 @@ abstract class React4j_ChildInputView extends ChildInputView {
       depType = DepType.AREZ_OR_NONE,
       observeLowerPriorityDependencies = true,
       reportResult = false)
+  @Nullable
   ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed(this);
@@ -174,11 +173,10 @@ abstract class React4j_ChildInputView extends ChildInputView {
 
   private static final class LiteNativeView extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_ChildInputView view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    LiteNativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_ChildInputView(this);
     }
@@ -194,8 +192,7 @@ abstract class React4j_ChildInputView extends ChildInputView {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }
@@ -205,11 +202,10 @@ abstract class React4j_ChildInputView extends ChildInputView {
           OnComponentDidUpdate,
           OnShouldComponentUpdate,
           OnComponentWillUnmount {
-    @NonNull
     private final React4j_ChildInputView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       view = new Arez_React4j_ChildInputView(this);
     }
@@ -235,8 +231,7 @@ abstract class React4j_ChildInputView extends ChildInputView {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

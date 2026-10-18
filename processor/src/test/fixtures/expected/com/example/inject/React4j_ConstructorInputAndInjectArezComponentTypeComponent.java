@@ -4,6 +4,7 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
@@ -40,7 +41,7 @@ abstract class React4j_ConstructorInputAndInjectArezComponentTypeComponent exten
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "ConstructorInputAndInjectArezComponentTypeComponent" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "ConstructorInputAndInjectArezComponentTypeComponent" );
     }
     return viewConstructor;
   }
@@ -54,7 +55,7 @@ abstract class React4j_ConstructorInputAndInjectArezComponentTypeComponent exten
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if ( React.shouldValidateInputValues() ) {
       $$react4j$$_validateInputValues( nextInputs );
@@ -66,8 +67,7 @@ abstract class React4j_ConstructorInputAndInjectArezComponentTypeComponent exten
     ((Arez_React4j_ConstructorInputAndInjectArezComponentTypeComponent) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -87,14 +87,13 @@ abstract class React4j_ConstructorInputAndInjectArezComponentTypeComponent exten
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @Nullable
-    private final React4j_ConstructorInputAndInjectArezComponentTypeComponent view;
+    private final @Nullable React4j_ConstructorInputAndInjectArezComponentTypeComponent view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       assert null != inputs;
-      view = Disposable.isDisposed( inputs.getAsAny( Inputs.model ).cast() ) ? null : React4j_ConstructorInputAndInjectArezComponentTypeComponentFactory.create( this );
+      view = Disposable.isDisposed( Objects.requireNonNull( inputs.getAsAny( Inputs.model ) ).cast() ) ? null : React4j_ConstructorInputAndInjectArezComponentTypeComponentFactory.create( this );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;
         React4j_ConstructorInputAndInjectArezComponentTypeComponent.$$react4j$$_validateInputValues( inputs );
@@ -118,8 +117,7 @@ abstract class React4j_ConstructorInputAndInjectArezComponentTypeComponent exten
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       if ( null != view && Disposable.isNotDisposed( view ) ) {
         return view.$$react4j$$_render();
       } else {

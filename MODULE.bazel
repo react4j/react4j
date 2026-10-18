@@ -1,23 +1,37 @@
 module(name = "react4j")
 
+bazel_dep(name = "braincheck")
+git_override(
+    module_name = "braincheck",
+    commit = "da61a26bb5b0577cb6b76fbccf9eff3158fd1e1f",
+    remote = "https://github.com/realityforge/braincheck.git",
+)
+
+bazel_dep(name = "zemeckis")
+git_override(
+    module_name = "zemeckis",
+    commit = "94ba5af646b322c235b8d895b99999ec251ede5b",
+    remote = "https://github.com/realityforge/zemeckis.git",
+)
+
 bazel_dep(name = "arez")
 git_override(
     module_name = "arez",
-    commit = "6811e57bd0585752876f2de0996385e8d24aaf5f",
+    commit = "0321e1ed4f45a3ca77572ab3f101ee7dff9c40e2",
     remote = "https://github.com/arez/arez.git",
 )
 
 bazel_dep(name = "proton_project", repo_name = "proton")
 git_override(
     module_name = "proton_project",
-    commit = "d156a9d2eee74f1577cf8b7a03cd9a5a67a637ee",
+    commit = "83158563c6c62bb7fb0c37d9e7e2e699927ded9d",
     remote = "https://github.com/realityforge/proton.git",
 )
 
 bazel_dep(name = "sting")
 git_override(
     module_name = "sting",
-    commit = "fc89bc7c3f4450d3d1b75eaa58e63edfb37f1267",
+    commit = "affa9a0f05f6bec61f7b4d80fc7b3ed5002c9481",
     remote = "https://github.com/sting-ioc/sting.git",
 )
 
@@ -58,10 +72,12 @@ single_version_override(
 # transitive module's partial Maven lock.
 browser_maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 browser_maven.install(
-    artifacts = ["org.jspecify:jspecify:1.0.0"],
+    artifacts = ["org.jspecify:jspecify:1.0.1"],
     duplicate_version_warning = "none",
     fail_if_repin_required = True,
     known_contributing_modules = [
+        "braincheck",
+        "zemeckis",
         "j2cl",
         "jsinterop_base",
         "protobuf",
@@ -160,16 +176,16 @@ _http_file(
 
 _http_file(
     name = "base",
-    downloaded_file_path = "com/google/jsinterop/base/1.0.0/base-1.0.0.jar",
-    sha256 = "603635c26a384f601b19fa79c04208bd2f52da7af54650a3abced5b813ca4412",
-    urls = ["https://repo.maven.apache.org/maven2/com/google/jsinterop/base/1.0.0/base-1.0.0.jar"],
+    downloaded_file_path = "com/google/jsinterop/base/1.2.0/base-1.2.0.jar",
+    sha256 = "74b273c76c94b27826ff816186310a2b384fb7b3e96471b26dd28afae263572a",
+    urls = ["https://repo.maven.apache.org/maven2/com/google/jsinterop/base/1.2.0/base-1.2.0.jar"],
 )
 
 _http_file(
     name = "base__sources",
-    downloaded_file_path = "com/google/jsinterop/base/1.0.0/base-1.0.0-sources.jar",
-    sha256 = "733f02f18b225ffb24e927f23ca12ea91fec7b560665a8720a62ab95013cf5ea",
-    urls = ["https://repo.maven.apache.org/maven2/com/google/jsinterop/base/1.0.0/base-1.0.0-sources.jar"],
+    downloaded_file_path = "com/google/jsinterop/base/1.2.0/base-1.2.0-sources.jar",
+    sha256 = "bd3584e4541e96557b98066c1bda7070046e87f11ec017c7815a0eed207e0ec8",
+    urls = ["https://repo.maven.apache.org/maven2/com/google/jsinterop/base/1.2.0/base-1.2.0-sources.jar"],
 )
 
 _http_file(
@@ -440,16 +456,16 @@ _http_file(
 
 _http_file(
     name = "jspecify",
-    downloaded_file_path = "org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar",
-    sha256 = "1fad6e6be7557781e4d33729d49ae1cdc8fdda6fe477bb0cc68ce351eafdfbab",
-    urls = ["https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar"],
+    downloaded_file_path = "org/jspecify/jspecify/1.0.1/jspecify-1.0.1.jar",
+    sha256 = "070d75f261fe4c5b8202508366715f7f2d4660f88c8ef7e6d3575e48c9683b66",
+    urls = ["https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.1/jspecify-1.0.1.jar"],
 )
 
 _http_file(
     name = "jspecify__sources",
-    downloaded_file_path = "org/jspecify/jspecify/1.0.0/jspecify-1.0.0-sources.jar",
-    sha256 = "adf0898191d55937fb3192ba971826f4f294292c4a960740f3c27310e7b70296",
-    urls = ["https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.0/jspecify-1.0.0-sources.jar"],
+    downloaded_file_path = "org/jspecify/jspecify/1.0.1/jspecify-1.0.1-sources.jar",
+    sha256 = "230c491aac6d2a2b7e66b68d4331b1d2626f1bf3a372c33bbe2b077297e46c45",
+    urls = ["https://repo.maven.apache.org/maven2/org/jspecify/jspecify/1.0.1/jspecify-1.0.1-sources.jar"],
 )
 
 _http_file(
@@ -485,20 +501,6 @@ _http_file(
     downloaded_file_path = "org/realityforge/bazel/depgen/bazel-depgen/0.26/bazel-depgen-0.26-all.jar",
     sha256 = "217987b5d60162bf6afe78a838b64818abef511852e39b094824e0b01a9bbd8c",
     urls = ["https://repo.maven.apache.org/maven2/org/realityforge/bazel/depgen/bazel-depgen/0.26/bazel-depgen-0.26-all.jar"],
-)
-
-_http_file(
-    name = "braincheck_core",
-    downloaded_file_path = "org/realityforge/braincheck/braincheck-core/1.35.0/braincheck-core-1.35.0.jar",
-    sha256 = "6d37351d8be23c2dd5b0c06a75cf6d1eaf70a8cad9300ce4bcf2d2d92de74b94",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/braincheck/braincheck-core/1.35.0/braincheck-core-1.35.0.jar"],
-)
-
-_http_file(
-    name = "braincheck_core__sources",
-    downloaded_file_path = "org/realityforge/braincheck/braincheck-core/1.35.0/braincheck-core-1.35.0-sources.jar",
-    sha256 = "2111c57c8b83e4e0e75dfe6f00b13dedd7c8484a91f8331fbd00c657cc9ed9d2",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/braincheck/braincheck-core/1.35.0/braincheck-core-1.35.0-sources.jar"],
 )
 
 _http_file(
@@ -555,20 +557,6 @@ _http_file(
     downloaded_file_path = "org/realityforge/org/jetbrains/annotations/org.jetbrains.annotations/1.7.0/org.jetbrains.annotations-1.7.0-sources.jar",
     sha256 = "51b7fe38ce0c21d53eb236f911d109923459c5625c6e62a4d02b95c71bfaec22",
     urls = ["https://repo.maven.apache.org/maven2/org/realityforge/org/jetbrains/annotations/org.jetbrains.annotations/1.7.0/org.jetbrains.annotations-1.7.0-sources.jar"],
-)
-
-_http_file(
-    name = "zemeckis_core",
-    downloaded_file_path = "org/realityforge/zemeckis/zemeckis-core/0.18/zemeckis-core-0.18.jar",
-    sha256 = "9fecd374ffd669e2816685d74f7c1d7b1dc746103bd932ea9c9ee6659132d827",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/zemeckis/zemeckis-core/0.18/zemeckis-core-0.18.jar"],
-)
-
-_http_file(
-    name = "zemeckis_core__sources",
-    downloaded_file_path = "org/realityforge/zemeckis/zemeckis-core/0.18/zemeckis-core-0.18-sources.jar",
-    sha256 = "052da3cd335515041c0ab0c27b7abc760fb7870b7241f35d23e0c4e6f7a02e26",
-    urls = ["https://repo.maven.apache.org/maven2/org/realityforge/zemeckis/zemeckis-core/0.18/zemeckis-core-0.18-sources.jar"],
 )
 
 _http_file(

@@ -17,7 +17,6 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
@@ -54,13 +53,13 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = ( React.shouldStoreDebugDataAsState() || React.shouldValidateInputValues() ) ? NativeView::new : LiteNativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "MaybeTracking" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "MaybeTracking" );
     }
     return viewConstructor;
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     return ViewState.SCHEDULED == $$react4j$$_state;
   }
@@ -82,7 +81,6 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
     $$react4j$$_state = ViewState.UNMOUNTED;
   }
 
-  @Nullable
   @Observe(
       name = "render",
       priority = Priority.LOW,
@@ -91,7 +89,7 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
       observeLowerPriorityDependencies = true,
       reportResult = false
   )
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
     SchedulerUtil.pauseUntilRenderLoopComplete();
@@ -140,11 +138,10 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
   }
 
   private static final class LiteNativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_MaybeTrackingView view;
 
     @JsConstructor
-    LiteNativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    LiteNativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_MaybeTrackingView( this );
     }
@@ -160,8 +157,7 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }
@@ -170,11 +166,10 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
       OnComponentDidUpdate,
       OnShouldComponentUpdate,
       OnComponentWillUnmount {
-    @NonNull
     private final React4j_MaybeTrackingView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_MaybeTrackingView( this );
     }
@@ -200,8 +195,7 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

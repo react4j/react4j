@@ -2,6 +2,7 @@ package com.example.prop;
 
 import arez.Disposable;
 import arez.component.Identifiable;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
@@ -433,27 +434,29 @@ final class ImmutablePropTypeMultipleBuilder {
       final Object $objectProp$ = inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.objectProp);
       final Object $nullableObjectProp$ =
           inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.nullableObjectProp);
-      _element.setKey(String.valueOf(
-              (boolean) inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.booleanProp))
+      _element.setKey(String.valueOf((boolean) Objects.requireNonNull(
+              inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.booleanProp)))
           + "-"
-          + String.valueOf(
-              (byte) (double) inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.byteProp))
+          + String.valueOf((byte) (double)
+              Objects.requireNonNull(inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.byteProp)))
           + "-"
-          + String.valueOf((char) inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.charProp))
+          + String.valueOf((char)
+              Objects.requireNonNull(inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.charProp)))
           + "-"
-          + String.valueOf((double) inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.doubleProp))
+          + String.valueOf((double) Objects.requireNonNull(
+              inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.doubleProp)))
           + "-"
-          + String.valueOf(
-              (float) (double) inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.floatProp))
+          + String.valueOf((float) (double) Objects.requireNonNull(
+              inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.floatProp)))
           + "-"
-          + String.valueOf(
-              (int) (double) inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.intProp))
+          + String.valueOf((int) (double)
+              Objects.requireNonNull(inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.intProp)))
           + "-"
-          + String.valueOf(
-              (long) (double) inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.longProp))
+          + String.valueOf((long) (double)
+              Objects.requireNonNull(inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.longProp)))
           + "-"
-          + String.valueOf(
-              (short) (double) inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.shortProp))
+          + String.valueOf((short) (double) Objects.requireNonNull(
+              inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.shortProp)))
           + "-"
           + ((ImmutablePropTypeMultiple.MyEnum)
               inputs.get(React4j_ImmutablePropTypeMultiple.Inputs.enumProp))

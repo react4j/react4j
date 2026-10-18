@@ -5,6 +5,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
 import react4j.dom.proptypes.cssPropertyTypes.AnimationFillMode;
 import react4j.dom.proptypes.cssPropertyTypes.Visibility;
@@ -21,7 +22,7 @@ public class CssProps {
     /** Sets a CSS custom property using its full name, such as {@code --accent}; null removes it. */
     @JsOverlay
     public final CssProps customProperty(final String name, @Nullable final String value) {
-        Js.asPropertyMap(this).set(name, value);
+        Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(this).set(name, value);
         return this;
     }
 

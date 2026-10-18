@@ -8,9 +8,10 @@ import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Context;
+import react4j.Contexts;
 import react4j.React;
 import react4j.ReactNode;
 import react4j.internal.OnComponentWillUnmount;
@@ -37,7 +38,7 @@ abstract class React4j_NoRenderWithPreRenderView extends NoRenderWithPreRenderVi
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "NoRenderWithPreRender" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "NoRenderWithPreRender" );
     }
     return viewConstructor;
   }
@@ -46,11 +47,17 @@ abstract class React4j_NoRenderWithPreRenderView extends NoRenderWithPreRenderVi
     ((Arez_React4j_NoRenderWithPreRenderView) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     preRender();
-    return null;
+    return ContextHolder.CONTEXT_contextValue.provide( contextValue(), (ReactNode[]) null );
+  }
+
+  private static final class ContextHolder {
+    private static final Context<String> CONTEXT_contextValue = Contexts.get( String.class );
+
+    private ContextHolder() {
+    }
   }
 
   static final class Factory {
@@ -61,11 +68,10 @@ abstract class React4j_NoRenderWithPreRenderView extends NoRenderWithPreRenderVi
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_NoRenderWithPreRenderView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_NoRenderWithPreRenderView( this );
     }
@@ -81,8 +87,7 @@ abstract class React4j_NoRenderWithPreRenderView extends NoRenderWithPreRenderVi
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }

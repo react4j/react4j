@@ -1,5 +1,6 @@
 package com.example.input;
 
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
@@ -54,11 +55,11 @@ final class NoShouldComponentUpdateForInputsBuilder {
     @Contract(pure = true)
     private final ReactNode build() {
       final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
-      _element.setKey(String.valueOf(
-              (boolean) inputs.get(React4j_NoShouldComponentUpdateForInputsView.Inputs.paramZ))
+      _element.setKey(String.valueOf((boolean) Objects.requireNonNull(
+              inputs.get(React4j_NoShouldComponentUpdateForInputsView.Inputs.paramZ)))
           + "-"
-          + String.valueOf(
-              (boolean) inputs.get(React4j_NoShouldComponentUpdateForInputsView.Inputs.paramP))
+          + String.valueOf((boolean) Objects.requireNonNull(
+              inputs.get(React4j_NoShouldComponentUpdateForInputsView.Inputs.paramP)))
           + (React.enableViewNames()
               ? "_NoShouldComponentUpdateForInputsView_4a12cafd"
               : NoShouldComponentUpdateForInputsView.class.getName()));

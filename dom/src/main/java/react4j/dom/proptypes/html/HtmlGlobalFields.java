@@ -63,14 +63,14 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
 
     @JsOverlay
     public final T prop(final String key, @Nullable final Any value) {
-        Js.asPropertyMap(this).set(key, value);
+        Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(this).set(key, value);
         return self();
     }
 
     /** Sets a data attribute by suffix: {@code data("shared", "true")} sets data-shared; null removes it. */
     @JsOverlay
     public final T data(final String name, @Nullable final String value) {
-        Js.asPropertyMap(this).set("data-" + name, value);
+        Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(this).set("data-" + name, value);
         return self();
     }
 
@@ -830,13 +830,13 @@ public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     public native @Nullable CssProps getStyle();
 
     @JsOverlay
-    public final T style(CssProps style) {
+    public final T style(@Nullable CssProps style) {
         setStyle(style);
         return self();
     }
 
     @JsProperty
-    protected native void setStyle(CssProps style);
+    protected native void setStyle(@Nullable CssProps style);
 
     @JsProperty
     public native @Nullable String getSummary();

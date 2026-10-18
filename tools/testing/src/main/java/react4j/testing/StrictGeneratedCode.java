@@ -51,6 +51,7 @@ public final class StrictGeneratedCode {
         }
         final var options = new ArrayList<>(Files.readAllLines(Path.of("third_party/java/strict_checker_options.txt")));
         options.addAll(List.of(
+                "-Xep:AnnotationPosition:ERROR",
                 "-proc:none",
                 "-sourcepath",
                 "",

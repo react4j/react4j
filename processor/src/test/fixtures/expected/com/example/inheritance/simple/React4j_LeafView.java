@@ -4,11 +4,11 @@ import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
+import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
@@ -41,69 +41,69 @@ abstract class React4j_LeafView extends LeafView {
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.asPropertyMap( viewConstructor ).set( "displayName", "Leaf" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "Leaf" );
     }
     return viewConstructor;
   }
 
   @Override
   public boolean zzField1InRootInterface() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.zzField1InRootInterface ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.zzField1InRootInterface ) ).asBoolean();
   }
 
   @Override
   public boolean aaField2InRootInterface() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.aaField2InRootInterface ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.aaField2InRootInterface ) ).asBoolean();
   }
 
   @Override
   boolean field1InRoot() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field1InRoot ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field1InRoot ) ).asBoolean();
   }
 
   @Override
   boolean field2InRoot() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field2InRoot ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field2InRoot ) ).asBoolean();
   }
 
   @Override
   public boolean zzField1InInnerInterface() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.zzField1InInnerInterface ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.zzField1InInnerInterface ) ).asBoolean();
   }
 
   @Override
   public boolean aaField2InInnerInterface() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.aaField2InInnerInterface ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.aaField2InInnerInterface ) ).asBoolean();
   }
 
   @Override
   boolean field1InInner() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field1InInner ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field1InInner ) ).asBoolean();
   }
 
   @Override
   boolean field2InInner() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field2InInner ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field2InInner ) ).asBoolean();
   }
 
   @Override
   public boolean zzField1InLeafInterface() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.zzField1InLeafInterface ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.zzField1InLeafInterface ) ).asBoolean();
   }
 
   @Override
   public boolean aaField2InLeafInterface() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.aaField2InLeafInterface ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.aaField2InLeafInterface ) ).asBoolean();
   }
 
   @Override
   boolean field1InLeaf() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field1InLeaf ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field1InLeaf ) ).asBoolean();
   }
 
   @Override
   boolean field2InLeaf() {
-    return $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field2InLeaf ).asBoolean();
+    return Objects.requireNonNull( $$react4j$$_nativeView.requireInputs().getAsAny( Inputs.field2InLeaf ) ).asBoolean();
   }
 
   private static void $$react4j$$_validateInputValues(
@@ -159,7 +159,7 @@ abstract class React4j_LeafView extends LeafView {
   }
 
   private boolean $$react4j$$_shouldComponentUpdate(
-      @Nullable final JsPropertyMap<@Nullable Object> nextInputs) {
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     if ( React.shouldValidateInputValues() ) {
       $$react4j$$_validateInputValues( nextInputs );
@@ -208,8 +208,7 @@ abstract class React4j_LeafView extends LeafView {
     ((Arez_React4j_LeafView) this).dispose();
   }
 
-  @Nullable
-  ReactNode $$react4j$$_render() {
+  @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
     return render();
   }
@@ -251,11 +250,10 @@ abstract class React4j_LeafView extends LeafView {
   }
 
   private static final class NativeView extends react4j.internal.NativeView implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    @NonNull
     private final React4j_LeafView view;
 
     @JsConstructor
-    NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       view = new Arez_React4j_LeafView( this );
       if ( React.shouldValidateInputValues() ) {
@@ -275,8 +273,7 @@ abstract class React4j_LeafView extends LeafView {
     }
 
     @Override
-    @Nullable
-    public final ReactNode render() {
+    public final @Nullable ReactNode render() {
       return view.$$react4j$$_render();
     }
   }
