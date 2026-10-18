@@ -21,7 +21,6 @@ java_format_check(
         "//css/processor/src/test/java/react4j/css/processor:compiler_tests",
         "//css/processor/src/test/java/react4j/css/processor:names_tests",
         "//css/processor/src/test/java/react4j/css/processor:peer_compiler_tests",
-        "//css/processor/src/test/java/react4j/css/processor:readme_tests",
         "//css/processor/src/test/java/react4j/css/processor:text_block_tests",
         "//css/integration-tests/src/test/java/react4j/css/integration:integration_tests",
         "//css/integration-tests/src/test/java/react4j/css/integration:fixture_dependency_java",
