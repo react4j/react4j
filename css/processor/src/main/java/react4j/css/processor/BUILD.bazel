@@ -9,6 +9,7 @@ java_library(
         "CssExpressions.java",
         "CssGenerator.java",
         "CssIds.java",
+        "CssMethods.java",
         "CssProcessor.java",
         "CssProperties.java",
         "Names.java",

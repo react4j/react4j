@@ -124,7 +124,6 @@ public final class CssResourceProcessorTest {
                 "enum Pulse",
                 "record Pulse()",
                 "class Pulse<T>",
-                "abstract class Pulse implements Runnable",
                 "class Pulse extends Parent")) {
             String source = frames(declaration, "", FRAMES);
             if (declaration.startsWith("enum")) {

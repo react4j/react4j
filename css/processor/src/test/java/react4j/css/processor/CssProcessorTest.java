@@ -63,6 +63,7 @@ public final class CssProcessorTest {
     @DataProvider(name = "fixtures")
     public Object[][] fixtures() throws Exception {
         Object[][] fixtures = {
+            new Object[] {"input", List.of("com/example/interfaces/Owner.java")},
             new Object[] {"input", List.of("com/example/symbols/Owner.java")},
             new Object[] {"bad_input", List.of("com/example/attribute_id/Button.java")},
             new Object[] {"bad_input", List.of("com/example/conflicting_symbol/Button.java")},
@@ -609,12 +610,7 @@ public final class CssProcessorTest {
                 "CSS accessor style must take no arguments and return String without type parameters or throws";
         var cases = new ArrayList<Object[]>();
         for (var declaration : List.of(
-                "class Button",
-                "abstract class Button<T>",
-                "abstract class Button implements Runnable",
-                "interface Button",
-                "@interface Button",
-                "enum Button")) {
+                "class Button", "abstract class Button<T>", "interface Button", "@interface Button", "enum Button")) {
             String text = base.replace("abstract class Button", declaration);
             if ("enum Button".equals(declaration)) {
                 text = text.replace("enum Button {", "enum Button {;");

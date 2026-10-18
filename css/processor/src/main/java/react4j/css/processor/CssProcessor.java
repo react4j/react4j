@@ -188,7 +188,6 @@ public final class CssProcessor extends AbstractStandardProcessor {
     private void validateResourceType(TypeElement owner) {
         if (ElementKind.CLASS != owner.getKind()
                 || !owner.getTypeParameters().isEmpty()
-                || !owner.getInterfaces().isEmpty()
                 || !isType(owner.getSuperclass(), "java.lang.Object")
                 || owner.getModifiers().contains(Modifier.PRIVATE)
                 || owner.getModifiers().contains(Modifier.SEALED)
@@ -349,7 +348,6 @@ public final class CssProcessor extends AbstractStandardProcessor {
         if (ElementKind.CLASS != owner.getKind()
                 || !owner.getModifiers().contains(Modifier.ABSTRACT)
                 || !owner.getTypeParameters().isEmpty()
-                || !owner.getInterfaces().isEmpty()
                 || !isType(owner.getSuperclass(), "java.lang.Object")
                 || owner.getModifiers().contains(Modifier.PRIVATE)
                 || (owner.getNestingKind().isNested() && !owner.getModifiers().contains(Modifier.STATIC))) {
@@ -379,25 +377,26 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 if (Elements.Origin.EXPLICIT == ElementsUtil.getOrigin(processingEnv.getElementUtils(), member)) {
                     throw new IllegalArgumentException("@Css style classes must not declare constructors");
                 }
-            } else if (ElementKind.METHOD == member.getKind()) {
-                var method = (ExecutableElement) member;
-                if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
-                    if (null != symbolAnnotation(method)) {
-                        throw new IllegalArgumentException(
-                                "CSS symbol accessors must be abstract: " + method.getSimpleName());
-                    }
-                    continue;
-                }
-                if (!method.getParameters().isEmpty()
-                        || !method.getTypeParameters().isEmpty()
-                        || !method.getThrownTypes().isEmpty()
-                        || !isType(method.getReturnType(), "java.lang.String")) {
-                    throw new IllegalArgumentException("CSS accessor " + method.getSimpleName()
-                            + " must take no arguments and return String without type parameters or throws");
-                }
-                methods.add(method);
-                deprecated |= processingEnv.getElementUtils().isDeprecated(method);
             }
+        }
+        for (var inherited : CssMethods.collect(processingEnv, owner)) {
+            var method = inherited.element();
+            if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
+                if (null != symbolAnnotation(method)) {
+                    throw new IllegalArgumentException(
+                            "CSS symbol accessors must be abstract: " + method.getSimpleName());
+                }
+                continue;
+            }
+            if (!inherited.type().getParameterTypes().isEmpty()
+                    || !method.getTypeParameters().isEmpty()
+                    || !inherited.type().getThrownTypes().isEmpty()
+                    || !isType(inherited.type().getReturnType(), "java.lang.String")) {
+                throw new IllegalArgumentException("CSS accessor " + method.getSimpleName()
+                        + " must take no arguments and return String without type parameters or throws");
+            }
+            methods.add(method);
+            deprecated |= processingEnv.getElementUtils().isDeprecated(method);
         }
         if (trees.getTree(owner).getMembers().stream()
                 .anyMatch(member -> member instanceof BlockTree block && !block.isStatic())) {
@@ -487,21 +486,23 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 enclosing = enclosing.getEnclosingElement()) {
             deprecated |= processingEnv.getElementUtils().isDeprecated(enclosing);
         }
-        for (var member : owner.getEnclosedElements()) {
-            if (member instanceof ExecutableElement method && ElementKind.METHOD == method.getKind()) {
-                if (null != symbolAnnotation(method)) {
-                    if (!method.getModifiers().contains(Modifier.ABSTRACT)
-                            || !method.getParameters().isEmpty()
-                            || !method.getTypeParameters().isEmpty()
-                            || !method.getThrownTypes().isEmpty()
-                            || !isType(method.getReturnType(), "java.lang.String")) {
-                        throw new IllegalArgumentException(
-                                "CSS symbol accessors must be abstract, take no arguments and return String without"
-                                        + " type parameters or throws");
-                    }
-                    methods.add(method);
-                    deprecated |= processingEnv.getElementUtils().isDeprecated(method);
+        for (var inherited : CssMethods.collect(processingEnv, owner)) {
+            var method = inherited.element();
+            if (null != symbolAnnotation(method)) {
+                if (!method.getModifiers().contains(Modifier.ABSTRACT)
+                        || !inherited.type().getParameterTypes().isEmpty()
+                        || !method.getTypeParameters().isEmpty()
+                        || !inherited.type().getThrownTypes().isEmpty()
+                        || !isType(inherited.type().getReturnType(), "java.lang.String")) {
+                    throw new IllegalArgumentException(
+                            "CSS symbol accessors must be abstract, take no arguments and return String without"
+                                    + " type parameters or throws");
                 }
+                methods.add(method);
+                deprecated |= processingEnv.getElementUtils().isDeprecated(method);
+            } else if (method.getModifiers().contains(Modifier.ABSTRACT)) {
+                throw new IllegalArgumentException(
+                        "CSS resource abstract methods require a symbol annotation: " + method.getSimpleName());
             }
         }
         if (methods.isEmpty()) {
@@ -521,15 +522,16 @@ public final class CssProcessor extends AbstractStandardProcessor {
     }
 
     private boolean publicFactory(TypeElement owner, String label) {
-        for (var member : owner.getEnclosedElements()) {
-            if (member instanceof ExecutableElement method
-                    && ElementKind.METHOD == method.getKind()
-                    && method.getSimpleName().contentEquals("get")
+        for (var inherited : CssMethods.collect(processingEnv, owner)) {
+            var method = inherited.element();
+            if (method.getSimpleName().contentEquals("get")
                     && method.getParameters().isEmpty()
                     && !method.getModifiers().contains(Modifier.PRIVATE)) {
                 if (!method.getModifiers().contains(Modifier.STATIC)
                         || method.getModifiers().contains(Modifier.FINAL)
-                        || !processingEnv.getTypeUtils().isSubtype(owner.asType(), method.getReturnType())) {
+                        || !processingEnv
+                                .getTypeUtils()
+                                .isSubtype(owner.asType(), inherited.type().getReturnType())) {
                     throw new IllegalArgumentException(
                             label + " method get() conflicts with the generated singleton factory");
                 }
