@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: implementing
-- Current frontier: T02
+- Current frontier: T03
 - Planning reviewer: /root/interfaces_planning_review — Findings: none (1/3 rounds; final confirmation unused)
 - Plan checkpoint: automatic — user-authorized implementation, final grill-me confirmation and passing planning review; no human plan checkpoint requested
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -17,7 +17,7 @@
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
 | T01 | [Inherited Java accessors](T01-inherited-accessors.md) | complete | None |
-| T02 | [Inherited symbol contracts](T02-symbol-contracts.md) | pending | T01 |
+| T02 | [Inherited symbol contracts](T02-symbol-contracts.md) | complete | T01 |
 | T03 | [Separate compilation and full validation](T03-integration-validation.md) | pending | T02 |
 
 ## Sequencing notes

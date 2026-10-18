@@ -140,13 +140,16 @@ public final class CssResourceProcessorTest {
                 "static final int VALUE=1;",
                 "Pulse() {}",
                 "private Pulse() {}",
-                "public Pulse(int value) {}",
-                "abstract String name();")) {
+                "public Pulse(int value) {}")) {
             cases.add(new Object[] {
                 frames("abstract class Pulse", member, FRAMES),
                 "must not declare fields, constructors or abstract methods"
             });
         }
+        cases.add(new Object[] {
+            frames("abstract class Pulse", "abstract String name();", FRAMES),
+            "CSS resource abstract methods require a symbol annotation: name"
+        });
         for (var member : List.of("{}", "static {}")) {
             cases.add(new Object[] {frames("class Pulse", member, FRAMES), "must not declare initializers"});
         }
