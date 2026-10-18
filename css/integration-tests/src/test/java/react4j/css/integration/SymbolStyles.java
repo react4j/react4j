@@ -6,7 +6,7 @@ import react4j.css.CssCustomProperty;
 import react4j.css.CssId;
 import react4j.css.CssImport;
 
-@CssImport(value = SharedDefaults.class, property = "accent", name = "foreground")
+@CssImport(value = PropertyTheme.class, property = "ink", name = "foreground")
 @CssImport(value = SharedPulse.class, name = "pulse")
 @Css("""
     color: var(--foreground);

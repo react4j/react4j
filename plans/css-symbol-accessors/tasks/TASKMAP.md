@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementing
-- Current frontier: T03
+- Status: implementation-review
+- Current frontier: independent implementation review
 - Planning reviewer: passed (2/3 rounds; final confirmation unused)
 - Plan checkpoint: automatic — accepted implementation scope, final interview confirmation and passing independent planning review
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -10,7 +10,7 @@
 ## Full-scope validation
 
 - Gate: tools/check.sh
-- Evidence: pending
+- Evidence: tools/check.sh passed on the T03 implementation, including all local/CI stages; CSS processor coverage 99.1% lines / 96.3% branches. See T03 for counts and task-local verification.
 
 ## Tasks
 
@@ -18,7 +18,7 @@
 | --- | --- | --- | --- |
 | T01 | [Property symbols and imports](T01-properties.md) | complete | None |
 | T02 | [ID and animation exports](T02-ids-animations.md) | complete | T01 |
-| T03 | [Coverage, documentation and full validation](T03-validation.md) | pending | T02 |
+| T03 | [Coverage, documentation and full validation](T03-validation.md) | complete | T02 |
 
 ## Sequencing notes
 

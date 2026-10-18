@@ -8,8 +8,12 @@ Declare an abstract style class with a literal CSS text block:
 
 ```java
 import react4j.css.Css;
+import react4j.css.CssCustomProperty;
 
 @Css("""
+    --on-accent: white;
+    --focus: #06f;
+    --success: #080;
     color: var(--on-accent);
 
     &:focus-visible {
@@ -28,6 +32,9 @@ abstract class SaveButton {
     abstract String style();
 
     abstract String success();
+
+    @CssCustomProperty(name = "success")
+    abstract String successProperty();
 }
 ```
 
@@ -85,7 +92,7 @@ abstract class ButtonStyles {
 
 Component selectors start with `&`. Each later compound after a descendant, child (`>`), adjacent sibling (`+`) or general sibling (`~`) combinator must start with `:css(alias)`. Qualify peer roots with attributes or pseudo-classes. Peer modifier classes and peer references inside component selector functions are unsupported. Component reference cycles are allowed.
 
-The referenced type's annotation determines the import kind: named `@Css` imports supply peer roots, named `@Keyframes` imports supply animation names, and unnamed `@GlobalCss` imports include global rules. Aliases are local to the importing definition and share one namespace. Named imports are checked even when unused; a selector or animation reference creates the dependency.
+The referenced type's annotation determines the import kind: named `@Css` imports supply peer roots, named `@Keyframes` imports supply animation names, and unnamed `@GlobalCss` imports include global rules. Component and animation aliases share a namespace within the importing definition. Property aliases use a separate namespace. Named imports are checked even when unused; a selector or animation reference creates the dependency.
 
 ### Animations
 
@@ -135,7 +142,7 @@ abstract class StatusStyles {
 }
 ```
 
-The shared animation's name derives from its Java class. Multiple consumers emit one definition. Imports work across separately compiled libraries and are checked even when unused; only animation references retain their definitions. Repeat `@CssImport` to import more names. Aliases must be distinct and cannot conflict with local keyframe definitions. Use `animation-name` to avoid shorthand ambiguity when an alias is also a timing or direction keyword.
+The shared animation's name derives from its Java class. Multiple consumers emit one definition. Imports work across separately compiled libraries and are checked even when unused; animation declarations and accessors retain their definitions. Repeat `@CssImport` to import more names. Aliases must be distinct and cannot conflict with local keyframe definitions. Use `animation-name` to avoid shorthand ambiguity when an alias is also a timing or direction keyword.
 
 Use unprefixed `@keyframes`, `animation` and `animation-name`, with unescaped, unquoted names. Keyframe definitions inside selectors or conditional rules and animation bindings inside keyframes are unsupported. Names must be static. For dynamic timing, use `animation-name: pulse` with longhands such as `animation-duration: var(--duration)`. Shorthand accepts only `steps()`, `cubic-bezier()` and `linear()` functions.
 
@@ -151,23 +158,106 @@ Use `@GlobalCss` for page defaults and rules that target elements outside a comp
 final class ApplicationDefaults {}
 ```
 
-Selectors retain their authored names and require no Java accessors. Global styles support style rules, nesting, `@media` and `@supports`. Conditional blocks require explicit selectors even inside a style rule, for example `body { @media screen { & { color: red; } } }`. Import shared animations and component roots with `@CssImport`; global selectors may use `:css(alias)` to reference those roots. Inline keyframe definitions and other at-rules, including `@font-face`, are unsupported.
+Selectors retain their authored names except for checked component references and bound IDs. Global styles support style rules, nesting, `@media` and `@supports`. Conditional blocks require explicit selectors even inside a style rule, for example `body { @media screen { & { color: red; } } }`. Import shared animations and component roots with `@CssImport`; global selectors may use `:css(alias)` to reference those roots. Inline keyframe definitions and other at-rules, including `@font-face`, are unsupported.
 
 Select application globals through the bundle's `globals` attribute below. Add `@CssImport(ApplicationDefaults.class)` to a component or another global definition that requires those defaults. Global imports work across separately compiled libraries; duplicate imports, self-inclusion, names on global imports and incompatible types are errors. The bundler rejects cycles among global inclusion edges.
 
-Keyframe and global declaration classes may be concrete or abstract, public or package-access. Inheritance, interfaces, type parameters and sealed classes are unsupported. Nested declarations must be static with accessible enclosing types. They must not declare fields, explicit constructors, initializers or abstract methods; concrete and static helpers are allowed. These definitions produce resources without generated Java bindings.
+Keyframe and global declaration classes may be concrete or abstract, public or package-access. Inheritance, interfaces, type parameters and sealed classes are unsupported. Nested declarations must be static with accessible enclosing types. They must not declare fields, explicit constructors or initializers. Concrete and static helpers are allowed. Abstract methods must be annotated symbol accessors as described below. Definitions with accessors must be abstract and generate lazy Java bindings; definitions without accessors produce resources only.
 
-### Runtime values
+### CSS names in Java
 
-Use CSS custom properties for values that change at runtime. Reference them with `var(--success)` in CSS and set them through the element's `style` prop:
+Use annotated abstract `String` methods to expose names from `@Css`, `@GlobalCss` or `@Keyframes` definitions:
+
+| Annotation | CSS occurrence | Returned value |
+| --- | --- | --- |
+| `@CssId` | A hash selector or a pure fragment URL such as `url(#mask)` | The scoped ID without `#` |
+| `@CssAnimation` | A local keyframe or an imported animation alias | The resolved animation name |
+| `@CssCustomProperty` | A custom-property declaration or `var()` reference | The resolved name including `--` |
+
+Names default to the method name, stripping a getter prefix: `getAccent()` becomes `accent`, `getURL()` becomes `uRL`, and `accent()` stays `accent`. No suffix stripping or camel-to-kebab conversion occurs. Override the name when needed:
+
+```java
+@CssId(name = "control")
+abstract String controlId();
+
+@CssAnimation(name = "pulse")
+abstract String pulseName();
+
+@CssCustomProperty(name = "accent-color")
+abstract String accentProperty();
+```
+
+Explicit ID names omit `#`; property names omit `--`. Each accessor must match a CSS occurrence or, for animations, a checked import. Duplicate exports and conflicting annotations are errors. `style()` remains an unannotated class accessor on components.
+
+Bound IDs are rewritten in hash selectors and same-document fragment URLs, including nested expressions. Strings and asset URLs such as `icons.svg#mask` retain their text. Attribute selectors that reference bound IDs are rejected. An ID is static per definition; repeated component instances that need distinct DOM IDs must use separate instance IDs.
+
+On a `@Keyframes` class, leave the animation annotation's `name` unset to expose that definition's own class-derived name:
+
+```java
+@Keyframes("""
+    from { opacity: 0.4; }
+    to { opacity: 1; }
+    """)
+abstract class SharedPulse {
+    static SharedPulse get() {
+        return Styled_SharedPulse.get();
+    }
+
+    @CssAnimation
+    abstract String name();
+}
+
+// Use the checked name with the ordinary DOM style API.
+new CssProps().animationName(SharedPulse.get().name()).animationDuration("0.8s");
+```
+
+An animation accessor retains an imported animation even when no CSS declaration references it.
+
+### Custom properties and runtime values
+
+All custom properties in Java CSS definitions belong to that definition by default, including unannotated declarations and names used only through `var()`. Set runtime values with a checked accessor:
 
 ```java
 new BtnProps()
         .className(SaveButton.get().success())
-        .style(new CssProps().customProperty("--success", "#04c"));
+        .style(new CssProps().customProperty(SaveButton.get().successProperty(), "#04c"));
 ```
 
-Values are CSS text, including any units. Passing null removes a previously rendered value.
+Values are CSS text, including units. Passing null removes a previously rendered value.
+
+Import a property to share its identity across definitions. `property` selects the source name without `--`; optional `name` supplies a local alias:
+
+```java
+@GlobalCss("""
+    :root { --accent: #06f; }
+    """)
+final class Palette {}
+
+@CssImport(value = Palette.class, property = "accent", name = "ink")
+@Css("""
+    color: var(--ink);
+    """)
+abstract class ThemedLabel {
+    static ThemedLabel get() {
+        return Styled_ThemedLabel.get();
+    }
+
+    abstract String style();
+
+    @CssCustomProperty(name = "ink")
+    abstract String inkProperty();
+}
+
+@CssImport(value = Palette.class, property = "accent", name = "ink")
+@GlobalCss("""
+    :root { --ink: #09c; }
+    """)
+final class DarkPalette {}
+```
+
+Both aliases resolve to Palette's property. Select `DarkPalette` as a global bundle root to apply its override. Imported property declarations and `var()` references use the same resolved name, so CSS inheritance and theme overrides work across style definitions. Providers need an actual property occurrence but no Java accessor. Imports work through separately compiled libraries and transitive aliases. Used imports retain their providers; unused imports are checked and omitted from dependencies. Ownership cycles without a defining symbol are errors.
+
+Raw shared stylesheets retain literal property names and do not participate in this ownership model. Fixed-name property bridges to external CSS are unsupported.
 
 ## Build integration
 
@@ -190,9 +280,9 @@ css_bundle(
 
 Load the generated CSS with the application and serve its source map alongside it. Maps include the original Java and shared CSS source content. The [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) shows two bundles selecting different globals from the same dependencies.
 
-Global roots use binary Java names; nested classes use `$`, such as `com.biz.ui.Main$Defaults`. Shared CSS files emit first in declared order, followed by globals. Globals are visited dependency-first, starting with declared roots and then component requirements. Each definition emits once: listing a dependency again as a later root does not move it. Components are visited in Java owner order. The `shared` and `components` cascade layers give component styles precedence over shared files and globals. All inputs reject `!important`, which would reverse that precedence.
+Global roots use binary Java names; nested classes use `$`, such as `com.biz.ui.Main$Defaults`. Shared CSS files emit first in declared order, followed by globals. Globals emit dependency-first where dependencies are acyclic. Explicit global inclusions always precede their importer, including through property cycles. Declared roots establish the first visits, followed by other required definitions. Each definition emits once: listing a dependency again as a later root does not move it. Components are visited in Java owner order. The `shared` and `components` cascade layers give component styles precedence over shared files and globals. All inputs reject `!important`, which would reverse that precedence.
 
-All component styles in reachable build targets are included, even if their accessors are unused. Shared animations and global styles are included only when referenced by retained styles or, for globals, selected explicitly. Collection follows Bazel reachability and does not use Closure liveness.
+All component styles and resource definitions with generated Java bindings in reachable build targets are included, even if their accessors are unused. Other animations and global styles are included when referenced by retained definitions or, for globals, selected explicitly. Collection follows Bazel reachability and does not use Closure liveness.
 
 Shared CSS files support style rules, `@media` and `@supports`, but cannot define keyframes. Put processed CSS sources in `src/main/css` and assets copied unchanged in `src/main/assets`. When packaging compiled style libraries, retain their generated `.css`, `.css.map` and `.css.json` resources.
 

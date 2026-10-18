@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -55,6 +56,7 @@ import react4j.css.internal.SourceMap;
 public final class CssProcessor extends AbstractStandardProcessor {
 
     private static final String CSS_ANNOTATION = "react4j.css.Css";
+    private final Map<String, Set<String>> propertyNames = new HashMap<>();
 
     @Override
     protected String getOptionPrefix() {
@@ -261,7 +263,11 @@ public final class CssProcessor extends AbstractStandardProcessor {
         }
         var css = annotation(owner, annotationName(sourceKind(owner)));
         assert null != css;
-        if (!CssProperties.names((String) value(css, "value").getValue(), sourceKind(owner))
+        if (!propertyNames
+                .computeIfAbsent(
+                        binaryName(owner),
+                        ignored ->
+                                CssProperties.names((String) value(css, "value").getValue(), sourceKind(owner)))
                 .contains(name)) {
             throw new IllegalArgumentException("Unknown custom property " + name + " in " + binaryName(owner));
         }
@@ -301,6 +307,12 @@ public final class CssProcessor extends AbstractStandardProcessor {
             }
             String name = binaryName(element);
             var property = (String) value(mirror, "property").getValue();
+            if (property.isEmpty()
+                    && mirror.getElementValues().keySet().stream()
+                            .anyMatch(key -> key.getSimpleName().contentEquals("property"))) {
+                throw new IllegalArgumentException(
+                        "@CssImport property must not be empty; omit it to import a definition");
+            }
             if (!property.isEmpty()) {
                 CssProperties.checkName(property);
                 String local = alias.isEmpty() ? property : alias;
@@ -359,7 +371,6 @@ public final class CssProcessor extends AbstractStandardProcessor {
         }
         var trees = Trees.instance(processingEnv);
         var methods = new ArrayList<ExecutableElement>();
-        boolean publicFactory = false;
         for (var member : owner.getEnclosedElements()) {
             if (ElementKind.FIELD == member.getKind()) {
                 throw new IllegalArgumentException(
@@ -370,19 +381,6 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 }
             } else if (ElementKind.METHOD == member.getKind()) {
                 var method = (ExecutableElement) member;
-                if (method.getSimpleName().contentEquals("get")
-                        && method.getParameters().isEmpty()
-                        && !method.getModifiers().contains(Modifier.PRIVATE)) {
-                    if (!method.getModifiers().contains(Modifier.STATIC)
-                            || method.getModifiers().contains(Modifier.FINAL)
-                            || !processingEnv.getTypeUtils().isSubtype(owner.asType(), method.getReturnType())) {
-                        throw new IllegalArgumentException(
-                                "@Css method get() conflicts with the generated singleton factory");
-                    }
-                    // Preserve public/protected access; the checker forbids protected members in a final class.
-                    publicFactory = method.getModifiers().contains(Modifier.PUBLIC)
-                            || method.getModifiers().contains(Modifier.PROTECTED);
-                }
                 if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
                     if (null != symbolAnnotation(method)) {
                         throw new IllegalArgumentException(
@@ -413,7 +411,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 owner,
                 processingEnv.getElementUtils().getBinaryName(owner).toString(),
                 parseAccessors(methods, Kind.COMPONENT),
-                publicFactory,
+                publicFactory(owner, "@Css"),
                 deprecated);
     }
 
@@ -483,7 +481,6 @@ public final class CssProcessor extends AbstractStandardProcessor {
 
     private @Nullable CssDescriptor resourceDescriptor(TypeElement owner) {
         var methods = new ArrayList<ExecutableElement>();
-        boolean publicFactory = false;
         boolean deprecated = processingEnv.getElementUtils().isDeprecated(owner);
         for (var enclosing = owner.getEnclosingElement();
                 enclosing instanceof TypeElement;
@@ -505,26 +502,43 @@ public final class CssProcessor extends AbstractStandardProcessor {
                     methods.add(method);
                     deprecated |= processingEnv.getElementUtils().isDeprecated(method);
                 }
-                if (method.getSimpleName().contentEquals("get")
-                        && method.getParameters().isEmpty()
-                        && !method.getModifiers().contains(Modifier.PRIVATE)) {
-                    if (!method.getModifiers().contains(Modifier.STATIC)
-                            || method.getModifiers().contains(Modifier.FINAL)
-                            || !processingEnv.getTypeUtils().isSubtype(owner.asType(), method.getReturnType())) {
-                        throw new IllegalArgumentException(
-                                "CSS method get() conflicts with the generated singleton factory");
-                    }
-                    publicFactory = method.getModifiers().contains(Modifier.PUBLIC)
-                            || method.getModifiers().contains(Modifier.PROTECTED);
-                }
             }
         }
         if (methods.isEmpty()) {
             return null;
         }
+        if (!owner.getModifiers().contains(Modifier.ABSTRACT)
+                || owner.getModifiers().contains(Modifier.FINAL)) {
+            throw new IllegalArgumentException("CSS resource bindings require an abstract, non-final class");
+        }
         methods.sort(Comparator.comparing(m -> m.getSimpleName().toString()));
         return new CssDescriptor(
-                owner, binaryName(owner), parseAccessors(methods, sourceKind(owner)), publicFactory, deprecated);
+                owner,
+                binaryName(owner),
+                parseAccessors(methods, sourceKind(owner)),
+                publicFactory(owner, "CSS"),
+                deprecated);
+    }
+
+    private boolean publicFactory(TypeElement owner, String label) {
+        for (var member : owner.getEnclosedElements()) {
+            if (member instanceof ExecutableElement method
+                    && ElementKind.METHOD == method.getKind()
+                    && method.getSimpleName().contentEquals("get")
+                    && method.getParameters().isEmpty()
+                    && !method.getModifiers().contains(Modifier.PRIVATE)) {
+                if (!method.getModifiers().contains(Modifier.STATIC)
+                        || method.getModifiers().contains(Modifier.FINAL)
+                        || !processingEnv.getTypeUtils().isSubtype(owner.asType(), method.getReturnType())) {
+                    throw new IllegalArgumentException(
+                            label + " method get() conflicts with the generated singleton factory");
+                }
+                // Protected factory methods become public in the final generated class.
+                return method.getModifiers().contains(Modifier.PUBLIC)
+                        || method.getModifiers().contains(Modifier.PROTECTED);
+            }
+        }
+        return false;
     }
 
     private Map<String, String> bindings(CssDescriptor descriptor, CssCompiler.Result result) {

@@ -99,7 +99,7 @@ final class CssCompiler {
                 resolved = binding.binding().cssName();
             }
             properties.put(name, resolved);
-            return resolved.substring(2);
+            return resolved;
         });
     }
 

@@ -136,6 +136,20 @@ public final class CssIdsTest {
     }
 
     @Test
+    public void attributeCaseFlagsOnlyFoldAsciiAndEscapedAttributeNamesFail() {
+        String css = "#ä {color:red;} [id='Ä' i] {color:blue;}";
+        var result = CssCompiler.global(
+                css,
+                ROOT,
+                new CssCompiler.Exports(List.of(), Set.of("ä"), Set.of()),
+                offset -> new SourceMap.Location("Button.java", css, 0, offset),
+                Map.of(),
+                Map.of());
+        assertEquals(result.ids(), Map.of("ä", ROOT + "--id-_00e4_"));
+        expectThrows(CssSyntax.InvalidCss.class, () -> global("#mask {color:red;} [\\69d=mask] {color:blue;}"));
+    }
+
+    @Test
     public void knownAttributeReferencesFailInsteadOfSilentlyMissingTheirTarget() {
         for (var attribute : List.of(
                 "[id=mask]",

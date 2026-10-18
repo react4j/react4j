@@ -38,7 +38,7 @@ final class CssProperties {
         String prefix = Kind.COMPONENT == kind ? ".root {\n" : Kind.KEYFRAMES == kind ? "@keyframes shared {\n" : "";
         var syntax = new CssSyntax(prefix + css + (prefix.isEmpty() ? "" : "\n}"), prefix.length());
         var sheet = Kind.KEYFRAMES == kind ? syntax.parseKeyframes() : syntax.parse(Kind.COMPONENT == kind);
-        return rewrite(sheet, syntax, UnaryOperator.identity());
+        return rewrite(sheet, syntax, name -> "--" + name);
     }
 
     static Set<String> rewrite(CascadingStyleSheet sheet, CssSyntax syntax, UnaryOperator<String> resolve) {
@@ -52,7 +52,7 @@ final class CssProperties {
                     throw syntax.invalid(String.valueOf(e.getMessage()), declaration);
                 }
                 names.add(name);
-                return "--" + resolve.apply(name);
+                return resolve.apply(name);
             }
 
             private void expression(CSSExpression expression, CSSDeclaration declaration) {

@@ -43,7 +43,7 @@ public final class CssIntegrationTest {
         assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "components"));
         assertEquals(layers.get(0).getRuleCount(), 0);
         assertEquals(layers.get(1).getAllSelectors(), List.of("shared"));
-        assertEquals(layers.get(1).getRuleCount(), 1);
+        assertEquals(layers.get(1).getRuleCount(), 2);
         var components = layers.get(2);
         assertEquals(components.getAllSelectors(), List.of("components"));
         assertEquals(components.getRuleCount(), 11);
@@ -100,7 +100,7 @@ public final class CssIntegrationTest {
         String css = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.fixture"))));
         String map = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.map"))));
         var indexed = JsonParser.parseString(map).getAsJsonObject();
-        assertEquals(indexed.getAsJsonArray("sections").size(), 6);
+        assertEquals(indexed.getAsJsonArray("sections").size(), 7);
         var consumer = new SourceMapConsumerV3();
         consumer.parse(map);
         String source = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.source"))));
@@ -144,7 +144,7 @@ public final class CssIntegrationTest {
         var defaults = Objects.requireNonNull(CSSReader.readFromStringReader(implicit, new CSSReaderSettings()));
         var explicit = Objects.requireNonNull(CSSReader.readFromStringReader(selected, new CSSReaderSettings()));
         var implicitRules = defaults.getAllLayerRules().get(1).getAllStyleRules();
-        assertEquals(implicitRules.size(), 1);
+        assertEquals(implicitRules.size(), 2);
         assertEquals(
                 Objects.requireNonNull(implicitRules
                                 .get(0)
@@ -154,7 +154,7 @@ public final class CssIntegrationTest {
                         .getAsCSSString(new CSSWriterSettings(true), 0),
                 "shared");
         var explicitRules = explicit.getAllLayerRules().get(1).getAllStyleRules();
-        assertEquals(explicitRules.size(), 2);
+        assertEquals(explicitRules.size(), 3);
         assertEquals(
                 Objects.requireNonNull(explicitRules
                                 .get(0)

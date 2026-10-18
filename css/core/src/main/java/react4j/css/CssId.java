@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.CLASS)
 public @interface CssId {
-    /** The CSS name; defaults to the method name, with a get prefix removed. */
+    /** The ID without #; defaults to the method name, with a get prefix removed. */
     String name() default "<default>";
 }

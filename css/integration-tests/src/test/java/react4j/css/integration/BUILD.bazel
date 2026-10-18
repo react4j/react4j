@@ -9,6 +9,7 @@ java_j2cl_library(
     name = "fixture_dependency",
     testonly = True,
     srcs = [
+        "PropertyTheme.java",
         "SharedDefaults.java",
         "SharedLabel.java",
         "SharedPulse.java",
@@ -112,6 +113,7 @@ java_testng(
     ],
     data = [
         "ButtonStyles.java",
+        "PropertyTheme.java",
         "SharedDefaults.java",
         "SharedPulse.java",
         "SymbolStyles.java",

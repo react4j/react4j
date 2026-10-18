@@ -38,6 +38,61 @@ public final class CssSymbolProcessorTest {
     }
 
     @Test
+    public void resourceHelpersNeedNoGeneratedBindingAndBindingsRequireAbstractOwners() throws Exception {
+        for (var kind : List.of("GlobalCss", "Keyframes")) {
+            String helper = source(kind, "", "color: red;", "static String get() { return \"helper\"; }")
+                    .replace("static Button of() { return Styled_Button.get(); }\n", "");
+            var result = CssProcessorTest.compile(Map.of("Button.java", helper));
+            assertTrue(result.success(), result.diagnostics());
+            assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
+            for (var declaration : List.of("class Button", "final class Button", "abstract final class Button")) {
+                result = CssProcessorTest.compile(Map.of(
+                        "Button.java",
+                        source(kind, "", "filter: url(#control);", "@CssId abstract String control();")
+                                .replace("abstract class Button", declaration)));
+                assertFalse(result.success(), declaration);
+                assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"), result.diagnostics());
+            }
+        }
+    }
+
+    @Test
+    public void symbolAnnotationsRejectWrongSitesAndInaccessibleAbstractMethods() throws Exception {
+        for (var member : List.of(
+                "void helper(@CssId String value) {}",
+                "@CssId private abstract String control();",
+                "@CssId static abstract String control();")) {
+            var result = CssProcessorTest.compile(
+                    Map.of("Button.java", source("Css", "", "filter: url(#control);", member)));
+            assertFalse(result.success(), member);
+            assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"), result.diagnostics());
+        }
+        var result = CssProcessorTest.compile(Map.of("Button.java", source("Css", "@CssId", "color: red;", "")));
+        assertFalse(result.success());
+        assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"), result.diagnostics());
+    }
+
+    @Test
+    public void propertyReferencesWithLocalOwnersMayFormMixedCycles() throws Exception {
+        String a = source(
+                        "GlobalCss",
+                        "@CssImport(value=B.class,property=\"y\")",
+                        "--x: var(--y);",
+                        "@CssCustomProperty abstract String x();")
+                .replace("Button", "A");
+        String b = source(
+                        "GlobalCss",
+                        "@CssImport(value=A.class,property=\"x\")",
+                        "--y: var(--x);",
+                        "@CssCustomProperty abstract String y();")
+                .replace("Button", "B");
+        var result = CssProcessorTest.compile(Map.of("A.java", a, "B.java", b), "demo.A", "demo.B");
+        assertTrue(result.success(), result.diagnostics());
+        assertEquals(result.values().get("demo.A.x"), "--jcss-demo-A--x");
+        assertEquals(result.values().get("demo.B.y"), "--jcss-demo-B--y");
+    }
+
+    @Test
     public void idsAndAnimationBindingsWorkOnAllDefinitionKinds() throws Exception {
         for (var kind : List.of("Css", "GlobalCss", "Keyframes")) {
             String annotations = "Keyframes".equals(kind) ? "" : "@CssImport(value=Pulse.class,name=\"pulse\")";
@@ -201,6 +256,7 @@ public final class CssSymbolProcessorTest {
                 .replace("static Button of() { return Styled_Button.get(); }", "");
         for (var annotation : List.of(
                 "@CssImport(value=Defaults.class,property=\"missing\")",
+                "@CssImport(value=Defaults.class,property=\"\")",
                 "@CssImport(value=Defaults.class,property=\"--accent\")",
                 "@CssImport(value=Defaults.class,property=\"accent\",name=\"--alias\")",
                 "@CssImport(value=Defaults.class,property=\"accent\")"

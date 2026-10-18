@@ -31,6 +31,15 @@ import react4j.css.internal.CssSyntax;
 final class CssIds {
     private CssIds() {}
 
+    private static String asciiLower(String value) {
+        var result = new StringBuilder(value.length());
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            result.append(c >= 'A' && c <= 'Z' ? (char) (c + 'a' - 'A') : c);
+        }
+        return result.toString();
+    }
+
     static Map<String, String> rewrite(CascadingStyleSheet sheet, CssSyntax syntax, String root, Set<String> bindings) {
         var found = new LinkedHashMap<String, String>();
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
@@ -58,6 +67,10 @@ final class CssIds {
             }
 
             private void attribute(CSSSelectorAttribute attribute) {
+                String name = attribute.getAttrName().toLowerCase(Locale.ROOT);
+                if (name.contains("\\")) {
+                    throw syntax.invalid("Escaped selector identifiers are unsupported", attribute);
+                }
                 String value = attribute.getAttrValue();
                 if (null == value) {
                     return;
@@ -65,7 +78,6 @@ final class CssIds {
                 if (value.startsWith("\"") || value.startsWith("'")) {
                     value = value.substring(1, value.length() - 1);
                 }
-                String name = attribute.getAttrName().toLowerCase(Locale.ROOT);
                 boolean uri = Set.of("href", "xlink:href", "src").contains(name);
                 boolean id = Set.of(
                                 "id",
@@ -88,12 +100,12 @@ final class CssIds {
                     throw syntax.invalid("Escaped ID attribute references are unsupported when binding IDs", attribute);
                 }
                 String authored = ECSSAttributeCase.CASE_INSENSITIVE == attribute.getCaseSensitivityFlag()
-                        ? value.toLowerCase(Locale.ROOT)
+                        ? asciiLower(value)
                         : value;
                 boolean reference = bindings.stream().anyMatch(binding -> {
                     String candidate = (uri ? "#" : "") + binding;
                     if (ECSSAttributeCase.CASE_INSENSITIVE == attribute.getCaseSensitivityFlag()) {
-                        candidate = candidate.toLowerCase(Locale.ROOT);
+                        candidate = asciiLower(candidate);
                     }
                     if (!uri && Arrays.asList(authored.split("\\s+")).contains(candidate)) {
                         return true;

@@ -7,13 +7,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Imports a CSS definition. Global styles have no name and are always required by their importer;
- * keyframes and component styles require a local name and are retained when referenced.
+ * Imports a CSS definition or one of its custom properties. Named component and animation imports are
+ * retained when referenced; unnamed global inclusions are always required by their importer.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)
 @Repeatable(CssImports.class)
 public @interface CssImport {
+    /** The local alias; defaults to the source name for property imports. */
     String name() default "";
 
     /** Selects a custom property without --; name optionally supplies its local alias. */
