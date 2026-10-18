@@ -5,6 +5,7 @@ import static org.testng.Assert.*;
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.debugging.sourcemap.SourceMapParseException;
 import com.google.gson.JsonArray;
+import com.sun.source.tree.MethodTree;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -131,7 +132,9 @@ public final class RuntimeCoverageTest {
                 "({error:window.fixtureError,values:window.fixtureValues,counters:window['" + instrumented.variable()
                         + "']})");
         assertTrue(result.get("error").isJsonNull(), result.toString());
-        assertEquals(result.getAsJsonArray("values").toString(), "[17,24,42,\"throw\",5,17,7,\"assert\",5,0,6]");
+        assertEquals(
+                result.getAsJsonArray("values").toString(),
+                "[17,24,42,\"throw\",5,17,7,\"assert\",5,0,6,\"void throw\"]");
         var counters = result.getAsJsonObject("counters");
         String report =
                 collector.report(instrumented, counters.getAsJsonArray("lines"), counters.getAsJsonArray("edges"));
@@ -179,6 +182,15 @@ public final class RuntimeCoverageTest {
         assertBranches(observed, source.text, "switch (value)", 3, 2);
         assertBranches(observed, source.text, "for (int value :", 2, 2);
         assertBranches(observed, source.text, "return (first ?", 4, 0);
+        assertMethodEnd(observed, source, "completedVoid", true);
+        assertMethodEnd(observed, source, "throwingVoid", false);
+        assertMethodEnd(observed, source, "deferredVoid", true);
+        assertCovered(observed, source.text, "// deferred void callback end", false);
+        assertCovered(observed, source.text, "value = 73;", false);
+        assertCovered(
+                observed, source.text, "parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(\"67\")", false);
+        assertCovered(
+                observed, source.text, "parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(\"71\")", false);
         String config =
                 "{\"roots\":[{\"path\":\"" + ROOT + "\",\"report\":\"runtime.lcov\",\"lines\":95,\"branches\":85}]}";
         assertThrows(
@@ -326,7 +338,7 @@ public final class RuntimeCoverageTest {
                         "<script src='/react.js'></script><script src='/react-dom.js'></script><script"
                                 + " src='/runtime.js'></script>",
                         "/runtime.js",
-                        instrumented.javascript(),
+                        instrumented.javascript() + "\nwindow.runRuntimeMapProbe();window.coverageDone=true;",
                         "/react.js",
                         Files.readString(Path.of(System.getProperty("coverage.runtime.react"))),
                         "/react-dom.js",
@@ -428,6 +440,17 @@ public final class RuntimeCoverageTest {
                 }
             }
         }
+    }
+
+    private static void assertMethodEnd(LcovReport.Source report, JavaCoverage source, String name, boolean covered) {
+        int line = source.methods.stream()
+                .filter(range -> range.tree() instanceof MethodTree method
+                        && method.getName().contentEquals(name))
+                .findFirst()
+                .orElseThrow()
+                .lastLine();
+        assertTrue(report.lines().containsKey(line), "Missing executable method end: " + name);
+        assertEquals(Objects.requireNonNull(report.lines().get(line)) > 0, covered, name);
     }
 
     private static void assertBranches(

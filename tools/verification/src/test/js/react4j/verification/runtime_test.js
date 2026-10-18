@@ -1,10 +1,22 @@
 goog.module('react4j.verification.RuntimeTest');
+const Core = goog.require('react4j.RuntimeTest');
+const Dom = goog.require('react4j.dom.RuntimeTest');
+const Events = goog.require('react4j.dom.EventsTest');
 const Example = goog.require('react4j.RuntimeCoverageExample');
-/** Runs real React element operations. */
-function run() {
+const Properties = goog.require('react4j.dom.PropertiesTest');
+/** @return {!Promise<void>} */
+async function run() {
   if (7 !== Example.multilineElements()) {
     throw new Error('React element roundtrip failed');
   }
-  window['coverageDone'] = true;
+  Properties();
+  Events();
+  await Core();
+  await Dom();
+
 }
-run();
+window['runRuntimeCoverageTests'] = run;
+/** Verifies native element construction. */
+window['runRuntimeMapProbe'] = function() {
+  if (7 !== Example.multilineElements()) throw new Error('Native element map probe');
+};

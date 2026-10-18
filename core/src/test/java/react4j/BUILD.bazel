@@ -40,12 +40,27 @@ java_j2cl_library(
     testonly = True,
     srcs = ["RuntimeCoverageExample.java"],
     java_deps = [
+        "//third_party/java:base",
+        "//third_party/java:arez_core",
         "//core",
         "//third_party/java:jsinterop_annotations",
     ],
     deps = [
         "//:core-j2cl",
         "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
         "//third_party/java:jspecify-j2cl",
+        "@arez//:core-j2cl",
     ],
+)
+
+java_testng(
+    name = "configuration_tests",
+    srcs = ["ReactConfigTest.java"],
+    jvm_flags = [
+        "-Dbraincheck.environment=development",
+        "-Dbraincheck.check_invariants=true",
+    ],
+    test_class = "react4j.ReactConfigTest",
+    deps = ["//core/src/main/java/react4j"],
 )

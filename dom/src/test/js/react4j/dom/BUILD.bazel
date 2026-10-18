@@ -1,0 +1,25 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "properties_test",
+    testonly = True,
+    srcs = ["properties_test.js"],
+    visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
+    deps = ["//:dom-j2cl"],
+)
+
+closure_js_library(
+    name = "events_test",
+    testonly = True,
+    srcs = ["events_test.js"],
+    visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
+    deps = ["//:dom-j2cl"],
+)
+
+closure_js_library(
+    name = "runtime_test",
+    testonly = True,
+    srcs = ["runtime_test.js"],
+    visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
+    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
+)

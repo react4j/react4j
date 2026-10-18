@@ -12,5 +12,9 @@ window['runCoverageFixture'] = function() {
   values.push(Fixture.assertion(true));
   try { Fixture.assertion(false); } catch (e) { values.push('assert'); }
   values.push(Fixture.enhanced([2, 3]), Fixture.enhanced([]), Fixture.ambiguous(false, true));
+  Fixture.completedVoid();
+  try { Fixture.throwingVoid(true); } catch (e) { values.push('void throw'); }
+  Fixture.deferredVoid();
+  Fixture.constructorMetadata();
   return values;
 };

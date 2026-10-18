@@ -1,0 +1,25 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//dom/src/test/js/react4j/dom:__pkg__",
+])
+
+java_j2cl_library(
+    name = "runtime_coverage",
+    testonly = True,
+    srcs = ["RuntimeCoverageExample.java"],
+    java_deps = [
+        "//core",
+        "//dom",
+        "//third_party/java:arez_core",
+        "//third_party/java:jsinterop_annotations",
+    ],
+    deps = [
+        "//:core-j2cl",
+        "//:dom-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jspecify-j2cl",
+        "@arez//:core-j2cl",
+    ],
+)

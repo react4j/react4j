@@ -113,6 +113,38 @@ public final class MeasurementFixture {
         return 7;
     }
 
+    public static void completedVoid() {
+        parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("61");
+    }
+
+    public static void throwingVoid(boolean fail) {
+        if (fail) {
+            failBeforeEvaluatingTheFollowingOperandForCoverageMeasurement();
+        }
+        parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("67");
+    }
+
+    @SuppressWarnings("ReturnValueIgnored")
+    public static void deferredVoid() {
+        @SuppressWarnings("Varifier")
+        Runnable never = () -> {
+            parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("71");
+        }; // deferred void callback end
+        never.hashCode();
+    }
+
+    public static int constructorMetadata() {
+        return NeverConstructed.class.hashCode();
+    }
+
+    public static final class NeverConstructed {
+        int value;
+
+        public NeverConstructed() {
+            value = 73;
+        }
+    }
+
     public static int untouched() {
         return 53;
     }

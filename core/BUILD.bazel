@@ -9,5 +9,8 @@ java_library(
 
 test_suite(
     name = "tests",
-    tests = ["//core/src/test/java/react4j:tests"],
+    tests = [
+        "//core/src/test/java/react4j:configuration_tests",
+        "//core/src/test/java/react4j:tests",
+    ],
 )

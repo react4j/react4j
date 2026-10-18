@@ -30,6 +30,10 @@ closure_js_library(
     deps = [
         "//:dom-j2cl",
         "//core/src/test/java/react4j:runtime_coverage",
+        "//core/src/test/js/react4j:runtime_test",
+        "//dom/src/test/js/react4j/dom:events_test",
+        "//dom/src/test/js/react4j/dom:properties_test",
+        "//dom/src/test/js/react4j/dom:runtime_test",
     ],
 )
 

@@ -5,12 +5,14 @@ import com.google.debugging.sourcemap.proto.Mapping.OriginalMapping;
 import com.google.devtools.build.runfiles.AutoBazelRepository;
 import com.google.devtools.build.runfiles.Runfiles;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.javascript.rhino.Node;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -202,13 +204,39 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
 
     @Override
     public List<CoverageInstrumenter.Line> lines(Node node, boolean completed) {
+        if (node.isFunction()) {
+            var parent = node.getParent();
+            String name = null != parent && parent.isMemberFunctionDef() ? parent.getString() : "";
+            var result = new HashSet<CoverageInstrumenter.Line>();
+            var body = node.getLastChild();
+            if (null != body) {
+                functionLines(body, name, completed, result);
+            }
+            return result.stream()
+                    .sorted(Comparator.comparing(CoverageInstrumenter.Line::source)
+                            .thenComparingInt(CoverageInstrumenter.Line::line))
+                    .toList();
+        }
         var origin = origin(node);
         if (null == origin) {
             return List.of();
         }
         return completed
-                ? origin.source().completed(origin.position(), node.getToken().name())
+                ? origin.source().completed(origin.position())
                 : origin.source().enteredAt(origin.line(), origin.position());
+    }
+
+    private void functionLines(Node node, String name, boolean completed, Set<CoverageInstrumenter.Line> result) {
+        if (node.isFunction() || node.isClass()) {
+            return;
+        }
+        var origin = origin(node);
+        if (null != origin) {
+            result.addAll(origin.source().functionProof(origin.position(), name, completed));
+        }
+        for (var child = node.getFirstChild(); null != child; child = child.getNext()) {
+            functionLines(child, name, completed, result);
+        }
     }
 
     @Override
@@ -357,29 +385,81 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
                 Set.copyOf(
                         Files.readAllLines(Path.of(Objects.requireNonNull(runfiles.rlocation("_main/" + args[8]))))));
         var instrumentation = CoverageInstrumenter.instrument(bundle, collector);
-        var assets = Map.of(
-                "/index.html",
-                "<!doctype html><script>var"
-                    + " CLOSURE_DEFINES={'goog.DEBUG':true};window.coverageError=null;window.addEventListener('error',e=>window.coverageError=String(e.error||e.message));</script><script"
-                    + " src='/react.js'></script><script src='/react-dom.js'></script><script"
-                    + " src='/runtime.js'></script>",
-                "/react.js",
-                Files.readString(paths.get(1)),
-                "/react-dom.js",
-                Files.readString(paths.get(2)),
-                "/runtime.js",
-                instrumentation.javascript());
-        var result = BrowserCoverage.run(
-                paths.get(3),
-                assets,
-                "window.coverageError||window.coverageDone",
-                "({error:window.coverageError,counters:window[ '" + instrumentation.variable() + "' ]})");
-        if (!result.get("error").isJsonNull()) {
-            throw new IllegalStateException("Runtime browser test failed: " + result.get("error"));
+        var runs = new ArrayList<JsonObject>();
+        for (String environment : List.of("development", "production")) {
+            var defines = new JsonObject();
+            defines.addProperty("goog.DEBUG", true);
+            defines.addProperty("react4j.environment", environment);
+            defines.addProperty("arez.environment", "development");
+            defines.addProperty("arez.enable_property_introspection", "true");
+            defines.addProperty("arez.enable_spies", "true");
+            defines.addProperty("arez.enable_names", "true");
+            defines.addProperty("arez.check_invariants", "true");
+            defines.addProperty("arez.check_api_invariants", "true");
+            defines.addProperty("arez.enable_task_interceptor", "true");
+            defines.addProperty("braincheck.environment", "development");
+            defines.addProperty("braincheck.check_invariants", "true");
+            defines.addProperty("braincheck.check_api_invariants", "true");
+            defines.addProperty("braincheck.verbose_error_messages", "true");
+            var assets = Map.of(
+                    "/index.html",
+                    "<!doctype html><body><script>var CLOSURE_DEFINES=" + defines
+                            + ";window.coverageError=null;window.addEventListener('error',e=>window.coverageError=String(e.error||e.message));</script><script"
+                            + " src='/react.js'></script><script src='/react-dom.js'></script><script"
+                            + " src='/runtime.js'></script>",
+                    "/react.js",
+                    Files.readString(paths.get(1)),
+                    "/react-dom.js",
+                    Files.readString(paths.get(2)),
+                    "/runtime.js",
+                    instrumentation.javascript()
+                            + "\n"
+                            + "Promise.resolve(window.runRuntimeCoverageTests()).then(()=>window.coverageDone=true,e=>window.coverageError=String(e));");
+            var result = BrowserCoverage.run(
+                    paths.get(3),
+                    assets,
+                    "window.coverageError||window.coverageDone",
+                    "({error:window.coverageError,counters:window['" + instrumentation.variable() + "']})");
+            if (!result.get("error").isJsonNull()) {
+                throw new IllegalStateException(
+                        "Runtime browser test failed (" + environment + "): " + result.get("error"));
+            }
+            runs.add(result.getAsJsonObject("counters"));
         }
-        var counters = result.getAsJsonObject("counters");
         Files.writeString(
                 destination,
-                collector.report(instrumentation, counters.getAsJsonArray("lines"), counters.getAsJsonArray("edges")));
+                collector.report(
+                        instrumentation,
+                        union(
+                                runs.stream()
+                                        .map(run -> run.getAsJsonArray("lines"))
+                                        .toList(),
+                                instrumentation.lines().size()),
+                        union(
+                                runs.stream()
+                                        .map(run -> run.getAsJsonArray("edges"))
+                                        .toList(),
+                                instrumentation.edges().size())));
+    }
+
+    private static JsonArray union(List<JsonArray> runs, int size) {
+        var hits = new boolean[size];
+        for (var run : runs) {
+            if (size != run.size()) {
+                throw new IllegalArgumentException("Browser coverage counter inventory mismatch");
+            }
+            for (int i = 0; i < size; i++) {
+                var value = run.get(i);
+                if (!value.isJsonPrimitive() || !value.getAsJsonPrimitive().isBoolean()) {
+                    throw new IllegalArgumentException("Invalid browser coverage counter");
+                }
+                hits[i] |= value.getAsBoolean();
+            }
+        }
+        var result = new JsonArray();
+        for (boolean hit : hits) {
+            result.add(hit);
+        }
+        return result;
     }
 }

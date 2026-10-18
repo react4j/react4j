@@ -38,6 +38,8 @@ final class JavaCoverage {
     final Set<Integer> jvmLines = new HashSet<>();
     final List<Range> statements = new ArrayList<>();
     final List<Range> methods = new ArrayList<>();
+    private final List<Range> lambdas = new ArrayList<>();
+    private final Map<Range, String> constructors = new LinkedHashMap<>();
     final List<Decision> decisions = new ArrayList<>();
     private final Map<Range, Tree> expressions = new LinkedHashMap<>();
     boolean requiresInventory;
@@ -71,6 +73,26 @@ final class JavaCoverage {
                         "Cannot parse Java coverage source: " + name + diagnostics.getDiagnostics());
             }
             new TreeScanner<@Nullable Void, Boolean>() {
+                private String owner = "";
+
+                @Override
+                public @Nullable Void visitClass(ClassTree type, Boolean jvm) {
+                    String previous = owner;
+                    owner += (owner.isEmpty() ? "" : "_") + type.getSimpleName();
+                    var declaration = range(type);
+                    var packageName = unit.getPackageName();
+                    String prefix =
+                            null == packageName ? "" : packageName.toString().replace('.', '_') + "_";
+                    if (null != declaration) {
+                        constructors.put(declaration, "$ctor__" + prefix + owner + "__");
+                    }
+                    try {
+                        return super.visitClass(type, jvm);
+                    } finally {
+                        owner = previous;
+                    }
+                }
+
                 @Override
                 public @Nullable Void scan(@Nullable Tree tree, Boolean inherited) {
                     if (null == tree) {
@@ -85,6 +107,9 @@ final class JavaCoverage {
                     }
                     var range = range(tree);
                     if (null != range) {
+                        if (tree instanceof LambdaExpressionTree) {
+                            lambdas.add(range);
+                        }
                         if (tree instanceof MethodTree method && null != method.getBody()) {
                             methods.add(range);
                             if (!hasMethodInventory(method, range, inventory.functions(), executable)) {
@@ -227,6 +252,50 @@ final class JavaCoverage {
         return position;
     }
 
+    List<CoverageInstrumenter.Line> functionProof(int position, String generated, boolean completed) {
+        if (generated.isEmpty()) {
+            Range selected = null;
+            for (var lambda : lambdas) {
+                var expression = (LambdaExpressionTree) lambda.tree();
+                var body = range(expression.getBody());
+                if (expression.getBody() instanceof BlockTree
+                        && null != body
+                        && body.contains(position)
+                        && (null == selected || body.end() - body.start() < selected.end() - selected.start())) {
+                    selected = body;
+                }
+            }
+            return null == selected ? List.of() : entered(completed ? selected.lastLine() : selected.firstLine());
+        }
+        for (var method : methods) {
+            var declaration = (MethodTree) method.tree();
+            String name = declaration.getName().toString();
+            boolean constructor = "<init>".equals(name) && generated.startsWith("$ctor__");
+            boolean match = constructor || generated.equals(name) || generated.startsWith("m_" + name + "__");
+            if (match && method.contains(position)) {
+                if (completed
+                        && null != declaration.getReturnType()
+                        && !"void".equals(declaration.getReturnType().toString())) {
+                    return List.of();
+                }
+                return entered(completed ? method.lastLine() : method.firstLine());
+            }
+        }
+        if (generated.startsWith("$ctor__")) {
+            for (var type : constructors.entrySet()) {
+                if (generated.startsWith(type.getValue())
+                        && type.getKey().contains(position)
+                        && ((ClassTree) type.getKey().tree())
+                                .getMembers().stream()
+                                        .noneMatch(member -> member instanceof MethodTree method
+                                                && "<init>".contentEquals(method.getName()))) {
+                    return entered(type.getKey().firstLine());
+                }
+            }
+        }
+        return List.of();
+    }
+
     List<CoverageInstrumenter.Line> enteredAt(int line, int position) {
         boolean executableOrigin = methods.stream().anyMatch(method -> method.contains(position))
                 || statements.stream()
@@ -242,8 +311,8 @@ final class JavaCoverage {
                 : List.of();
     }
 
-    List<CoverageInstrumenter.Line> completed(int position, String kind) {
-        var candidates = "FUNCTION".equals(kind) ? methods : statements;
+    List<CoverageInstrumenter.Line> completed(int position) {
+        var candidates = statements;
         Range selected = null;
         for (var candidate : candidates) {
             if (candidate.contains(position)
@@ -253,11 +322,6 @@ final class JavaCoverage {
         }
         if (null == selected) {
             return List.of();
-        }
-        if ("FUNCTION".equals(kind)) {
-            return selected.tree() instanceof MethodTree method && "void".equals(String.valueOf(method.getReturnType()))
-                    ? entered(selected.lastLine())
-                    : List.of();
         }
         var result = new HashSet<Integer>();
         new TreeScanner<@Nullable Void, @Nullable Void>() {
