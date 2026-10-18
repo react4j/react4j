@@ -35,6 +35,7 @@ abstract class IndicatorView {
     }
 
     @Css("""
+        box-sizing: border-box;
         position: absolute;
         width: 600px;
         top: 0;

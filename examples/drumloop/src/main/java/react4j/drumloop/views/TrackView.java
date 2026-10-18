@@ -46,6 +46,7 @@ abstract class TrackView {
     }
 
     @Css("""
+        box-sizing: border-box;
         flex: 0 0 155px;
         background: linear-gradient(#292929, #111);
         border: 1px solid #555;

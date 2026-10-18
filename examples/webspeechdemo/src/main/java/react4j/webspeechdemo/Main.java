@@ -24,14 +24,6 @@ public final class Main {
     @GlobalCss("""
         body {
           background-color: #333;
-          color: #fff;
-        }
-
-        button, select {
-          background-color: #fff;
-          border: none;
-          border-radius: 2px;
-          height: 1.5rem;
         }
         """)
     static final class Defaults {}

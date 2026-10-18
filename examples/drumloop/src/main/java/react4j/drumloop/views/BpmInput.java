@@ -38,6 +38,7 @@ abstract class BpmInput {
     }
 
     @Css("""
+        box-sizing: border-box;
         color: #25ccf7;
         border: 2px solid #25ccf7;
         font-size: 18px;

@@ -129,12 +129,27 @@ async function exerciseApplication(variant) {
   try {
     asserts.assertEquals('todos', page.querySelector('h1').textContent);
     asserts.assertEquals('What needs to be done?', input(page, 'input[placeholder]').placeholder);
-    asserts.assertNull(page.querySelector('#app footer'));
-    asserts.assertEquals('550px', view.getComputedStyle(page.body).maxWidth);
+    asserts.assertNull(page.querySelector('#app article footer'));
+    const panel = page.querySelector('#app article');
+    const info = page.querySelector('#app > div > footer');
+    asserts.assertEquals('550px', view.getComputedStyle(panel.parentElement).maxWidth);
+    asserts.assertEquals('rgb(245, 245, 245)', view.getComputedStyle(page.body).backgroundColor);
+    asserts.assertEquals('rgb(255, 255, 255)', view.getComputedStyle(panel).backgroundColor);
+    asserts.assertEquals('14px', view.getComputedStyle(panel).fontSize);
+    asserts.assertEquals('10px', view.getComputedStyle(info).fontSize);
+    asserts.assertEquals('10px', view.getComputedStyle(info.querySelector('p')).lineHeight);
+    asserts.assertEquals('400', view.getComputedStyle(info.querySelector('a')).fontWeight);
+    asserts.assertEquals(550, panel.getBoundingClientRect().width);
+    asserts.assertEquals(130, panel.getBoundingClientRect().top);
+    asserts.assertRoughlyEquals(65, info.getBoundingClientRect().top - panel.getBoundingClientRect().bottom, 0.1);
+    const outside = page.createElement('button');
+    page.body.appendChild(outside);
+    asserts.assertNotEquals('Todo control resets must remain scoped', '0px', view.getComputedStyle(outside).borderTopWidth);
+    outside.remove();
     await addTodo(page, 'Read the source');
     await addTodo(page, '  Ship the example  ');
     asserts.assertArrayEquals(['Read the source', 'Ship the example'], titles(page));
-    asserts.assertEquals('2 items left', page.querySelector('#app footer > span').textContent);
+    asserts.assertEquals('2 items left', page.querySelector('#app article footer > span').textContent);
     asserts.assertEquals('none', view.getComputedStyle(page.querySelector('#app ul label')).textDecorationLine);
     setText(input(page, 'input[placeholder]'), '   ');
     keyDown(input(page, 'input[placeholder]'), 13);
@@ -142,11 +157,18 @@ async function exerciseApplication(variant) {
 
     input(page, '#app li input[type=checkbox]').click();
     await waitFor(() => page.querySelectorAll('#app li input[type=checkbox]:checked').length === 1);
-    asserts.assertEquals('1 item left', page.querySelector('#app footer > span').textContent);
+    asserts.assertEquals('1 item left', page.querySelector('#app article footer > span').textContent);
     const completedLabel = /** @type {!HTMLInputElement} */ (page.querySelector('#app li input[type=checkbox]:checked')).nextElementSibling;
     asserts.assertEquals('line-through', view.getComputedStyle(completedLabel).textDecorationLine);
     await waitFor(() => view.getComputedStyle(completedLabel).color === 'rgb(217, 217, 217)');
-    asserts.assertNotNull(page.querySelector('#app footer button'));
+    asserts.assertNotNull(page.querySelector('#app article footer button'));
+    const clear = view.getComputedStyle(page.querySelector('#app article footer button'));
+    asserts.assertEquals('0px', clear.borderTopWidth);
+    asserts.assertEquals('rgba(0, 0, 0, 0)', clear.backgroundColor);
+    asserts.assertEquals('14px', clear.fontSize);
+    asserts.assertEquals('none', clear.outlineStyle);
+    asserts.assertEquals('none', view.getComputedStyle(input(page, '#app li input[type=checkbox]')).outlineStyle);
+    asserts.assertEquals('none', view.getComputedStyle(input(page, '#app section > input[type=checkbox]')).outlineStyle);
     await filterTodos(page, 'active');
     asserts.assertArrayEquals(['Ship the example'], titles(page));
     await filterTodos(page, 'completed');
@@ -156,15 +178,18 @@ async function exerciseApplication(variant) {
 
     input(page, '#app section > input[type=checkbox]').click();
     await waitFor(() => page.querySelectorAll('#app li input[type=checkbox]:checked').length === 2);
-    asserts.assertEquals('0 items left', page.querySelector('#app footer > span').textContent);
+    asserts.assertEquals('0 items left', page.querySelector('#app article footer > span').textContent);
     input(page, '#app section > input[type=checkbox]').click();
     await waitFor(() => page.querySelectorAll('#app li input[type=checkbox]:checked').length === 0);
-    asserts.assertEquals('2 items left', page.querySelector('#app footer > span').textContent);
+    asserts.assertEquals('2 items left', page.querySelector('#app article footer > span').textContent);
     asserts.assertEquals('none', view.getComputedStyle(page.querySelector('#app ul label')).textDecorationLine);
+    frame.width = '200';
+    await waitFor(() => 230 === panel.getBoundingClientRect().width);
     frame.width = '400';
-    await waitFor(() => view.getComputedStyle(page.querySelector('#app footer')).height === '50px');
+    await waitFor(() => 400 === panel.getBoundingClientRect().width);
+    await waitFor(() => view.getComputedStyle(page.querySelector('#app article footer')).height === '50px');
     frame.width = '800';
-    await waitFor(() => view.getComputedStyle(page.querySelector('#app footer')).height === '20px');
+    await waitFor(() => view.getComputedStyle(page.querySelector('#app article footer')).height === '20px');
 
     let editor = await editFirst(page);
     asserts.assertEquals('Read the source', editor.value);
@@ -192,15 +217,15 @@ async function exerciseApplication(variant) {
     await waitFor(() => titles(page).length === 1);
     asserts.assertArrayEquals(['Ship the example'], titles(page));
     /** @type {!HTMLButtonElement} */ (page.querySelector('#app li button')).click();
-    await waitFor(() => page.querySelector('#app footer') === null);
+    await waitFor(() => page.querySelector('#app article footer') === null);
     asserts.assertEquals(0, titles(page).length);
 
     await addTodo(page, 'First');
     await addTodo(page, 'Second');
     input(page, '#app section > input[type=checkbox]').click();
     await waitFor(() => page.querySelectorAll('#app li input[type=checkbox]:checked').length === 2);
-    /** @type {!HTMLButtonElement} */ (page.querySelector('#app footer button')).click();
-    await waitFor(() => page.querySelector('#app footer') === null);
+    /** @type {!HTMLButtonElement} */ (page.querySelector('#app article footer button')).click();
+    await waitFor(() => page.querySelector('#app article footer') === null);
     asserts.assertEquals(0, titles(page).length);
     await addTodo(page, 'In memory only');
     const reloaded = new Promise(resolve => { frame.onload = () => { resolve(undefined); }; });
@@ -208,7 +233,7 @@ async function exerciseApplication(variant) {
     await reloaded;
     const freshPage = /** @type {!Document} */ (frame.contentDocument);
     asserts.assertEquals(0, titles(freshPage).length);
-    asserts.assertNull(freshPage.querySelector('#app footer'));
+    asserts.assertNull(freshPage.querySelector('#app article footer'));
     asserts.assertEquals('', input(freshPage, 'input[placeholder]').value);
     asserts.assertEquals(JSON.stringify(errors), 0, errors.length);
   } finally {

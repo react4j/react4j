@@ -151,9 +151,26 @@ speechSynthesis.speak = utterance => {
     try {
       asserts.assertEquals('Web Speech Synthesis Demo', page.querySelector('h1').textContent);
       asserts.assertEquals('rgb(51, 51, 51)', view.getComputedStyle(page.body).backgroundColor);
-      asserts.assertEquals('rgb(255, 255, 255)', view.getComputedStyle(page.body).color);
+      asserts.assertEquals('rgb(255, 255, 255)', view.getComputedStyle(page.getElementById('app').firstElementChild).color);
       asserts.assertEquals('480px', view.getComputedStyle(page.querySelector('form')).maxWidth);
       asserts.assertEquals('rgb(255, 255, 255)', view.getComputedStyle(page.getElementById('textarea')).backgroundColor);
+      for (const control of page.querySelectorAll('button, select')) {
+        const css = view.getComputedStyle(control);
+        asserts.assertEquals('rgb(255, 255, 255)', css.backgroundColor);
+        asserts.assertEquals('0px', css.borderTopWidth);
+        asserts.assertEquals('2px', css.borderRadius);
+      }
+      asserts.assertEquals('24px', view.getComputedStyle(page.querySelector('select')).height);
+      asserts.assertEquals('24px', view.getComputedStyle(button(page, 'Reset pitch')).height);
+      asserts.assertEquals('52px', view.getComputedStyle(button(page, 'Speak')).height);
+      const outside = page.createElement('button');
+      page.body.appendChild(outside);
+      asserts.assertNotEquals('Application control styles must remain scoped', '0px', view.getComputedStyle(outside).borderTopWidth);
+      outside.remove();
+      frame.width = '400';
+      await waitFor(() => 384 === page.querySelector('form').getBoundingClientRect().width);
+      frame.width = '800';
+      await waitFor(() => 480 === page.querySelector('form').getBoundingClientRect().width);
       asserts.assertFalse(button(page, 'Speak').disabled);
       asserts.assertTrue(button(page, 'Pause').disabled);
       asserts.assertTrue(button(page, 'Stop').disabled);

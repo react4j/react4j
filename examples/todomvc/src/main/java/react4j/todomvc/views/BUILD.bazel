@@ -1,0 +1,33 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = ["//examples/todomvc:__subpackages__"])
+
+java_j2cl_library(
+    name = "views",
+    srcs = [
+        "Page.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        "//:core",
+        "//:dom",
+        "//css/core",
+    ],
+    plugins = [
+        "//:react4j_processor_plugin",
+        "//css/processor:plugin",
+        "@arez//:arez_processor_plugin",
+    ],
+    deps = [
+        "//:core-j2cl",
+        "//:dom-j2cl",
+        "//css/core:core-j2cl",
+        "//third_party/java:braincheck_core-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
+        "//third_party/java:jspecify-j2cl",
+        "//third_party/java:org_jetbrains_annotations-j2cl",
+        "//third_party/java:zemeckis_core-j2cl",
+        "@arez//:core-j2cl",
+    ],
+)

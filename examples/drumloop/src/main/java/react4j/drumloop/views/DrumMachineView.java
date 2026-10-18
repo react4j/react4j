@@ -6,6 +6,8 @@ import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 import react4j.css.Css;
+import react4j.css.CssImport;
+import react4j.css.GlobalCss;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.drumloop.model.DrumMachine;
 
@@ -52,7 +54,20 @@ abstract class DrumMachineView {
                                                 .map(FxButtonBuilder::sound))))));
     }
 
+    @GlobalCss("""
+        body {
+          background: #333;
+          margin: 0;
+        }
+        """)
+    static final class Defaults {}
+
+    @CssImport(Defaults.class)
     @Css("""
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
         max-width: 800px;
         margin: auto;
         background: linear-gradient(to bottom right, #222, #0a0a0a);
@@ -91,6 +106,7 @@ abstract class DrumMachineView {
     }
 
     @Css("""
+        box-sizing: border-box;
         flex: 1;
         flex-direction: row;
         align-items: stretch;
@@ -103,6 +119,7 @@ abstract class DrumMachineView {
     }
 
     @Css("""
+        box-sizing: border-box;
         display: flex;
         flex: 1;
         flex-direction: column;

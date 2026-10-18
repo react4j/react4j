@@ -14,10 +14,6 @@ css_bundle(
     name = "styles",
     css = "index.css",
     root = ":arez_bundle",
-    shared = [
-        "//examples/todomvc/src/main/css:base.css",
-        "//examples/todomvc/src/main/css:shared.css",
-    ],
     source_map = "index.css.map",
 )
 

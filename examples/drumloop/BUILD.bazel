@@ -16,7 +16,6 @@ css_bundle(
     name = "styles",
     css = "index.css",
     root = ":drumloop_bundle",
-    shared = ["//examples/drumloop/src/main/css:shared.css"],
     source_map = "index.css.map",
 )
 

@@ -82,6 +82,7 @@ abstract class TodoList {
     }
 
     @Css("""
+        outline: none;
         position: absolute;
         top: -55px;
         left: -12px;

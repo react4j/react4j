@@ -66,6 +66,8 @@ abstract class Application {
         var actionStyle = Application_Styled_ActionStyle.get();
         final SpeechSynthesisVoice voice = _speechData.getVoice();
         return div(
+                new HtmlProps()
+                        .className(Application_Styled_ContainerStyle.get().style()),
                 h1(new HtmlProps().className(Application_Styled_TitleStyle.get().style()), "Web Speech Synthesis Demo"),
                 form(
                         new FormProps()
@@ -297,6 +299,13 @@ abstract class Application {
     }
 
     @Css("""
+        color: #fff;
+        """)
+    abstract static class ContainerStyle {
+        abstract String style();
+    }
+
+    @Css("""
         max-width: 480px;
         margin: 2rem auto;
         font-size: 150%;
@@ -352,6 +361,10 @@ abstract class Application {
     }
 
     @Css("""
+        background-color: #fff;
+        border: none;
+        border-radius: 2px;
+        height: 1.5rem;
         display: inline-block;
         width: calc(80% - 3rem);
         margin: 0;
@@ -362,6 +375,9 @@ abstract class Application {
     }
 
     @Css("""
+        background-color: #fff;
+        border: none;
+        border-radius: 2px;
         width: 1.5rem;
         height: 1.5rem;
         margin: 0 0 0 1.5rem;
@@ -382,6 +398,9 @@ abstract class Application {
     }
 
     @Css("""
+        background-color: #fff;
+        border: none;
+        border-radius: 2px;
         height: 3.25rem;
         width: 3.25rem;
         padding: 0;

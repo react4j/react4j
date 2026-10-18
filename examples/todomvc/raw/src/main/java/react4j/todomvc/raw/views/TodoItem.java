@@ -196,6 +196,7 @@ abstract class TodoItem {
     }
 
     @Css("""
+        outline: none;
         text-align: center;
         width: 40px;
         height: auto;
@@ -243,6 +244,18 @@ abstract class TodoItem {
     }
 
     @Css("""
+        padding: 0;
+        border: 0;
+        background: none;
+        vertical-align: baseline;
+        font-family: inherit;
+        font-weight: inherit;
+        -webkit-appearance: none;
+        appearance: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-font-smoothing: antialiased;
+        font-smoothing: antialiased;
+        outline: none;
         display: var(--todo-destroy-display);
         position: absolute;
         top: 0;
