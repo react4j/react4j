@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -95,26 +96,28 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
         }
     }
 
-    public String report(Set<String> live) {
-        var known = new HashSet<String>();
-        values.forEach(value -> known.add(value.id()));
-        if (!known.containsAll(live)) {
-            throw new IllegalArgumentException("Unknown live CSS binding");
+    public String report(Set<String> live, String javascriptDigest) {
+        if (!javascriptDigest.matches("[0-9a-f]{64}")) {
+            throw new IllegalArgumentException("Invalid linked JavaScript digest");
         }
+        validateLive(live);
         var json = header();
+        json.addProperty("javascriptDigest", javascriptDigest);
         var entries = new JsonArray();
         live.stream().sorted().forEach(entries::add);
         json.add("live", entries);
         return json + "\n";
     }
 
-    public Set<String> readReport(String source) {
+    public Set<String> readReport(String source, String javascriptDigest) {
         try {
             var json = document(source);
             if (!link.equals(string(json, "link"))
                     || !digest.equals(string(json, "digest"))
+                    || !javascriptDigest.equals(string(json, "javascriptDigest"))
                     || !Boolean.toString(optimized).equals(json.get("optimized").toString())) {
-                throw new IllegalArgumentException("CSS liveness report does not match this link and catalogue");
+                throw new IllegalArgumentException(
+                        "CSS liveness report does not match this JavaScript link and catalogue");
             }
             var live = new HashSet<String>();
             for (var value : json.getAsJsonArray("live")) {
@@ -124,10 +127,18 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
                     throw new IllegalArgumentException("CSS liveness report requires distinct binding IDs");
                 }
             }
-            report(live);
+            validateLive(live);
             return Set.copyOf(live);
         } catch (RuntimeException e) {
             throw new IllegalArgumentException("Invalid CSS liveness report: " + e.getMessage(), e);
+        }
+    }
+
+    private void validateLive(Set<String> live) {
+        var known = new HashSet<String>();
+        values.forEach(value -> known.add(value.id()));
+        if (!known.containsAll(live)) {
+            throw new IllegalArgumentException("Unknown live CSS binding");
         }
     }
 
@@ -158,7 +169,14 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
         return value.getAsString();
     }
 
+    public static String digest(Path javascript) throws IOException {
+        return HexFormat.of().formatHex(CssCatalogue.sha256().digest(Files.readAllBytes(javascript)));
+    }
+
     public static void main(String[] args) throws IOException {
+        if (1 == args.length && args[0].startsWith("@")) {
+            args = Files.readAllLines(Path.of(args[0].substring(1))).toArray(String[]::new);
+        }
         var trees = new ArrayList<Path>();
         var options = new TreeMap<String, String>();
         for (int i = 0; i < args.length; i += 2) {

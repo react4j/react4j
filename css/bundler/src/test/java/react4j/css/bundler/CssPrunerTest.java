@@ -61,7 +61,7 @@ public final class CssPrunerTest {
                 ".root,.dead,.peer",
                 ".dead,.root,.peer",
                 ".root,.dead,.root")) {
-            String expected = selectors.equals(".root,.dead,.root") ? ".root,.root" : ".root";
+            String expected = ".root,.dead,.root".equals(selectors) ? ".root,.root" : ".root";
             assertEquals(
                     prune(
                                     resource(new SourceMap.Writer().append(selectors + "{color:blue;}")),
@@ -76,6 +76,17 @@ public final class CssPrunerTest {
                     prune(resource(new SourceMap.Writer().append(css)), Set.of(".dead"), Set.of())
                             .css(),
                     "");
+        }
+    }
+
+    @Test
+    public void literalTabsInStringsAndAttributesUseCharacterOffsets() {
+        for (var retained : List.of(".root{content:'\t';}", ".root[data-label='\t']{color:red;}")) {
+            String css = retained + ".dead{color:blue;}.root{opacity:0.5;}";
+            assertEquals(
+                    prune(resource(new SourceMap.Writer().append(css)), Set.of(".root", ".dead"), Set.of(".root"))
+                            .css(),
+                    retained + ".root{opacity:0.5;}");
         }
     }
 

@@ -54,15 +54,8 @@ final class CssReachability {
     }
 
     static Map<String, Resource> prune(CssCatalogue catalogue, CssLink link, Set<String> live, List<String> globals) {
-        link.report(live);
         var graph = new CssReachability(catalogue, live);
         for (var owner : globals) {
-            var resource = catalogue.resources().get(owner);
-            if (null == resource
-                    || CssResource.Kind.GLOBAL != resource.metadata().kind()) {
-                throw new IllegalArgumentException(
-                        "Global CSS root must reference an available @GlobalCss definition: " + owner);
-            }
             graph.activate(owner);
         }
         for (var value : link.values()) {

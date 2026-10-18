@@ -304,10 +304,17 @@ Raw shared stylesheets retain literal property names and do not participate in t
 
 Apply `//css/processor:plugin` to the J2CL target that owns the style definitions and add `//css/core:core-j2cl` to its dependencies. Browser clients do not need to declare a separate Java library. See the [example Java build](examples/save-button/src/main/java/react4j/css/example/BUILD.bazel) for processor and dependency configuration.
 
-Use [css_bundle](defs.bzl) to collect styles from the application's Closure linking target:
+Use [css_js_binary and css_bundle](defs.bzl) to link JavaScript and collect its styles. The browser application and test macros already use this integration:
 
 ```starlark
-load("//css:defs.bzl", "css_bundle")
+load("//css:defs.bzl", "css_bundle", "css_js_binary")
+
+css_js_binary(
+    name = "application_bundle",
+    deps = [":application"],
+    entry_points = ["com.biz.ui.Main"],
+    compilation_level = "ADVANCED",
+)
 
 css_bundle(
     name = "styles",
@@ -319,11 +326,15 @@ css_bundle(
 )
 ```
 
-Load the generated CSS with the application and serve its source map alongside it. Maps include the original Java and shared CSS source content. The [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) shows two bundles selecting different globals from the same dependencies.
+Load the generated CSS with the application and serve its source map alongside it. Maps include the original Java and shared CSS source content. The [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) shows several CSS variants sharing one JavaScript link.
 
 Global roots use binary Java names; nested classes use `$`, such as `com.biz.ui.Main$Defaults`. Shared CSS files emit first in declared order, followed by globals. Globals emit dependency-first where dependencies are acyclic. Explicit global inclusions always precede their importer, including through property cycles. Declared roots establish the first visits, followed by other required definitions. Each definition emits once: listing a dependency again as a later root does not move it. Components are visited in Java owner order. The `shared` and `components` cascade layers give component styles precedence over shared files and globals. All inputs reject `!important`, which would reverse that precedence.
 
-All component styles and resource definitions with generated Java bindings in reachable build targets are included, even if their accessors are unused. Other animations and global styles are included when referenced by retained definitions or, for globals, selected explicitly. Collection follows Bazel reachability and does not use Closure liveness.
+With `ADVANCED` compilation, CSS follows accessor values that survive JavaScript optimization, including through inlined helpers and interface calls. Unused owners, impossible selectors and resources required only by removed rules are dropped. A modifier value keeps its root class live. Any live checked accessor activates its author's unconditional global inclusions; retained declarations also keep their animation and property providers, including intermediate overrides. Complex selectors remain whenever their removal could change matching or specificity. Names stay readable, and source maps retain authored locations after pruning.
+
+Generated names used in an optimized link must originate from checked accessors compiled within that link. Class-list composition and concatenation of accessor values work. Hardcoding or reconstructing generated names outside accessors, including in raw shared CSS, is unsupported. A peer selector or `url(#id)` does not establish that the referenced element exists. See the [liveness contract](../docs/specs/css-liveness.md) for the retention rules.
+
+`BUNDLE` compilation and `css_bundle` roots that are unlinked Closure libraries retain all component styles and resource definitions with generated Java bindings, plus their dependencies and explicitly selected globals. Other animations and globals remain excluded until required. Complete links produce validated liveness evidence; missing or stale evidence fails the build.
 
 Shared CSS files support style rules, `@media` and `@supports`, but cannot define keyframes. Put processed CSS sources in `src/main/css` and assets copied unchanged in `src/main/assets`. When packaging compiled style libraries, retain their generated `.css`, `.css.map` and `.css.json` resources.
 

@@ -38,12 +38,7 @@ public record CssCatalogue(Map<String, Resource> resources, String digest) {
             }
         }
         var definitions = new TreeMap<String, Resource>();
-        MessageDigest hash;
-        try {
-            hash = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            throw new AssertionError(e);
-        }
+        var hash = sha256();
         for (var entry : files.entrySet()) {
             String name = entry.getKey();
             String content = Files.readString(entry.getValue());
@@ -74,6 +69,14 @@ public record CssCatalogue(Map<String, Resource> resources, String digest) {
                             readMap(mapPath, file)));
         }
         return new CssCatalogue(definitions, HexFormat.of().formatHex(hash.digest()));
+    }
+
+    static MessageDigest sha256() {
+        try {
+            return MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new AssertionError(e);
+        }
     }
 
     private static JsonObject readMap(Path path, String cssName) throws IOException {

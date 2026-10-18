@@ -16,6 +16,7 @@ public final class LivenessEntry {
     }
 
     @Css("""
+        &[data-label='prefix	 suffix'] { letter-spacing: 3px; }
         &.dead { content: '😀'; }
         @media screen {
           &.dead,

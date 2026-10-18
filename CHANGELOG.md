@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Reduce optimized CSS bundles by removing provably unused selectors and styles required only by removed rules. Preserve source maps back to Java and allow several theme bundles to share one JavaScript link.
 * Reject unused CSS custom-property imports and restore Delete-button hover visibility in all three TodoMVC examples.
 * Restore grey, struck-through labels for completed tasks in all three TodoMVC examples.
 * Add String-based `CssProps.customProperty` and HTML `data` fluent APIs for CSS custom properties and data attributes, including nullable removal without JavaScript casts.

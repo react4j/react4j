@@ -26,6 +26,20 @@ css_bundle(
     source_map = "optimized.css.map",
 )
 
+alias(
+    name = "optimized_alias",
+    testonly = True,
+    actual = ":optimized",
+)
+
+css_bundle(
+    name = "alias_styles",
+    testonly = True,
+    css = "alias.css",
+    root = ":optimized_alias",
+    source_map = "alias.css.map",
+)
+
 css_js_binary(
     name = "development",
     testonly = True,

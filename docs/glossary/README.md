@@ -16,7 +16,7 @@ A JavaScript compilation with an explicit application or exported-library bounda
 
 ### Liveness report
 
-Evidence from a [Complete link](#complete-link) identifying the generated accessor values that survive optimization, bound to that link's inputs.
+Evidence from a [Complete link](#complete-link) identifying the generated accessor values that survive optimization, bound to its JavaScript output and generated style definitions.
 
 ### CSS variant
 

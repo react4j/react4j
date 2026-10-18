@@ -9,7 +9,10 @@ java_library(
     ],
     resource_strip_prefix = "css/linker/src/main/resources",
     resources = ["//css/linker/src/main/resources/META-INF/services:com.google.javascript.jscomp.CompilerFactory"],
-    visibility = ["//css:__subpackages__"],
+    visibility = [
+        "//:__pkg__",
+        "//css:__subpackages__",
+    ],
     deps = [
         "//css/internal/src/main/java/react4j/css/internal",
         "@rules_closure//closure/compiler",

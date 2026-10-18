@@ -1,5 +1,15 @@
 {
   "programs": {
+    "//css/linker/src/main/java/react4j/css/linker/catalogue": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//css/linker/src/main/java/react4j/css/linker/worker": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
     "@rules_palantir_java_format//java_format/private/java/org/realityforge/rules/palantirjavaformat/palantir_java_format_worker": {
       "spec": {
         "reproducibility": "always"

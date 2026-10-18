@@ -62,7 +62,7 @@ public final class Bundle {
                     }
                     linkName = args.get(i + 1);
                 }
-                case "--css", "--map", "--link-config", "--liveness" -> {
+                case "--css", "--map", "--link-config", "--liveness", "--javascript" -> {
                     if (null != outputs.putIfAbsent(option, path)) {
                         throw new IllegalArgumentException("Repeated output " + option);
                     }
@@ -81,16 +81,23 @@ public final class Bundle {
         var catalogue = CssCatalogue.read(trees);
         CssLink link = null;
         Set<String> live = Set.of();
-        if (outputs.containsKey("--link-config") || outputs.containsKey("--liveness") || null != linkName) {
-            if (!outputs.keySet().containsAll(Set.of("--link-config", "--liveness")) || null == linkName) {
-                throw new IllegalArgumentException("Expected --link-config, --liveness and --link together");
+        if (outputs.containsKey("--link-config")
+                || outputs.containsKey("--liveness")
+                || outputs.containsKey("--javascript")
+                || null != linkName) {
+            if (!outputs.keySet().containsAll(Set.of("--link-config", "--liveness", "--javascript"))
+                    || null == linkName) {
+                throw new IllegalArgumentException(
+                        "Expected --link-config, --liveness, --javascript and --link together");
             }
             link = CssLink.read(Files.readString(outputs.get("--link-config")));
             var expected = CssLink.create(catalogue, linkName, link.optimized());
             if (!expected.equals(link)) {
                 throw new IllegalArgumentException("CSS link configuration does not match this link and catalogue");
             }
-            live = link.readReport(Files.readString(outputs.get("--liveness")));
+            live = link.readReport(
+                    Files.readString(outputs.get("--liveness")),
+                    CssLink.digest(Objects.requireNonNull(outputs.get("--javascript"))));
         }
         var result = assemble(catalogue, shared, globals, css.getFileName().toString(), link, live);
         Files.writeString(map, result.map());
@@ -117,29 +124,26 @@ public final class Bundle {
             Set<String> live)
             throws IOException {
         boolean optimized = null != link && link.optimized();
-        var definitions = optimized
-                ? CssReachability.prune(catalogue, Objects.requireNonNull(link), live, globals)
-                : catalogue.resources();
-        var retained = new HashSet<String>();
         for (var owner : globals) {
-            var definition = definitions.get(owner);
+            var definition = catalogue.resources().get(owner);
             if (null == definition || Kind.GLOBAL != definition.metadata().kind()) {
                 throw new IllegalArgumentException(
                         "Global CSS root must reference an available @GlobalCss definition: " + owner);
             }
-            if (optimized) {
-                retained.add(owner);
-            } else {
+        }
+        var definitions = optimized
+                ? CssReachability.prune(catalogue, Objects.requireNonNull(link), live, globals)
+                : catalogue.resources();
+        var retained = new HashSet<String>();
+        if (optimized) {
+            retained.addAll(definitions.keySet());
+        } else {
+            for (var owner : globals) {
                 retain(owner, definitions, retained);
             }
-        }
-        for (var definition : definitions.values()) {
-            if (optimized
-                    || Kind.COMPONENT == definition.metadata().kind()
-                    || !definition.metadata().bindings().isEmpty()) {
-                if (optimized) {
-                    retained.add(definition.metadata().owner());
-                } else {
+            for (var definition : definitions.values()) {
+                if (Kind.COMPONENT == definition.metadata().kind()
+                        || !definition.metadata().bindings().isEmpty()) {
                     retain(definition.metadata().owner(), definitions, retained);
                 }
             }

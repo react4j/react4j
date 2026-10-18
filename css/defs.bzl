@@ -1,7 +1,6 @@
 """Bazel rules for CSS-in-Java."""
 
-load("@rules_closure//closure:defs.bzl", "closure_js_binary")
-load("@rules_closure//closure/private:defs.bzl", "ClosureJsBinaryInfo")
+load("@rules_closure//closure:defs.bzl", "ClosureJsBinaryInfo", "closure_js_binary")
 
 _CssInfo = provider("Transitive J2CL output trees containing processor CSS resources.", fields = ["trees"])
 
@@ -21,6 +20,8 @@ _collect = aspect(implementation = _collect_impl, attr_aspects = ["deps", "expor
 def _configuration_impl(ctx):
     trees = depset(transitive = [dep[_CssInfo].trees for dep in ctx.attr.deps])
     args = ctx.actions.args()
+    args.use_param_file("@%s", use_always = True)
+    args.set_param_file_format("multiline")
     args.add("--output", ctx.outputs.json)
     args.add("--link", ctx.label.repo_name + "//" + ctx.label.package + ":" + ctx.attr.binary_name)
     args.add("--mode", "optimized" if ctx.attr.compilation_level == "ADVANCED" else "retain")
@@ -79,10 +80,11 @@ def _bundle_impl(ctx):
         binary = ctx.attr.root[ClosureJsBinaryInfo]
         if not binary.compiler_config or not binary.compiler_report:
             fail("CSS bundles rooted in a Closure binary require css_js_binary so liveness evidence is produced; use a library root for an unlinked library")
-        evidence = [binary.compiler_config, binary.compiler_report]
+        evidence = [binary.compiler_config, binary.compiler_report, binary.bin]
         args.add("--link-config", binary.compiler_config)
         args.add("--liveness", binary.compiler_report)
-        label = ctx.attr.root.label
+        args.add("--javascript", binary.bin)
+        label = binary.bin.owner
         args.add("--link", label.repo_name + "//" + label.package + ":" + label.name)
     ctx.actions.run(
         executable = ctx.executable._bundler,

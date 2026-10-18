@@ -672,11 +672,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
         try {
             IntFunction<SourceMap.Location> locations = offset -> {
                 int original = block.offsets()[Math.min(offset, block.value().length())];
-                return new SourceMap.Location(
-                        mappedSource,
-                        source,
-                        (int) unit.getLineMap().getLineNumber(original) - 1,
-                        (int) unit.getLineMap().getColumnNumber(original) - 1);
+                long line = unit.getLineMap().getLineNumber(original);
+                return new SourceMap.Location(mappedSource, source, (int) line - 1, (int)
+                        (original - unit.getLineMap().getStartPosition(line)));
             };
             if (Kind.KEYFRAMES == kind) {
                 return CssCompiler.keyframes(

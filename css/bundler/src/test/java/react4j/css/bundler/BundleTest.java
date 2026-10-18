@@ -9,16 +9,21 @@ import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
 import com.helger.css.writer.CSSWriterSettings;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import org.jspecify.annotations.Nullable;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import react4j.css.internal.CssCatalogue;
+import react4j.css.internal.CssLink;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.SourceMap;
 
@@ -239,6 +244,58 @@ public final class BundleTest {
                 List.of("--css", "x", "--map", "x"))) {
             expectThrows(IllegalArgumentException.class, () -> Bundle.run(args));
         }
+    }
+
+    @Test
+    public void completeLinkCommandRejectsStaleJavaScriptCatalogueAndIncompleteEvidence() throws Exception {
+        Path input = tree("linked");
+        component(input, "Button", ".root{color:red;}");
+        var link = CssLink.create(CssCatalogue.read(List.of(input)), "//:app", true);
+        Path javascript = dir().resolve("app.js");
+        Path config = dir().resolve("config.json");
+        Path report = dir().resolve("live.json");
+        Files.writeString(javascript, "window.result = '--example';");
+        Files.writeString(config, link.json());
+        Files.writeString(report, link.report(Set.of("Button#property"), CssLink.digest(javascript)));
+        var arguments = List.of(
+                "--css",
+                dir().resolve("app.css").toString(),
+                "--map",
+                dir().resolve("app.css.map").toString(),
+                "--input",
+                input.toString(),
+                "--link-config",
+                config.toString(),
+                "--liveness",
+                report.toString(),
+                "--javascript",
+                javascript.toString(),
+                "--link",
+                "//:app");
+        Bundle.run(arguments);
+        assertTrue(Files.readString(dir().resolve("app.css")).contains(".root{color:red;}"));
+        Files.writeString(javascript, "window.result = 'changed JavaScript, same CSS';");
+        var stale = expectThrows(IllegalArgumentException.class, () -> Bundle.run(arguments));
+        assertTrue(String.valueOf(stale.getMessage()).contains("does not match this JavaScript link"));
+        Files.writeString(javascript, "window.result = '--example';");
+        Files.writeString(config, link.json().replace("//:app", "//:other"));
+        expectThrows(IllegalArgumentException.class, () -> Bundle.run(arguments));
+        Files.writeString(config, link.json());
+        component(input, "Button", ".root{color:blue;}");
+        expectThrows(IllegalArgumentException.class, () -> Bundle.run(arguments));
+        component(input, "Button", ".root{color:red;}");
+        for (var option : List.of("--link-config", "--liveness", "--javascript", "--link")) {
+            var incomplete = new ArrayList<>(arguments);
+            int index = incomplete.indexOf(option);
+            incomplete.remove(index);
+            incomplete.remove(index);
+            expectThrows(IllegalArgumentException.class, () -> Bundle.run(incomplete));
+        }
+        var repeated = new ArrayList<>(arguments);
+        repeated.addAll(List.of("--link", "//:app"));
+        expectThrows(IllegalArgumentException.class, () -> Bundle.run(repeated));
+        Files.delete(report);
+        expectThrows(IOException.class, () -> Bundle.run(arguments));
     }
 
     private static void resource(Path tree, String owner, CssResource.Kind kind, String css, String... dependencies)

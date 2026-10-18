@@ -3,6 +3,9 @@ package react4j.css.integration;
 import static org.testng.Assert.*;
 
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
+import com.helger.css.reader.CSSReader;
+import com.helger.css.reader.CSSReaderSettings;
+import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -18,12 +21,21 @@ public final class CssLivenessIntegrationTest {
     public void realLinksHandleSeparatelyCompiledInterfaceAndFacadeBindings() throws Exception {
         String optimized = input("optimized");
         String development = input("development");
+        assertEquals(input("alias").replace("alias.css.map", "optimized.css.map"), optimized);
         assertTrue(optimized.contains("ButtonStyles--success"), optimized);
         assertFalse(optimized.contains("ButtonStyles--cancel"), optimized);
         assertFalse(optimized.contains("MapStyles--dead"), optimized);
         assertTrue(development.contains("ButtonStyles--cancel"), development);
         assertTrue(development.contains("MapStyles--dead"), development);
         assertFalse(input("javascript").contains("$react4j$css$"));
+        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
+                optimized, new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+        var components = sheet.getAllLayerRules().stream()
+                .filter(layer -> layer.getAllSelectors().equals(List.of("components")))
+                .findFirst()
+                .orElseThrow();
+        assertEquals(components.getAllMediaRules().size(), 1);
+        assertEquals(components.getAllMediaRules().get(0).getAllStyleRules().size(), 1);
     }
 
     @Test
@@ -33,7 +45,9 @@ public final class CssLivenessIntegrationTest {
         var consumer = new SourceMapConsumerV3();
         consumer.parse(input("map"));
         for (var pair : List.of(
-                new String[] {"--active", "&.active {"}, new String[] {"color:rgb(1,2,3)", "color: rgb(1, 2, 3)"})) {
+                new String[] {"--active", "&.active {"},
+                new String[] {"letter-spacing:3px", "letter-spacing: 3px"},
+                new String[] {"color:rgb(1,2,3)", "color: rgb(1, 2, 3)"})) {
             int generated = css.indexOf(pair[0]);
             assertTrue(generated >= 0, pair[0]);
             int generatedLine = (int) css.substring(0, generated)

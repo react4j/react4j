@@ -98,12 +98,13 @@ diff --git a/java/com/google/javascript/jscomp/JsCompiler.java b/java/com/google
          case "--info":
            infos.add(JsCheckerHelper.loadClosureJsLibraryInfo(Paths.get(iargs.next())));
            continue;
-@@ -173,7 +182,23 @@
+@@ -173,7 +182,24 @@
 
      // Run the compiler, capturing error messages.
      boolean failed = false;
 -    Compiler compiler = new Compiler();
 +    Compiler compiler;
++    CompilerFactory factory = null;
 +    if (null == compilerConfig && null == compilerReport) {
 +      compiler = new Compiler();
 +    } else {
@@ -114,7 +115,7 @@ diff --git a/java/com/google/javascript/jscomp/JsCompiler.java b/java/com/google
 +      if (!factories.hasNext()) {
 +        throw new IOException("No CompilerFactory is available for compiler_config");
 +      }
-+      CompilerFactory factory = factories.next();
++      factory = factories.next();
 +      if (factories.hasNext()) {
 +        throw new IOException("Multiple CompilerFactory implementations are available");
 +      }
@@ -123,6 +124,16 @@ diff --git a/java/com/google/javascript/jscomp/JsCompiler.java b/java/com/google
      JsCheckerErrorFormatter errorFormatter = new JsCheckerErrorFormatter(compiler, roots, labels);
      errorFormatter.setColorize(true);
      JsCheckerErrorManager errorManager = new JsCheckerErrorManager(errorFormatter);
+@@ -190,6 +216,9 @@
+       failed |= runner.go() != 0;
+     }
+     failed |= runner.hasErrors();
++    if (!failed && null != factory && null != jsOutputFile) {
++      factory.finish(compiler, jsOutputFile);
++    }
+
+     // Output error messages based on diagnostic settings.
+     if (!expectFailure && !expectWarnings) {
 diff --git a/java/com/google/javascript/jscomp/BUILD b/java/com/google/javascript/jscomp/BUILD
 --- a/java/com/google/javascript/jscomp/BUILD
 +++ b/java/com/google/javascript/jscomp/BUILD
@@ -148,7 +159,7 @@ diff --git a/java/com/google/javascript/jscomp/BUILD b/java/com/google/javascrip
 diff --git a/java/com/google/javascript/jscomp/CompilerFactory.java b/java/com/google/javascript/jscomp/CompilerFactory.java
 --- /dev/null
 +++ b/java/com/google/javascript/jscomp/CompilerFactory.java
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,12 @@
 +package com.google.javascript.jscomp;
 +
 +import java.io.IOException;
@@ -157,6 +168,9 @@ diff --git a/java/com/google/javascript/jscomp/CompilerFactory.java b/java/com/g
 +/** Creates a compiler configured by an opaque, declared build input. */
 +public interface CompilerFactory {
 +  Compiler create(Path configuration, Path report) throws IOException;
++
++  /** Completes extension output after the successful compilation has written JavaScript. */
++  default void finish(Compiler compiler, Path javascript) throws IOException {}
 +}
 diff --git a/java/io/bazel/rules/closure/BUILD b/java/io/bazel/rules/closure/BUILD
 --- a/java/io/bazel/rules/closure/BUILD
@@ -182,3 +196,23 @@ diff --git a/java/io/bazel/rules/closure/BUILD b/java/io/bazel/rules/closure/BUI
      visibility = ["//visibility:public"],
      deps = [
          "//java/com/google/javascript/jscomp",
+diff --git a/closure/defs.bzl b/closure/defs.bzl
+--- a/closure/defs.bzl
++++ b/closure/defs.bzl
+@@ -18,7 +18,7 @@
+ load("//closure/compiler:closure_js_aspect.bzl", _closure_js_aspect = "closure_js_aspect")
+ load("//closure/compiler:closure_js_binary.bzl", _closure_js_binary = "closure_js_binary")
+ load("//closure/compiler:closure_js_library.bzl", _closure_js_library = "closure_js_library", _create_closure_js_library = "create_closure_js_library")
+-load("//closure/private:defs.bzl", _CLOSURE_JS_TOOLCHAIN_ATTRS = "CLOSURE_JS_TOOLCHAIN_ATTRS", _ClosureJsLibraryInfo = "ClosureJsLibraryInfo")
++load("//closure/private:defs.bzl", _CLOSURE_JS_TOOLCHAIN_ATTRS = "CLOSURE_JS_TOOLCHAIN_ATTRS", _ClosureJsLibraryInfo = "ClosureJsLibraryInfo", _ClosureJsBinaryInfo = "ClosureJsBinaryInfo")
+ load("//closure/private:files_equal_test.bzl", _files_equal_test = "files_equal_test")
+ load("//closure/stylesheets:closure_css_binary.bzl", _closure_css_binary = "closure_css_binary")
+ load("//closure/stylesheets:closure_css_library.bzl", _closure_css_library = "closure_css_library")
+@@ -30,6 +30,7 @@
+ closure_js_library = _closure_js_library
+ create_closure_js_library = _create_closure_js_library
+ ClosureJsLibraryInfo = _ClosureJsLibraryInfo
++ClosureJsBinaryInfo = _ClosureJsBinaryInfo
+ CLOSURE_JS_TOOLCHAIN_ATTRS = _CLOSURE_JS_TOOLCHAIN_ATTRS
+ files_equal_test = _files_equal_test
+ closure_css_binary = _closure_css_binary

@@ -45,7 +45,8 @@ final class CssPruner {
         this.known = known;
         this.present = present;
         sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
-                resource.css(), new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+                resource.css(),
+                new CSSReaderSettings().setTabSize(1).setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
         lines.add(0);
         for (int i = 0; i < resource.css().length(); i++) {
             if ('\n' == resource.css().charAt(i)) {

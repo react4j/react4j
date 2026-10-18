@@ -12,6 +12,8 @@ import java.util.Set;
 import org.testng.annotations.Test;
 
 public final class CssLinkTest {
+    private static final String JAVASCRIPT_DIGEST = "2".repeat(64);
+
     private static CssLink link(boolean optimized) {
         return CssLink.create(
                 new CssCatalogue(
@@ -41,9 +43,9 @@ public final class CssLinkTest {
             assertEquals(CssLink.read(link.json()), link);
             assertEquals(link.values().get(0).source(), "demo/Styled_Button.impl.java.js");
             var live = Set.of("demo.Button#style");
-            assertEquals(link.readReport(link.report(live)), live);
-            assertEquals(link.readReport(link.report(Set.of())), Set.of());
-            expectThrows(IllegalArgumentException.class, () -> link.report(Set.of("missing")));
+            assertEquals(link.readReport(link.report(live, JAVASCRIPT_DIGEST), JAVASCRIPT_DIGEST), live);
+            assertEquals(link.readReport(link.report(Set.of(), JAVASCRIPT_DIGEST), JAVASCRIPT_DIGEST), Set.of());
+            expectThrows(IllegalArgumentException.class, () -> link.report(Set.of("missing"), JAVASCRIPT_DIGEST));
         }
     }
 
@@ -51,7 +53,7 @@ public final class CssLinkTest {
     public void missingMismatchedAndMalformedEvidenceCannotMeanAnEmptyLiveSet() {
         var link = link(true);
         String config = link.json();
-        String report = link.report(Set.of("demo.Button#style"));
+        String report = link.report(Set.of("demo.Button#style"), JAVASCRIPT_DIGEST);
         for (var bad : List.of(
                 "",
                 "{",
@@ -79,8 +81,10 @@ public final class CssLinkTest {
                 report.replace("[\"demo.Button#style\"]", "[\"demo.Button#style\",\"demo.Button#style\"]"),
                 report.replace("[\"demo.Button#style\"]", "[1]"),
                 report.replace("[\"demo.Button#style\"]", "[null]"))) {
-            expectThrows(IllegalArgumentException.class, () -> link.readReport(bad));
+            expectThrows(IllegalArgumentException.class, () -> link.readReport(bad, JAVASCRIPT_DIGEST));
         }
+        expectThrows(IllegalArgumentException.class, () -> link.readReport(report, "3".repeat(64)));
+        expectThrows(IllegalArgumentException.class, () -> link.report(Set.of(), "bad"));
         for (var key : List.of("version", "link", "digest", "optimized", "values")) {
             var json = JsonParser.parseString(config).getAsJsonObject();
             json.remove(key);
@@ -129,6 +133,10 @@ public final class CssLinkTest {
             assertNotEquals(CssLink.read(Files.readString(output)).digest(), original.digest());
             args[5] = "retain";
             CssLink.main(args);
+            assertFalse(CssLink.read(Files.readString(output)).optimized());
+            Path parameters = directory.resolve("arguments");
+            Files.writeString(parameters, String.join("\n", args));
+            CssLink.main(new String[] {"@" + parameters});
             assertFalse(CssLink.read(Files.readString(output)).optimized());
             for (var invalid : List.of(
                     new String[] {},

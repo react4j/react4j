@@ -8,10 +8,13 @@ import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.TreeMap;
 import org.testng.annotations.Test;
 import react4j.css.internal.CssLink;
 import react4j.css.internal.CssResource;
@@ -58,14 +61,14 @@ public final class StyleCompilerTest {
     public void finalValuesSurviveInliningAndLowerToOrdinaryStringsWithSourceMaps() throws Exception {
         Path directory = Files.createTempDirectory("css-linker");
         try {
-            Path source = directory.resolve("demo/Styled_Button.impl.java.js");
+            Path source = directory.resolve("input.js/demo/Styled_Button.impl.java.js");
             Files.createDirectories(source.getParent());
             String code = "class Styled_Button { style() { return 'root'; } success() { return 'root mod'; } dead() {"
                     + " return 'root dead'; } alias() { return 'root mod'; }} function helper(style) { return"
                     + " style.success(); } window.result = helper(new Styled_Button());";
             Files.writeString(source, code);
             Path other = directory.resolve("other.js");
-            Files.writeString(other, "window.other = 'root dead';");
+            Files.writeString(other, "function unrelated() { return 'root dead'; } window.other = unrelated();");
             Path extern = directory.resolve("extern.js");
             Files.writeString(extern, "var window;");
             Path output = directory.resolve("app.js");
@@ -92,7 +95,9 @@ public final class StyleCompilerTest {
                     })
                     .execute();
             assertEquals(result, 0);
-            assertEquals(link.readReport(Files.readString(report)), Set.of("demo.Button#success"));
+            compiler.finish(output);
+            assertEquals(
+                    link.readReport(Files.readString(report), CssLink.digest(output)), Set.of("demo.Button#success"));
             String js = Files.readString(output);
             assertFalse(js.contains("$react4j$css$"), js);
             assertFalse(js.contains("Styled_Button"), js);
@@ -120,13 +125,150 @@ public final class StyleCompilerTest {
             Path config = directory.resolve("config.json");
             Path report = directory.resolve("live.json");
             Files.writeString(config, link(false).json());
-            assertEquals(factories.get(0).get().create(config, report).getClass(), Compiler.class);
-            assertEquals(link(false).readReport(Files.readString(report)), Set.of());
+            var factory = factories.get(0).get();
+            var compiler = factory.create(config, report);
+            Path source = directory.resolve("entry.js");
+            Path extern = directory.resolve("extern.js");
+            Path output = directory.resolve("app.js");
+            Files.writeString(source, "window.result = 'ok';");
+            Files.writeString(extern, "var window;");
+            assertFalse(Files.exists(report));
+            for (var level : List.of("BUNDLE", "SIMPLE")) {
+                compiler = factory.create(config, report);
+                assertEquals(
+                        new Runner(compiler, new String[] {
+                                    "--js",
+                                    source.toString(),
+                                    "--externs",
+                                    extern.toString(),
+                                    "--env",
+                                    "CUSTOM",
+                                    "--compilation_level",
+                                    level,
+                                    "--js_output_file",
+                                    output.toString()
+                                })
+                                .execute(),
+                        0);
+                factory.finish(compiler, output);
+                assertEquals(link(false).readReport(Files.readString(report), CssLink.digest(output)), Set.of());
+            }
             Files.writeString(config, link(true).json());
-            assertTrue(new CssCompilerFactory().create(config, report) instanceof StyleCompiler);
+            var incomplete = factory.create(config, report);
+            expectThrows(IllegalArgumentException.class, () -> factory.finish(incomplete, output));
         } finally {
             remove(directory);
         }
+    }
+
+    @Test
+    public void generatedFilesWithTheSameBasenameResolveByTheirFullPackage() throws Exception {
+        Path directory = Files.createTempDirectory("css-packages");
+        try {
+            var values = List.of(
+                    value("style", "one"),
+                    new CssLink.Value(
+                            "a.demo.Button",
+                            "a.demo.Styled_Button",
+                            new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "two")));
+            var link = new CssLink("//:app", "1".repeat(64), true, values);
+            compile(
+                    new StyleCompiler(link, directory.resolve("live.json")),
+                    directory,
+                    Map.of(
+                            "demo/Styled_Button.impl.java.js",
+                                    "class One { style() { return 'one'; }} window.one = new One().style();",
+                            "a/demo/Styled_Button.impl.java.js",
+                                    "class Two { style() { return 'two'; }} window.two = new Two().style();"));
+            assertEquals(
+                    link.readReport(
+                            Files.readString(directory.resolve("live.json")),
+                            CssLink.digest(directory.resolve("app.js"))),
+                    Set.of("demo.Button#style", "a.demo.Button#style"));
+        } finally {
+            remove(directory);
+        }
+    }
+
+    @Test
+    public void defaultPackageBindingDoesNotCaptureASameNamedFileInAnotherPackage() throws Exception {
+        Path directory = Files.createTempDirectory("css-default-package");
+        try {
+            var link = new CssLink(
+                    "//:app",
+                    "1".repeat(64),
+                    true,
+                    List.of(new CssLink.Value(
+                            "Button",
+                            "Styled_Button",
+                            new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root"))));
+            compile(
+                    new StyleCompiler(link, directory.resolve("live.json")),
+                    directory,
+                    Map.of(
+                            "Styled_Button.impl.java.js", "class Generated { style() { return 'root'; }}",
+                            "a/Styled_Button.impl.java.js",
+                                    "class Other { text() { return 'root'; }} window.result = new Other().text();"));
+            assertEquals(
+                    link.readReport(
+                            Files.readString(directory.resolve("live.json")),
+                            CssLink.digest(directory.resolve("app.js"))),
+                    Set.of());
+        } finally {
+            remove(directory);
+        }
+    }
+
+    @Test
+    public void missingOrChangedGeneratedBindingsFailWithTheirIdentity() throws Exception {
+        Path directory = Files.createTempDirectory("css-invalid-link");
+        try {
+            var link = new CssLink("//:app", "1".repeat(64), true, List.of(value("style", "root")));
+            for (var sources : List.of(
+                    Map.of("other.js", "window.result = 'root';"),
+                    Map.of(
+                            "demo/Styled_Button.impl.java.js",
+                            "class Button { style() { return 'changed'; }} window.result = new Button().style();"))) {
+                var error = expectThrows(
+                        RuntimeException.class,
+                        () -> compile(new StyleCompiler(link, directory.resolve("live.json")), directory, sources));
+                var messages = new StringBuilder();
+                for (Throwable cause = error; null != cause; cause = cause.getCause()) {
+                    messages.append(cause.getMessage());
+                }
+                assertTrue(
+                        messages.toString().contains("CSS catalogue implementation is missing")
+                                || messages.toString().contains("Generated CSS binding differs from its catalogue"),
+                        messages.toString());
+                assertFalse(Files.exists(directory.resolve("live.json")));
+            }
+        } finally {
+            remove(directory);
+        }
+    }
+
+    private static void compile(StyleCompiler compiler, Path directory, Map<String, String> sources) throws Exception {
+        var arguments = new ArrayList<String>();
+        for (var entry : new TreeMap<>(sources).entrySet()) {
+            Path path = directory.resolve("input.js").resolve(entry.getKey());
+            Files.createDirectories(path.getParent());
+            Files.writeString(path, entry.getValue());
+            arguments.addAll(List.of("--js", path.toString()));
+        }
+        Path extern = directory.resolve("extern.js");
+        Files.writeString(extern, "var window;");
+        Path output = directory.resolve("app.js");
+        arguments.addAll(List.of(
+                "--externs",
+                extern.toString(),
+                "--env",
+                "CUSTOM",
+                "--compilation_level",
+                "ADVANCED",
+                "--js_output_file",
+                output.toString()));
+        assertEquals(new Runner(compiler, arguments.toArray(String[]::new)).execute(), 0);
+        compiler.finish(output);
     }
 
     private static void remove(Path directory) throws Exception {
