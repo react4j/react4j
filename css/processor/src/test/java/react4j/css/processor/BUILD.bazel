@@ -107,6 +107,24 @@ test_suite(
         ":compiler_tests",
         ":names_tests",
         ":peer_compiler_tests",
+        ":readme_tests",
         ":text_block_tests",
+    ],
+)
+
+java_testng(
+    name = "readme_tests",
+    srcs = ["CssReadmeTest.java"],
+    data = [
+        "//css:README.md",
+        "//third_party/java:strict_checker_options",
+    ],
+    jvm_flags = _PROCESSOR_JVM_FLAGS,
+    test_class = "react4j.css.processor.CssReadmeTest",
+    deps = [
+        "//css/core",
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//dom",
+        "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
     ],
 )

@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementing
-- Current frontier: T06
+- Status: implementation-review
+- Current frontier: independent implementation review
 - Planning reviewer: imports_coverage_planning (3/3 rounds plus final confirmation consumed; passed)
 - Plan checkpoint: automatic; revised review passed and latest user implementation authority persists
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -15,16 +15,16 @@
 | T03 | [Measured processor coverage](T03-processor-coverage.md) | complete | T02 |
 | T04 | [Honest runtime coverage pipeline](T04-runtime-measurement.md) | complete | T03 |
 | T05 | [Core and DOM coverage to 95/85](T05-runtime-tests.md) | complete | T04 |
-| T06 | [Examples, permanent docs and complete validation](T06-examples-validation.md) | pending | T05 |
+| T06 | [Examples, permanent docs and complete validation](T06-examples-validation.md) | complete | T05 |
 
 ## Full-scope validation
-Gate: tools/check.sh. Evidence: pending. Current baseline fails the newly required root floors; this delivery must close those gaps without weakening them.
+Gate: tools/check.sh passed on 2026-10-18, including formatting, both hermeticity modes, 36 development targets, six optimized browser targets, 18 JVM coverage targets, isolated consumers, site/release checks and 13 reproducibility comparisons. All root/class floors pass unchanged. Root line/branch percentages: core 97.84/92.65, dom 97.81/100, processor 96.22/86.12, css/processor 99.24/96.98, css/internal 97.75/93.18, css/bundler 98.18/93.53. Reports remain in reports/coverage; supporting implementation and task evidence are committed before review.
 
 ## Sequencing
 The primary agent implements sequentially. T04 validates the coverage seam before T05 expands tests; invalid source attribution or denominator assumptions reopen only that measurement decision. Read-only planning and implementation reviewers are independent. No implementation delegation is authorized by this workflow.
 
 ## Promoted knowledge
-Not required unless canonical domain directories exist at promotion time.
+Checked before implementation review: docs/adr, docs/glossary, docs/specs and docs/deferred do not exist. No domain-documentation promotion is required. Durable user/contributor guidance lives in css/README.md and CONTRIBUTING.md.
 
 ## Planning review history
 Round 1: blocked because per-root browser routing omitted JVM-only bodies in ReactConfig, despite separate JVM tests. Resolved by assigning disjoint source obligations using parsed @GwtIncompatible ranges, supplementing browser evidence with JVM-only counters in the effective runtime report, and requiring missing/unexecuted mixed-platform controls to fail the same root gate. Updated D4/D5, AC4 and T04/T05. Round 2: Findings: none. Reviewer confirmed mixed-platform obligations remain inside the enforced root total, with missing/unexecuted evidence controls. Residual instrumentation/source-attribution feasibility is explicitly gated by T04 before T05.

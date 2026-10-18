@@ -57,12 +57,20 @@ public final class BrowserExample {
                                         "Nested"),
                                 DOM.span(new HtmlProps().id("status").className(status.success()), "Status")),
                         DOM.button(new BtnProps().id("busy-button").className(button.busy()), "Saving"),
-                        DOM.span(new HtmlProps().id("busy-status").className(status.busy()), "Saving status")),
+                        DOM.span(new HtmlProps().id("busy-status").className(status.busy()), "Saving status"),
+                        DOM.button(new BtnProps().id("peer-button").className(button.style()), "Focus to show status"),
+                        DOM.span(
+                                new HtmlProps()
+                                        .id("peer-label")
+                                        .data("peer", "true")
+                                        .className(status.style()),
+                                "Ready")),
                 container);
     }
 
     @CssImport(Defaults.class)
     @CssImport(name = "pulse", value = Pulse.class)
+    @CssImport(name = "status", value = Status.class)
     @Css("""
         color: var(--on-accent);
 
@@ -72,6 +80,10 @@ public final class BrowserExample {
 
         &:disabled {
           opacity: 0.5;
+        }
+
+        &:focus-visible + :css(status)[data-peer] {
+          color: var(--success);
         }
 
         &.success {

@@ -1,5 +1,6 @@
 load("//third_party/java:rules.bzl", "java_testng")
 load("//tools/verification:defs.bzl", "j2cl_modules")
+load("//tools/webtesting:defs.bzl", "java_browser_testng")
 
 java_testng(
     name = "coverage_tests",
@@ -10,7 +11,7 @@ java_testng(
     deps = ["//tools/verification/src/main/java/react4j/verification:coverage"],
 )
 
-java_testng(
+java_browser_testng(
     name = "browser_coverage_tests",
     size = "medium",
     srcs = ["BrowserCoverageTest.java"],
@@ -19,7 +20,6 @@ java_testng(
         "//tools/webtesting:chromium.gen.json",
     ],
     jvm_flags = ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)"],
-    tags = ["requires-network"],
     test_class = "react4j.verification.BrowserCoverageTest",
     visibility = ["//:__pkg__"],
     deps = [
@@ -28,7 +28,7 @@ java_testng(
     ],
 )
 
-java_testng(
+java_browser_testng(
     name = "instrumenter_tests",
     size = "medium",
     srcs = ["CoverageInstrumenterTest.java"],
@@ -37,7 +37,6 @@ java_testng(
         "//tools/webtesting:chromium.gen.json",
     ],
     jvm_flags = ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)"],
-    tags = ["requires-network"],
     test_class = "react4j.verification.CoverageInstrumenterTest",
     visibility = ["//:__pkg__"],
     deps = [
@@ -48,7 +47,7 @@ java_testng(
     ],
 )
 
-java_testng(
+java_browser_testng(
     name = "runtime_coverage_tests",
     size = "medium",
     srcs = ["RuntimeCoverageTest.java"],
@@ -93,7 +92,6 @@ java_testng(
         "-Dcoverage.mixed.modules=$(rootpath :mixed_modules)",
         "-Dcoverage.fixture.modules=$(rootpath :fixture_modules)",
     ],
-    tags = ["requires-network"],
     test_class = "react4j.verification.RuntimeCoverageTest",
     visibility = ["//:__pkg__"],
     deps = [

@@ -41,6 +41,27 @@
       "mnemonic": "TestRunner",
       "target": "//css/examples/save-button/src/test/js/react4j/css/example:browser_tests",
       "requirement": "requires-network"
+    },
+    {
+      "reason": "Pinned Chromium and ChromeDriver communicate over loopback during the JVM browser test; build actions remain sandboxed without network access",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//tools/verification/src/test/java/react4j/verification:browser_coverage_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "Pinned Chromium and ChromeDriver communicate over loopback during the JVM browser test; build actions remain sandboxed without network access",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//tools/verification/src/test/java/react4j/verification:instrumenter_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "Pinned Chromium and ChromeDriver communicate over loopback during the JVM browser test; build actions remain sandboxed without network access",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//tools/verification/src/test/java/react4j/verification:runtime_coverage_tests",
+      "requirement": "requires-network"
     }
   ]
 }

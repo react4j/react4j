@@ -12,3 +12,8 @@ test_suite(
     ],
     visibility = ["//visibility:public"],
 )
+
+exports_files(
+    ["README.md"],
+    visibility = ["//css/processor/src/test/java/react4j/css/processor:__pkg__"],
+)

@@ -8,6 +8,7 @@ browser_test(
     srcs = ["browser_test.js"],
     data = [
         ":alternate_styles",
+        ":component_styles",
         ":styles",
     ],
     entry_point = "react4j.css.example.BrowserTest",
@@ -41,4 +42,12 @@ css_bundle(
     root = ":browser_tests_bin",
     shared = ["//css/examples/save-button/src/main/css:shared.css"],
     source_map = "alternate.css.map",
+)
+
+css_bundle(
+    name = "component_styles",
+    testonly = True,
+    css = "component.css",
+    root = ":browser_tests_bin",
+    source_map = "component.css.map",
 )

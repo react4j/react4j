@@ -41,9 +41,37 @@ Style definitions must be abstract, public or package-access, and stateless: no 
 
 ## Supported CSS
 
-Component styles support root declarations and nested selectors beginning with `&` that target the same element, including attributes and `:is`, `:not` and `:where`. `@media` and `@supports` blocks require explicit nested selectors. Apply one component's root to each styled element. When modifiers conflict, stylesheet order determines precedence, regardless of class-token order.
+Component styles support root declarations and nested selectors beginning with `&`, including attributes and same-element `:is`, `:not` and `:where`. Import another component to target its root in a checked descendant or sibling selector. `@media` and `@supports` blocks require explicit nested selectors. Apply one component's root to each styled element. When modifiers conflict, stylesheet order determines precedence, regardless of class-token order.
 
-Descendant and sibling selectors, global escapes, escaped selector or property identifiers, `:has`, `@container` and other at-rules are unsupported, except for the keyframes described below. CSS must be a literal Java text block. Validation checks syntax and selector/accessor agreement; it does not check property semantics or transform CSS for browser compatibility.
+Raw descendant and sibling targets, global escapes, escaped selector or property identifiers, `:has`, `@container` and other at-rules are unsupported, except for the keyframes described below. CSS must be a literal Java text block. Validation checks syntax and selector/accessor agreement; it does not check property semantics or transform CSS for browser compatibility.
+
+### Peer components
+
+Name a component import locally and reference its root with `:css(alias)`:
+
+```java
+@Css("""
+    color: white;
+    """)
+abstract class LabelStyles {
+    abstract String style();
+}
+
+@CssImport(name = "label", value = LabelStyles.class)
+@CssImport(ApplicationDefaults.class)
+@Css("""
+    &:focus-visible + :css(label)[data-status] {
+      color: green;
+    }
+    """)
+abstract class ButtonStyles {
+    abstract String style();
+}
+```
+
+Component selectors start with `&`. Each later compound after a descendant, child (`>`), adjacent sibling (`+`) or general sibling (`~`) combinator must start with `:css(alias)`. Qualify peer roots with attributes or pseudo-classes. Peer modifier classes and peer references inside component selector functions are unsupported. Component reference cycles are allowed.
+
+The referenced type's annotation determines the import kind: named `@Css` imports supply peer roots, named `@Keyframes` imports supply animation names, and unnamed `@GlobalCss` imports include global rules. Aliases are local to the importing definition and share one namespace. Named imports are checked even when unused; a selector or animation reference creates the dependency.
 
 ### Animations
 
@@ -101,9 +129,9 @@ Use `@GlobalCss` for page defaults and rules that target elements outside a comp
 final class ApplicationDefaults {}
 ```
 
-Selectors retain their authored names and require no Java accessors. Global styles support style rules, nesting, `@media` and `@supports`. Conditional blocks require explicit selectors even inside a style rule, for example `body { @media screen { & { color: red; } } }`. Import shared animations with `@CssImport`; inline keyframe definitions and other at-rules, including `@font-face`, are unsupported.
+Selectors retain their authored names and require no Java accessors. Global styles support style rules, nesting, `@media` and `@supports`. Conditional blocks require explicit selectors even inside a style rule, for example `body { @media screen { & { color: red; } } }`. Import shared animations and component roots with `@CssImport`; global selectors may use `:css(alias)` to reference those roots. Inline keyframe definitions and other at-rules, including `@font-face`, are unsupported.
 
-Select application globals through the bundle's `globals` attribute below. Add `@CssImport(ApplicationDefaults.class)` to a component or another global definition that requires those defaults. Global imports work across separately compiled libraries; duplicate imports, self-inclusion, names on global imports and incompatible types are errors. The bundler rejects dependency cycles.
+Select application globals through the bundle's `globals` attribute below. Add `@CssImport(ApplicationDefaults.class)` to a component or another global definition that requires those defaults. Global imports work across separately compiled libraries; duplicate imports, self-inclusion, names on global imports and incompatible types are errors. The bundler rejects cycles among global inclusion edges.
 
 Keyframe and global declaration classes may be concrete or abstract, public or package-access. Inheritance, interfaces, type parameters and sealed classes are unsupported. Nested declarations must be static with accessible enclosing types. They must not declare fields, explicit constructors, initializers or abstract methods; concrete and static helpers are allowed. These definitions produce resources without generated Java bindings.
 
@@ -142,7 +170,7 @@ Load the generated CSS with the application and serve its source map alongside i
 
 Global roots use binary Java names; nested classes use `$`, such as `com.biz.ui.Main$Defaults`. Shared CSS files emit first in declared order, followed by globals. Globals are visited dependency-first, starting with declared roots and then component requirements. Each definition emits once: listing a dependency again as a later root does not move it. Components are visited in Java owner order. The `shared` and `components` cascade layers give component styles precedence over shared files and globals. All inputs reject `!important`, which would reverse that precedence.
 
-All component styles in reachable build targets are included, even if their accessors are unused. Shared animations and global styles are included only when referenced by retained styles or, for globals, selected explicitly. Collection does not yet use Closure liveness.
+All component styles in reachable build targets are included, even if their accessors are unused. Shared animations and global styles are included only when referenced by retained styles or, for globals, selected explicitly. Collection follows Bazel reachability and does not use Closure liveness.
 
 Shared CSS files support style rules, `@media` and `@supports`, but cannot define keyframes. Put processed CSS sources in `src/main/css` and assets copied unchanged in `src/main/assets`. When packaging compiled style libraries, retain their generated `.css`, `.css.map` and `.css.json` resources.
 

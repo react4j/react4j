@@ -45,6 +45,14 @@ Public `//:core`, `//:dom`, `//:processor` and `//:react4j_processor_plugin` use
 
 Keep React/ReactDOM versions and browser mode switches aligned with the runtime and asset checks. Development uses BUNDLE plus runtime Closure defines; `-c opt` selects ADVANCED production. Browser tests load the real pinned runtime assets and verify rendering, generated inputs, context and configuration in both modes.
 
+## Coverage
+
+The full gate enforces [coverage.json](tools/verification/coverage.json), including per-class overrides. It writes `reports/coverage/jvm.lcov`, `runtime.lcov` and `summary.txt`.
+
+Core and DOM execute in pinned Chromium with real React and Arez assets, in both runtime configurations. Their coverage bundle preserves every owned J2CL module without optimization or pruning. The complete JVM compilation line inventory supplies the Java denominator; source maps and parsed Java expressions/callables establish browser execution. Ambiguous or unmapped execution remains uncovered. JVM-only `@GwtIncompatible` declarations, including methods in mixed-platform files, contribute their JVM counters to disjoint obligations in the same runtime root. Other configured roots use JVM coverage directly.
+
+Browser branch obligations cover conditions, ternaries, short circuits, assertions, loop exits and switch arm entries, including fallthrough and unmatched defaults. These source decisions have stable identities independent of JVM branch numbering. Missing modules, source maps, declared sources, counters or JVM-only method evidence fail collection. When investigating a coverage failure, retain the raw reports and verify attribution before changing tests or rules.
+
 ## Documentation and releases
 
 Reader documentation lives in `docs/`; Java/CommonMark rendering, templates and navigation live in `tools/site/` and `website/`. Snippets come from checked example source jars. Site generation validates local links, assets, fragments, navigation and snippet boundaries. Rebuild and refresh the local preview after edits. Site deployment replaces published content with the generated site and preserves Git metadata.

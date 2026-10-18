@@ -27,9 +27,10 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 @AutoBazelRepository
 final class RuntimeCoverage implements CoverageInstrumenter.Locations {
-    record Module(int start, int end, int[] lines, SourceMapConsumerV3 map, Map<String, JavaCoverage> sources) {}
+    private record Module(
+            int start, int end, int[] lines, SourceMapConsumerV3 map, Map<String, JavaCoverage> sources) {}
 
-    record Origin(JavaCoverage source, int line, int position) {}
+    private record Origin(JavaCoverage source, int line, int position) {}
 
     private final TreeMap<Integer, Module> modules = new TreeMap<>();
     private final Map<String, JavaCoverage> sources = new TreeMap<>();
@@ -365,14 +366,8 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
         }
         var trees = new ArrayList<Path>();
         for (int i = 6; i < 8; i++) {
-            var tree = Arrays.stream(args[i].split(" "))
-                    .filter(s -> s.endsWith(".js"))
-                    .toList();
-            if (1 != tree.size()) {
-                throw new IllegalArgumentException("Expected one declared J2CL module tree");
-            }
             trees.add(Path.of(Objects.requireNonNull(
-                    runfiles.rlocation("_main/" + Path.of(tree.get(0)).normalize()))));
+                    runfiles.rlocation("_main/" + Path.of(args[i]).normalize()))));
         }
         var destination = Path.of(args[10]);
         Files.deleteIfExists(destination);

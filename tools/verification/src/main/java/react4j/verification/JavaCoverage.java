@@ -1,6 +1,21 @@
 package react4j.verification;
 
-import com.sun.source.tree.*;
+import com.sun.source.tree.AssertTree;
+import com.sun.source.tree.BinaryTree;
+import com.sun.source.tree.BlockTree;
+import com.sun.source.tree.ClassTree;
+import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.tree.ConditionalExpressionTree;
+import com.sun.source.tree.ExpressionStatementTree;
+import com.sun.source.tree.ForLoopTree;
+import com.sun.source.tree.IfTree;
+import com.sun.source.tree.LambdaExpressionTree;
+import com.sun.source.tree.MethodTree;
+import com.sun.source.tree.ModifiersTree;
+import com.sun.source.tree.ReturnTree;
+import com.sun.source.tree.SwitchTree;
+import com.sun.source.tree.Tree;
+import com.sun.source.tree.VariableTree;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.TreeScanner;
 import com.sun.source.util.Trees;
@@ -36,11 +51,11 @@ final class JavaCoverage {
     final String text;
     final Set<Integer> executable;
     final Set<Integer> jvmLines = new HashSet<>();
-    final List<Range> statements = new ArrayList<>();
+    private final List<Range> statements = new ArrayList<>();
     final List<Range> methods = new ArrayList<>();
     private final List<Range> lambdas = new ArrayList<>();
     private final Map<Range, String> constructors = new LinkedHashMap<>();
-    final List<Decision> decisions = new ArrayList<>();
+    private final List<Decision> decisions = new ArrayList<>();
     private final Map<Range, Tree> expressions = new LinkedHashMap<>();
     boolean requiresInventory;
     private int nextEdge;

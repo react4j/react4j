@@ -94,6 +94,23 @@ testSuite({
     asserts.assertEquals('', computed('base').getPropertyValue('--excluded'));
     asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);
   },
+  async testComponentImportsRetainGlobalsWithoutExplicitRoots() {
+    style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/component.css')).text();
+    asserts.assertEquals('defaults', computed('base').getPropertyValue('--cascade').trim());
+    asserts.assertEquals('', computed('base').getPropertyValue('--excluded'));
+    asserts.assertEquals('rgb(255, 255, 255)', computed('base').color);
+    asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);
+  },
+  testCheckedPeerSelectorFollowsFocus() {
+    const button = /** @type {!HTMLButtonElement} */ (container.querySelector('#peer-button'));
+    asserts.assertEquals('rgb(255, 255, 255)', computed('peer-label').color);
+    button.focus();
+    asserts.assertTrue(button.matches(':focus-visible'));
+    asserts.assertEquals('rgb(0, 136, 0)', computed('peer-label').color);
+    asserts.assertEquals('rgb(255, 255, 255)', computed('busy-status').color);
+    button.blur();
+    asserts.assertEquals('rgb(255, 255, 255)', computed('peer-label').color);
+  },
   testGeneratedBindingsAndCascade() {
     asserts.assertEquals('rgb(255, 255, 255)', computed('base').color);
     asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);
