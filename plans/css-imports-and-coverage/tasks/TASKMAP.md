@@ -1,11 +1,11 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementation-review
-- Current frontier: independent implementation review
+- Status: reviewed
+- Current frontier: closeout and draft PR push
 - Planning reviewer: imports_coverage_planning (3/3 rounds plus final confirmation consumed; passed)
 - Plan checkpoint: automatic; revised review passed and latest user implementation authority persists
-- Implementation reviewer: pending (0/5 rounds; final confirmation unused)
+- Implementation reviewer: imports_coverage_review (1/5 rounds consumed; passed; final confirmation unused)
 - Authority: latest user instruction authorizes all accepted import/peer/coverage work; no human checkpoint.
 
 | ID | Task | Status | Blocked by |
@@ -34,3 +34,6 @@ T04 probe-driven replan: the pinned Java coverage-only mode preserves functions 
 Round 3: blocked because J2CL maps omit executable origins within single multiline expressions (ReactElement lines 120/136), so statement/token probes could still reduce the Java denominator. Fix: independent complete JVM-compilation line inventory supplies obligations only; browser-missing origins stay uncovered, safe completion attribution requires an unconditional same-path Java-AST proof, and controls cover skipped/throwing operands plus deferred bodies. Updated D4/D5, AC4, T04 and T05. Final confirmation pending; no review-budget reset.
 
 Final confirmation: Findings: none. Reviewer verified D4/D5, AC4 and T04/T05 preserve the independent Java denominator and safe proof requirement, with omitted/skipped/throwing/deferred-expression controls. Residual risk remains the explicit T04 feasibility gate: enough safe attribution must exist to meet 95/85. All planning attempts, including final confirmation, are consumed.
+
+## Implementation review history
+Round 1 on 01c9cbbc1: Findings: none. Fresh read-only reviewer inspected the complete 420b502b6..01c9cbbc1 delivery against T01–T06, imports/peers/graph semantics, full/header compilation, actual native behavior and honest coverage inventories/attribution. Reviewer independently reran 13 focused targets and compiled disposable compound-assignment/array-expression probes through pinned J2CL; no premature completion issue was established. Full-gate log and all unchanged threshold totals were verified. Residual delivery gates are exact plan cleanup and pushing draft PR #112; no merge is authorized.
