@@ -15,13 +15,13 @@ final class CssGenerator {
     private CssGenerator() {}
 
     static TypeSpec buildType(final ProcessingEnvironment processingEnv, final CssDescriptor descriptor) {
-        var owner = descriptor.getElement();
-        String packageName = descriptor.getPackageName();
-        String root = descriptor.getRootClassName();
+        var owner = descriptor.element();
+        String packageName = descriptor.packageName();
+        String root = descriptor.rootClassName();
         var ownerType = ClassName.get(owner);
         var factory =
                 MethodSpec.methodBuilder("get").addModifiers(Modifier.STATIC).returns(ownerType);
-        if (descriptor.isFactoryPublic()) {
+        if (descriptor.publicFactory()) {
             factory.addModifiers(Modifier.PUBLIC);
         }
         var generated = GeneratorUtil.getGeneratedClassName(owner, "Styled_", "");
@@ -66,7 +66,7 @@ final class CssGenerator {
         if (null != suppression) {
             builder.addAnnotation(suppression);
         }
-        for (var method : descriptor.getAccessors()) {
+        for (var method : descriptor.accessors()) {
             String name = method.getSimpleName().toString();
             String token = root + ("style".equals(name) ? "" : " " + root + "--" + Names.encode(name));
             var accessor = MethodSpec.methodBuilder(name)

@@ -93,7 +93,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
             return;
         }
         if (null != descriptor) {
-            emitTypeSpec(descriptor.getPackageName(), CssGenerator.buildType(processingEnv, descriptor));
+            emitTypeSpec(descriptor.packageName(), CssGenerator.buildType(processingEnv, descriptor));
         }
         String ownerName = binaryName(owner);
         String resource = CssResource.path(ownerName);
@@ -388,8 +388,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
             assert null != descriptor;
             return CssCompiler.component(
                     block.value(),
-                    descriptor.getRootClassName(),
-                    descriptor.getAccessors().stream()
+                    descriptor.rootClassName(),
+                    descriptor.accessors().stream()
                             .map(m -> m.getSimpleName().toString())
                             .toList(),
                     locations,
