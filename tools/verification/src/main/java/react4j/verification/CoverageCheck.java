@@ -23,18 +23,33 @@ public final class CoverageCheck {
 
     public static void main(String[] args) throws IOException {
         if (3 != args.length) {
-            throw new IllegalArgumentException("Expected coverage config, LCOV report and summary output");
+            throw new IllegalArgumentException("Expected coverage config, report directory and summary output");
         }
         final var output = Path.of(args[2]);
         Files.deleteIfExists(output);
-        final var summary = summarize(Files.readString(Path.of(args[1])), Files.readString(Path.of(args[0])));
+        final var roots = readConfiguration(Files.readString(Path.of(args[0])));
+        final var reports = new HashMap<String, String>();
+        for (final var rule : roots) {
+            if (!reports.containsKey(rule.report())) {
+                reports.put(rule.report(), Files.readString(Path.of(args[1]).resolve(rule.report())));
+            }
+        }
+        final var summary = summarize(reports, roots);
         Files.createDirectories(output.toAbsolutePath().getParent());
         Files.writeString(output, summary);
         System.out.print(summary);
     }
 
-    static String summarize(String report, String configuration) {
-        final var roots = readConfiguration(configuration);
+    static String summarize(Map<String, String> reports, String configuration) {
+        return summarize(reports, readConfiguration(configuration));
+    }
+
+    private static String summarize(Map<String, String> reports, List<Rule> roots) {
+        for (final var root : roots) {
+            if (!reports.containsKey(root.report())) {
+                throw new IllegalArgumentException("Missing required coverage report: " + root.report());
+            }
+        }
         final var totals = new LinkedHashMap<String, Counts>();
         for (final var root : roots) {
             totals.put(root.path(), new Counts());
@@ -43,26 +58,29 @@ public final class CoverageCheck {
             }
         }
         final var sources = new HashSet<String>();
-        for (final var record : report.split("end_of_record")) {
-            final var fields = new HashMap<String, String>();
-            for (final var line : record.split("\\R")) {
-                final var separator = line.indexOf(':');
-                if (separator > 0 && Set.of("SF", "LF", "LH", "BRF", "BRH").contains(line.substring(0, separator))) {
-                    if (null != fields.putIfAbsent(line.substring(0, separator), line.substring(separator + 1))) {
-                        throw new IllegalArgumentException("Duplicate coverage counter");
+        for (final var entry : reports.entrySet()) {
+            for (final var record : entry.getValue().split("end_of_record")) {
+                final var fields = new HashMap<String, String>();
+                for (final var line : record.split("\\R")) {
+                    final var separator = line.indexOf(':');
+                    if (separator > 0
+                            && Set.of("SF", "LF", "LH", "BRF", "BRH").contains(line.substring(0, separator))) {
+                        if (null != fields.putIfAbsent(line.substring(0, separator), line.substring(separator + 1))) {
+                            throw new IllegalArgumentException("Duplicate coverage counter");
+                        }
                     }
                 }
-            }
-            final var source = fields.getOrDefault("SF", "").replace('\\', '/');
-            for (final var root : roots) {
-                if (source.startsWith(root.path() + "/")) {
-                    if (!sources.add(source)) {
-                        throw new IllegalArgumentException("Duplicate coverage source: " + source);
-                    }
-                    Objects.requireNonNull(totals.get(root.path())).add(fields, source);
-                    final var unit = totals.get(source);
-                    if (null != unit) {
-                        unit.add(fields, source);
+                final var source = fields.getOrDefault("SF", "").replace('\\', '/');
+                for (final var root : roots) {
+                    if (entry.getKey().equals(root.report()) && source.startsWith(root.path() + "/")) {
+                        if (!sources.add(source)) {
+                            throw new IllegalArgumentException("Duplicate coverage source: " + source);
+                        }
+                        Objects.requireNonNull(totals.get(root.path())).add(fields, source);
+                        final var unit = totals.get(source);
+                        if (null != unit) {
+                            unit.add(fields, source);
+                        }
                     }
                 }
             }
@@ -114,6 +132,7 @@ public final class CoverageCheck {
 
     private static Rule readRule(JsonReader reader, boolean root) throws IOException {
         String path = null;
+        String report = null;
         BigDecimal lines = null;
         BigDecimal branches = null;
         final var classes = new ArrayList<Rule>();
@@ -130,6 +149,15 @@ public final class CoverageCheck {
                         throw new IllegalArgumentException("Coverage path must be a string");
                     }
                     path = reader.nextString();
+                }
+                case "report" -> {
+                    if (!root || JsonToken.STRING != reader.peek()) {
+                        throw new IllegalArgumentException("Only roots declare a coverage report filename");
+                    }
+                    report = reader.nextString();
+                    if (!report.matches("[A-Za-z0-9][A-Za-z0-9_.-]*\\.lcov")) {
+                        throw new IllegalArgumentException("Invalid coverage report filename: " + report);
+                    }
                 }
                 case "lines" -> lines = percentage(reader);
                 case "branches" -> branches = percentage(reader);
@@ -156,8 +184,9 @@ public final class CoverageCheck {
             }
         }
         reader.endObject();
-        if (null == path || null == lines || null == branches) {
-            throw new IllegalArgumentException("Coverage rules require path, lines and branches");
+        if (null == path || null == lines || null == branches || root && null == report) {
+            throw new IllegalArgumentException(
+                    "Coverage rules require path, lines and branches; roots also require report");
         }
         if (path.startsWith("/")
                 || path.matches("^[A-Za-z]:.*")
@@ -172,7 +201,7 @@ public final class CoverageCheck {
                 throw new IllegalArgumentException("Class coverage minima must not weaken its root: " + rule.path());
             }
         }
-        return new Rule(path, lines, branches, List.copyOf(classes));
+        return new Rule(path, null == report ? "" : report, lines, branches, List.copyOf(classes));
     }
 
     private static BigDecimal percentage(JsonReader reader) throws IOException {
@@ -188,7 +217,7 @@ public final class CoverageCheck {
 
     private static void appendSummary(StringBuilder result, String path, Rule rule, Counts counts) {
         if (0 == counts.files || 0 == counts.lines || 0 == counts.hits) {
-            throw new IllegalArgumentException("Missing or empty owned JVM coverage for " + path);
+            throw new IllegalArgumentException("Missing or empty owned coverage for " + path);
         }
         if (belowMinimum(counts.hits, counts.lines, rule.lines())
                 || belowMinimum(counts.branchHits, counts.branches, rule.branches())) {
@@ -218,7 +247,7 @@ public final class CoverageCheck {
                                 < 0);
     }
 
-    private record Rule(String path, BigDecimal lines, BigDecimal branches, List<Rule> classes) {}
+    private record Rule(String path, String report, BigDecimal lines, BigDecimal branches, List<Rule> classes) {}
 
     private static final class Counts {
         private long files;

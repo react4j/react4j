@@ -1,4 +1,7 @@
 load("//third_party/java:rules.bzl", "java_testng")
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = ["//visibility:public"])
 
 java_testng(
     name = "tests",
@@ -29,5 +32,20 @@ java_testng(
         "//third_party/java:arez_testng",
         "//third_party/java:jdepend",
         "//third_party/java:mockito_core",
+    ],
+)
+
+java_j2cl_library(
+    name = "runtime_coverage",
+    testonly = True,
+    srcs = ["RuntimeCoverageExample.java"],
+    java_deps = [
+        "//core",
+        "//third_party/java:jsinterop_annotations",
+    ],
+    deps = [
+        "//:core-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jspecify-j2cl",
     ],
 )

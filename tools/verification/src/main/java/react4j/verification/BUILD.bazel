@@ -3,7 +3,10 @@ load("//third_party/java:rules.bzl", "java_binary", "java_library")
 java_library(
     name = "coverage",
     srcs = ["CoverageCheck.java"],
-    visibility = ["//tools/verification/src/test/java/react4j/verification:__pkg__"],
+    visibility = [
+        "//:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
     deps = ["@maven//:com_google_code_gson_gson"],
 )
 
@@ -15,4 +18,101 @@ java_binary(
         "//tools/verification:__pkg__",
     ],
     runtime_deps = [":coverage"],
+)
+
+java_library(
+    name = "browser_coverage",
+    srcs = [
+        "BrowserCoverage.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
+    deps = [
+        "@maven//:com_google_code_gson_gson",
+        "@rules_java//java/runfiles",
+    ],
+)
+
+java_library(
+    name = "coverage_instrumenter",
+    srcs = ["CoverageInstrumenter.java"],
+    visibility = [
+        "//:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
+    deps = ["@rules_closure//closure/compiler"],
+)
+
+java_library(
+    name = "lcov_report",
+    srcs = ["LcovReport.java"],
+    visibility = [
+        "//:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
+)
+
+java_library(
+    name = "java_coverage",
+    srcs = ["JavaCoverage.java"],
+    visibility = [
+        "//:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
+    deps = [
+        ":coverage_instrumenter",
+        ":lcov_report",
+    ],
+)
+
+java_library(
+    name = "runtime_coverage_lib",
+    srcs = ["RuntimeCoverage.java"],
+    visibility = [
+        "//:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
+    deps = [
+        ":browser_coverage",
+        ":coverage_instrumenter",
+        ":java_coverage",
+        ":lcov_report",
+        "@maven//:com_google_code_gson_gson",
+        "@rules_closure//closure/compiler",
+        "@rules_java//java/runfiles",
+    ],
+)
+
+java_binary(
+    name = "runtime_coverage",
+    testonly = True,
+    args = [
+        "$(rootpath //tools/verification/src/test/js/react4j/verification:runtime.js)",
+        "$(rootpath //tools/generation:react_dev)",
+        "$(rootpath //tools/generation:react_dom_dev)",
+        "$(rootpath //tools/webtesting:chromium.gen.json)",
+        "$(rootpath //tools/release:core_sources)",
+        "$(rootpath //tools/release:dom_sources)",
+        "$(rootpath //tools/verification:core_modules)",
+        "$(rootpath //tools/verification:dom_modules)",
+        "$(rootpath //tools/verification:runtime_sources)",
+    ],
+    data = [
+        "//tools/generation:react_dev",
+        "//tools/generation:react_dom_dev",
+        "//tools/release:core_sources",
+        "//tools/release:dom_sources",
+        "//tools/verification:core_modules",
+        "//tools/verification:dom_modules",
+        "//tools/verification:runtime_sources",
+        "//tools/verification/src/test/js/react4j/verification:runtime.js",
+        "//tools/webtesting:chromium",
+        "//tools/webtesting:chromium.gen.json",
+    ],
+    main_class = "react4j.verification.RuntimeCoverage",
+    visibility = ["//tools/verification:__pkg__"],
+    runtime_deps = [":runtime_coverage_lib"],
 )

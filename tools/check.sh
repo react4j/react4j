@@ -14,7 +14,8 @@ bazel coverage -c dbg //:jvm_tests --combined_report=lcov '--instrumentation_fil
 coverage_report="$(bazel info -c dbg output_path)/_coverage/_coverage_report.dat"
 mkdir -p reports/coverage
 cp -f "$coverage_report" reports/coverage/jvm.lcov
-bazel run //tools/verification:coverage_check -- "$root/tools/verification/coverage.json" "$root/reports/coverage/jvm.lcov" "$root/reports/coverage/summary.txt"
+bazel run //tools/verification:runtime_coverage -- "$root/reports/coverage/jvm.lcov" "$root/reports/coverage/runtime.lcov"
+bazel run //tools/verification:coverage_check -- "$root/tools/verification/coverage.json" "$root/reports/coverage" "$root/reports/coverage/summary.txt"
 tools/check_bazel_consumer.sh
 tools/site.sh build
 tools/site.sh check

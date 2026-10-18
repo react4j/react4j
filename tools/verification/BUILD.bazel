@@ -1,3 +1,5 @@
+load(":defs.bzl", "j2cl_modules", "source_inventory")
+
 exports_files(
     ["coverage.json"],
     visibility = ["//tools/verification/src/test/java/react4j/verification:__pkg__"],
@@ -6,5 +8,44 @@ exports_files(
 alias(
     name = "coverage_check",
     actual = "//tools/verification/src/main/java/react4j/verification:coverage_check",
+    visibility = ["//visibility:public"],
+)
+
+j2cl_modules(
+    name = "core_modules",
+    testonly = True,
+    library = "//:core-j2cl",
+    visibility = [
+        "//tools/verification/src/main/java/react4j/verification:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
+)
+
+j2cl_modules(
+    name = "dom_modules",
+    testonly = True,
+    library = "//:dom-j2cl",
+    visibility = [
+        "//tools/verification/src/main/java/react4j/verification:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
+)
+
+source_inventory(
+    name = "runtime_sources",
+    testonly = True,
+    libraries = [
+        "//core/src/main/java/react4j",
+        "//dom/src/main/java/react4j/dom",
+    ],
+    visibility = [
+        "//tools/verification/src/main/java/react4j/verification:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
+)
+
+alias(
+    name = "runtime_coverage",
+    actual = "//tools/verification/src/main/java/react4j/verification:runtime_coverage",
     visibility = ["//visibility:public"],
 )

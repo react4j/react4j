@@ -1,10 +1,10 @@
 {
   "roots": [
-    { "path": "core/src/main/java", "lines": 95, "branches": 85 },
-    { "path": "dom/src/main/java", "lines": 95, "branches": 85 },
-    { "path": "processor/src/main/java", "lines": 95, "branches": 85 },
+    { "path": "core/src/main/java", "report": "runtime.lcov", "lines": 95, "branches": 85 },
+    { "path": "dom/src/main/java", "report": "runtime.lcov", "lines": 95, "branches": 85 },
+    { "path": "processor/src/main/java", "report": "jvm.lcov", "lines": 95, "branches": 85 },
     {
-      "path": "css/processor/src/main/java",
+      "path": "css/processor/src/main/java", "report": "jvm.lcov",
       "lines": 95,
       "branches": 85,
       "classes": [
@@ -14,7 +14,7 @@
       ]
     },
     {
-      "path": "css/internal/src/main/java",
+      "path": "css/internal/src/main/java", "report": "jvm.lcov",
       "lines": 95,
       "branches": 85,
       "classes": [
@@ -23,7 +23,7 @@
       ]
     },
     {
-      "path": "css/bundler/src/main/java",
+      "path": "css/bundler/src/main/java", "report": "jvm.lcov",
       "lines": 95,
       "branches": 85,
       "classes": [

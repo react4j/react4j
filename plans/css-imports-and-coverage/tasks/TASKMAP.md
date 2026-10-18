@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: planned
-- Current frontier: T04
+- Status: implementing
+- Current frontier: T05
 - Planning reviewer: imports_coverage_planning (3/3 rounds plus final confirmation consumed; passed)
 - Plan checkpoint: automatic; revised review passed and latest user implementation authority persists
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -13,7 +13,7 @@
 | T01 | [Unified resource imports](T01-unified-imports.md) | complete | None |
 | T02 | [Checked peer selectors and graph semantics](T02-peer-selectors.md) | complete | T01 |
 | T03 | [Measured processor coverage](T03-processor-coverage.md) | complete | T02 |
-| T04 | [Honest runtime coverage pipeline](T04-runtime-measurement.md) | pending | T03 |
+| T04 | [Honest runtime coverage pipeline](T04-runtime-measurement.md) | complete | T03 |
 | T05 | [Core and DOM coverage to 95/85](T05-runtime-tests.md) | pending | T04 |
 | T06 | [Examples, permanent docs and complete validation](T06-examples-validation.md) | pending | T05 |
 
