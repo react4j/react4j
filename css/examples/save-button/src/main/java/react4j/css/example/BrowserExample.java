@@ -40,6 +40,11 @@ public final class BrowserExample {
         ReactDOM.render(
                 DOM.div(
                         DOM.button(
+                                new BtnProps()
+                                        .id("modifier-only")
+                                        .className(ModifierOnly.get().activeForRender()),
+                                "Modifier through an interface helper"),
+                        DOM.button(
                                 new BtnProps().id("base").data("shared", shared).className(button.style()), "Save"),
                         DOM.button(new BtnProps().id("success").className(buttonStates.success()), "Saved"),
                         DOM.button(new BtnProps().id("cancel").className(button.cancel()), "Cancel"),
@@ -137,6 +142,36 @@ public final class BrowserExample {
         default String forBusy(boolean busy) {
             return busy ? busy() : style();
         }
+    }
+
+    interface ActiveStyle<T> {
+        T active();
+
+        default T activeForRender() {
+            return active();
+        }
+    }
+
+    @Css("""
+        color: rgb(12, 34, 56);
+        &.unused { outline-width: 17px; }
+        &.active { border-width: 7px; }
+        """)
+    abstract static class ModifierOnly implements ActiveStyle<String> {
+        static ModifierOnly get() {
+            return BrowserExample_Styled_ModifierOnly.get();
+        }
+
+        abstract String style();
+
+        abstract String unused();
+    }
+
+    @Css("""
+        color: rgb(98, 76, 54);
+        """)
+    abstract static class UnusedOwner {
+        abstract String style();
     }
 
     @CssImport(Defaults.class)

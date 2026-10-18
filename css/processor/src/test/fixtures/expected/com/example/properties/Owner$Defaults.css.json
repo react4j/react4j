@@ -1,1 +1,1 @@
-{"version":2,"bindings":true,"owner":"com.example.properties.Owner$Defaults","kind":"GLOBAL","dependencies":[],"includes":[]}
+{"version":3,"owner":"com.example.properties.Owner$Defaults","kind":"GLOBAL","dependencies":[],"includes":[],"implementation":"com.example.properties.Owner_Styled_Defaults","bindings":[{"method":"getAccent","kind":"PROPERTY","value":"--jcss-com-example-properties-Owner_0024_Defaults--accent"}],"providers":{}}

@@ -1,1 +1,1 @@
-{"version":2,"bindings":true,"owner":"com.example.shadowed.String","kind":"COMPONENT","dependencies":[],"includes":[]}
+{"version":3,"owner":"com.example.shadowed.String","kind":"COMPONENT","dependencies":[],"includes":[],"implementation":"com.example.shadowed.Styled_String","bindings":[{"method":"style","kind":"CLASS","value":"jcss-com-example-shadowed-String"}],"providers":{}}

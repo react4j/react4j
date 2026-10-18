@@ -7,10 +7,19 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 /** Identity and dependencies of one processor stylesheet, independent of JavaScript liveness. */
-public record CssResource(String owner, Kind kind, List<String> dependencies, List<String> includes, boolean bindings) {
+public record CssResource(
+        String owner,
+        Kind kind,
+        List<String> dependencies,
+        List<String> includes,
+        String implementation,
+        List<Binding> bindings,
+        Map<String, String> providers) {
     private static final Pattern OWNER = Pattern.compile(
             "\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*(?:\\.\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)*");
 
@@ -20,10 +29,43 @@ public record CssResource(String owner, Kind kind, List<String> dependencies, Li
         KEYFRAMES
     }
 
+    public enum SymbolKind {
+        CLASS,
+        ID,
+        ANIMATION,
+        PROPERTY
+    }
+
+    public record Binding(String method, SymbolKind kind, String value) {
+        public Binding {
+            if (!OWNER.matcher(method).matches() || method.contains(".") || value.isBlank()) {
+                throw new IllegalArgumentException("Invalid CSS binding: " + method);
+            }
+        }
+    }
+
     public CssResource {
         path(owner);
         dependencies = List.copyOf(dependencies);
         includes = List.copyOf(includes);
+        bindings = List.copyOf(bindings);
+        providers = Map.copyOf(providers);
+        if (bindings.isEmpty() != implementation.isEmpty()) {
+            throw new IllegalArgumentException("CSS bindings require their generated implementation");
+        }
+        if (!implementation.isEmpty()) {
+            path(implementation);
+        }
+        var methods = new HashSet<String>();
+        for (var binding : bindings) {
+            if (!methods.add(binding.method())) {
+                throw new IllegalArgumentException("Duplicate CSS binding: " + binding.method());
+            }
+        }
+        if (!dependencies.containsAll(providers.values())
+                || providers.keySet().stream().anyMatch(String::isBlank)) {
+            throw new IllegalArgumentException("CSS symbol providers must be dependencies");
+        }
         if (!dependencies.containsAll(includes) || new HashSet<>(includes).size() != includes.size()) {
             throw new IllegalArgumentException("CSS inclusions must be distinct dependencies");
         }
@@ -45,8 +87,7 @@ public record CssResource(String owner, Kind kind, List<String> dependencies, Li
 
     public String json() {
         var json = new JsonObject();
-        json.addProperty("version", 2);
-        json.addProperty("bindings", bindings);
+        json.addProperty("version", 3);
         json.addProperty("owner", owner);
         json.addProperty("kind", kind.name());
         var entries = new JsonArray();
@@ -55,32 +96,50 @@ public record CssResource(String owner, Kind kind, List<String> dependencies, Li
         var included = new JsonArray();
         includes.forEach(included::add);
         json.add("includes", included);
+        json.addProperty("implementation", implementation);
+        var methods = new JsonArray();
+        for (var binding : bindings) {
+            var method = new JsonObject();
+            method.addProperty("method", binding.method());
+            method.addProperty("kind", binding.kind().name());
+            method.addProperty("value", binding.value());
+            methods.add(method);
+        }
+        json.add("bindings", methods);
+        var references = new JsonObject();
+        new TreeMap<>(providers).forEach(references::addProperty);
+        json.add("providers", references);
         return json + "\n";
     }
 
     public static CssResource read(String source, String expectedOwner) {
         try {
             var json = JsonParser.parseString(source).getAsJsonObject();
-            if (!json.has("version") || !"2".equals(json.get("version").toString())) {
+            if (!json.has("version") || !"3".equals(json.get("version").toString())) {
                 throw new IllegalArgumentException("Unsupported CSS metadata version");
             }
             String owner = string(json, "owner");
             if (!owner.equals(expectedOwner)) {
                 throw new IllegalArgumentException("CSS metadata owner differs from its path: " + expectedOwner);
             }
-            var bindings = json.get("bindings");
-            if (null == bindings
-                    || !bindings.isJsonPrimitive()
-                    || !bindings.getAsJsonPrimitive().isBoolean()) {
-                throw new IllegalArgumentException("CSS metadata requires boolean bindings");
+            var bindings = new ArrayList<Binding>();
+            for (var entry : json.getAsJsonArray("bindings")) {
+                var method = entry.getAsJsonObject();
+                bindings.add(new Binding(
+                        string(method, "method"), SymbolKind.valueOf(string(method, "kind")), string(method, "value")));
             }
+            var providers = new TreeMap<String, String>();
+            var references = json.getAsJsonObject("providers");
+            references.keySet().forEach(key -> providers.put(key, string(references, key)));
             return new CssResource(
                     owner,
                     Kind.valueOf(string(json, "kind")),
                     names(json, "dependencies"),
                     names(json, "includes"),
-                    bindings.getAsBoolean());
-        } catch (JsonParseException | IllegalStateException | ClassCastException e) {
+                    string(json, "implementation"),
+                    bindings,
+                    providers);
+        } catch (JsonParseException | IllegalStateException | ClassCastException | NullPointerException e) {
             throw new IllegalArgumentException("Invalid CSS metadata for " + expectedOwner, e);
         }
     }

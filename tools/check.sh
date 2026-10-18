@@ -10,7 +10,7 @@ bazel run //tools/ahab:hermeticity.check -- --compilation-mode=opt
 bazel build //core //dom //processor //doc-examples:java //:core-j2cl //:dom-j2cl //tools/generation:assets //tools/release:maven_artifacts //tools/release:site_javadoc
 bazel test //:all_tests --test_output=errors
 bazel test -c opt //:browser_tests --test_output=errors
-bazel coverage -c dbg //:jvm_tests --combined_report=lcov '--instrumentation_filter=^//(core|dom|processor|css/(processor|internal|bundler))(:|/),-/src/test/' --test_output=errors
+bazel coverage -c dbg //:jvm_tests --combined_report=lcov '--instrumentation_filter=^//(core|dom|processor|css/(processor|internal|bundler|linker))(:|/),-/src/test/' --test_output=errors
 coverage_report="$(bazel info -c dbg output_path)/_coverage/_coverage_report.dat"
 mkdir -p reports/coverage
 cp -f "$coverage_report" reports/coverage/jvm.lcov

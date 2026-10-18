@@ -1,1 +1,1 @@
-{"version":2,"bindings":true,"owner":"com.example.deprecated.Button","kind":"COMPONENT","dependencies":[],"includes":[]}
+{"version":3,"owner":"com.example.deprecated.Button","kind":"COMPONENT","dependencies":[],"includes":[],"implementation":"com.example.deprecated.Styled_Button","bindings":[{"method":"active","kind":"CLASS","value":"jcss-com-example-deprecated-Button jcss-com-example-deprecated-Button--active"},{"method":"style","kind":"CLASS","value":"jcss-com-example-deprecated-Button"}],"providers":{}}

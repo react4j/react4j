@@ -1,1 +1,1 @@
-{"version":2,"bindings":true,"owner":"com.example.symbols.Owner$Pulse","kind":"KEYFRAMES","dependencies":[],"includes":[]}
+{"version":3,"owner":"com.example.symbols.Owner$Pulse","kind":"KEYFRAMES","dependencies":[],"includes":[],"implementation":"com.example.symbols.Owner_Styled_Pulse","bindings":[{"method":"effect","kind":"ID","value":"jcss-com-example-symbols-Owner_0024_Pulse--id-effect"},{"method":"name","kind":"ANIMATION","value":"jcss-com-example-symbols-Owner_0024_Pulse--keyframes"}],"providers":{}}

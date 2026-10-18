@@ -1,1 +1,1 @@
-{"version":2,"bindings":true,"owner":"com.example.interfaces.Owner$First","kind":"COMPONENT","dependencies":[],"includes":[]}
+{"version":3,"owner":"com.example.interfaces.Owner$First","kind":"COMPONENT","dependencies":[],"includes":[],"implementation":"com.example.interfaces.Owner_Styled_First$Implementation","bindings":[{"method":"style","kind":"CLASS","value":"jcss-com-example-interfaces-Owner_0024_First"},{"method":"success","kind":"CLASS","value":"jcss-com-example-interfaces-Owner_0024_First jcss-com-example-interfaces-Owner_0024_First--success"}],"providers":{}}

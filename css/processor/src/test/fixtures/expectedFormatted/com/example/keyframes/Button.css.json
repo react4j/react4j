@@ -1,1 +1,1 @@
-{"version":2,"bindings":true,"owner":"com.example.keyframes.Button","kind":"COMPONENT","dependencies":[],"includes":[]}
+{"version":3,"owner":"com.example.keyframes.Button","kind":"COMPONENT","dependencies":[],"includes":[],"implementation":"com.example.keyframes.Styled_Button","bindings":[{"method":"active","kind":"CLASS","value":"jcss-com-example-keyframes-Button jcss-com-example-keyframes-Button--active"},{"method":"style","kind":"CLASS","value":"jcss-com-example-keyframes-Button"}],"providers":{}}

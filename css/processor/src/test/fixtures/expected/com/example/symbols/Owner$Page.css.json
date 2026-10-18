@@ -1,1 +1,1 @@
-{"version":2,"bindings":true,"owner":"com.example.symbols.Owner$Page","kind":"GLOBAL","dependencies":[],"includes":[]}
+{"version":3,"owner":"com.example.symbols.Owner$Page","kind":"GLOBAL","dependencies":[],"includes":[],"implementation":"com.example.symbols.Owner_Styled_Page","bindings":[{"method":"accent","kind":"PROPERTY","value":"--jcss-com-example-symbols-Owner_0024_Page--accent"},{"method":"page","kind":"ID","value":"jcss-com-example-symbols-Owner_0024_Page--id-page"}],"providers":{}}

@@ -1,0 +1,17 @@
+load("//third_party/java:rules.bzl", "java_testng")
+
+java_testng(
+    name = "tests",
+    srcs = ["StyleCompilerTest.java"],
+    test_class = "react4j.css.linker.StyleCompilerTest",
+    visibility = [
+        "//:__pkg__",
+        "//css:__pkg__",
+    ],
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/linker/src/main/java/react4j/css/linker",
+        "@rules_closure//closure/compiler",
+        "@rules_closure//java/com/google/javascript/jscomp:compiler_factory",
+    ],
+)

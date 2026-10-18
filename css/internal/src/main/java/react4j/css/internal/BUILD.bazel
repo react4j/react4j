@@ -3,6 +3,8 @@ load("//third_party/java:rules.bzl", "java_library")
 java_library(
     name = "internal",
     srcs = [
+        "CssCatalogue.java",
+        "CssLink.java",
         "CssResource.java",
         "CssSyntax.java",
         "SourceMap.java",

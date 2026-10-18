@@ -1,6 +1,6 @@
 # T01 — Link live class values to pruned browser CSS
 
-- Status: `pending`
+- Status: `complete`
 - Blocked by: None
 - Spec coverage: R1, R2, R4, R5; AC1, AC4, AC5 (basic class path)
 
@@ -10,11 +10,11 @@ A real SaveButton optimized link deletes an unused owner/modifier and keeps the 
 
 ## Acceptance criteria
 
-- [ ] Processor emits validated binding/symbol identities and generic/facade/nested goldens remain correct; ordinary JVM literal accessors unchanged.
-- [ ] Generic rules_closure factory/config/report/output seam and local JVM worker compile once with stock options/checks; no runtime marker.
-- [ ] Deterministic catalogue and link-bound report drive independent css_bundle; BUNDLE retain-all and unlinked library path are explicit; binary without report fails.
-- [ ] Existing three theme variants share report; malformed/mismatched evidence fails unit checks.
-- [ ] Basic impossible class rules are removed conservatively and source maps for survivors resolve after deleted preceding spans. Other dependencies may remain conservatively until T02.
+- [x] Processor emits validated binding/symbol identities and generic/facade/nested goldens remain correct; ordinary JVM literal accessors unchanged.
+- [x] Generic rules_closure factory/config/report/output seam and local JVM worker compile once with stock options/checks; no runtime marker.
+- [x] Deterministic catalogue and link-bound report drive independent css_bundle; BUNDLE retain-all and unlinked library path are explicit; binary without report fails.
+- [x] Existing three theme variants share report; malformed/mismatched evidence fails unit checks.
+- [x] Basic impossible class rules are removed conservatively and source maps for survivors resolve after deleted preceding spans. Other dependencies may remain conservatively until T02.
 
 ## Validation
 
@@ -24,4 +24,7 @@ A real SaveButton optimized link deletes an unused owner/modifier and keeps the 
 
 ## Evidence
 
-- Pending.
+- `tools/update_goldens.sh css`: 508 processor cases passed; 60 metadata goldens updated and verification rerun passed.
+- SaveButton Chromium suite passed in development and `-c opt`, including dead owner/modifier deletion, modifier-only root retention via inherited generic helper, three CSS variants and no marker in final JS.
+- Internal, bundler and linker unit suites passed; final-value source map resolves the original accessor literal, CSS projection resolves surviving selector/declaration positions.
+- Unlinked integration tests passed. Java formatter and buildifier writes completed. Remaining fine resource graph and adversarial distribution cases belong to T02/T03.

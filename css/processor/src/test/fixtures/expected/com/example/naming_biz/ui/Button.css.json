@@ -1,1 +1,1 @@
-{"version":2,"bindings":true,"owner":"com.example.naming_biz.ui.Button","kind":"COMPONENT","dependencies":[],"includes":[]}
+{"version":3,"owner":"com.example.naming_biz.ui.Button","kind":"COMPONENT","dependencies":[],"includes":[],"implementation":"com.example.naming_biz.ui.Styled_Button","bindings":[{"method":"style","kind":"CLASS","value":"jcss-com-example-naming_005f_biz-ui-Button"}],"providers":{}}

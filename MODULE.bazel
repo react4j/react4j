@@ -117,6 +117,7 @@ single_version_override(
         "//third_party/bazel/patches:rules_closure_use_protobuf_java_proto_library.patch",
         "//third_party/bazel/patches:rules_closure_web_test_runtime_defines.patch",
         "//third_party/bazel/patches:rules_closure_test_execution_requirements.patch",
+        "//third_party/bazel/patches:rules_closure_compiler_factory.patch",
     ],
     version = "0.17.0",
 )

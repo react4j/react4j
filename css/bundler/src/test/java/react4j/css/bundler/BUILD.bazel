@@ -2,8 +2,14 @@ load("//third_party/java:rules.bzl", "java_testng")
 
 java_testng(
     name = "tests",
-    srcs = ["BundleTest.java"],
-    test_class = "react4j.css.bundler.BundleTest",
+    srcs = [
+        "BundleTest.java",
+        "CssPrunerTest.java",
+    ],
+    test_classes = [
+        "react4j.css.bundler.BundleTest",
+        "react4j.css.bundler.CssPrunerTest",
+    ],
     visibility = [
         "//:__pkg__",
         "//css:__pkg__",

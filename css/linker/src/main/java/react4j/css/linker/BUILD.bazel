@@ -1,0 +1,40 @@
+load("//third_party/java:rules.bzl", "java_binary", "java_library")
+
+java_library(
+    name = "linker",
+    srcs = [
+        "CssCompilerFactory.java",
+        "StyleCompiler.java",
+        "package-info.java",
+    ],
+    resource_strip_prefix = "css/linker/src/main/resources",
+    resources = ["//css/linker/src/main/resources/META-INF/services:com.google.javascript.jscomp.CompilerFactory"],
+    visibility = ["//css:__subpackages__"],
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "@rules_closure//closure/compiler",
+        "@rules_closure//java/com/google/javascript/jscomp:compiler_factory",
+    ],
+)
+
+java_binary(
+    name = "worker",
+    jvm_flags = [
+        "-Xmx2g",
+        "-Xss20m",
+        "-XX:+UseParallelGC",
+    ],
+    main_class = "io.bazel.rules.closure.ClosureWorker",
+    visibility = ["//visibility:public"],
+    runtime_deps = [
+        ":linker",
+        "@rules_closure//java/io/bazel/rules/closure:worker_main",
+    ],
+)
+
+java_binary(
+    name = "catalogue",
+    main_class = "react4j.css.internal.CssLink",
+    visibility = ["//css:__pkg__"],
+    runtime_deps = ["//css/internal/src/main/java/react4j/css/internal"],
+)

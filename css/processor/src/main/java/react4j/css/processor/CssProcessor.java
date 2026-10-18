@@ -119,10 +119,20 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 throw new IllegalArgumentException("Unused custom property import: " + name);
             }
         }
+        String implementation = "";
+        var bound = new ArrayList<CssResource.Binding>();
         if (null != descriptor) {
-            emitTypeSpec(
-                    descriptor.packageName(),
-                    CssGenerator.buildType(processingEnv, descriptor, bindings(descriptor, result)));
+            var values = bindings(descriptor, result);
+            var generated = CssGenerator.buildType(processingEnv, descriptor, values);
+            emitTypeSpec(descriptor.packageName(), generated.type());
+            implementation = generated.implementation();
+            for (var accessor : descriptor.accessors()) {
+                String method = accessor.method().getSimpleName().toString();
+                bound.add(new CssResource.Binding(
+                        method,
+                        CssResource.SymbolKind.valueOf(accessor.kind().name()),
+                        Objects.requireNonNull(values.get(method))));
+            }
         }
         String ownerName = binaryName(owner);
         String resource = CssResource.path(ownerName);
@@ -138,8 +148,15 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 .map(CssProperties.Import::provider)
                 .sorted()
                 .forEach(dependencies::add);
-        var metadata =
-                new CssResource(ownerName, kind, List.copyOf(dependencies), imports.globals(), null != descriptor);
+        var providers = new TreeMap<String, String>();
+        imports.named().values().stream()
+                .filter(binding -> Kind.KEYFRAMES == binding.kind() && dependencies.contains(binding.owner()))
+                .forEach(binding -> providers.put(binding.cssName(), binding.owner()));
+        imports.properties()
+                .values()
+                .forEach(binding -> providers.put(binding.binding().cssName(), binding.provider()));
+        var metadata = new CssResource(
+                ownerName, kind, List.copyOf(dependencies), imports.globals(), implementation, bound, providers);
         var output = result.output();
         for (var entry : Map.of(
                         resource,

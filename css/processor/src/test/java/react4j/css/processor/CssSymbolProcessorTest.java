@@ -183,10 +183,12 @@ public final class CssSymbolProcessorTest {
             assertEquals(result.values().get("demo.Button.getAccent"), "--jcss-demo-Button--accent");
             assertEquals(result.values().get("demo.Button.other"), "--jcss-demo-Button--other_002d_name");
             assertEquals(result.values().get("demo.Button.getURL"), "--jcss-demo-Button--uRL");
-            assertTrue(JsonParser.parseString(text(result, "classes/demo/Button.css.json"))
-                    .getAsJsonObject()
-                    .get("bindings")
-                    .getAsBoolean());
+            assertEquals(
+                    JsonParser.parseString(text(result, "classes/demo/Button.css.json"))
+                            .getAsJsonObject()
+                            .getAsJsonArray("bindings")
+                            .size(),
+                    "Css".equals(kind) ? 4 : 3);
         }
     }
 

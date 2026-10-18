@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.testng.annotations.AfterMethod;
@@ -55,7 +56,22 @@ public final class BundleTest {
         Files.writeString(Path.of(path + ".map"), mapped.map(path.getFileName().toString()));
         Files.writeString(
                 Path.of(path + ".json"),
-                new CssResource(name.replace('/', '.'), CssResource.Kind.COMPONENT, List.of(), List.of(), true).json());
+                metadata(name.replace('/', '.'), CssResource.Kind.COMPONENT, List.of(), List.of(), true)
+                        .json());
+    }
+
+    private static CssResource metadata(
+            String owner, CssResource.Kind kind, List<String> dependencies, List<String> includes, boolean bindings) {
+        return new CssResource(
+                owner,
+                kind,
+                dependencies,
+                includes,
+                bindings ? owner + "Styled" : "",
+                bindings
+                        ? List.of(new CssResource.Binding("property", CssResource.SymbolKind.PROPERTY, "--example"))
+                        : List.of(),
+                Map.of());
     }
 
     @Test
@@ -230,7 +246,8 @@ public final class BundleTest {
         component(tree, owner.replace('.', '/'), css);
         Files.writeString(
                 tree.resolve(CssResource.path(owner) + ".json"),
-                new CssResource(owner, kind, List.of(dependencies), List.of(dependencies), false).json());
+                metadata(owner, kind, List.of(dependencies), List.of(dependencies), false)
+                        .json());
     }
 
     @Test
@@ -243,7 +260,7 @@ public final class BundleTest {
         // Property dependencies do not impose the acyclic global-inclusion contract.
         Files.writeString(
                 input.resolve("Theme.css.json"),
-                new CssResource("Theme", CssResource.Kind.GLOBAL, List.of("Defaults", "Button"), List.of(), false)
+                metadata("Theme", CssResource.Kind.GLOBAL, List.of("Defaults", "Button"), List.of(), false)
                         .json());
         resource(input, "Unused", CssResource.Kind.GLOBAL, "body{--unused:pink;}");
         var result = Bundle.assemble(List.of(input), List.of(), List.of(), "app.css");
@@ -261,7 +278,8 @@ public final class BundleTest {
         assertFalse(result.css().contains("pink"));
         Files.writeString(
                 input.resolve("Defaults.css.json"),
-                new CssResource("Defaults", CssResource.Kind.GLOBAL, List.of("Theme"), List.of(), false).json());
+                metadata("Defaults", CssResource.Kind.GLOBAL, List.of("Theme"), List.of(), false)
+                        .json());
         assertEquals(
                 Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(), result.css());
     }
@@ -273,7 +291,8 @@ public final class BundleTest {
         resource(input, "B", CssResource.Kind.GLOBAL, "body{color:blue;}", "A");
         Files.writeString(
                 input.resolve("B.css.json"),
-                new CssResource("B", CssResource.Kind.GLOBAL, List.of("A"), List.of(), false).json());
+                metadata("B", CssResource.Kind.GLOBAL, List.of("A"), List.of(), false)
+                        .json());
         for (var root : List.of("A", "B")) {
             var result = Bundle.assemble(List.of(input), List.of(), List.of(root), "app.css");
             var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
@@ -296,17 +315,20 @@ public final class BundleTest {
                 Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(), "@layer shared,components;\n");
         Files.writeString(
                 input.resolve("Pulse.css.json"),
-                new CssResource("Pulse", CssResource.Kind.KEYFRAMES, List.of("Defaults"), List.of(), true).json());
+                metadata("Pulse", CssResource.Kind.KEYFRAMES, List.of("Defaults"), List.of(), true)
+                        .json());
         var result = Bundle.assemble(List.of(input), List.of(), List.of(), "app.css");
         var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
         assertEquals(sheet.getAllLayerRules().get(1).getAllStyleRules().size(), 1);
         assertEquals(sheet.getAllLayerRules().get(2).getAllKeyframesRules().size(), 1);
         Files.writeString(
                 input.resolve("Pulse.css.json"),
-                new CssResource("Pulse", CssResource.Kind.KEYFRAMES, List.of("Defaults"), List.of(), false).json());
+                metadata("Pulse", CssResource.Kind.KEYFRAMES, List.of("Defaults"), List.of(), false)
+                        .json());
         Files.writeString(
                 input.resolve("Defaults.css.json"),
-                new CssResource("Defaults", CssResource.Kind.GLOBAL, List.of(), List.of(), true).json());
+                metadata("Defaults", CssResource.Kind.GLOBAL, List.of(), List.of(), true)
+                        .json());
         var global = Objects.requireNonNull(CSSReader.readFromStringReader(
                 Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(), new CSSReaderSettings()));
         assertEquals(global.getAllLayerRules().size(), 2);

@@ -1,0 +1,1 @@
+exports_files(["com.google.javascript.jscomp.CompilerFactory"])

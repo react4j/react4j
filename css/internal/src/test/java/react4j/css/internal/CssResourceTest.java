@@ -5,15 +5,28 @@ import static org.testng.Assert.*;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.testng.annotations.Test;
 
 public final class CssResourceTest {
+    private static CssResource metadata(
+            String owner, CssResource.Kind kind, List<String> dependencies, List<String> includes, boolean bindings) {
+        return new CssResource(
+                owner,
+                kind,
+                dependencies,
+                includes,
+                bindings ? "demo.Styled_Button" : "",
+                bindings ? List.of(new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root")) : List.of(),
+                Map.of());
+    }
+
     @Test
     public void metadataRoundTripsAndCopiesDependencies() {
         for (var kind : CssResource.Kind.values()) {
             var expected = List.of("demo.Pulse", "demo.Outer$Defaults");
             var dependencies = new ArrayList<>(expected);
-            var resource = new CssResource("demo.Button", kind, dependencies, List.of("demo.Pulse"), true);
+            var resource = metadata("demo.Button", kind, dependencies, List.of("demo.Pulse"), true);
             dependencies.clear();
             assertEquals(resource.dependencies(), expected);
             assertEquals(CssResource.read(resource.json(), "demo.Button"), resource);
@@ -28,15 +41,16 @@ public final class CssResourceTest {
 
     @Test
     public void malformedMetadataAndUnsafeIdentitiesAreRejected() {
-        String valid = new CssResource("demo.Button", CssResource.Kind.COMPONENT, List.of(), List.of(), false).json();
+        String valid = metadata("demo.Button", CssResource.Kind.COMPONENT, List.of(), List.of(), false)
+                .json();
         for (var input : List.of(
                 "{",
                 "[]",
                 "null",
                 "1",
                 "{}",
-                valid.replace("\"version\":2", "\"version\":2.1"),
-                valid.replace("\"version\":2", "\"version\":\"1\""),
+                valid.replace("\"version\":3", "\"version\":3.1"),
+                valid.replace("\"version\":3", "\"version\":\"1\""),
                 valid.replace("COMPONENT", "UNKNOWN"),
                 valid.replace("[]", "[1]"),
                 valid.replace("[]", "[null]"),
@@ -66,18 +80,18 @@ public final class CssResourceTest {
         expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "demo.Button"));
         expectThrows(
                 IllegalArgumentException.class,
-                () -> new CssResource("A", CssResource.Kind.GLOBAL, List.of("B"), List.of("B", "B"), false));
+                () -> metadata("A", CssResource.Kind.GLOBAL, List.of("B"), List.of("B", "B"), false));
         for (var owner : List.of("", ".A", "A.", "a..B", "a/b", "a\\b", "1A", "a-B", "a B")) {
             expectThrows(IllegalArgumentException.class, () -> CssResource.path(owner));
             expectThrows(
                     IllegalArgumentException.class,
-                    () -> new CssResource("A", CssResource.Kind.COMPONENT, List.of(owner), List.of(), false));
+                    () -> metadata("A", CssResource.Kind.COMPONENT, List.of(owner), List.of(), false));
         }
         expectThrows(
                 IllegalArgumentException.class,
-                () -> new CssResource("A", CssResource.Kind.COMPONENT, List.of("B", "B"), List.of(), false));
+                () -> metadata("A", CssResource.Kind.COMPONENT, List.of("B", "B"), List.of(), false));
         expectThrows(
                 IllegalArgumentException.class,
-                () -> new CssResource("A", CssResource.Kind.KEYFRAMES, List.of("B"), List.of("Missing"), false));
+                () -> metadata("A", CssResource.Kind.KEYFRAMES, List.of("B"), List.of("Missing"), false));
     }
 }

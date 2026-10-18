@@ -1,1 +1,1 @@
-{"version":2,"bindings":true,"owner":"com.example.nested.Owner$Inner","kind":"COMPONENT","dependencies":[],"includes":[]}
+{"version":3,"owner":"com.example.nested.Owner$Inner","kind":"COMPONENT","dependencies":[],"includes":[],"implementation":"com.example.nested.Owner_Styled_Inner","bindings":[{"method":"_ready","kind":"CLASS","value":"jcss-com-example-nested-Owner_0024_Inner jcss-com-example-nested-Owner_0024_Inner--_005f_ready"},{"method":"style","kind":"CLASS","value":"jcss-com-example-nested-Owner_0024_Inner"}],"providers":{}}

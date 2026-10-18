@@ -1,5 +1,6 @@
 goog.module('react4j.css.example.BrowserTest');
 const Example = goog.require('react4j.css.example.BrowserExample');
+const Mode = goog.require('react4j.browser.Mode');
 const asserts = goog.require('goog.testing.asserts');
 const testSuite = goog.require('goog.testing.testSuite');
 
@@ -55,6 +56,14 @@ testSuite({
   },
   testGeneratedBindingsAreSingletons() {
     asserts.assertTrue(Example.bindingsAreSingletons());
+  },
+  testInliningKeepsModifierAndRootWhileDeadValuesLoseTheirCss() {
+    asserts.assertEquals('rgb(12, 34, 56)', computed('modifier-only').color);
+    asserts.assertEquals('7px', computed('modifier-only').borderTopWidth);
+    const optimized = Mode.environment === 'production';
+    asserts.assertEquals(!optimized, style.textContent.includes('outline-width:17px'));
+    asserts.assertEquals(!optimized, style.textContent.includes('98,76,54'));
+    asserts.assertFalse(style.textContent.includes('$react4j$css$'));
   },
   testInterfaceImplementationsKeepIndependentClasses() {
     const button = /** @type {!HTMLElement} */ (container.querySelector('#success'));
@@ -227,7 +236,7 @@ testSuite({
       if (!group) { group = []; groups.set(owner, group); ordered.push(group); }
       group.push(rules[i].cssText);
     }
-    asserts.assertEquals(2, groups.size);
+    asserts.assertEquals(Mode.environment === 'production' ? 3 : 4, groups.size);
     while (componentRules.length) layer.deleteRule(0);
     for (const animation of animations) layer.insertRule(animation, componentRules.length);
     for (let i = ordered.length - 1; i >= 0; i--) {

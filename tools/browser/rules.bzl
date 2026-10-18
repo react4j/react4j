@@ -1,7 +1,8 @@
 """Browser mode defaults and example applications and Chromium tests."""
 
-load("@rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("@rules_closure//closure/testing:webdriver_test.bzl", "webdriver_test")
+load("//css:defs.bzl", "css_js_binary")
 
 _PRODUCTION_DEFINES = {
     "arez.check_api_invariants": "false",
@@ -157,7 +158,7 @@ def _asset(name):
     return select({_PRODUCTION: "//tools/generation:" + name + "_prod", "//conditions:default": "//tools/generation:" + name + "_dev"})
 
 def browser_application(name, entry_point, deps, html, assets = {}):
-    closure_js_binary(
+    css_js_binary(
         name = name + "_bundle",
         deps = deps,
         entry_points = [entry_point],
@@ -206,7 +207,7 @@ _runtime = rule(implementation = _runtime_impl, outputs = {"js": "%{name}.js"}, 
 
 def browser_test(name, srcs, deps, entry_point, data = []):
     closure_js_library(name = name + "_lib", testonly = True, srcs = srcs, deps = deps + ["//tools/browser:mode", "@rules_closure//closure/testing/library:asserts", "@rules_closure//closure/testing/library:testsuite"])
-    closure_js_binary(
+    css_js_binary(
         name = name + "_bin",
         testonly = True,
         deps = [":" + name + "_lib"],

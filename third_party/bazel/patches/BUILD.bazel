@@ -11,6 +11,7 @@ exports_files([
     "j2cl_use_canonical_maven_coordinate.patch",
     "rules_closure_bazel_9_missing_loads.patch",
     "rules_closure_bound_link_memory.patch",
+    "rules_closure_compiler_factory.patch",
     "rules_closure_custom_env_test_typings.patch",
     "rules_closure_use_protobuf_java_proto_library.patch",
     "rules_closure_web_test_runtime_defines.patch",

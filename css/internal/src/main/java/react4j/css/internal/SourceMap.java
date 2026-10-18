@@ -17,6 +17,107 @@ public final class SourceMap {
 
     private record Segment(int line, int column, int source, int originalLine, int originalColumn) {}
 
+    public record Span(int start, int end) {
+        public Span {
+            if (start < 0 || end < start) {
+                throw new IllegalArgumentException("Invalid CSS span");
+            }
+        }
+    }
+
+    private record Mapping(int offset, @Nullable Location location) {}
+
+    /** Copies retained bytes and their original mapping segments without reserializing CSS. */
+    public static Writer project(String css, JsonObject map, List<Span> spans) {
+        var lines = new ArrayList<Integer>();
+        lines.add(0);
+        for (int i = 0; i < css.length(); i++) {
+            if ('\n' == css.charAt(i)) {
+                lines.add(i + 1);
+            }
+        }
+        var mappings = new ArrayList<Mapping>();
+        int source = 0;
+        int originalLine = 0;
+        int originalColumn = 0;
+        int line = 0;
+        for (var row : map.get("mappings").getAsString().split(";", -1)) {
+            int column = 0;
+            for (var encoded : row.split(",")) {
+                if (encoded.isEmpty()) {
+                    continue;
+                }
+                var fields = decode(encoded);
+                if (1 != fields.size() && 4 != fields.size()) {
+                    throw new IllegalArgumentException("Invalid CSS source-map segment");
+                }
+                column += fields.get(0);
+                Location location = null;
+                if (4 == fields.size()) {
+                    source += fields.get(1);
+                    originalLine += fields.get(2);
+                    originalColumn += fields.get(3);
+                    location = new Location(
+                            map.getAsJsonArray("sources").get(source).getAsString(),
+                            map.getAsJsonArray("sourcesContent").get(source).getAsString(),
+                            originalLine,
+                            originalColumn);
+                }
+                mappings.add(new Mapping(lines.get(line) + column, location));
+            }
+            line++;
+        }
+        var writer = new Writer();
+        int mapping = 0;
+        int previousEnd = 0;
+        for (var span : spans) {
+            if (span.start() < previousEnd || span.end() > css.length()) {
+                throw new IllegalArgumentException("CSS source-map spans must be ordered and within the source");
+            }
+            previousEnd = span.end();
+            int offset = span.start();
+            while (offset < span.end()) {
+                while (mapping + 1 < mappings.size()
+                        && mappings.get(mapping + 1).offset() <= offset) {
+                    mapping++;
+                }
+                int end = mapping + 1 < mappings.size()
+                        ? Math.min(span.end(), mappings.get(mapping + 1).offset())
+                        : span.end();
+                var origin = mappings.isEmpty() || mappings.get(mapping).offset() > offset
+                        ? null
+                        : mappings.get(mapping).location();
+                writer.append(css.substring(offset, end), origin);
+                offset = end;
+            }
+        }
+        return writer;
+    }
+
+    private static List<Integer> decode(String encoded) {
+        var result = new ArrayList<Integer>();
+        int value = 0;
+        int shift = 0;
+        for (int i = 0; i < encoded.length(); i++) {
+            int digit = BASE64.indexOf(encoded.charAt(i));
+            if (digit < 0 || shift > 30) {
+                throw new IllegalArgumentException("Invalid CSS source-map VLQ");
+            }
+            value |= (digit & 31) << shift;
+            if (0 == (digit & 32)) {
+                result.add(0 == (value & 1) ? value >>> 1 : -(value >>> 1));
+                value = 0;
+                shift = 0;
+            } else {
+                shift += 5;
+            }
+        }
+        if (0 != shift) {
+            throw new IllegalArgumentException("Incomplete CSS source-map VLQ");
+        }
+        return result;
+    }
+
     public static final class Writer {
         private final StringBuilder css = new StringBuilder();
         private final LinkedHashMap<String, String> sources = new LinkedHashMap<>();

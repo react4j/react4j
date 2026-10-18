@@ -22,6 +22,7 @@
         { "path": "react4j/css/internal/CssResource.java", "lines": 95, "branches": 85 }
       ]
     },
+    { "path": "css/linker/src/main/java", "report": "jvm.lcov", "lines": 95, "branches": 85 },
     {
       "path": "css/bundler/src/main/java", "report": "jvm.lcov",
       "lines": 95,

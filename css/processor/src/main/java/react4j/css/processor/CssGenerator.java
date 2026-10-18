@@ -17,7 +17,9 @@ import org.realityforge.proton.SuppressWarningsUtil;
 final class CssGenerator {
     private CssGenerator() {}
 
-    static TypeSpec buildType(
+    record Generated(TypeSpec type, String implementation) {}
+
+    static Generated buildType(
             final ProcessingEnvironment processingEnv,
             final CssDescriptor descriptor,
             final Map<String, String> values) {
@@ -108,7 +110,7 @@ final class CssGenerator {
         if (facade) {
             builder.addType(implementation.build());
         }
-        return builder.build();
+        return new Generated(builder.build(), generated.canonicalName() + (facade ? "$" + implementationName : ""));
     }
 
     private static String freshName(String base, Set<String> reserved) {

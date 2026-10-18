@@ -2,7 +2,6 @@ package react4j.css.bundler;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,8 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.function.Function;
+import org.jspecify.annotations.Nullable;
+import react4j.css.internal.CssCatalogue;
+import react4j.css.internal.CssCatalogue.Resource;
+import react4j.css.internal.CssLink;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
@@ -43,6 +45,7 @@ public final class Bundle {
         var shared = new ArrayList<Path>();
         var globals = new ArrayList<String>();
         var outputs = new HashMap<String, Path>();
+        String linkName = null;
         for (int i = 0; i < args.size(); i += 2) {
             if (i + 1 == args.size()) {
                 throw new IllegalArgumentException("Missing value for " + args.get(i));
@@ -53,7 +56,13 @@ public final class Bundle {
                 case "--input" -> trees.add(path);
                 case "--shared" -> shared.add(path);
                 case "--global" -> globals.add(args.get(i + 1));
-                case "--css", "--map" -> {
+                case "--link" -> {
+                    if (null != linkName) {
+                        throw new IllegalArgumentException("Repeated --link");
+                    }
+                    linkName = args.get(i + 1);
+                }
+                case "--css", "--map", "--link-config", "--liveness" -> {
                     if (null != outputs.putIfAbsent(option, path)) {
                         throw new IllegalArgumentException("Repeated output " + option);
                     }
@@ -69,7 +78,21 @@ public final class Bundle {
         if (css.equals(map)) {
             throw new IllegalArgumentException("CSS and source-map outputs must differ");
         }
-        var result = assemble(trees, shared, globals, css.getFileName().toString());
+        var catalogue = CssCatalogue.read(trees);
+        CssLink link = null;
+        Set<String> live = Set.of();
+        if (outputs.containsKey("--link-config") || outputs.containsKey("--liveness") || null != linkName) {
+            if (!outputs.keySet().containsAll(Set.of("--link-config", "--liveness")) || null == linkName) {
+                throw new IllegalArgumentException("Expected --link-config, --liveness and --link together");
+            }
+            link = CssLink.read(Files.readString(outputs.get("--link-config")));
+            var expected = CssLink.create(catalogue, linkName, link.optimized());
+            if (!expected.equals(link)) {
+                throw new IllegalArgumentException("CSS link configuration does not match this link and catalogue");
+            }
+            live = link.readReport(Files.readString(outputs.get("--liveness")));
+        }
+        var result = assemble(catalogue, shared, globals, css.getFileName().toString(), link, live);
         Files.writeString(map, result.map());
         String reference = Objects.requireNonNull(css.toAbsolutePath().getParent())
                 .relativize(map.toAbsolutePath())
@@ -82,7 +105,19 @@ public final class Bundle {
 
     static Result assemble(List<Path> trees, List<Path> shared, List<String> globals, String outputName)
             throws IOException {
-        var definitions = readResources(trees);
+        return assemble(CssCatalogue.read(trees), shared, globals, outputName, null, Set.of());
+    }
+
+    static Result assemble(
+            CssCatalogue catalogue,
+            List<Path> shared,
+            List<String> globals,
+            String outputName,
+            @Nullable CssLink link,
+            Set<String> live)
+            throws IOException {
+        var definitions = catalogue.resources();
+        boolean optimized = null != link && link.optimized();
         var retained = new HashSet<String>();
         for (var owner : globals) {
             var definition = definitions.get(owner);
@@ -92,9 +127,30 @@ public final class Bundle {
             }
             retain(owner, definitions, retained);
         }
+        var active = new HashSet<String>();
+        var present = new HashSet<String>();
+        var known = new HashSet<String>();
         for (var definition : definitions.values()) {
-            if (Kind.COMPONENT == definition.metadata().kind()
-                    || definition.metadata().bindings()) {
+            for (var binding : definition.metadata().bindings()) {
+                if (CssResource.SymbolKind.CLASS == binding.kind() || CssResource.SymbolKind.ID == binding.kind()) {
+                    String prefix = CssResource.SymbolKind.CLASS == binding.kind() ? "." : "#";
+                    for (var token : binding.value().split(" ")) {
+                        known.add(prefix + token);
+                        if (live.contains(definition.metadata().owner() + "#" + binding.method())) {
+                            present.add(prefix + token);
+                        }
+                    }
+                }
+                if (live.contains(definition.metadata().owner() + "#" + binding.method())) {
+                    active.add(definition.metadata().owner());
+                }
+            }
+        }
+        for (var definition : definitions.values()) {
+            if (optimized
+                    ? active.contains(definition.metadata().owner())
+                    : (Kind.COMPONENT == definition.metadata().kind()
+                            || !definition.metadata().bindings().isEmpty())) {
                 retain(definition.metadata().owner(), definitions, retained);
             }
         }
@@ -149,6 +205,11 @@ public final class Bundle {
                 .filter(d -> retained.contains(d.metadata().owner())
                         && Kind.GLOBAL != d.metadata().kind())
                 .forEach(ordered::add);
+        if (optimized) {
+            ordered = new ArrayList<>(ordered.stream()
+                    .map(resource -> CssPruner.prune(resource, known, present))
+                    .toList());
+        }
         var writer = new StringBuilder("@layer shared,components;\n");
         var sections = new JsonArray();
         int line = 1;
@@ -228,55 +289,6 @@ public final class Bundle {
         return new Result(writer.toString(), map + "\n");
     }
 
-    private static Map<String, Resource> readResources(List<Path> trees) throws IOException {
-        var resources = new TreeMap<String, Path>();
-        for (var tree : trees.stream().distinct().toList()) {
-            try (var files = Files.walk(tree)) {
-                for (var path : files.filter(Files::isRegularFile).sorted().toList()) {
-                    if (path.toString().endsWith(".css")
-                            || path.toString().endsWith(".css.map")
-                            || path.toString().endsWith(".css.json")) {
-                        String name = tree.relativize(path).toString().replace('\\', '/');
-                        if (null != resources.putIfAbsent(name, path)) {
-                            throw new IllegalArgumentException("Duplicate CSS resource: " + name);
-                        }
-                    }
-                }
-            }
-        }
-        var definitions = new TreeMap<String, Resource>();
-        for (var entry : resources.entrySet()) {
-            String name = entry.getKey();
-            if (!name.endsWith(".css")) {
-                if (!resources.containsKey(name.substring(0, name.lastIndexOf('.')))) {
-                    throw new IllegalArgumentException("CSS metadata or source map without CSS: " + name);
-                }
-                continue;
-            }
-            Path path = entry.getValue();
-            Path mapPath = resources.get(name + ".map");
-            Path metadataPath = resources.get(name + ".json");
-            if (null == mapPath || null == metadataPath) {
-                throw new IllegalArgumentException("Missing CSS source map or metadata: " + name);
-            }
-            String owner = name.substring(0, name.length() - 4).replace('/', '.');
-            var metadata = CssResource.read(Files.readString(metadataPath), owner);
-            String file = path.getFileName().toString();
-            String css = Files.readString(path);
-            String reference = SourceMap.reference(file);
-            if (!css.endsWith(reference)) {
-                throw new IllegalArgumentException("Missing component sourceMappingURL: " + name);
-            }
-            definitions.put(
-                    owner,
-                    new Resource(
-                            metadata, css.substring(0, css.length() - reference.length()), readMap(mapPath, file)));
-        }
-        return definitions;
-    }
-
-    private record Resource(CssResource metadata, String css, JsonObject map) {}
-
     private static void retain(String owner, Map<String, Resource> definitions, Set<String> retained) {
         if (!retained.add(owner)) {
             return;
@@ -334,24 +346,6 @@ public final class Bundle {
         visiting.remove(owner);
         visited.add(owner);
         ordered.add(definition);
-    }
-
-    private static JsonObject readMap(Path path, String cssName) throws IOException {
-        try {
-            var map = JsonParser.parseString(Files.readString(path)).getAsJsonObject();
-            if (!map.has("version")
-                    || 3 != map.get("version").getAsInt()
-                    || !map.has("file")
-                    || !cssName.equals(map.get("file").getAsString())
-                    || !map.has("mappings")
-                    || !map.has("sources")
-                    || !map.has("sourcesContent")) {
-                throw new IllegalArgumentException("Invalid component source map: " + path);
-            }
-            return map;
-        } catch (JsonParseException | IllegalStateException e) {
-            throw new IllegalArgumentException("Invalid component source map: " + path, e);
-        }
     }
 
     private static JsonObject section(int line, JsonObject map) {
