@@ -33,10 +33,6 @@ final class CssDescriptor {
         return GeneratorUtil.getQualifiedPackageName(_element);
     }
 
-    String getBinaryName() {
-        return _binaryName;
-    }
-
     String getRootClassName() {
         return Names.root(_binaryName);
     }

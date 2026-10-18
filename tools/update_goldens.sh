@@ -34,7 +34,7 @@ bazel run "$target" -- \
   "--wrapper_script_flag=--jvm_flag=-Djava.io.tmpdir=$scratch/compilations" \
   "--wrapper_script_flag=--jvm_flag=-Dreact4j.fixture_dir=$scratch/fixtures" \
   "--wrapper_script_flag=--jvm_flag=-Dreact4j.output_fixture_data=true" -d "$scratch/test-output"
-bazel run //tools/testing/src/main/java/react4j/testing:golden_updater -- "$scratch/fixtures" "$scratch/baseline" "$root/$fixture" "${trees[@]}"
+bazel run //tools/testing/src/main/java/react4j/testing:golden_updater -- "$scratch/fixtures" "$scratch/baseline" "$root/$fixture"
 bazel test "$target" --test_output=errors
 paths=()
 for tree in "${trees[@]}"; do

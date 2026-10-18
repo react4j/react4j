@@ -105,7 +105,7 @@ final class CssCompiler {
             }
         }
         for (var frames : compiler.keyframes.values()) {
-            compiler.keyframes(frames);
+            compiler.writeKeyframes(frames, compiler.animationName(frames.getAnimationName()));
         }
         compiler.style(sheet.getAllStyleRules().get(0), new Scope("." + root, true), true);
         for (var name : accessors) {
@@ -258,10 +258,6 @@ final class CssCompiler {
         if (name.contains("\\") || name.startsWith("\"") || name.startsWith("'")) {
             throw syntax.invalid("Animation names must be unescaped, unquoted identifiers", node);
         }
-    }
-
-    private void keyframes(CSSKeyframesRule rule) {
-        writeKeyframes(rule, animationName(rule.getAnimationName()));
     }
 
     private void writeKeyframes(CSSKeyframesRule rule, String name) {

@@ -52,7 +52,6 @@ java_browser_testng(
     size = "medium",
     srcs = ["RuntimeCoverageTest.java"],
     data = [
-        ":fixture_jar",
         ":fixture_modules",
         ":mixed_modules",
         "//tools/generation:react_dev",
@@ -64,6 +63,7 @@ java_browser_testng(
         "//tools/verification:core_modules",
         "//tools/verification:dom_modules",
         "//tools/verification:runtime_sources",
+        "//tools/verification/src/test/java/react4j/verification/fixture:libfixture_java.jar",
         "//tools/verification/src/test/java/react4j/verification/fixture:libfixture_java-src.jar",
         "//tools/verification/src/test/java/react4j/verification/mixed:libmixed_java.jar",
         "//tools/verification/src/test/java/react4j/verification/mixed:libmixed_java-src.jar",
@@ -85,7 +85,7 @@ java_browser_testng(
         "-Dcoverage.runtime.dom.modules=$(rootpath //tools/verification:dom_modules)",
         "-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)",
         "-Dcoverage.fixture.bundle=$(rootpath //tools/verification/src/test/js/react4j/verification:fixture.js)",
-        "-Dcoverage.fixture.jar=$(rootpath :fixture_jar)",
+        "-Dcoverage.fixture.jar=$(rootpath //tools/verification/src/test/java/react4j/verification/fixture:libfixture_java.jar)",
         "-Dcoverage.fixture.sources=$(rootpath //tools/verification/src/test/java/react4j/verification/fixture:libfixture_java-src.jar)",
         "-Dcoverage.mixed.jar=$(rootpath //tools/verification/src/test/java/react4j/verification/mixed:libmixed_java.jar)",
         "-Dcoverage.mixed.sources=$(rootpath //tools/verification/src/test/java/react4j/verification/mixed:libmixed_java-src.jar)",
@@ -105,11 +105,6 @@ java_browser_testng(
         "@maven//:com_google_code_gson_gson",
         "@rules_closure//closure/compiler",
     ],
-)
-
-filegroup(
-    name = "fixture_jar",
-    srcs = ["//tools/verification/src/test/java/react4j/verification/fixture:libfixture_java.jar"],
 )
 
 j2cl_modules(

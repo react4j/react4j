@@ -320,16 +320,15 @@ final class JavaCoverage {
         return executableOrigin ? entered(line) : List.of();
     }
 
-    List<CoverageInstrumenter.Line> entered(int line) {
+    private List<CoverageInstrumenter.Line> entered(int line) {
         return executable.contains(line) && !jvmLines.contains(line)
                 ? List.of(new CoverageInstrumenter.Line(name, line))
                 : List.of();
     }
 
     List<CoverageInstrumenter.Line> completed(int position) {
-        var candidates = statements;
         Range selected = null;
-        for (var candidate : candidates) {
+        for (var candidate : statements) {
             if (candidate.contains(position)
                     && (null == selected || candidate.end() - candidate.start() < selected.end() - selected.start())) {
                 selected = candidate;

@@ -114,12 +114,6 @@ public final class Bundle {
                 }
             }
         }
-        for (var definition : definitions.values()) {
-            String owner = definition.metadata().owner();
-            if (retained.contains(owner) && Kind.GLOBAL == definition.metadata().kind()) {
-                orderGlobal(owner, definitions, visited, visiting, ordered);
-            }
-        }
         definitions.values().stream()
                 .filter(d -> retained.contains(d.metadata().owner())
                         && Kind.GLOBAL != d.metadata().kind())

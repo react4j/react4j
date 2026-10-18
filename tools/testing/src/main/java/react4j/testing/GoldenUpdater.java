@@ -14,19 +14,14 @@ public final class GoldenUpdater {
     private GoldenUpdater() {}
 
     public static void main(String[] args) throws IOException {
-        if (args.length < 4) {
-            throw new IllegalArgumentException(
-                    "Expected regenerated, baseline and maintained fixture roots followed by expected trees");
+        if (3 != args.length) {
+            throw new IllegalArgumentException("Expected regenerated, baseline and maintained fixture roots");
         }
         var source = Path.of(args[0]);
         var baseline = Path.of(args[1]);
         var destination = Path.of(args[2]);
         var changed = new ArrayList<Path>();
-        var trees = List.of(args).subList(3, args.length);
-        for (var tree : trees) {
-            if (!List.of("expected", "expectedFormatted").contains(tree)) {
-                throw new IllegalArgumentException("Unknown expected tree: " + tree);
-            }
+        for (var tree : List.of("expected", "expectedFormatted")) {
             try (var files = Files.walk(source.resolve(tree))) {
                 for (var file : files.filter(Files::isRegularFile).sorted().toList()) {
                     var relative = source.relativize(file);
