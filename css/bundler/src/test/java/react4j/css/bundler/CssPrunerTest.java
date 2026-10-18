@@ -80,6 +80,31 @@ public final class CssPrunerTest {
     }
 
     @Test
+    public void nativeNestingPreservesParentMatchingContextsAndMaximumSpecificity() {
+        for (var css : List.of(
+                ".ordinary,#absent{& .child{color:red;}}.ordinary .child{color:blue;}",
+                ".ordinary,#absent{@media screen{& .child{color:red;}}}",
+                ".ordinary,#absent{@supports (display:grid){& .child{color:red;}}}",
+                "#absent{:not(&){outline-width:11px;}}",
+                "#absent{@media screen{:not(&){outline-width:11px;}}}",
+                "#absent{@supports (display:grid){:not(&){outline-width:11px;}}}",
+                ".ordinary{#absent{:not(&){outline-width:11px;}}}")) {
+            assertEquals(
+                    prune(resource(new SourceMap.Writer().append(css)), Set.of("#absent"), Set.of())
+                            .css(),
+                    css);
+        }
+        assertEquals(
+                prune(
+                                resource(new SourceMap.Writer()
+                                        .append(".ordinary,#absent{&.dead{color:red;}& .child{color:blue;}}")),
+                                Set.of("#absent", ".dead"),
+                                Set.of())
+                        .css(),
+                ".ordinary,#absent{& .child{color:blue;}}");
+    }
+
+    @Test
     public void literalTabsInStringsAndAttributesUseCharacterOffsets() {
         for (var retained : List.of(".root{content:'\t';}", ".root[data-label='\t']{color:red;}")) {
             String css = retained + ".dead{color:blue;}.root{opacity:0.5;}";

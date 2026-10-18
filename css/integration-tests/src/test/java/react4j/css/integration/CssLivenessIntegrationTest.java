@@ -3,9 +3,13 @@ package react4j.css.integration;
 import static org.testng.Assert.*;
 
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
+import com.helger.css.decl.CSSMediaRule;
+import com.helger.css.decl.CSSStyleRule;
+import com.helger.css.decl.CSSSupportsRule;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
+import com.helger.css.writer.CSSWriterSettings;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -36,6 +40,32 @@ public final class CssLivenessIntegrationTest {
                 .orElseThrow();
         assertEquals(components.getAllMediaRules().size(), 1);
         assertEquals(components.getAllMediaRules().get(0).getAllStyleRules().size(), 1);
+    }
+
+    @Test
+    public void globalNativeNestingRetainsContextsForDeadCheckedIds() throws Exception {
+        var settings = new CSSWriterSettings(true);
+        var optimized = Objects.requireNonNull(CSSReader.readFromStringReader(
+                input("optimized"), new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+        var development = Objects.requireNonNull(CSSReader.readFromStringReader(
+                input("development"),
+                new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+        var optimizedRules = optimized.getAllLayerRules().get(1).getAllStyleRules();
+        var developmentRules = development.getAllLayerRules().get(1).getAllStyleRules();
+        for (int i = 0; i < 5; i++) {
+            assertEquals(
+                    optimizedRules.get(i).getAsCSSString(settings, 0),
+                    developmentRules.get(i).getAsCSSString(settings, 0));
+        }
+        String root = "jcss-react4j-css-integration-LivenessEntry_0024_";
+        assertEquals(
+                optimizedRules.get(0).getSelectorsAsCSSString(settings, 0),
+                ".ordinary,#" + root + "NestingDefaults--id-bound");
+        assertEquals(
+                ((CSSStyleRule) optimizedRules.get(2).getAllRules().get(0)).getSelectorsAsCSSString(settings, 0),
+                ":not(&)");
+        assertTrue(optimizedRules.get(3).getAllRules().get(0) instanceof CSSMediaRule);
+        assertTrue(optimizedRules.get(4).getAllRules().get(0) instanceof CSSSupportsRule);
     }
 
     @Test

@@ -22,6 +22,7 @@ css_bundle(
     name = "optimized_styles",
     testonly = True,
     css = "optimized.css",
+    globals = ["react4j.css.integration.LivenessEntry$NestingDefaults"],
     root = ":optimized",
     source_map = "optimized.css.map",
 )
@@ -36,6 +37,7 @@ css_bundle(
     name = "alias_styles",
     testonly = True,
     css = "alias.css",
+    globals = ["react4j.css.integration.LivenessEntry$NestingDefaults"],
     root = ":optimized_alias",
     source_map = "alias.css.map",
 )
@@ -52,6 +54,7 @@ css_bundle(
     name = "development_styles",
     testonly = True,
     css = "development.css",
+    globals = ["react4j.css.integration.LivenessEntry$NestingDefaults"],
     root = ":development",
     source_map = "development.css.map",
 )

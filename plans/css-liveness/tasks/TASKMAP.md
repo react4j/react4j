@@ -5,7 +5,7 @@
 - Current frontier: `None; independent implementation review`
 - Planning reviewer: `/root/css_liveness_plan_review` (`1/3` rounds; final confirmation `unused`); Findings: none.
 - Plan checkpoint: `automatic`; accepted scope, prior implementation/push authority, completed interview confirmation and passing independent planning review. No additional human plan pause was requested.
-- Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
+- Implementation reviewer: `/root/css_liveness_implementation_review` (`1/5` rounds completed; round 2 queued; final confirmation `unused`)
 
 ## Full-scope validation
 
@@ -29,6 +29,7 @@
 ## Review history
 
 - Planning round 1: Findings: none. Whole plan, dependencies, scope, domain artifacts and verification reviewed. Worker integration and map projection implementation proof remains owned by T01/T02. No blocking findings or dispositions.
+- Implementation round 1: complete against c0098a68d..a233214f1. One P2 finding: native nesting parents were pruned without preserving inherited specificity or `:not(&)` matching. Full delivered scope inspected; no other findings. Fix preserves native parent contexts while still pruning impossible leaves. Unit and real authored J2CL/Closure regressions reproduced the failure, then passed, including conditional nesting. `tools/check.sh` passed after the fix. Round 2 verifies the committed fix and affected surfaces.
 
 ## Promoted knowledge
 

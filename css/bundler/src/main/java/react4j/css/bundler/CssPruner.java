@@ -91,11 +91,14 @@ final class CssPruner {
         boolean retained = false;
         for (var rule : rules) {
             if (rule instanceof CSSStyleRule style) {
-                if (style.getAllSelectors().stream().noneMatch(this::possible)) {
-                    remove(style);
-                    continue;
+                // Native nesting inherits maximum parent-list specificity and can negate &.
+                if (!style.hasRules()) {
+                    if (style.getAllSelectors().stream().noneMatch(this::possible)) {
+                        remove(style);
+                        continue;
+                    }
+                    selectors(style.getAllSelectors());
                 }
-                selectors(style.getAllSelectors());
                 style.getAllDeclarations().forEach(this::declaration);
                 rules(style.getAllRules(), animations);
             } else if (rule instanceof CSSKeyframesRule frames) {
