@@ -1,5 +1,6 @@
 package react4j.css.integration;
 
+import java.io.IOException;
 import react4j.css.CssAnimation;
 import react4j.css.CssCustomProperty;
 import react4j.css.CssId;
@@ -7,8 +8,19 @@ import react4j.css.CssId;
 public final class StyleContracts {
     private StyleContracts() {}
 
-    public interface Button {
-        String style();
+    public interface GenericRoot {
+        <T> String style();
+    }
+
+    public interface ThrowingRoot {
+        String style() throws IOException;
+    }
+
+    // Deliberate collisions exercise generated references through separately compiled header jars.
+    public interface Button extends GenericRoot, ThrowingRoot {
+        int Internal = 1;
+
+        class Styled_ButtonStyles {}
 
         String success();
 
@@ -36,11 +48,16 @@ public final class StyleContracts {
     }
 
     public interface Defaults {
+        int Internal = 1;
+        int Styled_SharedDefaults = 2;
+
         @CssCustomProperty
         String accent();
     }
 
     public interface Pulse {
+        class Styled_SharedPulse {}
+
         @CssAnimation
         String name();
     }

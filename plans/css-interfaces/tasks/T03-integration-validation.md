@@ -30,4 +30,12 @@ Focused hardening covers source/binary conflicts, malformed inherited signatures
 
 Simplify completed: reuse collected methods for factory checks, remove redundant override selection and retain public Object implementations, and keep interface examples within existing targets. Permanent contracts are in css/README.md and CHANGELOG.md. The complete initiative diff and golden outputs were inspected. No domain-promotion directories exist.
 
-Final coverage: CSS processor root 1244/1254 lines (99.2%) and 890/926 branches (96.1%); CssMethods 63/63 lines and 43/48 branches; CssGenerator 62/62 lines and 34/34 branches.
+Final coverage: CSS processor root 1282/1292 lines (99.2%) and 902/936 branches (96.4%); CssMethods 84/84 lines and 54/56 branches; CssGenerator 85/85 lines and 48/48 branches.
+
+## Review round 1 fixes
+
+Both P2 findings were reproduced and fixed. Internal names now avoid inherited members. When a type hides the conventional generated name, its package-access factory contains a separate package-access final implementation with a private constructor; the existing lazy holder owns allocation. This preserves the authored API even in unnamed packages without reserving legal interface member names. The interface golden includes this form, and real separately compiled JVM/J2CL contracts exercise it.
+
+Effective method groups retain all Java signatures separately from annotation declarations, prefer a non-generic subsignature and validate covariant String returns plus the erased intersection of throws. Ambiguous or unsafe return contracts still fail. Sixty collision combinations, sixty peer-name/order combinations and ten invalid combinations compile actual authored/generated Java; positive signature tests also compile a String-returning caller without throws or casts. Header-jar integration combines a generic root with a throws-bearing non-generic root.
+
+Goldens were regenerated and inspected. The simplify pass reviewed the collision-safe construction path and effective-signature checks. tools/check.sh passed again after both fixes: all 37 development targets, six optimized browser targets, full unchanged coverage policy, isolated consumer, site/release validation and 13 reproducible artifacts. The packaged processor smoke test passes in its normal uninstrumented build; instrumented implementation tests supply coverage. Round 2 review is pending.

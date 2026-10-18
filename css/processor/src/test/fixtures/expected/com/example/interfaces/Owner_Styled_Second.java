@@ -10,7 +10,7 @@ final class Owner_Styled_Second extends Owner.Second {
   }
 
   static Owner.Second get() {
-    return Owner_Styled_Second.Internal.INSTANCE;
+    return Internal_.INSTANCE;
   }
 
   @Override
@@ -23,10 +23,10 @@ final class Owner_Styled_Second extends Owner.Second {
     return "jcss-com-example-interfaces-Owner_0024_Second jcss-com-example-interfaces-Owner_0024_Second--success";
   }
 
-  private static final class Internal {
+  private static final class Internal_ {
     private static final Owner.Second INSTANCE = new Owner_Styled_Second();
 
-    private Internal() {
+    private Internal_() {
     }
   }
 }

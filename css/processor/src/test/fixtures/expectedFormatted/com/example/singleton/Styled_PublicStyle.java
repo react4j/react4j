@@ -9,7 +9,7 @@ final class Styled_PublicStyle extends PublicStyle {
   private Styled_PublicStyle() {}
 
   public static PublicStyle get() {
-    return Styled_PublicStyle.Internal.INSTANCE;
+    return Internal.INSTANCE;
   }
 
   @Override

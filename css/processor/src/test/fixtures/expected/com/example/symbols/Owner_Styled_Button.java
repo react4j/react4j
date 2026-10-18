@@ -10,7 +10,7 @@ final class Owner_Styled_Button extends Owner.Button {
   }
 
   static Owner.Button get() {
-    return Owner_Styled_Button.Internal.INSTANCE;
+    return Internal.INSTANCE;
   }
 
   @Override

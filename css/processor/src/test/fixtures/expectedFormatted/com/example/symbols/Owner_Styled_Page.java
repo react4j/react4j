@@ -9,7 +9,7 @@ final class Owner_Styled_Page extends Owner.Page {
   private Owner_Styled_Page() {}
 
   public static Owner.Page get() {
-    return Owner_Styled_Page.Internal.INSTANCE;
+    return Internal.INSTANCE;
   }
 
   @Override

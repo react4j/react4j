@@ -11,7 +11,7 @@ final class Styled_Override extends Override {
   }
 
   static Override get() {
-    return Styled_Override.Internal.INSTANCE;
+    return Internal.INSTANCE;
   }
 
   @java.lang.Override

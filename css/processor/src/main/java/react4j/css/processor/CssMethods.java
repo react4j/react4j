@@ -12,12 +12,35 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Types;
 
 /** Effective Java methods, retaining their types as members of the CSS definition. */
 final class CssMethods {
     private CssMethods() {}
 
-    record Method(ExecutableElement element, ExecutableType type, List<ExecutableElement> declarations) {}
+    record Method(
+            ExecutableElement element,
+            ExecutableType type,
+            List<ExecutableElement> declarations,
+            List<ExecutableType> signatures) {
+        boolean isAccessor(Types types) {
+            var string = type.getReturnType();
+            if (!type.getParameterTypes().isEmpty()
+                    || !element.getTypeParameters().isEmpty()
+                    || !(string instanceof DeclaredType declared)
+                    || !((TypeElement) declared.asElement()).getQualifiedName().contentEquals("java.lang.String")) {
+                return false;
+            }
+            // Covariant returns and the intersection of throws describe the common implementation.
+            return signatures.stream().allMatch(signature -> types.isSubtype(string, signature.getReturnType()))
+                    && signatures.stream()
+                            .flatMap(signature -> signature.getThrownTypes().stream())
+                            .map(types::erasure)
+                            .noneMatch(thrown -> signatures.stream()
+                                    .allMatch(signature -> signature.getThrownTypes().stream()
+                                            .anyMatch(allowed -> types.isSubtype(thrown, types.erasure(allowed)))));
+        }
+    }
 
     static List<Method> collect(ProcessingEnvironment environment, TypeElement owner) {
         var elements = environment.getElementUtils();
@@ -49,16 +72,15 @@ final class CssMethods {
                             return false;
                         }
                         var inherited = (ExecutableType) types.asMemberOf((DeclaredType) owner.asType(), declaration);
-                        return types.isSubsignature(type, inherited) || types.isSubsignature(inherited, type);
+                        return sameSignature(types, type, inherited);
                     })
                     .toList();
-            var method = new Method(candidate, type, contracts);
+            var method = new Method(candidate, type, contracts, List.of(type));
             int index = -1;
             for (int i = 0; i < methods.size(); i++) {
                 var previous = methods.get(i);
                 if (candidate.getSimpleName().contentEquals(previous.element().getSimpleName())
-                        && (types.isSubsignature(method.type(), previous.type())
-                                || types.isSubsignature(previous.type(), method.type()))) {
+                        && sameSignature(types, method.type(), previous.type())) {
                     index = i;
                     break;
                 }
@@ -69,18 +91,28 @@ final class CssMethods {
                 var previous = methods.get(index);
                 boolean candidateAbstract = candidate.getModifiers().contains(Modifier.ABSTRACT);
                 boolean previousAbstract = previous.element().getModifiers().contains(Modifier.ABSTRACT);
-                // getAllMembers already removes overridden declarations; unrelated signatures remain.
-                if (candidateAbstract != previousAbstract
+                boolean candidateSubsignature = types.isSubsignature(type, previous.type());
+                boolean previousSubsignature = types.isSubsignature(previous.type(), type);
+                // A non-generic declaration can implement its generic peer, but not conversely.
+                boolean preferCandidate = candidateAbstract != previousAbstract
                         ? !candidateAbstract
-                        : types.isSubtype(
-                                method.type().getReturnType(), previous.type().getReturnType())) {
-                    methods.set(index, method);
-                }
+                        : candidateSubsignature != previousSubsignature
+                                ? candidateSubsignature
+                                : types.isSubtype(
+                                        type.getReturnType(), previous.type().getReturnType());
+                var selected = preferCandidate ? method : previous;
+                var signatures = new ArrayList<>(previous.signatures());
+                signatures.add(type);
+                methods.set(index, new Method(selected.element(), selected.type(), contracts, List.copyOf(signatures)));
             }
         }
         methods.sort(
                 Comparator.comparing(method -> method.element().getSimpleName().toString()));
         return List.copyOf(methods);
+    }
+
+    private static boolean sameSignature(Types types, ExecutableType first, ExecutableType second) {
+        return types.isSubsignature((ExecutableType) types.erasure(first), (ExecutableType) types.erasure(second));
     }
 
     private static void interfaces(

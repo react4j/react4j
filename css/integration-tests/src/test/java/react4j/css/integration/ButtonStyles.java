@@ -11,6 +11,6 @@ import react4j.css.Css;
     """)
 abstract class ButtonStyles implements StyleContracts.Button {
     static ButtonStyles get() {
-        return Styled_ButtonStyles.get();
+        return react4j.css.integration.Styled_ButtonStyles.get();
     }
 }

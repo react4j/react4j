@@ -11,7 +11,7 @@ final class Styled_String extends String {
   }
 
   static String get() {
-    return Styled_String.Internal.INSTANCE;
+    return Internal.INSTANCE;
   }
 
   @java.lang.Override

@@ -395,10 +395,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 }
                 continue;
             }
-            if (!inherited.type().getParameterTypes().isEmpty()
-                    || !method.getTypeParameters().isEmpty()
-                    || !inherited.type().getThrownTypes().isEmpty()
-                    || !isType(inherited.type().getReturnType(), "java.lang.String")) {
+            if (!inherited.isAccessor(processingEnv.getTypeUtils())) {
                 throw new IllegalArgumentException("CSS accessor " + method.getSimpleName()
                         + " must take no arguments and return String without type parameters or throws");
             }
@@ -537,10 +534,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
             var method = inherited.element();
             if (null != symbolAnnotation(owner, inherited)) {
                 if (!method.getModifiers().contains(Modifier.ABSTRACT)
-                        || !inherited.type().getParameterTypes().isEmpty()
-                        || !method.getTypeParameters().isEmpty()
-                        || !inherited.type().getThrownTypes().isEmpty()
-                        || !isType(inherited.type().getReturnType(), "java.lang.String")) {
+                        || !inherited.isAccessor(processingEnv.getTypeUtils())) {
                     throw new IllegalArgumentException(
                             "CSS symbol accessors must be abstract, take no arguments and return String without"
                                     + " type parameters or throws");

@@ -5,28 +5,33 @@ import org.jspecify.annotations.NullMarked;
 
 @Generated("react4j.css.processor.CssProcessor")
 @NullMarked
-final class Owner_Styled_First extends Owner.First {
+final class Owner_Styled_First {
   private Owner_Styled_First() {
   }
 
   public static Owner.First get() {
-    return Owner_Styled_First.Internal.INSTANCE;
+    return Internal_.INSTANCE;
   }
 
-  @Override
-  public String style() {
-    return "jcss-com-example-interfaces-Owner_0024_First";
+  private static final class Internal_ {
+    private static final Owner.First INSTANCE = new Implementation();
+
+    private Internal_() {
+    }
   }
 
-  @Override
-  public String success() {
-    return "jcss-com-example-interfaces-Owner_0024_First jcss-com-example-interfaces-Owner_0024_First--success";
-  }
+  static final class Implementation extends Owner.First {
+    private Implementation() {
+    }
 
-  private static final class Internal {
-    private static final Owner.First INSTANCE = new Owner_Styled_First();
+    @Override
+    public String style() {
+      return "jcss-com-example-interfaces-Owner_0024_First";
+    }
 
-    private Internal() {
+    @Override
+    public String success() {
+      return "jcss-com-example-interfaces-Owner_0024_First jcss-com-example-interfaces-Owner_0024_First--success";
     }
   }
 }

@@ -10,7 +10,7 @@ final class Owner_Middle_Styled_Style extends Owner.Middle.Style {
   }
 
   static Owner.Middle.Style get() {
-    return Owner_Middle_Styled_Style.Internal.INSTANCE;
+    return Internal.INSTANCE;
   }
 
   @Override

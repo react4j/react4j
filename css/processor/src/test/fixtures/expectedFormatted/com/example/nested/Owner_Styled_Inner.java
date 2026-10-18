@@ -9,7 +9,7 @@ final class Owner_Styled_Inner extends Owner.Inner {
   private Owner_Styled_Inner() {}
 
   static Owner.Inner get() {
-    return Owner_Styled_Inner.Internal.INSTANCE;
+    return Internal.INSTANCE;
   }
 
   @Override

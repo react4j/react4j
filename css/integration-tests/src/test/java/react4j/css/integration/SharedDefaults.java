@@ -7,6 +7,6 @@ import react4j.css.GlobalCss;
     """)
 public abstract class SharedDefaults implements StyleContracts.Defaults {
     public static SharedDefaults get() {
-        return Styled_SharedDefaults.get();
+        return react4j.css.integration.Styled_SharedDefaults.get();
     }
 }

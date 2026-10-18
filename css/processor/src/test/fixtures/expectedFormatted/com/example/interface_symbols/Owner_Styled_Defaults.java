@@ -9,7 +9,7 @@ final class Owner_Styled_Defaults extends Owner.Defaults {
   private Owner_Styled_Defaults() {}
 
   public static Owner.Defaults get() {
-    return Owner_Styled_Defaults.Internal.INSTANCE;
+    return Internal.INSTANCE;
   }
 
   @Override

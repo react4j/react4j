@@ -44,13 +44,13 @@ Access styles through the authored type:
 DOM.button(new BtnProps().className(SaveButton.get().success()), "Saved");
 ```
 
-Keep references to the generated subclass inside the style definition's forwarding `get()` method. The method must be static and non-final and return the style type. Use package access by default; make it public when a public style is consumed from another package. The generated singleton remains lazy, so no static field is needed in the authored class.
+Keep references to the generated binding class inside the style definition's forwarding `get()` method. The method must be static and non-final and return the style type. Use package access by default; make it public when a public style is consumed from another package. The generated singleton remains lazy, so no static field is needed in the authored class.
 
 `style()` returns the root class token. Each modifier accessor returns both the root and its modifier token, so `success()` applies both sets of declarations. Every modifier must match a local selector such as `&.success`, and every local class selector must have an accessor. State pseudo-classes such as `:focus-visible` need no accessor.
 
-CSS names derive from the Java package and class, including enclosing classes. The generated subclass is always package-access, including for public definitions. To keep styles in a view's source file, use a static nested class: `View.Styles` generates `View_Styled_Styles`. See [BrowserExample.java](examples/save-button/src/main/java/react4j/css/example/BrowserExample.java) for a complete rendering example.
+CSS names derive from the Java package and class, including enclosing classes. The generated binding class is always package-access, including for public definitions. To keep styles in a view's source file, use a static nested class: `View.Styles` generates `View_Styled_Styles`. See [BrowserExample.java](examples/save-button/src/main/java/react4j/css/example/BrowserExample.java) for a complete rendering example.
 
-Style definitions must be abstract, public or package-access, and stateless: no fields, explicit constructors or instance initializers. Extending another class, type parameters and sealed classes are unsupported. Nested definitions must be static with accessible enclosing types. Abstract accessors must return `String` and have no parameters, type parameters or throws. Concrete and static helpers are allowed.
+Style definitions must be abstract, public or package-access, and stateless: no fields, explicit constructors or instance initializers. Extending another class, type parameters and sealed classes are unsupported. Nested definitions must be static with accessible enclosing types. Abstract accessors must resolve to an effective `String` signature without parameters, method type parameters or throws. Concrete and static helpers are allowed.
 
 ### Shared interfaces
 
@@ -87,7 +87,7 @@ abstract class SecondaryAction implements ActionStyle {
 }
 ```
 
-Accessors inherited from interfaces need no redeclaration and generate public overrides. Generic interfaces work when their substituted accessor signatures satisfy the rules above, such as `Styles<String>`. Interface constants and default, static and private helpers are allowed. A component still needs an abstract `style()`; redeclare a default `style()` as abstract to generate it.
+Accessors inherited from interfaces need no redeclaration and generate public overrides. Compatible peer declarations combine covariant returns and throws restrictions according to their Java contracts. Generic interfaces work when their substituted accessor signatures satisfy the rules above, such as `Styles<String>`. Interface constants and default, static and private helpers are allowed. A component still needs an abstract `style()`; redeclare a default `style()` as abstract to generate it.
 
 Interfaces can also declare `@CssId`, `@CssAnimation` and `@CssCustomProperty` accessors, including for `@GlobalCss` and `@Keyframes` implementations. Names and CSS occurrences are checked in each consuming definition, including through separately compiled libraries. A standalone interface produces no CSS or bindings.
 

@@ -8,7 +8,7 @@ final class Styled_Button extends Button {
   private Styled_Button() {}
 
   static Button get() {
-    return Styled_Button.Internal.INSTANCE;
+    return Internal.INSTANCE;
   }
 
   @Override

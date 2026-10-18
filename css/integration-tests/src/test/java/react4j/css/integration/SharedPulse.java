@@ -7,6 +7,6 @@ import react4j.css.Keyframes;
     """)
 public abstract class SharedPulse implements StyleContracts.Pulse {
     public static SharedPulse get() {
-        return Styled_SharedPulse.get();
+        return react4j.css.integration.Styled_SharedPulse.get();
     }
 }

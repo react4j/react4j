@@ -15,6 +15,9 @@ import org.testng.annotations.Test;
 @NullMarked
 public final class CssInterfaceProcessorTest {
     private static final String IMPORTS = "package demo;\n"
+            + "import java.io.IOException;\n"
+            + "import java.sql.SQLException;\n"
+            + "import org.jspecify.annotations.Nullable;\n"
             + "import org.jspecify.annotations.NullMarked;\n"
             + "import react4j.css.Css;\n"
             + "import react4j.css.GlobalCss;\n"
@@ -417,8 +420,7 @@ public final class CssInterfaceProcessorTest {
                             css,
                             "abstract class Button implements Contract",
                             "Css".equals(kind) ? "abstract String style();" : "",
-                            "interface Contract { @Deprecated @CssCustomProperty"
-                                    + " @org.jspecify.annotations.Nullable String accent(); }")));
+                            "interface Contract { @Deprecated @CssCustomProperty" + " @Nullable String accent(); }")));
             assertTrue(result.success(), result.diagnostics());
             assertTrue(text(result, "generated/demo/Styled_Button.java").contains("\"deprecation\""));
         }
@@ -637,6 +639,116 @@ public final class CssInterfaceProcessorTest {
                     "demo.Button");
             assertTrue(refined.success(), refined.diagnostics());
             assertEquals(refined.values().get("demo.Button.getPulse"), "jcss-demo-Button--keyframes");
+        }
+    }
+
+    @Test
+    public void singletonReferencesSurviveInheritedTypesAndConstants() throws Exception {
+        for (var kind : List.of("Css", "GlobalCss", "Keyframes")) {
+            String css = "--accent: red;";
+            if (!"Css".equals(kind)) {
+                css = ("Keyframes".equals(kind) ? "to" : "body") + " { " + css + " }";
+            }
+            for (var members : List.of(
+                    "class Styled_Button {}",
+                    "int Styled_Button=1;",
+                    "int Internal=1; int Internal_=2;",
+                    "class Button {} class Styled_Button {}",
+                    "class Styled_Button {} class Implementation {} int Internal=1;")) {
+                for (var packageName : List.of("demo", "")) {
+                    for (boolean formatted : List.of(false, true)) {
+                        String input = source(
+                                kind,
+                                css,
+                                "abstract class Button implements Contract",
+                                packageName.isEmpty()
+                                        ? ""
+                                        : "static demo.Button of() { return demo.Styled_Button.get(); }",
+                                "interface Contract { " + members
+                                        + ("Css".equals(kind) ? " String style();" : "")
+                                        + " @CssCustomProperty String accent(); }");
+                        if (packageName.isEmpty()) {
+                            input = input.replace("package demo;", "");
+                        }
+                        var result = CssProcessorTest.compile(
+                                Map.of("Button.java", input),
+                                List.of("-Areact4j.css.format_generated_source=" + formatted),
+                                packageName.isEmpty() ? new String[0] : new String[] {"demo.Button"});
+                        assertTrue(result.success(), kind + ": " + members + ": " + result.diagnostics());
+                        if (!packageName.isEmpty()) {
+                            assertEquals(result.values().get("demo.Button.accent"), "--jcss-demo-Button--accent");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void effectiveSignaturesDoNotDependOnPeerNamesOrOrder() throws Exception {
+        var pairs = List.of(
+                List.of("String value();", "<T> String value();"),
+                List.of("<T> String value();", "String value() throws IOException;"),
+                List.of("String value();", "String value() throws Exception;"),
+                List.of("Object value();", "String value() throws Exception;"),
+                List.of("String value() throws IOException;", "String value() throws SQLException;"));
+        for (var kind : List.of("Css", "GlobalCss", "Keyframes")) {
+            String css = "Css".equals(kind)
+                    ? "color: red;"
+                    : ("Keyframes".equals(kind) ? "to" : "body") + " { --accent: red; }";
+            String name = "Css".equals(kind) ? "style" : "accent";
+            String annotation = "Css".equals(kind) ? "" : "@CssCustomProperty ";
+            for (var pair : pairs) {
+                for (boolean swap : List.of(false, true)) {
+                    String contracts = "interface A { " + annotation
+                            + pair.get(swap ? 1 : 0).replace("value", name) + " } interface B { " + annotation
+                            + pair.get(swap ? 0 : 1).replace("value", name) + " }";
+                    for (var order : List.of("A, B", "B, A")) {
+                        var result = CssProcessorTest.compile(
+                                Map.of(
+                                        "Button.java",
+                                        source(
+                                                kind,
+                                                css,
+                                                "abstract class Button implements " + order,
+                                                "static Button of() { return Styled_Button.get(); }",
+                                                contracts),
+                                        "Client.java",
+                                        "package demo; class Client { String read(Button value) { return value." + name
+                                                + "(); } }"),
+                                "demo.Button");
+                        assertTrue(result.success(), kind + ": " + pair + ": " + result.diagnostics());
+                        assertEquals(
+                                result.values().get("demo.Button." + name),
+                                "Css".equals(kind) ? "jcss-demo-Button" : "--jcss-demo-Button--accent");
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void commonThrowsAndUnsupportedGenericSignaturesStillFail() throws Exception {
+        for (var pair : List.of(
+                List.of("String style() throws Exception;", "String style() throws IOException;"),
+                List.of("<T> String style();", "<U> String style();"),
+                List.of("<T> T style();", "String style();"),
+                List.of("Object style();", "<T> String style();"),
+                List.of("<T extends Exception> String style() throws T;", "String style() throws IOException;"))) {
+            for (boolean swap : List.of(false, true)) {
+                var result = CssProcessorTest.compile(Map.of(
+                        "Button.java",
+                        source(
+                                "Css",
+                                "color: red;",
+                                "abstract class Button implements A, B",
+                                "",
+                                "interface A { " + pair.get(swap ? 1 : 0) + " } interface B { " + pair.get(swap ? 0 : 1)
+                                        + " }")));
+                assertFalse(result.success(), pair.toString());
+                assertTrue(result.diagnostics().contains("without type parameters or throws"), result.diagnostics());
+                assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
+            }
         }
     }
 }

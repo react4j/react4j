@@ -10,7 +10,7 @@ final class Owner_Styled_Pulse extends Owner.Pulse {
   }
 
   static Owner.Pulse get() {
-    return Owner_Styled_Pulse.Internal.INSTANCE;
+    return Internal.INSTANCE;
   }
 
   @Override

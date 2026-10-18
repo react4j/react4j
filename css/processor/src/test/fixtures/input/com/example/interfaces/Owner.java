@@ -6,6 +6,10 @@ import react4j.css.Css;
 @NullMarked
 public final class Owner {
     public interface Styles<T> {
+        int Internal = 1;
+
+        class Owner_Styled_First {}
+
         T style();
 
         String success();
@@ -21,7 +25,7 @@ public final class Owner {
         """)
     public abstract static class First implements Styles<String> {
         public static First get() {
-            return Owner_Styled_First.get();
+            return com.example.interfaces.Owner_Styled_First.get();
         }
     }
 

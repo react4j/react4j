@@ -9,7 +9,7 @@ final class Styled_PackageStyle extends PackageStyle {
   private Styled_PackageStyle() {}
 
   public static PackageStyle get() {
-    return Styled_PackageStyle.Internal.INSTANCE;
+    return Internal.INSTANCE;
   }
 
   @Override
