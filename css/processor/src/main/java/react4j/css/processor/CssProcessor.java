@@ -114,6 +114,11 @@ public final class CssProcessor extends AbstractStandardProcessor {
         if (null == result) {
             return;
         }
+        for (var name : imports.properties().keySet().stream().sorted().toList()) {
+            if (!result.propertyImports().contains(name)) {
+                throw new IllegalArgumentException("Unused custom property import: " + name);
+            }
+        }
         if (null != descriptor) {
             emitTypeSpec(
                     descriptor.packageName(),
@@ -129,9 +134,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 .distinct()
                 .sorted()
                 .forEach(dependencies::add);
-        imports.properties().entrySet().stream()
-                .filter(entry -> result.propertyImports().contains(entry.getKey()))
-                .map(entry -> entry.getValue().provider())
+        imports.properties().values().stream()
+                .map(CssProperties.Import::provider)
                 .sorted()
                 .forEach(dependencies::add);
         var metadata =

@@ -203,8 +203,7 @@ public final class CssSymbolProcessorTest {
                                     source(
                                             kind,
                                             "@CssImport(value=Defaults.class,property=\"accent\",name=\"local\")\n"
-                                                + "@CssImport(value=Defaults.class,property=\"focus\")\n"
-                                                + "@CssImport(value=Defaults.class,property=\"accent\",name=\"unused\")",
+                                                    + "@CssImport(value=Defaults.class,property=\"focus\")",
                                             "--local: gold; outline-color: var(--focus);",
                                             "@CssCustomProperty abstract String local(); @CssCustomProperty abstract"
                                                     + " String focus();")),
@@ -250,7 +249,7 @@ public final class CssSymbolProcessorTest {
     }
 
     @Test
-    public void unusedImportsAreCheckedAndDoNotRetainProviders() throws Exception {
+    public void invalidPropertyImportsFailBeforeGeneratingJava() throws Exception {
         String defaults = source("GlobalCss", "", "--accent: red;", "")
                 .replace("abstract class Button", "abstract class Defaults")
                 .replace("static Button of() { return Styled_Button.get(); }", "");
@@ -266,16 +265,28 @@ public final class CssSymbolProcessorTest {
             assertFalse(result.success(), annotation);
             assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
         }
-        var result = CssProcessorTest.compile(Map.of(
-                "Defaults.java",
-                defaults,
-                "Button.java",
-                source("Css", "@CssImport(value=Defaults.class,property=\"accent\")", "color: red;", "")));
-        assertTrue(result.success(), result.diagnostics());
-        assertTrue(JsonParser.parseString(text(result, "classes/demo/Button.css.json"))
-                .getAsJsonObject()
-                .getAsJsonArray("dependencies")
-                .isEmpty());
+    }
+
+    @Test
+    public void unusedPropertyImportsFailForEveryDefinitionKind() throws Exception {
+        String defaults = source("GlobalCss", "", "--accent: red;", "")
+                .replace("abstract class Button", "abstract class Defaults")
+                .replace("static Button of() { return Styled_Button.get(); }", "");
+        for (var kind : List.of("Css", "GlobalCss", "Keyframes")) {
+            for (var local : List.of("accent", "ink")) {
+                String annotation = "@CssImport(value=Defaults.class,property=\"accent\""
+                        + ("accent".equals(local) ? "" : ",name=\"ink\"") + ")";
+                String css = "color: red; content: 'var(--" + local + ")';"
+                        + ("ink".equals(local) ? "outline-color: var(--accent);" : "");
+                var result = CssProcessorTest.compile(
+                        Map.of("Defaults.java", defaults, "Button.java", source(kind, annotation, css, "")));
+                assertFalse(result.success(), kind + ": " + local);
+                assertTrue(
+                        result.diagnostics().contains("Unused custom property import: " + local), result.diagnostics());
+                assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
+                assertFalse(result.files().containsKey("classes/demo/Button.css"));
+            }
+        }
     }
 
     @Test

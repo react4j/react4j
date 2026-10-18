@@ -296,7 +296,7 @@ abstract class ThemedLabel {
 final class DarkPalette {}
 ```
 
-Both aliases resolve to Palette's property. Select `DarkPalette` as a global bundle root to apply its override. Imported property declarations and `var()` references use the same resolved name, so CSS inheritance and theme overrides work across style definitions. Providers need an actual property occurrence but no Java accessor. Imports work through separately compiled libraries and transitive aliases. Used imports retain their providers; unused imports are checked and omitted from dependencies. Ownership cycles without a defining symbol are errors.
+Both aliases resolve to Palette's property. Select `DarkPalette` as a global bundle root to apply its override. Imported property declarations and `var()` references use the same resolved name, so CSS inheritance and theme overrides work across style definitions. Providers need an actual property occurrence but no Java accessor. Imports work through separately compiled libraries and transitive aliases. Each property import must have a matching declaration or `var()` reference in the importing definition and retains its provider. An unused property import is a compilation error. Ownership cycles without a defining symbol are errors.
 
 Raw shared stylesheets retain literal property names and do not participate in this ownership model. Fixed-name property bridges to external CSS are unsupported.
 

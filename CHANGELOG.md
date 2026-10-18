@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Reject unused CSS custom-property imports and restore Delete-button hover visibility in all three TodoMVC examples.
 * Restore grey, struck-through labels for completed tasks in all three TodoMVC examples.
 * Add String-based `CssProps.customProperty` and HTML `data` fluent APIs for CSS custom properties and data attributes, including nullable removal without JavaScript casts.
 * Add experimental CSS-in-Java with `react4j.css`: colocate component styles in Java text blocks and access checked class, ID, animation and custom-property names through lazy typed bindings. Names derive from Java owners; custom properties are local unless shared through checked `@CssImport` bindings, preserving inheritance and theme overrides across libraries. Share animations with `@Keyframes`, select peers with `:css(alias)` and define page rules with `@GlobalCss`. JVM processing and bundling validate declarations, retain required styles and provide source maps back to Java.

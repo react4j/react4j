@@ -151,6 +151,8 @@ async function exerciseApplication(variant) {
     asserts.assertArrayEquals(['Read the source', 'Ship the example'], titles(page));
     asserts.assertEquals('2 items left', page.querySelector('#app article footer > span').textContent);
     asserts.assertEquals('none', view.getComputedStyle(page.querySelector('#app ul label')).textDecorationLine);
+    asserts.assertEquals('Delete controls stay hidden until row hover', 'none',
+        view.getComputedStyle(page.querySelector('#app li button')).display);
     setText(input(page, 'input[placeholder]'), '   ');
     keyDown(input(page, 'input[placeholder]'), 13);
     asserts.assertEquals(2, titles(page).length);

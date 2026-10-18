@@ -233,7 +233,6 @@ abstract class TodoItem {
         abstract String style();
     }
 
-    @CssImport(value = ItemStyle.class, property = "todo-destroy-display")
     @Css("""
         white-space: pre-line;
         word-break: break-all;
@@ -257,6 +256,7 @@ abstract class TodoItem {
         abstract String completed();
     }
 
+    @CssImport(value = ItemStyle.class, property = "todo-destroy-display")
     @Css("""
         padding: 0;
         border: 0;

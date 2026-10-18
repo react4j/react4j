@@ -17,7 +17,10 @@ public @interface CssImport {
     /** The local alias; defaults to the source name for property imports. */
     String name() default "";
 
-    /** Selects a custom property without --; name optionally supplies its local alias. */
+    /**
+     * Selects a custom property without --; name optionally supplies its local alias. The importing
+     * definition must declare the local property or reference it through var().
+     */
     String property() default "";
 
     Class<?> value();
