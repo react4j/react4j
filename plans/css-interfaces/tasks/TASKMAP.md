@@ -1,11 +1,11 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementation-review
-- Current frontier: implementation review
+- Status: review-passed
+- Current frontier: closeout
 - Planning reviewer: /root/interfaces_planning_review — Findings: none (1/3 rounds; final confirmation unused)
 - Plan checkpoint: automatic — user-authorized implementation, final grill-me confirmation and passing planning review; no human plan checkpoint requested
-- Implementation reviewer: /root/interfaces_implementation_review — round 1 found two P2 gaps (1/5 rounds; final confirmation unused)
+- Implementation reviewer: /root/interfaces_implementation_review — Findings: none (2/5 rounds; final confirmation unused)
 
 ## Full-scope validation
 
@@ -34,4 +34,6 @@ Round 1 inspected the complete spec/task tree and relevant processor/generator, 
 
 ## Implementation review
 
-Round 1 verified the complete scope and reran the assembled processor, implementation and integration targets. Two P2 findings are accepted: inherited member names can hide singleton/self references, and unrelated signatures can select method-generic/throws-bearing peers by interface name. Both fixes and their regression coverage are complete within T03, and tools/check.sh passed again. Round 2 is pending; review has not passed. See T03 for dispositions and evidence.
+Round 1 verified the complete scope and reran the assembled processor, implementation and integration targets. Two P2 findings were accepted: inherited member names can hide singleton/self references, and unrelated signatures can select method-generic/throws-bearing peers by interface name. Both fixes and their regression coverage are complete within T03, and tools/check.sh passed again.
+
+Round 2 returned Findings: none at 9fc56ca17. The same independent reviewer verified both fixes, regression tests, goldens, header-jar integration and documentation; reran the assembled processor, implementation and integration targets; and independently passed 30 JDK 21 collision combinations and 24 source/binary signature combinations. The reviewer inspected the full-gate log and coverage reports and identified no residual risk. Review passed in 2/5 rounds; final confirmation was unused. See T03 for dispositions and evidence.
