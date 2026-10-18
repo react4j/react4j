@@ -3,7 +3,9 @@ package react4j.css.example;
 import jsinterop.annotations.JsMethod;
 import org.jspecify.annotations.Nullable;
 import react4j.css.Css;
+import react4j.css.CssAnimation;
 import react4j.css.CssCustomProperty;
+import react4j.css.CssId;
 import react4j.css.CssImport;
 import react4j.css.GlobalCss;
 import react4j.css.Keyframes;
@@ -70,7 +72,51 @@ public final class BrowserExample {
                                         .id("peer-label")
                                         .data("peer", "true")
                                         .className(status.style()),
-                                "Ready")),
+                                "Ready"),
+                        DOM.button(
+                                new BtnProps()
+                                        .id(button.controlId())
+                                        .data("symbol", "control")
+                                        .className(button.style()),
+                                "Checked ID"),
+                        DOM.div(new HtmlProps()
+                                .dangerouslySetInnerHTML(
+                                        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"0\" height=\"0\"><filter"
+                                                + " id=\""
+                                                + button.filterId()
+                                                + "\"><feGaussianBlur stdDeviation=\"0.25\"/></filter></svg>")),
+                        DOM.span(
+                                new HtmlProps()
+                                        .id("direct-animation")
+                                        .className(status.style())
+                                        .style(new CssProps()
+                                                .animationName(DirectPulse.get().name())
+                                                .animationDuration("1s")),
+                                "Direct animation"),
+                        DOM.span(
+                                new HtmlProps()
+                                        .id("local-animation")
+                                        .className(button.style())
+                                        .style(new CssProps()
+                                                .animationName(button.localAnimation())
+                                                .animationDuration("1s")),
+                                "Local animation"),
+                        DOM.span(
+                                new HtmlProps()
+                                        .id("accessor-animation")
+                                        .className(status.style())
+                                        .style(new CssProps()
+                                                .animationName(status.externalAnimation())
+                                                .animationDuration("1s")),
+                                "Imported animation"),
+                        DOM.span(
+                                new HtmlProps()
+                                        .id(DirectGlobals.get().id())
+                                        .data("symbol", "global")
+                                        .style(new CssProps()
+                                                .customProperty(
+                                                        DirectGlobals.get().spacing(), "9px")),
+                                "Direct global")),
                 container);
     }
 
@@ -81,7 +127,14 @@ public final class BrowserExample {
     @CssImport(name = "status", value = Status.class)
     @CssImport(value = Defaults.class, property = "focus")
     @CssImport(value = Defaults.class, property = "cancel")
+    @CssImport(value = Defaults.class, property = "theme-color")
     @Css("""
+        @keyframes runtime-pulse { from { opacity: 1; } to { opacity: .8; } }
+        &#control {
+          border-bottom: 5px solid;
+          filter: url(#filter);
+          background-color: var(--theme-color);
+        }
         color: var(--on-accent);
 
         &:focus-visible {
@@ -124,8 +177,18 @@ public final class BrowserExample {
 
         @CssCustomProperty(name = "success")
         abstract String successProperty();
+
+        @CssId(name = "control")
+        abstract String controlId();
+
+        @CssId(name = "filter")
+        abstract String filterId();
+
+        @CssAnimation(name = "runtime-pulse")
+        abstract String localAnimation();
     }
 
+    @CssImport(name = "accessor-pulse", value = AccessorPulse.class)
     @CssImport(Defaults.class)
     @CssImport(value = Defaults.class, property = "on-accent")
     @CssImport(value = Defaults.class, property = "success")
@@ -155,6 +218,9 @@ public final class BrowserExample {
         abstract String success();
 
         abstract String busy();
+
+        @CssAnimation(name = "accessor-pulse")
+        abstract String externalAnimation();
     }
 
     @Keyframes("""
@@ -162,6 +228,40 @@ public final class BrowserExample {
         to { opacity: 1; }
         """)
     abstract static class Pulse {}
+
+    @Keyframes("""
+        from { opacity: 1; }
+        to { opacity: .8; }
+        """)
+    abstract static class DirectPulse {
+        static DirectPulse get() {
+            return BrowserExample_Styled_DirectPulse.get();
+        }
+
+        @CssAnimation
+        abstract String name();
+    }
+
+    @Keyframes("""
+        from { transform: translateX(0); }
+        to { transform: translateX(1px); }
+        """)
+    abstract static class AccessorPulse {}
+
+    @GlobalCss("""
+        #direct-global { --spacing: 7px; letter-spacing: var(--spacing); }
+        """)
+    abstract static class DirectGlobals {
+        static DirectGlobals get() {
+            return BrowserExample_Styled_DirectGlobals.get();
+        }
+
+        @CssId(name = "direct-global")
+        abstract String id();
+
+        @CssCustomProperty
+        abstract String spacing();
+    }
 
     @Keyframes("""
         to { transform: rotate(360deg); }
@@ -174,19 +274,24 @@ public final class BrowserExample {
           --focus: #06f;
           --success: #080;
           --cancel: #a00;
+          --theme-color: #080;
         }
         #base { border-top-width: 2px; }
         """)
     static final class Defaults {}
 
     @CssImport(Defaults.class)
+    @CssImport(value = Defaults.class, property = "theme-color")
     @GlobalCss("""
+        :root { --theme-color: #909; }
         #base { border-top-width: 3px; }
         """)
     static final class Theme {}
 
     @CssImport(Defaults.class)
+    @CssImport(value = Defaults.class, property = "theme-color")
     @GlobalCss("""
+        :root { --theme-color: #099; }
         #base { border-top-width: 4px; }
         """)
     static final class AlternateTheme {}

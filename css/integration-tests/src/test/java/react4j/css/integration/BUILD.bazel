@@ -29,6 +29,7 @@ java_j2cl_library(
     testonly = True,
     srcs = [
         "ButtonStyles.java",
+        "SymbolStyles.java",
         "package-info.java",
     ],
     java_deps = [
@@ -113,6 +114,7 @@ java_testng(
         "ButtonStyles.java",
         "SharedDefaults.java",
         "SharedPulse.java",
+        "SymbolStyles.java",
         ":fixture.css",
         ":fixture.css.map",
         ":fixture_bindings.js",
@@ -124,6 +126,7 @@ java_testng(
         "-Dcss.map=$(rootpath :fixture.css.map)",
         "-Dcss.tree=$(rootpath :fixture_bindings.js)",
         "-Dcss.source=$(rootpath ButtonStyles.java)",
+        "-Dcss.symbols_source=$(rootpath SymbolStyles.java)",
         "-Dcss.frames_source=$(rootpath SharedPulse.java)",
         "-Dcss.globals_source=$(rootpath SharedDefaults.java)",
         "-Dcss.selected=$(rootpath :selected.css)",

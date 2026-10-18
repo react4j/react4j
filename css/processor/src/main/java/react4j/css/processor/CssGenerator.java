@@ -69,7 +69,8 @@ final class CssGenerator {
         if (null != suppression) {
             builder.addAnnotation(suppression);
         }
-        for (var method : descriptor.accessors()) {
+        for (var binding : descriptor.accessors()) {
+            var method = binding.method();
             String name = method.getSimpleName().toString();
             String token = values.get(name);
             var accessor = MethodSpec.methodBuilder(name)

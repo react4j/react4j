@@ -27,7 +27,7 @@ public final class CssPeerCompilerTest {
         return CssCompiler.component(
                 css,
                 "jcss-demo-Button",
-                List.of("style"),
+                new CssCompiler.Exports(List.of("style"), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 IMPORTS,
                 Map.of());
@@ -37,6 +37,7 @@ public final class CssPeerCompilerTest {
         return CssCompiler.global(
                 css,
                 "jcss-demo-Global",
+                new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Global.java", css, 0, offset),
                 IMPORTS,
                 Map.of());
@@ -147,7 +148,7 @@ public final class CssPeerCompilerTest {
                         () -> CssCompiler.component(
                                 css,
                                 "jcss-demo-Button",
-                                List.of("style", "active"),
+                                new CssCompiler.Exports(List.of("style", "active"), Set.of(), Set.of()),
                                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                                 IMPORTS,
                                 Map.of()));
@@ -217,7 +218,7 @@ public final class CssPeerCompilerTest {
             var imported = CssCompiler.component(
                     source,
                     "root",
-                    List.of("style"),
+                    new CssCompiler.Exports(List.of("style"), Set.of(), Set.of()),
                     offset -> new SourceMap.Location("Button.java", source, 0, offset),
                     Map.of(alias, new CssCompiler.Import("demo.Label", Kind.COMPONENT)),
                     Map.of());

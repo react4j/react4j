@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Function;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
@@ -110,7 +111,7 @@ public final class Bundle {
         }
         visited.clear();
         for (var owner : globals) {
-            orderGlobal(owner, definitions, visited, visiting, ordered);
+            orderGlobal(owner, definitions, visited, visiting, ordered, CssResource::dependencies);
         }
         for (var definition : definitions.values()) {
             if (retained.contains(definition.metadata().owner())) {
@@ -119,7 +120,7 @@ public final class Bundle {
                             == Objects.requireNonNull(definitions.get(dependency))
                                     .metadata()
                                     .kind()) {
-                        orderGlobal(dependency, definitions, visited, visiting, ordered);
+                        orderGlobal(dependency, definitions, visited, visiting, ordered, CssResource::dependencies);
                     }
                 }
             }
@@ -127,9 +128,23 @@ public final class Bundle {
         for (var definition : definitions.values()) {
             if (retained.contains(definition.metadata().owner())
                     && Kind.GLOBAL == definition.metadata().kind()) {
-                orderGlobal(definition.metadata().owner(), definitions, visited, visiting, ordered);
+                orderGlobal(
+                        definition.metadata().owner(),
+                        definitions,
+                        visited,
+                        visiting,
+                        ordered,
+                        CssResource::dependencies);
             }
         }
+        // Cyclic property dependencies must still respect the acyclic inclusion constraints.
+        var constrained = new ArrayList<Resource>();
+        visited.clear();
+        for (var definition : ordered) {
+            orderGlobal(
+                    definition.metadata().owner(), definitions, visited, visiting, constrained, CssResource::includes);
+        }
+        ordered = constrained;
         definitions.values().stream()
                 .filter(d -> retained.contains(d.metadata().owner())
                         && Kind.GLOBAL != d.metadata().kind())
@@ -302,17 +317,18 @@ public final class Bundle {
             Map<String, Resource> definitions,
             Set<String> visited,
             Set<String> visiting,
-            List<Resource> ordered) {
+            List<Resource> ordered,
+            Function<CssResource, List<String>> edges) {
         if (visited.contains(owner) || !visiting.add(owner)) {
             return;
         }
         var definition = Objects.requireNonNull(definitions.get(owner));
-        for (var dependency : definition.metadata().dependencies()) {
+        for (var dependency : edges.apply(definition.metadata())) {
             if (Kind.GLOBAL
                     == Objects.requireNonNull(definitions.get(dependency))
                             .metadata()
                             .kind()) {
-                orderGlobal(dependency, definitions, visited, visiting, ordered);
+                orderGlobal(dependency, definitions, visited, visiting, ordered, edges);
             }
         }
         visiting.remove(owner);

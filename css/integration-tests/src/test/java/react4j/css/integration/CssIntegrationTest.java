@@ -4,7 +4,7 @@ import static org.testng.Assert.*;
 
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
-import com.helger.css.decl.CSSDeclaration;
+import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSKeyframesRule;
 import com.helger.css.decl.CSSSelectorSimpleMember;
@@ -46,9 +46,9 @@ public final class CssIntegrationTest {
         assertEquals(layers.get(1).getRuleCount(), 1);
         var components = layers.get(2);
         assertEquals(components.getAllSelectors(), List.of("components"));
-        assertEquals(components.getRuleCount(), 9);
+        assertEquals(components.getRuleCount(), 11);
         var rules = components.getAllStyleRules();
-        assertEquals(rules.size(), 7);
+        assertEquals(rules.size(), 9);
         assertStyle(rules.get(0), List.of("." + root), "color", "white");
         assertStyle(rules.get(1), List.of("." + root, "." + root + "--success"), "background-color", "green");
         assertStyle(rules.get(2), List.of("." + root, "." + root + "--cancel"), "background-color", "red");
@@ -100,7 +100,7 @@ public final class CssIntegrationTest {
         String css = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.fixture"))));
         String map = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.map"))));
         var indexed = JsonParser.parseString(map).getAsJsonObject();
-        assertEquals(indexed.getAsJsonArray("sections").size(), 5);
+        assertEquals(indexed.getAsJsonArray("sections").size(), 6);
         var consumer = new SourceMapConsumerV3();
         consumer.parse(map);
         String source = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.source"))));
@@ -195,8 +195,48 @@ public final class CssIntegrationTest {
                 consumer, frames.getAllBlocks().get(0).getAllDeclarations().get(0), "css.frames_source", "opacity: 0");
     }
 
+    @Test
+    public void symbolBindingsAgreeWithSeparatelyCompiledResourcesAndTheirMaps() throws Exception {
+        var styles = SymbolStyles.get();
+        assertSame(styles, SymbolStyles.get());
+        assertSame(SharedDefaults.get(), SharedDefaults.get());
+        assertSame(SharedPulse.get(), SharedPulse.get());
+        assertEquals(styles.foreground(), SharedDefaults.get().accent());
+        assertEquals(styles.animation(), SharedPulse.get().name());
+        String css = Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.fixture"))));
+        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(css, new CSSReaderSettings()));
+        var rules = sheet.getAllLayerRules().get(2).getAllStyleRules();
+        var root = rules.stream()
+                .filter(rule ->
+                        ("." + styles.style()).equals(rule.getSelectorsAsCSSString(new CSSWriterSettings(true), 0)))
+                .findFirst()
+                .orElseThrow();
+        var color = Objects.requireNonNull(root.getDeclarationOfPropertyName("color"));
+        var filter = Objects.requireNonNull(root.getDeclarationOfPropertyName("filter"));
+        assertEquals(
+                color.getExpression().getAsCSSString(new CSSWriterSettings(true), 0),
+                "var(" + styles.foreground() + ")");
+        assertEquals(
+                filter.getExpression().getAsCSSString(new CSSWriterSettings(true), 0),
+                "url(#" + styles.filterId() + ")");
+        assertTrue(rules.stream()
+                .anyMatch(rule -> ("." + styles.style() + "#" + styles.control())
+                        .equals(rule.getSelectorsAsCSSString(new CSSWriterSettings(true), 0))));
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.map")))));
+        assertOrigin(consumer, color, "css.symbols_source", "color: var(--foreground)");
+        assertOrigin(consumer, filter, "css.symbols_source", "filter: url(#mask)");
+        var controlRule = rules.stream()
+                .filter(rule -> ("." + styles.style() + "#" + styles.control())
+                        .equals(rule.getSelectorsAsCSSString(new CSSWriterSettings(true), 0)))
+                .findFirst()
+                .orElseThrow();
+        assertOrigin(consumer, controlRule, "css.symbols_source", "&#control");
+    }
+
     private static void assertOrigin(
-            SourceMapConsumerV3 consumer, CSSDeclaration declaration, String property, String token) throws Exception {
+            SourceMapConsumerV3 consumer, ICSSSourceLocationAware declaration, String property, String token)
+            throws Exception {
         var position = Objects.requireNonNull(declaration.getSourceLocation());
         var mapped = Objects.requireNonNull(consumer.getMappingForLine(
                 position.getFirstTokenBeginLineNumber(), position.getFirstTokenBeginColumnNumber()));

@@ -1,0 +1,1 @@
+ERROR com/example/conflicting_symbol/Button.java:12:10: CSS accessors must declare only one symbol annotation: control

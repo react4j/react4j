@@ -44,7 +44,9 @@ final class CssCompiler {
     private static final Set<String> CSS_WIDE = Set.of("initial", "inherit", "unset", "revert", "revert-layer");
     private final CssSyntax syntax;
     private final String root;
-    private final List<String> accessors;
+    private final Exports exports;
+    private Map<String, String> ids = Map.of();
+    private final Map<String, String> animations = new LinkedHashMap<>();
     private final IntFunction<SourceMap.Location> locations;
     private final Set<String> found = new HashSet<>();
     private final Map<String, CSSKeyframesRule> keyframes = new LinkedHashMap<>();
@@ -57,12 +59,12 @@ final class CssCompiler {
             String source,
             int prefix,
             String root,
-            List<String> accessors,
+            Exports exports,
             IntFunction<SourceMap.Location> locations,
             Map<String, Import> imports) {
         syntax = new CssSyntax(source, prefix);
         this.root = root;
-        this.accessors = accessors;
+        this.exports = exports;
         this.locations = locations;
         this.imports = imports;
     }
@@ -73,11 +75,15 @@ final class CssCompiler {
         }
     }
 
+    record Exports(List<String> modifiers, Set<String> ids, Set<String> animations) {}
+
     record Result(
             SourceMap.Writer output,
             Set<String> imports,
             Map<String, String> properties,
-            Set<String> propertyImports) {}
+            Set<String> propertyImports,
+            Map<String, String> ids,
+            Map<String, String> animations) {}
 
     private final Map<String, String> properties = new LinkedHashMap<>();
     private final Set<String> usedProperties = new LinkedHashSet<>();
@@ -98,20 +104,27 @@ final class CssCompiler {
     }
 
     private Result result() {
-        return new Result(output, Set.copyOf(usedImports), Map.copyOf(properties), Set.copyOf(usedProperties));
+        return new Result(
+                output,
+                Set.copyOf(usedImports),
+                Map.copyOf(properties),
+                Set.copyOf(usedProperties),
+                ids,
+                Map.copyOf(animations));
     }
 
     static Result component(
             String css,
             String root,
-            List<String> accessors,
+            Exports exports,
             IntFunction<SourceMap.Location> locations,
             Map<String, Import> imports,
             Map<String, CssProperties.Import> properties) {
         String prefix = "." + root + " {\n";
-        var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, accessors, locations, imports);
+        var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, exports, locations, imports);
         var sheet = compiler.syntax.parse(true);
         compiler.properties(sheet, properties);
+        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids());
         for (var rule : sheet.getAllRules()) {
             if (rule instanceof CSSKeyframesRule frames) {
                 String name = frames.getAnimationName();
@@ -133,11 +146,12 @@ final class CssCompiler {
                 }
             }
         }
+        compiler.exports.animations().forEach(compiler::exportAnimation);
         for (var frames : compiler.keyframes.values()) {
             compiler.writeKeyframes(frames, compiler.animationName(frames.getAnimationName()));
         }
         compiler.style(sheet.getAllStyleRules().get(0), new Scope("." + root, true), true);
-        for (var name : accessors) {
+        for (var name : exports.modifiers()) {
             if (!"style".equals(name) && !compiler.found.contains(name)) {
                 throw new CssSyntax.InvalidCss("Accessor " + name + "() has no matching local selector", 0);
             }
@@ -147,33 +161,33 @@ final class CssCompiler {
 
     static Result keyframes(
             String css,
-            String name,
+            String root,
+            Exports exports,
             IntFunction<SourceMap.Location> locations,
             Map<String, CssProperties.Import> properties) {
         String prefix = "@keyframes shared {\n";
-        var compiler = new CssCompiler(
-                prefix + css + "\n}",
-                prefix.length(),
-                name.endsWith("--keyframes") ? name.substring(0, name.length() - "--keyframes".length()) : name,
-                List.of(),
-                locations,
-                Map.of());
+        var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, exports, locations, Map.of());
         var sheet = compiler.syntax.parseKeyframes();
         compiler.properties(sheet, properties);
+        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids());
         var frames = (CSSKeyframesRule) sheet.getAllRules().get(0);
-        compiler.writeKeyframes(frames, name);
+        compiler.animations.put("", root + "--keyframes");
+        compiler.writeKeyframes(frames, root + "--keyframes");
         return compiler.result();
     }
 
     static Result global(
             String css,
             String root,
+            Exports exports,
             IntFunction<SourceMap.Location> locations,
             Map<String, Import> imports,
             Map<String, CssProperties.Import> properties) {
-        var compiler = new CssCompiler(css, 0, root, List.of(), locations, imports);
+        var compiler = new CssCompiler(css, 0, root, exports, locations, imports);
         var sheet = compiler.syntax.parse(false);
         compiler.properties(sheet, properties);
+        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids());
+        exports.animations().forEach(compiler::exportAnimation);
         for (var rule : sheet.getAllRules()) {
             compiler.globalRule((ICSSSourceLocationAware) rule);
         }
@@ -299,6 +313,21 @@ final class CssCompiler {
 
     private String animationName(String name) {
         return root + "--keyframes-" + Names.encode(name);
+    }
+
+    private void exportAnimation(String name) {
+        var imported = imports.get(name);
+        if (null != imported) {
+            if (Kind.KEYFRAMES != imported.kind()) {
+                throw new IllegalArgumentException("Animation accessor must reference imported @Keyframes: " + name);
+            }
+            usedImports.add(name);
+            animations.put(name, imported.cssName());
+        } else if (keyframes.containsKey(name)) {
+            animations.put(name, animationName(name));
+        } else {
+            throw new IllegalArgumentException("Unknown animation accessor name: " + name);
+        }
     }
 
     private void checkAnimationName(String name, ICSSSourceLocationAware node) {
@@ -462,12 +491,14 @@ final class CssCompiler {
                 }
                 if (simple.isNesting() && nested && 0 == index) {
                     result.append(parent.selector());
+                } else if (simple.isHash() && owned && ids.containsKey(value.substring(1))) {
+                    result.append('#').append(ids.get(value.substring(1)));
                 } else if (simple.isClass()) {
                     String name = value.substring(1);
                     if (!owned) {
                         throw syntax.invalid("Local modifiers cannot qualify imported peers", simple);
                     }
-                    if ("style".equals(name) || !accessors.contains(name)) {
+                    if ("style".equals(name) || !exports.modifiers().contains(name)) {
                         throw syntax.invalid("Local selector ." + name + " has no matching modifier accessor", simple);
                     }
                     found.add(name);
@@ -562,7 +593,10 @@ final class CssCompiler {
                 if (Set.of(":css", ":css()").contains(simple.getValue().toLowerCase(Locale.ROOT))) {
                     throw syntax.invalid(":css() requires one imported component name", simple);
                 }
-                result.append(simple.getAsCSSString(compact, 0));
+                result.append(
+                        simple.isHash() && ids.containsKey(simple.getValue().substring(1))
+                                ? "#" + ids.get(simple.getValue().substring(1))
+                                : simple.getAsCSSString(compact, 0));
             } else {
                 result.append(member.getAsCSSString(compact, 0));
             }

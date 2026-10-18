@@ -267,6 +267,27 @@ public final class BundleTest {
     }
 
     @Test
+    public void propertyCyclesCannotReverseExplicitGlobalInclusionOrder() throws Exception {
+        Path input = tree("mixed-order");
+        resource(input, "A", CssResource.Kind.GLOBAL, "body{color:red;}", "B");
+        resource(input, "B", CssResource.Kind.GLOBAL, "body{color:blue;}", "A");
+        Files.writeString(
+                input.resolve("B.css.json"),
+                new CssResource("B", CssResource.Kind.GLOBAL, List.of("A"), List.of(), false).json());
+        for (var root : List.of("A", "B")) {
+            var result = Bundle.assemble(List.of(input), List.of(), List.of(root), "app.css");
+            var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
+            assertEquals(
+                    sheet.getAllLayerRules().get(1).getAllStyleRules().stream()
+                            .map(rule -> Objects.requireNonNull(rule.getDeclarationOfPropertyName("color"))
+                                    .getExpression()
+                                    .getAsCSSString(new CSSWriterSettings(true), 0))
+                            .toList(),
+                    List.of("blue", "red"));
+        }
+    }
+
+    @Test
     public void javaBindingsRootResourceDefinitionsAndTheirDependencies() throws Exception {
         Path input = tree("bindings");
         resource(input, "Pulse", CssResource.Kind.KEYFRAMES, "@keyframes pulse{to{opacity:1;}}", "Defaults");

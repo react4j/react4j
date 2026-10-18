@@ -1,0 +1,1 @@
+ERROR com/example/attribute_id/Button.java:8:6: com/example/attribute_id/Button.java:9:6: Attribute selectors referencing bound IDs are unsupported

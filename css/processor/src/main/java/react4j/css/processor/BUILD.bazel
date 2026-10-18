@@ -3,10 +3,12 @@ load("//third_party/java:rules.bzl", "java_library")
 java_library(
     name = "processor",
     srcs = [
+        "CssAccessor.java",
         "CssCompiler.java",
         "CssDescriptor.java",
         "CssExpressions.java",
         "CssGenerator.java",
+        "CssIds.java",
         "CssProcessor.java",
         "CssProperties.java",
         "Names.java",

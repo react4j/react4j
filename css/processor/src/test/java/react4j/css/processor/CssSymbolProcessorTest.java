@@ -20,7 +20,7 @@ public final class CssSymbolProcessorTest {
     private static final String IMPORTS = "package demo;\n"
             + "import react4j.css.Css;\n"
             + "import react4j.css.CssImport;\n"
-            + "import react4j.css.CssCustomProperty;\n"
+            + "import react4j.css.CssCustomProperty;\nimport react4j.css.CssId;\nimport react4j.css.CssAnimation;\n"
             + "import react4j.css.GlobalCss;\n"
             + "import react4j.css.Keyframes;\n"
             + "import org.jspecify.annotations.NullMarked;\n";
@@ -35,6 +35,79 @@ public final class CssSymbolProcessorTest {
 
     private static String text(CssProcessorTest.Result result, String path) {
         return new String(Base64.getDecoder().decode(result.files().get(path)), StandardCharsets.UTF_8);
+    }
+
+    @Test
+    public void idsAndAnimationBindingsWorkOnAllDefinitionKinds() throws Exception {
+        for (var kind : List.of("Css", "GlobalCss", "Keyframes")) {
+            String annotations = "Keyframes".equals(kind) ? "" : "@CssImport(value=Pulse.class,name=\"pulse\")";
+            String methods = "@CssId abstract String getControl(); @CssAnimation abstract String "
+                    + ("Keyframes".equals(kind) ? "name" : "getPulse") + "();";
+            var result = CssProcessorTest.compile(
+                    Map.of(
+                            "Pulse.java",
+                            IMPORTS + "@Keyframes(\"\"\"\nto {opacity: .8;}\n\"\"\") class Pulse {}",
+                            "Button.java",
+                            source(kind, annotations, "filter: url(#control);", methods)),
+                    "demo.Button");
+            assertTrue(result.success(), result.diagnostics());
+            assertEquals(result.values().get("demo.Button.getControl"), "jcss-demo-Button--id-control");
+            assertEquals(
+                    result.values().get("demo.Button." + ("Keyframes".equals(kind) ? "name" : "getPulse")),
+                    "jcss-demo-" + ("Keyframes".equals(kind) ? "Button" : "Pulse") + "--keyframes");
+            assertEquals(
+                    JsonParser.parseString(text(result, "classes/demo/Button.css.json"))
+                            .getAsJsonObject()
+                            .getAsJsonArray("dependencies")
+                            .toString(),
+                    "Keyframes".equals(kind) ? "[]" : "[\"demo.Pulse\"]");
+        }
+        var local = CssProcessorTest.compile(
+                Map.of(
+                        "Button.java",
+                        source(
+                                "Css",
+                                "",
+                                "@keyframes pulse {to {opacity:.8;}}",
+                                "@CssAnimation abstract String getPulse();")),
+                "demo.Button");
+        assertTrue(local.success(), local.diagnostics());
+        assertEquals(local.values().get("demo.Button.getPulse"), "jcss-demo-Button--keyframes-pulse");
+    }
+
+    @Test
+    public void invalidIdsAnimationsAndMixedAnnotationsEmitNoBindings() throws Exception {
+        for (var kind : List.of("Css", "GlobalCss", "Keyframes")) {
+            for (var method : List.of(
+                    "@CssId abstract String missing();",
+                    "@CssId(name=\"#control\") abstract String control();",
+                    "@CssId(name=\"\") abstract String control();",
+                    "@CssId(name=\"a b\") abstract String control();",
+                    "@CssId String control() {return \"x\";}",
+                    "@CssId static String control() {return \"x\";}",
+                    "@CssId abstract int control();",
+                    "@CssId abstract String control(int value);",
+                    "@CssId abstract <T> String control();",
+                    "@CssId abstract String control() throws Exception;",
+                    "@CssId abstract String control(); @CssId abstract String getControl();",
+                    "@CssId @CssCustomProperty abstract String control();",
+                    "@CssId @CssAnimation abstract String control();",
+                    "@CssAnimation @CssCustomProperty abstract String control();",
+                    "@CssAnimation(name=\"none\") abstract String animation();",
+                    "@CssAnimation(name=\"\") abstract String animation();",
+                    "@CssAnimation(name=\"'pulse'\") abstract String animation();",
+                    "@CssAnimation String pulse() {return \"x\";}",
+                    "@CssAnimation abstract int pulse();",
+                    "@CssAnimation abstract String pulse(int value);",
+                    "@CssAnimation abstract String pulse() throws Exception;",
+                    "@CssAnimation abstract String name(); @CssAnimation abstract String getName();")) {
+                var result = CssProcessorTest.compile(
+                        Map.of("Button.java", source(kind, "", "filter: url(#control);", method)));
+                assertFalse(result.success(), kind + ": " + method);
+                assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"), result.diagnostics());
+                assertFalse(result.files().containsKey("classes/demo/Button.css"), result.diagnostics());
+            }
+        }
     }
 
     @Test

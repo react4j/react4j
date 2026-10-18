@@ -4,12 +4,9 @@ import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSExpression;
 import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
-import com.helger.css.decl.CSSSupportsConditionDeclaration;
-import com.helger.css.decl.CSSSupportsConditionNested;
 import com.helger.css.decl.CSSSupportsRule;
 import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.ECSSExpressionOperator;
-import com.helger.css.decl.ICSSSupportsConditionMember;
 import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
 import java.util.LinkedHashSet;
@@ -89,17 +86,9 @@ final class CssProperties {
                 expression(declaration.getExpression(), declaration);
             }
 
-            private void condition(ICSSSupportsConditionMember condition) {
-                if (condition instanceof CSSSupportsConditionDeclaration declaration) {
-                    onDeclaration(declaration.getDeclaration());
-                } else if (condition instanceof CSSSupportsConditionNested nested) {
-                    nested.getAllMembers().forEach(this::condition);
-                }
-            }
-
             @Override
             public void onBeginSupportsRule(CSSSupportsRule rule) {
-                rule.getAllSupportConditionMembers().forEach(this::condition);
+                CssExpressions.supports(rule.getAllSupportConditionMembers(), this::onDeclaration);
             }
         });
         return Set.copyOf(names);

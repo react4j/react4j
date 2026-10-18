@@ -22,7 +22,7 @@ public final class CssPropertiesTest {
         return CssCompiler.component(
                 css,
                 ROOT,
-                List.of("style"),
+                new CssCompiler.Exports(List.of("style"), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
                 imports);

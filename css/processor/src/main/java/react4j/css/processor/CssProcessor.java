@@ -47,7 +47,9 @@ import react4j.css.internal.SourceMap;
     "react4j.css.CssImport",
     "react4j.css.CssImports",
     "react4j.css.GlobalCss",
-    "react4j.css.CssCustomProperty"
+    "react4j.css.CssCustomProperty",
+    "react4j.css.CssId",
+    "react4j.css.CssAnimation"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public final class CssProcessor extends AbstractStandardProcessor {
@@ -207,7 +209,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                                     == ElementsUtil.getOrigin(processingEnv.getElementUtils(), member))
                     || (ElementKind.METHOD == member.getKind()
                             && member.getModifiers().contains(Modifier.ABSTRACT)
-                            && null == annotation(member, "react4j.css.CssCustomProperty"))) {
+                            && null == symbolAnnotation(member))) {
                 throw new IllegalArgumentException(
                         "CSS resource definitions must not declare fields, constructors or abstract methods");
             }
@@ -382,7 +384,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                             || method.getModifiers().contains(Modifier.PROTECTED);
                 }
                 if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
-                    if (null != annotation(method, "react4j.css.CssCustomProperty")) {
+                    if (null != symbolAnnotation(method)) {
                         throw new IllegalArgumentException(
                                 "CSS symbol accessors must be abstract: " + method.getSimpleName());
                     }
@@ -407,30 +409,65 @@ public final class CssProcessor extends AbstractStandardProcessor {
         if (methods.stream().noneMatch(m -> m.getSimpleName().contentEquals("style"))) {
             throw new IllegalArgumentException("@Css style classes require abstract String style()");
         }
-        validateSymbols(methods);
         return new CssDescriptor(
                 owner,
                 processingEnv.getElementUtils().getBinaryName(owner).toString(),
-                methods,
+                parseAccessors(methods, Kind.COMPONENT),
                 publicFactory,
                 deprecated);
     }
 
-    private void validateSymbols(List<ExecutableElement> methods) {
-        var names = new LinkedHashSet<String>();
-        for (var method : methods) {
-            var annotation = annotation(method, "react4j.css.CssCustomProperty");
+    private @Nullable AnnotationMirror symbolAnnotation(Element member) {
+        AnnotationMirror found = null;
+        for (var name : List.of("CssId", "CssAnimation", "CssCustomProperty")) {
+            var annotation = annotation(member, "react4j.css." + name);
             if (null != annotation) {
-                if (method.getSimpleName().contentEquals("style")) {
-                    throw new IllegalArgumentException("style() must be an unannotated component class accessor");
+                if (null != found) {
+                    throw new IllegalArgumentException(
+                            "CSS accessors must declare only one symbol annotation: " + member.getSimpleName());
                 }
-                String name = symbolName(method, annotation);
-                CssProperties.checkName(name);
-                if (!names.add(name)) {
-                    throw new IllegalArgumentException("Duplicate custom property accessor: " + name);
-                }
+                found = annotation;
             }
         }
+        return found;
+    }
+
+    private List<CssAccessor> parseAccessors(List<ExecutableElement> methods, Kind ownerKind) {
+        var names = new LinkedHashSet<String>();
+        var accessors = new ArrayList<CssAccessor>();
+        for (var method : methods) {
+            var annotation = symbolAnnotation(method);
+            var kind = null == annotation
+                    ? CssAccessor.Kind.CLASS
+                    : switch (annotation.getAnnotationType().toString()) {
+                        case "react4j.css.CssId" -> CssAccessor.Kind.ID;
+                        case "react4j.css.CssAnimation" -> CssAccessor.Kind.ANIMATION;
+                        default -> CssAccessor.Kind.PROPERTY;
+                    };
+            String name = method.getSimpleName().toString();
+            if (null != annotation) {
+                if ("style".equals(name)) {
+                    throw new IllegalArgumentException("style() must be an unannotated component class accessor");
+                }
+                name = symbolName(method, annotation);
+                if (CssAccessor.Kind.PROPERTY == kind) {
+                    CssProperties.checkName(name);
+                } else if (CssAccessor.Kind.ANIMATION == kind && Kind.KEYFRAMES == ownerKind) {
+                    if (!"<default>".equals(value(annotation, "name").getValue())) {
+                        throw new IllegalArgumentException(
+                                "@CssAnimation on @Keyframes exposes its own name and must not declare name");
+                    }
+                    name = "";
+                } else {
+                    CssCompiler.checkAlias(name, CssAccessor.Kind.ANIMATION == kind ? Kind.KEYFRAMES : Kind.COMPONENT);
+                }
+                if (!names.add(kind + ":" + name)) {
+                    throw new IllegalArgumentException("Duplicate CSS symbol accessor: " + name);
+                }
+            }
+            accessors.add(new CssAccessor(method, kind, name));
+        }
+        return List.copyOf(accessors);
     }
 
     private String symbolName(ExecutableElement method, AnnotationMirror annotation) {
@@ -455,7 +492,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
         }
         for (var member : owner.getEnclosedElements()) {
             if (member instanceof ExecutableElement method && ElementKind.METHOD == method.getKind()) {
-                if (null != annotation(method, "react4j.css.CssCustomProperty")) {
+                if (null != symbolAnnotation(method)) {
                     if (!method.getModifiers().contains(Modifier.ABSTRACT)
                             || !method.getParameters().isEmpty()
                             || !method.getTypeParameters().isEmpty()
@@ -486,30 +523,38 @@ public final class CssProcessor extends AbstractStandardProcessor {
             return null;
         }
         methods.sort(Comparator.comparing(m -> m.getSimpleName().toString()));
-        validateSymbols(methods);
-        return new CssDescriptor(owner, binaryName(owner), methods, publicFactory, deprecated);
+        return new CssDescriptor(
+                owner, binaryName(owner), parseAccessors(methods, sourceKind(owner)), publicFactory, deprecated);
     }
 
     private Map<String, String> bindings(CssDescriptor descriptor, CssCompiler.Result result) {
         var bindings = new LinkedHashMap<String, String>();
-        for (var method : descriptor.accessors()) {
-            String name = method.getSimpleName().toString();
-            var annotation = annotation(method, "react4j.css.CssCustomProperty");
-            String token;
-            if (null == annotation) {
-                String root = descriptor.rootClassName();
-                token = root + ("style".equals(name) ? "" : " " + root + "--" + Names.encode(name));
-            } else {
-                String symbol = symbolName(method, annotation);
-                token = result.properties().get(symbol);
-                if (null == token) {
-                    throw new IllegalArgumentException(
-                            "Custom property accessor " + name + "() has no matching CSS occurrence: " + symbol);
-                }
+        for (var accessor : descriptor.accessors()) {
+            String method = accessor.method().getSimpleName().toString();
+            String name = accessor.name();
+            String token =
+                    switch (accessor.kind()) {
+                        case CLASS ->
+                            descriptor.rootClassName()
+                                    + ("style".equals(name)
+                                            ? ""
+                                            : " " + descriptor.rootClassName() + "--" + Names.encode(name));
+                        case PROPERTY -> result.properties().get(name);
+                        case ID -> result.ids().get(name);
+                        case ANIMATION -> result.animations().get(name);
+                    };
+            if (null == token) {
+                throw new IllegalArgumentException(
+                        "CSS " + accessor.kind().name().toLowerCase(Locale.ROOT) + " accessor " + method
+                                + "() has no matching CSS occurrence: " + name);
             }
-            bindings.put(name, token);
+            bindings.put(method, token);
         }
         return bindings;
+    }
+
+    private static CssCompiler.Exports exports(@Nullable CssDescriptor descriptor) {
+        return null == descriptor ? new CssCompiler.Exports(List.of(), Set.of(), Set.of()) : descriptor.exports();
     }
 
     private CssCompiler.@Nullable Result compileCss(
@@ -551,20 +596,26 @@ public final class CssProcessor extends AbstractStandardProcessor {
             };
             if (Kind.KEYFRAMES == kind) {
                 return CssCompiler.keyframes(
-                        block.value(), Names.root(binaryName(owner)) + "--keyframes", locations, imports.properties());
+                        block.value(),
+                        Names.root(binaryName(owner)),
+                        exports(descriptor),
+                        locations,
+                        imports.properties());
             }
             if (Kind.GLOBAL == kind) {
                 return CssCompiler.global(
-                        block.value(), Names.root(binaryName(owner)), locations, imports.named(), imports.properties());
+                        block.value(),
+                        Names.root(binaryName(owner)),
+                        exports(descriptor),
+                        locations,
+                        imports.named(),
+                        imports.properties());
             }
             assert null != descriptor;
             return CssCompiler.component(
                     block.value(),
                     descriptor.rootClassName(),
-                    descriptor.accessors().stream()
-                            .filter(m -> null == annotation(m, "react4j.css.CssCustomProperty"))
-                            .map(m -> m.getSimpleName().toString())
-                            .toList(),
+                    descriptor.exports(),
                     locations,
                     imports.named(),
                     imports.properties());

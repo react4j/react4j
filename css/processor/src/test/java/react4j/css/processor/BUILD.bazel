@@ -92,6 +92,17 @@ java_testng(
 )
 
 java_testng(
+    name = "ids_tests",
+    srcs = ["CssIdsTest.java"],
+    test_class = "react4j.css.processor.CssIdsTest",
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//third_party/java:ph_css",
+    ],
+)
+
+java_testng(
     name = "properties_tests",
     srcs = ["CssPropertiesTest.java"],
     test_class = "react4j.css.processor.CssPropertiesTest",
@@ -120,6 +131,7 @@ test_suite(
     name = "unit_tests",
     tests = [
         ":compiler_tests",
+        ":ids_tests",
         ":names_tests",
         ":peer_compiler_tests",
         ":properties_tests",

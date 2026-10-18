@@ -83,20 +83,44 @@ testSuite({
         if (child.cssText.startsWith('@keyframes')) names.push(/** @type {!CSSKeyframesRule} */ (child).name);
       }
     }
-    asserts.assertArrayEquals([name], names);
+    const expected = [name, computed('direct-animation').animationName,
+      computed('local-animation').animationName, computed('accessor-animation').animationName];
+    asserts.assertEquals(4, new Set(expected).size);
+    asserts.assertArrayEquals(expected.sort(), names.sort());
+  },
+  testCheckedIdsFragmentsAndJavaOnlyResourceBindings() {
+    const control = /** @type {!HTMLElement} */ (container.querySelector('[data-symbol=control]'));
+    const filter = /** @type {!SVGFilterElement} */ (container.querySelector('filter'));
+    const global = /** @type {!HTMLElement} */ (container.querySelector('[data-symbol=global]'));
+    asserts.assertTrue(control.id !== 'control');
+    asserts.assertEquals('5px', getComputedStyle(control).borderBottomWidth);
+    asserts.assertTrue(getComputedStyle(control).filter.includes('#' + filter.id));
+    asserts.assertEquals(filter, document.getElementById(filter.id));
+    asserts.assertEquals('9px', getComputedStyle(global).letterSpacing);
+    /** @type {!Array<string>} */
+    const animatedIds = ['direct-animation', 'local-animation', 'accessor-animation'];
+    for (let i = 0; i < animatedIds.length; i++) {
+      const id = /** @type {string} */ (animatedIds[i]);
+      const node = /** @type {!HTMLElement} */ (container.querySelector('#' + id));
+      asserts.assertEquals(1, node.getAnimations().length);
+      asserts.assertEquals(node.style.animationName, getComputedStyle(node).animationName);
+    }
   },
   async testExplicitGlobalSelectionAndDependencyFirstCascade() {
     // Defaults is also a later explicit root; its first visit precedes Theme.
     asserts.assertEquals('3px', computed('base').borderTopWidth);
+    asserts.assertEquals('rgb(153, 0, 153)', getComputedStyle(/** @type {!Element} */ (container.querySelector('[data-symbol=control]'))).backgroundColor);
     asserts.assertEquals('', computed('base').getPropertyValue('--jcss-react4j-css-example-BrowserExample_0024_UnusedGlobals--excluded'));
     style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/alternate.css')).text();
     asserts.assertEquals('4px', computed('base').borderTopWidth);
+    asserts.assertEquals('rgb(0, 153, 153)', getComputedStyle(/** @type {!Element} */ (container.querySelector('[data-symbol=control]'))).backgroundColor);
     asserts.assertEquals('', computed('base').getPropertyValue('--jcss-react4j-css-example-BrowserExample_0024_UnusedGlobals--excluded'));
     asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);
   },
   async testComponentImportsRetainGlobalsWithoutExplicitRoots() {
     style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/component.css')).text();
     asserts.assertEquals('2px', computed('base').borderTopWidth);
+    asserts.assertEquals('rgb(0, 136, 0)', getComputedStyle(/** @type {!Element} */ (container.querySelector('[data-symbol=control]'))).backgroundColor);
     asserts.assertEquals('', computed('base').getPropertyValue('--jcss-react4j-css-example-BrowserExample_0024_UnusedGlobals--excluded'));
     asserts.assertEquals('rgb(255, 255, 255)', computed('base').color);
     asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);
