@@ -266,7 +266,7 @@ public final class SiteTest {
     }
 
     @Test
-    public void copiesPackagedApplicationTreesIncludingRepresentationsAndSourceMaps() throws Exception {
+    public void copiesPackagedApplicationTreesIncludingAssetsAndSourceMaps() throws Exception {
         var source = Path.of(Objects.requireNonNull(System.getProperty("application.directory")))
                 .toRealPath();
         var output = Files.createTempDirectory("site-tree");

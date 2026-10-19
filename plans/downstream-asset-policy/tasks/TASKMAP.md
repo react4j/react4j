@@ -5,7 +5,7 @@
 - Current frontier: implementation review
 - Planning reviewer: `/root/downstream_policy_planning` (`1/3` rounds; final confirmation unused); Findings: none. Whole plan and affected packaging/build/preview/contracts checked.
 - Plan checkpoint: automatic (explicit implementation instruction and passing independent planning review)
-- Implementation reviewer: pending (`0/5` rounds; final confirmation unused)
+- Implementation reviewer: `/root/downstream_policy_implementation` (`1/5` rounds; final confirmation unused); round 1 in progress.
 
 ## Full-scope validation
 
@@ -26,3 +26,7 @@ T01 changes the packaging contract atomically across tools, Bazel and consumers 
 ## Promoted knowledge
 
 [Web assets spec](../../../docs/specs/web-assets.md), [linking ADR](../../../docs/adr/0003-finalize-asset-urls-after-linking.md), [glossary](../../../docs/glossary/README.md#asset-inventory), [CSS README](../../../css/README.md) and CHANGELOG updated. Classification: plain outputs, complete inventory and downstream policy ownership are accepted replacement-independent requirements owned by the existing spec; inventory meaning belongs to the glossary; metadata timing stays in the existing ADR; usage belongs to README; removed planner/dependency details stay in code/history. Specification-only diff audited and domain links validated. No new ADR or deferred issue qualifies.
+
+## Review evidence
+
+Round 1 independently confirmed the full scope, action graphs and real directory/manifest correspondence. A stale site-copy test name was updated to refer to assets rather than representations; its behavior is unchanged. The focused site suite and Java formatting passed after the rename. Final reviewer disposition pending.
