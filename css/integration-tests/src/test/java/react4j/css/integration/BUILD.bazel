@@ -18,9 +18,9 @@ java_j2cl_library(
         "package-info.java",
     ],
     java_deps = ["//css/core"],
-    plugins = ["//css/processor:plugin"],
+    plugins = ["//:css_processor_plugin"],
     deps = [
-        "//css/core:core-j2cl",
+        "//:css",
         "//third_party/java:jspecify-j2cl",
     ],
 )
@@ -40,10 +40,10 @@ java_j2cl_library(
         ":fixture_contracts_java",
         "//css/core",
     ],
-    plugins = ["//css/processor:plugin"],
+    plugins = ["//:css_processor_plugin"],
     deps = [
         ":fixture_contracts",
-        "//css/core:core-j2cl",
+        "//:css",
         "//third_party/java:jspecify-j2cl",
     ],
 )
@@ -61,11 +61,11 @@ java_j2cl_library(
         ":fixture_dependency_java",
         "//css/core",
     ],
-    plugins = ["//css/processor:plugin"],
+    plugins = ["//:css_processor_plugin"],
     deps = [
         ":fixture_contracts",
         ":fixture_dependency",
-        "//css/core:core-j2cl",
+        "//:css",
         "//third_party/java:jspecify-j2cl",
     ],
 )
@@ -81,10 +81,10 @@ java_j2cl_library(
         ":fixture_dependency_java",
         "//css/core",
     ],
-    plugins = ["//css/processor:plugin"],
+    plugins = ["//:css_processor_plugin"],
     deps = [
         ":fixture_dependency",
-        "//css/core:core-j2cl",
+        "//:css",
         "//third_party/java:jspecify-j2cl",
     ],
 )
@@ -204,11 +204,11 @@ java_j2cl_library(
         "//css/core",
         "//third_party/java:jsinterop_annotations",
     ],
-    plugins = ["//css/processor:plugin"],
+    plugins = ["//:css_processor_plugin"],
     deps = [
         ":fixture_bindings",
         ":fixture_contracts",
-        "//css/core:core-j2cl",
+        "//:css",
         "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jspecify-j2cl",
     ],
@@ -226,9 +226,9 @@ java_j2cl_library(
         "//css/core",
         "//third_party/java:jsinterop_annotations",
     ],
-    plugins = ["//css/processor:plugin"],
+    plugins = ["//:css_processor_plugin"],
     deps = [
-        "//css/core:core-j2cl",
+        "//:css",
         "//css/integration-tests/src/test/assets/react4j/css/integration:media",
         "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jspecify-j2cl",

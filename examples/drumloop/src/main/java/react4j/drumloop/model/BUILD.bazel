@@ -18,7 +18,7 @@ java_j2cl_library(
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/audio:audio_java",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise:promise_java",
         "//examples/drumloop/src/main/java/react4j/drumloop/cache:cache_java",
-        "//:core",
+        "//:_core_java",
         "//third_party/java:sting_core",
     ],
     plugins = [
@@ -26,7 +26,7 @@ java_j2cl_library(
         "@sting//:sting_processor_plugin",
     ],
     deps = [
-        "//:core-j2cl",
+        "//:core",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/audio",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise",

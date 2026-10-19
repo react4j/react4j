@@ -23,15 +23,15 @@ java_test(
     ],
     main_class = "isolated.Consumer",
     plugins = [
-        "//:react4j_processor_plugin",
+        "//:processor",
         "@arez//:arez_processor_plugin",
         "@sting//:sting_processor_plugin",
     ],
     use_testrunner = False,
     visibility = ["//visibility:public"],
     deps = [
-        "//:core",
-        "//:dom",
+        "//:_core_java",
+        "//:_dom_java",
         "//third_party/java:sting_core",
     ],
 )

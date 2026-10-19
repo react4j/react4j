@@ -26,8 +26,8 @@ java_j2cl_library(
         "EventsBrowserTest.native.js",
     ],
     deps = [
-        "//:core-j2cl",
-        "//:dom-j2cl",
+        "//:core",
+        "//:dom",
         "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jspecify-j2cl",
         "//tools/webtesting/src/main/java/react4j/webtesting:browser",

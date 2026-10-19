@@ -15,7 +15,7 @@ java_j2cl_library(
         "package-info.java",
     ],
     java_deps = [
-        "//:core",
+        "//:_core_java",
         "//examples/todomvc/src/main/java/react4j/todomvc/browser:browser_java",
         "//third_party/java:sting_core",
     ],
@@ -24,7 +24,7 @@ java_j2cl_library(
         "@sting//:sting_processor_plugin",
     ],
     deps = [
-        "//:core-j2cl",
+        "//:core",
         "//examples/todomvc/src/main/java/react4j/todomvc/browser",
         "//third_party/java:braincheck_core-j2cl",
         "//third_party/java:jsinterop_annotations-j2cl",

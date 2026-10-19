@@ -1,6 +1,6 @@
 # T02 — J2CL-first root API
 
-- Status: pending
+- Status: complete
 - Blocked by: T01
 - Spec coverage: R1; AC1
 
@@ -10,9 +10,9 @@ Five requested root library/plugin labels. Separate private publication jars and
 
 ## Acceptance criteria
 
-- [ ] Core/DOM/CSS root targets provide browser compilation; both plugins compile generated code. JVM compiler imports remain internal.
-- [ ] Retired root suffix/plugin names have no definitions or active callers; CSS package targets may remain internal backings. Generated companions stay on backing targets.
-- [ ] No source compilation/checking or packaged-archive evidence is bypassed.
+- [x] Core/DOM/CSS root targets provide browser compilation; both plugins compile generated code. JVM compiler imports remain internal.
+- [x] Retired root suffix/plugin names have no definitions or active callers; CSS package targets may remain internal backings. Generated companions stay on backing targets.
+- [x] No source compilation/checking or packaged-archive evidence is bypassed.
 
 ## Validation
 
@@ -20,4 +20,7 @@ Focused JVM/publication/processor suites, J2CL example and asset browser checks;
 
 ## Evidence
 
-Pending.
+- Fourteen focused core/DOM/processor/publication suites pass; CSS browser suite passes in fastbuild and opt.
+- External native J2CL consumer passes with all five requested labels in both modes, including selected-check failures.
+- Root query reports four browser/plugin aliases and the processor plugin; old root names have no build callers. Private backing visibility prevents generated platform companions from becoming supported entry points.
+- Buildifier, shell syntax and diff checks pass.

@@ -14,7 +14,7 @@ alias(
 j2cl_modules(
     name = "core_modules",
     testonly = True,
-    library = "//:core-j2cl",
+    library = "//:core",
     visibility = [
         "//tools/verification/src/main/java/react4j/verification:__pkg__",
         "//tools/verification/src/test/java/react4j/verification:__pkg__",
@@ -24,7 +24,7 @@ j2cl_modules(
 j2cl_modules(
     name = "dom_modules",
     testonly = True,
-    library = "//:dom-j2cl",
+    library = "//:dom",
     visibility = [
         "//tools/verification/src/main/java/react4j/verification:__pkg__",
         "//tools/verification/src/test/java/react4j/verification:__pkg__",

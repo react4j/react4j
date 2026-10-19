@@ -28,7 +28,7 @@ closure_js_library(
     testonly = True,
     srcs = ["runtime_test.js"],
     deps = [
-        "//:dom-j2cl",
+        "//:dom",
         "//core/src/test/java/react4j:runtime_coverage",
         "//core/src/test/js/react4j:runtime_test",
         "//dom/src/test/js/react4j/dom:events_test",

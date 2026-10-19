@@ -132,30 +132,33 @@ _RUNTIME = [
 ]
 
 java_import(
-    name = "core",
+    name = "_core_java",
     jars = ["//tools/release:core_jar"],
     srcjar = "//tools/release:core_sources",
+    visibility = ["//:__subpackages__"],
     exports = _RUNTIME,
 )
 
 java_import(
-    name = "dom",
+    name = "_dom_java",
     jars = ["//tools/release:dom_jar"],
     srcjar = "//tools/release:dom_sources",
-    exports = [":core"] + _RUNTIME,
+    visibility = ["//:__subpackages__"],
+    exports = [":_core_java"] + _RUNTIME,
 )
 
 java_import(
-    name = "processor",
+    name = "_processor_java",
     jars = ["//tools/release:processor_jar"],
     srcjar = "//tools/release:processor_sources",
+    visibility = ["//:__subpackages__"],
 )
 
 java_plugin(
-    name = "react4j_processor_plugin",
+    name = "processor",
     generates_api = True,
     processor_class = "react4j.processor.React4jProcessor",
-    deps = [":processor"],
+    deps = [":_processor_java"],
 )
 
 _BROWSER_RUNTIME = [
@@ -170,20 +173,22 @@ _BROWSER_RUNTIME = [
 ]
 
 j2cl_library(
-    name = "core-j2cl",
+    name = "_core_j2cl",
     srcs = ["//tools/release:core_j2cl_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    visibility = ["//:__subpackages__"],
     exports = _BROWSER_RUNTIME,
     deps = _BROWSER_RUNTIME,
 )
 
 j2cl_library(
-    name = "dom-j2cl",
+    name = "_dom_j2cl",
     srcs = ["//tools/release:dom_j2cl_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
-    exports = [":core-j2cl"],
+    visibility = ["//:__subpackages__"],
+    exports = [":_core_j2cl"],
     deps = [
-        ":core-j2cl",
+        ":_core_j2cl",
         "//third_party/java:braincheck_core-j2cl",
         "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jsinterop_base-j2cl",
@@ -192,6 +197,26 @@ j2cl_library(
         "//third_party/java:zemeckis_core-j2cl",
         "@arez//:core-j2cl",
     ],
+)
+
+alias(
+    name = "core",
+    actual = ":_core_j2cl",
+)
+
+alias(
+    name = "dom",
+    actual = ":_dom_j2cl",
+)
+
+alias(
+    name = "css",
+    actual = "//css/core:core-j2cl",
+)
+
+alias(
+    name = "css_processor_plugin",
+    actual = "//css/processor:plugin",
 )
 
 test_suite(

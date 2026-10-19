@@ -40,9 +40,9 @@ j2cl_library(
     name = "assets",
     srcs = ["AssetsExample.java"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
-    plugins = ["@react4j//css/processor:plugin", "@sting//third_party/java:nullaway_plugin"],
+    plugins = ["@react4j//:css_processor_plugin", "@sting//third_party/java:nullaway_plugin"],
     javacopts = ["-XDaddTypeAnnotationsToSymbol=true", "-Xep:ArrayEquals:ERROR", "-Xep:NullAway:ERROR", "-XepOpt:NullAway:OnlyNullMarked=true", "-XepOpt:NullAway:JSpecifyMode=true", "-XepOpt:NullAway:AssertsEnabled=true"],
-    deps = ["//src/main/assets/react4j/css/example:media", "@react4j//:core-j2cl", "@react4j//:dom-j2cl", "@react4j//css/core:core-j2cl", "@j2cl//:jsinterop-annotations-j2cl", "//:jspecify"],
+    deps = ["//src/main/assets/react4j/css/example:media", "@react4j//:core", "@react4j//:dom", "@react4j//:css", "@j2cl//:jsinterop-annotations-j2cl", "//:jspecify"],
 )
 closure_js_library(name = "entry", srcs = ["AssetsExample.entry.js"], deps = [":assets"])
 JAVA
@@ -78,9 +78,9 @@ j2cl_library(
     name = "views",
     srcs = ["Parent.java", "SampleView.java"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
-    plugins = ["@react4j//:react4j_processor_plugin", "@arez//:arez_processor_plugin", "@sting//third_party/java:nullaway_plugin"],
+    plugins = ["@react4j//:processor", "@arez//:arez_processor_plugin", "@sting//third_party/java:nullaway_plugin"],
     javacopts = ["-XDaddTypeAnnotationsToSymbol=true", "-Xep:NullAway:ERROR", "-XepOpt:NullAway:OnlyNullMarked=true", "-XepOpt:NullAway:JSpecifyMode=true", "-XepOpt:NullAway:AssertsEnabled=true"],
-    deps = ["@react4j//:core-j2cl", "@react4j//:dom-j2cl", "@arez//:core-j2cl", "//:jspecify"],
+    deps = ["@react4j//:core", "@react4j//:dom", "@arez//:core-j2cl", "//:jspecify"],
 )
 JAVA
 mkdir -p "$workspace/src/main/java/checks"
@@ -124,7 +124,7 @@ expect_diagnostic() {
   fi
 }
 cd "$workspace"
-bazel --output_base="$scratch/bazel" build //src/main/java/isolated:views //:application //:application_manifest @react4j//:core-j2cl @react4j//:dom-j2cl @react4j//doc-examples:hello_world
+bazel --output_base="$scratch/bazel" build //src/main/java/isolated:views //:application //:application_manifest @react4j//:core @react4j//:dom @react4j//doc-examples:hello_world
 bazel --output_base="$scratch/bazel" build -c opt //:application //:application_manifest @react4j//doc-examples:hello_world
 for mode in fastbuild opt; do
   expect_diagnostic "$mode" //:bad_array.js '[ArrayEquals]'
