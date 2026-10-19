@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `implementing`
-- Current frontier: `T07`
+- Status: `implementation-review`
+- Current frontier: `implementation review`
 - Planning reviewer: `/root/css_compression_plan_review` (`2/3` rounds; final confirmation `unused`; passed)
 - Plan checkpoint: `automatic` — explicit implementation request, confirmed interview and passing planning review; no human checkpoint requested.
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -11,7 +11,12 @@
 ## Full-scope validation
 
 - Gate: `tools/check.sh`, domain link validator, simplify, independent implementation review and exact diff inspection.
-- Evidence: pending.
+- Evidence: complete `tools/check.sh` passed on 2026-10-19; 40 ordinary targets, 8 optimized browser suites, 20 JVM coverage targets, unchanged 95/85 policy, external consumer, site, unsigned release and all 13 independently rebuilt publication artifacts passed. Simplify and domain replacement/link audits complete. See T07 for exact CSS coverage counts. Independent implementation review remains the next gate.
+
+## Post-implementation gates
+
+- Fresh read-only implementation review under the recorded budget; fix findings with focused validation before closeout.
+- After review passes, remove this exact plan tree and task-created scratch output, commit and push PR112, refresh/attach its description, and report actual remote Verify state. Never merge.
 
 ## Tasks
 
@@ -23,7 +28,7 @@
 | T04 | [Component compression through a real link](T04-component-compression.md) | complete | T03 |
 | T05 | [Compress every symbol and protect variants](T05-complete-compression.md) | complete | T04 |
 | T06 | [Source content and map fidelity](T06-source-maps.md) | complete | T05 |
-| T07 | [Delivery verification and permanent docs](T07-delivery.md) | in_progress | T06 |
+| T07 | [Delivery verification and permanent docs](T07-delivery.md) | complete | T06 |
 
 ## Sequencing notes
 

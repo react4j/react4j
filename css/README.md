@@ -159,7 +159,7 @@ abstract class HeartStyles {
 }
 ```
 
-Keyframe names are namespaced automatically and remain stable when the animation body changes. No Java accessor is needed for an animation name. Duplicate definitions and unknown animation names are errors. [StepButton.java](../examples/drumloop/src/main/java/react4j/drumloop/views/StepButton.java) shows an animation colocated with its view.
+Readable keyframe names derive from the Java owner and authored animation name. Optimized builds apply the link’s naming policy. No Java accessor is needed for an animation name. Duplicate definitions and unknown animation names are errors. [StepButton.java](../examples/drumloop/src/main/java/react4j/drumloop/views/StepButton.java) shows an animation colocated with its view.
 
 For reuse across style definitions, declare a `@Keyframes` class and import it under a local name:
 

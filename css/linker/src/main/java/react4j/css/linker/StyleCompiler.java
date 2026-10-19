@@ -88,8 +88,7 @@ final class StyleCompiler extends Compiler {
                 String source = tree < 0 ? path : path.substring(tree + 4);
                 if (bindingSources.contains(source)) {
                     inputSources.put(input.getName(), source);
-                    var pathToSource = Path.of(input.getName()).toAbsolutePath();
-                    var treeRoot = pathToSource;
+                    var treeRoot = Path.of(input.getName()).toAbsolutePath();
                     for (int i = 0; i < Path.of(source).getNameCount(); i++) {
                         treeRoot = Objects.requireNonNull(treeRoot.getParent());
                     }
@@ -184,7 +183,7 @@ final class StyleCompiler extends Compiler {
                         var value = symbols.get(node.getString());
                         if (null != value) {
                             live.add(value.id());
-                            node.replaceWith(IR.string(link.names().value(value.binding()))
+                            node.replaceWith(IR.string(Objects.requireNonNull(compiledValues.get(node.getString())))
                                     .srcref(node));
                             reportChangeToEnclosingScope(parent);
                         }

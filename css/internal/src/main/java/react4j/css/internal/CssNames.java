@@ -7,10 +7,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 import react4j.css.internal.CssResource.SymbolId;
 import react4j.css.internal.CssResource.SymbolKind;
 
@@ -215,13 +213,6 @@ public record CssNames(Policy policy, List<Entry> entries) {
             ordinal = ordinal / ALPHABET.length() - 1;
         } while (ordinal >= 0);
         return result.reverse().toString();
-    }
-
-    public String value(CssResource.Binding binding) {
-        var names = entries.stream().collect(Collectors.toMap(Entry::symbol, Entry::compiled));
-        return binding.symbols().stream()
-                .map(id -> Objects.requireNonNull(names.get(id), id.id()))
-                .collect(Collectors.joining(" "));
     }
 
     public JsonArray json() {

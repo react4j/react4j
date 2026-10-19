@@ -14,6 +14,7 @@ import java.util.Objects;
 /** Loads a binding's actual companion map and fills missing Java content from its declared tree. */
 record BindingSourceMap(SourceMapConsumerV3 mapping, SourceMapInput input) {
     static BindingSourceMap read(Path source, Path tree) {
+        // Preserve the input path form so Closure and Bazel apply the same source-location mappings.
         var path = source.resolveSibling(source.getFileName().toString().replace(".impl.java.js", ".js.map"));
         try {
             var json = JsonParser.parseString(Files.readString(path)).getAsJsonObject();

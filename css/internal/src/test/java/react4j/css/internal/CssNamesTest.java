@@ -44,7 +44,7 @@ public final class CssNamesTest {
     }
 
     @Test
-    public void allocationIsDeterministicReservesAuthoredNamesAndComposesTokensIndependently() {
+    public void allocationIsDeterministicReservesAuthoredNamesAndKeepsStableTokens() {
         var root = new Symbol(SymbolKind.CLASS, "", "readable-root", false);
         var success = new Symbol(SymbolKind.CLASS, "success", "readable-success", true);
         var dead = new Symbol(SymbolKind.CLASS, "dead", "readable-dead", false);
@@ -61,16 +61,20 @@ public final class CssNamesTest {
                 CssNames.create(
                         catalogue(List.of(root, dead, success), List.of(binding), ".a,.b{content:'readable-root';}"),
                         table.policy()));
-        assertEquals(table.value(binding), "c readable-success");
+        assertEquals(
+                table.entries().stream().map(CssNames.Entry::compiled).toList(), List.of("c", "d", "readable-success"));
         assertEquals(table.entries().size(), 3);
         assertEquals(table.entries().get(1).compiled(), "d");
         assertEquals(table.entries().get(1).getters(), List.of());
         assertEquals(table.entries().get(0).getters(), List.of("Button#success"));
         assertEquals(CssNames.read(table.policy(), table.json()), table);
         var prefixed = CssNames.create(catalogue, new CssNames.Policy(true, "app-"));
-        assertEquals(prefixed.value(binding), "app-a readable-success");
+        assertEquals(
+                prefixed.entries().stream().map(CssNames.Entry::compiled).toList(),
+                List.of("app-a", "app-b", "readable-success"));
         var readable = CssNames.create(catalogue, new CssNames.Policy(false, "ignored-"));
-        assertEquals(readable.value(binding), binding.value());
+        assertTrue(
+                readable.entries().stream().allMatch(entry -> entry.readable().equals(entry.compiled())));
     }
 
     @Test

@@ -43,6 +43,20 @@
       "requirement": "requires-network"
     },
     {
+      "reason": "The CSS integration browser test uses the existing WebDriver loopback runner; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//css/examples/save-button/src/test/js/react4j/css/example:prefixed_browser_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The CSS integration browser test uses the existing WebDriver loopback runner; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//css/examples/save-button/src/test/js/react4j/css/example:uncompressed_browser_tests",
+      "requirement": "requires-network"
+    },
+    {
       "reason": "Pinned Chromium and ChromeDriver communicate over loopback during the JVM browser test; build actions remain sandboxed without network access",
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",

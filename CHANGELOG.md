@@ -2,12 +2,14 @@
 
 ### Unreleased
 
+* Compress generated CSS class, ID, animation and custom-property names in optimized builds, with a separate disable switch, optional link prefix, `@CssStable` contracts and a complete reverse-name artifact. Preserve authored CSS mappings and include generated binding Java in JavaScript source maps.
+* Share checked IDs across CSS definitions through selected `@CssImport` bindings. CSS accessor annotations follow the effective Java declaration, matching React4j interface conventions.
 * Reduce optimized CSS bundles by removing provably unused selectors and styles required only by removed rules. Preserve source maps back to Java and allow several theme bundles to share one JavaScript link.
 * Reject unused CSS custom-property imports and restore Delete-button hover visibility in all three TodoMVC examples.
 * Restore grey, struck-through labels for completed tasks in all three TodoMVC examples.
 * Add String-based `CssProps.customProperty` and HTML `data` fluent APIs for CSS custom properties and data attributes, including nullable removal without JavaScript casts.
 * Add experimental CSS-in-Java with `react4j.css`: colocate component styles in Java text blocks and access checked class, ID, animation and custom-property names through lazy typed bindings. Names derive from Java owners; custom properties are local unless shared through checked `@CssImport` bindings, preserving inheritance and theme overrides across libraries. Share animations with `@Keyframes`, select peers with `:css(alias)` and define page rules with `@GlobalCss`. JVM processing and bundling validate declarations, retain required styles and provide source maps back to Java.
-* Share class and checked-symbol accessors through Java interfaces on CSS definitions, including generic contracts, default helpers and separately compiled libraries. Implementations keep independent CSS names; conflicting inherited symbol mappings receive processor diagnostics.
+* Share class and checked-symbol accessors through Java interfaces on CSS definitions, including generic contracts, default helpers and separately compiled libraries. Implementations keep independent CSS names; overrides own their symbol annotations and defaults.
 * Upgrade JSpecify to version `1.0.1`.
 * Build against pinned Braincheck and Zemeckis publication archives in Bazel.
 * Support JsInterop 1.2 nullness contracts when reading required JavaScript inputs and context components. Emit JSpecify qualifiers directly on generated types so consumer builds pass AnnotationPosition. Accept an absent inline style in DOM props and a null context children array, including generated context providers without a render method.

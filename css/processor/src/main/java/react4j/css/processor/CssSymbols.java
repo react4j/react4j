@@ -37,8 +37,14 @@ final class CssSymbols {
                 shift += definition.readable().length() - (token.end() - token.start());
             }
         }
-        var map = JsonParser.parseString(input.map("intermediate.css")).getAsJsonObject();
         return new Result(
-                edits.isEmpty() ? input : SourceMap.replace(input.css(), map, edits), List.copyOf(occurrences));
+                edits.isEmpty()
+                        ? input
+                        : SourceMap.replace(
+                                input.css(),
+                                JsonParser.parseString(input.map("intermediate.css"))
+                                        .getAsJsonObject(),
+                                edits),
+                List.copyOf(occurrences));
     }
 }
