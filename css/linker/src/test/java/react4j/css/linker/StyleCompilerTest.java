@@ -39,7 +39,7 @@ public final class StyleCompilerTest {
         return new CssLink.Value(
                 "demo.Button",
                 "demo.Styled_Button",
-                new CssResource.Binding(method, CssResource.SymbolKind.CLASS, value));
+                new CssResource.Binding(method, CssResource.SymbolKind.CLASS, value, List.of()));
     }
 
     private static final class Runner extends CommandLineRunner {
@@ -173,7 +173,7 @@ public final class StyleCompilerTest {
                     new CssLink.Value(
                             "a.demo.Button",
                             "a.demo.Styled_Button",
-                            new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "two")));
+                            new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "two", List.of())));
             var link = new CssLink("//:app", "1".repeat(64), true, values);
             compile(
                     new StyleCompiler(link, directory.resolve("live.json")),
@@ -204,7 +204,7 @@ public final class StyleCompilerTest {
                     List.of(new CssLink.Value(
                             "Button",
                             "Styled_Button",
-                            new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root"))));
+                            new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root", List.of()))));
             compile(
                     new StyleCompiler(link, directory.resolve("live.json")),
                     directory,
@@ -312,11 +312,12 @@ public final class StyleCompilerTest {
                             new CssLink.Value(
                                     "demo.Button",
                                     "demo.Styled_Button",
-                                    new CssResource.Binding("id", CssResource.SymbolKind.ID, "shared")),
+                                    new CssResource.Binding("id", CssResource.SymbolKind.ID, "shared", List.of())),
                             new CssLink.Value(
                                     "demo.Button",
                                     "demo.Styled_Button",
-                                    new CssResource.Binding("animation", CssResource.SymbolKind.ANIMATION, "shared"))));
+                                    new CssResource.Binding(
+                                            "animation", CssResource.SymbolKind.ANIMATION, "shared", List.of()))));
             for (var method : List.of("id", "animation")) {
                 compile(
                         new StyleCompiler(link, directory.resolve("live.json")),

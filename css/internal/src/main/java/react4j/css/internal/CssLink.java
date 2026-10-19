@@ -60,12 +60,9 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
         var json = header();
         var bindings = new JsonArray();
         for (var value : values) {
-            var entry = new JsonObject();
+            var entry = value.binding().json();
             entry.addProperty("owner", value.owner());
             entry.addProperty("implementation", value.implementation());
-            entry.addProperty("method", value.binding().method());
-            entry.addProperty("kind", value.binding().kind().name());
-            entry.addProperty("value", value.binding().value());
             bindings.add(entry);
         }
         json.add("values", bindings);
@@ -79,12 +76,7 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
             for (var item : json.getAsJsonArray("values")) {
                 var entry = item.getAsJsonObject();
                 values.add(new Value(
-                        string(entry, "owner"),
-                        string(entry, "implementation"),
-                        new CssResource.Binding(
-                                string(entry, "method"),
-                                CssResource.SymbolKind.valueOf(string(entry, "kind")),
-                                string(entry, "value"))));
+                        string(entry, "owner"), string(entry, "implementation"), CssResource.Binding.read(entry)));
             }
             var optimized = json.get("optimized");
             if (!optimized.isJsonPrimitive() || !optimized.getAsJsonPrimitive().isBoolean()) {
@@ -144,7 +136,7 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
 
     private JsonObject header() {
         var json = new JsonObject();
-        json.addProperty("version", 1);
+        json.addProperty("version", 2);
         json.addProperty("link", link);
         json.addProperty("digest", digest);
         json.addProperty("optimized", optimized);
@@ -153,7 +145,7 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
 
     private static JsonObject document(String source) {
         var json = JsonParser.parseString(source).getAsJsonObject();
-        if (!json.has("version") || !"1".equals(json.get("version").toString())) {
+        if (!json.has("version") || !"2".equals(json.get("version").toString())) {
             throw new IllegalArgumentException("Unsupported CSS link evidence version");
         }
         return json;

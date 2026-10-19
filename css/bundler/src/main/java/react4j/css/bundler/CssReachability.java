@@ -61,6 +61,7 @@ final class CssReachability {
         for (var value : link.values()) {
             if (live.contains(value.id())) {
                 graph.activate(value.owner());
+                value.binding().requires().forEach(graph::activate);
                 if (CssResource.SymbolKind.ID != value.binding().kind()) {
                     graph.reference(value.owner(), value.binding().value());
                 }

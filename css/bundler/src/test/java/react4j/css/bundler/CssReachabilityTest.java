@@ -21,7 +21,7 @@ import react4j.css.internal.SourceMap;
 
 public final class CssReachabilityTest {
     private static Binding binding(String method, SymbolKind kind, String value) {
-        return new Binding(method, kind, value);
+        return new Binding(method, kind, value, List.of());
     }
 
     private static Resource resource(
@@ -33,6 +33,7 @@ public final class CssReachabilityTest {
             Map<String, List<String>> providers,
             String... peers) {
         var dependencies = new ArrayList<>(includes);
+        bindings.forEach(binding -> dependencies.addAll(binding.requires()));
         providers.values().forEach(dependencies::addAll);
         dependencies.addAll(Arrays.asList(peers));
         var metadata = new CssResource(
@@ -74,6 +75,74 @@ public final class CssReachabilityTest {
                         CssLink.create(catalogue, "//:app", true),
                         live)
                 .css();
+    }
+
+    @Test
+    public void equalStableIdsActivateOnlyTheLiveBindingProvidersAndAlreadyActiveOwners() throws Exception {
+        var catalogue = catalogue(
+                resource(
+                        "Consumer",
+                        Kind.GLOBAL,
+                        "#shared{font-weight:700;}",
+                        List.of(
+                                new Binding("aDead", SymbolKind.ID, "shared", List.of("Second")),
+                                new Binding("zLive", SymbolKind.ID, "shared", List.of("Alias", "First"))),
+                        List.of("Active"),
+                        Map.of()),
+                resource(
+                        "Alias",
+                        Kind.GLOBAL,
+                        "#shared{margin-left:19px;}",
+                        List.of(),
+                        List.of("Required"),
+                        Map.of(),
+                        "First"),
+                resource(
+                        "First",
+                        Kind.GLOBAL,
+                        "#shared{padding-left:13px;}",
+                        List.of(binding("id", SymbolKind.ID, "shared")),
+                        List.of(),
+                        Map.of()),
+                resource(
+                        "Second",
+                        Kind.GLOBAL,
+                        "#shared{padding-right:37px;}",
+                        List.of(binding("id", SymbolKind.ID, "shared")),
+                        List.of(),
+                        Map.of()),
+                resource(
+                        "Active",
+                        Kind.GLOBAL,
+                        "#shared{margin-right:29px;}",
+                        List.of(binding("id", SymbolKind.ID, "shared")),
+                        List.of(),
+                        Map.of()),
+                resource(
+                        "Dormant",
+                        Kind.GLOBAL,
+                        "#shared{padding-top:43px;}",
+                        List.of(binding("id", SymbolKind.ID, "shared")),
+                        List.of(),
+                        Map.of()),
+                global("Required", "body{outline-width:23px;}"));
+        String first = bundle(catalogue, Set.of("Consumer#zLive"));
+        for (var retained : List.of(
+                "font-weight:700",
+                "margin-left:19px",
+                "padding-left:13px",
+                "margin-right:29px",
+                "outline-width:23px")) {
+            assertTrue(first.contains(retained), first);
+        }
+        assertFalse(first.contains("padding-right:37px"), first);
+        assertFalse(first.contains("padding-top:43px"), first);
+        String second = bundle(catalogue, Set.of("Consumer#aDead"));
+        assertTrue(second.contains("padding-right:37px"), second);
+        assertTrue(second.contains("margin-right:29px"), second);
+        for (var omitted : List.of("padding-left:13px", "margin-left:19px", "outline-width:23px", "padding-top:43px")) {
+            assertFalse(second.contains(omitted), second);
+        }
     }
 
     @Test

@@ -111,6 +111,15 @@ final class CssCompiler {
         });
     }
 
+    private void ids(CascadingStyleSheet sheet, Map<String, CssIds.Import> imported, boolean global) {
+        var bindings = new LinkedHashMap<String, String>();
+        exports.ids()
+                .forEach(name -> bindings.put(
+                        name, exports.authoredIds().contains(name) ? name : root + "--id-" + Names.encode(name)));
+        imported.forEach((name, binding) -> bindings.put(name, binding.binding().cssName()));
+        ids = CssIds.rewrite(sheet, syntax, bindings, global);
+    }
+
     private Result result() {
         return new Result(
                 output,
@@ -127,12 +136,13 @@ final class CssCompiler {
             Exports exports,
             IntFunction<SourceMap.Location> locations,
             Map<String, Import> imports,
-            Map<String, CssProperties.Import> properties) {
+            Map<String, CssProperties.Import> properties,
+            Map<String, CssIds.Import> importedIds) {
         String prefix = "." + root + " {\n";
         var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, exports, locations, imports);
         var sheet = compiler.syntax.parse(true);
         compiler.properties(sheet, properties);
-        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids(), exports.authoredIds());
+        compiler.ids(sheet, importedIds, false);
         for (var rule : sheet.getAllRules()) {
             if (rule instanceof CSSKeyframesRule frames) {
                 String name = frames.getAnimationName();
@@ -173,12 +183,13 @@ final class CssCompiler {
             String root,
             Exports exports,
             IntFunction<SourceMap.Location> locations,
-            Map<String, CssProperties.Import> properties) {
+            Map<String, CssProperties.Import> properties,
+            Map<String, CssIds.Import> importedIds) {
         String prefix = "@keyframes shared {\n";
         var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, exports, locations, Map.of());
         var sheet = compiler.syntax.parseKeyframes();
         compiler.properties(sheet, properties);
-        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids(), exports.authoredIds());
+        compiler.ids(sheet, importedIds, false);
         var frames = (CSSKeyframesRule) sheet.getAllRules().get(0);
         compiler.animations.put("", root + "--keyframes");
         compiler.writeKeyframes(frames, root + "--keyframes");
@@ -191,11 +202,12 @@ final class CssCompiler {
             Exports exports,
             IntFunction<SourceMap.Location> locations,
             Map<String, Import> imports,
-            Map<String, CssProperties.Import> properties) {
+            Map<String, CssProperties.Import> properties,
+            Map<String, CssIds.Import> importedIds) {
         var compiler = new CssCompiler(css, 0, root, exports, locations, imports);
         var sheet = compiler.syntax.parse(false);
         compiler.properties(sheet, properties);
-        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids(), exports.authoredIds());
+        compiler.ids(sheet, importedIds, true);
         exports.animations().forEach(compiler::exportAnimation);
         for (var rule : sheet.getAllRules()) {
             compiler.globalRule((ICSSSourceLocationAware) rule);

@@ -123,11 +123,20 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 throw new IllegalArgumentException("Unused custom property import: " + name);
             }
         }
+        for (var name : imports.ids().keySet().stream().sorted().toList()) {
+            if (!result.ids().containsKey(name)
+                    && (null == descriptor
+                            || descriptor.accessors().stream()
+                                    .noneMatch(accessor ->
+                                            CssAccessor.Kind.ID == accessor.kind() && name.equals(accessor.name())))) {
+                throw new IllegalArgumentException("Unused ID import: " + name);
+            }
+        }
         String implementation = "";
         var bound = new ArrayList<CssResource.Binding>();
         if (null != descriptor) {
             validateStableImports(owner, descriptor, imports);
-            var values = bindings(descriptor, result);
+            var values = bindings(descriptor, result, imports);
             var generated = CssGenerator.buildType(processingEnv, descriptor, values);
             emitTypeSpec(descriptor.packageName(), generated.type());
             implementation = generated.implementation();
@@ -136,7 +145,10 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 bound.add(new CssResource.Binding(
                         method,
                         CssResource.SymbolKind.valueOf(accessor.kind().name()),
-                        Objects.requireNonNull(values.get(method))));
+                        Objects.requireNonNull(values.get(method)),
+                        CssAccessor.Kind.ID == accessor.kind() && imports.ids().containsKey(accessor.name())
+                                ? imports.ids().get(accessor.name()).providers()
+                                : List.of()));
             }
         }
         String ownerName = binaryName(owner);
@@ -151,6 +163,10 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 .forEach(dependencies::add);
         imports.properties().values().stream()
                 .map(CssProperties.Import::provider)
+                .sorted()
+                .forEach(dependencies::add);
+        imports.ids().values().stream()
+                .flatMap(binding -> binding.providers().stream())
                 .sorted()
                 .forEach(dependencies::add);
         var providers = new TreeMap<String, List<String>>();
@@ -268,7 +284,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
     private record Imports(
             Map<String, CssCompiler.Import> named,
             List<String> globals,
-            Map<String, CssProperties.Import> properties) {}
+            Map<String, CssProperties.Import> properties,
+            Map<String, CssIds.Import> ids) {}
 
     private List<AnnotationMirror> importMirrors(TypeElement owner) {
         var mirrors = new ArrayList<AnnotationMirror>();
@@ -282,7 +299,35 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 mirrors.add((AnnotationMirror) ((AnnotationValue) item).getValue());
             }
         }
+        var ids = new LinkedHashSet<String>();
+        for (var mirror : mirrors) {
+            String property = selection(mirror, "property");
+            String id = selection(mirror, "id");
+            if (!property.isEmpty() && !id.isEmpty()) {
+                throw new IllegalArgumentException("@CssImport id and property are mutually exclusive");
+            }
+            if (!id.isEmpty()) {
+                CssCompiler.checkAlias(id, Kind.COMPONENT);
+                var alias = (String) value(mirror, "name").getValue();
+                String local = alias.isEmpty() ? id : alias;
+                CssCompiler.checkAlias(local, Kind.COMPONENT);
+                if (!ids.add(local)) {
+                    throw new IllegalArgumentException("Duplicate imported ID: " + local);
+                }
+            }
+        }
         return mirrors;
+    }
+
+    private String selection(AnnotationMirror mirror, String name) {
+        var selected = (String) value(mirror, name).getValue();
+        if (selected.isEmpty()
+                && mirror.getElementValues().keySet().stream()
+                        .anyMatch(key -> key.getSimpleName().contentEquals(name))) {
+            throw new IllegalArgumentException(
+                    "@CssImport " + name + " must not be empty; omit it to import a definition");
+        }
+        return selected;
     }
 
     private TypeElement importTarget(AnnotationMirror mirror) {
@@ -334,11 +379,60 @@ public final class CssProcessor extends AbstractStandardProcessor {
         return binding;
     }
 
+    private CssIds.Import resolveId(TypeElement owner, String name, Set<String> visiting) {
+        String ownerName = binaryName(owner);
+        String key = ownerName + "#" + name;
+        if (!visiting.add(key)) {
+            throw new IllegalArgumentException("Cyclic ID import without an owner: " + key);
+        }
+        var declared = new LinkedHashSet<String>();
+        for (var method : CssMethods.collect(processingEnv, owner)) {
+            var annotation = symbolAnnotation(method.declaration());
+            if (null != annotation
+                    && "react4j.css.CssId".equals(annotation.getAnnotationType().toString())) {
+                if (!method.element().getModifiers().contains(Modifier.ABSTRACT)
+                        || !method.isAccessor(processingEnv.getTypeUtils())) {
+                    throw new IllegalArgumentException(
+                            "CSS ID accessors must be abstract, take no arguments and return String");
+                }
+                declared.add(symbolName(method.declaration(), annotation));
+            }
+        }
+        Kind kind = sourceKind(owner);
+        var css = annotation(owner, annotationName(kind));
+        assert null != css;
+        boolean occurs = CssIds.names((String) value(css, "value").getValue(), kind, Set.of(name))
+                .contains(name);
+        for (var mirror : importMirrors(owner)) {
+            var id = (String) value(mirror, "id").getValue();
+            var alias = (String) value(mirror, "name").getValue();
+            if (!id.isEmpty() && name.equals(alias.isEmpty() ? id : alias)) {
+                if (!occurs && !declared.contains(name)) {
+                    throw new IllegalArgumentException("Unused ID import: " + name);
+                }
+                var resolved = resolveId(importTarget(mirror), id, visiting);
+                var providers = new LinkedHashSet<String>();
+                providers.add(ownerName);
+                providers.addAll(resolved.providers());
+                visiting.remove(key);
+                return new CssIds.Import(List.copyOf(providers), resolved.binding());
+            }
+        }
+        if (!declared.contains(name) || !occurs) {
+            throw new IllegalArgumentException("Unknown ID " + name + " in " + ownerName);
+        }
+        visiting.remove(key);
+        return new CssIds.Import(
+                List.of(ownerName),
+                new CssIds.Binding(ownerName, name, kind, stable(owner, CssResource.SymbolKind.ID, name)));
+    }
+
     private Imports imports(TypeElement owner, Kind kind) {
         var mirrors = importMirrors(owner);
         var imports = new LinkedHashMap<String, CssCompiler.Import>();
         var globals = new ArrayList<String>();
         var properties = new LinkedHashMap<String, CssProperties.Import>();
+        var ids = new LinkedHashMap<String, CssIds.Import>();
         for (var mirror : mirrors) {
             var alias = (String) value(mirror, "name").getValue();
             var element = importTarget(mirror);
@@ -352,13 +446,10 @@ public final class CssProcessor extends AbstractStandardProcessor {
             }
             String name = binaryName(element);
             var property = (String) value(mirror, "property").getValue();
-            if (property.isEmpty()
-                    && mirror.getElementValues().keySet().stream()
-                            .anyMatch(key -> key.getSimpleName().contentEquals("property"))) {
-                throw new IllegalArgumentException(
-                        "@CssImport property must not be empty; omit it to import a definition");
-            }
-            if (!property.isEmpty()) {
+            var id = (String) value(mirror, "id").getValue();
+            if (!id.isEmpty()) {
+                ids.put(alias.isEmpty() ? id : alias, resolveId(element, id, new LinkedHashSet<>()));
+            } else if (!property.isEmpty()) {
                 CssProperties.checkName(property);
                 String local = alias.isEmpty() ? property : alias;
                 CssProperties.checkName(local);
@@ -368,7 +459,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 }
             } else if (Kind.KEYFRAMES == kind) {
                 throw new IllegalArgumentException(
-                        "@CssImport is only supported on stylesheet definitions unless importing a property");
+                        "@CssImport is only supported on stylesheet definitions unless importing a property or ID");
             } else if (Kind.GLOBAL == targetKind) {
                 if (!alias.isEmpty()) {
                     throw new IllegalArgumentException("Global CSS imports must not declare a name: " + name);
@@ -398,7 +489,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 }
             }
         }
-        return new Imports(Map.copyOf(imports), List.copyOf(globals), Map.copyOf(properties));
+        return new Imports(Map.copyOf(imports), List.copyOf(globals), Map.copyOf(properties), Map.copyOf(ids));
     }
 
     private CssDescriptor parse(TypeElement owner) {
@@ -605,7 +696,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
         return false;
     }
 
-    private Map<String, String> bindings(CssDescriptor descriptor, CssCompiler.Result result) {
+    private Map<String, String> bindings(CssDescriptor descriptor, CssCompiler.Result result, Imports imports) {
         var bindings = new LinkedHashMap<String, String>();
         for (var accessor : descriptor.accessors()) {
             String method = accessor.method().getSimpleName().toString();
@@ -618,7 +709,10 @@ public final class CssProcessor extends AbstractStandardProcessor {
                                             ? ""
                                             : " " + descriptor.rootClassName() + "--" + Names.encode(name));
                         case PROPERTY -> result.properties().get(name);
-                        case ID -> result.ids().get(name);
+                        case ID ->
+                            imports.ids().containsKey(name)
+                                    ? imports.ids().get(name).binding().cssName()
+                                    : result.ids().get(name);
                         case ANIMATION -> result.animations().get(name);
                     };
             if (null == token) {
@@ -673,10 +767,14 @@ public final class CssProcessor extends AbstractStandardProcessor {
             }
             var property = imports.properties().get(accessor.name());
             var animation = imports.named().get(accessor.name());
+            var id = imports.ids().get(accessor.name());
             if (CssResource.SymbolKind.PROPERTY == kind
                             && null != property
                             && !property.binding().stable()
-                    || CssResource.SymbolKind.ANIMATION == kind && null != animation && !animation.stable()) {
+                    || CssResource.SymbolKind.ANIMATION == kind && null != animation && !animation.stable()
+                    || CssResource.SymbolKind.ID == kind
+                            && null != id
+                            && !id.binding().stable()) {
                 throw new IllegalArgumentException(
                         "@CssStable importing accessor conflicts with its defining owner's policy: "
                                 + accessor.method().getSimpleName());
@@ -713,9 +811,12 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         stable(owner, CssResource.SymbolKind.PROPERTY, name)));
             }
         });
-        result.ids()
-                .forEach((name, value) -> symbols.add(new CssResource.Symbol(
-                        CssResource.SymbolKind.ID, name, value, stable(owner, CssResource.SymbolKind.ID, name))));
+        result.ids().forEach((name, value) -> {
+            if (!imports.ids().containsKey(name)) {
+                symbols.add(new CssResource.Symbol(
+                        CssResource.SymbolKind.ID, name, value, stable(owner, CssResource.SymbolKind.ID, name)));
+            }
+        });
         result.animations().forEach((name, value) -> {
             if (!imports.named().containsKey(name)) {
                 symbols.add(new CssResource.Symbol(
@@ -800,7 +901,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         Names.root(binaryName(owner)),
                         exports(owner, kind, descriptor),
                         locations,
-                        imports.properties());
+                        imports.properties(),
+                        imports.ids());
             }
             if (Kind.GLOBAL == kind) {
                 return CssCompiler.global(
@@ -809,7 +911,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         exports(owner, kind, descriptor),
                         locations,
                         imports.named(),
-                        imports.properties());
+                        imports.properties(),
+                        imports.ids());
             }
             assert null != descriptor;
             return CssCompiler.component(
@@ -818,7 +921,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                     exports(owner, kind, descriptor),
                     locations,
                     imports.named(),
-                    imports.properties());
+                    imports.properties(),
+                    imports.ids());
         } catch (CssSyntax.InvalidCss e) {
             int offset = block.offsets()[Math.max(0, Math.min(block.value().length(), e.offset()))];
             String location =

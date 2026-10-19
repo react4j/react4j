@@ -133,7 +133,7 @@ abstract class ButtonStyles {
 
 Component selectors start with `&`. Each later compound after a descendant, child (`>`), adjacent sibling (`+`) or general sibling (`~`) combinator must start with `:css(alias)`. Qualify peer roots with attributes or pseudo-classes. Peer modifier classes and peer references inside component selector functions are unsupported. Component reference cycles are allowed.
 
-The referenced type's annotation determines the import kind: named `@Css` imports supply peer roots, named `@Keyframes` imports supply animation names, and unnamed `@GlobalCss` imports include global rules. Component and animation aliases share a namespace within the importing definition. Property aliases use a separate namespace. Named imports are checked even when unused; a selector or animation reference creates the dependency.
+The referenced type's annotation determines the import kind: named `@Css` imports supply peer roots, named `@Keyframes` imports supply animation names, and unnamed `@GlobalCss` imports include global rules. Component and animation aliases share a namespace within the importing definition. Property and ID aliases each use a separate namespace. Named imports are checked even when unused; a selector or animation reference creates the dependency.
 
 ### Animations
 
@@ -228,9 +228,13 @@ abstract String pulseName();
 abstract String accentProperty();
 ```
 
-Explicit ID names omit `#`; property names omit `--`. Each accessor must match a CSS occurrence or, for animations, a checked import. Duplicate exports and conflicting annotations are errors. `style()` exposes the component root class and cannot carry a typed-symbol annotation.
+Explicit ID names omit `#`; property names omit `--`. Each accessor must match a CSS occurrence or, for IDs and animations, a checked import. Duplicate exports and conflicting annotations are errors. `style()` exposes the component root class and cannot carry a typed-symbol annotation.
 
 Bound IDs are rewritten in hash selectors and same-document fragment URLs, including nested expressions. Strings and asset URLs such as `icons.svg#mask` retain their text. Attribute selectors that reference bound IDs are rejected. An ID is static per definition; repeated component instances that need distinct DOM IDs must use separate instance IDs.
+
+Share an ID with `@CssImport(value = Owner.class, id = "control", name = "local")`. The local alias defaults to the selected ID. All three definition kinds can consume selected IDs in selectors, fragment URLs or `@CssId` accessors. Providers may re-export imported aliases, including from separately compiled libraries. An import needs a CSS occurrence or an accessor; `id` and `property` selections are mutually exclusive.
+
+Every hash selector in `@GlobalCss` requires a local `@CssId` accessor or selected ID import. A surviving importing accessor activates its provider chain and their unconditional global inclusions. A selector or fragment reference alone neither activates an ID provider nor proves that its DOM element exists. Stable IDs with the same spelling can match across already active styles.
 
 On a `@Keyframes` class, leave the animation annotation's `name` unset to expose that definition's own class-derived name:
 

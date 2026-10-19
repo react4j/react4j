@@ -1,1 +1,1 @@
-{"version":4,"owner":"com.example.global.Defaults","kind":"GLOBAL","dependencies":[],"includes":[],"implementation":"","bindings":[],"providers":{},"symbols":[{"kind":"PROPERTY","name":"accent","value":"--jcss-com-example-global-Defaults--accent","stable":false}]}
+{"version":5,"owner":"com.example.global.Defaults","kind":"GLOBAL","dependencies":[],"includes":[],"implementation":"","bindings":[],"providers":{},"symbols":[{"kind":"PROPERTY","name":"accent","value":"--jcss-com-example-global-Defaults--accent","stable":false}]}

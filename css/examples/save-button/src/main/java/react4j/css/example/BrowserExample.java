@@ -46,7 +46,11 @@ public final class BrowserExample {
                                         .className(ModifierOnly.get().activeForRender()),
                                 "Modifier through an interface helper"),
                         DOM.button(
-                                new BtnProps().id("base").data("shared", shared).className(button.style()), "Save"),
+                                new BtnProps()
+                                        .id(Defaults.get().base())
+                                        .data("shared", shared)
+                                        .className(button.style()),
+                                "Save"),
                         DOM.button(new BtnProps().id("success").className(buttonStates.success()), "Saved"),
                         DOM.button(new BtnProps().id("cancel").className(button.cancel()), "Cancel"),
                         DOM.button(
@@ -86,6 +90,9 @@ public final class BrowserExample {
                         DOM.span(
                                 new HtmlProps().id(EqualNames.get().id()).data("symbol", "equal-names"),
                                 "Stable ID sharing an animation's readable name"),
+                        DOM.span(
+                                new HtmlProps().id(ImportedIds.get().zLive()).data("symbol", "shared-import"),
+                                "Checked shared ID"),
                         DOM.button(
                                 new BtnProps()
                                         .id(button.controlId())
@@ -341,6 +348,63 @@ public final class BrowserExample {
         """)
     abstract static class EqualNamePulse {}
 
+    @GlobalCss("""
+        #shared-import { padding-left: 13px; }
+        """)
+    abstract static class FirstIds {
+        @CssStable
+        @CssId(name = "shared-import")
+        abstract String id();
+    }
+
+    @GlobalCss("""
+        #shared-import { padding-right: 37px; }
+        """)
+    abstract static class SecondIds {
+        @CssStable
+        @CssId(name = "shared-import")
+        abstract String id();
+    }
+
+    @GlobalCss("""
+        #shared-import { margin-right: 29px; }
+        """)
+    abstract static class ActiveIds {
+        @CssStable
+        @CssId(name = "shared-import")
+        abstract String id();
+    }
+
+    @GlobalCss("""
+        [data-symbol=shared-import] { border-left: 23px solid; }
+        """)
+    static final class IdRequirements {}
+
+    @CssImport(IdRequirements.class)
+    @CssImport(value = FirstIds.class, id = "shared-import", name = "local")
+    @GlobalCss("""
+        #local { margin-left: 19px; }
+        """)
+    static final class IdAliases {}
+
+    @CssImport(ActiveIds.class)
+    @CssImport(value = IdAliases.class, id = "local", name = "first")
+    @CssImport(value = SecondIds.class, id = "shared-import", name = "second")
+    @GlobalCss("""
+        #second { font-weight: 700; }
+        """)
+    abstract static class ImportedIds {
+        static ImportedIds get() {
+            return BrowserExample_Styled_ImportedIds.get();
+        }
+
+        @CssId(name = "second")
+        abstract String aDead();
+
+        @CssId(name = "first")
+        abstract String zLive();
+    }
+
     @Keyframes("""
         to { transform: rotate(360deg); }
         """)
@@ -356,9 +420,18 @@ public final class BrowserExample {
         }
         #base { border-top-width: 2px; }
         """)
-    static final class Defaults {}
+    abstract static class Defaults {
+        static Defaults get() {
+            return BrowserExample_Styled_Defaults.get();
+        }
+
+        @CssStable
+        @CssId
+        abstract String base();
+    }
 
     @CssImport(Defaults.class)
+    @CssImport(value = Defaults.class, id = "base")
     @CssImport(value = Defaults.class, property = "theme-color")
     @GlobalCss("""
         :root { --theme-color: #909; }
@@ -367,6 +440,7 @@ public final class BrowserExample {
     static final class Theme {}
 
     @CssImport(Defaults.class)
+    @CssImport(value = Defaults.class, id = "base")
     @CssImport(value = Defaults.class, property = "theme-color")
     @GlobalCss("""
         :root { --theme-color: #099; }
@@ -374,6 +448,7 @@ public final class BrowserExample {
         """)
     static final class AlternateTheme {}
 
+    @CssImport(value = Defaults.class, id = "base")
     @GlobalCss("""
         #base { --excluded: unwanted; }
         """)

@@ -21,16 +21,39 @@ import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import react4j.css.internal.CssExpressions;
+import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
 
 /** Rewrites explicitly bound ID selectors and same-document fragments. */
 final class CssIds {
     private CssIds() {}
+
+    record Binding(String owner, String name, Kind kind, boolean stable) {
+        String cssName() {
+            return Kind.GLOBAL == kind && stable ? name : Names.root(owner) + "--id-" + Names.encode(name);
+        }
+    }
+
+    record Import(List<String> providers, Binding binding) {
+        Import {
+            providers = List.copyOf(providers);
+        }
+    }
+
+    static Set<String> names(String css, Kind kind, Set<String> bindings) {
+        String prefix = Kind.COMPONENT == kind ? ".root {\n" : Kind.KEYFRAMES == kind ? "@keyframes shared {\n" : "";
+        var syntax = new CssSyntax(prefix + css + (prefix.isEmpty() ? "" : "\n}"), prefix.length());
+        var sheet = Kind.KEYFRAMES == kind ? syntax.parseKeyframes() : syntax.parse(Kind.COMPONENT == kind);
+        var names = new LinkedHashMap<String, String>();
+        bindings.forEach(name -> names.put(name, name));
+        return rewrite(sheet, syntax, names, false).keySet();
+    }
 
     private static String asciiLower(String value) {
         var result = new StringBuilder(value.length());
@@ -42,11 +65,11 @@ final class CssIds {
     }
 
     static Map<String, String> rewrite(
-            CascadingStyleSheet sheet, CssSyntax syntax, String root, Set<String> bindings, Set<String> authored) {
+            CascadingStyleSheet sheet, CssSyntax syntax, Map<String, String> bindings, boolean global) {
         var found = new LinkedHashMap<String, String>();
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
             private String resolve(String name) {
-                String resolved = authored.contains(name) ? name : root + "--id-" + Names.encode(name);
+                String resolved = Objects.requireNonNull(bindings.get(name));
                 found.put(name, resolved);
                 return resolved;
             }
@@ -56,7 +79,7 @@ final class CssIds {
                 CssExpressions.visit(declaration.getExpression(), member -> {
                     if (member instanceof CSSExpressionMemberTermURI uri) {
                         String value = uri.getURIString();
-                        if (value.startsWith("#") && bindings.contains(value.substring(1))) {
+                        if (value.startsWith("#") && bindings.containsKey(value.substring(1))) {
                             uri.setURIString("#" + resolve(value.substring(1)));
                         }
                     }
@@ -104,7 +127,7 @@ final class CssIds {
                 String authored = ECSSAttributeCase.CASE_INSENSITIVE == attribute.getCaseSensitivityFlag()
                         ? asciiLower(value)
                         : value;
-                boolean reference = bindings.stream().anyMatch(binding -> {
+                boolean reference = bindings.keySet().stream().anyMatch(binding -> {
                     String candidate = (uri ? "#" : "") + binding;
                     if (ECSSAttributeCase.CASE_INSENSITIVE == attribute.getCaseSensitivityFlag()) {
                         candidate = asciiLower(candidate);
@@ -133,8 +156,11 @@ final class CssIds {
                         onStyleRuleSelector(nested);
                     } else if (member instanceof CSSSelectorSimpleMember simple && simple.isHash()) {
                         String name = simple.getValue().substring(1);
-                        if (bindings.contains(name)) {
+                        if (bindings.containsKey(name)) {
                             resolve(name);
+                        } else if (global) {
+                            throw syntax.invalid(
+                                    "Global ID selectors require @CssId or a selected ID import: #" + name, simple);
                         }
                     } else if (member instanceof CSSSelectorAttribute attribute) {
                         attribute(attribute);
@@ -156,8 +182,11 @@ final class CssIds {
                         CssExpressions.visit(function.getParameterExpression(), term -> {
                             if (term instanceof CSSExpressionMemberTermSimple simple
                                     && simple.getValue().startsWith("#")
-                                    && bindings.contains(simple.getValue().substring(1))) {
-                                throw syntax.invalid("Bound IDs are unsupported in this selector function", function);
+                                    && (global
+                                            || bindings.containsKey(
+                                                    simple.getValue().substring(1)))) {
+                                throw syntax.invalid(
+                                        "ID selectors are unsupported in this selector function", function);
                             }
                         });
                     }

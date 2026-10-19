@@ -1,6 +1,6 @@
 # T04 — Component compression through a real link
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: T03
 - Spec coverage: R5–R7 class/control/evidence portions; AC4–AC5 corresponding portions.
 

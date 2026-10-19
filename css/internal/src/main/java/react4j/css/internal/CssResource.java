@@ -37,11 +37,35 @@ public record CssResource(
         PROPERTY
     }
 
-    public record Binding(String method, SymbolKind kind, String value) {
+    public record Binding(String method, SymbolKind kind, String value, List<String> requires) {
         public Binding {
             if (!OWNER.matcher(method).matches() || method.contains(".") || value.isBlank()) {
                 throw new IllegalArgumentException("Invalid CSS binding: " + method);
             }
+            requires = List.copyOf(requires);
+            if (new HashSet<>(requires).size() != requires.size()) {
+                throw new IllegalArgumentException("CSS binding providers must be distinct");
+            }
+            requires.forEach(CssResource::path);
+        }
+
+        public JsonObject json() {
+            var json = new JsonObject();
+            json.addProperty("method", method);
+            json.addProperty("kind", kind.name());
+            json.addProperty("value", value);
+            var owners = new JsonArray();
+            requires.forEach(owners::add);
+            json.add("requires", owners);
+            return json;
+        }
+
+        public static Binding read(JsonObject json) {
+            return new Binding(
+                    string(json, "method"),
+                    SymbolKind.valueOf(string(json, "kind")),
+                    string(json, "value"),
+                    names(json, "requires"));
         }
     }
 
@@ -92,6 +116,9 @@ public record CssResource(
             if (!methods.add(binding.method())) {
                 throw new IllegalArgumentException("Duplicate CSS binding: " + binding.method());
             }
+            if (!dependencies.containsAll(binding.requires())) {
+                throw new IllegalArgumentException("CSS binding providers must be dependencies");
+            }
         }
         if (!dependencies.containsAll(includes) || new HashSet<>(includes).size() != includes.size()) {
             throw new IllegalArgumentException("CSS inclusions must be distinct dependencies");
@@ -114,7 +141,7 @@ public record CssResource(
 
     public String json() {
         var json = new JsonObject();
-        json.addProperty("version", 4);
+        json.addProperty("version", 5);
         json.addProperty("owner", owner);
         json.addProperty("kind", kind.name());
         var entries = new JsonArray();
@@ -126,11 +153,7 @@ public record CssResource(
         json.addProperty("implementation", implementation);
         var methods = new JsonArray();
         for (var binding : bindings) {
-            var method = new JsonObject();
-            method.addProperty("method", binding.method());
-            method.addProperty("kind", binding.kind().name());
-            method.addProperty("value", binding.value());
-            methods.add(method);
+            methods.add(binding.json());
         }
         json.add("bindings", methods);
         var references = new JsonObject();
@@ -156,7 +179,7 @@ public record CssResource(
     public static CssResource read(String source, String expectedOwner) {
         try {
             var json = JsonParser.parseString(source).getAsJsonObject();
-            if (!json.has("version") || !"4".equals(json.get("version").toString())) {
+            if (!json.has("version") || !"5".equals(json.get("version").toString())) {
                 throw new IllegalArgumentException("Unsupported CSS metadata version");
             }
             String owner = string(json, "owner");
@@ -166,8 +189,7 @@ public record CssResource(
             var bindings = new ArrayList<Binding>();
             for (var entry : json.getAsJsonArray("bindings")) {
                 var method = entry.getAsJsonObject();
-                bindings.add(new Binding(
-                        string(method, "method"), SymbolKind.valueOf(string(method, "kind")), string(method, "value")));
+                bindings.add(Binding.read(method));
             }
             var providers = new TreeMap<String, List<String>>();
             var references = json.getAsJsonObject("providers");

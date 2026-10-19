@@ -27,7 +27,7 @@ public final class CssLinkTest {
                                                 List.of(),
                                                 "demo.Styled_Button",
                                                 List.of(new CssResource.Binding(
-                                                        "style", CssResource.SymbolKind.CLASS, "root")),
+                                                        "style", CssResource.SymbolKind.CLASS, "root", List.of())),
                                                 Map.of(),
                                                 List.of()),
                                         "",
@@ -61,7 +61,7 @@ public final class CssLinkTest {
                 "null",
                 "[]",
                 "{}",
-                config.replace("\"version\":1", "\"version\":2"),
+                config.replace("\"version\":2", "\"version\":3"),
                 config.replace("\"optimized\":true", "\"optimized\":\"true\""),
                 config.replace("\"kind\":\"CLASS\"", "\"kind\":\"UNKNOWN\""),
                 config.replace("\"method\":\"style\"", "\"method\":null"),
@@ -74,7 +74,7 @@ public final class CssLinkTest {
                 "null",
                 "[]",
                 "{}",
-                report.replace("\"version\":1", "\"version\":2"),
+                report.replace("\"version\":2", "\"version\":3"),
                 report.replace("//demo:app", "//demo:other"),
                 report.replace("1".repeat(64), "2".repeat(64)),
                 report.replace("\"optimized\":true", "\"optimized\":false"),
@@ -113,7 +113,7 @@ public final class CssLinkTest {
                             List.of(),
                             List.of(),
                             "Styled_Button",
-                            List.of(new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root")),
+                            List.of(new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root", List.of())),
                             Map.of(),
                             List.of())
                     .json();

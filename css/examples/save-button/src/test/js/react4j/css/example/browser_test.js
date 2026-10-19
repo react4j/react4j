@@ -139,6 +139,18 @@ testSuite({
     asserts.assertEquals('11px', getComputedStyle(node).borderTopWidth);
     asserts.assertEquals(Mode.environment !== 'production', style.textContent.includes('opacity:0.12345'));
   },
+  testEqualImportedIdsKeepOnlyTheLiveProviderChain() {
+    const node = /** @type {!HTMLElement} */ (container.querySelector('[data-symbol=shared-import]'));
+    const css = getComputedStyle(node);
+    asserts.assertEquals('shared-import', node.id);
+    asserts.assertEquals('13px', css.paddingLeft);
+    asserts.assertEquals('19px', css.marginLeft);
+    asserts.assertEquals('23px', css.borderLeftWidth);
+    asserts.assertEquals('29px', css.marginRight);
+    asserts.assertEquals('700', css.fontWeight);
+    asserts.assertEquals(Mode.environment === 'production' ? '0px' : '37px', css.paddingRight);
+    asserts.assertEquals(Mode.environment !== 'production', style.textContent.includes('padding-right:37px'));
+  },
   async testExplicitGlobalSelectionAndDependencyFirstCascade() {
     // Defaults is also a later explicit root; its first visit precedes Theme.
     asserts.assertEquals('3px', computed('base').borderTopWidth);

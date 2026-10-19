@@ -25,7 +25,8 @@ public final class CssPropertiesTest {
                 new CssCompiler.Exports(List.of("style"), Set.of(), Set.of(), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
-                imports);
+                imports,
+                Map.of());
     }
 
     private static CascadingStyleSheet parse(String css) {
@@ -78,6 +79,7 @@ public final class CssPropertiesTest {
                 ROOT,
                 new CssCompiler.Exports(List.of(), Set.of(), Set.of(), Set.of(), Set.of("accent")),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
+                Map.of(),
                 Map.of(),
                 Map.of());
         assertEquals(owned.output().css(), ":root{--accent:red;color:var(--accent);}");

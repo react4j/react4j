@@ -27,6 +27,7 @@ public final class CssIdsTest {
                 EXPORTS,
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
+                Map.of(),
                 Map.of());
     }
 
@@ -36,6 +37,7 @@ public final class CssIdsTest {
                 ROOT,
                 EXPORTS,
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
+                Map.of(),
                 Map.of(),
                 Map.of());
     }
@@ -48,6 +50,7 @@ public final class CssIdsTest {
                 ROOT,
                 new CssCompiler.Exports(List.of(), Set.of("control", "mask"), Set.of(), Set.of("control"), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
+                Map.of(),
                 Map.of(),
                 Map.of());
         assertEquals(result.ids(), Map.of("control", "control", "mask", ROOT + "--id-mask"));
@@ -116,16 +119,18 @@ public final class CssIdsTest {
                                 ROOT,
                                 EXPORTS,
                                 offset -> new SourceMap.Location("Frames.java", "", 0, offset),
+                                Map.of(),
                                 Map.of())
                         .ids(),
                 Map.of("mask", ROOT + "--id-mask"));
-        assertTrue(global("#unbound { content:'#mask'; background:url(icons.svg#mask); }")
+        expectThrows(CssSyntax.InvalidCss.class, () -> global("#unbound { color: red; }"));
+        assertTrue(global(":root { content:'#mask'; background:url(icons.svg#mask); }")
                 .ids()
                 .isEmpty());
     }
 
     @Test
-    public void globalSelectorFunctionsAndNestingFindIdsWithoutChangingUnboundNames() {
+    public void globalSelectorFunctionsAndNestingFindIdsAndPreserveOrdinaryClasses() {
         for (var function : List.of(
                 ":not(#mask)",
                 ":is(#mask)",
@@ -141,7 +146,7 @@ public final class CssIdsTest {
                     result.output().css());
         }
         assertEquals(
-                global("body { & #mask { color:red; } } #base { color:blue; }").ids(),
+                global("body { & #mask { color:red; } } .base { color:blue; }").ids(),
                 Map.of("mask", ROOT + "--id-mask"));
         assertTrue(global("[data-label='mask'][href='icons.svg#mask'][id=other][id] {content:'#mask';} :lang(en)"
                         + " {color:red;}")
@@ -157,6 +162,7 @@ public final class CssIdsTest {
                 ROOT,
                 new CssCompiler.Exports(List.of(), Set.of("ä"), Set.of(), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
+                Map.of(),
                 Map.of(),
                 Map.of());
         assertEquals(result.ids(), Map.of("ä", ROOT + "--id-_00e4_"));
