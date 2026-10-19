@@ -112,7 +112,7 @@ public record CssNames(Policy policy, List<Entry> entries) {
             }
         }
 
-        public JsonObject json() {
+        private JsonObject json() {
             var json = symbol.json();
             json.addProperty("readable", readable);
             json.addProperty("compiled", compiled);
@@ -138,46 +138,44 @@ public record CssNames(Policy policy, List<Entry> entries) {
     public static CssNames create(CssCatalogue catalogue, Policy policy) {
         var symbols = new TreeMap<SymbolId, CssResource.Symbol>(Comparator.comparing(SymbolId::id));
         var getters = new TreeMap<SymbolId, List<String>>(Comparator.comparing(SymbolId::id));
-        catalogue
-                .resources()
-                .values()
-                .forEach(resource -> resource.metadata()
-                        .symbols()
-                        .forEach(symbol -> symbols.put(
-                                new SymbolId(resource.metadata().owner(), symbol.kind(), symbol.name()), symbol)));
-        catalogue
-                .resources()
-                .values()
-                .forEach(resource -> resource.metadata().bindings().forEach(binding -> {
-                    var readable = new ArrayList<String>();
-                    for (var id : binding.symbols()) {
-                        var symbol = symbols.get(id);
-                        if (null == symbol) {
-                            throw new IllegalArgumentException("Unknown canonical CSS binding symbol: " + id.id());
-                        }
-                        readable.add(symbol.value());
-                        getters.computeIfAbsent(id, ignored -> new ArrayList<>())
-                                .add(resource.metadata().owner() + "#" + binding.method());
+        for (var resource : catalogue.resources().values()) {
+            var metadata = resource.metadata();
+            for (var symbol : metadata.symbols()) {
+                symbols.put(new SymbolId(metadata.owner(), symbol.kind(), symbol.name()), symbol);
+            }
+        }
+        for (var resource : catalogue.resources().values()) {
+            var metadata = resource.metadata();
+            for (var binding : metadata.bindings()) {
+                String getter = metadata.owner() + "#" + binding.method();
+                var readable = new ArrayList<String>();
+                for (var id : binding.symbols()) {
+                    var symbol = symbols.get(id);
+                    if (null == symbol) {
+                        throw new IllegalArgumentException("Unknown canonical CSS binding symbol: " + id.id());
                     }
-                    if (!binding.value().equals(String.join(" ", readable))) {
-                        throw new IllegalArgumentException(
-                                "CSS binding value differs from its canonical composition: " + binding.method());
-                    }
-                }));
-        catalogue
-                .resources()
-                .values()
-                .forEach(resource -> resource.metadata().occurrences().forEach(occurrence -> {
-                    var symbol = symbols.get(occurrence.symbol());
-                    if (null == symbol
-                            || occurrence.end() > resource.css().length()
-                            || !resource.css()
-                                    .substring(occurrence.start(), occurrence.end())
-                                    .equals(symbol.value())) {
-                        throw new IllegalArgumentException("CSS occurrence differs from its canonical catalogue: "
-                                + occurrence.symbol().id());
-                    }
-                }));
+                    readable.add(symbol.value());
+                    getters.computeIfAbsent(id, ignored -> new ArrayList<>()).add(getter);
+                }
+                if (!binding.value().equals(String.join(" ", readable))) {
+                    throw new IllegalArgumentException(
+                            "CSS binding value differs from its canonical composition: " + binding.method());
+                }
+            }
+        }
+        for (var resource : catalogue.resources().values()) {
+            for (var occurrence : resource.metadata().occurrences()) {
+                var symbol = symbols.get(occurrence.symbol());
+                if (null == symbol
+                        || occurrence.end() > resource.css().length()
+                        || !resource.css()
+                                .substring(occurrence.start(), occurrence.end())
+                                .equals(symbol.value())) {
+                    throw new IllegalArgumentException("CSS occurrence differs from its canonical catalogue: "
+                            + occurrence.symbol().id());
+                }
+            }
+        }
         var reserved = new HashSet<>(RESERVED);
         var insensitive = new HashSet<String>();
         var parsed = new TreeMap<String, CssTokens.Parsed>();

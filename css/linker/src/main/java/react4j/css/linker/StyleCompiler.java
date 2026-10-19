@@ -99,26 +99,25 @@ final class StyleCompiler extends Compiler {
                 }
             }
         }
-        if (!link.optimized()) {
-            super.initChunks(externs, chunks, options);
-            enrichedMaps.forEach(this::addInputSourceMap);
-            return;
-        }
-        for (var source : sources.keySet()) {
-            if (!found.contains(source)) {
-                throw new IllegalArgumentException("CSS catalogue implementation is missing from this link: " + source);
+        if (link.optimized()) {
+            for (var source : sources.keySet()) {
+                if (!found.contains(source)) {
+                    throw new IllegalArgumentException(
+                            "CSS catalogue implementation is missing from this link: " + source);
+                }
             }
+            externs = new ArrayList<>(externs);
+            var declarations = new StringBuilder();
+            symbols.keySet()
+                    .forEach(name -> declarations
+                            .append("/** @const {string} */ var ")
+                            .append(name)
+                            .append(";\n"));
+            externs.add(SourceFile.fromCode("react4j-css-symbols.externs.js", declarations.toString()));
+            options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, (external, root) -> symbolize(root));
         }
-        var extended = new ArrayList<>(externs);
-        var declarations = new StringBuilder();
-        symbols.keySet()
-                .forEach(name -> declarations
-                        .append("/** @const {string} */ var ")
-                        .append(name)
-                        .append(";\n"));
-        extended.add(SourceFile.fromCode("react4j-css-symbols.externs.js", declarations.toString()));
-        options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, (external, root) -> symbolize(root));
-        super.initChunks(extended, chunks, options);
+        super.initChunks(externs, chunks, options);
+        // Closure initialization clears input maps; register enriched maps afterward.
         enrichedMaps.forEach(this::addInputSourceMap);
     }
 

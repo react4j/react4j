@@ -140,7 +140,7 @@ public final class CssTokens {
     }
 
     private static String name(SymbolKind kind, String value) {
-        if (CssResource.SymbolKind.ANIMATION == kind && (value.startsWith("'") || value.startsWith("\""))) {
+        if (SymbolKind.ANIMATION == kind && (value.startsWith("'") || value.startsWith("\""))) {
             value = Objects.requireNonNull(CSSParseHelper.extractStringValue(value));
         }
         return CSSParseHelper.unescapeURL(value);
