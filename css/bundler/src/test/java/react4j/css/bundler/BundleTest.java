@@ -76,7 +76,8 @@ public final class BundleTest {
                 bindings
                         ? List.of(new CssResource.Binding("property", CssResource.SymbolKind.PROPERTY, "--example"))
                         : List.of(),
-                Map.of());
+                Map.of(),
+                List.of());
     }
 
     @Test

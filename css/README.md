@@ -211,7 +211,7 @@ Use annotated abstract `String` methods to expose names from `@Css`, `@GlobalCss
 
 | Annotation | CSS occurrence | Returned value |
 | --- | --- | --- |
-| `@CssId` | A hash selector or a pure fragment URL such as `url(#mask)` | The scoped ID without `#` |
+| `@CssId` | A hash selector or a pure fragment URL such as `url(#mask)` | The resolved ID without `#` |
 | `@CssAnimation` | A local keyframe or an imported animation alias | The resolved animation name |
 | `@CssCustomProperty` | A custom-property declaration or `var()` reference | The resolved name including `--` |
 
@@ -228,7 +228,7 @@ abstract String pulseName();
 abstract String accentProperty();
 ```
 
-Explicit ID names omit `#`; property names omit `--`. Each accessor must match a CSS occurrence or, for animations, a checked import. Duplicate exports and conflicting annotations are errors. `style()` remains an unannotated class accessor on components.
+Explicit ID names omit `#`; property names omit `--`. Each accessor must match a CSS occurrence or, for animations, a checked import. Duplicate exports and conflicting annotations are errors. `style()` exposes the component root class and cannot carry a typed-symbol annotation.
 
 Bound IDs are rewritten in hash selectors and same-document fragment URLs, including nested expressions. Strings and asset URLs such as `icons.svg#mask` retain their text. Attribute selectors that reference bound IDs are rejected. An ID is static per definition; repeated component instances that need distinct DOM IDs must use separate instance IDs.
 
@@ -253,6 +253,12 @@ new CssProps().animationName(SharedPulse.get().name()).animationDuration("0.8s")
 ```
 
 An animation accessor retains an imported animation even when no CSS declaration references it.
+
+### Stable names
+
+Use `@CssStable` on a CSS definition to preserve all names it owns, including names without Java accessors. On an abstract accessor, it preserves that symbol; a modifier accessor preserves only its modifier token, while `style()` controls the root. Stable component names and standalone keyframe names keep their scoped spelling. Stable IDs and properties owned by `@GlobalCss` use their authored spelling in every build mode, including JVM accessor values.
+
+Imports keep their defining owner's policy. Mark the provider to preserve an imported name; an explicit `@CssStable` importing accessor must agree with that provider. Marking a consuming definition covers its owned names only. Stability follows the effective declaration like other symbol annotations and does not retain otherwise unused CSS.
 
 ### Custom properties and runtime values
 
@@ -298,7 +304,7 @@ final class DarkPalette {}
 
 Both aliases resolve to Palette's property. Select `DarkPalette` as a global bundle root to apply its override. Imported property declarations and `var()` references use the same resolved name, so CSS inheritance and theme overrides work across style definitions. Providers need an actual property occurrence but no Java accessor. Imports work through separately compiled libraries and transitive aliases. Each property import must have a matching declaration or `var()` reference in the importing definition and retains its provider. An unused property import is a compilation error. Ownership cycles without a defining symbol are errors.
 
-Raw shared stylesheets retain literal property names and do not participate in this ownership model. Fixed-name property bridges to external CSS are unsupported.
+Raw shared stylesheets retain literal property names. Use a stable global property to share an authored property name with external CSS.
 
 ## Build integration
 

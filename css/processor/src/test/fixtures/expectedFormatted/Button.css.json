@@ -1,1 +1,1 @@
-{"version":3,"owner":"Button","kind":"COMPONENT","dependencies":[],"includes":[],"implementation":"Styled_Button","bindings":[{"method":"style","kind":"CLASS","value":"jcss-Button"}],"providers":{}}
+{"version":4,"owner":"Button","kind":"COMPONENT","dependencies":[],"includes":[],"implementation":"Styled_Button","bindings":[{"method":"style","kind":"CLASS","value":"jcss-Button"}],"providers":{},"symbols":[{"kind":"CLASS","name":"","value":"jcss-Button","stable":false}]}

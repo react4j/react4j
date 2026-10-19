@@ -10,7 +10,7 @@ Component roots and modifiers shorten consistently in actual optimized JS and CS
 
 ## Acceptance criteria
 
-- [ ] Extend catalogue metadata with canonical symbol identity, owned/CSS-only inventory, stable policy and getter composition; hard-cut obsolete schema. Start allocation with component class symbols, retaining other kinds until T05.
+- [ ] Use the owned/CSS-only inventory and stable policy established in T02; extend getter metadata with canonical symbol composition and hard-cut obsolete schema. Start allocation with component class symbols, retaining other kinds until T05.
 - [ ] Normal resolved `defs` configure both catalogue and compiler, including select; defaults ADVANCED on, BUNDLE/development off, explicit false preserves optimization/pruning, optional string prefix applies only to compressed names.
 - [ ] Validate boolean/string types, invalid prefixes and conflicting settings; consume only the exact recognized CSS defines without muting unrelated unknown-define warnings.
 - [ ] Root and modifier tokens map independently then getters rebuild values. Preserve imports, aliases and inlining; stable class tokens remain readable.

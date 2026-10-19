@@ -18,7 +18,7 @@ import react4j.css.internal.SourceMap;
 public final class CssIdsTest {
     private static final String ROOT = "jcss-demo-Button";
     private static final CssCompiler.Exports EXPORTS =
-            new CssCompiler.Exports(List.of("style"), Set.of("mask", "control"), Set.of());
+            new CssCompiler.Exports(List.of("style"), Set.of("mask", "control"), Set.of(), Set.of(), Set.of());
 
     private static CssCompiler.Result component(String css) {
         return CssCompiler.component(
@@ -38,6 +38,20 @@ public final class CssIdsTest {
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
                 Map.of());
+    }
+
+    @Test
+    public void authoredGlobalIdsCanCoexistWithScopedIds() {
+        String css = "#control { filter: url(#mask); }";
+        var result = CssCompiler.global(
+                css,
+                ROOT,
+                new CssCompiler.Exports(List.of(), Set.of("control", "mask"), Set.of(), Set.of("control"), Set.of()),
+                offset -> new SourceMap.Location("Button.java", css, 0, offset),
+                Map.of(),
+                Map.of());
+        assertEquals(result.ids(), Map.of("control", "control", "mask", ROOT + "--id-mask"));
+        assertEquals(result.output().css(), "#control{filter:url(#" + ROOT + "--id-mask);}");
     }
 
     @Test
@@ -141,7 +155,7 @@ public final class CssIdsTest {
         var result = CssCompiler.global(
                 css,
                 ROOT,
-                new CssCompiler.Exports(List.of(), Set.of("ä"), Set.of()),
+                new CssCompiler.Exports(List.of(), Set.of("ä"), Set.of(), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
                 Map.of());

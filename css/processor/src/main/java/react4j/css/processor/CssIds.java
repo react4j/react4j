@@ -41,11 +41,12 @@ final class CssIds {
         return result.toString();
     }
 
-    static Map<String, String> rewrite(CascadingStyleSheet sheet, CssSyntax syntax, String root, Set<String> bindings) {
+    static Map<String, String> rewrite(
+            CascadingStyleSheet sheet, CssSyntax syntax, String root, Set<String> bindings, Set<String> authored) {
         var found = new LinkedHashMap<String, String>();
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
             private String resolve(String name) {
-                String resolved = root + "--id-" + Names.encode(name);
+                String resolved = authored.contains(name) ? name : root + "--id-" + Names.encode(name);
                 found.put(name, resolved);
                 return resolved;
             }

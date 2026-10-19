@@ -43,7 +43,7 @@ public final class CssCompilerTest {
         return CssCompiler.component(
                         css,
                         ROOT,
-                        new CssCompiler.Exports(List.of(modifiers), Set.of(), Set.of()),
+                        new CssCompiler.Exports(List.of(modifiers), Set.of(), Set.of(), Set.of(), Set.of()),
                         offset -> new SourceMap.Location("Button.java", css, 0, offset),
                         Map.of(),
                         Map.of())
@@ -334,7 +334,7 @@ public final class CssCompilerTest {
         var other = parse(CssCompiler.component(
                         source,
                         "jcss-demo-Other",
-                        new CssCompiler.Exports(List.of("style", "beating"), Set.of(), Set.of()),
+                        new CssCompiler.Exports(List.of("style", "beating"), Set.of(), Set.of(), Set.of(), Set.of()),
                         offset -> new SourceMap.Location("Other.java", source, 0, offset),
                         Map.of(),
                         Map.of())
@@ -754,11 +754,11 @@ public final class CssCompilerTest {
     public void sharedAnimationAliasesRespectShorthandGrammarAndTrackRealReferences() {
         var imports = Map.of(
                 "pulse",
-                new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES),
+                new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES, false),
                 "linear",
-                new CssCompiler.Import("shared.Linear", Kind.KEYFRAMES),
+                new CssCompiler.Import("shared.Linear", Kind.KEYFRAMES, false),
                 "--custom",
-                new CssCompiler.Import("shared.Custom", Kind.KEYFRAMES));
+                new CssCompiler.Import("shared.Custom", Kind.KEYFRAMES, false));
         for (var entry : Map.of(
                         "animation: linear 1s;", List.<String>of(),
                         "animation: linear 1s linear;", List.of("linear"),
@@ -771,7 +771,7 @@ public final class CssCompilerTest {
             var result = CssCompiler.component(
                     source,
                     ROOT,
-                    new CssCompiler.Exports(List.of("style"), Set.of(), Set.of()),
+                    new CssCompiler.Exports(List.of("style"), Set.of(), Set.of(), Set.of(), Set.of()),
                     offset -> new SourceMap.Location("Button.java", source, 0, offset),
                     imports,
                     Map.of());
@@ -799,7 +799,7 @@ public final class CssCompilerTest {
                 () -> CssCompiler.component(
                         "@keyframes pulse { from { opacity: 0; } }",
                         ROOT,
-                        new CssCompiler.Exports(List.of("style"), Set.of(), Set.of()),
+                        new CssCompiler.Exports(List.of("style"), Set.of(), Set.of(), Set.of(), Set.of()),
                         offset -> new SourceMap.Location("Button.java", "", 0, offset),
                         imports,
                         Map.of()));
@@ -811,7 +811,7 @@ public final class CssCompilerTest {
         var result = CssCompiler.keyframes(
                 source,
                 "shared-pulse",
-                new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
+                new CssCompiler.Exports(List.of(), Set.of(), Set.of(), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Pulse.java", source, 0, offset),
                 Map.of());
         var frames =
@@ -831,7 +831,7 @@ public final class CssCompilerTest {
                     () -> CssCompiler.keyframes(
                             invalid,
                             "shared-pulse",
-                            new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
+                            new CssCompiler.Exports(List.of(), Set.of(), Set.of(), Set.of(), Set.of()),
                             offset -> new SourceMap.Location("Pulse.java", invalid, 0, offset),
                             Map.of()));
         }
@@ -844,7 +844,7 @@ public final class CssCompilerTest {
             var result = CssCompiler.global(
                     css,
                     "jcss-demo-Global",
-                    new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
+                    new CssCompiler.Exports(List.of(), Set.of(), Set.of(), Set.of(), Set.of()),
                     offset -> new SourceMap.Location("Defaults.java", css, 0, offset),
                     Map.of(),
                     Map.of());
@@ -859,7 +859,7 @@ public final class CssCompilerTest {
                     () -> CssCompiler.global(
                             invalid,
                             "jcss-demo-Global",
-                            new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
+                            new CssCompiler.Exports(List.of(), Set.of(), Set.of(), Set.of(), Set.of()),
                             offset -> new SourceMap.Location("Defaults.java", invalid, 0, offset),
                             Map.of(),
                             Map.of()));
@@ -874,9 +874,9 @@ public final class CssCompilerTest {
         var result = CssCompiler.global(
                 css,
                 "jcss-demo-Global",
-                new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
+                new CssCompiler.Exports(List.of(), Set.of(), Set.of(), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Defaults.java", css, 0, offset),
-                Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES)),
+                Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES, false)),
                 Map.of());
         assertEquals(result.imports(), Set.of("pulse"));
         var sheet = parse(result.output().css());
@@ -897,9 +897,9 @@ public final class CssCompilerTest {
             var empty = CssCompiler.global(
                     source,
                     "jcss-demo-Global",
-                    new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
+                    new CssCompiler.Exports(List.of(), Set.of(), Set.of(), Set.of(), Set.of()),
                     offset -> new SourceMap.Location("Defaults.java", source, 0, offset),
-                    Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES)),
+                    Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES, false)),
                     Map.of());
             assertTrue(empty.imports().isEmpty());
         }
@@ -916,9 +916,9 @@ public final class CssCompilerTest {
                     () -> CssCompiler.global(
                             source,
                             "jcss-demo-Global",
-                            new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
+                            new CssCompiler.Exports(List.of(), Set.of(), Set.of(), Set.of(), Set.of()),
                             offset -> new SourceMap.Location("Defaults.java", source, 0, offset),
-                            Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES)),
+                            Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES, false)),
                             Map.of()));
         }
     }

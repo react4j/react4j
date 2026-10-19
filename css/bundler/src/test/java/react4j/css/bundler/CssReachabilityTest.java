@@ -42,7 +42,8 @@ public final class CssReachabilityTest {
                 includes,
                 bindings.isEmpty() ? "" : "Styled_" + owner,
                 bindings,
-                providers);
+                providers,
+                List.of());
         return new Resource(
                 metadata,
                 css,
@@ -73,6 +74,33 @@ public final class CssReachabilityTest {
                         CssLink.create(catalogue, "//:app", true),
                         live)
                 .css();
+    }
+
+    @Test
+    public void liveIdsDoNotActivateEqualNamedAnimationsOrTheirProvider() throws Exception {
+        var catalogue = catalogue(
+                resource(
+                        "IDs",
+                        Kind.GLOBAL,
+                        "#shared{color:red;}",
+                        List.of(
+                                binding("id", SymbolKind.ID, "shared"),
+                                binding("animation", SymbolKind.ANIMATION, "shared")),
+                        List.of(),
+                        Map.of("shared", List.of("Pulse"))),
+                resource(
+                        "Pulse",
+                        Kind.KEYFRAMES,
+                        "@keyframes shared{to{opacity:0.12345;}}",
+                        List.of(),
+                        List.of(),
+                        Map.of()));
+        String id = bundle(catalogue, Set.of("IDs#id"));
+        assertTrue(id.contains("#shared{color:red;}"), id);
+        assertFalse(id.contains("@keyframes"), id);
+        String animation = bundle(catalogue, Set.of("IDs#animation"));
+        assertTrue(animation.contains("@keyframes shared"), animation);
+        assertFalse(animation.contains("#shared"), animation);
     }
 
     @Test

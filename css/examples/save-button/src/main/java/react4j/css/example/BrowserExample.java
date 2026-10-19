@@ -7,6 +7,7 @@ import react4j.css.CssAnimation;
 import react4j.css.CssCustomProperty;
 import react4j.css.CssId;
 import react4j.css.CssImport;
+import react4j.css.CssStable;
 import react4j.css.GlobalCss;
 import react4j.css.Keyframes;
 import react4j.dom.DOM;
@@ -82,6 +83,9 @@ public final class BrowserExample {
                                         .data("peer", "true")
                                         .className(status.style()),
                                 "Ready"),
+                        DOM.span(
+                                new HtmlProps().id(EqualNames.get().id()).data("symbol", "equal-names"),
+                                "Stable ID sharing an animation's readable name"),
                         DOM.button(
                                 new BtnProps()
                                         .id(button.controlId())
@@ -145,6 +149,8 @@ public final class BrowserExample {
     }
 
     interface ActiveStyle<T> {
+        @CssStable
+        @JsMethod(name = "activeStyle")
         T active();
 
         default T activeForRender() {
@@ -171,6 +177,7 @@ public final class BrowserExample {
         abstract String unused();
     }
 
+    @CssStable
     @Css("""
         color: rgb(98, 76, 54);
         """)
@@ -296,6 +303,7 @@ public final class BrowserExample {
         """)
     abstract static class AccessorPulse {}
 
+    @CssStable
     @GlobalCss("""
         #direct-global { --spacing: 7px; letter-spacing: var(--spacing); }
         """)
@@ -310,6 +318,28 @@ public final class BrowserExample {
         @CssCustomProperty
         abstract String spacing();
     }
+
+    @CssImport(name = "pulse", value = EqualNamePulse.class)
+    @GlobalCss("""
+        #jcss-react4j-css-example-BrowserExample_0024_EqualNamePulse--keyframes { border-top: 11px solid; }
+        """)
+    abstract static class EqualNames {
+        static EqualNames get() {
+            return BrowserExample_Styled_EqualNames.get();
+        }
+
+        @CssStable
+        @CssId(name = "jcss-react4j-css-example-BrowserExample_0024_EqualNamePulse--keyframes")
+        abstract String id();
+
+        @CssAnimation(name = "pulse")
+        abstract String animation();
+    }
+
+    @Keyframes("""
+        to { opacity: 0.12345; }
+        """)
+    abstract static class EqualNamePulse {}
 
     @Keyframes("""
         to { transform: rotate(360deg); }

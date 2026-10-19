@@ -11,6 +11,7 @@ java_library(
         "CssId.java",
         "CssImport.java",
         "CssImports.java",
+        "CssStable.java",
         "GlobalCss.java",
         "Keyframes.java",
         "package-info.java",

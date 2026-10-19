@@ -16,7 +16,8 @@ import react4j.css.internal.SourceMap;
 public final class CssPrunerTest {
     private static Resource resource(SourceMap.Writer writer) {
         return new Resource(
-                new CssResource("Button", CssResource.Kind.COMPONENT, List.of(), List.of(), "", List.of(), Map.of()),
+                new CssResource(
+                        "Button", CssResource.Kind.COMPONENT, List.of(), List.of(), "", List.of(), Map.of(), List.of()),
                 writer.css(),
                 JsonParser.parseString(writer.map("Button.css")).getAsJsonObject());
     }

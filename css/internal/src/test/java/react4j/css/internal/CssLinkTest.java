@@ -28,7 +28,8 @@ public final class CssLinkTest {
                                                 "demo.Styled_Button",
                                                 List.of(new CssResource.Binding(
                                                         "style", CssResource.SymbolKind.CLASS, "root")),
-                                                Map.of()),
+                                                Map.of(),
+                                                List.of()),
                                         "",
                                         JsonParser.parseString("{}").getAsJsonObject())),
                         "1".repeat(64)),
@@ -113,7 +114,8 @@ public final class CssLinkTest {
                             List.of(),
                             "Styled_Button",
                             List.of(new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root")),
-                            Map.of())
+                            Map.of(),
+                            List.of())
                     .json();
             Files.writeString(tree.resolve("Button.css"), ".root{color:red;}" + SourceMap.reference("Button.css"));
             Files.writeString(

@@ -70,13 +70,18 @@ final class CssCompiler {
         this.imports = imports;
     }
 
-    record Import(String owner, Kind kind) {
+    record Import(String owner, Kind kind, boolean stable) {
         String cssName() {
             return Names.root(owner) + (Kind.KEYFRAMES == kind ? "--keyframes" : "");
         }
     }
 
-    record Exports(List<String> modifiers, Set<String> ids, Set<String> animations) {}
+    record Exports(
+            List<String> modifiers,
+            Set<String> ids,
+            Set<String> animations,
+            Set<String> authoredIds,
+            Set<String> authoredProperties) {}
 
     record Result(
             SourceMap.Writer output,
@@ -94,7 +99,9 @@ final class CssCompiler {
             var binding = imported.get(name);
             String resolved;
             if (null == binding) {
-                resolved = "--" + root + "--" + Names.encode(name);
+                resolved = exports.authoredProperties().contains(name)
+                        ? "--" + name
+                        : "--" + root + "--" + Names.encode(name);
             } else {
                 usedProperties.add(name);
                 resolved = binding.binding().cssName();
@@ -125,7 +132,7 @@ final class CssCompiler {
         var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, exports, locations, imports);
         var sheet = compiler.syntax.parse(true);
         compiler.properties(sheet, properties);
-        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids());
+        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids(), exports.authoredIds());
         for (var rule : sheet.getAllRules()) {
             if (rule instanceof CSSKeyframesRule frames) {
                 String name = frames.getAnimationName();
@@ -149,6 +156,7 @@ final class CssCompiler {
         }
         compiler.exports.animations().forEach(compiler::exportAnimation);
         for (var frames : compiler.keyframes.values()) {
+            compiler.animations.put(frames.getAnimationName(), compiler.animationName(frames.getAnimationName()));
             compiler.writeKeyframes(frames, compiler.animationName(frames.getAnimationName()));
         }
         compiler.style(sheet.getAllStyleRules().get(0), new Scope("." + root, true), true);
@@ -170,7 +178,7 @@ final class CssCompiler {
         var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, exports, locations, Map.of());
         var sheet = compiler.syntax.parseKeyframes();
         compiler.properties(sheet, properties);
-        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids());
+        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids(), exports.authoredIds());
         var frames = (CSSKeyframesRule) sheet.getAllRules().get(0);
         compiler.animations.put("", root + "--keyframes");
         compiler.writeKeyframes(frames, root + "--keyframes");
@@ -187,7 +195,7 @@ final class CssCompiler {
         var compiler = new CssCompiler(css, 0, root, exports, locations, imports);
         var sheet = compiler.syntax.parse(false);
         compiler.properties(sheet, properties);
-        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids());
+        compiler.ids = CssIds.rewrite(sheet, compiler.syntax, compiler.root, exports.ids(), exports.authoredIds());
         exports.animations().forEach(compiler::exportAnimation);
         for (var rule : sheet.getAllRules()) {
             compiler.globalRule((ICSSSourceLocationAware) rule);

@@ -2,7 +2,9 @@ package react4j.css.linker;
 
 import static org.testng.Assert.*;
 
+import com.google.debugging.sourcemap.FilePosition;
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
+import com.google.debugging.sourcemap.SourceMapGeneratorV3;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerFactory;
@@ -15,6 +17,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 import org.testng.annotations.Test;
 import react4j.css.internal.CssLink;
 import react4j.css.internal.CssResource;
@@ -66,7 +69,7 @@ public final class StyleCompilerTest {
             String code = "class Styled_Button { style() { return 'root'; } success() { return 'root mod'; } dead() {"
                     + " return 'root dead'; } alias() { return 'root mod'; }} function helper(style) { return"
                     + " style.success(); } window.result = helper(new Styled_Button());";
-            Files.writeString(source, code);
+            mappedSource(source, code);
             Path other = directory.resolve("other.js");
             Files.writeString(other, "function unrelated() { return 'root dead'; } window.other = unrelated();");
             Path extern = directory.resolve("extern.js");
@@ -109,8 +112,8 @@ public final class StyleCompilerTest {
             var origin = consumer.getMappingForLine(1, start + 1);
             assertNotNull(origin);
             assert null != origin;
-            assertTrue(origin.getOriginalFile().endsWith("demo/Styled_Button.impl.java.js"));
-            assertEquals(origin.getColumnPosition(), code.indexOf("'root mod'") + 1);
+            assertTrue(origin.getOriginalFile().endsWith("demo/Styled_Button.java"), origin.toString());
+            assertEquals(origin.getColumnPosition(), code.indexOf("success()") + 1);
         } finally {
             remove(directory);
         }
@@ -247,12 +250,124 @@ public final class StyleCompilerTest {
         }
     }
 
+    @Test
+    public void missingMalformedAndUnidentifiedBindingMapsFailClosed() throws Exception {
+        Path directory = Files.createTempDirectory("css-invalid-binding-map");
+        try {
+            Path source = directory.resolve("input.js/demo/Styled_Button.impl.java.js");
+            Path map = source.resolveSibling("Styled_Button.js.map");
+            Path extern = directory.resolve("extern.js");
+            Path report = directory.resolve("live.json");
+            Files.createDirectories(source.getParent());
+            Files.writeString(extern, "var window;");
+            var link = new CssLink("//:app", "1".repeat(64), true, List.of(value("style", "root")));
+            for (var failure : List.of("missing", "malformed", "unidentified")) {
+                mappedSource(source, "class Button { style() { return 'root'; }} window.result=new Button().style();");
+                if ("missing".equals(failure)) {
+                    Files.delete(map);
+                } else if ("malformed".equals(failure)) {
+                    Files.writeString(map, "{");
+                } else {
+                    Files.writeString(map, Files.readString(map).replace("demo.Styled_Button.style", "other.method"));
+                }
+                var error = expectThrows(
+                        RuntimeException.class,
+                        () -> new Runner(new StyleCompiler(link, report), new String[] {
+                                    "--js",
+                                    source.toString(),
+                                    "--externs",
+                                    extern.toString(),
+                                    "--env",
+                                    "CUSTOM",
+                                    "--compilation_level",
+                                    "ADVANCED",
+                                    "--js_output_file",
+                                    directory.resolve("app.js").toString()
+                                })
+                                .execute());
+                var messages = new StringBuilder();
+                for (Throwable cause = error; null != cause; cause = cause.getCause()) {
+                    messages.append(cause.getMessage());
+                }
+                assertTrue(
+                        messages.toString().contains("Invalid generated CSS binding source map")
+                                || messages.toString().contains("Generated CSS binding differs from its catalogue"),
+                        messages.toString());
+                assertFalse(Files.exists(report));
+            }
+        } finally {
+            remove(directory);
+        }
+    }
+
+    @Test
+    public void equalGetterTextKeepsEachBindingIdentity() throws Exception {
+        Path directory = Files.createTempDirectory("css-equal-bindings");
+        try {
+            var link = new CssLink(
+                    "//:app",
+                    "1".repeat(64),
+                    true,
+                    List.of(
+                            new CssLink.Value(
+                                    "demo.Button",
+                                    "demo.Styled_Button",
+                                    new CssResource.Binding("id", CssResource.SymbolKind.ID, "shared")),
+                            new CssLink.Value(
+                                    "demo.Button",
+                                    "demo.Styled_Button",
+                                    new CssResource.Binding("animation", CssResource.SymbolKind.ANIMATION, "shared"))));
+            for (var method : List.of("id", "animation")) {
+                compile(
+                        new StyleCompiler(link, directory.resolve("live.json")),
+                        directory,
+                        Map.of(
+                                "demo/Styled_Button.impl.java.js",
+                                "class Button { id() { return 'shared'; } animation() { return 'shared'; } }"
+                                        + "window.result = new Button()." + method + "();"));
+                assertEquals(
+                        link.readReport(
+                                Files.readString(directory.resolve("live.json")),
+                                CssLink.digest(directory.resolve("app.js"))),
+                        Set.of("demo.Button#" + method));
+            }
+        } finally {
+            remove(directory);
+        }
+    }
+
+    private static void mappedSource(Path path, String code) throws Exception {
+        if (!path.toString().endsWith(".impl.java.js")) {
+            Files.writeString(path, code);
+            return;
+        }
+        String name = path.getFileName().toString().replace(".impl.java.js", "");
+        String relative = path.toString().replace('\\', '/');
+        relative = relative.substring(relative.lastIndexOf(".js/") + 4).replace(".impl.java.js", "");
+        String owner = relative.replace('/', '.');
+        var generator = new SourceMapGeneratorV3();
+        var methods = Pattern.compile("([\\p{javaJavaIdentifierStart}][\\p{javaJavaIdentifierPart}]*)\\(\\)\\s*\\{")
+                .matcher(code);
+        while (methods.find()) {
+            generator.addMapping(
+                    name + ".java",
+                    owner + "." + methods.group(1),
+                    new FilePosition(0, methods.start()),
+                    new FilePosition(0, methods.start()),
+                    new FilePosition(0, code.indexOf('}', methods.end()) + 1));
+        }
+        var output = new StringBuilder();
+        generator.appendTo(output, name + ".js");
+        Files.writeString(path.resolveSibling(name + ".js.map"), output);
+        Files.writeString(path, code + "\n//# sourceMappingURL=" + name + ".js.map\n");
+    }
+
     private static void compile(StyleCompiler compiler, Path directory, Map<String, String> sources) throws Exception {
         var arguments = new ArrayList<String>();
         for (var entry : new TreeMap<>(sources).entrySet()) {
             Path path = directory.resolve("input.js").resolve(entry.getKey());
             Files.createDirectories(path.getParent());
-            Files.writeString(path, entry.getValue());
+            mappedSource(path, entry.getValue());
             arguments.addAll(List.of("--js", path.toString()));
         }
         Path extern = directory.resolve("extern.js");

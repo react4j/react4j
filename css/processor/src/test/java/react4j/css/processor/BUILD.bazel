@@ -20,6 +20,7 @@ java_testng(
         "CssProcessorArtifactTest.java",
         "CssProcessorTest.java",
         "CssResourceProcessorTest.java",
+        "CssStableProcessorTest.java",
         "CssSymbolProcessorTest.java",
     ],
     data = [
@@ -33,6 +34,7 @@ java_testng(
         "react4j.css.processor.CssInterfaceProcessorTest",
         "react4j.css.processor.CssProcessorTest",
         "react4j.css.processor.CssResourceProcessorTest",
+        "react4j.css.processor.CssStableProcessorTest",
         "react4j.css.processor.CssSymbolProcessorTest",
     ],
     deps = [
@@ -50,6 +52,7 @@ java_testng(
         "CssInterfaceProcessorTest.java",
         "CssProcessorTest.java",
         "CssResourceProcessorTest.java",
+        "CssStableProcessorTest.java",
         "CssSymbolProcessorTest.java",
     ],
     data = [
@@ -61,6 +64,7 @@ java_testng(
         "react4j.css.processor.CssInterfaceProcessorTest",
         "react4j.css.processor.CssProcessorTest",
         "react4j.css.processor.CssResourceProcessorTest",
+        "react4j.css.processor.CssStableProcessorTest",
         "react4j.css.processor.CssSymbolProcessorTest",
     ],
     deps = [

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -17,6 +18,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -49,7 +51,8 @@ import react4j.css.internal.SourceMap;
     "react4j.css.GlobalCss",
     "react4j.css.CssCustomProperty",
     "react4j.css.CssId",
-    "react4j.css.CssAnimation"
+    "react4j.css.CssAnimation",
+    "react4j.css.CssStable"
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public final class CssProcessor extends AbstractStandardProcessor {
@@ -78,6 +81,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                             ? type
                             : (TypeElement) Objects.requireNonNull(element.getEnclosingElement());
                     if (ElementKind.INTERFACE == owner.getKind()
+                            && null == annotation(owner, "react4j.css.CssStable")
                             && owner.getAnnotationMirrors().stream()
                                     .noneMatch(mirror -> List.of(
                                                     CSS_ANNOTATION,
@@ -122,6 +126,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
         String implementation = "";
         var bound = new ArrayList<CssResource.Binding>();
         if (null != descriptor) {
+            validateStableImports(owner, descriptor, imports);
             var values = bindings(descriptor, result);
             var generated = CssGenerator.buildType(processingEnv, descriptor, values);
             emitTypeSpec(descriptor.packageName(), generated.type());
@@ -162,7 +167,14 @@ public final class CssProcessor extends AbstractStandardProcessor {
         providers.replaceAll(
                 (symbol, owners) -> owners.stream().distinct().sorted().toList());
         var metadata = new CssResource(
-                ownerName, kind, List.copyOf(dependencies), imports.globals(), implementation, bound, providers);
+                ownerName,
+                kind,
+                List.copyOf(dependencies),
+                imports.globals(),
+                implementation,
+                bound,
+                providers,
+                symbols(owner, kind, descriptor, result, imports));
         var output = result.output();
         for (var entry : Map.of(
                         resource,
@@ -303,7 +315,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 .contains(name)) {
             throw new IllegalArgumentException("Unknown custom property " + name + " in " + binaryName(owner));
         }
-        CssProperties.Binding binding = new CssProperties.Binding(binaryName(owner), name);
+        boolean stable = stable(owner, CssResource.SymbolKind.PROPERTY, name);
+        CssProperties.Binding binding = new CssProperties.Binding(binaryName(owner), name, sourceKind(owner), stable);
         boolean imported = false;
         for (var mirror : importMirrors(owner)) {
             var property = (String) value(mirror, "property").getValue();
@@ -369,7 +382,18 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 globals.add(name);
             } else {
                 CssCompiler.checkAlias(alias, targetKind);
-                if (null != imports.putIfAbsent(alias, new CssCompiler.Import(name, targetKind))) {
+                if (null
+                        != imports.putIfAbsent(
+                                alias,
+                                new CssCompiler.Import(
+                                        name,
+                                        targetKind,
+                                        stable(
+                                                element,
+                                                Kind.KEYFRAMES == targetKind
+                                                        ? CssResource.SymbolKind.ANIMATION
+                                                        : CssResource.SymbolKind.CLASS,
+                                                "")))) {
                     throw new IllegalArgumentException("Duplicate imported CSS name: " + alias);
                 }
             }
@@ -416,7 +440,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
         for (var inherited : inheritedMethods) {
             var method = inherited.element();
             if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
-                if (null != symbolAnnotation(inherited.declaration())) {
+                if (null != symbolAnnotation(inherited.declaration())
+                        || null != annotation(inherited.declaration(), "react4j.css.CssStable")) {
                     throw new IllegalArgumentException(
                             "CSS symbol accessors must be abstract: " + method.getSimpleName());
                 }
@@ -522,12 +547,17 @@ public final class CssProcessor extends AbstractStandardProcessor {
         var inheritedMethods = CssMethods.collect(processingEnv, owner);
         for (var inherited : inheritedMethods) {
             var method = inherited.element();
-            if (null != symbolAnnotation(inherited.declaration())) {
+            if (null != symbolAnnotation(inherited.declaration())
+                    || null != annotation(inherited.declaration(), "react4j.css.CssStable")) {
                 if (!method.getModifiers().contains(Modifier.ABSTRACT)
                         || !inherited.isAccessor(processingEnv.getTypeUtils())) {
                     throw new IllegalArgumentException(
                             "CSS symbol accessors must be abstract, take no arguments and return String without"
                                     + " type parameters or throws");
+                }
+                if (null == symbolAnnotation(inherited.declaration())) {
+                    throw new IllegalArgumentException(
+                            "CSS resource abstract methods require a symbol annotation: " + method.getSimpleName());
                 }
                 methods.add(inherited);
                 deprecated |= processingEnv.getElementUtils().isDeprecated(inherited.element())
@@ -601,8 +631,132 @@ public final class CssProcessor extends AbstractStandardProcessor {
         return bindings;
     }
 
-    private static CssCompiler.Exports exports(@Nullable CssDescriptor descriptor) {
-        return null == descriptor ? new CssCompiler.Exports(List.of(), Set.of(), Set.of()) : descriptor.exports();
+    private boolean stable(TypeElement owner, CssResource.SymbolKind kind, String name) {
+        if (null != annotation(owner, "react4j.css.CssStable")) {
+            return true;
+        }
+        return methodStable(owner, kind, name);
+    }
+
+    private boolean methodStable(TypeElement owner, CssResource.SymbolKind kind, String name) {
+        for (var method : CssMethods.collect(processingEnv, owner)) {
+            var declaration = method.declaration();
+            if (null == annotation(declaration, "react4j.css.CssStable")) {
+                continue;
+            }
+            var annotation = symbolAnnotation(declaration);
+            var symbolKind = null == annotation
+                    ? CssResource.SymbolKind.CLASS
+                    : switch (annotation.getAnnotationType().toString()) {
+                        case "react4j.css.CssId" -> CssResource.SymbolKind.ID;
+                        case "react4j.css.CssAnimation" -> CssResource.SymbolKind.ANIMATION;
+                        default -> CssResource.SymbolKind.PROPERTY;
+                    };
+            String symbolName =
+                    null == annotation ? declaration.getSimpleName().toString() : symbolName(declaration, annotation);
+            if (CssResource.SymbolKind.CLASS == symbolKind && "style".equals(symbolName)
+                    || CssResource.SymbolKind.ANIMATION == symbolKind && Kind.KEYFRAMES == sourceKind(owner)) {
+                symbolName = "";
+            }
+            if (symbolKind == kind && symbolName.equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void validateStableImports(TypeElement owner, CssDescriptor descriptor, Imports imports) {
+        for (var accessor : descriptor.accessors()) {
+            var kind = CssResource.SymbolKind.valueOf(accessor.kind().name());
+            if (!methodStable(owner, kind, accessor.name())) {
+                continue;
+            }
+            var property = imports.properties().get(accessor.name());
+            var animation = imports.named().get(accessor.name());
+            if (CssResource.SymbolKind.PROPERTY == kind
+                            && null != property
+                            && !property.binding().stable()
+                    || CssResource.SymbolKind.ANIMATION == kind && null != animation && !animation.stable()) {
+                throw new IllegalArgumentException(
+                        "@CssStable importing accessor conflicts with its defining owner's policy: "
+                                + accessor.method().getSimpleName());
+            }
+        }
+    }
+
+    private List<CssResource.Symbol> symbols(
+            TypeElement owner,
+            Kind kind,
+            @Nullable CssDescriptor descriptor,
+            CssCompiler.Result result,
+            Imports imports) {
+        var symbols = new ArrayList<CssResource.Symbol>();
+        if (Kind.COMPONENT == kind) {
+            String root = Names.root(binaryName(owner));
+            symbols.add(new CssResource.Symbol(
+                    CssResource.SymbolKind.CLASS, "", root, stable(owner, CssResource.SymbolKind.CLASS, "")));
+            assert null != descriptor;
+            descriptor.accessors().stream()
+                    .filter(accessor -> CssAccessor.Kind.CLASS == accessor.kind() && !"style".equals(accessor.name()))
+                    .forEach(accessor -> symbols.add(new CssResource.Symbol(
+                            CssResource.SymbolKind.CLASS,
+                            accessor.name(),
+                            root + "--" + Names.encode(accessor.name()),
+                            stable(owner, CssResource.SymbolKind.CLASS, accessor.name()))));
+        }
+        result.properties().forEach((name, value) -> {
+            if (!imports.properties().containsKey(name)) {
+                symbols.add(new CssResource.Symbol(
+                        CssResource.SymbolKind.PROPERTY,
+                        name,
+                        value,
+                        stable(owner, CssResource.SymbolKind.PROPERTY, name)));
+            }
+        });
+        result.ids()
+                .forEach((name, value) -> symbols.add(new CssResource.Symbol(
+                        CssResource.SymbolKind.ID, name, value, stable(owner, CssResource.SymbolKind.ID, name))));
+        result.animations().forEach((name, value) -> {
+            if (!imports.named().containsKey(name)) {
+                symbols.add(new CssResource.Symbol(
+                        CssResource.SymbolKind.ANIMATION,
+                        name,
+                        value,
+                        stable(owner, CssResource.SymbolKind.ANIMATION, name)));
+            }
+        });
+        return symbols.stream()
+                .sorted(Comparator.comparing(CssResource.Symbol::kind).thenComparing(CssResource.Symbol::name))
+                .toList();
+    }
+
+    private CssCompiler.Exports exports(TypeElement owner, Kind kind, @Nullable CssDescriptor descriptor) {
+        var ids = null == descriptor
+                ? Set.<String>of()
+                : descriptor.accessors().stream()
+                        .filter(accessor -> CssAccessor.Kind.ID == accessor.kind())
+                        .map(CssAccessor::name)
+                        .collect(Collectors.toSet());
+        var authoredIds = new LinkedHashSet<String>();
+        var authoredProperties = new LinkedHashSet<String>();
+        if (Kind.GLOBAL == kind) {
+            ids.stream()
+                    .filter(name -> stable(owner, CssResource.SymbolKind.ID, name))
+                    .forEach(authoredIds::add);
+            var css = annotation(owner, annotationName(kind));
+            assert null != css;
+            propertyNames
+                    .computeIfAbsent(
+                            binaryName(owner),
+                            ignored -> CssProperties.names(
+                                    (String) value(css, "value").getValue(), kind))
+                    .stream()
+                    .filter(name -> stable(owner, CssResource.SymbolKind.PROPERTY, name))
+                    .forEach(authoredProperties::add);
+        }
+        return null == descriptor
+                ? new CssCompiler.Exports(List.of(), Set.of(), Set.of(), authoredIds, authoredProperties)
+                : descriptor.exports(authoredIds, authoredProperties);
     }
 
     private CssCompiler.@Nullable Result compileCss(
@@ -644,7 +798,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 return CssCompiler.keyframes(
                         block.value(),
                         Names.root(binaryName(owner)),
-                        exports(descriptor),
+                        exports(owner, kind, descriptor),
                         locations,
                         imports.properties());
             }
@@ -652,7 +806,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 return CssCompiler.global(
                         block.value(),
                         Names.root(binaryName(owner)),
-                        exports(descriptor),
+                        exports(owner, kind, descriptor),
                         locations,
                         imports.named(),
                         imports.properties());
@@ -661,7 +815,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
             return CssCompiler.component(
                     block.value(),
                     descriptor.rootClassName(),
-                    descriptor.exports(),
+                    exports(owner, kind, descriptor),
                     locations,
                     imports.named(),
                     imports.properties());

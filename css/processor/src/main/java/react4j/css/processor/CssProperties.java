@@ -20,9 +20,9 @@ import react4j.css.internal.CssSyntax;
 final class CssProperties {
     private CssProperties() {}
 
-    record Binding(String owner, String name) {
+    record Binding(String owner, String name, Kind kind, boolean stable) {
         String cssName() {
-            return "--" + Names.root(owner) + "--" + Names.encode(name);
+            return Kind.GLOBAL == kind && stable ? "--" + name : "--" + Names.root(owner) + "--" + Names.encode(name);
         }
     }
 

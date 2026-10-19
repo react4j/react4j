@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: `implementing`
-- Current frontier: `T02`
+- Current frontier: `T03`
 - Planning reviewer: `/root/css_compression_plan_review` (`2/3` rounds; final confirmation `unused`; passed)
 - Plan checkpoint: `automatic` — explicit implementation request, confirmed interview and passing planning review; no human checkpoint requested.
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -18,7 +18,7 @@
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
 | T01 | [Effective accessor declarations](T01-effective-declarations.md) | complete | None |
-| T02 | [Stable names in every mode](T02-stable-names.md) | pending | T01 |
+| T02 | [Stable names in every mode](T02-stable-names.md) | complete | T01 |
 | T03 | [Checked shared IDs and liveness](T03-shared-ids.md) | pending | T02 |
 | T04 | [Component compression through a real link](T04-component-compression.md) | pending | T03 |
 | T05 | [Compress every symbol and protect variants](T05-complete-compression.md) | pending | T04 |
@@ -28,7 +28,7 @@
 ## Sequencing notes
 
 - Primary implements sequentially. Every task stays green and commits implementation with evidence/state. Intermediate class-only compression is delivery staging, not the final public contract.
-- Metadata schema and table evolve with the first real class compression slice, then all remaining kinds; no unused catalogue-only prefactoring task.
+- Owned symbol inventory is established in T02 to record stable policy. T04 adds canonical getter composition and the first real compression table, then T05 completes all kinds; no unused catalogue-only prefactoring task.
 - T01 owns an evidence-based disposition of the baseline assembled-suite timeout, because source/binary/golden compiler variations exercise that target throughout later tasks.
 - Review budgets include every attempt across replacements. Planning: 3 rounds plus one final confirmation. Implementation: 5 rounds plus one final confirmation.
 - Entire active tree is temporary and removed only after passing implementation review and promoting conclusions. Retain exact gate/review evidence in git/PR.

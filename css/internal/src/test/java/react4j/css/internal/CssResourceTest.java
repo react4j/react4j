@@ -18,7 +18,57 @@ public final class CssResourceTest {
                 includes,
                 bindings ? "demo.Styled_Button" : "",
                 bindings ? List.of(new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root")) : List.of(),
-                Map.of());
+                Map.of(),
+                List.of());
+    }
+
+    @Test
+    public void ownedSymbolsPreservePoliciesAndRejectMalformedInventory() {
+        var symbols = new ArrayList<>(List.of(
+                new CssResource.Symbol(CssResource.SymbolKind.CLASS, "", "root", false),
+                new CssResource.Symbol(CssResource.SymbolKind.CLASS, "success", "root--success", true),
+                new CssResource.Symbol(CssResource.SymbolKind.ID, "control", "control", true),
+                new CssResource.Symbol(CssResource.SymbolKind.PROPERTY, "accent", "--accent", true),
+                new CssResource.Symbol(CssResource.SymbolKind.ANIMATION, "", "pulse", false)));
+        var resource = new CssResource(
+                "Button", CssResource.Kind.COMPONENT, List.of(), List.of(), "", List.of(), Map.of(), symbols);
+        symbols.clear();
+        assertEquals(resource.symbols().size(), 5);
+        assertEquals(CssResource.read(resource.json(), "Button"), resource);
+        expectThrows(
+                UnsupportedOperationException.class, () -> resource.symbols().clear());
+        for (var kind : CssResource.SymbolKind.values()) {
+            for (var pair :
+                    List.of(List.of("has space", "valid"), List.of("valid", ""), List.of("valid", "has space"))) {
+                expectThrows(
+                        IllegalArgumentException.class,
+                        () -> new CssResource.Symbol(kind, pair.get(0), pair.get(1), false));
+            }
+            if (CssResource.SymbolKind.ID == kind || CssResource.SymbolKind.PROPERTY == kind) {
+                expectThrows(IllegalArgumentException.class, () -> new CssResource.Symbol(kind, "", "value", false));
+            }
+        }
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> new CssResource(
+                        "Button",
+                        CssResource.Kind.COMPONENT,
+                        List.of(),
+                        List.of(),
+                        "",
+                        List.of(),
+                        Map.of(),
+                        List.of(resource.symbols().get(0), resource.symbols().get(0))));
+        for (var replacement : List.of("null", "7", "{}", "\"true\"")) {
+            var json = JsonParser.parseString(resource.json()).getAsJsonObject();
+            json.getAsJsonArray("symbols").get(0).getAsJsonObject().add("stable", JsonParser.parseString(replacement));
+            expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "Button"));
+        }
+        for (var field : List.of("stable", "kind", "name", "value")) {
+            var json = JsonParser.parseString(resource.json()).getAsJsonObject();
+            json.getAsJsonArray("symbols").get(0).getAsJsonObject().remove(field);
+            expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "Button"));
+        }
     }
 
     @Test
@@ -50,7 +100,8 @@ public final class CssResourceTest {
                 List.of(),
                 "Styled_Button",
                 bindings,
-                Map.of("--accent", owners));
+                Map.of("--accent", owners),
+                List.of());
         owners.clear();
         bindings.clear();
         assertEquals(resource.bindings().size(), 1);
@@ -66,7 +117,14 @@ public final class CssResourceTest {
         expectThrows(
                 IllegalArgumentException.class,
                 () -> new CssResource(
-                        "Button", CssResource.Kind.COMPONENT, List.of(), List.of(), "", resource.bindings(), Map.of()));
+                        "Button",
+                        CssResource.Kind.COMPONENT,
+                        List.of(),
+                        List.of(),
+                        "",
+                        resource.bindings(),
+                        Map.of(),
+                        List.of()));
         expectThrows(
                 IllegalArgumentException.class,
                 () -> new CssResource(
@@ -76,7 +134,8 @@ public final class CssResourceTest {
                         List.of(),
                         "Styled_Button",
                         List.of(),
-                        Map.of()));
+                        Map.of(),
+                        List.of()));
         expectThrows(
                 IllegalArgumentException.class,
                 () -> new CssResource(
@@ -86,7 +145,8 @@ public final class CssResourceTest {
                         List.of(),
                         "Styled_Button",
                         List.of(resource.bindings().get(0), resource.bindings().get(0)),
-                        Map.of()));
+                        Map.of(),
+                        List.of()));
         for (var providers : List.of(
                 Map.of("", List.of("Defaults")),
                 Map.of("--accent", List.<String>of()),
@@ -101,9 +161,10 @@ public final class CssResourceTest {
                             List.of(),
                             "",
                             List.of(),
-                            providers));
+                            providers,
+                            List.of()));
         }
-        for (var key : List.of("implementation", "bindings", "providers")) {
+        for (var key : List.of("implementation", "bindings", "providers", "symbols")) {
             var json = JsonParser.parseString(resource.json()).getAsJsonObject();
             json.remove(key);
             expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "Button"));
@@ -120,8 +181,8 @@ public final class CssResourceTest {
                 "null",
                 "1",
                 "{}",
-                valid.replace("\"version\":3", "\"version\":3.1"),
-                valid.replace("\"version\":3", "\"version\":\"1\""),
+                valid.replace("\"version\":4", "\"version\":4.1"),
+                valid.replace("\"version\":4", "\"version\":\"1\""),
                 valid.replace("COMPONENT", "UNKNOWN"),
                 valid.replace("[]", "[1]"),
                 valid.replace("[]", "[null]"),

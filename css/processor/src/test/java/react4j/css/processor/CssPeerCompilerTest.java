@@ -19,15 +19,15 @@ import react4j.css.internal.SourceMap;
 
 public final class CssPeerCompilerTest {
     private static final Map<String, CssCompiler.Import> IMPORTS = Map.of(
-            "label", new CssCompiler.Import("demo.Label", Kind.COMPONENT),
-            "other", new CssCompiler.Import("demo.Outer$Other", Kind.COMPONENT),
-            "beat", new CssCompiler.Import("demo.Beat", Kind.KEYFRAMES));
+            "label", new CssCompiler.Import("demo.Label", Kind.COMPONENT, false),
+            "other", new CssCompiler.Import("demo.Outer$Other", Kind.COMPONENT, false),
+            "beat", new CssCompiler.Import("demo.Beat", Kind.KEYFRAMES, false));
 
     private static CssCompiler.Result component(String css) {
         return CssCompiler.component(
                 css,
                 "jcss-demo-Button",
-                new CssCompiler.Exports(List.of("style"), Set.of(), Set.of()),
+                new CssCompiler.Exports(List.of("style"), Set.of(), Set.of(), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 IMPORTS,
                 Map.of());
@@ -37,7 +37,7 @@ public final class CssPeerCompilerTest {
         return CssCompiler.global(
                 css,
                 "jcss-demo-Global",
-                new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
+                new CssCompiler.Exports(List.of(), Set.of(), Set.of(), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Global.java", css, 0, offset),
                 IMPORTS,
                 Map.of());
@@ -148,7 +148,8 @@ public final class CssPeerCompilerTest {
                         () -> CssCompiler.component(
                                 css,
                                 "jcss-demo-Button",
-                                new CssCompiler.Exports(List.of("style", "active"), Set.of(), Set.of()),
+                                new CssCompiler.Exports(
+                                        List.of("style", "active"), Set.of(), Set.of(), Set.of(), Set.of()),
                                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                                 IMPORTS,
                                 Map.of()));
@@ -218,9 +219,9 @@ public final class CssPeerCompilerTest {
             var imported = CssCompiler.component(
                     source,
                     "root",
-                    new CssCompiler.Exports(List.of("style"), Set.of(), Set.of()),
+                    new CssCompiler.Exports(List.of("style"), Set.of(), Set.of(), Set.of(), Set.of()),
                     offset -> new SourceMap.Location("Button.java", source, 0, offset),
-                    Map.of(alias, new CssCompiler.Import("demo.Label", Kind.COMPONENT)),
+                    Map.of(alias, new CssCompiler.Import("demo.Label", Kind.COMPONENT, false)),
                     Map.of());
             assertEquals(imported.imports(), Set.of(alias));
         }

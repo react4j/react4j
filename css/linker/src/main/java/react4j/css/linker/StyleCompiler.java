@@ -1,5 +1,7 @@
 package react4j.css.linker;
 
+import com.google.debugging.sourcemap.SourceMapConsumerV3;
+import com.google.debugging.sourcemap.SourceMapParseException;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
@@ -28,6 +30,7 @@ final class StyleCompiler extends Compiler {
     private final Map<String, CssLink.Value> symbols = new LinkedHashMap<>();
     private final Map<String, Map<String, String>> sources = new HashMap<>();
     private final Map<String, String> inputSources = new HashMap<>();
+    private final Map<String, SourceMapConsumerV3> inputMaps = new HashMap<>();
     private @Nullable Set<String> liveValues;
 
     StyleCompiler(CssLink link, Path report) {
@@ -36,14 +39,11 @@ final class StyleCompiler extends Compiler {
         if (!link.optimized()) {
             return;
         }
-        // Aliases returning the same value from one generated implementation have identical liveness semantics.
         for (var value : link.values()) {
             var returns = sources.computeIfAbsent(value.source(), ignored -> new HashMap<>());
-            if (!returns.containsKey(value.binding().value())) {
-                String symbol = "$react4j$css$" + link.digest() + "$" + symbols.size();
-                returns.put(value.binding().value(), symbol);
-                symbols.put(symbol, value);
-            }
+            String symbol = "$react4j$css$" + link.digest() + "$" + symbols.size();
+            returns.put(value.implementation() + "." + value.binding().method(), symbol);
+            symbols.put(symbol, value);
         }
     }
 
@@ -62,6 +62,15 @@ final class StyleCompiler extends Compiler {
                 String source = tree < 0 ? path : path.substring(tree + 4);
                 if (sources.containsKey(source)) {
                     inputSources.put(input.getName(), source);
+                    try {
+                        String mapName =
+                                Path.of(source).getFileName().toString().replace(".impl.java.js", ".js.map");
+                        var consumer = new SourceMapConsumerV3();
+                        consumer.parse(Files.readString(Path.of(input.getName()).resolveSibling(mapName)));
+                        inputMaps.put(input.getName(), consumer);
+                    } catch (IOException | SourceMapParseException e) {
+                        throw new IllegalArgumentException("Invalid generated CSS binding source map: " + source, e);
+                    }
                     found.add(source);
                 }
             }
@@ -89,7 +98,7 @@ final class StyleCompiler extends Compiler {
         NodeTraversal.traverse(this, root, new NodeTraversal.AbstractPostOrderCallback() {
             @Override
             public void visit(NodeTraversal traversal, Node node, @Nullable Node parent) {
-                if (!node.isScript() && !(node.isStringLit() && null != parent && parent.isReturn())) {
+                if (!node.isScript() && !node.isReturn()) {
                     return;
                 }
                 String source = node.getSourceFileName();
@@ -99,12 +108,22 @@ final class StyleCompiler extends Compiler {
                 }
                 parsed.add(generated);
                 var returns = Objects.requireNonNull(sources.get(generated));
-                if (node.isStringLit() && null != parent && parent.isReturn()) {
-                    String symbol = returns.get(node.getString());
-                    if (null != symbol) {
+                if (node.isReturn()) {
+                    // J2CL records Java method identities independently of literal values and JSInterop names.
+                    var mapping = Objects.requireNonNull(inputMaps.get(source))
+                            .getMappingForLine(node.getLineno(), node.getCharno() + 1);
+                    String symbol = null == mapping ? null : returns.get(mapping.getIdentifier());
+                    var literal = node.getFirstChild();
+                    if (null != symbol
+                            && null != literal
+                            && literal.isStringLit()
+                            && literal.getString()
+                                    .equals(Objects.requireNonNull(symbols.get(symbol))
+                                            .binding()
+                                            .value())) {
                         seen.add(symbol);
-                        node.replaceWith(IR.name(symbol).srcref(node));
-                        reportChangeToEnclosingScope(parent);
+                        literal.replaceWith(IR.name(symbol).srcref(literal));
+                        reportChangeToEnclosingScope(node);
                     }
                 }
             }

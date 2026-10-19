@@ -19,7 +19,8 @@ public record CssResource(
         List<String> includes,
         String implementation,
         List<Binding> bindings,
-        Map<String, List<String>> providers) {
+        Map<String, List<String>> providers,
+        List<Symbol> symbols) {
     private static final Pattern OWNER = Pattern.compile(
             "\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*(?:\\.\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)*");
 
@@ -44,11 +45,29 @@ public record CssResource(
         }
     }
 
+    public record Symbol(SymbolKind kind, String name, String value, boolean stable) {
+        public Symbol {
+            if (name.chars().anyMatch(Character::isWhitespace)
+                    || value.isBlank()
+                    || value.chars().anyMatch(Character::isWhitespace)
+                    || (name.isEmpty() && SymbolKind.CLASS != kind && SymbolKind.ANIMATION != kind)) {
+                throw new IllegalArgumentException("Invalid CSS symbol: " + name);
+            }
+        }
+    }
+
     public CssResource {
         path(owner);
         dependencies = List.copyOf(dependencies);
         includes = List.copyOf(includes);
         bindings = List.copyOf(bindings);
+        symbols = List.copyOf(symbols);
+        var identities = new HashSet<String>();
+        for (var symbol : symbols) {
+            if (!identities.add(symbol.kind() + ":" + symbol.name())) {
+                throw new IllegalArgumentException("Duplicate owned CSS symbol: " + symbol.name());
+            }
+        }
         var copied = new TreeMap<String, List<String>>();
         for (var entry : providers.entrySet()) {
             String symbol = entry.getKey();
@@ -95,7 +114,7 @@ public record CssResource(
 
     public String json() {
         var json = new JsonObject();
-        json.addProperty("version", 3);
+        json.addProperty("version", 4);
         json.addProperty("owner", owner);
         json.addProperty("kind", kind.name());
         var entries = new JsonArray();
@@ -121,13 +140,23 @@ public record CssResource(
             references.add(symbol, values);
         });
         json.add("providers", references);
+        var names = new JsonArray();
+        for (var symbol : symbols) {
+            var name = new JsonObject();
+            name.addProperty("kind", symbol.kind().name());
+            name.addProperty("name", symbol.name());
+            name.addProperty("value", symbol.value());
+            name.addProperty("stable", symbol.stable());
+            names.add(name);
+        }
+        json.add("symbols", names);
         return json + "\n";
     }
 
     public static CssResource read(String source, String expectedOwner) {
         try {
             var json = JsonParser.parseString(source).getAsJsonObject();
-            if (!json.has("version") || !"3".equals(json.get("version").toString())) {
+            if (!json.has("version") || !"4".equals(json.get("version").toString())) {
                 throw new IllegalArgumentException("Unsupported CSS metadata version");
             }
             String owner = string(json, "owner");
@@ -143,6 +172,21 @@ public record CssResource(
             var providers = new TreeMap<String, List<String>>();
             var references = json.getAsJsonObject("providers");
             references.keySet().forEach(key -> providers.put(key, names(references, key)));
+            var symbols = new ArrayList<Symbol>();
+            for (var item : json.getAsJsonArray("symbols")) {
+                var symbol = item.getAsJsonObject();
+                var stable = symbol.get("stable");
+                if (null == stable
+                        || !stable.isJsonPrimitive()
+                        || !stable.getAsJsonPrimitive().isBoolean()) {
+                    throw new IllegalArgumentException("CSS symbol requires boolean stable");
+                }
+                symbols.add(new Symbol(
+                        SymbolKind.valueOf(string(symbol, "kind")),
+                        string(symbol, "name"),
+                        string(symbol, "value"),
+                        stable.getAsBoolean()));
+            }
             return new CssResource(
                     owner,
                     Kind.valueOf(string(json, "kind")),
@@ -150,7 +194,8 @@ public record CssResource(
                     names(json, "includes"),
                     string(json, "implementation"),
                     bindings,
-                    providers);
+                    providers,
+                    symbols);
         } catch (JsonParseException | IllegalStateException | ClassCastException | NullPointerException e) {
             throw new IllegalArgumentException("Invalid CSS metadata for " + expectedOwner, e);
         }

@@ -106,6 +106,9 @@ testSuite({
     const expected = [name, computed('direct-animation').animationName,
       computed('local-animation').animationName, computed('accessor-animation').animationName];
     asserts.assertEquals(4, new Set(expected).size);
+    if (Mode.environment !== 'production') {
+      expected.push(/** @type {!HTMLElement} */ (container.querySelector('[data-symbol=equal-names]')).id);
+    }
     asserts.assertEquals(Mode.environment === 'production' ? 0 : 1,
       names.filter(name => name.endsWith('--keyframes-unused')).length);
     asserts.assertArrayEquals(expected.sort(), names.filter(name => !name.endsWith('--keyframes-unused')).sort());
@@ -119,6 +122,8 @@ testSuite({
     asserts.assertTrue(getComputedStyle(control).filter.includes('#' + filter.id));
     asserts.assertEquals(filter, document.getElementById(filter.id));
     asserts.assertEquals('9px', getComputedStyle(global).letterSpacing);
+    asserts.assertEquals('direct-global', global.id);
+    asserts.assertEquals('9px', global.style.getPropertyValue('--spacing'));
     /** @type {!Array<string>} */
     const animatedIds = ['direct-animation', 'local-animation', 'accessor-animation'];
     for (let i = 0; i < animatedIds.length; i++) {
@@ -127,6 +132,12 @@ testSuite({
       asserts.assertEquals(1, node.getAnimations().length);
       asserts.assertEquals(node.style.animationName, getComputedStyle(node).animationName);
     }
+  },
+  testEqualGetterTextPreservesBindingKindAndLiveness() {
+    const node = /** @type {!HTMLElement} */ (container.querySelector('[data-symbol=equal-names]'));
+    asserts.assertEquals('jcss-react4j-css-example-BrowserExample_0024_EqualNamePulse--keyframes', node.id);
+    asserts.assertEquals('11px', getComputedStyle(node).borderTopWidth);
+    asserts.assertEquals(Mode.environment !== 'production', style.textContent.includes('opacity:0.12345'));
   },
   async testExplicitGlobalSelectionAndDependencyFirstCascade() {
     // Defaults is also a later explicit root; its first visit precedes Theme.
