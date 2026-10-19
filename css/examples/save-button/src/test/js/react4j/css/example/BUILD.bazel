@@ -1,5 +1,6 @@
 load("//css:defs.bzl", "css_bundle")
 load("//tools/browser:rules.bzl", "browser_test")
+load(":variants.bzl", "naming_variant")
 
 package(default_visibility = ["//:__pkg__"])
 
@@ -50,4 +51,14 @@ css_bundle(
     css = "component.css",
     root = ":browser_tests_bin",
     source_map = "component.css.map",
+)
+
+naming_variant(
+    name = "uncompressed",
+    defs = ["--define=react4j.css.compress_names=false"],
+)
+
+naming_variant(
+    name = "prefixed",
+    defs = ["--define=react4j.css.name_prefix='app-'"],
 )

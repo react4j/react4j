@@ -91,12 +91,14 @@ BrowserApplicationInfo = provider("Packaged browser files and their relative app
 
 _PRODUCTION = "//tools/browser:production"
 
-def _defines(test = False):
+def _defines(test = False, extra = {}):
     production = dict(_PRODUCTION_DEFINES)
     development = dict(_DEVELOPMENT_DEFINES)
     if test:
         production["react4j.examples.environment"] = "production"
         development["react4j.examples.environment"] = "development"
+    production.update(extra)
+    development.update(extra)
     return select({_PRODUCTION: production, "//conditions:default": development})
 
 def _compiler_defines(test = False):
@@ -205,7 +207,7 @@ def _runtime_impl(ctx):
 
 _runtime = rule(implementation = _runtime_impl, outputs = {"js": "%{name}.js"}, attrs = {"dom": attr.label(allow_single_file = True), "js": attr.label(allow_single_file = True), "react": attr.label(allow_single_file = True), "_assets": attr.label(default = Label("//tools/browser:assets"), executable = True, cfg = "exec")})
 
-def browser_test(name, srcs, deps, entry_point, data = []):
+def browser_test(name, srcs, deps, entry_point, data = [], defs = [], runtime_defines = {}):
     closure_js_library(name = name + "_lib", testonly = True, srcs = srcs, deps = deps + ["//tools/browser:mode", "@rules_closure//closure/testing/library:asserts", "@rules_closure//closure/testing/library:testsuite"])
     css_js_binary(
         name = name + "_bin",
@@ -213,7 +215,7 @@ def browser_test(name, srcs, deps, entry_point, data = []):
         deps = [":" + name + "_lib"],
         entry_points = [entry_point],
         compilation_level = select({_PRODUCTION: "ADVANCED", "//conditions:default": "BUNDLE"}),
-        defs = _compiler_defines(test = True),
+        defs = _compiler_defines(test = True) + defs,
     )
     _runtime(name = name + "_runtime", testonly = True, js = name + "_bin.js", react = _asset("react"), dom = _asset("react_dom"))
-    webdriver_test(name = name, test_file_js = name + "_runtime.js", data = data, browsers = ["//tools/webtesting:chromium"], runtime_defines = _defines(test = True))
+    webdriver_test(name = name, test_file_js = name + "_runtime.js", data = data, browsers = ["//tools/webtesting:chromium"], runtime_defines = _defines(test = True, extra = runtime_defines))

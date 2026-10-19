@@ -37,7 +37,33 @@ public record CssResource(
         PROPERTY
     }
 
-    public record Binding(String method, SymbolKind kind, String value, List<String> requires) {
+    public record SymbolId(String owner, SymbolKind kind, String name) {
+        public SymbolId {
+            path(owner);
+            if (name.chars().anyMatch(Character::isWhitespace)
+                    || (name.isEmpty() && SymbolKind.CLASS != kind && SymbolKind.ANIMATION != kind)) {
+                throw new IllegalArgumentException("Invalid canonical CSS symbol: " + name);
+            }
+        }
+
+        public String id() {
+            return owner + "#" + kind + ":" + name;
+        }
+
+        public JsonObject json() {
+            var json = new JsonObject();
+            json.addProperty("owner", owner);
+            json.addProperty("kind", kind.name());
+            json.addProperty("name", name);
+            return json;
+        }
+
+        public static SymbolId read(JsonObject json) {
+            return new SymbolId(string(json, "owner"), SymbolKind.valueOf(string(json, "kind")), string(json, "name"));
+        }
+    }
+
+    public record Binding(String method, SymbolKind kind, String value, List<String> requires, List<SymbolId> symbols) {
         public Binding {
             if (!OWNER.matcher(method).matches() || method.contains(".") || value.isBlank()) {
                 throw new IllegalArgumentException("Invalid CSS binding: " + method);
@@ -47,6 +73,14 @@ public record CssResource(
                 throw new IllegalArgumentException("CSS binding providers must be distinct");
             }
             requires.forEach(CssResource::path);
+            symbols = List.copyOf(symbols);
+            if (symbols.isEmpty()
+                    || symbols.stream().anyMatch(symbol -> kind != symbol.kind())
+                    || (SymbolKind.CLASS != kind && 1 != symbols.size())
+                    || symbols.size() > 2
+                    || new HashSet<>(symbols).size() != symbols.size()) {
+                throw new IllegalArgumentException("Invalid CSS binding composition: " + method);
+            }
         }
 
         public JsonObject json() {
@@ -57,6 +91,9 @@ public record CssResource(
             var owners = new JsonArray();
             requires.forEach(owners::add);
             json.add("requires", owners);
+            var references = new JsonArray();
+            symbols.forEach(symbol -> references.add(symbol.json()));
+            json.add("symbols", references);
             return json;
         }
 
@@ -65,7 +102,10 @@ public record CssResource(
                     string(json, "method"),
                     SymbolKind.valueOf(string(json, "kind")),
                     string(json, "value"),
-                    names(json, "requires"));
+                    names(json, "requires"),
+                    json.getAsJsonArray("symbols").asList().stream()
+                            .map(item -> SymbolId.read(item.getAsJsonObject()))
+                            .toList());
         }
     }
 
@@ -141,7 +181,7 @@ public record CssResource(
 
     public String json() {
         var json = new JsonObject();
-        json.addProperty("version", 5);
+        json.addProperty("version", 6);
         json.addProperty("owner", owner);
         json.addProperty("kind", kind.name());
         var entries = new JsonArray();
@@ -179,7 +219,7 @@ public record CssResource(
     public static CssResource read(String source, String expectedOwner) {
         try {
             var json = JsonParser.parseString(source).getAsJsonObject();
-            if (!json.has("version") || !"5".equals(json.get("version").toString())) {
+            if (!json.has("version") || !"6".equals(json.get("version").toString())) {
                 throw new IllegalArgumentException("Unsupported CSS metadata version");
             }
             String owner = string(json, "owner");

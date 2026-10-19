@@ -75,10 +75,16 @@ public final class BundleTest {
                 bindings ? owner + "Styled" : "",
                 bindings
                         ? List.of(new CssResource.Binding(
-                                "property", CssResource.SymbolKind.PROPERTY, "--example", List.of()))
+                                "property",
+                                CssResource.SymbolKind.PROPERTY,
+                                "--example",
+                                List.of(),
+                                List.of(new CssResource.SymbolId(owner, CssResource.SymbolKind.PROPERTY, "example"))))
                         : List.of(),
                 Map.of(),
-                List.of());
+                bindings
+                        ? List.of(new CssResource.Symbol(CssResource.SymbolKind.PROPERTY, "example", "--example", true))
+                        : List.of());
     }
 
     @Test

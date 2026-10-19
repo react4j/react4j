@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 import react4j.css.internal.CssCatalogue;
 import react4j.css.internal.CssCatalogue.Resource;
 import react4j.css.internal.CssLink;
+import react4j.css.internal.CssNames;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssResource.Binding;
 import react4j.css.internal.CssResource.Kind;
@@ -21,7 +22,8 @@ import react4j.css.internal.SourceMap;
 
 public final class CssReachabilityTest {
     private static Binding binding(String method, SymbolKind kind, String value) {
-        return new Binding(method, kind, value, List.of());
+        return new Binding(
+                method, kind, value, List.of(), List.of(new CssResource.SymbolId("demo.Button", kind, "token")));
     }
 
     private static Resource resource(
@@ -32,6 +34,27 @@ public final class CssReachabilityTest {
             List<String> includes,
             Map<String, List<String>> providers,
             String... peers) {
+        bindings = bindings.stream()
+                .map(binding -> new Binding(
+                        binding.method(),
+                        binding.kind(),
+                        binding.value(),
+                        binding.requires(),
+                        Arrays.stream(binding.value().split(" "))
+                                .map(token -> new CssResource.SymbolId(
+                                        binding.requires().isEmpty()
+                                                ? owner
+                                                : binding.requires()
+                                                        .get(binding.requires().size() - 1),
+                                        binding.kind(),
+                                        token))
+                                .toList()))
+                .toList();
+        var symbols = bindings.stream()
+                .flatMap(binding -> Arrays.stream(binding.value().split(" "))
+                        .map(token -> new CssResource.Symbol(binding.kind(), token, token, true)))
+                .distinct()
+                .toList();
         var dependencies = new ArrayList<>(includes);
         bindings.forEach(binding -> dependencies.addAll(binding.requires()));
         providers.values().forEach(dependencies::addAll);
@@ -44,7 +67,7 @@ public final class CssReachabilityTest {
                 bindings.isEmpty() ? "" : "Styled_" + owner,
                 bindings,
                 providers,
-                List.of());
+                symbols);
         return new Resource(
                 metadata,
                 css,
@@ -72,7 +95,7 @@ public final class CssReachabilityTest {
                         List.of(),
                         List.of(globals),
                         "app.css",
-                        CssLink.create(catalogue, "//:app", true),
+                        CssLink.create(catalogue, "//:app", true, new CssNames.Policy(false, "")),
                         live)
                 .css();
     }
@@ -85,8 +108,18 @@ public final class CssReachabilityTest {
                         Kind.GLOBAL,
                         "#shared{font-weight:700;}",
                         List.of(
-                                new Binding("aDead", SymbolKind.ID, "shared", List.of("Second")),
-                                new Binding("zLive", SymbolKind.ID, "shared", List.of("Alias", "First"))),
+                                new Binding(
+                                        "aDead",
+                                        SymbolKind.ID,
+                                        "shared",
+                                        List.of("Second"),
+                                        List.of(new CssResource.SymbolId("demo.Button", SymbolKind.ID, "token"))),
+                                new Binding(
+                                        "zLive",
+                                        SymbolKind.ID,
+                                        "shared",
+                                        List.of("Alias", "First"),
+                                        List.of(new CssResource.SymbolId("demo.Button", SymbolKind.ID, "token")))),
                         List.of("Active"),
                         Map.of()),
                 resource(

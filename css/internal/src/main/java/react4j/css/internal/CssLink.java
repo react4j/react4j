@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /** Versioned evidence between the Closure compilation and independently rooted CSS bundles. */
-public record CssLink(String link, String digest, boolean optimized, List<Value> values) {
+public record CssLink(String link, String digest, boolean optimized, List<Value> values, CssNames names) {
     public record Value(String owner, String implementation, CssResource.Binding binding) {
         public Value {
             CssResource.path(owner);
@@ -35,6 +35,9 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
         if (link.isBlank() || !digest.matches("[0-9a-f]{64}")) {
             throw new IllegalArgumentException("Invalid CSS link identity or catalogue digest");
         }
+        if (!optimized && names.policy().compressed()) {
+            throw new IllegalArgumentException("CSS compression requires an optimized link");
+        }
         values = List.copyOf(values);
         var ids = new HashSet<String>();
         for (var value : values) {
@@ -45,6 +48,10 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
     }
 
     public static CssLink create(CssCatalogue catalogue, String link, boolean optimized) {
+        return create(catalogue, link, optimized, new CssNames.Policy(optimized, ""));
+    }
+
+    public static CssLink create(CssCatalogue catalogue, String link, boolean optimized, CssNames.Policy policy) {
         var values = new ArrayList<Value>();
         catalogue
                 .resources()
@@ -53,7 +60,7 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
                         .bindings()
                         .forEach(binding -> values.add(new Value(
                                 resource.metadata().owner(), resource.metadata().implementation(), binding))));
-        return new CssLink(link, catalogue.digest(), optimized, values);
+        return new CssLink(link, catalogue.digest(), optimized, values, CssNames.create(catalogue, policy));
     }
 
     public String json() {
@@ -82,7 +89,12 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
             if (!optimized.isJsonPrimitive() || !optimized.getAsJsonPrimitive().isBoolean()) {
                 throw new IllegalArgumentException("CSS link requires boolean optimized");
             }
-            return new CssLink(string(json, "link"), string(json, "digest"), optimized.getAsBoolean(), values);
+            return new CssLink(
+                    string(json, "link"),
+                    string(json, "digest"),
+                    optimized.getAsBoolean(),
+                    values,
+                    CssNames.read(CssNames.Policy.read(json.getAsJsonObject("policy")), json.getAsJsonArray("names")));
         } catch (RuntimeException e) {
             throw new IllegalArgumentException("Invalid CSS link configuration: " + e.getMessage(), e);
         }
@@ -107,7 +119,9 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
             if (!link.equals(string(json, "link"))
                     || !digest.equals(string(json, "digest"))
                     || !javascriptDigest.equals(string(json, "javascriptDigest"))
-                    || !Boolean.toString(optimized).equals(json.get("optimized").toString())) {
+                    || !Boolean.toString(optimized).equals(json.get("optimized").toString())
+                    || !names.equals(CssNames.read(
+                            CssNames.Policy.read(json.getAsJsonObject("policy")), json.getAsJsonArray("names")))) {
                 throw new IllegalArgumentException(
                         "CSS liveness report does not match this JavaScript link and catalogue");
             }
@@ -136,16 +150,18 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
 
     private JsonObject header() {
         var json = new JsonObject();
-        json.addProperty("version", 2);
+        json.addProperty("version", 3);
         json.addProperty("link", link);
         json.addProperty("digest", digest);
         json.addProperty("optimized", optimized);
+        json.add("policy", names.policy().json());
+        json.add("names", names.json());
         return json;
     }
 
     private static JsonObject document(String source) {
         var json = JsonParser.parseString(source).getAsJsonObject();
-        if (!json.has("version") || !"2".equals(json.get("version").toString())) {
+        if (!json.has("version") || !"3".equals(json.get("version").toString())) {
             throw new IllegalArgumentException("Unsupported CSS link evidence version");
         }
         return json;
@@ -171,11 +187,14 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
         }
         var trees = new ArrayList<Path>();
         var options = new TreeMap<String, String>();
+        var defines = new ArrayList<String>();
         for (int i = 0; i < args.length; i += 2) {
             if (i + 1 == args.length) {
                 throw new IllegalArgumentException("Missing CSS catalogue option value");
             }
-            if ("--input".equals(args[i])) {
+            if ("--define".equals(args[i])) {
+                defines.add(args[i + 1]);
+            } else if ("--input".equals(args[i])) {
                 trees.add(Path.of(args[i + 1]));
             } else if (!Set.of("--link", "--mode", "--output").contains(args[i])
                     || null != options.putIfAbsent(args[i], args[i + 1])) {
@@ -190,7 +209,8 @@ public record CssLink(String link, String digest, boolean optimized, List<Value>
                 create(
                                 CssCatalogue.read(trees),
                                 Objects.requireNonNull(options.get("--link")),
-                                "optimized".equals(options.get("--mode")))
+                                "optimized".equals(options.get("--mode")),
+                                CssNames.Policy.defines(defines, "optimized".equals(options.get("--mode"))))
                         .json());
     }
 }

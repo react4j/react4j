@@ -4,12 +4,16 @@ java_testng(
     name = "tests",
     srcs = [
         "CssLinkTest.java",
+        "CssNamesTest.java",
+        "CssRenamerTest.java",
         "CssResourceTest.java",
         "CssSyntaxTest.java",
         "SourceMapTest.java",
     ],
     test_classes = [
         "react4j.css.internal.CssLinkTest",
+        "react4j.css.internal.CssNamesTest",
+        "react4j.css.internal.CssRenamerTest",
         "react4j.css.internal.CssResourceTest",
         "react4j.css.internal.SourceMapTest",
         "react4j.css.internal.CssSyntaxTest",

@@ -149,6 +149,7 @@ java_testng(
         "//css/integration-tests/src/test/js/react4j/css/integration:development.css",
         "//css/integration-tests/src/test/js/react4j/css/integration:optimized.css",
         "//css/integration-tests/src/test/js/react4j/css/integration:optimized.css.map",
+        "//css/integration-tests/src/test/js/react4j/css/integration:optimized.css-live.json",
         "//css/integration-tests/src/test/js/react4j/css/integration:optimized.js",
     ],
     jvm_flags = [
@@ -158,6 +159,7 @@ java_testng(
         "-Dcss.liveness.optimized=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.css)",
         "-Dcss.liveness.map=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.css.map)",
         "-Dcss.liveness.javascript=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.js)",
+        "-Dcss.liveness.names=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.css-live.json)",
         "-Dcss.fixture=$(rootpath :fixture.css)",
         "-Dcss.map=$(rootpath :fixture.css.map)",
         "-Dcss.tree=$(rootpath :fixture_bindings.js)",

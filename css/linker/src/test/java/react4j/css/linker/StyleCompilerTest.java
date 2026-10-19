@@ -11,6 +11,7 @@ import com.google.javascript.jscomp.CompilerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -18,15 +19,39 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import org.testng.annotations.Test;
 import react4j.css.internal.CssLink;
+import react4j.css.internal.CssNames;
 import react4j.css.internal.CssResource;
 
 public final class StyleCompilerTest {
-    private static CssLink link(boolean optimized) {
+    private static List<CssResource.SymbolId> references(CssResource.SymbolKind kind, String value) {
+        return Arrays.stream(value.split(" "))
+                .map(token -> new CssResource.SymbolId("demo.Button", kind, token))
+                .toList();
+    }
+
+    private static CssLink testLink(String name, boolean optimized, List<CssLink.Value> values) {
+        var entries = new TreeMap<String, CssNames.Entry>();
+        for (var value : values) {
+            var tokens = value.binding().value().split(" ");
+            for (int i = 0; i < tokens.length; i++) {
+                var symbol = value.binding().symbols().get(i);
+                entries.put(symbol.id(), new CssNames.Entry(symbol, tokens[i], tokens[i], false, List.of(value.id())));
+            }
+        }
         return new CssLink(
-                "//demo:app",
+                name,
                 "1".repeat(64),
+                optimized,
+                values,
+                new CssNames(new CssNames.Policy(false, ""), List.copyOf(entries.values())));
+    }
+
+    private static CssLink link(boolean optimized) {
+        return testLink(
+                "//demo:app",
                 optimized,
                 List.of(
                         value("style", "root"),
@@ -39,14 +64,26 @@ public final class StyleCompilerTest {
         return new CssLink.Value(
                 "demo.Button",
                 "demo.Styled_Button",
-                new CssResource.Binding(method, CssResource.SymbolKind.CLASS, value, List.of()));
+                new CssResource.Binding(
+                        method,
+                        CssResource.SymbolKind.CLASS,
+                        value,
+                        List.of(),
+                        references(CssResource.SymbolKind.CLASS, value)));
     }
 
     private static final class Runner extends CommandLineRunner {
         private final Compiler compiler;
 
         Runner(Compiler compiler, String[] arguments) {
-            super(arguments);
+            this(compiler, arguments, true);
+        }
+
+        Runner(Compiler compiler, String[] arguments, boolean uncompressed) {
+            super(Stream.concat(
+                            Arrays.stream(arguments),
+                            uncompressed ? Stream.of("--define=react4j.css.compress_names=false") : Stream.empty())
+                    .toArray(String[]::new));
             this.compiler = compiler;
         }
 
@@ -173,8 +210,14 @@ public final class StyleCompilerTest {
                     new CssLink.Value(
                             "a.demo.Button",
                             "a.demo.Styled_Button",
-                            new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "two", List.of())));
-            var link = new CssLink("//:app", "1".repeat(64), true, values);
+                            new CssResource.Binding(
+                                    "style",
+                                    CssResource.SymbolKind.CLASS,
+                                    "two",
+                                    List.of(),
+                                    List.of(new CssResource.SymbolId(
+                                            "a.demo.Button", CssResource.SymbolKind.CLASS, "two")))));
+            var link = testLink("//:app", true, values);
             compile(
                     new StyleCompiler(link, directory.resolve("live.json")),
                     directory,
@@ -197,14 +240,19 @@ public final class StyleCompilerTest {
     public void defaultPackageBindingDoesNotCaptureASameNamedFileInAnotherPackage() throws Exception {
         Path directory = Files.createTempDirectory("css-default-package");
         try {
-            var link = new CssLink(
+            var link = testLink(
                     "//:app",
-                    "1".repeat(64),
                     true,
                     List.of(new CssLink.Value(
                             "Button",
                             "Styled_Button",
-                            new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root", List.of()))));
+                            new CssResource.Binding(
+                                    "style",
+                                    CssResource.SymbolKind.CLASS,
+                                    "root",
+                                    List.of(),
+                                    List.of(new CssResource.SymbolId(
+                                            "Button", CssResource.SymbolKind.CLASS, "root"))))));
             compile(
                     new StyleCompiler(link, directory.resolve("live.json")),
                     directory,
@@ -226,7 +274,7 @@ public final class StyleCompilerTest {
     public void missingOrChangedGeneratedBindingsFailWithTheirIdentity() throws Exception {
         Path directory = Files.createTempDirectory("css-invalid-link");
         try {
-            var link = new CssLink("//:app", "1".repeat(64), true, List.of(value("style", "root")));
+            var link = testLink("//:app", true, List.of(value("style", "root")));
             for (var sources : List.of(
                     Map.of("other.js", "window.result = 'root';"),
                     Map.of(
@@ -260,7 +308,7 @@ public final class StyleCompilerTest {
             Path report = directory.resolve("live.json");
             Files.createDirectories(source.getParent());
             Files.writeString(extern, "var window;");
-            var link = new CssLink("//:app", "1".repeat(64), true, List.of(value("style", "root")));
+            var link = testLink("//:app", true, List.of(value("style", "root")));
             for (var failure : List.of("missing", "malformed", "unidentified")) {
                 mappedSource(source, "class Button { style() { return 'root'; }} window.result=new Button().style();");
                 if ("missing".equals(failure)) {
@@ -304,20 +352,28 @@ public final class StyleCompilerTest {
     public void equalGetterTextKeepsEachBindingIdentity() throws Exception {
         Path directory = Files.createTempDirectory("css-equal-bindings");
         try {
-            var link = new CssLink(
+            var link = testLink(
                     "//:app",
-                    "1".repeat(64),
                     true,
                     List.of(
                             new CssLink.Value(
                                     "demo.Button",
                                     "demo.Styled_Button",
-                                    new CssResource.Binding("id", CssResource.SymbolKind.ID, "shared", List.of())),
+                                    new CssResource.Binding(
+                                            "id",
+                                            CssResource.SymbolKind.ID,
+                                            "shared",
+                                            List.of(),
+                                            references(CssResource.SymbolKind.ID, "shared"))),
                             new CssLink.Value(
                                     "demo.Button",
                                     "demo.Styled_Button",
                                     new CssResource.Binding(
-                                            "animation", CssResource.SymbolKind.ANIMATION, "shared", List.of()))));
+                                            "animation",
+                                            CssResource.SymbolKind.ANIMATION,
+                                            "shared",
+                                            List.of(),
+                                            references(CssResource.SymbolKind.ANIMATION, "shared")))));
             for (var method : List.of("id", "animation")) {
                 compile(
                         new StyleCompiler(link, directory.resolve("live.json")),
@@ -331,6 +387,102 @@ public final class StyleCompilerTest {
                                 Files.readString(directory.resolve("live.json")),
                                 CssLink.digest(directory.resolve("app.js"))),
                         Set.of("demo.Button#" + method));
+            }
+        } finally {
+            remove(directory);
+        }
+    }
+
+    @Test
+    public void equalReadableGettersLowerUsingTheirOwnCanonicalCompositionAndPolicy() throws Exception {
+        Path directory = Files.createTempDirectory("css-equal-compression");
+        try {
+            var root = new CssResource.SymbolId("demo.Button", CssResource.SymbolKind.CLASS, "");
+            var id = new CssResource.SymbolId("demo.Owner", CssResource.SymbolKind.ID, "control");
+            var values = List.of(
+                    new CssLink.Value(
+                            "demo.Button",
+                            "demo.Styled_Button",
+                            new CssResource.Binding(
+                                    "style", CssResource.SymbolKind.CLASS, "shared", List.of(), List.of(root))),
+                    new CssLink.Value(
+                            "demo.Button",
+                            "demo.Styled_Button",
+                            new CssResource.Binding(
+                                    "id", CssResource.SymbolKind.ID, "shared", List.of(), List.of(id))));
+            var table = new CssNames(
+                    new CssNames.Policy(true, ""),
+                    List.of(
+                            new CssNames.Entry(root, "shared", "a", false, List.of("demo.Button#style")),
+                            new CssNames.Entry(id, "shared", "shared", true, List.of("demo.Button#id"))));
+            var link = new CssLink("//:app", "1".repeat(64), true, values, table);
+            for (var method : List.of("style", "id")) {
+                compile(
+                        new StyleCompiler(link, directory.resolve("live.json")),
+                        directory,
+                        Map.of(
+                                "demo/Styled_Button.impl.java.js",
+                                "class Button { style() { return 'shared'; } id() { return 'shared'; } } window.result"
+                                        + " = new Button()."
+                                        + method + "();"),
+                        false);
+                String js = Files.readString(directory.resolve("app.js"));
+                assertTrue(js.contains("style".equals(method) ? "\"a\"" : "\"shared\""), js);
+                assertEquals(
+                        link.readReport(
+                                Files.readString(directory.resolve("live.json")),
+                                CssLink.digest(directory.resolve("app.js"))),
+                        Set.of("demo.Button#" + method));
+            }
+        } finally {
+            remove(directory);
+        }
+    }
+
+    @Test
+    public void compilerRejectsInvalidOrMismatchedCssDefines() throws Exception {
+        Path directory = Files.createTempDirectory("css-defines");
+        try {
+            var source = directory.resolve("entry.js");
+            var extern = directory.resolve("extern.js");
+            Files.writeString(source, "window.result='ok';");
+            Files.writeString(extern, "var window;");
+            var link = new CssLink(
+                    "//:app", "1".repeat(64), true, List.of(), new CssNames(new CssNames.Policy(true, ""), List.of()));
+            for (var define : List.of(
+                    "react4j.css.compress_names='false'",
+                    "react4j.css.name_prefix=true",
+                    "react4j.css.compress_names=false",
+                    "react4j.css.name_prefix='app-'")) {
+                var report = directory.resolve("live.json");
+                var error = expectThrows(
+                        RuntimeException.class,
+                        () -> new Runner(
+                                        new StyleCompiler(link, report),
+                                        new String[] {
+                                            "--js",
+                                            source.toString(),
+                                            "--externs",
+                                            extern.toString(),
+                                            "--env",
+                                            "CUSTOM",
+                                            "--compilation_level",
+                                            "ADVANCED",
+                                            "--define=" + define,
+                                            "--js_output_file",
+                                            directory.resolve("app.js").toString()
+                                        },
+                                        false)
+                                .execute());
+                var messages = new StringBuilder();
+                for (Throwable cause = error; null != cause; cause = cause.getCause()) {
+                    messages.append(cause.getMessage());
+                }
+                assertTrue(
+                        messages.toString().contains("Invalid CSS define type")
+                                || messages.toString().contains("CSS name policy differs"),
+                        messages.toString());
+                assertFalse(Files.exists(report));
             }
         } finally {
             remove(directory);
@@ -364,6 +516,12 @@ public final class StyleCompilerTest {
     }
 
     private static void compile(StyleCompiler compiler, Path directory, Map<String, String> sources) throws Exception {
+        compile(compiler, directory, sources, true);
+    }
+
+    private static void compile(
+            StyleCompiler compiler, Path directory, Map<String, String> sources, boolean uncompressed)
+            throws Exception {
         var arguments = new ArrayList<String>();
         for (var entry : new TreeMap<>(sources).entrySet()) {
             Path path = directory.resolve("input.js").resolve(entry.getKey());
@@ -383,7 +541,7 @@ public final class StyleCompilerTest {
                 "ADVANCED",
                 "--js_output_file",
                 output.toString()));
-        assertEquals(new Runner(compiler, arguments.toArray(String[]::new)).execute(), 0);
+        assertEquals(new Runner(compiler, arguments.toArray(String[]::new), uncompressed).execute(), 0);
         compiler.finish(output);
     }
 

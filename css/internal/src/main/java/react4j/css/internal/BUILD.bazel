@@ -6,6 +6,8 @@ java_library(
         "CssCatalogue.java",
         "CssExpressions.java",
         "CssLink.java",
+        "CssNames.java",
+        "CssRenamer.java",
         "CssResource.java",
         "CssSyntax.java",
         "SourceMap.java",

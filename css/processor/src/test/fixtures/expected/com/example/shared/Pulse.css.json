@@ -1,1 +1,1 @@
-{"version":5,"owner":"com.example.shared.Pulse","kind":"KEYFRAMES","dependencies":[],"includes":[],"implementation":"","bindings":[],"providers":{},"symbols":[{"kind":"ANIMATION","name":"","value":"jcss-com-example-shared-Pulse--keyframes","stable":false}]}
+{"version":6,"owner":"com.example.shared.Pulse","kind":"KEYFRAMES","dependencies":[],"includes":[],"implementation":"","bindings":[],"providers":{},"symbols":[{"kind":"ANIMATION","name":"","value":"jcss-com-example-shared-Pulse--keyframes","stable":false}]}

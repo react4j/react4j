@@ -148,7 +148,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         Objects.requireNonNull(values.get(method)),
                         CssAccessor.Kind.ID == accessor.kind() && imports.ids().containsKey(accessor.name())
                                 ? imports.ids().get(accessor.name()).providers()
-                                : List.of()));
+                                : List.of(),
+                        composition(owner, accessor, imports)));
             }
         }
         String ownerName = binaryName(owner);
@@ -211,6 +212,29 @@ public final class CssProcessor extends AbstractStandardProcessor {
 
     private String binaryName(TypeElement owner) {
         return processingEnv.getElementUtils().getBinaryName(owner).toString();
+    }
+
+    private List<CssResource.SymbolId> composition(TypeElement owner, CssAccessor accessor, Imports imports) {
+        var kind = CssResource.SymbolKind.valueOf(accessor.kind().name());
+        String name = accessor.name();
+        String provider = binaryName(owner);
+        if (CssResource.SymbolKind.CLASS == kind) {
+            var root = new CssResource.SymbolId(provider, kind, "");
+            return "style".equals(name) ? List.of(root) : List.of(root, new CssResource.SymbolId(provider, kind, name));
+        }
+        if (CssResource.SymbolKind.PROPERTY == kind && imports.properties().containsKey(name)) {
+            var binding = imports.properties().get(name).binding();
+            provider = binding.owner();
+            name = binding.name();
+        } else if (CssResource.SymbolKind.ID == kind && imports.ids().containsKey(name)) {
+            var binding = imports.ids().get(name).binding();
+            provider = binding.owner();
+            name = binding.name();
+        } else if (CssResource.SymbolKind.ANIMATION == kind && imports.named().containsKey(name)) {
+            provider = imports.named().get(name).owner();
+            name = "";
+        }
+        return List.of(new CssResource.SymbolId(provider, kind, name));
     }
 
     private @Nullable AnnotationMirror annotation(Element owner, String name) {

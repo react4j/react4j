@@ -26,6 +26,7 @@ def _configuration_impl(ctx):
     args.add("--link", ctx.label.repo_name + "//" + ctx.label.package + ":" + ctx.attr.binary_name)
     args.add("--mode", "optimized" if ctx.attr.compilation_level == "ADVANCED" else "retain")
     args.add_all(trees, before_each = "--input", expand_directories = False)
+    args.add_all(ctx.attr.defs, before_each = "--define")
     ctx.actions.run(
         executable = ctx.executable._catalogue,
         inputs = trees,
@@ -41,6 +42,7 @@ _configuration = rule(
     attrs = {
         "binary_name": attr.string(mandatory = True),
         "compilation_level": attr.string(mandatory = True),
+        "defs": attr.string_list(),
         "deps": attr.label_list(aspects = [_collect]),
         "_catalogue": attr.label(default = Label("//css/linker/src/main/java/react4j/css/linker:catalogue"), executable = True, cfg = "exec"),
     },
@@ -53,6 +55,7 @@ def css_js_binary(name, deps, compilation_level = "ADVANCED", **kwargs):
         binary_name = name,
         compilation_level = compilation_level,
         deps = deps,
+        defs = kwargs.get("defs", []),
         testonly = kwargs.get("testonly", False),
     )
     closure_js_binary(

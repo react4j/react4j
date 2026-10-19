@@ -8,6 +8,7 @@ import com.google.javascript.jscomp.CustomPassExecutionTime;
 import com.google.javascript.jscomp.JSChunk;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.jarjar.com.google.common.collect.ImmutableList;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.Node;
 import java.io.IOException;
@@ -21,13 +22,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
 import react4j.css.internal.CssLink;
+import react4j.css.internal.CssNames;
 
 final class StyleCompiler extends Compiler {
     private final CssLink link;
     private final Path report;
     private final Map<String, CssLink.Value> symbols = new LinkedHashMap<>();
+    private final Map<String, String> compiledValues = new HashMap<>();
     private final Map<String, Map<String, String>> sources = new HashMap<>();
     private final Map<String, String> inputSources = new HashMap<>();
     private final Map<String, SourceMapConsumerV3> inputMaps = new HashMap<>();
@@ -39,16 +43,40 @@ final class StyleCompiler extends Compiler {
         if (!link.optimized()) {
             return;
         }
+        var compiled = link.names().entries().stream()
+                .collect(Collectors.toMap(CssNames.Entry::symbol, CssNames.Entry::compiled));
         for (var value : link.values()) {
             var returns = sources.computeIfAbsent(value.source(), ignored -> new HashMap<>());
             String symbol = "$react4j$css$" + link.digest() + "$" + symbols.size();
             returns.put(value.implementation() + "." + value.binding().method(), symbol);
             symbols.put(symbol, value);
+            compiledValues.put(
+                    symbol,
+                    value.binding().symbols().stream()
+                            .map(id -> Objects.requireNonNull(compiled.get(id), id.id()))
+                            .collect(Collectors.joining(" ")));
         }
     }
 
     @Override
     public void initChunks(List<SourceFile> externs, List<JSChunk> chunks, CompilerOptions options) {
+        var defines = options.getDefineReplacements();
+        var settings = new ArrayList<String>();
+        for (var key : List.of(CssNames.COMPRESS, CssNames.PREFIX)) {
+            var value = defines.get(key);
+            if (null != value) {
+                if (CssNames.COMPRESS.equals(key) && !value.isTrue() && !value.isFalse()
+                        || CssNames.PREFIX.equals(key) && !value.isStringLit()) {
+                    throw new IllegalArgumentException("Invalid CSS define type: " + key);
+                }
+                settings.add("--define=" + key + "="
+                        + (value.isStringLit() ? "'" + value.getString() + "'" : Boolean.toString(value.isTrue())));
+            }
+        }
+        if (!link.names().policy().equals(CssNames.Policy.defines(settings, link.optimized()))) {
+            throw new IllegalArgumentException("CSS name policy differs from Closure defines");
+        }
+        options.addUnknownDefinesToIgnore(ImmutableList.of(CssNames.COMPRESS, CssNames.PREFIX));
         if (!link.optimized()) {
             super.initChunks(externs, chunks, options);
             return;
@@ -153,7 +181,8 @@ final class StyleCompiler extends Compiler {
                         var value = symbols.get(node.getString());
                         if (null != value) {
                             live.add(value.id());
-                            node.replaceWith(IR.string(value.binding().value()).srcref(node));
+                            node.replaceWith(IR.string(link.names().value(value.binding()))
+                                    .srcref(node));
                             reportChangeToEnclosingScope(parent);
                         }
                     }

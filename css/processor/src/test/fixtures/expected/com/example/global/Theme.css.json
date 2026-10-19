@@ -1,1 +1,1 @@
-{"version":5,"owner":"com.example.global.Theme","kind":"GLOBAL","dependencies":["com.example.global.Defaults"],"includes":["com.example.global.Defaults"],"implementation":"","bindings":[],"providers":{},"symbols":[]}
+{"version":6,"owner":"com.example.global.Theme","kind":"GLOBAL","dependencies":["com.example.global.Defaults"],"includes":["com.example.global.Defaults"],"implementation":"","bindings":[],"providers":{},"symbols":[]}

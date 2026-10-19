@@ -3,6 +3,7 @@ package react4j.css.integration;
 import static org.testng.Assert.*;
 
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
+import com.google.gson.JsonParser;
 import com.helger.css.decl.CSSMediaRule;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CSSSupportsRule;
@@ -21,14 +22,26 @@ public final class CssLivenessIntegrationTest {
         return Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.liveness." + property))));
     }
 
+    private static String compiledClass(String owner, String name) throws Exception {
+        for (var item : JsonParser.parseString(input("names")).getAsJsonObject().getAsJsonArray("names")) {
+            var symbol = item.getAsJsonObject();
+            if (("react4j.css.integration." + owner).equals(symbol.get("owner").getAsString())
+                    && "CLASS".equals(symbol.get("kind").getAsString())
+                    && name.equals(symbol.get("name").getAsString())) {
+                return symbol.get("compiled").getAsString();
+            }
+        }
+        throw new AssertionError("Missing class in reverse-name artifact: " + owner + "#" + name);
+    }
+
     @Test
     public void realLinksHandleSeparatelyCompiledInterfaceAndFacadeBindings() throws Exception {
         String optimized = input("optimized");
         String development = input("development");
         assertEquals(input("alias").replace("alias.css.map", "optimized.css.map"), optimized);
-        assertTrue(optimized.contains("ButtonStyles--success"), optimized);
-        assertFalse(optimized.contains("ButtonStyles--cancel"), optimized);
-        assertFalse(optimized.contains("MapStyles--dead"), optimized);
+        assertTrue(optimized.contains("." + compiledClass("ButtonStyles", "success")), optimized);
+        assertFalse(optimized.contains("." + compiledClass("ButtonStyles", "cancel")), optimized);
+        assertFalse(optimized.contains("." + compiledClass("LivenessEntry$MapStyles", "dead")), optimized);
         assertTrue(development.contains("ButtonStyles--cancel"), development);
         assertTrue(development.contains("MapStyles--dead"), development);
         assertFalse(input("javascript").contains("$react4j$css$"));
@@ -75,7 +88,7 @@ public final class CssLivenessIntegrationTest {
         var consumer = new SourceMapConsumerV3();
         consumer.parse(input("map"));
         for (var pair : List.of(
-                new String[] {"--active", "&.active {"},
+                new String[] {"." + compiledClass("LivenessEntry$MapStyles", "active"), "&.active {"},
                 new String[] {"letter-spacing:3px", "letter-spacing: 3px"},
                 new String[] {"color:rgb(1,2,3)", "color: rgb(1, 2, 3)"})) {
             int generated = css.indexOf(pair[0]);

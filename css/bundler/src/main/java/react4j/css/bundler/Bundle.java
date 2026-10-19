@@ -19,6 +19,7 @@ import org.jspecify.annotations.Nullable;
 import react4j.css.internal.CssCatalogue;
 import react4j.css.internal.CssCatalogue.Resource;
 import react4j.css.internal.CssLink;
+import react4j.css.internal.CssRenamer;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
@@ -91,7 +92,8 @@ public final class Bundle {
                         "Expected --link-config, --liveness, --javascript and --link together");
             }
             link = CssLink.read(Files.readString(outputs.get("--link-config")));
-            var expected = CssLink.create(catalogue, linkName, link.optimized());
+            var expected = CssLink.create(
+                    catalogue, linkName, link.optimized(), link.names().policy());
             if (!expected.equals(link)) {
                 throw new IllegalArgumentException("CSS link configuration does not match this link and catalogue");
             }
@@ -195,6 +197,10 @@ public final class Bundle {
                 .filter(d -> retained.contains(d.metadata().owner())
                         && Kind.GLOBAL != d.metadata().kind())
                 .forEach(ordered::add);
+        if (null != link) {
+            var renamer = new CssRenamer(link.names());
+            ordered = new ArrayList<>(ordered.stream().map(renamer::rename).toList());
+        }
         var writer = new StringBuilder("@layer shared,components;\n");
         var sections = new JsonArray();
         int line = 1;

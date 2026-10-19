@@ -176,6 +176,8 @@ test_suite(
     name = "browser_tests",
     tests = [
         "//css/examples/save-button/src/test/js/react4j/css/example:browser_tests",
+        "//css/examples/save-button/src/test/js/react4j/css/example:prefixed_browser_tests",
+        "//css/examples/save-button/src/test/js/react4j/css/example:uncompressed_browser_tests",
         "//doc-examples/src/test/js/react4j/examples:browser_tests",
         "//examples/drumloop/src/test/js/react4j/drumloop:browser_tests",
         "//examples/heart-rate-monitor/src/test/js/react4j/hrm:browser_tests",

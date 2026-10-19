@@ -18,7 +18,13 @@ public final class CssResourceTest {
                 includes,
                 bindings ? "demo.Styled_Button" : "",
                 bindings
-                        ? List.of(new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root", List.of()))
+                        ? List.of(new CssResource.Binding(
+                                "style",
+                                CssResource.SymbolKind.CLASS,
+                                "root",
+                                List.of(),
+                                List.of(new CssResource.SymbolId(
+                                        "demo.Button", CssResource.SymbolKind.CLASS, "token"))))
                         : List.of(),
                 Map.of(),
                 List.of());
@@ -27,7 +33,12 @@ public final class CssResourceTest {
     @Test
     public void bindingProviderChainsAreExplicitImmutableDependencies() {
         var providers = new ArrayList<>(List.of("Alias", "Owner"));
-        var binding = new CssResource.Binding("id", CssResource.SymbolKind.ID, "shared", providers);
+        var binding = new CssResource.Binding(
+                "id",
+                CssResource.SymbolKind.ID,
+                "shared",
+                providers,
+                List.of(new CssResource.SymbolId("demo.Button", CssResource.SymbolKind.ID, "token")));
         providers.clear();
         assertEquals(binding.requires(), List.of("Alias", "Owner"));
         assertEquals(CssResource.Binding.read(binding.json()), binding);
@@ -56,10 +67,20 @@ public final class CssResourceTest {
                         List.of()));
         expectThrows(
                 IllegalArgumentException.class,
-                () -> new CssResource.Binding("id", CssResource.SymbolKind.ID, "shared", List.of("Owner", "Owner")));
+                () -> new CssResource.Binding(
+                        "id",
+                        CssResource.SymbolKind.ID,
+                        "shared",
+                        List.of("Owner", "Owner"),
+                        List.of(new CssResource.SymbolId("demo.Button", CssResource.SymbolKind.ID, "token"))));
         expectThrows(
                 IllegalArgumentException.class,
-                () -> new CssResource.Binding("id", CssResource.SymbolKind.ID, "shared", List.of("../Owner")));
+                () -> new CssResource.Binding(
+                        "id",
+                        CssResource.SymbolKind.ID,
+                        "shared",
+                        List.of("../Owner"),
+                        List.of(new CssResource.SymbolId("demo.Button", CssResource.SymbolKind.ID, "token"))));
         for (var invalid : List.of("null", "{}", "[1]", "[true]", "[null]", "\"Owner\"")) {
             var json = binding.json();
             json.add("requires", JsonParser.parseString(invalid));
@@ -139,8 +160,12 @@ public final class CssResourceTest {
 
     @Test
     public void bindingsAndMultipleProvidersAreValidatedAndImmutable() {
-        var bindings = new ArrayList<>(
-                List.of(new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root", List.of())));
+        var bindings = new ArrayList<>(List.of(new CssResource.Binding(
+                "style",
+                CssResource.SymbolKind.CLASS,
+                "root",
+                List.of(),
+                List.of(new CssResource.SymbolId("demo.Button", CssResource.SymbolKind.CLASS, "token")))));
         var owners = new ArrayList<>(List.of("Defaults", "Theme"));
         var resource = new CssResource(
                 "Button",
@@ -159,11 +184,21 @@ public final class CssResourceTest {
         for (var method : List.of("bad/name", "a.b", "")) {
             expectThrows(
                     IllegalArgumentException.class,
-                    () -> new CssResource.Binding(method, CssResource.SymbolKind.ID, "node", List.of()));
+                    () -> new CssResource.Binding(
+                            method,
+                            CssResource.SymbolKind.ID,
+                            "node",
+                            List.of(),
+                            List.of(new CssResource.SymbolId("demo.Button", CssResource.SymbolKind.ID, "token"))));
         }
         expectThrows(
                 IllegalArgumentException.class,
-                () -> new CssResource.Binding("id", CssResource.SymbolKind.ID, " ", List.of()));
+                () -> new CssResource.Binding(
+                        "id",
+                        CssResource.SymbolKind.ID,
+                        " ",
+                        List.of(),
+                        List.of(new CssResource.SymbolId("demo.Button", CssResource.SymbolKind.ID, "token"))));
         expectThrows(
                 IllegalArgumentException.class,
                 () -> new CssResource(
@@ -231,8 +266,8 @@ public final class CssResourceTest {
                 "null",
                 "1",
                 "{}",
-                valid.replace("\"version\":5", "\"version\":5.1"),
-                valid.replace("\"version\":5", "\"version\":\"1\""),
+                valid.replace("\"version\":6", "\"version\":6.1"),
+                valid.replace("\"version\":6", "\"version\":\"1\""),
                 valid.replace("COMPONENT", "UNKNOWN"),
                 valid.replace("[]", "[1]"),
                 valid.replace("[]", "[null]"),

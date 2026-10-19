@@ -27,9 +27,15 @@ public final class CssLinkTest {
                                                 List.of(),
                                                 "demo.Styled_Button",
                                                 List.of(new CssResource.Binding(
-                                                        "style", CssResource.SymbolKind.CLASS, "root", List.of())),
+                                                        "style",
+                                                        CssResource.SymbolKind.CLASS,
+                                                        "root",
+                                                        List.of(),
+                                                        List.of(new CssResource.SymbolId(
+                                                                "demo.Button", CssResource.SymbolKind.CLASS, "")))),
                                                 Map.of(),
-                                                List.of()),
+                                                List.of(new CssResource.Symbol(
+                                                        CssResource.SymbolKind.CLASS, "", "root", false))),
                                         "",
                                         JsonParser.parseString("{}").getAsJsonObject())),
                         "1".repeat(64)),
@@ -61,7 +67,7 @@ public final class CssLinkTest {
                 "null",
                 "[]",
                 "{}",
-                config.replace("\"version\":2", "\"version\":3"),
+                config.replace("\"version\":3", "\"version\":2"),
                 config.replace("\"optimized\":true", "\"optimized\":\"true\""),
                 config.replace("\"kind\":\"CLASS\"", "\"kind\":\"UNKNOWN\""),
                 config.replace("\"method\":\"style\"", "\"method\":null"),
@@ -74,7 +80,7 @@ public final class CssLinkTest {
                 "null",
                 "[]",
                 "{}",
-                report.replace("\"version\":2", "\"version\":3"),
+                report.replace("\"version\":3", "\"version\":2"),
                 report.replace("//demo:app", "//demo:other"),
                 report.replace("1".repeat(64), "2".repeat(64)),
                 report.replace("\"optimized\":true", "\"optimized\":false"),
@@ -84,6 +90,15 @@ public final class CssLinkTest {
                 report.replace("[\"demo.Button#style\"]", "[null]"))) {
             expectThrows(IllegalArgumentException.class, () -> link.readReport(bad, JAVASCRIPT_DIGEST));
         }
+        for (var field : List.of("compiled", "readable", "owner", "name")) {
+            var changed = JsonParser.parseString(report).getAsJsonObject();
+            changed.getAsJsonArray("names").get(0).getAsJsonObject().addProperty(field, "foreign");
+            expectThrows(IllegalArgumentException.class, () -> link.readReport(changed.toString(), JAVASCRIPT_DIGEST));
+        }
+        var changedPolicy = JsonParser.parseString(report).getAsJsonObject();
+        changedPolicy.getAsJsonObject("policy").addProperty("prefix", "foreign-");
+        expectThrows(
+                IllegalArgumentException.class, () -> link.readReport(changedPolicy.toString(), JAVASCRIPT_DIGEST));
         expectThrows(IllegalArgumentException.class, () -> link.readReport(report, "3".repeat(64)));
         expectThrows(IllegalArgumentException.class, () -> link.report(Set.of(), "bad"));
         for (var key : List.of("version", "link", "digest", "optimized", "values")) {
@@ -91,15 +106,17 @@ public final class CssLinkTest {
             json.remove(key);
             expectThrows(IllegalArgumentException.class, () -> CssLink.read(json.toString()));
         }
-        expectThrows(IllegalArgumentException.class, () -> new CssLink("", "1".repeat(64), true, List.of()));
-        expectThrows(IllegalArgumentException.class, () -> new CssLink("app", "bad", true, List.of()));
+        expectThrows(
+                IllegalArgumentException.class, () -> new CssLink("", "1".repeat(64), true, List.of(), link.names()));
+        expectThrows(IllegalArgumentException.class, () -> new CssLink("app", "bad", true, List.of(), link.names()));
         expectThrows(
                 IllegalArgumentException.class,
                 () -> new CssLink(
                         "app",
                         "1".repeat(64),
                         true,
-                        List.of(link.values().get(0), link.values().get(0))));
+                        List.of(link.values().get(0), link.values().get(0)),
+                        link.names()));
     }
 
     @Test
@@ -113,9 +130,14 @@ public final class CssLinkTest {
                             List.of(),
                             List.of(),
                             "Styled_Button",
-                            List.of(new CssResource.Binding("style", CssResource.SymbolKind.CLASS, "root", List.of())),
+                            List.of(new CssResource.Binding(
+                                    "style",
+                                    CssResource.SymbolKind.CLASS,
+                                    "root",
+                                    List.of(),
+                                    List.of(new CssResource.SymbolId("Button", CssResource.SymbolKind.CLASS, "")))),
                             Map.of(),
-                            List.of())
+                            List.of(new CssResource.Symbol(CssResource.SymbolKind.CLASS, "", "root", false)))
                     .json();
             Files.writeString(tree.resolve("Button.css"), ".root{color:red;}" + SourceMap.reference("Button.css"));
             Files.writeString(

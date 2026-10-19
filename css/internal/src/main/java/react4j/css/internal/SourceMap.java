@@ -29,6 +29,36 @@ public final class SourceMap {
 
     /** Copies retained bytes and their original mapping segments without reserializing CSS. */
     public static Writer project(String css, JsonObject map, List<Span> spans) {
+        return copy(css, mappings(css, map), spans);
+    }
+
+    public record Edit(int start, int end, String value) {}
+
+    /** Replaces parsed tokens, keeping each replacement at its existing authored anchor. */
+    public static Writer replace(String css, JsonObject map, List<Edit> edits) {
+        var mappings = mappings(css, map);
+        var writer = new Writer();
+        int offset = 0;
+        for (var edit : edits) {
+            if (edit.start() < offset || edit.end() < edit.start() || edit.end() > css.length()) {
+                throw new IllegalArgumentException("CSS edits must be ordered and within the source");
+            }
+            copy(css, mappings, new Span(offset, edit.start()), writer);
+            Location origin = null;
+            for (var mapping : mappings) {
+                if (mapping.offset() > edit.start()) {
+                    break;
+                }
+                origin = mapping.location();
+            }
+            writer.append(edit.value(), origin);
+            offset = edit.end();
+        }
+        copy(css, mappings, new Span(offset, css.length()), writer);
+        return writer;
+    }
+
+    private static List<Mapping> mappings(String css, JsonObject map) {
         var lines = new ArrayList<Integer>();
         lines.add(0);
         for (int i = 0; i < css.length(); i++) {
@@ -67,31 +97,38 @@ public final class SourceMap {
             }
             line++;
         }
+        return mappings;
+    }
+
+    private static Writer copy(String css, List<Mapping> mappings, List<Span> spans) {
         var writer = new Writer();
-        int mapping = 0;
         int previousEnd = 0;
         for (var span : spans) {
             if (span.start() < previousEnd || span.end() > css.length()) {
                 throw new IllegalArgumentException("CSS source-map spans must be ordered and within the source");
             }
+            copy(css, mappings, span, writer);
             previousEnd = span.end();
-            int offset = span.start();
-            while (offset < span.end()) {
-                while (mapping + 1 < mappings.size()
-                        && mappings.get(mapping + 1).offset() <= offset) {
-                    mapping++;
-                }
-                int end = mapping + 1 < mappings.size()
-                        ? Math.min(span.end(), mappings.get(mapping + 1).offset())
-                        : span.end();
-                var origin = mappings.isEmpty() || mappings.get(mapping).offset() > offset
-                        ? null
-                        : mappings.get(mapping).location();
-                writer.append(css.substring(offset, end), origin);
-                offset = end;
-            }
         }
         return writer;
+    }
+
+    private static void copy(String css, List<Mapping> mappings, Span span, Writer writer) {
+        int mapping = 0;
+        int offset = span.start();
+        while (offset < span.end()) {
+            while (mapping + 1 < mappings.size() && mappings.get(mapping + 1).offset() <= offset) {
+                mapping++;
+            }
+            int end = mapping + 1 < mappings.size()
+                    ? Math.min(span.end(), mappings.get(mapping + 1).offset())
+                    : span.end();
+            var origin = mappings.isEmpty() || mappings.get(mapping).offset() > offset
+                    ? null
+                    : mappings.get(mapping).location();
+            writer.append(css.substring(offset, end), origin);
+            offset = end;
+        }
     }
 
     private static List<Integer> decode(String encoded) {

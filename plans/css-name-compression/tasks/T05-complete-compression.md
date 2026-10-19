@@ -1,6 +1,6 @@
 # T05 — Compress every symbol and protect variants
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: T04
 - Spec coverage: R5–R7 remaining kinds/occurrences/collisions; AC4–AC5.
 
@@ -22,6 +22,12 @@ The shared table shortens IDs, animation names and custom properties, including 
 - Unit/parser/reachability matrices for all occurrence forms, escaped/unsupported syntax boundaries, keywords, stable duplicates, provider chains and collision failures.
 - Real J2CL/Closure/bundler/browser assertions for all four kinds in compressed/off/prefixed/development modes and two variants sharing one JS.
 - Deterministic identical-input output comparison and exact reverse-origin checks; focused map queries for nonclass replacements.
+
+## Realization notes
+
+- Preserve canonical identity for CSS occurrences, not just getters: a stable authored ID/property can equal another definition's readable scoped name, and aliases can have different provider chains. A text-to-name dictionary cannot distinguish these cases. Use unique per-local-alias intermediate names while compiling, resolve parsed occurrences to canonical symbols/provider requirements in processor metadata, and emit ordinary readable CSS. This is generated-token identity metadata, not the deferred exact authored token mapping.
+- Project occurrence offsets through pruning before final renaming. Typed references retain the existing distinction between classes/IDs proving DOM presence and property/animation resources requiring providers. Keep selector/fragment-only IDs from activating their providers.
+- Reuse the existing parser/animation validation rather than invent a second shorthand grammar. Reserve/check names by parsed context; preserve strings and external URLs. Allocate all kinds in the common link table, then use recorded canonical occurrences for edits.
 
 ## Evidence
 

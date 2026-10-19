@@ -3,6 +3,8 @@ const Example = goog.require('react4j.css.example.BrowserExample');
 const Mode = goog.require('react4j.browser.Mode');
 const asserts = goog.require('goog.testing.asserts');
 const testSuite = goog.require('goog.testing.testSuite');
+/** @define {string} */
+const variant = goog.define('react4j.css.example.variant', '');
 
 /** @type {!HTMLElement} */
 let container;
@@ -46,13 +48,23 @@ testSuite({
     container = /** @type {!HTMLElement} */ (document.createElement('div'));
     document.body.appendChild(container);
     style = /** @type {!HTMLStyleElement} */ (document.createElement('style'));
-    style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/styles.css')).text();
+    style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/' + variant + 'styles.css')).text();
     document.head.appendChild(style);
     Example.render(container, "#04c", "true");
   },
   tearDown() {
     container.remove();
     style.remove();
+  },
+  testClassNamingPolicy() {
+    const root = /** @type {!Element} */ (container.querySelector('#success')).classList.item(0);
+    asserts.assertNotNull(root);
+    if (Mode.environment === 'production' && variant !== 'uncompressed-') {
+      asserts.assertFalse(root.startsWith('jcss-'));
+      asserts.assertEquals(variant === 'prefixed-', root.startsWith('app-'));
+    } else {
+      asserts.assertTrue(root.startsWith('jcss-'));
+    }
   },
   testGeneratedBindingsAreSingletons() {
     asserts.assertTrue(Example.bindingsAreSingletons());
@@ -156,14 +168,14 @@ testSuite({
     asserts.assertEquals('3px', computed('base').borderTopWidth);
     asserts.assertEquals('rgb(153, 0, 153)', getComputedStyle(/** @type {!Element} */ (container.querySelector('[data-symbol=control]'))).backgroundColor);
     asserts.assertEquals('', computed('base').getPropertyValue('--jcss-react4j-css-example-BrowserExample_0024_UnusedGlobals--excluded'));
-    style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/alternate.css')).text();
+    style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/' + variant + 'alternate.css')).text();
     asserts.assertEquals('4px', computed('base').borderTopWidth);
     asserts.assertEquals('rgb(0, 153, 153)', getComputedStyle(/** @type {!Element} */ (container.querySelector('[data-symbol=control]'))).backgroundColor);
     asserts.assertEquals('', computed('base').getPropertyValue('--jcss-react4j-css-example-BrowserExample_0024_UnusedGlobals--excluded'));
     asserts.assertEquals('rgb(0, 136, 0)', computed('success').backgroundColor);
   },
   async testComponentImportsRetainGlobalsWithoutExplicitRoots() {
-    style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/component.css')).text();
+    style.textContent = await (await fetch('/css/examples/save-button/src/test/js/react4j/css/example/' + variant + 'component.css')).text();
     asserts.assertEquals('2px', computed('base').borderTopWidth);
     asserts.assertEquals('rgb(0, 136, 0)', getComputedStyle(/** @type {!Element} */ (container.querySelector('[data-symbol=control]'))).backgroundColor);
     asserts.assertEquals('', computed('base').getPropertyValue('--jcss-react4j-css-example-BrowserExample_0024_UnusedGlobals--excluded'));
