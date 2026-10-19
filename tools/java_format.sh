@@ -32,6 +32,7 @@ paths=(
   tools/verification/src/test/java
   tools/release/src/main/java
   tools/release/src/test/java
+  tools/webtesting/src/main/java
   tools/testing/src/main/java
   core/src/main/java
   core/src/test/java

@@ -1,0 +1,22 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//core/src/test/java/react4j:__pkg__",
+])
+
+java_j2cl_library(
+    name = "browser",
+    testonly = True,
+    srcs = [
+        "Browser.java",
+        "BrowserPromise.java",
+        "Checks.java",
+    ],
+    java_deps = ["//third_party/java:jsinterop_annotations"],
+    native_srcs = ["Browser.native.js"],
+    deps = [
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jspecify-j2cl",
+    ],
+)

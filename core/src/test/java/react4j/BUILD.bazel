@@ -38,18 +38,24 @@ java_testng(
 java_j2cl_library(
     name = "runtime_coverage",
     testonly = True,
-    srcs = ["RuntimeCoverageExample.java"],
+    srcs = [
+        "RuntimeBrowserTest.java",
+        "RuntimeCoverageExample.java",
+    ],
     java_deps = [
+        "//tools/webtesting/src/main/java/react4j/webtesting:browser_java",
         "//third_party/java:base",
         "//third_party/java:arez_core",
         "//core",
         "//third_party/java:jsinterop_annotations",
     ],
+    native_srcs = ["RuntimeBrowserTest.native.js"],
     deps = [
         "//:core-j2cl",
         "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jsinterop_base-j2cl",
         "//third_party/java:jspecify-j2cl",
+        "//tools/webtesting/src/main/java/react4j/webtesting:browser",
         "@arez//:core-j2cl",
     ],
 )

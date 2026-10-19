@@ -1,6 +1,6 @@
 # T01 — Core runtime and browser support
 
-- Status: `pending`
+- Status: `complete`
 - Blocked by: None
 - Spec coverage: R1,R2,R5; AC1
 
@@ -10,9 +10,9 @@ Migrate core runtime assertions through a small checked, test-only native browse
 
 ## Acceptance criteria
 
-- [ ] Delivered behavior and relevant spec criteria preserve the original cases.
-- [ ] Focused checks and formatting pass; the Java/native boundary is inspected.
-- [ ] Evidence and task state are committed together.
+- [x] Delivered behavior and relevant spec criteria preserve the original cases.
+- [x] Focused checks and formatting pass; the Java/native boundary is inspected.
+- [x] Evidence and task state are committed together.
 
 ## Validation
 
@@ -20,4 +20,6 @@ Core runtime coverage browser target/collector in both configurations; checked J
 
 ## Evidence
 
-- pending
+- RuntimeCoverageTest passed in default and -c opt configurations, including mapped native element probes and skipped/throwing attribution regressions.
+- `bazel run //tools/verification:runtime_coverage -- "$PWD/reports/coverage/jvm.lcov" "$PWD/reports/coverage/runtime.lcov"` passed, executing the migrated core scenarios in development and production. Production source/inventory inputs are unchanged.
+- Java formatter, buildifier and diff checks passed; native core helpers contain only React fixture construction, property observation and render/unmount.
