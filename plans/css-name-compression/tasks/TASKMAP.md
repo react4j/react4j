@@ -2,20 +2,20 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: `implementation-review`
-- Current frontier: `implementation review`
+- Current frontier: `closeout`
 - Planning reviewer: `/root/css_compression_plan_review` (`2/3` rounds; final confirmation `unused`; passed)
 - Plan checkpoint: `automatic` — explicit implementation request, confirmed interview and passing planning review; no human checkpoint requested.
-- Implementation reviewer: `/root/css_compression_implementation_review` (`2/5` rounds; final confirmation `unused`; round 3 ready)
+- Implementation reviewer: `/root/css_compression_implementation_review` (`3/5` rounds; final confirmation `unused`; passed)
 - Authority: implementation request and confirmed interview recorded in SPEC; existing PR112 push authority; no merge.
 
 ## Full-scope validation
 
 - Gate: `tools/check.sh`, domain link validator, simplify, independent implementation review and exact diff inspection.
-- Evidence: complete `tools/check.sh` passed on 2026-10-19; 40 ordinary targets, 8 optimized browser suites, 20 JVM coverage targets, unchanged 95/85 policy, external consumer, site, unsigned release and all 13 independently rebuilt publication artifacts passed. Simplify and domain replacement/link audits complete. See T07 for exact CSS coverage counts. Independent implementation review remains the next gate.
+- Evidence: complete `tools/check.sh` passed on 2026-10-19 against final reviewed implementation bf9c35c23: 40 ordinary targets, 8 optimized browser suites, 20 JVM coverage targets, unchanged 95/85 policy, external consumer in both modes, site (27,034 links; zero broken), unsigned release and all 13 independently rebuilt publication artifacts passed. See T07 for exact coverage counts and processor suite timings. Simplify, domain replacement/link audits and independent implementation review passed. No source changes followed the final gate.
 
 ## Post-implementation gates
 
-- Fresh read-only implementation review under the recorded budget; fix findings with focused validation before closeout.
+- Implementation review passed in 3/5 rounds; all findings resolved, final confirmation unused. Final knowledge sweep found no additional durable conclusions: the existing canonical owners cover all fixes. Domain links pass; both mapping deferrals remain. Task-created scratch output is removed apart from the active gate log and publication draft, which are removed after publication.
 - After review passes, remove this exact plan tree and task-created scratch output, commit and push PR112, refresh/attach its description, and report actual remote Verify state. Never merge.
 
 ## Tasks
@@ -58,3 +58,5 @@
 - Implementation round 1: fresh read-only reviewer activated against plan d1375174d and delivered HEAD b2a5dfa7f, with complete scope/authority/corrections, promoted artifacts and full-gate evidence. Found two P2 collision gaps: raw attribute references and escaped grammar names. Both verified and addressed with catalogue reservations, finite candidate checks, decoded contexts and related scoped-function handling. Ten focused targets and one full post-fix gate passed; the last no-gain comparison refinement passes four focused targets. Full gate rerunning for the final tree before closeout. No significant decision or requirement changed.
 
 - Implementation round 2: same read-only reviewer confirmed escaped-context fixes and found one remaining P2: attribute checks missed actual root-plus-modifier getter compositions. Accepted and fixed by reconstructing finite getter values from canonical table metadata. Regressions cover late variants, known catalogue CSS, reversed inventory order, partial/all stability, case flags, escapes and unchanged matches. Internal, bundler and linker targets pass; formatter, domain links and diff checks pass. Complete gate passed against 05a5f0802 before this final fix; rerun against the committed fix before closeout. No significant decision or requirement changed.
+
+- Implementation round 3: Findings: none. Same read-only reviewer verified canonical getter compositions, root-first ordering, partial stability, catalogue reservations, late variants, escapes/case flags and unchanged matches. Direct reproduction rejects all four prior bypasses. Focused internal, bundler and linker tests pass. Complete exact-head gate subsequently passed; no residual verification remains. Final confirmation unused.
