@@ -3,6 +3,7 @@ load("//third_party/java:rules.bzl", "java_library")
 java_library(
     name = "processor",
     srcs = [
+        "AssetDeclarations.java",
         "CssAccessor.java",
         "CssCompiler.java",
         "CssDescriptor.java",

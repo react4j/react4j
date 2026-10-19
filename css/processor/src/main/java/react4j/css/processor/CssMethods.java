@@ -112,6 +112,29 @@ final class CssMethods {
         return List.copyOf(methods);
     }
 
+    static boolean publicFactory(
+            ProcessingEnvironment environment, TypeElement owner, List<Method> methods, String label) {
+        for (var inherited : methods) {
+            var method = inherited.element();
+            if (method.getSimpleName().contentEquals("get")
+                    && method.getParameters().isEmpty()
+                    && !method.getModifiers().contains(Modifier.PRIVATE)) {
+                if (!method.getModifiers().contains(Modifier.STATIC)
+                        || method.getModifiers().contains(Modifier.FINAL)
+                        || !environment
+                                .getTypeUtils()
+                                .isSubtype(owner.asType(), inherited.type().getReturnType())) {
+                    throw new IllegalArgumentException(
+                            label + " method get() conflicts with the generated singleton factory");
+                }
+                // Protected factory methods become public in the final generated class.
+                return method.getModifiers().contains(Modifier.PUBLIC)
+                        || method.getModifiers().contains(Modifier.PROTECTED);
+            }
+        }
+        return false;
+    }
+
     private static boolean sameSignature(Types types, ExecutableType first, ExecutableType second) {
         return types.isSubsignature((ExecutableType) types.erasure(first), (ExecutableType) types.erasure(second));
     }

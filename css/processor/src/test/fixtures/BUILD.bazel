@@ -3,6 +3,7 @@ filegroup(
     srcs = [
         ":inputs",
         "//css/processor/src/test/fixtures/expected:files",
+        "//css/processor/src/test/fixtures/expected/com/example/assets:files",
         "//css/processor/src/test/fixtures/expected/com/example/attribute_id:files",
         "//css/processor/src/test/fixtures/expected/com/example/bad_accessor:files",
         "//css/processor/src/test/fixtures/expected/com/example/bare_conditional:files",
@@ -69,6 +70,7 @@ filegroup(
         "//css/processor/src/test/fixtures/expected/com/example/unsupported_at_rule:files",
         "//css/processor/src/test/fixtures/expected/com/example/unsupported_pseudo:files",
         "//css/processor/src/test/fixtures/expectedFormatted:files",
+        "//css/processor/src/test/fixtures/expectedFormatted/com/example/assets:files",
         "//css/processor/src/test/fixtures/expectedFormatted/com/example/attribute_id:files",
         "//css/processor/src/test/fixtures/expectedFormatted/com/example/bad_accessor:files",
         "//css/processor/src/test/fixtures/expectedFormatted/com/example/bare_conditional:files",
@@ -190,6 +192,7 @@ filegroup(
         "//css/processor/src/test/fixtures/bad_input/com/example/unsupported_at_rule:files",
         "//css/processor/src/test/fixtures/bad_input/com/example/unsupported_pseudo:files",
         "//css/processor/src/test/fixtures/input:files",
+        "//css/processor/src/test/fixtures/input/com/example/assets:files",
         "//css/processor/src/test/fixtures/input/com/example/basic:files",
         "//css/processor/src/test/fixtures/input/com/example/conditions:files",
         "//css/processor/src/test/fixtures/input/com/example/deprecated:files",

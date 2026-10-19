@@ -16,6 +16,7 @@ java_testng(
     name = "processor_tests",
     size = "large",
     srcs = [
+        "AssetProcessorTest.java",
         "CssIdImportProcessorTest.java",
         "CssInterfaceProcessorTest.java",
         "CssProcessorArtifactTest.java",
@@ -31,6 +32,7 @@ java_testng(
     ],
     jvm_flags = _PROCESSOR_JVM_FLAGS + ["-Dcss.processor.jar=$(rootpath //css/processor:processor_jar)"],
     test_classes = [
+        "react4j.css.processor.AssetProcessorTest",
         "react4j.css.processor.CssIdImportProcessorTest",
         "react4j.css.processor.CssProcessorArtifactTest",
         "react4j.css.processor.CssInterfaceProcessorTest",
@@ -51,6 +53,7 @@ java_testng(
     name = "implementation_tests",
     size = "medium",
     srcs = [
+        "AssetProcessorTest.java",
         "CssIdImportProcessorTest.java",
         "CssInterfaceProcessorTest.java",
         "CssProcessorTest.java",
@@ -64,6 +67,7 @@ java_testng(
     ],
     jvm_flags = _PROCESSOR_JVM_FLAGS + ["-Dcss.processor.implementation=true"],
     test_classes = [
+        "react4j.css.processor.AssetProcessorTest",
         "react4j.css.processor.CssIdImportProcessorTest",
         "react4j.css.processor.CssInterfaceProcessorTest",
         "react4j.css.processor.CssProcessorTest",

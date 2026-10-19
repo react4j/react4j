@@ -1,0 +1,8 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "Owner$Media.assets.json",
+        "Owner_Assets_Media.java",
+    ],
+    visibility = ["//css/processor/src/test/fixtures:__pkg__"],
+)

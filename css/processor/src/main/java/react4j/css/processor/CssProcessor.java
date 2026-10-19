@@ -44,6 +44,8 @@ import react4j.css.internal.SourceMap;
 /** Validates component CSS in the JVM, then emits static bindings and CSS resources. */
 @SupportedAnnotationTypes({
     "react4j.css.Css",
+    "react4j.css.Assets",
+    "react4j.css.Asset",
     "react4j.css.Keyframes",
     "react4j.css.CssImport",
     "react4j.css.CssImports",
@@ -84,6 +86,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                             && owner.getAnnotationMirrors().stream()
                                     .noneMatch(mirror -> List.of(
                                                     CSS_ANNOTATION,
+                                                    "react4j.css.Assets",
                                                     "react4j.css.GlobalCss",
                                                     "react4j.css.Keyframes",
                                                     "react4j.css.CssImport",
@@ -106,6 +109,31 @@ public final class CssProcessor extends AbstractStandardProcessor {
     }
 
     private void process(TypeElement owner) throws IOException {
+        if (null != annotation(owner, "react4j.css.Assets")) {
+            for (var name : List.of("Css", "GlobalCss", "Keyframes", "CssStable", "CssImport", "CssImports")) {
+                if (null != annotation(owner, "react4j.css." + name)) {
+                    throw new IllegalArgumentException("@Assets cannot be combined with @" + name);
+                }
+            }
+            validateResourceType(owner);
+            var definition = AssetDeclarations.parse(processingEnv, owner);
+            var generated = CssGenerator.buildType(
+                    processingEnv,
+                    owner,
+                    "Assets_",
+                    definition.publicFactory(),
+                    definition.deprecated(),
+                    definition.methods(),
+                    definition.values());
+            emitTypeSpec(definition.packageName(), generated.type());
+            AssetDeclarations.emit(processingEnv, owner, generated.implementation(), definition);
+            return;
+        }
+        for (var method : owner.getEnclosedElements()) {
+            if (null != annotation(method, "react4j.css.Asset")) {
+                throw new IllegalArgumentException("@Asset methods require an @Assets definition");
+            }
+        }
         Kind kind = sourceKind(owner);
         CssDescriptor descriptor = Kind.COMPONENT == kind ? parse(owner) : null;
         if (Kind.COMPONENT != kind) {
@@ -338,7 +366,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
         return List.of(new CssResource.SymbolId(provider, kind, name));
     }
 
-    private @Nullable AnnotationMirror annotation(Element owner, String name) {
+    static @Nullable AnnotationMirror annotation(Element owner, String name) {
         return owner.getAnnotationMirrors().stream()
                 .filter(a -> a.getAnnotationType().toString().equals(name))
                 .findFirst()
@@ -655,6 +683,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
         var inheritedMethods = CssMethods.collect(processingEnv, owner);
         for (var inherited : inheritedMethods) {
             var method = inherited.element();
+            if (null != annotation(inherited.declaration(), "react4j.css.Asset")) {
+                throw new IllegalArgumentException("@Asset methods require an @Assets definition");
+            }
             if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
                 if (null != symbolAnnotation(inherited.declaration())
                         || null != annotation(inherited.declaration(), "react4j.css.CssStable")) {
@@ -683,7 +714,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 owner,
                 processingEnv.getElementUtils().getBinaryName(owner).toString(),
                 parseAccessors(methods, Kind.COMPONENT),
-                publicFactory(owner, inheritedMethods, "@Css"),
+                CssMethods.publicFactory(processingEnv, owner, inheritedMethods, "@Css"),
                 deprecated);
     }
 
@@ -763,6 +794,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
         var inheritedMethods = CssMethods.collect(processingEnv, owner);
         for (var inherited : inheritedMethods) {
             var method = inherited.element();
+            if (null != annotation(inherited.declaration(), "react4j.css.Asset")) {
+                throw new IllegalArgumentException("@Asset methods require an @Assets definition");
+            }
             if (null != symbolAnnotation(inherited.declaration())
                     || null != annotation(inherited.declaration(), "react4j.css.CssStable")) {
                 if (!method.getModifiers().contains(Modifier.ABSTRACT)
@@ -795,30 +829,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 owner,
                 binaryName(owner),
                 parseAccessors(methods, sourceKind(owner)),
-                publicFactory(owner, inheritedMethods, "CSS"),
+                CssMethods.publicFactory(processingEnv, owner, inheritedMethods, "CSS"),
                 deprecated);
-    }
-
-    private boolean publicFactory(TypeElement owner, List<CssMethods.Method> methods, String label) {
-        for (var inherited : methods) {
-            var method = inherited.element();
-            if (method.getSimpleName().contentEquals("get")
-                    && method.getParameters().isEmpty()
-                    && !method.getModifiers().contains(Modifier.PRIVATE)) {
-                if (!method.getModifiers().contains(Modifier.STATIC)
-                        || method.getModifiers().contains(Modifier.FINAL)
-                        || !processingEnv
-                                .getTypeUtils()
-                                .isSubtype(owner.asType(), inherited.type().getReturnType())) {
-                    throw new IllegalArgumentException(
-                            label + " method get() conflicts with the generated singleton factory");
-                }
-                // Protected factory methods become public in the final generated class.
-                return method.getModifiers().contains(Modifier.PUBLIC)
-                        || method.getModifiers().contains(Modifier.PROTECTED);
-            }
-        }
-        return false;
     }
 
     private Map<String, String> bindings(CssDescriptor descriptor, CssCompiler.Result result, Imports imports) {

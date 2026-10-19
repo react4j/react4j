@@ -2,20 +2,60 @@
 
 load("@rules_closure//closure:defs.bzl", "ClosureJsBinaryInfo", "closure_js_binary")
 
-_CssInfo = provider("Transitive J2CL output trees containing processor CSS resources.", fields = ["trees"])
+WebAssetsInfo = provider("Declared logical asset paths and their byte-independent catalogue.", fields = ["files", "manifest"])
+
+# Read by collection aspects; source bytes are inputs only to asset processing/packaging.
+def _web_assets_impl(ctx):
+    package_path = "/" + ctx.label.package + "/"
+    roots = [marker for marker in ["/src/main/assets/", "/src/test/assets/"] if marker in package_path]
+    if len(roots) != 1:
+        fail("web_assets must be declared below src/main/assets or src/test/assets")
+    prefix = package_path.split(roots[0], 1)[1]
+    files = {}
+    manifest = {}
+    for file in ctx.files.srcs:
+        if file.is_directory:
+            fail("web_assets requires individually declared files: " + str(file))
+        local_prefix = ctx.label.package + "/"
+        relative = file.short_path[len(local_prefix):] if file.short_path.startswith(local_prefix) else file.basename
+        logical = prefix + relative
+        if logical in files:
+            fail("Duplicate declared logical asset path: " + logical)
+        if any([part in ["", ".", ".."] for part in logical.split("/")]) or any([char in logical for char in ["\\", ":", "?", "#", "%"]]):
+            fail("Invalid logical asset path: " + logical)
+        files[logical] = file
+        manifest[logical] = file.path
+    ctx.actions.write(ctx.outputs.manifest, json.encode({path: manifest[path] for path in sorted(manifest)}))
+    return [DefaultInfo(files = depset([ctx.outputs.manifest])), WebAssetsInfo(files = files, manifest = ctx.outputs.manifest)]
+
+web_assets = rule(
+    implementation = _web_assets_impl,
+    outputs = {"manifest": "%{name}.assets.json"},
+    attrs = {"srcs": attr.label_list(allow_files = True, mandatory = True)},
+)
+
+_CssInfo = provider("Transitive J2CL resources and byte-independent asset catalogues.", fields = ["trees", "asset_manifests", "asset_files"])
 
 def _collect_impl(target, ctx):
     transitive = []
-    for attribute in ["deps", "exports"]:
+    manifests = []
+    files = []
+    own = []
+    if WebAssetsInfo in target:
+        own = [target[WebAssetsInfo].manifest]
+        files = [depset(target[WebAssetsInfo].files.values())]
+    for attribute in ["deps", "exports", "srcs", "assets"]:
         for dep in getattr(ctx.rule.attr, attribute, []):
             if _CssInfo in dep:
                 transitive.append(dep[_CssInfo].trees)
+                manifests.append(dep[_CssInfo].asset_manifests)
+                files.append(dep[_CssInfo].asset_files)
 
     # J2CL declares its per-library JavaScript directory as a tree artifact.
     trees = [file for file in target[DefaultInfo].files.to_list() if file.is_directory and file.basename.endswith(".js")]
-    return [_CssInfo(trees = depset(trees, transitive = transitive))]
+    return [_CssInfo(trees = depset(trees, transitive = transitive), asset_manifests = depset(own, transitive = manifests), asset_files = depset(transitive = files))]
 
-_collect = aspect(implementation = _collect_impl, attr_aspects = ["deps", "exports"])
+_collect = aspect(implementation = _collect_impl, attr_aspects = ["deps", "exports", "srcs", "assets"])
 
 def _configuration_impl(ctx):
     trees = depset(transitive = [dep[_CssInfo].trees for dep in ctx.attr.deps])

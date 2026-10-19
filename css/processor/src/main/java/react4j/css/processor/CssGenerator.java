@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import org.realityforge.proton.GeneratorUtil;
@@ -24,13 +25,31 @@ final class CssGenerator {
             final CssDescriptor descriptor,
             final Map<String, String> values) {
         var owner = descriptor.element();
-        String packageName = descriptor.packageName();
+        return buildType(
+                processingEnv,
+                owner,
+                "Styled_",
+                descriptor.publicFactory(),
+                descriptor.accessesDeprecatedElements(),
+                descriptor.accessors().stream().map(CssAccessor::method).toList(),
+                values);
+    }
+
+    static Generated buildType(
+            ProcessingEnvironment processingEnv,
+            TypeElement owner,
+            String prefix,
+            boolean publicFactory,
+            boolean accessesDeprecatedElements,
+            List<ExecutableElement> methods,
+            Map<String, String> values) {
+        String packageName = GeneratorUtil.getQualifiedPackageName(owner);
         var ownerName = ClassName.get(owner);
         var members = processingEnv.getElementUtils().getAllMembers(owner);
         var reserved = new HashSet<String>();
         members.forEach(member -> reserved.add(member.getSimpleName().toString()));
         reserved.add(ownerName.topLevelClassName().simpleName());
-        var generated = GeneratorUtil.getGeneratedClassName(owner, "Styled_", "");
+        var generated = GeneratorUtil.getGeneratedClassName(owner, prefix, "");
         boolean facade = members.stream()
                 .anyMatch(member ->
                         member instanceof TypeElement && member.getSimpleName().contentEquals(generated.simpleName()));
@@ -58,7 +77,7 @@ final class CssGenerator {
         var instanceType = !facade && ownerShadowed ? generated : ownerName;
         var factory =
                 MethodSpec.methodBuilder("get").addModifiers(Modifier.STATIC).returns(instanceType);
-        if (descriptor.publicFactory()) {
+        if (publicFactory) {
             factory.addModifiers(Modifier.PUBLIC);
         }
         String holderName = freshName("Internal", reserved);
@@ -91,13 +110,12 @@ final class CssGenerator {
         var suppression = SuppressWarningsUtil.maybeSuppressWarningsAnnotation(
                 packageName.isEmpty() ? "DefaultPackage" : null,
                 qualified ? "UnnecessarilyFullyQualified" : null,
-                descriptor.accessesDeprecatedElements() ? "deprecation" : null,
-                descriptor.accessesDeprecatedElements() ? "removal" : null);
+                accessesDeprecatedElements ? "deprecation" : null,
+                accessesDeprecatedElements ? "removal" : null);
         if (null != suppression) {
             builder.addAnnotation(suppression);
         }
-        for (var binding : descriptor.accessors()) {
-            var method = binding.method();
+        for (var method : methods) {
             String name = method.getSimpleName().toString();
             String token = values.get(name);
             var accessor = MethodSpec.methodBuilder(name)

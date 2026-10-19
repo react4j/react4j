@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `planned`
-- Current frontier: `T01`
+- Status: `implementing`
+- Current frontier: `T02`
 - Planning reviewer: `/root/assets_planning_review` (`2/3` rounds; final confirmation `unused`)
 - Plan checkpoint: automatic; accepted scope and explicit implementation authority, planning review passed
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -18,7 +18,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Checked asset declarations](T01-declarations.md) | pending | None |
+| T01 | [Checked asset declarations](T01-declarations.md) | complete | None |
 | T02 | [Java asset liveness and late URLs](T02-java-link.md) | pending | T01 |
 | T03 | [CSS assets and owned fonts](T03-css-fonts.md) | pending | T02 |
 | T04 | [Manifest packaging and compression](T04-packaging.md) | pending | T03 |

@@ -2,6 +2,7 @@
 
 load("@j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@rules_java//java/common:java_info.bzl", "JavaInfo")
+load("//css:defs.bzl", "WebAssetsInfo")
 load("//third_party/java:rules.bzl", "java_library")
 
 def _checked_sources_impl(ctx):
@@ -15,12 +16,13 @@ def _checked_sources_impl(ctx):
 _checked_sources = rule(
     implementation = _checked_sources_impl,
     attrs = {
+        "assets": attr.label_list(providers = [WebAssetsInfo]),
         "java": attr.label(mandatory = True, providers = [JavaInfo]),
         "originals": attr.label_list(allow_files = True),
     },
 )
 
-def java_j2cl_library(name, srcs, deps = [], java_deps = [], plugins = [], native_srcs = [], testonly = False):
+def java_j2cl_library(name, srcs, deps = [], java_deps = [], plugins = [], native_srcs = [], testonly = False, assets = []):
     java_library(
         name = name + "_java",
         testonly = testonly,
@@ -32,6 +34,7 @@ def java_j2cl_library(name, srcs, deps = [], java_deps = [], plugins = [], nativ
         name = name + "_sources",
         testonly = testonly,
         java = ":" + name + "_java",
+        assets = assets,
         # A processor must not see its already-generated implementations as source inputs.
         originals = srcs if plugins else [],
         visibility = ["//visibility:private"],

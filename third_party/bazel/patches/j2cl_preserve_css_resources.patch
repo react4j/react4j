@@ -1,7 +1,7 @@
 diff --git a/transpiler/java/com/google/j2cl/transpiler/J2clTranspiler.java b/transpiler/java/com/google/j2cl/transpiler/J2clTranspiler.java
 --- a/transpiler/java/com/google/j2cl/transpiler/J2clTranspiler.java
 +++ b/transpiler/java/com/google/j2cl/transpiler/J2clTranspiler.java
-@@ -65,4 +65,8 @@
+@@ -65,4 +65,9 @@
 -      // Copy generated JS files from the APT directory to the output directory.
 +      // Preserve processor CSS and maps alongside generated JavaScript.
        SourceUtils.getAllSources(options.getSourceGenPath())
@@ -10,5 +10,6 @@ diff --git a/transpiler/java/com/google/j2cl/transpiler/J2clTranspiler.java b/tr
 +              (f.sourcePath().endsWith(".js") && !f.sourcePath().endsWith(".native.js"))
 +                  || f.sourcePath().endsWith(".css")
 +                  || f.sourcePath().endsWith(".css.map")
-+                  || f.sourcePath().endsWith(".css.json"))
++                  || f.sourcePath().endsWith(".css.json")
++                  || f.sourcePath().endsWith(".assets.json"))
            .forEach(f -> options.getOutput().copyFile(f.sourcePath(), f.targetPath()));

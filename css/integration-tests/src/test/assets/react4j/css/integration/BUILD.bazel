@@ -1,0 +1,12 @@
+load("//css:defs.bzl", "web_assets")
+
+package(default_visibility = ["//css:__subpackages__"])
+
+web_assets(
+    name = "media",
+    testonly = True,
+    srcs = [
+        "asset.svg",
+        "unused.svg",
+    ],
+)

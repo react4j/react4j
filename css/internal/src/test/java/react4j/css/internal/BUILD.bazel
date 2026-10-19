@@ -3,6 +3,7 @@ load("//third_party/java:rules.bzl", "java_testng")
 java_testng(
     name = "tests",
     srcs = [
+        "AssetResourceTest.java",
         "CssLinkTest.java",
         "CssNamesTest.java",
         "CssRenamerTest.java",
@@ -12,6 +13,7 @@ java_testng(
         "SourceMapTest.java",
     ],
     test_classes = [
+        "react4j.css.internal.AssetResourceTest",
         "react4j.css.internal.CssLinkTest",
         "react4j.css.internal.CssNamesTest",
         "react4j.css.internal.CssRenamerTest",
