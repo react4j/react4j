@@ -11,7 +11,6 @@ import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.IfTree;
 import com.sun.source.tree.LambdaExpressionTree;
 import com.sun.source.tree.MethodTree;
-import com.sun.source.tree.ModifiersTree;
 import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.Tree;
@@ -50,7 +49,6 @@ final class JavaCoverage {
     final String name;
     final String text;
     final Set<Integer> executable;
-    final Set<Integer> jvmLines = new HashSet<>();
     private final List<Range> statements = new ArrayList<>();
     final List<Range> methods = new ArrayList<>();
     private final List<Range> lambdas = new ArrayList<>();
@@ -59,7 +57,6 @@ final class JavaCoverage {
     private final Map<Range, Tree> expressions = new LinkedHashMap<>();
     boolean requiresInventory;
     private int nextEdge;
-    private final Set<Integer> browserOrigins = new HashSet<>();
     private final CompilationUnitTree unit;
     private final Trees trees;
 
@@ -87,11 +84,11 @@ final class JavaCoverage {
                 throw new IllegalArgumentException(
                         "Cannot parse Java coverage source: " + name + diagnostics.getDiagnostics());
             }
-            new TreeScanner<@Nullable Void, Boolean>() {
+            new TreeScanner<@Nullable Void, @Nullable Void>() {
                 private String owner = "";
 
                 @Override
-                public @Nullable Void visitClass(ClassTree type, Boolean jvm) {
+                public @Nullable Void visitClass(ClassTree type, @Nullable Void unused) {
                     String previous = owner;
                     owner += (owner.isEmpty() ? "" : "_") + type.getSimpleName();
                     var declaration = range(type);
@@ -102,18 +99,17 @@ final class JavaCoverage {
                         constructors.put(declaration, "$ctor__" + prefix + owner + "__");
                     }
                     try {
-                        return super.visitClass(type, jvm);
+                        return super.visitClass(type, unused);
                     } finally {
                         owner = previous;
                     }
                 }
 
                 @Override
-                public @Nullable Void scan(@Nullable Tree tree, Boolean inherited) {
+                public @Nullable Void scan(@Nullable Tree tree, @Nullable Void unused) {
                     if (null == tree) {
                         return null;
                     }
-                    boolean jvm = inherited || incompatible(tree);
                     if (tree instanceof ClassTree
                             && (Tree.Kind.CLASS == tree.getKind()
                                     || Tree.Kind.ENUM == tree.getKind()
@@ -132,77 +128,61 @@ final class JavaCoverage {
                                         "Missing executable method inventory: " + name + ":" + method.getName());
                             }
                         }
-                        if (jvm) {
-                            executable.stream()
-                                    .filter(line -> range.firstLine() <= line && line <= range.lastLine())
-                                    .forEach(jvmLines::add);
-                        }
                         if (tree instanceof ReturnTree
                                 || tree instanceof ExpressionStatementTree
                                 || tree instanceof VariableTree) {
                             statements.add(range);
                         }
-                        if (!jvm) {
-                            Tree expression =
-                                    switch (tree.getKind()) {
-                                        case IF -> ((IfTree) tree).getCondition();
-                                        case RETURN -> ((ReturnTree) tree).getExpression();
-                                        case VARIABLE -> ((VariableTree) tree).getInitializer();
-                                        case EXPRESSION_STATEMENT -> ((ExpressionStatementTree) tree).getExpression();
-                                        default -> null;
-                                    };
-                            if (null != expression) {
-                                expressions.put(range, expression);
-                            }
-                            if (tree instanceof MethodTree
-                                    || tree instanceof ReturnTree
-                                    || tree instanceof ExpressionStatementTree
-                                    || tree instanceof VariableTree variable && null != variable.getInitializer()) {
-                                browserOrigins.add(range.firstLine());
-                            }
-                            String kind =
-                                    switch (tree.getKind()) {
-                                        case IF -> "IF";
-                                        case ASSERT -> {
-                                            if (null != ((AssertTree) tree).getDetail()) {
-                                                throw new IllegalArgumentException(
-                                                        "Unsupported owned Java assertion detail: " + name);
-                                            }
-                                            yield "ASSERT";
-                                        }
-                                        case ENHANCED_FOR_LOOP -> "FOR";
-                                        case SWITCH_EXPRESSION ->
+                        Tree expression =
+                                switch (tree.getKind()) {
+                                    case IF -> ((IfTree) tree).getCondition();
+                                    case RETURN -> ((ReturnTree) tree).getExpression();
+                                    case VARIABLE -> ((VariableTree) tree).getInitializer();
+                                    case EXPRESSION_STATEMENT -> ((ExpressionStatementTree) tree).getExpression();
+                                    default -> null;
+                                };
+                        if (null != expression) {
+                            expressions.put(range, expression);
+                        }
+                        String kind =
+                                switch (tree.getKind()) {
+                                    case IF -> "IF";
+                                    case ASSERT -> {
+                                        if (null != ((AssertTree) tree).getDetail()) {
                                             throw new IllegalArgumentException(
-                                                    "Unsupported owned Java switch expression: " + name);
-                                        case CONDITIONAL_EXPRESSION -> "HOOK";
-                                        case CONDITIONAL_AND -> "AND";
-                                        case CONDITIONAL_OR -> "OR";
-                                        case WHILE_LOOP -> "WHILE";
-                                        case DO_WHILE_LOOP -> "DO";
-                                        case FOR_LOOP -> null == ((ForLoopTree) tree).getCondition() ? "" : "FOR";
-                                        case SWITCH -> "SWITCH";
-                                        default -> "";
-                                    };
-                            if (!kind.isEmpty()) {
-                                int count = 2;
-                                if (tree instanceof SwitchTree selection) {
-                                    count = selection.getCases().size();
-                                    if (selection.getCases().stream()
-                                            .noneMatch(c -> c.getExpressions().isEmpty())) {
-                                        count++;
+                                                    "Unsupported owned Java assertion detail: " + name);
+                                        }
+                                        yield "ASSERT";
                                     }
+                                    case ENHANCED_FOR_LOOP -> "FOR";
+                                    case SWITCH_EXPRESSION ->
+                                        throw new IllegalArgumentException(
+                                                "Unsupported owned Java switch expression: " + name);
+                                    case CONDITIONAL_EXPRESSION -> "HOOK";
+                                    case CONDITIONAL_AND -> "AND";
+                                    case CONDITIONAL_OR -> "OR";
+                                    case WHILE_LOOP -> "WHILE";
+                                    case DO_WHILE_LOOP -> "DO";
+                                    case FOR_LOOP -> null == ((ForLoopTree) tree).getCondition() ? "" : "FOR";
+                                    case SWITCH -> "SWITCH";
+                                    default -> "";
+                                };
+                        if (!kind.isEmpty()) {
+                            int count = 2;
+                            if (tree instanceof SwitchTree selection) {
+                                count = selection.getCases().size();
+                                if (selection.getCases().stream()
+                                        .noneMatch(c -> c.getExpressions().isEmpty())) {
+                                    count++;
                                 }
-                                decisions.add(new Decision(range, kind, count, nextEdge));
-                                nextEdge += count;
                             }
+                            decisions.add(new Decision(range, kind, count, nextEdge));
+                            nextEdge += count;
                         }
                     }
-                    return super.scan(tree, jvm);
+                    return super.scan(tree, unused);
                 }
-            }.scan(unit, false);
-        }
-        if (browserOrigins.stream().anyMatch(jvmLines::contains)) {
-            throw new IllegalArgumentException("Ambiguous mixed-platform Java source line: " + name);
+            }.scan(unit, null);
         }
         for (int line : executable) {
             if (line < 1 || line > unit.getLineMap().getLineNumber(text.length())) {
@@ -228,19 +208,6 @@ final class JavaCoverage {
                 && method.getModifiers().getFlags().contains(Modifier.PRIVATE)
                 && null != method.getBody()
                 && method.getBody().getStatements().isEmpty();
-    }
-
-    private static boolean incompatible(Tree tree) {
-        ModifiersTree modifiers = tree instanceof ClassTree type
-                ? type.getModifiers()
-                : tree instanceof MethodTree method
-                        ? method.getModifiers()
-                        : tree instanceof VariableTree field ? field.getModifiers() : null;
-        return null != modifiers
-                && modifiers.getAnnotations().stream().anyMatch(a -> {
-                    String annotation = a.getAnnotationType().toString();
-                    return "GwtIncompatible".equals(annotation) || annotation.endsWith(".GwtIncompatible");
-                });
     }
 
     private @Nullable Range range(Tree tree) {
@@ -321,9 +288,7 @@ final class JavaCoverage {
     }
 
     private List<CoverageInstrumenter.Line> entered(int line) {
-        return executable.contains(line) && !jvmLines.contains(line)
-                ? List.of(new CoverageInstrumenter.Line(name, line))
-                : List.of();
+        return executable.contains(line) ? List.of(new CoverageInstrumenter.Line(name, line)) : List.of();
     }
 
     List<CoverageInstrumenter.Line> completed(int position) {
@@ -411,21 +376,15 @@ final class JavaCoverage {
         return selected;
     }
 
-    LcovReport.Source report(LcovReport.Source jvm, Set<Integer> lines, Set<Integer> edges) {
+    LcovReport.Source report(Set<Integer> lines, Set<Integer> edges) {
         var lineCounts = new TreeMap<Integer, Long>();
-        executable.forEach(line ->
-                lineCounts.put(line, jvmLines.contains(line) ? jvm.lines().get(line) : lines.contains(line) ? 1L : 0L));
+        executable.forEach(line -> lineCounts.put(line, lines.contains(line) ? 1L : 0L));
         var branches = new TreeMap<LcovReport.Branch, Long>();
-        jvm.branches().forEach((edge, hits) -> {
-            if (jvmLines.contains(edge.line())) {
-                branches.put(edge, hits);
-            }
-        });
         for (var decision : decisions) {
             for (int edge = 0; edge < decision.edges(); edge++) {
                 int identity = decision.id() + edge;
                 branches.put(
-                        new LcovReport.Branch(decision.range().firstLine(), 100000 + decision.id(), edge),
+                        new LcovReport.Branch(decision.range().firstLine(), decision.id(), edge),
                         edges.contains(identity) ? 1L : 0L);
             }
         }

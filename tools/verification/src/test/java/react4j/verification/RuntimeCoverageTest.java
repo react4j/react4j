@@ -8,7 +8,6 @@ import com.google.gson.JsonArray;
 import com.sun.source.tree.MethodTree;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,15 +16,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.zip.ZipFile;
-import org.jacoco.core.analysis.Analyzer;
-import org.jacoco.core.analysis.CoverageBuilder;
-import org.jacoco.core.analysis.ICounter;
-import org.jacoco.core.data.ExecutionDataStore;
-import org.jacoco.core.data.SessionInfoStore;
-import org.jacoco.core.instr.Instrumenter;
-import org.jacoco.core.runtime.LoggerRuntime;
-import org.jacoco.core.runtime.RuntimeData;
 import org.jspecify.annotations.NullMarked;
 import org.testng.annotations.Test;
 
@@ -34,73 +24,18 @@ public final class RuntimeCoverageTest {
     private static final String ROOT = "tools/verification/src/test/java";
     private static final String SOURCE = ROOT + "/react4j/verification/fixture/MeasurementFixture.java";
 
-    private static Map<String, LcovReport.Source> inventory(boolean execute) throws Exception {
-        return inventory(execute, "react4j.verification.fixture.MeasurementFixture", SOURCE, "coverage.fixture.jar");
+    private static Map<String, LcovReport.Source> inventory() throws Exception {
+        return JavaInventory.read(Map.of(ROOT, Path.of(System.getProperty("coverage.fixture.jar"))), Set.of(SOURCE));
     }
 
-    private static Map<String, LcovReport.Source> inventory(
-            boolean execute, String className, String sourceName, String jarProperty) throws Exception {
-        byte[] original;
-        var nested = new ArrayList<byte[]>();
-        try (var jar = new ZipFile(System.getProperty(jarProperty))) {
-            for (var entry : jar.stream()
-                    .filter(e -> e.getName().startsWith(className.replace('.', '/') + "$")
-                            && e.getName().endsWith(".class"))
-                    .toList()) {
-                nested.add(jar.getInputStream(entry).readAllBytes());
-            }
-            original = jar.getInputStream(jar.getEntry(className.replace('.', '/') + ".class"))
-                    .readAllBytes();
-        }
-        var runtime = new LoggerRuntime();
-        var data = new RuntimeData();
-        runtime.startup(data);
-        try {
-            byte[] instrumented = new Instrumenter(runtime).instrument(original, sourceName);
-            var type = new ClassLoader(RuntimeCoverageTest.class.getClassLoader()) {
-                Class<?> fixture() {
-                    return defineClass(className, instrumented, 0, instrumented.length);
-                }
-            }.fixture();
-            if (execute) {
-                var method = type.getMethod("jvmOnly", int.class);
-                assertEquals(method.invoke(null, 1), 1);
-                assertEquals(method.invoke(null, -1), 1);
-            }
-            var execution = new ExecutionDataStore();
-            data.collect(execution, new SessionInfoStore(), false);
-            var coverage = new CoverageBuilder();
-            var analyzer = new Analyzer(execution, coverage);
-            analyzer.analyzeClass(original, sourceName);
-            for (var bytes : nested) {
-                analyzer.analyzeClass(bytes, sourceName);
-            }
-            var lines = new TreeMap<Integer, Long>();
-            var branches = new TreeMap<LcovReport.Branch, Long>();
-            var functions = new TreeMap<String, LcovReport.Function>();
-            for (var file : coverage.getSourceFiles()) {
-                for (int line = file.getFirstLine(); line <= file.getLastLine(); line++) {
-                    var counter = file.getLine(line);
-                    if (ICounter.EMPTY != counter.getStatus()) {
-                        lines.put(line, counter.getInstructionCounter().getCoveredCount() > 0 ? 1L : 0L);
-                    }
-                    var branch = counter.getBranchCounter();
-                    for (int edge = 0; edge < branch.getTotalCount(); edge++) {
-                        branches.put(new LcovReport.Branch(line, 0, edge), edge < branch.getCoveredCount() ? 1L : 0L);
-                    }
-                }
-            }
-            coverage.getClasses()
-                    .forEach(c -> c.getMethods()
-                            .forEach(m -> functions.put(
-                                    c.getName() + "::" + m.getName() + " " + m.getDesc(),
-                                    new LcovReport.Function(
-                                            Math.max(0, m.getFirstLine()),
-                                            m.getInstructionCounter().getCoveredCount() > 0 ? 1L : 0L))));
-            return Map.of(sourceName, new LcovReport.Source(lines, branches, functions));
-        } finally {
-            runtime.shutdown();
-        }
+    @Test
+    public void archiveInventoryContainsNoExecutionEvidence() throws Exception {
+        var source = Objects.requireNonNull(inventory().get(SOURCE));
+        assertFalse(source.lines().isEmpty());
+        assertTrue(source.lines().values().stream().allMatch(hits -> 0 == hits));
+        assertFalse(source.functions().isEmpty());
+        assertTrue(source.functions().values().stream().allMatch(function -> 0 == function.hits()));
+        assertTrue(source.branches().isEmpty());
     }
 
     private static Path modules() {
@@ -109,7 +44,7 @@ public final class RuntimeCoverageTest {
 
     @Test
     public void actualJ2clDenominatorAndExecution() throws Exception {
-        var inventory = inventory(true);
+        var inventory = inventory();
         String bundle = Files.readString(Path.of(System.getProperty("coverage.fixture.bundle")));
         var collector = new RuntimeCoverage(
                 bundle,
@@ -133,8 +68,7 @@ public final class RuntimeCoverageTest {
                         + "']})");
         assertTrue(result.get("error").isJsonNull(), result.toString());
         assertEquals(
-                result.getAsJsonArray("values").toString(),
-                "[17,24,42,\"throw\",5,17,7,\"assert\",5,0,6,\"void throw\"]");
+                result.getAsJsonArray("values").toString(), "[17,24,42,\"throw\",5,7,\"assert\",5,0,6,\"void throw\"]");
         var counters = result.getAsJsonObject("counters");
         String report =
                 collector.report(instrumented, counters.getAsJsonArray("lines"), counters.getAsJsonArray("edges"));
@@ -195,19 +129,6 @@ public final class RuntimeCoverageTest {
                 "{\"roots\":[{\"path\":\"" + ROOT + "\",\"report\":\"runtime.lcov\",\"lines\":95,\"branches\":85}]}";
         assertThrows(
                 IllegalArgumentException.class, () -> CoverageCheck.summarize(Map.of("runtime.lcov", report), config));
-        // The same browser evidence cannot hide unexecuted JVM-only bodies.
-        var unexecuted = new RuntimeCoverage(
-                bundle,
-                inventory(false),
-                Map.of(ROOT, Path.of(System.getProperty("coverage.fixture.sources"))),
-                List.of(modules()),
-                Set.of(SOURCE));
-        String missingJvmHits =
-                unexecuted.report(instrumented, counters.getAsJsonArray("lines"), counters.getAsJsonArray("edges"));
-        var missing = Objects.requireNonNull(LcovReport.read(missingJvmHits).get(SOURCE));
-        assertCovered(missing, source.text, "return value >", false);
-        assertTrue(missing.lines().values().stream().filter(n -> n > 0).count()
-                < observed.lines().values().stream().filter(n -> n > 0).count());
         var absent = new HashMap<>(inventory);
         var original = Objects.requireNonNull(inventory.get(SOURCE));
         absent.put(SOURCE, new LcovReport.Source(original.lines(), original.branches(), Map.of()));
@@ -218,6 +139,14 @@ public final class RuntimeCoverageTest {
                         absent,
                         Map.of(ROOT, Path.of(System.getProperty("coverage.fixture.sources"))),
                         List.of(modules()),
+                        Set.of(SOURCE)));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new RuntimeCoverage(
+                        bundle,
+                        inventory,
+                        Map.of(ROOT, Path.of(System.getProperty("coverage.fixture.sources"))),
+                        List.of(),
                         Set.of(SOURCE)));
         assertThrows(
                 IllegalArgumentException.class,
@@ -233,81 +162,13 @@ public final class RuntimeCoverageTest {
     }
 
     @Test
-    public void completeBrowserCannotHideMissingJvmExecution() throws Exception {
-        String sourceName = ROOT + "/react4j/verification/mixed/MixedPlatformFixture.java";
-        String bundle = Files.readString(Path.of(System.getProperty("coverage.fixture.bundle")));
-        var sourceJars = Map.of(ROOT, Path.of(System.getProperty("coverage.mixed.sources")));
-        var trees = List.of(Path.of(System.getProperty("coverage.mixed.modules")));
-        var measured =
-                inventory(true, "react4j.verification.mixed.MixedPlatformFixture", sourceName, "coverage.mixed.jar");
-        var collector = new RuntimeCoverage(bundle, measured, sourceJars, trees, Set.of(sourceName));
-        var instrumented = CoverageInstrumenter.instrument(bundle, collector);
-        var result = BrowserCoverage.run(
-                Path.of(System.getProperty("react4j.browser.metadata")),
-                Map.of(
-                        "/index.html",
-                        "<script src='/fixture.js'></script>",
-                        "/fixture.js",
-                        instrumented.javascript() + "\nwindow.runCoverageFixture();window.fixtureDone=true;"),
-                "window.fixtureDone",
-                "window['" + instrumented.variable() + "']");
-        var lines = result.getAsJsonArray("lines");
-        var edges = result.getAsJsonArray("edges");
-        String config = "{\"roots\":[{\"path\":\"" + ROOT
-                + "/react4j/verification/mixed\",\"report\":\"runtime.lcov\",\"lines\":95,\"branches\":85}]}";
-        String complete = collector.report(instrumented, lines, edges);
-        CoverageCheck.summarize(Map.of("runtime.lcov", complete), config);
-        var unexecuted = new RuntimeCoverage(
-                bundle,
-                inventory(false, "react4j.verification.mixed.MixedPlatformFixture", sourceName, "coverage.mixed.jar"),
-                sourceJars,
-                trees,
-                Set.of(sourceName));
-        String incomplete = unexecuted.report(instrumented, lines, edges);
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> CoverageCheck.summarize(Map.of("runtime.lcov", incomplete), config));
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new RuntimeCoverage(bundle, Map.of(), sourceJars, trees, Set.of(sourceName)));
-    }
-
-    @Test
     public void actualReactMultilineMapHolesRemainIndependentObligations() throws Exception {
         var declared = Set.copyOf(Files.readAllLines(Path.of(System.getProperty("coverage.runtime.sources"))));
-        var inventory = new TreeMap<String, LcovReport.Source>();
-        for (String root : List.of("core", "dom")) {
-            var builder = new CoverageBuilder();
-            new Analyzer(new ExecutionDataStore(), builder)
-                    .analyzeAll(Path.of(System.getProperty("coverage.runtime." + root + ".jar"))
-                            .toFile());
-            for (var source : builder.getSourceFiles()) {
-                String name = root + "/src/main/java/" + source.getPackageName() + "/" + source.getName();
-                if (!declared.contains(name)) {
-                    continue;
-                }
-                var lines = new TreeMap<Integer, Long>();
-                var branches = new TreeMap<LcovReport.Branch, Long>();
-                var functions = new TreeMap<String, LcovReport.Function>();
-                for (int line = Math.max(1, source.getFirstLine()); line <= source.getLastLine(); line++) {
-                    var counter = source.getLine(line);
-                    if (ICounter.EMPTY != counter.getStatus()) {
-                        lines.put(line, 0L);
-                    }
-                    for (int edge = 0; edge < counter.getBranchCounter().getTotalCount(); edge++) {
-                        branches.put(new LcovReport.Branch(line, 0, edge), 0L);
-                    }
-                }
-                builder.getClasses().stream()
-                        .filter(c -> c.getPackageName().equals(source.getPackageName())
-                                && source.getName().equals(c.getSourceFileName()))
-                        .forEach(c -> c.getMethods()
-                                .forEach(m -> functions.put(
-                                        c.getName() + "::" + m.getName() + " " + m.getDesc(),
-                                        new LcovReport.Function(Math.max(0, m.getFirstLine()), 0))));
-                inventory.put(name, new LcovReport.Source(lines, branches, functions));
-            }
-        }
+        var inventory = JavaInventory.read(
+                Map.of(
+                        "core/src/main/java", Path.of(System.getProperty("coverage.runtime.core.jar")),
+                        "dom/src/main/java", Path.of(System.getProperty("coverage.runtime.dom.jar"))),
+                declared);
         var core = Path.of(System.getProperty("coverage.runtime.core.modules"));
         var original = new SourceMapConsumerV3();
         original.parse(Files.readString(core.resolve("react4j/ReactElement$$Overlay.js.map")));
@@ -362,32 +223,8 @@ public final class RuntimeCoverageTest {
     }
 
     @Test
-    public void wholeJvmTypeDoesNotRequireBrowserModule() throws Exception {
-        String name = ROOT + "/react4j/verification/fixture/JvmOnlyFixture.java";
-        var inventory = inventory(true, "react4j.verification.fixture.JvmOnlyFixture", name, "coverage.fixture.jar");
-        String bundle = Files.readString(Path.of(System.getProperty("coverage.fixture.bundle")));
-        var collector = new RuntimeCoverage(
-                bundle,
-                inventory,
-                Map.of(ROOT, Path.of(System.getProperty("coverage.fixture.sources"))),
-                List.of(modules()),
-                Set.of(name));
-        var instrumented = CoverageInstrumenter.instrument(bundle, collector);
-        assertTrue(instrumented.lines().isEmpty());
-        assertTrue(instrumented.edges().isEmpty());
-        var observed =
-                Objects.requireNonNull(LcovReport.read(collector.report(instrumented, new JsonArray(), new JsonArray()))
-                        .get(name));
-        assertEquals(
-                observed.lines(), Objects.requireNonNull(inventory.get(name)).lines());
-        assertEquals(
-                observed.branches(), Objects.requireNonNull(inventory.get(name)).branches());
-        assertTrue(observed.lines().values().stream().allMatch(hits -> hits > 0));
-    }
-
-    @Test
     public void corruptOrAbsentMapsAndInventoriesFail() throws Exception {
-        var inventory = inventory(true);
+        var inventory = inventory();
         String bundle = Files.readString(Path.of(System.getProperty("coverage.fixture.bundle")));
         var jars = Map.of(ROOT, Path.of(System.getProperty("coverage.fixture.sources")));
         var temporary = Files.createTempDirectory(Path.of(System.getenv("TEST_TMPDIR")), "coverage-maps-");

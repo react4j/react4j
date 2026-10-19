@@ -10,11 +10,6 @@ import org.jspecify.annotations.NullMarked;
 public final class MeasurementFixture {
     private MeasurementFixture() {}
 
-    @GwtIncompatible
-    public static int jvmOnly(int value) {
-        return value > 0 ? value : -value;
-    }
-
     @JsMethod(namespace = JsPackage.GLOBAL, name = "parseInt")
     private static native int parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(String value);
 
@@ -71,7 +66,7 @@ public final class MeasurementFixture {
     @SuppressWarnings("fallthrough")
     public static int decisions(int value) {
         int result = value > 0 ? 1 : 2;
-        if (value > 0 && value < 3 || value == -1) {
+        if (value > 0 && value < 3 || -1 == value) {
             result++;
         }
         for (int i = 0; i < value; i++) {

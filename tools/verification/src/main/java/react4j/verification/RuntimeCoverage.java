@@ -34,7 +34,6 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
 
     private final TreeMap<Integer, Module> modules = new TreeMap<>();
     private final Map<String, JavaCoverage> sources = new TreeMap<>();
-    private final Map<String, LcovReport.Source> inventory;
     private final Set<String> boundDecisions = new HashSet<>();
 
     RuntimeCoverage(
@@ -44,7 +43,6 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
             List<Path> trees,
             Set<String> declared)
             throws Exception {
-        this.inventory = inventory;
         var archiveSources = new HashMap<String, String>();
         for (var entry : sourceJars.entrySet()) {
             try (var zip = new ZipFile(entry.getValue().toFile())) {
@@ -164,7 +162,7 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
             }
         }
         for (var source : sources.values()) {
-            if (!mapped.contains(source.name) && !source.jvmLines.containsAll(source.executable)) {
+            if (!source.executable.isEmpty() && !mapped.contains(source.name)) {
                 throw new IllegalArgumentException("Missing owned executable J2CL source: " + source.name);
             }
         }
@@ -345,46 +343,40 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
         }
         var result = new TreeMap<String, LcovReport.Source>();
         sources.forEach((name, source) -> result.put(
-                name,
-                source.report(
-                        Objects.requireNonNull(inventory.get(name)),
-                        lines.getOrDefault(name, Set.of()),
-                        edges.getOrDefault(name, Set.of()))));
+                name, source.report(lines.getOrDefault(name, Set.of()), edges.getOrDefault(name, Set.of()))));
         return LcovReport.write(result);
     }
 
     public static void main(String[] args) throws Exception {
-        if (11 != args.length) {
+        if (12 != args.length) {
             throw new IllegalArgumentException(
                     "Expected bundle, React, ReactDOM, browser metadata, two source archives, two module sets, source"
-                            + " inventory, JVM LCOV, output LCOV");
+                            + " inventory, two class archives, output LCOV");
         }
         var runfiles = Runfiles.preload().withSourceRepository(AutoBazelRepository_RuntimeCoverage.NAME);
         var paths = new ArrayList<Path>();
-        for (int i = 0; i < 6; i++) {
-            paths.add(Path.of(Objects.requireNonNull(runfiles.rlocation("_main/" + args[i]))));
-        }
-        var trees = new ArrayList<Path>();
-        for (int i = 6; i < 8; i++) {
-            trees.add(Path.of(Objects.requireNonNull(
+        for (int i = 0; i < 11; i++) {
+            paths.add(Path.of(Objects.requireNonNull(
                     runfiles.rlocation("_main/" + Path.of(args[i]).normalize()))));
         }
-        var destination = Path.of(args[10]);
+        var destination = Path.of(args[11]);
         Files.deleteIfExists(destination);
         String bundle = Files.readString(paths.get(0));
+        var declared = Set.copyOf(Files.readAllLines(paths.get(8)));
         var collector = new RuntimeCoverage(
                 bundle,
-                LcovReport.read(Files.readString(Path.of(args[9]))),
+                JavaInventory.read(
+                        Map.of("core/src/main/java", paths.get(9), "dom/src/main/java", paths.get(10)), declared),
                 Map.of("core/src/main/java", paths.get(4), "dom/src/main/java", paths.get(5)),
-                trees,
-                Set.copyOf(
-                        Files.readAllLines(Path.of(Objects.requireNonNull(runfiles.rlocation("_main/" + args[8]))))));
+                paths.subList(6, 8),
+                declared);
         var instrumentation = CoverageInstrumenter.instrument(bundle, collector);
         var runs = new ArrayList<JsonObject>();
         for (String environment : List.of("development", "production")) {
             var defines = new JsonObject();
             defines.addProperty("goog.DEBUG", true);
             defines.addProperty("react4j.environment", environment);
+            defines.addProperty("react4j.examples.environment", environment);
             defines.addProperty("arez.environment", "development");
             defines.addProperty("arez.enable_property_introspection", "true");
             defines.addProperty("arez.enable_spies", "true");

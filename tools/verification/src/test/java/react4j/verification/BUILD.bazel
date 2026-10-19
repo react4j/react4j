@@ -53,7 +53,6 @@ java_browser_testng(
     srcs = ["RuntimeCoverageTest.java"],
     data = [
         ":fixture_modules",
-        ":mixed_modules",
         "//tools/generation:react_dev",
         "//tools/generation:react_dom_dev",
         "//tools/release:core_jar",
@@ -65,8 +64,6 @@ java_browser_testng(
         "//tools/verification:runtime_sources",
         "//tools/verification/src/test/java/react4j/verification/fixture:libfixture_java.jar",
         "//tools/verification/src/test/java/react4j/verification/fixture:libfixture_java-src.jar",
-        "//tools/verification/src/test/java/react4j/verification/mixed:libmixed_java.jar",
-        "//tools/verification/src/test/java/react4j/verification/mixed:libmixed_java-src.jar",
         "//tools/verification/src/test/js/react4j/verification:fixture.js",
         "//tools/verification/src/test/js/react4j/verification:runtime.js",
         "//tools/webtesting:chromium",
@@ -87,9 +84,6 @@ java_browser_testng(
         "-Dcoverage.fixture.bundle=$(rootpath //tools/verification/src/test/js/react4j/verification:fixture.js)",
         "-Dcoverage.fixture.jar=$(rootpath //tools/verification/src/test/java/react4j/verification/fixture:libfixture_java.jar)",
         "-Dcoverage.fixture.sources=$(rootpath //tools/verification/src/test/java/react4j/verification/fixture:libfixture_java-src.jar)",
-        "-Dcoverage.mixed.jar=$(rootpath //tools/verification/src/test/java/react4j/verification/mixed:libmixed_java.jar)",
-        "-Dcoverage.mixed.sources=$(rootpath //tools/verification/src/test/java/react4j/verification/mixed:libmixed_java-src.jar)",
-        "-Dcoverage.mixed.modules=$(rootpath :mixed_modules)",
         "-Dcoverage.fixture.modules=$(rootpath :fixture_modules)",
     ],
     test_class = "react4j.verification.RuntimeCoverageTest",
@@ -101,7 +95,6 @@ java_browser_testng(
         "//tools/verification/src/main/java/react4j/verification:java_coverage",
         "//tools/verification/src/main/java/react4j/verification:lcov_report",
         "//tools/verification/src/main/java/react4j/verification:runtime_coverage_lib",
-        "@bazel_tools//tools/jdk:JacocoCoverageRunner",
         "@maven//:com_google_code_gson_gson",
         "@rules_closure//closure/compiler",
     ],
@@ -119,10 +112,4 @@ java_testng(
     test_class = "react4j.verification.LcovReportTest",
     visibility = ["//:__pkg__"],
     deps = ["//tools/verification/src/main/java/react4j/verification:lcov_report"],
-)
-
-j2cl_modules(
-    name = "mixed_modules",
-    testonly = True,
-    library = "//tools/verification/src/test/java/react4j/verification/mixed",
 )

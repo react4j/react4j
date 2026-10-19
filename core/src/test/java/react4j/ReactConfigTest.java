@@ -10,6 +10,11 @@ public final class ReactConfigTest {
     private ReactConfigTest() {}
 
     @JsMethod
+    public static void browserDefaults(boolean production) {
+        verify(production, false, true);
+    }
+
+    @JsMethod
     public static void run(String profile, boolean production) {
         switch (profile) {
             case "defaults" -> verify(production, !production, production);

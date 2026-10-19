@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: `implementing`
-- Current frontier: `T02`
+- Current frontier: `T03`
 - Planning reviewer: `/root/browser_runtime_planning` (`1/3` rounds; final confirmation `unused`); Findings: none.
 - Plan checkpoint: `automatic`; latest user “Do that” supplies implementation authority, no human checkpoint requested, planning review passed.
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -17,7 +17,7 @@
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
 | T01 | [Browser runtime verification](T01-browser-runtime.md) | complete | None |
-| T02 | [Browser-only coverage evidence](T02-browser-coverage.md) | pending | T01 |
+| T02 | [Browser-only coverage evidence](T02-browser-coverage.md) | complete | T01 |
 | T03 | [Delivery verification and closeout](T03-delivery.md) | pending | T02 |
 
 ## Sequencing notes

@@ -66,7 +66,6 @@ java_format_check(
         "//core/src/test/java/react4j:runtime_coverage",
         "//dom/src/test/java/react4j/dom:runtime_coverage",
         "//tools/verification/src/test/java/react4j/verification/fixture:fixture_java",
-        "//tools/verification/src/test/java/react4j/verification/mixed:mixed_java",
         "//tools/verification/src/test/java/react4j/verification:browser_coverage_tests_runner",
         "//tools/verification/src/test/java/react4j/verification:coverage_tests",
         "//tools/verification/src/test/java/react4j/verification:instrumenter_tests_runner",

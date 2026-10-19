@@ -70,7 +70,10 @@ java_library(
 
 java_library(
     name = "runtime_coverage_lib",
-    srcs = ["RuntimeCoverage.java"],
+    srcs = [
+        "JavaInventory.java",
+        "RuntimeCoverage.java",
+    ],
     visibility = [
         "//:__pkg__",
         "//tools/verification/src/test/java/react4j/verification:__pkg__",
@@ -80,6 +83,7 @@ java_library(
         ":coverage_instrumenter",
         ":java_coverage",
         ":lcov_report",
+        "@bazel_tools//tools/jdk:JacocoCoverageRunner",
         "@maven//:com_google_code_gson_gson",
         "@rules_closure//closure/compiler",
         "@rules_java//java/runfiles",
@@ -99,11 +103,15 @@ java_binary(
         "$(rootpath //tools/verification:core_modules)",
         "$(rootpath //tools/verification:dom_modules)",
         "$(rootpath //tools/verification:runtime_sources)",
+        "$(rootpath //tools/release:core_jar)",
+        "$(rootpath //tools/release:dom_jar)",
     ],
     data = [
         "//tools/generation:react_dev",
         "//tools/generation:react_dom_dev",
+        "//tools/release:core_jar",
         "//tools/release:core_sources",
+        "//tools/release:dom_jar",
         "//tools/release:dom_sources",
         "//tools/verification:core_modules",
         "//tools/verification:dom_modules",

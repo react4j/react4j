@@ -3,7 +3,6 @@ load("//tools/browser:java.bzl", "java_j2cl_library")
 package(default_visibility = [
     "//:__pkg__",
     "//tools/verification/src/test/java/react4j/verification:__pkg__",
-    "//tools/verification/src/test/java/react4j/verification/mixed:__pkg__",
     "//tools/verification/src/test/js/react4j/verification:__pkg__",
 ])
 
@@ -11,8 +10,6 @@ java_j2cl_library(
     name = "fixture",
     testonly = True,
     srcs = [
-        "GwtIncompatible.java",
-        "JvmOnlyFixture.java",
         "MeasurementFixture.java",
     ],
     java_deps = [
