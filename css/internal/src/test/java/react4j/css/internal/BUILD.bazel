@@ -5,6 +5,7 @@ java_testng(
     srcs = [
         "AssetLinkTest.java",
         "AssetResourceTest.java",
+        "CssAssetValuesTest.java",
         "CssLinkTest.java",
         "CssNamesTest.java",
         "CssRenamerTest.java",
@@ -17,6 +18,7 @@ java_testng(
     test_classes = [
         "react4j.css.internal.AssetLinkTest",
         "react4j.css.internal.AssetResourceTest",
+        "react4j.css.internal.CssAssetValuesTest",
         "react4j.css.internal.CssLinkTest",
         "react4j.css.internal.CssNamesTest",
         "react4j.css.internal.CssRenamerTest",

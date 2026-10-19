@@ -110,6 +110,8 @@ def css_js_binary(name, deps, compilation_level = "ADVANCED", **kwargs):
         **kwargs
     )
 
+CssBundleInfo = provider("Independently pruned CSS and map from a particular JavaScript link.", fields = ["css", "source_map", "root"])
+
 def _bundle_impl(ctx):
     trees = ctx.attr.root[_CssInfo].trees
     evidence = []
@@ -141,6 +143,7 @@ def _bundle_impl(ctx):
     return [
         DefaultInfo(files = depset([ctx.outputs.css, ctx.outputs.source_map])),
         OutputGroupInfo(css = depset([ctx.outputs.css]), source_map = depset([ctx.outputs.source_map])),
+        CssBundleInfo(css = ctx.outputs.css, source_map = ctx.outputs.source_map, root = ctx.attr.root[ClosureJsBinaryInfo].bin.owner if ClosureJsBinaryInfo in ctx.attr.root else ctx.attr.root.label),
     ]
 
 css_bundle = rule(
@@ -155,7 +158,7 @@ css_bundle = rule(
     },
 )
 
-WebBundleInfo = provider("Finalized JavaScript, maps and retained assets with a build inventory.", fields = ["directory", "manifest", "javascript", "source_map"])
+WebBundleInfo = provider("Finalized JavaScript, maps and retained assets with a build inventory.", fields = ["directory", "manifest", "javascript", "source_map", "styles"])
 
 def _web_bundle_impl(ctx):
     binary = ctx.attr.root[ClosureJsBinaryInfo]
@@ -178,20 +181,35 @@ def _web_bundle_impl(ctx):
     args.add("--link", label.repo_name + "//" + label.package + ":" + label.name)
     args.add_all(resources.trees, before_each = "--input", expand_directories = False)
     args.add_all(resources.asset_manifests, before_each = "--asset-catalogue")
+    styles = {}
+    style_inputs = []
+    for target, name in ctx.attr.styles.items():
+        style = target[CssBundleInfo]
+        if style.root != binary.bin.owner:
+            fail("Every CSS variant must share the web_bundle JavaScript root")
+        if not name.endswith(".css") or name in styles.values():
+            fail("CSS variant deployment names must be distinct .css paths")
+        output = ctx.actions.declare_file(ctx.label.name + "_styles/" + name)
+        source_map = ctx.actions.declare_file(ctx.label.name + "_styles/" + name + ".map")
+        styles[output] = name
+        styles[source_map] = name + ".map"
+        style_inputs.extend([style.css, style.source_map])
+        args.add("--style", json.encode({"input": style.css.path, "map": style.source_map.path, "name": name, "output": output.path, "outputMap": source_map.path}))
     ctx.actions.run(
         executable = ctx.executable._tool,
-        inputs = depset([binary.bin, binary.map, binary.compiler_config, binary.compiler_report], transitive = [resources.trees, resources.asset_manifests, resources.asset_files]),
-        outputs = [directory, ctx.outputs.manifest, ctx.outputs.javascript, ctx.outputs.source_map],
+        inputs = depset([binary.bin, binary.map, binary.compiler_config, binary.compiler_report] + style_inputs, transitive = [resources.trees, resources.asset_manifests, resources.asset_files]),
+        outputs = [directory, ctx.outputs.manifest, ctx.outputs.javascript, ctx.outputs.source_map] + styles.keys(),
         arguments = [args],
         mnemonic = "WebBundle",
     )
-    return [DefaultInfo(files = depset([directory])), WebBundleInfo(directory = directory, manifest = ctx.outputs.manifest, javascript = ctx.outputs.javascript, source_map = ctx.outputs.source_map), OutputGroupInfo(manifest = depset([ctx.outputs.manifest]), javascript = depset([ctx.outputs.javascript]), source_map = depset([ctx.outputs.source_map]))]
+    return [DefaultInfo(files = depset([directory])), WebBundleInfo(directory = directory, manifest = ctx.outputs.manifest, javascript = ctx.outputs.javascript, source_map = ctx.outputs.source_map, styles = styles), OutputGroupInfo(manifest = depset([ctx.outputs.manifest]), javascript = depset([ctx.outputs.javascript]), source_map = depset([ctx.outputs.source_map]))]
 
 web_bundle = rule(
     implementation = _web_bundle_impl,
     outputs = {"javascript": "%{name}.js", "manifest": "%{name}.manifest.json", "source_map": "%{name}.js.map"},
     attrs = {
         "root": attr.label(mandatory = True, providers = [ClosureJsBinaryInfo], aspects = [_collect]),
+        "styles": attr.label_keyed_string_dict(providers = [CssBundleInfo], doc = "CSS variant to application-relative .css deployment path."),
         "_tool": attr.label(default = Label("//css/bundler/src/main/java/react4j/css/bundler:assets_tool"), executable = True, cfg = "exec"),
     },
 )

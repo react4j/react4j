@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
@@ -245,6 +246,21 @@ public record CssLink(
         return HexFormat.of().formatHex(CssCatalogue.sha256().digest(bytes));
     }
 
+    public static void validateCssAssets(CssCatalogue catalogue, Map<String, String> files) {
+        catalogue
+                .resources()
+                .values()
+                .forEach(resource -> CssUrls.edits(
+                        resource.css(),
+                        value -> CssUrls.checked(value, (path, suffix) -> {
+                            AssetResource.validatePath(path);
+                            if (!files.containsKey(path)) {
+                                throw new IllegalArgumentException("Missing declared CSS asset: " + path);
+                            }
+                            return "asset:" + path + suffix;
+                        })));
+    }
+
     public static void main(String[] args) throws IOException {
         if (1 == args.length && args[0].startsWith("@")) {
             args = Files.readAllLines(Path.of(args[0].substring(1))).toArray(String[]::new);
@@ -272,7 +288,9 @@ public record CssLink(
             throw new IllegalArgumentException("Expected --link, --mode (optimized or retain), --output");
         }
         var catalogue = CssCatalogue.read(trees);
-        AssetResource.validate(catalogue.assets(), AssetResource.catalogue(manifests));
+        var files = AssetResource.catalogue(manifests);
+        AssetResource.validate(catalogue.assets(), files);
+        validateCssAssets(catalogue, files);
         Files.writeString(
                 Path.of(options.get("--output")),
                 create(

@@ -17,6 +17,7 @@ java_testng(
     size = "large",
     srcs = [
         "AssetProcessorTest.java",
+        "CssAssetFontProcessorTest.java",
         "CssIdImportProcessorTest.java",
         "CssInterfaceProcessorTest.java",
         "CssProcessorArtifactTest.java",
@@ -33,6 +34,7 @@ java_testng(
     jvm_flags = _PROCESSOR_JVM_FLAGS + ["-Dcss.processor.jar=$(rootpath //css/processor:processor_jar)"],
     test_classes = [
         "react4j.css.processor.AssetProcessorTest",
+        "react4j.css.processor.CssAssetFontProcessorTest",
         "react4j.css.processor.CssIdImportProcessorTest",
         "react4j.css.processor.CssProcessorArtifactTest",
         "react4j.css.processor.CssInterfaceProcessorTest",
@@ -54,6 +56,7 @@ java_testng(
     size = "medium",
     srcs = [
         "AssetProcessorTest.java",
+        "CssAssetFontProcessorTest.java",
         "CssIdImportProcessorTest.java",
         "CssInterfaceProcessorTest.java",
         "CssProcessorTest.java",
@@ -68,6 +71,7 @@ java_testng(
     jvm_flags = _PROCESSOR_JVM_FLAGS + ["-Dcss.processor.implementation=true"],
     test_classes = [
         "react4j.css.processor.AssetProcessorTest",
+        "react4j.css.processor.CssAssetFontProcessorTest",
         "react4j.css.processor.CssIdImportProcessorTest",
         "react4j.css.processor.CssInterfaceProcessorTest",
         "react4j.css.processor.CssProcessorTest",
@@ -146,11 +150,23 @@ java_testng(
 test_suite(
     name = "unit_tests",
     tests = [
+        ":asset_font_tests",
         ":compiler_tests",
         ":ids_tests",
         ":names_tests",
         ":peer_compiler_tests",
         ":properties_tests",
         ":text_block_tests",
+    ],
+)
+
+java_testng(
+    name = "asset_font_tests",
+    srcs = ["CssAssetFontTest.java"],
+    test_class = "react4j.css.processor.CssAssetFontTest",
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//third_party/java:ph_css",
     ],
 )

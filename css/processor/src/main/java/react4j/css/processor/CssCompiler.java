@@ -5,6 +5,7 @@ import com.helger.css.decl.AbstractHasTopLevelRules;
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
+import com.helger.css.decl.CSSFontFaceRule;
 import com.helger.css.decl.CSSKeyframesRule;
 import com.helger.css.decl.CSSMediaRule;
 import com.helger.css.decl.CSSNestedDeclarations;
@@ -37,6 +38,7 @@ import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
+import react4j.css.internal.CssUrls;
 import react4j.css.internal.SourceMap;
 
 /** In-process CSS parsing, ownership checks and static output. */
@@ -76,6 +78,8 @@ final class CssCompiler {
         }
     }
 
+    record Resources(Map<String, String> assets, Map<String, CssFonts.Import> fonts) {}
+
     record Exports(List<String> modifiers, Set<String> ids, Set<String> animations) {}
 
     record Result(
@@ -84,9 +88,32 @@ final class CssCompiler {
             Map<String, String> properties,
             Set<String> propertyImports,
             Map<String, String> ids,
-            Map<String, String> animations) {}
+            Map<String, String> animations,
+            Map<String, String> fonts) {}
 
     private final Map<String, String> properties = new LinkedHashMap<>();
+    private Map<String, String> fonts = Map.of();
+
+    private void resources(CascadingStyleSheet sheet, Resources resources) {
+        fonts = CssFonts.rewrite(sheet, syntax, root, resources.fonts());
+        CssUrls.visit(sheet, reference -> {
+            try {
+                String value = CssUrls.checked(reference.value(), (name, suffix) -> {
+                    String path = resources.assets().get(name);
+                    if (null == path) {
+                        throw new IllegalArgumentException("Unknown CSS asset import or accessor: " + name);
+                    }
+                    return "asset:" + path + suffix;
+                });
+                if (!value.equals(reference.value())) {
+                    var unused = reference.replace().apply(value);
+                }
+            } catch (IllegalArgumentException e) {
+                throw syntax.invalid(String.valueOf(e.getMessage()), reference.node());
+            }
+        });
+    }
+
     private final Set<String> usedProperties = new LinkedHashSet<>();
 
     private void properties(CascadingStyleSheet sheet, Map<String, CssProperties.Import> imported) {
@@ -114,7 +141,8 @@ final class CssCompiler {
                 Map.copyOf(properties),
                 Set.copyOf(usedProperties),
                 ids,
-                Map.copyOf(animations));
+                Map.copyOf(animations),
+                fonts);
     }
 
     static Result component(
@@ -124,12 +152,14 @@ final class CssCompiler {
             IntFunction<SourceMap.Location> locations,
             Map<String, Import> imports,
             Map<String, CssProperties.Import> properties,
-            Map<String, CssIds.Import> importedIds) {
+            Map<String, CssIds.Import> importedIds,
+            Resources resources) {
         String prefix = "." + root + " {\n";
         var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, exports, locations, imports);
         var sheet = compiler.syntax.parse(true);
         compiler.properties(sheet, properties);
         compiler.ids(sheet, importedIds, false);
+        compiler.resources(sheet, resources);
         for (var rule : sheet.getAllRules()) {
             if (rule instanceof CSSKeyframesRule frames) {
                 String name = frames.getAnimationName();
@@ -151,6 +181,9 @@ final class CssCompiler {
                 }
             }
         }
+        for (var face : sheet.getAllFontFaceRules()) {
+            compiler.output.append(face.getAsCSSString(compiler.compact, 0), compiler.location(face));
+        }
         compiler.exports.animations().forEach(compiler::exportAnimation);
         for (var frames : compiler.keyframes.values()) {
             compiler.animations.put(frames.getAnimationName(), compiler.animationName(frames.getAnimationName()));
@@ -171,12 +204,14 @@ final class CssCompiler {
             Exports exports,
             IntFunction<SourceMap.Location> locations,
             Map<String, CssProperties.Import> properties,
-            Map<String, CssIds.Import> importedIds) {
+            Map<String, CssIds.Import> importedIds,
+            Resources resources) {
         String prefix = "@keyframes shared {\n";
         var compiler = new CssCompiler(prefix + css + "\n}", prefix.length(), root, exports, locations, Map.of());
         var sheet = compiler.syntax.parseKeyframes();
         compiler.properties(sheet, properties);
         compiler.ids(sheet, importedIds, false);
+        compiler.resources(sheet, resources);
         var frames = (CSSKeyframesRule) sheet.getAllRules().get(0);
         compiler.animations.put("", root + "--keyframes");
         compiler.writeKeyframes(frames, root + "--keyframes");
@@ -190,11 +225,13 @@ final class CssCompiler {
             IntFunction<SourceMap.Location> locations,
             Map<String, Import> imports,
             Map<String, CssProperties.Import> properties,
-            Map<String, CssIds.Import> importedIds) {
+            Map<String, CssIds.Import> importedIds,
+            Resources resources) {
         var compiler = new CssCompiler(css, 0, root, exports, locations, imports);
         var sheet = compiler.syntax.parse(false);
         compiler.properties(sheet, properties);
         compiler.ids(sheet, importedIds, true);
+        compiler.resources(sheet, resources);
         exports.animations().forEach(compiler::exportAnimation);
         for (var rule : sheet.getAllRules()) {
             compiler.globalRule((ICSSSourceLocationAware) rule);
@@ -217,6 +254,8 @@ final class CssCompiler {
                 globalRule((ICSSSourceLocationAware) child);
             }
             output.append("}");
+        } else if (rule instanceof CSSFontFaceRule face) {
+            output.append(face.getAsCSSString(compact, 0), location(face));
         } else if (rule instanceof CSSNestedDeclarations declarations) {
             writeDeclarations(declarations.getAllDeclarations());
         } else if (rule instanceof CSSMediaRule media) {

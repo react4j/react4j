@@ -29,5 +29,8 @@ public @interface CssImport {
      */
     String id() default "";
 
+    /** Selects an owned font family; name optionally supplies its local family alias. */
+    String font() default "";
+
     Class<?> value();
 }

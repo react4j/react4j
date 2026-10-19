@@ -176,7 +176,15 @@ public record CssNames(Policy policy, List<Entry> entries) {
                 }
             }
         }
+        for (var resource : catalogue.resources().values()) {
+            for (var use : resource.metadata().fontUses()) {
+                if (use.end() > resource.css().length() || !symbols.keySet().containsAll(use.families())) {
+                    throw new IllegalArgumentException("Dynamic CSS font dependency differs from its catalogue");
+                }
+            }
+        }
         var reserved = new HashSet<>(RESERVED);
+        reserved.addAll(CssFontValues.RESERVED);
         var insensitive = new HashSet<String>();
         var parsed = new TreeMap<String, CssTokens.Parsed>();
         symbols.values().forEach(symbol -> reserved.add(symbol.value()));
@@ -184,7 +192,12 @@ public record CssNames(Policy policy, List<Entry> entries) {
         catalogue.resources().forEach((owner, resource) -> {
             var references = CssTokens.parse(resource.css());
             parsed.put(owner, references);
-            references.tokens().forEach(token -> reserved.add(token.name()));
+            references.tokens().forEach(token -> {
+                reserved.add(token.name());
+                if (SymbolKind.FONT == token.kind()) {
+                    insensitive.add(CssTokens.asciiLower(token.name()));
+                }
+            });
             for (var attribute : references.attributes()) {
                 attribute.names().forEach(name -> {
                     if (attribute.insensitive()) {
@@ -206,9 +219,12 @@ public record CssNames(Policy policy, List<Entry> entries) {
                     compiled = (SymbolKind.PROPERTY == symbol.kind() ? "--" : "") + policy.prefix() + shortName(next++);
                 } while (reserved.contains(compiled)
                         || insensitive.contains(CssTokens.asciiLower(compiled))
-                        || SymbolKind.ANIMATION == symbol.kind()
+                        || (SymbolKind.ANIMATION == symbol.kind() || SymbolKind.FONT == symbol.kind())
                                 && RESERVED.contains(compiled.toLowerCase(Locale.ROOT)));
                 reserved.add(compiled);
+                if (SymbolKind.FONT == symbol.kind()) {
+                    insensitive.add(CssTokens.asciiLower(compiled));
+                }
             }
             entries.add(new Entry(id, symbol.value(), compiled, symbol.stable(), getters.getOrDefault(id, List.of())));
         }

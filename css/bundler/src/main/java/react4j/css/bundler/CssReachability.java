@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import react4j.css.internal.CssCatalogue;
 import react4j.css.internal.CssCatalogue.Resource;
+import react4j.css.internal.CssFontValues;
 import react4j.css.internal.CssLink;
 import react4j.css.internal.CssResource;
 
@@ -19,6 +20,7 @@ final class CssReachability {
     private final Map<String, CssPruner> pruners = new TreeMap<>();
     private final Map<String, String> animationOwners = new HashMap<>();
     private final Set<String> animations = new HashSet<>();
+    private final Set<String> fonts = new HashSet<>();
     private final Set<String> active = new HashSet<>();
     private final Set<String> queued = new HashSet<>();
     private final ArrayDeque<String> pending = new ArrayDeque<>();
@@ -72,13 +74,18 @@ final class CssReachability {
             graph.queued.remove(owner);
             var resource = Objects.requireNonNull(graph.resources.get(owner));
             resource.metadata().includes().forEach(graph::activate);
-            var selected = Objects.requireNonNull(graph.pruners.get(owner)).prune(graph.animations);
+            var selected = Objects.requireNonNull(graph.pruners.get(owner)).prune(graph.animations, graph.fonts);
             graph.retained.put(owner, selected);
             for (var occurrence : selected.metadata().occurrences()) {
                 occurrence.requires().forEach(graph::activate);
                 if (CssResource.SymbolKind.ANIMATION == occurrence.symbol().kind()) {
                     graph.animation(occurrence.symbol());
+                } else if (CssResource.SymbolKind.FONT == occurrence.symbol().kind()) {
+                    graph.font(occurrence.symbol());
                 }
+            }
+            for (var use : selected.metadata().fontUses()) {
+                use.families().forEach(graph::font);
             }
         }
         return graph.retained;
@@ -96,6 +103,19 @@ final class CssReachability {
     private void enqueue(String owner) {
         if (queued.add(owner)) {
             pending.add(owner);
+        }
+    }
+
+    private void font(CssResource.SymbolId id) {
+        var resource = Objects.requireNonNull(resources.get(id.owner()), id.owner());
+        var symbol = resource.metadata().symbols().stream()
+                .filter(candidate ->
+                        candidate.kind() == id.kind() && candidate.name().equals(id.name()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Missing canonical CSS font: " + id.id()));
+        if (fonts.add(CssFontValues.canonical(symbol.value()))) {
+            activate(id.owner());
+            enqueue(id.owner());
         }
     }
 

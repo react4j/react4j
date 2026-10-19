@@ -13,6 +13,11 @@ final class Owner_Assets_Media extends Owner.Media {
   }
 
   @Override
+  String font() {
+    return "asset:com/example/assets/card/heading.ttf";
+  }
+
+  @Override
   public String icon() {
     return "asset:com/example/assets/card/edit.svg";
   }

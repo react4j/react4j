@@ -2,9 +2,11 @@ package react4j.css.internal;
 
 import static org.testng.Assert.*;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -16,6 +18,34 @@ import react4j.css.internal.CssResource.SymbolId;
 import react4j.css.internal.CssResource.SymbolKind;
 
 public final class CssNamesTest {
+    @Test
+    public void compressedFontFamiliesRemainDistinctIgnoringCaseAndReserveAuthoredFamilies() {
+        var symbols = new ArrayList<Symbol>();
+        for (int i = 0; i < 70; i++) {
+            symbols.add(new Symbol(SymbolKind.FONT, "family" + i, "scoped-family" + i, false));
+        }
+        var metadata = new CssResource(
+                "Fonts", CssResource.Kind.GLOBAL, List.of(), List.of(), "", List.of(), symbols, List.of(), List.of());
+        var resource = new CssCatalogue.Resource(metadata, "body{font-family:'APP-A';}", new JsonObject());
+        var table = CssNames.create(
+                new CssCatalogue(Map.of("Fonts", resource), "1".repeat(64), Map.of()),
+                new CssNames.Policy(true, "app-"));
+        assertEquals(
+                table.entries().stream()
+                        .map(entry -> entry.compiled().toLowerCase(Locale.ROOT))
+                        .distinct()
+                        .count(),
+                70L);
+        assertFalse(table.entries().stream().anyMatch(entry -> "app-a".equalsIgnoreCase(entry.compiled())));
+        var first = table.entries().get(0);
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> new CssRenamer(table)
+                        .checkShared(
+                                "body{font-family:'" + first.compiled().toUpperCase(Locale.ROOT) + "';}",
+                                "variant.css"));
+    }
+
     private static CssCatalogue catalogue(List<Symbol> symbols, List<Binding> bindings, String css) {
         var resource = new CssResource(
                 "Button",
@@ -25,6 +55,7 @@ public final class CssNamesTest {
                 bindings.isEmpty() ? "" : "Styled_Button",
                 bindings,
                 symbols,
+                List.of(),
                 List.of());
         return new CssCatalogue(
                 Map.of(
@@ -138,9 +169,18 @@ public final class CssNamesTest {
                 new Symbol(SymbolKind.ID, "control", "shared", false),
                 new Symbol(SymbolKind.PROPERTY, "accent", "--shared", false),
                 new Symbol(SymbolKind.ANIMATION, "pulse", "pulse", false),
-                new Symbol(SymbolKind.PROPERTY, "runtime", "--runtime", false));
+                new Symbol(SymbolKind.PROPERTY, "runtime", "--runtime", false),
+                new Symbol(SymbolKind.FONT, "heading", "local-heading", false));
         var local = new CssResource(
-                "Local", CssResource.Kind.COMPONENT, List.of(), List.of(), "", List.of(), symbols, List.of());
+                "Local",
+                CssResource.Kind.COMPONENT,
+                List.of(),
+                List.of(),
+                "",
+                List.of(),
+                symbols,
+                List.of(),
+                List.of());
         var entries = new TreeMap<String, CssCatalogue.Resource>();
         entries.put(
                 "Local",
@@ -157,6 +197,7 @@ public final class CssNamesTest {
                     "Styled_" + owner,
                     List.of(binding),
                     List.of(new Symbol(SymbolKind.ID, "shared", "shared", true)),
+                    List.of(),
                     List.of());
             entries.put(
                     owner,

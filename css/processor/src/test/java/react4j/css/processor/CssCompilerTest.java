@@ -47,7 +47,8 @@ public final class CssCompilerTest {
                         offset -> new SourceMap.Location("Button.java", css, 0, offset),
                         Map.of(),
                         Map.of(),
-                        Map.of())
+                        Map.of(),
+                        new CssCompiler.Resources(Map.of(), Map.of()))
                 .output()
                 .css();
     }
@@ -195,7 +196,7 @@ public final class CssCompilerTest {
                         Map.entry("&:is(body) { color: red; }", "same owned element"),
                         Map.entry("&.\\73 uccess { color: red; }", "Escaped selector"),
                         Map.entry("color: red !important;", "precedence"),
-                        Map.entry("@font-face { font-family: test; src: url(test.woff); }", "rule"),
+                        Map.entry("@font-face { font-family: test; src: url(test.woff); }", "checked asset import"),
                         Map.entry(
                                 "@container (width > 1px) { &.success { color: red; } }", "Unsupported component rule"),
                         Map.entry("@layer global { &.success { color: red; } }", "Unsupported component rule"),
@@ -339,7 +340,8 @@ public final class CssCompilerTest {
                         offset -> new SourceMap.Location("Other.java", source, 0, offset),
                         Map.of(),
                         Map.of(),
-                        Map.of())
+                        Map.of(),
+                        new CssCompiler.Resources(Map.of(), Map.of()))
                 .output()
                 .css());
         assertEquals(
@@ -777,7 +779,8 @@ public final class CssCompilerTest {
                     offset -> new SourceMap.Location("Button.java", source, 0, offset),
                     imports,
                     Map.of(),
-                    Map.of());
+                    Map.of(),
+                    new CssCompiler.Resources(Map.of(), Map.of()));
             assertEquals(result.imports(), new HashSet<>(entry.getValue()));
             var sheet = parse(result.output().css());
             assertEquals(sheet.getAllStyleRules().size(), 1);
@@ -803,7 +806,8 @@ public final class CssCompilerTest {
                         offset -> new SourceMap.Location("Button.java", "", 0, offset),
                         imports,
                         Map.of(),
-                        Map.of()));
+                        Map.of(),
+                        new CssCompiler.Resources(Map.of(), Map.of())));
     }
 
     @Test
@@ -815,7 +819,8 @@ public final class CssCompilerTest {
                 new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Pulse.java", source, 0, offset),
                 Map.of(),
-                Map.of());
+                Map.of(),
+                new CssCompiler.Resources(Map.of(), Map.of()));
         var frames =
                 (CSSKeyframesRule) parse(result.output().css()).getAllRules().get(0);
         assertEquals(frames.getAnimationName(), "shared-pulse--keyframes");
@@ -836,7 +841,8 @@ public final class CssCompilerTest {
                             new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
                             offset -> new SourceMap.Location("Pulse.java", invalid, 0, offset),
                             Map.of(),
-                            Map.of()));
+                            Map.of(),
+                            new CssCompiler.Resources(Map.of(), Map.of())));
         }
     }
 
@@ -851,7 +857,8 @@ public final class CssCompilerTest {
                     offset -> new SourceMap.Location("Defaults.java", css, 0, offset),
                     Map.of(),
                     Map.of(),
-                    Map.of());
+                    Map.of(),
+                    new CssCompiler.Resources(Map.of(), Map.of()));
             var style = parse(result.output().css()).getAllStyleRules().get(0);
             var conditional = (AbstractHasTopLevelRules) style.getAllRules().get(0);
             var nested = conditional.getAllStyleRules().get(0);
@@ -867,7 +874,8 @@ public final class CssCompilerTest {
                             offset -> new SourceMap.Location("Defaults.java", invalid, 0, offset),
                             Map.of(),
                             Map.of(),
-                            Map.of()));
+                            Map.of(),
+                            new CssCompiler.Resources(Map.of(), Map.of())));
         }
     }
 
@@ -883,7 +891,8 @@ public final class CssCompilerTest {
                 offset -> new SourceMap.Location("Defaults.java", css, 0, offset),
                 Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES, false)),
                 Map.of(),
-                Map.of());
+                Map.of(),
+                new CssCompiler.Resources(Map.of(), Map.of()));
         assertEquals(result.imports(), Set.of("pulse"));
         var sheet = parse(result.output().css());
         assertEquals(sheet.getAllRules().size(), 3);
@@ -907,7 +916,8 @@ public final class CssCompilerTest {
                     offset -> new SourceMap.Location("Defaults.java", source, 0, offset),
                     Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES, false)),
                     Map.of(),
-                    Map.of());
+                    Map.of(),
+                    new CssCompiler.Resources(Map.of(), Map.of()));
             assertTrue(empty.imports().isEmpty());
         }
         for (var source : List.of(
@@ -927,7 +937,8 @@ public final class CssCompilerTest {
                             offset -> new SourceMap.Location("Defaults.java", source, 0, offset),
                             Map.of("pulse", new CssCompiler.Import("shared.Pulse", Kind.KEYFRAMES, false)),
                             Map.of(),
-                            Map.of()));
+                            Map.of(),
+                            new CssCompiler.Resources(Map.of(), Map.of())));
         }
     }
 }

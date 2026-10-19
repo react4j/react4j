@@ -159,7 +159,15 @@ public final class CssRenamerTest {
                         new SourceMap.Location("Button.java", "authored selector and declaration", 11, 6))
                 .append("&.modifier{color:red;}}\n");
         var metadata = new CssResource(
-                "Button", CssResource.Kind.COMPONENT, List.of(), List.of(), "", List.of(), List.of(), List.of());
+                "Button",
+                CssResource.Kind.COMPONENT,
+                List.of(),
+                List.of(),
+                "",
+                List.of(),
+                List.of(),
+                List.of(),
+                List.of());
         metadata = metadata.withOccurrences(CssTokens.read(writer.css()).stream()
                 .filter(token -> SymbolKind.CLASS == token.kind())
                 .map(token -> new CssResource.Occurrence(
@@ -258,7 +266,15 @@ public final class CssRenamerTest {
             uses.add(new CssResource.Occurrence(id, token.start(), token.end(), List.of()));
         }
         var metadata = new CssResource(
-                "Consumer", CssResource.Kind.COMPONENT, List.of(), List.of(), "", List.of(), List.of(), uses);
+                "Consumer",
+                CssResource.Kind.COMPONENT,
+                List.of(),
+                List.of(),
+                "",
+                List.of(),
+                List.of(),
+                uses,
+                List.of());
         String source = "class Consumer {\n"
                 + "  @Css(\"\"\"\n"
                 + "    selector\n"

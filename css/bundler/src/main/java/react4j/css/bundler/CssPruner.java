@@ -3,6 +3,7 @@ package react4j.css.bundler;
 import com.google.gson.JsonParser;
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.AbstractHasTopLevelRules;
+import com.helger.css.decl.CSSFontFaceRule;
 import com.helger.css.decl.CSSKeyframesRule;
 import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorMemberPseudoIs;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import react4j.css.internal.CssCatalogue.Resource;
+import react4j.css.internal.CssFontValues;
 import react4j.css.internal.SourceMap;
 
 /** Proves impossible selectors and copies surviving bytes with their original mappings. */
@@ -52,9 +54,9 @@ final class CssPruner {
                 .collect(Collectors.toSet());
     }
 
-    Resource prune(Set<String> animations) {
+    Resource prune(Set<String> animations, Set<String> fonts) {
         removed.clear();
-        rules(sheet.getAllRules(), animations);
+        rules(sheet.getAllRules(), animations, fonts);
         var spans = new ArrayList<SourceMap.Span>();
         int offset = 0;
         for (var span : removed.stream()
@@ -74,7 +76,7 @@ final class CssPruner {
                         .getAsJsonObject());
     }
 
-    private boolean rules(List<?> rules, Set<String> animations) {
+    private boolean rules(List<?> rules, Set<String> animations, Set<String> fonts) {
         boolean retained = false;
         for (var rule : rules) {
             if (rule instanceof CSSStyleRule style) {
@@ -86,14 +88,19 @@ final class CssPruner {
                     }
                     selectors(style.getAllSelectors());
                 }
-                rules(style.getAllRules(), animations);
+                rules(style.getAllRules(), animations, fonts);
             } else if (rule instanceof CSSKeyframesRule frames) {
                 if (!animations.contains(frames.getAnimationName())) {
                     remove(frames);
                     continue;
                 }
+            } else if (rule instanceof CSSFontFaceRule face) {
+                if (!fonts.contains(CssFontValues.face(face))) {
+                    remove(face);
+                    continue;
+                }
             } else if (rule instanceof AbstractHasTopLevelRules nested) {
-                if (!rules(nested.getAllRules(), animations)) {
+                if (!rules(nested.getAllRules(), animations, fonts)) {
                     remove((ICSSSourceLocationAware) rule);
                     continue;
                 }

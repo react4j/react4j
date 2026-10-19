@@ -89,10 +89,37 @@ web_bundle(
     name = "asset_optimized_web",
     testonly = True,
     root = ":asset_optimized",
+    styles = {":asset_optimized_styles": "styles/app.css"},
 )
 
 web_bundle(
     name = "asset_development_web",
     testonly = True,
     root = ":asset_development",
+    styles = {":asset_development_styles": "styles/app.css"},
+)
+
+css_bundle(
+    name = "asset_optimized_styles",
+    testonly = True,
+    css = "asset_optimized.css",
+    root = ":asset_optimized",
+    source_map = "asset_optimized.css.map",
+)
+
+css_bundle(
+    name = "asset_development_styles",
+    testonly = True,
+    css = "asset_development.css",
+    root = ":asset_development",
+    source_map = "asset_development.css.map",
+)
+
+css_bundle(
+    name = "asset_alternate_styles",
+    testonly = True,
+    css = "asset_alternate.css",
+    globals = ["react4j.css.integration.CssAssetStyles$Additional"],
+    root = ":asset_optimized",
+    source_map = "asset_alternate.css.map",
 )

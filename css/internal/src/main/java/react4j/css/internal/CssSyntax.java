@@ -55,7 +55,7 @@ public final class CssSyntax {
             @Override
             public void onCSSUnexpectedRule(Token token, String rule, String message) {
                 // Check placement in the syntax tree so diagnostics identify the keyframes header.
-                if ("@keyframes".equals(rule)) {
+                if ("@keyframes".equals(rule) || "@font-face".equals(rule)) {
                     return;
                 }
                 throw new InvalidCss(
@@ -134,7 +134,12 @@ public final class CssSyntax {
                 var declarations = shell(child);
                 append(style, declarations);
                 for (var declaration : child) {
-                    append(ECSSNodeType.KEYFRAMESRULE.isNode(declaration) ? result : declarations, declaration);
+                    append(
+                            (ECSSNodeType.KEYFRAMESRULE.isNode(declaration)
+                                            || ECSSNodeType.FONTFACERULE.isNode(declaration))
+                                    ? result
+                                    : declarations,
+                            declaration);
                 }
             } else {
                 append(style, child);
@@ -159,8 +164,12 @@ public final class CssSyntax {
         if (ECSSNodeType.IMPORTANT.isNode(node)) {
             throw invalid("!important declarations defeat shared/component precedence", node.getSourceLocation());
         }
-        if (component && ECSSNodeType.KEYFRAMESRULE.isNode(node) && 1 != depth) {
-            throw invalid("Keyframes must be declared at the component's outer level", node.getSourceLocation());
+        if ((ECSSNodeType.KEYFRAMESRULE.isNode(node) || ECSSNodeType.FONTFACERULE.isNode(node)) && 1 != depth) {
+            throw invalid(
+                    ECSSNodeType.KEYFRAMESRULE.isNode(node)
+                            ? "Keyframes must be declared at the component's outer level"
+                            : "Font faces must be declared at the outer level",
+                    node.getSourceLocation());
         }
         for (var type : ECSSNodeType.values()) {
             if (type.isNode(node)
@@ -168,7 +177,8 @@ public final class CssSyntax {
                     && ECSSNodeType.STYLERULE != type
                     && ECSSNodeType.MEDIARULE != type
                     && ECSSNodeType.SUPPORTSRULE != type
-                    && !(component && ECSSNodeType.KEYFRAMESRULE == type)) {
+                    && !(component && ECSSNodeType.KEYFRAMESRULE == type)
+                    && ECSSNodeType.FONTFACERULE != type) {
                 throw invalid(
                         (component ? "Unsupported component rule: " : "Unsupported shared rule: ") + type.name(),
                         node.getSourceLocation());

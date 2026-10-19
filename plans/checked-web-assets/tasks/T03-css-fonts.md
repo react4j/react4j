@@ -1,6 +1,6 @@
 # T03 — CSS assets and owned fonts
 
-- Status: `pending`
+- Status: `complete`
 - Blocked by: T02
 - Spec coverage: R3,R4,R5,R6; AC1,AC2,AC3
 
@@ -10,9 +10,9 @@ Resolve typed asset imports in component/global/keyframes declarations, structur
 
 ## Acceptance criteria
 
-- [ ] Delivered behavior and its spec criteria pass focused validation.
-- [ ] Existing behavior remains covered; new diagnostics and generated artifacts are checked.
-- [ ] Evidence is recorded and the implementation/task state committed together.
+- [x] Delivered behavior and its spec criteria pass focused validation.
+- [x] Existing behavior remains covered; new diagnostics and generated artifacts are checked.
+- [x] Evidence is recorded and the implementation/task state committed together.
 
 ## Validation
 
@@ -20,4 +20,7 @@ Processor formatted/unformatted and cross-library tests; parsed-model URL/font u
 
 ## Evidence
 
-- pending
+- `bazel test //css:tests --test_output=summary`: all 15 targets passed, including both processor artifacts, paired formatting modes, source/binary imports, existing CSS integration and real ADVANCED/BUNDLE asset fixtures. Shaded processor suite: 587 cases.
+- `tools/update_goldens.sh css`: 80 generated outputs updated and verified, including complete new asset/font output sets; temporary logs removed. Java format and buildifier checks passed.
+- Parsed-model tests cover URL functions/image-set strings, external/data/blob/fragment values, suffixes and unsafe local paths; static/dynamic font grammar, faces/descriptors, aliases/cycles and case-insensitive compression. Dead modifier font dependencies and files are pruned, both live weights survive, and independent CSS variants union their retained files with preserved Java source-map origins.
+- Both web_bundle fixtures built with stylesheet-relative finalized URLs. Full browser/package requests and root coverage remain assigned to T04/T05.

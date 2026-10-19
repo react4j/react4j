@@ -140,7 +140,8 @@ public final class CssTokens {
     }
 
     private static String name(SymbolKind kind, String value) {
-        if (SymbolKind.ANIMATION == kind && (value.startsWith("'") || value.startsWith("\""))) {
+        if ((SymbolKind.ANIMATION == kind || SymbolKind.FONT == kind)
+                && (value.startsWith("'") || value.startsWith("\""))) {
             value = Objects.requireNonNull(CSSParseHelper.extractStringValue(value));
         }
         return CSSParseHelper.unescapeURL(value);
@@ -251,6 +252,13 @@ public final class CssTokens {
                             token(SymbolKind.ANIMATION, start(simple), simple.getValue());
                         }
                     }
+                }
+                for (var family : CssFontValues.read(declaration).families()) {
+                    var terms = family.terms();
+                    int first = start(terms.get(0));
+                    var last = terms.get(terms.size() - 1);
+                    int end = start(last) + last.getValue().length();
+                    tokens.add(new Token(SymbolKind.FONT, first, end, css.substring(first, end), family.name()));
                 }
                 CssExpressions.visit(declaration.getExpression(), member -> {
                     if (member instanceof CSSExpressionMemberFunction function

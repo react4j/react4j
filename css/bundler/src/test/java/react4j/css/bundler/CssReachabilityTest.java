@@ -82,7 +82,8 @@ public final class CssReachabilityTest {
                 bindings.isEmpty() ? "" : "Styled_" + owner,
                 bindings,
                 symbols.stream().distinct().toList(),
-                occurrences);
+                occurrences,
+                List.of());
         return new Resource(
                 metadata,
                 css,
@@ -149,7 +150,8 @@ public final class CssReachabilityTest {
                     metadata.implementation(),
                     bindings,
                     symbols,
-                    occurrences);
+                    occurrences,
+                    List.of());
             entries.put(metadata.owner(), new Resource(updated, resource.css(), resource.map()));
         }
         return new CssCatalogue(entries, "1".repeat(64), Map.of());

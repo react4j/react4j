@@ -26,6 +26,7 @@ public final class CssResourceTest {
                                         "demo.Button", CssResource.SymbolKind.CLASS, "token"))))
                         : List.of(),
                 List.of(),
+                List.of(),
                 List.of());
     }
 
@@ -51,6 +52,7 @@ public final class CssResourceTest {
                 "Styled_Consumer",
                 List.of(binding),
                 List.of(),
+                List.of(),
                 List.of());
         assertEquals(CssResource.read(resource.json(), "Consumer"), resource);
         expectThrows(
@@ -62,6 +64,7 @@ public final class CssResourceTest {
                         List.of(),
                         "Styled_Consumer",
                         List.of(binding),
+                        List.of(),
                         List.of(),
                         List.of()));
         expectThrows(
@@ -99,7 +102,15 @@ public final class CssResourceTest {
                 new CssResource.Symbol(CssResource.SymbolKind.PROPERTY, "accent", "--accent", true),
                 new CssResource.Symbol(CssResource.SymbolKind.ANIMATION, "", "pulse", false)));
         var resource = new CssResource(
-                "Button", CssResource.Kind.COMPONENT, List.of(), List.of(), "", List.of(), symbols, List.of());
+                "Button",
+                CssResource.Kind.COMPONENT,
+                List.of(),
+                List.of(),
+                "",
+                List.of(),
+                symbols,
+                List.of(),
+                List.of());
         symbols.clear();
         assertEquals(resource.symbols().size(), 5);
         assertEquals(CssResource.read(resource.json(), "Button"), resource);
@@ -108,9 +119,11 @@ public final class CssResourceTest {
         for (var kind : CssResource.SymbolKind.values()) {
             for (var pair :
                     List.of(List.of("has space", "valid"), List.of("valid", ""), List.of("valid", "has space"))) {
-                expectThrows(
-                        IllegalArgumentException.class,
-                        () -> new CssResource.Symbol(kind, pair.get(0), pair.get(1), false));
+                if (CssResource.SymbolKind.FONT != kind || !"has space".equals(pair.get(0))) {
+                    expectThrows(
+                            IllegalArgumentException.class,
+                            () -> new CssResource.Symbol(kind, pair.get(0), pair.get(1), false));
+                }
             }
             if (CssResource.SymbolKind.ID == kind || CssResource.SymbolKind.PROPERTY == kind) {
                 expectThrows(IllegalArgumentException.class, () -> new CssResource.Symbol(kind, "", "value", false));
@@ -126,6 +139,7 @@ public final class CssResourceTest {
                         "",
                         List.of(),
                         List.of(resource.symbols().get(0), resource.symbols().get(0)),
+                        List.of(),
                         List.of()));
         for (var replacement : List.of("null", "7", "{}", "\"true\"")) {
             var json = JsonParser.parseString(resource.json()).getAsJsonObject();
@@ -174,6 +188,7 @@ public final class CssResourceTest {
                 "Styled_Button",
                 bindings,
                 List.of(),
+                List.of(),
                 List.of());
         owners.clear();
         bindings.clear();
@@ -208,6 +223,7 @@ public final class CssResourceTest {
                         "",
                         resource.bindings(),
                         List.of(),
+                        List.of(),
                         List.of()));
         expectThrows(
                 IllegalArgumentException.class,
@@ -217,6 +233,7 @@ public final class CssResourceTest {
                         List.of(),
                         List.of(),
                         "Styled_Button",
+                        List.of(),
                         List.of(),
                         List.of(),
                         List.of()));
@@ -229,6 +246,7 @@ public final class CssResourceTest {
                         List.of(),
                         "Styled_Button",
                         List.of(resource.bindings().get(0), resource.bindings().get(0)),
+                        List.of(),
                         List.of(),
                         List.of()));
         for (var key : List.of("implementation", "bindings", "symbols", "occurrences")) {
@@ -246,7 +264,15 @@ public final class CssResourceTest {
                 new CssResource.Occurrence(root, 1, 4, List.of()),
                 new CssResource.Occurrence(property, 8, 12, List.of("Provider"))));
         var resource = new CssResource(
-                "Consumer", CssResource.Kind.COMPONENT, List.of("Provider"), List.of(), "", List.of(), List.of(), uses);
+                "Consumer",
+                CssResource.Kind.COMPONENT,
+                List.of("Provider"),
+                List.of(),
+                "",
+                List.of(),
+                List.of(),
+                uses,
+                List.of());
         uses.clear();
         assertEquals(resource.occurrences().size(), 2);
         assertEquals(CssResource.read(resource.json(), "Consumer"), resource);
@@ -302,8 +328,8 @@ public final class CssResourceTest {
                 "null",
                 "1",
                 "{}",
-                valid.replace("\"version\":7", "\"version\":7.1"),
-                valid.replace("\"version\":7", "\"version\":\"1\""),
+                valid.replace("\"version\":8", "\"version\":8.1"),
+                valid.replace("\"version\":8", "\"version\":\"1\""),
                 valid.replace("COMPONENT", "UNKNOWN"),
                 valid.replace("[]", "[1]"),
                 valid.replace("[]", "[null]"),

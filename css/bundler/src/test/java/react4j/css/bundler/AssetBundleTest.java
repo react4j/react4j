@@ -5,6 +5,8 @@ import static org.testng.Assert.*;
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.helger.css.reader.CSSReader;
+import com.helger.css.reader.CSSReaderSettings;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -132,6 +134,78 @@ public final class AssetBundleTest {
             }
         }
         return false;
+    }
+
+    @Test
+    public void cssVariantsRetainOnlySurvivingFilesAndFamiliesAndKeepStylesheetRelativeUrls() throws Exception {
+        for (boolean optimized : List.of(false, true)) {
+            var directory = Files.createTempDirectory("asset-css");
+            try {
+                var style = new JsonObject();
+                style.addProperty("input", input(optimized, "css").toString());
+                style.addProperty("map", input(optimized, "cssmap").toString());
+                style.addProperty("output", directory.resolve("final.css").toString());
+                style.addProperty(
+                        "outputMap", directory.resolve("final.css.map").toString());
+                style.addProperty("name", "styles/app.css");
+                var options = args(directory, optimized);
+                options.addAll(List.of("--style", style.toString()));
+                AssetBundle.run(options);
+                String css = Files.readString(directory.resolve("final.css"));
+                var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(css, new CSSReaderSettings()));
+                assertEquals(
+                        sheet.getAllLayerRules().stream()
+                                .mapToInt(layer -> layer.getFontFaceRuleCount())
+                                .sum(),
+                        optimized ? 2 : 3);
+                assertFalse(css.contains("asset:"));
+                assertTrue(css.contains("../assets/"), css);
+                assertTrue(css.contains("?variant=1#shape"), css);
+                var inventory = JsonParser.parseString(Files.readString(directory.resolve("manifest.json")))
+                        .getAsJsonObject();
+                assertEquals(inventory.getAsJsonArray("assets").size(), optimized ? 1 : 2);
+                assertTrue(inventory.toString().contains("css:styles/app.css"));
+                var map = JsonParser.parseString(Files.readString(directory.resolve("final.css.map")))
+                        .getAsJsonObject();
+                var consumer = new SourceMapConsumerV3();
+                consumer.parse(map.toString());
+                int index = css.indexOf("../assets/");
+                int line = (int) css.substring(0, index)
+                                .chars()
+                                .filter(c -> '\n' == c)
+                                .count()
+                        + 1;
+                int column = index - css.lastIndexOf('\n', index - 1);
+                assertTrue(Objects.requireNonNull(consumer.getMappingForLine(line, column))
+                        .getOriginalFile()
+                        .endsWith("CssAssetStyles.java"));
+                assertTrue(map.toString().contains("class CssAssetStyles"));
+                if (optimized) {
+                    var alternate = style.deepCopy();
+                    alternate.addProperty("input", input(true, "alternate").toString());
+                    alternate.addProperty("map", input(true, "alternatemap").toString());
+                    alternate.addProperty(
+                            "output", directory.resolve("alternate.css").toString());
+                    alternate.addProperty(
+                            "outputMap", directory.resolve("alternate.css.map").toString());
+                    alternate.addProperty("name", "alternate.css");
+                    var union = directory.resolve("union");
+                    Files.createDirectory(union);
+                    var combined = args(union, true);
+                    combined.addAll(List.of("--style", style.toString(), "--style", alternate.toString()));
+                    AssetBundle.run(combined);
+                    var manifest = JsonParser.parseString(Files.readString(union.resolve("manifest.json")))
+                            .getAsJsonObject();
+                    assertEquals(manifest.getAsJsonArray("assets").size(), 2);
+                    assertTrue(manifest.getAsJsonArray("pruned").isEmpty());
+                    assertTrue(manifest.toString().contains("css:alternate.css"));
+                    assertFalse(
+                            Files.readString(directory.resolve("alternate.css")).contains("../assets/"));
+                }
+            } finally {
+                delete(directory);
+            }
+        }
     }
 
     @Test

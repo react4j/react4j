@@ -18,7 +18,8 @@ public record CssResource(
         String implementation,
         List<Binding> bindings,
         List<Symbol> symbols,
-        List<Occurrence> occurrences) {
+        List<Occurrence> occurrences,
+        List<FontUse> fontUses) {
     private static final Pattern OWNER = Pattern.compile(
             "\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*(?:\\.\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)*");
 
@@ -32,13 +33,14 @@ public record CssResource(
         CLASS,
         ID,
         ANIMATION,
-        PROPERTY
+        PROPERTY,
+        FONT
     }
 
     public record SymbolId(String owner, SymbolKind kind, String name) {
         public SymbolId {
             path(owner);
-            if (name.chars().anyMatch(Character::isWhitespace)
+            if ((SymbolKind.FONT != kind && name.chars().anyMatch(Character::isWhitespace))
                     || (name.isEmpty() && SymbolKind.CLASS != kind && SymbolKind.ANIMATION != kind)) {
                 throw new IllegalArgumentException("Invalid canonical CSS symbol: " + name);
             }
@@ -109,7 +111,7 @@ public record CssResource(
 
     public record Symbol(SymbolKind kind, String name, String value, boolean stable) {
         public Symbol {
-            if (name.chars().anyMatch(Character::isWhitespace)
+            if ((SymbolKind.FONT != kind && name.chars().anyMatch(Character::isWhitespace))
                     || value.isBlank()
                     || value.chars().anyMatch(Character::isWhitespace)
                     || (name.isEmpty() && SymbolKind.CLASS != kind && SymbolKind.ANIMATION != kind)) {
@@ -151,12 +153,47 @@ public record CssResource(
         }
     }
 
+    /** Families reachable through a surviving runtime-dependent font declaration. */
+    public record FontUse(int start, int end, List<SymbolId> families) {
+        public FontUse {
+            families = List.copyOf(families);
+            if (start < 0
+                    || end <= start
+                    || families.isEmpty()
+                    || new HashSet<>(families).size() != families.size()
+                    || families.stream().anyMatch(id -> SymbolKind.FONT != id.kind())) {
+                throw new IllegalArgumentException("Invalid dynamic font dependency");
+            }
+        }
+
+        JsonObject json() {
+            var json = new JsonObject();
+            json.addProperty("start", start);
+            json.addProperty("end", end);
+            var ids = new JsonArray();
+            families.forEach(id -> ids.add(id.json()));
+            json.add("families", ids);
+            return json;
+        }
+
+        static FontUse read(JsonObject json) {
+            return new FontUse(
+                    integer(json, "start"),
+                    integer(json, "end"),
+                    json.getAsJsonArray("families").asList().stream()
+                            .map(id -> SymbolId.read(id.getAsJsonObject()))
+                            .toList());
+        }
+    }
+
     public CssResource withOccurrences(List<Occurrence> values) {
-        return new CssResource(owner, kind, dependencies, includes, implementation, bindings, symbols, values);
+        return new CssResource(
+                owner, kind, dependencies, includes, implementation, bindings, symbols, values, fontUses);
     }
 
     public CssResource project(List<SourceMap.Span> spans) {
         var projected = new ArrayList<Occurrence>();
+        var uses = new ArrayList<FontUse>();
         int offset = 0;
         for (var span : spans) {
             for (var occurrence : occurrences) {
@@ -170,9 +207,17 @@ public record CssResource(
                     throw new IllegalArgumentException("CSS pruning split a managed identifier");
                 }
             }
+            for (var use : fontUses) {
+                if (use.start() >= span.start() && use.end() <= span.end()) {
+                    uses.add(new FontUse(
+                            offset + use.start() - span.start(), offset + use.end() - span.start(), use.families()));
+                } else if (use.start() < span.end() && use.end() > span.start()) {
+                    throw new IllegalArgumentException("CSS pruning split a font dependency");
+                }
+            }
             offset += span.end() - span.start();
         }
-        return withOccurrences(projected);
+        return new CssResource(owner, kind, dependencies, includes, implementation, bindings, symbols, projected, uses);
     }
 
     private static int integer(JsonObject json, String key) {
@@ -190,6 +235,19 @@ public record CssResource(
         bindings = List.copyOf(bindings);
         symbols = List.copyOf(symbols);
         occurrences = List.copyOf(occurrences);
+        fontUses = List.copyOf(fontUses);
+        int previousUse = 0;
+        for (var use : fontUses) {
+            if (use.start() < previousUse) {
+                throw new IllegalArgumentException("Dynamic font uses require ordered spans and declared dependencies");
+            }
+            for (var id : use.families()) {
+                if (!owner.equals(id.owner()) && !dependencies.contains(id.owner())) {
+                    throw new IllegalArgumentException("Dynamic font uses require declared dependencies");
+                }
+            }
+            previousUse = use.end();
+        }
         int previousEnd = 0;
         for (var occurrence : occurrences) {
             if (occurrence.start() < previousEnd || !dependencies.containsAll(occurrence.requires())) {
@@ -239,7 +297,7 @@ public record CssResource(
 
     public String json() {
         var json = new JsonObject();
-        json.addProperty("version", 7);
+        json.addProperty("version", 8);
         json.addProperty("owner", owner);
         json.addProperty("kind", kind.name());
         var entries = new JsonArray();
@@ -267,13 +325,16 @@ public record CssResource(
         var uses = new JsonArray();
         occurrences.forEach(occurrence -> uses.add(occurrence.json()));
         json.add("occurrences", uses);
+        var fonts = new JsonArray();
+        fontUses.forEach(use -> fonts.add(use.json()));
+        json.add("fontUses", fonts);
         return json + "\n";
     }
 
     public static CssResource read(String source, String expectedOwner) {
         try {
             var json = JsonParser.parseString(source).getAsJsonObject();
-            if (!json.has("version") || !"7".equals(json.get("version").toString())) {
+            if (!json.has("version") || !"8".equals(json.get("version").toString())) {
                 throw new IllegalArgumentException("Unsupported CSS metadata version");
             }
             String owner = string(json, "owner");
@@ -310,6 +371,9 @@ public record CssResource(
                     symbols,
                     json.getAsJsonArray("occurrences").asList().stream()
                             .map(item -> Occurrence.read(item.getAsJsonObject()))
+                            .toList(),
+                    json.getAsJsonArray("fontUses").asList().stream()
+                            .map(item -> FontUse.read(item.getAsJsonObject()))
                             .toList());
         } catch (JsonParseException | IllegalStateException | ClassCastException | NullPointerException e) {
             throw new IllegalArgumentException("Invalid CSS metadata for " + expectedOwner, e);

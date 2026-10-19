@@ -36,6 +36,7 @@ import javax.tools.StandardLocation;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.ElementsUtil;
+import react4j.css.internal.CssFontValues;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
@@ -153,7 +154,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 readable(compiled.properties(), CssResource.SymbolKind.PROPERTY, definitions),
                 compiled.propertyImports(),
                 readable(compiled.ids(), CssResource.SymbolKind.ID, definitions),
-                readable(compiled.animations(), CssResource.SymbolKind.ANIMATION, definitions));
+                readable(compiled.animations(), CssResource.SymbolKind.ANIMATION, definitions),
+                readable(compiled.fonts(), CssResource.SymbolKind.FONT, definitions));
         for (var name : imports.properties().keySet().stream().sorted().toList()) {
             if (!result.propertyImports().contains(name)) {
                 throw new IllegalArgumentException("Unused custom property import: " + name);
@@ -166,6 +168,11 @@ public final class CssProcessor extends AbstractStandardProcessor {
                                     .noneMatch(accessor ->
                                             CssAccessor.Kind.ID == accessor.kind() && name.equals(accessor.name())))) {
                 throw new IllegalArgumentException("Unused ID import: " + name);
+            }
+        }
+        for (var name : imports.fonts().keySet()) {
+            if (!result.fonts().containsKey(name)) {
+                throw new IllegalArgumentException("Unused font import: " + name);
             }
         }
         String implementation = "";
@@ -204,6 +211,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 .flatMap(binding -> binding.providers().stream())
                 .sorted()
                 .forEach(dependencies::add);
+        imports.fonts().values().stream().map(CssFonts.Import::owner).sorted().forEach(dependencies::add);
         var metadata = new CssResource(
                 ownerName,
                 kind,
@@ -212,7 +220,15 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 implementation,
                 bound,
                 symbols(owner, kind, descriptor, result, imports),
-                resolved.occurrences());
+                resolved.occurrences(),
+                CssFontValues.uses(
+                        resolved.output().css(),
+                        definitions.values().stream()
+                                .map(CssSymbols.Definition::symbol)
+                                .filter(id -> CssResource.SymbolKind.FONT == id.kind())
+                                .distinct()
+                                .sorted(Comparator.comparing(CssResource.SymbolId::id))
+                                .toList()));
         var output = result.output();
         for (var entry : Map.of(
                         resource,
@@ -306,6 +322,18 @@ public final class CssProcessor extends AbstractStandardProcessor {
                                 value,
                                 List.of()));
             }
+        });
+        result.fonts().forEach((name, value) -> {
+            var imported = imports.fonts().get(name);
+            definitions.put(
+                    new CssSymbols.Key(CssResource.SymbolKind.FONT, value),
+                    new CssSymbols.Definition(
+                            new CssResource.SymbolId(
+                                    null == imported ? ownerName : imported.owner(),
+                                    CssResource.SymbolKind.FONT,
+                                    null == imported ? name : imported.name()),
+                            null == imported ? value : imported.cssName(),
+                            null == imported ? List.of() : List.of(imported.owner())));
         });
         imports.named().forEach((alias, imported) -> {
             boolean animation = Kind.KEYFRAMES == imported.kind();
@@ -438,7 +466,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
             Map<String, CssCompiler.Import> named,
             List<String> globals,
             Map<String, CssProperties.Import> properties,
-            Map<String, CssIds.Import> ids) {}
+            Map<String, CssIds.Import> ids,
+            Map<String, String> assets,
+            Map<String, CssFonts.Import> fonts) {}
 
     private List<AnnotationMirror> importMirrors(TypeElement owner) {
         var mirrors = new ArrayList<AnnotationMirror>();
@@ -456,6 +486,10 @@ public final class CssProcessor extends AbstractStandardProcessor {
         for (var mirror : mirrors) {
             String property = selection(mirror, "property");
             String id = selection(mirror, "id");
+            String font = selection(mirror, "font");
+            if (!font.isEmpty() && (!id.isEmpty() || !property.isEmpty())) {
+                throw new IllegalArgumentException("@CssImport font, id and property are mutually exclusive");
+            }
             if (!property.isEmpty() && !id.isEmpty()) {
                 throw new IllegalArgumentException("@CssImport id and property are mutually exclusive");
             }
@@ -490,11 +524,14 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 || ElementKind.CLASS != element.getKind()
                 || (null == annotation(element, CSS_ANNOTATION)
                         && null == annotation(element, "react4j.css.GlobalCss")
-                        && null == annotation(element, "react4j.css.Keyframes"))) {
+                        && null == annotation(element, "react4j.css.Keyframes")
+                        && null == annotation(element, "react4j.css.Assets"))) {
             throw new IllegalArgumentException(
-                    "@CssImport must reference a @Css, @GlobalCss or @Keyframes class: " + target);
+                    "@CssImport must reference a @Css, @GlobalCss, @Keyframes or @Assets class: " + target);
         }
-        sourceKind(element);
+        if (null == annotation(element, "react4j.css.Assets")) {
+            sourceKind(element);
+        }
         return element;
     }
 
@@ -580,15 +617,64 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 new CssIds.Binding(ownerName, name, kind, stable(owner, CssResource.SymbolKind.ID, name)));
     }
 
+    private CssFonts.Import resolveFont(TypeElement owner, String selected, Set<String> visiting) {
+        String name = CssFontValues.canonical(selected);
+        String ownerName = binaryName(owner);
+        String key = ownerName + "#font:" + name;
+        if (!visiting.add(key)) {
+            throw new IllegalArgumentException("Cyclic font import without an owner: " + key);
+        }
+        Kind kind = sourceKind(owner);
+        var annotation = annotation(owner, annotationName(kind));
+        assert null != annotation;
+        if (CssFonts.names((String) value(annotation, "value").getValue(), kind).contains(name)) {
+            visiting.remove(key);
+            return new CssFonts.Import(ownerName, name, stable(owner, CssResource.SymbolKind.FONT, name));
+        }
+        for (var mirror : importMirrors(owner)) {
+            var font = (String) value(mirror, "font").getValue();
+            var alias = (String) value(mirror, "name").getValue();
+            if (!font.isEmpty() && name.equals(CssFontValues.canonical(alias.isEmpty() ? font : alias))) {
+                var imported = resolveFont(importTarget(mirror), font, visiting);
+                visiting.remove(key);
+                return imported;
+            }
+        }
+        throw new IllegalArgumentException("Unknown owned font family " + name + " in " + ownerName);
+    }
+
     private Imports imports(TypeElement owner, Kind kind) {
         var mirrors = importMirrors(owner);
         var imports = new LinkedHashMap<String, CssCompiler.Import>();
         var globals = new ArrayList<String>();
         var properties = new LinkedHashMap<String, CssProperties.Import>();
         var ids = new LinkedHashMap<String, CssIds.Import>();
+        var assets = new LinkedHashMap<String, String>();
+        var assetAliases = new LinkedHashSet<String>();
+        var fonts = new LinkedHashMap<String, CssFonts.Import>();
         for (var mirror : mirrors) {
             var alias = (String) value(mirror, "name").getValue();
             var element = importTarget(mirror);
+            if (null != annotation(element, "react4j.css.Assets")) {
+                if (!selection(mirror, "id").isEmpty()
+                        || !selection(mirror, "property").isEmpty()
+                        || !selection(mirror, "font").isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "@Assets imports select a named asset catalogue without id, property or font");
+                }
+                CssCompiler.checkAlias(alias, Kind.COMPONENT);
+                if (null != Trees.instance(processingEnv).getPath(element)) {
+                    validateResourceType(element);
+                }
+                if (!assetAliases.add(alias)) {
+                    throw new IllegalArgumentException("Duplicate imported asset catalogue: " + alias);
+                }
+                var declaration = AssetDeclarations.parse(processingEnv, element);
+                for (var binding : declaration.bindings()) {
+                    assets.put(alias + "." + binding.method(), binding.path());
+                }
+                continue;
+            }
             Kind targetKind = sourceKind(element);
             if (null != Trees.instance(processingEnv).getPath(element)) {
                 if (Kind.COMPONENT == targetKind) {
@@ -600,7 +686,16 @@ public final class CssProcessor extends AbstractStandardProcessor {
             String name = binaryName(element);
             var property = (String) value(mirror, "property").getValue();
             var id = (String) value(mirror, "id").getValue();
-            if (!id.isEmpty()) {
+            var font = (String) value(mirror, "font").getValue();
+            if (!font.isEmpty()) {
+                String local = CssFontValues.canonical(alias.isEmpty() ? font : alias);
+                if (CssFontValues.RESERVED.contains(local)) {
+                    throw new IllegalArgumentException("Reserved imported font family: " + local);
+                }
+                if (null != fonts.putIfAbsent(local, resolveFont(element, font, new LinkedHashSet<>()))) {
+                    throw new IllegalArgumentException("Duplicate imported font family: " + local);
+                }
+            } else if (!id.isEmpty()) {
                 ids.put(alias.isEmpty() ? id : alias, resolveId(element, id, new LinkedHashSet<>()));
             } else if (!property.isEmpty()) {
                 CssProperties.checkName(property);
@@ -642,7 +737,13 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 }
             }
         }
-        return new Imports(Map.copyOf(imports), List.copyOf(globals), Map.copyOf(properties), Map.copyOf(ids));
+        return new Imports(
+                Map.copyOf(imports),
+                List.copyOf(globals),
+                Map.copyOf(properties),
+                Map.copyOf(ids),
+                Map.copyOf(assets),
+                Map.copyOf(fonts));
     }
 
     private CssDescriptor parse(TypeElement owner) {
@@ -963,6 +1064,12 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         stable(owner, CssResource.SymbolKind.ANIMATION, name)));
             }
         });
+        result.fonts().forEach((name, value) -> {
+            if (!imports.fonts().containsKey(name)) {
+                symbols.add(new CssResource.Symbol(
+                        CssResource.SymbolKind.FONT, name, value, stable(owner, CssResource.SymbolKind.FONT, name)));
+            }
+        });
         return symbols.stream()
                 .sorted(Comparator.comparing(CssResource.Symbol::kind).thenComparing(CssResource.Symbol::name))
                 .toList();
@@ -1014,7 +1121,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         exports(descriptor),
                         locations,
                         imports.properties(),
-                        imports.ids());
+                        imports.ids(),
+                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
             }
             if (Kind.GLOBAL == kind) {
                 return CssCompiler.global(
@@ -1024,7 +1132,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         locations,
                         imports.named(),
                         imports.properties(),
-                        imports.ids());
+                        imports.ids(),
+                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
             }
             assert null != descriptor;
             return CssCompiler.component(
@@ -1034,7 +1143,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                     locations,
                     imports.named(),
                     imports.properties(),
-                    imports.ids());
+                    imports.ids(),
+                    new CssCompiler.Resources(imports.assets(), imports.fonts()));
         } catch (CssSyntax.InvalidCss e) {
             int offset = block.offsets()[Math.max(0, Math.min(block.value().length(), e.offset()))];
             String location =

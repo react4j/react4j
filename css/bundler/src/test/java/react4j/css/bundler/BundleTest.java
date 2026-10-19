@@ -85,6 +85,7 @@ public final class BundleTest {
                 bindings
                         ? List.of(new CssResource.Symbol(CssResource.SymbolKind.PROPERTY, "example", "--example", true))
                         : List.of(),
+                List.of(),
                 List.of());
     }
 
@@ -110,7 +111,8 @@ public final class BundleTest {
                         new CssResource.Symbol(CssResource.SymbolKind.CLASS, "success", "readable-modifier", false)),
                 List.of(
                         new CssResource.Occurrence(id, 1, 14, List.of()),
-                        new CssResource.Occurrence(modifier, 15, 32, List.of())));
+                        new CssResource.Occurrence(modifier, 15, 32, List.of())),
+                List.of());
         var resource = new CssCatalogue.Resource(
                 metadata,
                 css,

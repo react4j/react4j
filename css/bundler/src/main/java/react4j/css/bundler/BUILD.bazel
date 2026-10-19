@@ -30,6 +30,7 @@ java_library(
     name = "assets",
     srcs = [
         "AssetBundle.java",
+        "AssetCss.java",
         "AssetJavaScript.java",
         "package-info.java",
     ],

@@ -88,7 +88,14 @@ public final class CssRenamer {
     void checkNames(CssTokens.Parsed parsed, String path) {
         for (var token : parsed.tokens()) {
             String raw = token.name();
-            var entry = compressed.get(raw);
+            var entry = SymbolKind.FONT == token.kind()
+                    ? compressed.values().stream()
+                            .filter(candidate ->
+                                    SymbolKind.FONT == candidate.symbol().kind()
+                                            && candidate.compiled().equalsIgnoreCase(raw))
+                            .findFirst()
+                            .orElse(null)
+                    : compressed.get(raw);
             if (null != entry && token.kind() == entry.symbol().kind()) {
                 throw new IllegalArgumentException(path + ": raw CSS name conflicts with a compressed symbol: " + raw
                         + " (" + entry.symbol().id() + "); mark the symbol stable or use a distinct link prefix");

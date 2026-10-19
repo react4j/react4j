@@ -23,13 +23,14 @@ public final class CssPrunerTest {
                         "",
                         List.of(),
                         List.of(),
+                        List.of(),
                         List.of()),
                 writer.css(),
                 JsonParser.parseString(writer.map("Button.css")).getAsJsonObject());
     }
 
     private static Resource prune(Resource resource, Set<String> known, Set<String> present) {
-        return new CssPruner(resource, known, present).prune(Set.of());
+        return new CssPruner(resource, known, present).prune(Set.of(), Set.of());
     }
 
     @Test

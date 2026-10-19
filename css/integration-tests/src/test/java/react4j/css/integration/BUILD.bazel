@@ -215,6 +215,7 @@ java_j2cl_library(
     testonly = True,
     srcs = [
         "AssetFixtures.java",
+        "CssAssetStyles.java",
         "package-info.java",
     ],
     assets = ["//css/integration-tests/src/test/assets/react4j/css/integration:media"],

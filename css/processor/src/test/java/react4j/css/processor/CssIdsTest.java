@@ -28,7 +28,8 @@ public final class CssIdsTest {
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
                 Map.of(),
-                Map.of());
+                Map.of(),
+                new CssCompiler.Resources(Map.of(), Map.of()));
     }
 
     private static CssCompiler.Result global(String css) {
@@ -39,15 +40,16 @@ public final class CssIdsTest {
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
                 Map.of(),
-                Map.of());
+                Map.of(),
+                new CssCompiler.Resources(Map.of(), Map.of()));
     }
 
     @Test
     public void escapedUrlFunctionsKeepExternalAndUnboundValuesAndCheckEncodedFragments() {
-        for (String uri :
-                List.of("u\\72 l()", "u\\72 l(var(--path))", "u\\72 l('icons.svg#mask')", "u\\72 l('#other')")) {
+        for (String uri : List.of("u\\72 l('https://example.com/icons.svg#mask')", "u\\72 l('#other')")) {
             assertTrue(component("filter:" + uri + ";").ids().isEmpty());
         }
+        expectThrows(IllegalArgumentException.class, () -> component("filter:u\\72 l(var(--path));"));
         expectThrows(CssSyntax.InvalidCss.class, () -> component("filter:u\\72 l('#bad%');"));
     }
 
@@ -61,7 +63,8 @@ public final class CssIdsTest {
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
                 Map.of(),
-                Map.of());
+                Map.of(),
+                new CssCompiler.Resources(Map.of(), Map.of()));
         assertEquals(result.ids(), Map.of("control", ROOT + "--id-control", "mask", ROOT + "--id-mask"));
         assertEquals(result.output().css(), "#" + ROOT + "--id-control{filter:url(#" + ROOT + "--id-mask);}");
     }
@@ -70,7 +73,7 @@ public final class CssIdsTest {
     public void boundHashesAndPureFragmentsAgreeAndOtherValuesStayLiteral() {
         var result =
                 component("&#mask, &:is(#control, :not(#mask)) { filter: var(--filter,url('#mask')); content:'#mask';"
-                        + " background: url(icons.svg#mask); color: #fff; }");
+                        + " background: url(https://example.com/icons.svg#mask); color: #fff; }");
         assertEquals(result.ids(), Map.of("mask", ROOT + "--id-mask", "control", ROOT + "--id-control"));
         var style = Objects.requireNonNull(
                         CSSReader.readFromStringReader(result.output().css(), new CSSReaderSettings()))
@@ -94,7 +97,7 @@ public final class CssIdsTest {
                         "content",
                         "'#mask'",
                         "background",
-                        "url(icons.svg#mask)",
+                        "url(https://example.com/icons.svg#mask)",
                         "color",
                         "#fff")
                 .entrySet()) {
@@ -134,11 +137,12 @@ public final class CssIdsTest {
                                 EXPORTS,
                                 offset -> new SourceMap.Location("Frames.java", "", 0, offset),
                                 Map.of(),
-                                Map.of())
+                                Map.of(),
+                                new CssCompiler.Resources(Map.of(), Map.of()))
                         .ids(),
                 Map.of("mask", ROOT + "--id-mask"));
         expectThrows(CssSyntax.InvalidCss.class, () -> global("#unbound { color: red; }"));
-        assertTrue(global(":root { content:'#mask'; background:url(icons.svg#mask); }")
+        assertTrue(global(":root { content:'#mask'; background:url(https://example.com/icons.svg#mask); }")
                 .ids()
                 .isEmpty());
     }
@@ -162,8 +166,8 @@ public final class CssIdsTest {
         assertEquals(
                 global("body { & #mask { color:red; } } .base { color:blue; }").ids(),
                 Map.of("mask", ROOT + "--id-mask"));
-        assertTrue(global("[data-label='mask'][href='icons.svg#mask'][id=other][id] {content:'#mask';} :lang(en)"
-                        + " {color:red;}")
+        assertTrue(global("[data-label='mask'][href='https://example.com/icons.svg#mask'][id=other][id]"
+                        + " {content:'#mask';} :lang(en) {color:red;}")
                 .ids()
                 .isEmpty());
     }
@@ -178,7 +182,8 @@ public final class CssIdsTest {
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
                 Map.of(),
-                Map.of());
+                Map.of(),
+                new CssCompiler.Resources(Map.of(), Map.of()));
         assertEquals(result.ids(), Map.of("ä", ROOT + "--id-_00e4_"));
         expectThrows(CssSyntax.InvalidCss.class, () -> global("#mask {color:red;} [\\69d=mask] {color:blue;}"));
     }

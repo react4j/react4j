@@ -212,7 +212,7 @@ public final class CssResourceProcessorTest {
             cases.add(new Object[] {
                 "@CssImport(name=\"beat\", value=" + type + ".class)",
                 "color: red;",
-                "must reference a @Css, @GlobalCss or @Keyframes class"
+                "must reference a @Css, @GlobalCss, @Keyframes or @Assets class"
             });
         }
         cases.add(new Object[] {
@@ -502,7 +502,7 @@ public final class CssResourceProcessorTest {
         for (var type : List.of("int", "void", "int[]", "String[]", "String")) {
             cases.add(new Object[] {
                 consumer("@CssImport(" + type + ".class)", "color: red;"),
-                "@CssImport must reference a @Css, @GlobalCss or @Keyframes class"
+                "@CssImport must reference a @Css, @GlobalCss, @Keyframes or @Assets class"
             });
         }
         for (var type : List.of("Button", "Pulse")) {

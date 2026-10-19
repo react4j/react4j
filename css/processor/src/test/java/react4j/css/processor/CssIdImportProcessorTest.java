@@ -43,7 +43,8 @@ public final class CssIdImportProcessorTest {
     @Test
     public void aliasesResolveInSelectorsAndFragmentsInEveryDefinitionKind() throws Exception {
         for (var kind : List.of("Css", "GlobalCss", "Keyframes")) {
-            String css = "filter: url(#alias); content: '#alias'; background: url(icons.svg#alias);";
+            String css =
+                    "filter: url(#alias); content: '#alias'; background: url(https://example.com/icons.svg#alias);";
             css = "Css".equals(kind)
                     ? "&#alias { " + css + " }"
                     : ("GlobalCss".equals(kind) ? "#alias" : "to") + " { " + css + " }";
@@ -64,7 +65,7 @@ public final class CssIdImportProcessorTest {
             String output = text(result, "classes/demo/Button.css");
             assertTrue(output.contains("url(#jcss-demo-Owner--id-control)"), output);
             assertTrue(output.contains("'#alias'"), output);
-            assertTrue(output.contains("url(icons.svg#alias)"), output);
+            assertTrue(output.contains("url(https://example.com/icons.svg#alias)"), output);
         }
     }
 
@@ -287,7 +288,7 @@ public final class CssIdImportProcessorTest {
                 "Button",
                 "Css",
                 "@CssImport(value=Owner.class,id=\"control\",name=\"alias\")",
-                "background: url(icons.svg#alias); content: '#alias';",
+                "background: url(https://example.com/icons.svg#alias); content: '#alias';",
                 "");
         var result = CssProcessorTest.compile(Map.of("Owner.java", provider(false), "Button.java", consumer));
         assertFalse(result.success());

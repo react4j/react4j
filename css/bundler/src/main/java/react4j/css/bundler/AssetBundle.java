@@ -33,6 +33,7 @@ public final class AssetBundle {
     static void run(List<String> args) throws IOException {
         var trees = new ArrayList<Path>();
         var manifests = new ArrayList<Path>();
+        var styles = new ArrayList<AssetCss>();
         var options = new TreeMap<String, String>();
         var required = Set.of(
                 "--directory",
@@ -52,6 +53,8 @@ public final class AssetBundle {
             String value = args.get(i + 1);
             if ("--input".equals(option)) {
                 trees.add(Path.of(value));
+            } else if ("--style".equals(option)) {
+                styles.add(AssetCss.read(value));
             } else if ("--asset-catalogue".equals(option)) {
                 manifests.add(Path.of(value));
             } else if (!required.contains(option) || null != options.putIfAbsent(option, value)) {
@@ -73,6 +76,7 @@ public final class AssetBundle {
         }
         var files = AssetResource.catalogue(manifests);
         AssetResource.validate(catalogue.assets(), files);
+        CssLink.validateCssAssets(catalogue, files);
         var javascript = Path.of(options.get("--javascript"));
         var live = link.readReport(Files.readString(Path.of(options.get("--liveness"))), CssLink.digest(javascript));
         var directory = Path.of(options.get("--directory"));
@@ -86,9 +90,18 @@ public final class AssetBundle {
         for (var asset : link.assets()) {
             if (!link.optimized() || live.contains(asset.id())) {
                 retained.computeIfAbsent(asset.binding().path(), ignored -> new TreeSet<>())
-                        .add(asset.id());
+                        .add("java:" + asset.id());
             }
         }
+        for (var style : styles) {
+            for (var path : style.references()) {
+                if (!files.containsKey(path)) {
+                    throw new IllegalArgumentException("Missing declared CSS asset: " + path);
+                }
+                retained.computeIfAbsent(path, ignored -> new TreeSet<>()).add("css:" + style.name());
+            }
+        }
+        var fileUrls = new TreeMap<String, String>();
         var urls = new TreeMap<String, String>();
         var entries = new JsonArray();
         for (var entry : retained.entrySet()) {
@@ -101,6 +114,7 @@ public final class AssetBundle {
                     + Base64.getUrlEncoder()
                             .withoutPadding()
                             .encodeToString(HexFormat.of().parseHex(digest)) + "." + media.extension();
+            fileUrls.put(logical, url);
             var output = directory.resolve(url);
             Files.createDirectories(Objects.requireNonNull(output.getParent()));
             if (Files.exists(output)) {
@@ -120,8 +134,10 @@ public final class AssetBundle {
             var getters = new JsonArray();
             var reasons = new JsonArray();
             for (var accessor : entry.getValue()) {
-                getters.add(accessor);
-                reasons.add("java:" + accessor);
+                if (accessor.startsWith("java:")) {
+                    getters.add(accessor.substring(5));
+                }
+                reasons.add(accessor);
             }
             item.add("accessors", getters);
             item.add("retainedBy", reasons);
@@ -130,10 +146,13 @@ public final class AssetBundle {
             item.add("representations", representations);
             entries.add(item);
             for (var asset : link.assets()) {
-                if (asset.binding().path().equals(logical) && entry.getValue().contains(asset.id())) {
+                if (asset.binding().path().equals(logical) && entry.getValue().contains("java:" + asset.id())) {
                     urls.put(link.optimized() ? asset.token() : asset.binding().value(), url);
                 }
             }
+        }
+        for (var style : styles) {
+            style.write(fileUrls);
         }
         String code = Files.readString(javascript);
         var mapped = AssetJavaScript.rewrite(
