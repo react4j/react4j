@@ -281,6 +281,32 @@ public final class CssNamesTest {
     }
 
     @Test
+    public void knownBroadAttributesCannotAcquireClassListMatches() {
+        var symbols = List.of(
+                new Symbol(SymbolKind.CLASS, "", "source-root", false),
+                new Symbol(SymbolKind.CLASS, "success", "source-modifier", false));
+        var binding = new Binding(
+                "success", SymbolKind.CLASS, "source-root source-modifier", List.of(), List.of(id(""), id("success")));
+        String css = "[class*='a app']{color:red;}";
+        var catalogue = catalogue(symbols, List.of(binding), css);
+        var error = expectThrows(
+                IllegalArgumentException.class, () -> CssNames.create(catalogue, new CssNames.Policy(true, "app-")));
+        assertTrue(String.valueOf(error.getMessage()).contains("Button#success"));
+        assertEquals(
+                CssNames.create(catalogue, new CssNames.Policy(false, "app-"))
+                        .entries()
+                        .size(),
+                2);
+        assertEquals(
+                CssNames.create(catalogue(symbols, List.of(), css), new CssNames.Policy(true, "app-"))
+                        .entries()
+                        .stream()
+                        .map(CssNames.Entry::compiled)
+                        .toList(),
+                List.of("app-a", "app-b"));
+    }
+
+    @Test
     public void escapedRawAnimationAndVariableContextsReserveTheirActualNames() {
         for (var kind : List.of(SymbolKind.ANIMATION, SymbolKind.PROPERTY, SymbolKind.ID)) {
             String css =

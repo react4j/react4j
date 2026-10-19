@@ -6,6 +6,7 @@ import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.testng.annotations.Test;
@@ -13,6 +14,70 @@ import react4j.css.internal.CssResource.SymbolId;
 import react4j.css.internal.CssResource.SymbolKind;
 
 public final class CssRenamerTest {
+    @Test
+    public void attributeComparisonsCheckActualGetterCompositionsIncludingStableTokens() {
+        for (int stable = 0; stable < 4; stable++) {
+            boolean rootStable = 0 != (stable & 1);
+            boolean modifierStable = 0 != (stable & 2);
+            String root = rootStable ? "a" : "source-root";
+            String modifier = modifierStable ? "b" : "source-modifier";
+            var renamer = new CssRenamer(new CssNames(
+                    new CssNames.Policy(true, ""),
+                    List.of(
+                            new CssNames.Entry(
+                                    new SymbolId("Button", SymbolKind.CLASS, "success"),
+                                    modifier,
+                                    "b",
+                                    modifierStable,
+                                    List.of("Button#success")),
+                            new CssNames.Entry(
+                                    new SymbolId("Button", SymbolKind.CLASS, ""),
+                                    root,
+                                    "a",
+                                    rootStable,
+                                    List.of("Button#style", "Button#success")))));
+            for (String selector : List.of(
+                    "[class='a b']", "[class|='a b']", "[class*='a b']", "[CLASS*='A B' i]", "[class*='\\61  b']")) {
+                if (rootStable && modifierStable) {
+                    renamer.checkShared(selector + "{}", "variant.css");
+                } else {
+                    var error = expectThrows(
+                            IllegalArgumentException.class, () -> renamer.checkShared(selector + "{}", "variant.css"));
+                    assertTrue(String.valueOf(error.getMessage()).contains("variant.css: raw CSS attribute selector"));
+                }
+            }
+            for (var comparison : Map.of("[class^='a ']", rootStable, "[class$=' b']", modifierStable)
+                    .entrySet()) {
+                if (comparison.getValue()) {
+                    renamer.checkShared(comparison.getKey() + "{}", "variant.css");
+                } else {
+                    expectThrows(
+                            IllegalArgumentException.class,
+                            () -> renamer.checkShared(comparison.getKey() + "{}", "variant.css"));
+                }
+            }
+            for (String selector : List.of("[class*=' ']", "[class^='b ']", "[id*='a b']")) {
+                renamer.checkShared(selector + "{}", "variant.css");
+            }
+        }
+        var unrelated = new CssRenamer(new CssNames(
+                new CssNames.Policy(true, ""),
+                List.of(
+                        new CssNames.Entry(
+                                new SymbolId("Button", SymbolKind.CLASS, ""),
+                                "source-root",
+                                "a",
+                                false,
+                                List.of("Button#style")),
+                        new CssNames.Entry(
+                                new SymbolId("Button", SymbolKind.CLASS, "success"),
+                                "source-modifier",
+                                "b",
+                                false,
+                                List.of("Button#success")))));
+        unrelated.checkShared("[class*='a b']{}", "variant.css");
+    }
+
     @Test
     public void escapedRawGrammarCannotHideLateAnimationPropertyOrFragmentCollisions() {
         for (var kind : List.of(SymbolKind.ANIMATION, SymbolKind.PROPERTY, SymbolKind.ID)) {

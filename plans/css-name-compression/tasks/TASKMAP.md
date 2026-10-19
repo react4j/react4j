@@ -5,7 +5,7 @@
 - Current frontier: `implementation review`
 - Planning reviewer: `/root/css_compression_plan_review` (`2/3` rounds; final confirmation `unused`; passed)
 - Plan checkpoint: `automatic` — explicit implementation request, confirmed interview and passing planning review; no human checkpoint requested.
-- Implementation reviewer: `/root/css_compression_implementation_review` (`1/5` rounds; final confirmation `unused`; round 2 ready)
+- Implementation reviewer: `/root/css_compression_implementation_review` (`2/5` rounds; final confirmation `unused`; round 3 ready)
 - Authority: implementation request and confirmed interview recorded in SPEC; existing PR112 push authority; no merge.
 
 ## Full-scope validation
@@ -56,3 +56,5 @@
 - Planning round 2: Findings: none. Checked binding-identity correction and affected metadata, symbolization, provider, allocation, test and sequencing surfaces. Residual experiments (J2CL method matching and CI runtime) remain owned by T02 and T01. Final confirmation unused.
 
 - Implementation round 1: fresh read-only reviewer activated against plan d1375174d and delivered HEAD b2a5dfa7f, with complete scope/authority/corrections, promoted artifacts and full-gate evidence. Found two P2 collision gaps: raw attribute references and escaped grammar names. Both verified and addressed with catalogue reservations, finite candidate checks, decoded contexts and related scoped-function handling. Ten focused targets and one full post-fix gate passed; the last no-gain comparison refinement passes four focused targets. Full gate rerunning for the final tree before closeout. No significant decision or requirement changed.
+
+- Implementation round 2: same read-only reviewer confirmed escaped-context fixes and found one remaining P2: attribute checks missed actual root-plus-modifier getter compositions. Accepted and fixed by reconstructing finite getter values from canonical table metadata. Regressions cover late variants, known catalogue CSS, reversed inventory order, partial/all stability, case flags, escapes and unchanged matches. Internal, bundler and linker targets pass; formatter, domain links and diff checks pass. Complete gate passed against 05a5f0802 before this final fix; rerun against the committed fix before closeout. No significant decision or requirement changed.

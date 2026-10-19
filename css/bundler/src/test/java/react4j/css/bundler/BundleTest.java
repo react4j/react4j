@@ -90,8 +90,9 @@ public final class BundleTest {
 
     @Test
     public void variantsRejectRawCollisionsWithoutChangingTheLinkedTable() throws Exception {
-        String css = ".readable-root{color:red;}";
+        String css = ".readable-root.readable-modifier{color:red;}";
         var id = new CssResource.SymbolId("Button", CssResource.SymbolKind.CLASS, "");
+        var modifier = new CssResource.SymbolId("Button", CssResource.SymbolKind.CLASS, "success");
         var metadata = new CssResource(
                 "Button",
                 CssResource.Kind.COMPONENT,
@@ -99,9 +100,17 @@ public final class BundleTest {
                 List.of(),
                 "Styled_Button",
                 List.of(new CssResource.Binding(
-                        "style", CssResource.SymbolKind.CLASS, "readable-root", List.of(), List.of(id))),
-                List.of(new CssResource.Symbol(CssResource.SymbolKind.CLASS, "", "readable-root", false)),
-                List.of(new CssResource.Occurrence(id, 1, 14, List.of())));
+                        "success",
+                        CssResource.SymbolKind.CLASS,
+                        "readable-root readable-modifier",
+                        List.of(),
+                        List.of(id, modifier))),
+                List.of(
+                        new CssResource.Symbol(CssResource.SymbolKind.CLASS, "", "readable-root", false),
+                        new CssResource.Symbol(CssResource.SymbolKind.CLASS, "success", "readable-modifier", false)),
+                List.of(
+                        new CssResource.Occurrence(id, 1, 14, List.of()),
+                        new CssResource.Occurrence(modifier, 15, 32, List.of())));
         var resource = new CssCatalogue.Resource(
                 metadata,
                 css,
@@ -111,26 +120,33 @@ public final class BundleTest {
         var link = CssLink.create(catalogue, "//:app", true);
         String original = link.json();
         Path shared = dir().resolve("shared.css");
-        for (var raw : List.of(".a{color:blue;}", "[class~=a]{color:blue;}", "[CLASS=A i]{color:blue;}")) {
+        for (var raw : List.of(
+                ".a{color:blue;}",
+                "[class~=a]{color:blue;}",
+                "[CLASS=A i]{color:blue;}",
+                "[class^='a ']{color:blue;}",
+                "[class$=' b']{color:blue;}",
+                "[class*='a b']{color:blue;}",
+                "[class|='a b']{color:blue;}")) {
             Files.writeString(shared, raw);
             var error = expectThrows(
                     IllegalArgumentException.class,
                     () -> Bundle.assemble(
-                            catalogue, List.of(shared), List.of(), "app.css", link, Set.of("Button#style")));
+                            catalogue, List.of(shared), List.of(), "app.css", link, Set.of("Button#success")));
             assertTrue(String.valueOf(error.getMessage()).contains("shared.css: raw CSS"));
         }
         assertEquals(link.json(), original);
-        assertTrue(Bundle.assemble(catalogue, List.of(), List.of(), "app.css", link, Set.of("Button#style"))
+        assertTrue(Bundle.assemble(catalogue, List.of(), List.of(), "app.css", link, Set.of("Button#success"))
                 .css()
-                .contains(".a{color:red;}"));
+                .contains(".a.b{color:red;}"));
         var prefixed = CssLink.create(catalogue, "//:prefixed", true, new CssNames.Policy(true, "app-"));
-        assertTrue(Bundle.assemble(catalogue, List.of(shared), List.of(), "app.css", prefixed, Set.of("Button#style"))
+        assertTrue(Bundle.assemble(catalogue, List.of(shared), List.of(), "app.css", prefixed, Set.of("Button#success"))
                 .css()
-                .contains(".app-a{color:red;}"));
+                .contains(".app-a.app-b{color:red;}"));
         var readable = CssLink.create(catalogue, "//:readable", true, new CssNames.Policy(false, ""));
-        assertTrue(Bundle.assemble(catalogue, List.of(shared), List.of(), "app.css", readable, Set.of("Button#style"))
+        assertTrue(Bundle.assemble(catalogue, List.of(shared), List.of(), "app.css", readable, Set.of("Button#success"))
                 .css()
-                .contains(".readable-root{color:red;}"));
+                .contains(".readable-root.readable-modifier{color:red;}"));
     }
 
     @Test
