@@ -5,7 +5,7 @@ closure_js_library(
     testonly = True,
     srcs = ["properties_test.js"],
     visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
-    deps = ["//:dom-j2cl"],
+    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
 )
 
 closure_js_library(
@@ -13,7 +13,7 @@ closure_js_library(
     testonly = True,
     srcs = ["events_test.js"],
     visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
-    deps = ["//:dom-j2cl"],
+    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
 )
 
 closure_js_library(

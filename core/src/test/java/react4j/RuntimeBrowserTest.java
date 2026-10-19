@@ -65,6 +65,11 @@ public final class RuntimeBrowserTest {
                 .finallyDo(() -> cleanup(root));
     }
 
+    @JsMethod
+    public static void mapProbe() {
+        check(7 == RuntimeCoverageExample.multilineElements(), "Native element map probe");
+    }
+
     private static void cleanup(Browser.Element root) {
         unmount(root);
         root.remove();
