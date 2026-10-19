@@ -5,7 +5,7 @@
 - Current frontier: `none`
 - Planning reviewer: `/root/assets_planning_review` (`2/3` rounds; final confirmation `unused`)
 - Plan checkpoint: automatic; accepted scope and explicit implementation authority, planning review passed
-- Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
+- Implementation reviewer: `/root/assets_delivery_review` (`1/5` rounds; final confirmation `unused`; round 1 corrections verified, full gate running)
 - Authority: user accepted the preceding design and explicitly instructed implementation; no human plan checkpoint.
 - Base: d9ff8955726c3dead8a2700e34ea3ea268fc46aa
 
@@ -33,6 +33,10 @@
 ## Review history
 
 - Round 1: two blockers, both accepted. T05 now owns all TodoMVC local SVG migrations; T03 specifies selected shared-font imports and T05 migrates all four Drumloop consumers. Round 2: Findings: none; both corrections verified. Planning gate passed.
+
+## Implementation review history
+
+- Round 1: three P2 findings, all accepted and reproduced. Distinct scoped custom-property definitions are retained, variable fragments are validated in their full font context, and the global font guide permits supported outer-level font faces. Parsed-model regressions cover scoped orders, conditional definitions, transitive/cyclic references, fallback/unknown values and keyword/multiword distinctions; processor regressions cover component/global declarations in both distributions. Focused unit suite plus implementation and standalone processor suites passed (590 standalone cases). Full post-fix gate running. Final confirmation remains unused.
 
 ## Promoted knowledge
 

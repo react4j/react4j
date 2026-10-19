@@ -17,7 +17,7 @@ Define checked Java declarations and imports for each [CSS symbol](../glossary/R
 9. Generated accessors return ordinary strings on the JVM and in shipped JavaScript. Compiler-only symbols do not appear in shipped JavaScript.
 10. Outer-level `@font-face` declarations own static family names and accept ordinary face descriptors, including multiple weights/styles per family. Malformed faces, duplicate descriptors and reserved owned families are rejected.
 11. Selected `@CssImport(font = ...)` bindings use the provider's family identity through aliases and separately compiled definitions. Unused imports and ownerless cycles are errors. Font aliases have their own namespace.
-12. Family lists and supported font shorthand bind resolved family occurrences, including runtime fallbacks. Ambiguous dynamic shorthand containing managed families and managed names hidden in custom-property values are rejected rather than silently misbound.
+12. Family lists and supported font shorthand bind resolved family occurrences, including runtime fallbacks. Ambiguous dynamic shorthand containing managed families and managed names hidden in custom-property values are rejected rather than silently misbound, including through definitions in other selectors or conditional rules. Variables supplying weight, size or line-height remain supported.
 
 ## Related contracts
 

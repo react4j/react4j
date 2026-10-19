@@ -199,7 +199,7 @@ Use `@GlobalCss` for page defaults and rules that target elements outside a comp
 final class ApplicationDefaults {}
 ```
 
-Selectors retain their authored names except for checked component references and bound IDs. Global styles support style rules, nesting, `@media` and `@supports`. Conditional blocks require explicit selectors even inside a style rule, for example `body { @media screen { & { color: red; } } }`. Import shared animations and component roots with `@CssImport`; global selectors may use `:css(alias)` to reference those roots. Inline keyframe definitions and other at-rules, including `@font-face`, are unsupported.
+Selectors retain their authored names except for checked component references and bound IDs. Global styles support style rules, nesting, `@media` and `@supports`. Conditional blocks require explicit selectors even inside a style rule, for example `body { @media screen { & { color: red; } } }`. Import shared animations and component roots with `@CssImport`; global selectors may use `:css(alias)` to reference those roots. Outer-level `@font-face` rules declare owned fonts as described below. Inline keyframe definitions and other at-rules are unsupported; font faces cannot be nested in selectors or conditional rules.
 
 Select application globals through the bundle's `globals` attribute below. Add `@CssImport(ApplicationDefaults.class)` to a component or another global definition that requires those defaults. Global imports work across separately compiled libraries; duplicate imports, self-inclusion, names on global imports and incompatible types are errors. The bundler rejects cycles among global inclusion edges.
 
@@ -393,7 +393,7 @@ Declare `@font-face` at the outer level of `@Css` or `@GlobalCss`. Family names 
 
 Share a family through a selected import, for example `@CssImport(value = Fonts.class, font = "righteous", name = "heading")`, then use `font-family: heading, cursive`. The provider owns the name and faces; the importing style keeps that provider only while its family usage survives. [Drumloop's shared family](../examples/drumloop/src/main/java/react4j/drumloop/views/Fonts.java) serves four components this way. Family imports can also pass through separately compiled definitions and aliases.
 
-`font-family` lists, common `font` shorthand, `var()` fallbacks and ordinary face descriptors are parsed as CSS. Ambiguous dynamic shorthands that mix unresolved runtime values with managed family names are rejected; use a separate `font-family` declaration with a checked fallback. Managed family names hidden inside custom-property values are unsupported.
+`font-family` lists, common `font` shorthand, `var()` fallbacks and ordinary face descriptors are parsed as CSS. Ambiguous dynamic shorthands that mix unresolved runtime values with managed family names are rejected; use a separate `font-family` declaration with a checked fallback. Managed family names hidden inside custom-property values are unsupported. Validation checks definitions across selectors and conditional rules; variables supplying only weight, size or line-height remain supported.
 
 Checked URLs also work in `image-set()` strings and preserve query/fragment suffixes, such as `url("asset:media.icon#mark")`. External HTTP(S), protocol-relative, data and blob URLs remain external; `url(#id)` remains a same-document reference. Other local file URLs must use a checked asset import. Asset imports alone do not retain every file.
 

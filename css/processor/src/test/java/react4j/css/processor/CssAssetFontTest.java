@@ -116,6 +116,66 @@ public final class CssAssetFontTest {
     }
 
     @Test
+    public void scopedAndConditionalVariablesCannotHideManagedFamilies() {
+        var imported = Map.of("heading", new CssFonts.Import("shared.Fonts", "righteous", true));
+        for (var rules : List.of(
+                "&:hover{--family:heading;font-family:var(--family)}&:focus{--family:serif}",
+                "&:focus{--family:serif}&:hover{--family:heading;font-family:var(--family)}",
+                "&:hover{--family:heading;font-family:var(--family);@media screen{&{--family:serif}}}",
+                "&:hover{--family:heading;--alias:var(--family);font-family:var(--alias)}&:focus{--family:serif}",
+                "&:hover{--family:heading;--size:16px;font:var(--size) var(--family)}&:focus{--family:serif}",
+                "--family:heading;font:var(--external-size) var(--family);",
+                "--family:var(--missing,heading);font-family:var(--family);",
+                "--family:heading;font-family:env(missing,var(--family));",
+                "&:hover{--family:heading;--alias:var(--family);font-family:var(--alias)}"
+                        + "&:focus{--family:var(--alias)}")) {
+            var error =
+                    expectThrows(CssSyntax.InvalidCss.class, () -> compile(rules + "&.unused{color:red;}", imported));
+            assertTrue(String.valueOf(error.getMessage()).contains("font-family fallback"), error.getMessage());
+        }
+    }
+
+    @Test
+    public void fontVariableFragmentsAreCheckedInTheirFullDeclaration() {
+        for (var fonts : List.of(
+                Map.<String, CssFonts.Import>of(),
+                Map.of("heading", new CssFonts.Import("shared.Fonts", "righteous", true)))) {
+            for (var css : List.of(
+                    "--weight:bold;font:var(--weight) 16px Arial;",
+                    "--size:16px;font:var(--size) Arial;",
+                    "--height:1.2;font:16px/var(--height) Arial;",
+                    "--weight:bold;--size:16px;--height:1.2;font:var(--weight) var(--size)/var(--height) Arial;",
+                    "--family:Arial;--font:16px var(--family);font:var(--font);",
+                    "--first:var(--second);--second:var(--first);font:var(--first,16px Arial);",
+                    "--family:var(--missing,Arial);font-family:var(--family);",
+                    "--weight:bold;font:var(--weight) var(--external-size) Arial;",
+                    "--family:Arial;--family:16px;font-family:var(--family);",
+                    "--weight:bold;--weight:bold;font:var(--weight) 16px Arial;",
+                    "--family:Arial;font-family:env(missing,var(--family));")) {
+                var result = compile(css + "&.unused{color:red;}", fonts);
+                assertTrue(
+                        result.output().css().contains("Arial"), result.output().css());
+            }
+        }
+    }
+
+    @Test
+    public void fontKeywordsAndMultiwordNamesAreNotMistakenForManagedFamilies() {
+        var fonts = Map.of(
+                "bold",
+                new CssFonts.Import("shared.Fonts", "bold", true),
+                "heading",
+                new CssFonts.Import("shared.Fonts", "heading", true));
+        for (var css : List.of(
+                "--weight:bold;font:var(--weight) 16px Arial;",
+                "font:bold var(--size) Arial;",
+                "font:var(--prefix) 16px My Heading;",
+                "--family:My Heading;font:var(--external-size) var(--family);")) {
+            compile(css + "&.unused{color:red;}", fonts);
+        }
+    }
+
+    @Test
     public void malformedAndMisplacedFontDefinitionsFailAtTheirSource() {
         for (var css : List.of(
                 "@font-face{src:url(asset:media.font);}",

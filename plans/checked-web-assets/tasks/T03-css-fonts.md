@@ -26,3 +26,8 @@ Processor formatted/unformatted and cross-library tests; parsed-model URL/font u
 - Both web_bundle fixtures built with stylesheet-relative finalized URLs. Full browser/package requests and root coverage remain assigned to T04/T05.
 - Standards check during packaging corrected family matching to Unicode Default Caseless Matching (full C/F mappings) with no normalization or quoted-whitespace folding. Pinned Unicode data is packaged into both processor artifacts; Unicode, escape and whitespace tests pass in shaded and implementation suites.
 - A regression test reproduced a false compressed-font collision between ASCII i and Turkish dotless ı; raw-name collision checks now use the same full case folding as family resolution. Stable family names remain scoped, like owned animations.
+
+## Implementation review corrections
+
+- Round 1 reproduced scoped custom-property overwrites hiding managed families and valid font-weight fragments being parsed as complete shorthands. Regressions failed before fixes. Validation now checks every distinct scoped definition in the complete declaration without changing emitted variable expressions, including transitive references, cycles, fallbacks and unresolved fragments. Tests distinguish keyword prefixes and multiword family names. The global font guide now agrees with supported outer-level faces.
+- Durable clarification belongs to [CSS bindings](../../../docs/specs/css-bindings.md) R12: all scopes contribute checked candidates, and ordinary non-family font variables remain supported. This is observable existing-contract behavior and passes the replacement test; expansion details remain implementation evidence only.

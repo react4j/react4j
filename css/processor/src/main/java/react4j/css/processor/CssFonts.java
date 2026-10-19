@@ -5,6 +5,8 @@ import com.helger.css.decl.CSSExpression;
 import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CascadingStyleSheet;
+import com.helger.css.decl.ECSSExpressionOperator;
+import com.helger.css.decl.ICSSExpressionMember;
 import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.parser.CSSParseHelper;
@@ -12,11 +14,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import react4j.css.internal.CssExpressions;
+import java.util.function.Consumer;
 import react4j.css.internal.CssFontValues;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
@@ -57,12 +59,15 @@ final class CssFonts {
         }
         var managed = new HashSet<>(names.keySet());
         managed.addAll(imports.keySet());
-        var variables = new LinkedHashMap<String, CSSExpression>();
+        var variables = new LinkedHashMap<String, List<CSSExpression>>();
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
             @Override
             public void onDeclaration(CSSDeclaration declaration) {
                 if (declaration.getProperty().startsWith("--")) {
-                    variables.put(declaration.getProperty(), declaration.getExpression());
+                    var definitions = variables.computeIfAbsent(declaration.getProperty(), name -> new ArrayList<>());
+                    if (!definitions.contains(declaration.getExpression())) {
+                        definitions.add(declaration.getExpression());
+                    }
                 }
             }
         });
@@ -72,12 +77,6 @@ final class CssFonts {
                 try {
                     var value = CssFontValues.read(declaration);
                     if (value.dynamic()) {
-                        checkVariables(
-                                declaration.getExpression(),
-                                declaration.getProperty(),
-                                managed,
-                                variables,
-                                new HashSet<>());
                         imports.keySet()
                                 .forEach(name -> names.putIfAbsent(name, root + "--font-" + Names.encode(name)));
                     }
@@ -94,19 +93,8 @@ final class CssFonts {
                             family.replace(resolved);
                         }
                     }
-                    if (value.dynamic()
-                            && "font".equalsIgnoreCase(CSSParseHelper.unescapeURL(declaration.getProperty()))) {
-                        CssExpressions.visit(declaration.getExpression(), member -> {
-                            if (member instanceof CSSExpressionMemberTermSimple term
-                                    && managed.contains(CssFontValues.canonical(CSSParseHelper.unescapeURL(
-                                            term.isStringLiteral()
-                                                    ? Objects.requireNonNull(
-                                                            CSSParseHelper.extractStringValue(term.getValue()))
-                                                    : term.getValue())))) {
-                                throw new IllegalArgumentException(
-                                        "Dynamic font shorthand with a managed family requires font-family longhand");
-                            }
-                        });
+                    if (value.dynamic() && !managed.isEmpty()) {
+                        checkVariables(declaration, managed, variables);
                     }
                 } catch (IllegalArgumentException e) {
                     throw syntax.invalid(String.valueOf(e.getMessage()), declaration);
@@ -117,30 +105,98 @@ final class CssFonts {
     }
 
     private static void checkVariables(
-            CSSExpression expression,
-            String property,
-            Set<String> managed,
-            Map<String, CSSExpression> variables,
-            Set<String> visiting) {
-        CssExpressions.visit(expression, member -> {
-            if (member instanceof CSSExpressionMemberFunction function
-                    && "var".equalsIgnoreCase(function.getFunctionName())) {
-                var arguments = function.getExpression();
-                if (null != arguments
-                        && arguments.getMemberAtIndex(0) instanceof CSSExpressionMemberTermSimple first
-                        && visiting.add(first.getValue())) {
-                    var definition = variables.get(first.getValue());
-                    if (null != definition) {
-                        var value = CssFontValues.read(new CSSDeclaration(property, definition));
-                        if (value.families().stream().anyMatch(family -> managed.contains(family.name()))) {
-                            throw new IllegalArgumentException(
-                                    "Managed font families in custom-property values require a font-family fallback"
-                                            + " instead");
-                        }
-                        checkVariables(definition, property, managed, variables, visiting);
+            CSSDeclaration declaration, Set<String> managed, Map<String, List<CSSExpression>> variables) {
+        expand(declaration.getExpression().getAllMembers(), List.of(), variables, Set.of(), expression -> {
+            CssFontValues.Value value;
+            try {
+                value = CssFontValues.read(new CSSDeclaration(declaration.getProperty(), expression));
+            } catch (IllegalArgumentException e) {
+                // Definitions from unrelated scopes can form invalid computed values. They do not select a font.
+                return;
+            }
+            var families = value.families();
+            if (value.dynamic() && "font".equalsIgnoreCase(CSSParseHelper.unescapeURL(declaration.getProperty()))) {
+                var members = expression.getAllMembers();
+                for (int first = 1; first < members.size(); first++) {
+                    var suffix = new CSSExpression();
+                    members.subList(first, members.size()).forEach(suffix::addMember);
+                    try {
+                        // The longest valid family suffix excludes weight/size/line-height fragments.
+                        families = CssFontValues.read(new CSSDeclaration("font-family", suffix))
+                                .families();
+                        break;
+                    } catch (IllegalArgumentException e) {
+                        // This suffix still includes shorthand grammar before the family list.
                     }
                 }
             }
+            if (families.stream().anyMatch(family -> managed.contains(family.name()))) {
+                throw new IllegalArgumentException(
+                        "Managed font families in custom-property values require a font-family fallback instead");
+            }
         });
+    }
+
+    // Substitute into the complete declaration: a variable can supply a weight, size, line-height or family.
+    // Keep every scoped definition and break dependency cycles without mutating the emitted syntax tree.
+    private static void expand(
+            List<ICSSExpressionMember> remaining,
+            List<ICSSExpressionMember> prefix,
+            Map<String, List<CSSExpression>> variables,
+            Set<String> visiting,
+            Consumer<CSSExpression> consumer) {
+        if (remaining.isEmpty()) {
+            var expression = new CSSExpression();
+            prefix.forEach(expression::addMember);
+            consumer.accept(expression);
+            return;
+        }
+        var member = remaining.get(0);
+        var tail = remaining.subList(1, remaining.size());
+        Consumer<List<ICSSExpressionMember>> append = replacement -> {
+            var combined = new ArrayList<>(prefix);
+            combined.addAll(replacement);
+            expand(tail, combined, variables, visiting, consumer);
+        };
+        if (member instanceof CSSExpressionMemberFunction function && null != function.getExpression()) {
+            var arguments = function.getExpression().getAllMembers();
+            if ("var".equalsIgnoreCase(CSSParseHelper.unescapeURL(function.getFunctionName()))
+                    && !arguments.isEmpty()
+                    && arguments.get(0) instanceof CSSExpressionMemberTermSimple first
+                    && !visiting.contains(first.getValue())) {
+                var path = new HashSet<>(visiting);
+                path.add(first.getValue());
+                var definitions = variables.getOrDefault(first.getValue(), List.of());
+                for (var definition : definitions) {
+                    expand(
+                            definition.getAllMembers(),
+                            List.of(),
+                            variables,
+                            path,
+                            expression -> append.accept(expression.getAllMembers()));
+                }
+                int comma = arguments.indexOf(ECSSExpressionOperator.COMMA);
+                if (comma >= 0) {
+                    expand(
+                            arguments.subList(comma + 1, arguments.size()),
+                            List.of(),
+                            variables,
+                            path,
+                            expression -> append.accept(expression.getAllMembers()));
+                }
+                if (!definitions.isEmpty() || comma >= 0) {
+                    return;
+                }
+            }
+            expand(
+                    arguments,
+                    List.of(),
+                    variables,
+                    visiting,
+                    expression -> append.accept(
+                            List.of(new CSSExpressionMemberFunction(function.getFunctionName(), expression))));
+        } else {
+            append.accept(List.of(member));
+        }
     }
 }

@@ -121,6 +121,51 @@ public final class CssAssetFontProcessorTest {
     }
 
     @Test
+    public void scopedVariableDefinitionsCannotSilentlyBypassOwnedFontValidation() throws Exception {
+        String face = "@font-face{font-family:Heading;src:url(https://example.com/heading.woff2);}";
+        for (var kind : List.of("Css", "GlobalCss")) {
+            String selector = "Css".equals(kind) ? "&:hover" : "a";
+            String use = selector + "{--family:Heading;font-family:var(--family)}";
+            String other = selector + "{--family:serif}";
+            for (var css : List.of(
+                    use + other,
+                    other + use,
+                    use + "@media screen{" + other + "}",
+                    selector + "{--family:Heading;--alias:var(--family);font-family:var(--alias)}" + other,
+                    selector + "{--family:Heading;font:var(--external-size) var(--family)}",
+                    selector + "{--font:16px Heading;font:var(--font)}",
+                    selector + "{--family:var(--unknown,Heading);font-family:var(--family)}")) {
+                var result = CssProcessorTest.compile(Map.of("Button.java", consumer(kind, "", face + css)));
+                assertFalse(result.success(), css);
+                assertTrue(result.diagnostics().contains("font-family fallback"), result.diagnostics());
+                assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
+                assertFalse(result.files().containsKey("classes/demo/Button.css"));
+            }
+        }
+    }
+
+    @Test
+    public void ordinaryFontVariableFragmentsRemainValidWithOwnedFonts() throws Exception {
+        for (var kind : List.of("Css", "GlobalCss")) {
+            String selector = "Css".equals(kind) ? "&" : "body";
+            for (var declarations : List.of(
+                    "--weight:bold;font:var(--weight) 16px Arial;",
+                    "--size:16px;font:var(--size) Arial;",
+                    "--height:1.2;font:16px/var(--height) Arial;",
+                    "--weight:bold;--size:16px;--height:1.2;font:var(--weight) var(--size)/var(--height) Arial;",
+                    "--family:Arial;--font:16px var(--family);font:var(--font);")) {
+                String css = "@font-face{font-family:Heading;src:url(https://example.com/heading.woff2);}" + selector
+                        + "{font-family:Heading;" + declarations + "}";
+                var result = CssProcessorTest.compile(Map.of("Button.java", consumer(kind, "", css)));
+                assertTrue(result.success(), result.diagnostics());
+                String output = text(result, "classes/demo/Button.css");
+                assertTrue(output.contains("jcss-demo-Button--font-heading"), output);
+                assertTrue(output.contains("Arial"), output);
+            }
+        }
+    }
+
+    @Test
     public void assetSelectionAliasAndReferenceMistakesFailBeforeGeneration() throws Exception {
         var cases = Map.of(
                 "@CssImport(value=Media.class)", "Invalid imported CSS name",
