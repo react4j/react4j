@@ -59,6 +59,7 @@ _collect = aspect(implementation = _collect_impl, attr_aspects = ["deps", "expor
 
 def _configuration_impl(ctx):
     trees = depset(transitive = [dep[_CssInfo].trees for dep in ctx.attr.deps])
+    manifests = depset(transitive = [dep[_CssInfo].asset_manifests for dep in ctx.attr.deps])
     args = ctx.actions.args()
     args.use_param_file("@%s", use_always = True)
     args.set_param_file_format("multiline")
@@ -67,9 +68,10 @@ def _configuration_impl(ctx):
     args.add("--mode", "optimized" if ctx.attr.compilation_level == "ADVANCED" else "retain")
     args.add_all(trees, before_each = "--input", expand_directories = False)
     args.add_all(ctx.attr.defs, before_each = "--define")
+    args.add_all(manifests, before_each = "--asset-catalogue")
     ctx.actions.run(
         executable = ctx.executable._catalogue,
-        inputs = trees,
+        inputs = depset(transitive = [trees, manifests]),
         outputs = [ctx.outputs.json],
         arguments = [args],
         mnemonic = "CssCatalogue",
@@ -150,5 +152,46 @@ css_bundle = rule(
         "shared": attr.label_list(allow_files = [".css"]),
         "source_map": attr.output(mandatory = True),
         "_bundler": attr.label(default = Label("//css/bundler"), executable = True, cfg = "exec"),
+    },
+)
+
+WebBundleInfo = provider("Finalized JavaScript, maps and retained assets with a build inventory.", fields = ["directory", "manifest", "javascript", "source_map"])
+
+def _web_bundle_impl(ctx):
+    binary = ctx.attr.root[ClosureJsBinaryInfo]
+    if not binary.compiler_config or not binary.compiler_report:
+        fail("web_bundle requires a css_js_binary root")
+    resources = ctx.attr.root[_CssInfo]
+    directory = ctx.actions.declare_directory(ctx.label.name)
+    args = ctx.actions.args()
+    args.use_param_file("@%s", use_always = True)
+    args.set_param_file_format("multiline")
+    args.add("--directory", directory.path)
+    args.add("--manifest", ctx.outputs.manifest)
+    args.add("--output-js", ctx.outputs.javascript)
+    args.add("--output-map", ctx.outputs.source_map)
+    args.add("--javascript", binary.bin)
+    args.add("--map", binary.map)
+    args.add("--link-config", binary.compiler_config)
+    args.add("--liveness", binary.compiler_report)
+    label = binary.bin.owner
+    args.add("--link", label.repo_name + "//" + label.package + ":" + label.name)
+    args.add_all(resources.trees, before_each = "--input", expand_directories = False)
+    args.add_all(resources.asset_manifests, before_each = "--asset-catalogue")
+    ctx.actions.run(
+        executable = ctx.executable._tool,
+        inputs = depset([binary.bin, binary.map, binary.compiler_config, binary.compiler_report], transitive = [resources.trees, resources.asset_manifests, resources.asset_files]),
+        outputs = [directory, ctx.outputs.manifest, ctx.outputs.javascript, ctx.outputs.source_map],
+        arguments = [args],
+        mnemonic = "WebBundle",
+    )
+    return [DefaultInfo(files = depset([directory])), WebBundleInfo(directory = directory, manifest = ctx.outputs.manifest, javascript = ctx.outputs.javascript, source_map = ctx.outputs.source_map), OutputGroupInfo(manifest = depset([ctx.outputs.manifest]), javascript = depset([ctx.outputs.javascript]), source_map = depset([ctx.outputs.source_map]))]
+
+web_bundle = rule(
+    implementation = _web_bundle_impl,
+    outputs = {"javascript": "%{name}.js", "manifest": "%{name}.manifest.json", "source_map": "%{name}.js.map"},
+    attrs = {
+        "root": attr.label(mandatory = True, providers = [ClosureJsBinaryInfo], aspects = [_collect]),
+        "_tool": attr.label(default = Label("//css/bundler/src/main/java/react4j/css/bundler:assets_tool"), executable = True, cfg = "exec"),
     },
 )

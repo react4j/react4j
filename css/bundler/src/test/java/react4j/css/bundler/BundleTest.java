@@ -116,7 +116,7 @@ public final class BundleTest {
                 css,
                 JsonParser.parseString(new SourceMap.Writer().append(css).map("Button.css"))
                         .getAsJsonObject());
-        var catalogue = new CssCatalogue(Map.of("Button", resource), "1".repeat(64));
+        var catalogue = new CssCatalogue(Map.of("Button", resource), "1".repeat(64), Map.of());
         var link = CssLink.create(catalogue, "//:app", true);
         String original = link.json();
         Path shared = dir().resolve("shared.css");

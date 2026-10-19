@@ -36,7 +36,8 @@ public final class CssNamesTest {
                                                 .append(css)
                                                 .map("Button.css"))
                                         .getAsJsonObject())),
-                "1".repeat(64));
+                "1".repeat(64),
+                Map.of());
     }
 
     private static SymbolId id(String name) {
@@ -164,7 +165,8 @@ public final class CssNamesTest {
                             ".app-a{color:red;}",
                             JsonParser.parseString("{}").getAsJsonObject()));
         }
-        var table = CssNames.create(new CssCatalogue(entries, "1".repeat(64)), new CssNames.Policy(true, "app-"));
+        var table =
+                CssNames.create(new CssCatalogue(entries, "1".repeat(64), Map.of()), new CssNames.Policy(true, "app-"));
         assertEquals(
                 table.entries().stream().map(entry -> entry.symbol().kind()).collect(Collectors.toSet()),
                 Set.of(SymbolKind.values()));
@@ -196,7 +198,8 @@ public final class CssNamesTest {
                                                 bad,
                                                 "x",
                                                 JsonParser.parseString("{}").getAsJsonObject())),
-                                "1".repeat(64)),
+                                "1".repeat(64),
+                                Map.of()),
                         table.policy()));
     }
 
@@ -224,7 +227,8 @@ public final class CssNamesTest {
         expectThrows(IllegalArgumentException.class, () -> new CssNames.Entry(id(""), "", "a", false, List.of()));
         expectThrows(IllegalArgumentException.class, () -> new CssNames.Entry(id(""), "root", "", false, List.of()));
         expectThrows(
-                IllegalArgumentException.class, () -> new CssLink("//:app", "1".repeat(64), false, List.of(), table));
+                IllegalArgumentException.class,
+                () -> new CssLink("//:app", "1".repeat(64), false, List.of(), table, List.of()));
     }
 
     @Test

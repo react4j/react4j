@@ -12,6 +12,7 @@ java_library(
         "CssResource.java",
         "CssSyntax.java",
         "CssTokens.java",
+        "MappedText.java",
         "SourceMap.java",
         "package-info.java",
     ],

@@ -131,7 +131,7 @@ public final class SourceMap {
         }
     }
 
-    private static List<Integer> decode(String encoded) {
+    static List<Integer> decode(String encoded) {
         var result = new ArrayList<Integer>();
         int value = 0;
         int shift = 0;
@@ -255,7 +255,7 @@ public final class SourceMap {
         return "\n/*# sourceMappingURL=" + file + ".map */\n";
     }
 
-    private static void vlq(StringBuilder result, int value) {
+    static void vlq(StringBuilder result, int value) {
         long remaining = value < 0 ? (-(long) value << 1) | 1 : (long) value << 1;
         do {
             var digit = (int) (remaining & 31);

@@ -47,7 +47,8 @@ public final class StyleCompilerTest {
                 "1".repeat(64),
                 optimized,
                 values,
-                new CssNames(new CssNames.Policy(false, ""), List.copyOf(entries.values())));
+                new CssNames(new CssNames.Policy(false, ""), List.copyOf(entries.values())),
+                List.of());
     }
 
     private static CssLink link(boolean optimized) {
@@ -421,7 +422,7 @@ public final class StyleCompilerTest {
                     List.of(
                             new CssNames.Entry(root, "shared", "a", false, List.of("demo.Button#style")),
                             new CssNames.Entry(id, "shared", "shared", true, List.of("demo.Button#id"))));
-            var link = new CssLink("//:app", "1".repeat(64), true, values, table);
+            var link = new CssLink("//:app", "1".repeat(64), true, values, table, List.of());
             for (var method : List.of("style", "id")) {
                 compile(
                         new StyleCompiler(link, directory.resolve("live.json")),
@@ -566,7 +567,12 @@ public final class StyleCompilerTest {
             Files.writeString(source, "window.result='ok';");
             Files.writeString(extern, "var window;");
             var link = new CssLink(
-                    "//:app", "1".repeat(64), true, List.of(), new CssNames(new CssNames.Policy(true, ""), List.of()));
+                    "//:app",
+                    "1".repeat(64),
+                    true,
+                    List.of(),
+                    new CssNames(new CssNames.Policy(true, ""), List.of()),
+                    List.of());
             for (var define : List.of(
                     "react4j.css.compress_names='false'",
                     "react4j.css.name_prefix=true",

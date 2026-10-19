@@ -25,3 +25,26 @@ java_binary(
     visibility = ["//css/bundler:__pkg__"],
     runtime_deps = [":bundler"],
 )
+
+java_library(
+    name = "assets",
+    srcs = [
+        "AssetBundle.java",
+        "AssetJavaScript.java",
+        "package-info.java",
+    ],
+    visibility = ["//css:__subpackages__"],
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/linker/src/main/java/react4j/css/linker",
+        "@maven//:com_google_code_gson_gson",
+        "@rules_closure//closure/compiler",
+    ],
+)
+
+java_binary(
+    name = "assets_tool",
+    main_class = "react4j.css.bundler.AssetBundle",
+    visibility = ["//css:__pkg__"],
+    runtime_deps = [":assets"],
+)

@@ -3,6 +3,7 @@ load("//third_party/java:rules.bzl", "java_testng")
 java_testng(
     name = "tests",
     srcs = [
+        "AssetLinkTest.java",
         "AssetResourceTest.java",
         "CssLinkTest.java",
         "CssNamesTest.java",
@@ -10,9 +11,11 @@ java_testng(
         "CssResourceTest.java",
         "CssSyntaxTest.java",
         "CssTokensTest.java",
+        "MappedTextTest.java",
         "SourceMapTest.java",
     ],
     test_classes = [
+        "react4j.css.internal.AssetLinkTest",
         "react4j.css.internal.AssetResourceTest",
         "react4j.css.internal.CssLinkTest",
         "react4j.css.internal.CssNamesTest",
@@ -21,6 +24,7 @@ java_testng(
         "react4j.css.internal.SourceMapTest",
         "react4j.css.internal.CssSyntaxTest",
         "react4j.css.internal.CssTokensTest",
+        "react4j.css.internal.MappedTextTest",
     ],
     visibility = [
         "//:__pkg__",

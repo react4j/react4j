@@ -1,7 +1,10 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
-load("//css:defs.bzl", "css_bundle", "css_js_binary")
+load("//css:defs.bzl", "css_bundle", "css_js_binary", "web_bundle")
 
-package(default_visibility = ["//css/integration-tests/src/test/java/react4j/css/integration:__pkg__"])
+package(default_visibility = [
+    "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
+    "//css/integration-tests/src/test/java/react4j/css/integration:__pkg__",
+])
 
 closure_js_library(
     name = "entry",
@@ -57,4 +60,39 @@ css_bundle(
     globals = ["react4j.css.integration.LivenessEntry$NestingDefaults"],
     root = ":development",
     source_map = "development.css.map",
+)
+
+closure_js_library(
+    name = "asset_entry",
+    testonly = True,
+    srcs = ["asset_entry.js"],
+    deps = ["//css/integration-tests/src/test/java/react4j/css/integration:asset_bindings"],
+)
+
+css_js_binary(
+    name = "asset_optimized",
+    testonly = True,
+    compilation_level = "ADVANCED",
+    entry_points = ["react4j.css.integration.AssetLink"],
+    deps = [":asset_entry"],
+)
+
+css_js_binary(
+    name = "asset_development",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    entry_points = ["react4j.css.integration.AssetLink"],
+    deps = [":asset_entry"],
+)
+
+web_bundle(
+    name = "asset_optimized_web",
+    testonly = True,
+    root = ":asset_optimized",
+)
+
+web_bundle(
+    name = "asset_development_web",
+    testonly = True,
+    root = ":asset_development",
 )

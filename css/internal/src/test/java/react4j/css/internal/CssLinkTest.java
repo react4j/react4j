@@ -38,7 +38,8 @@ public final class CssLinkTest {
                                                 List.of()),
                                         "",
                                         JsonParser.parseString("{}").getAsJsonObject())),
-                        "1".repeat(64)),
+                        "1".repeat(64),
+                        Map.of()),
                 "//demo:app",
                 optimized);
     }
@@ -67,7 +68,7 @@ public final class CssLinkTest {
                 "null",
                 "[]",
                 "{}",
-                config.replace("\"version\":3", "\"version\":2"),
+                config.replace("\"version\":4", "\"version\":2"),
                 config.replace("\"optimized\":true", "\"optimized\":\"true\""),
                 config.replace("\"kind\":\"CLASS\"", "\"kind\":\"UNKNOWN\""),
                 config.replace("\"method\":\"style\"", "\"method\":null"),
@@ -80,7 +81,7 @@ public final class CssLinkTest {
                 "null",
                 "[]",
                 "{}",
-                report.replace("\"version\":3", "\"version\":2"),
+                report.replace("\"version\":4", "\"version\":2"),
                 report.replace("//demo:app", "//demo:other"),
                 report.replace("1".repeat(64), "2".repeat(64)),
                 report.replace("\"optimized\":true", "\"optimized\":false"),
@@ -107,8 +108,11 @@ public final class CssLinkTest {
             expectThrows(IllegalArgumentException.class, () -> CssLink.read(json.toString()));
         }
         expectThrows(
-                IllegalArgumentException.class, () -> new CssLink("", "1".repeat(64), true, List.of(), link.names()));
-        expectThrows(IllegalArgumentException.class, () -> new CssLink("app", "bad", true, List.of(), link.names()));
+                IllegalArgumentException.class,
+                () -> new CssLink("", "1".repeat(64), true, List.of(), link.names(), List.of()));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> new CssLink("app", "bad", true, List.of(), link.names(), List.of()));
         expectThrows(
                 IllegalArgumentException.class,
                 () -> new CssLink(
@@ -116,7 +120,8 @@ public final class CssLinkTest {
                         "1".repeat(64),
                         true,
                         List.of(link.values().get(0), link.values().get(0)),
-                        link.names()));
+                        link.names(),
+                        List.of()));
     }
 
     @Test

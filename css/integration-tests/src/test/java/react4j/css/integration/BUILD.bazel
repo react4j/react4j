@@ -218,10 +218,14 @@ java_j2cl_library(
         "package-info.java",
     ],
     assets = ["//css/integration-tests/src/test/assets/react4j/css/integration:media"],
-    java_deps = ["//css/core"],
+    java_deps = [
+        "//css/core",
+        "//third_party/java:jsinterop_annotations",
+    ],
     plugins = ["//css/processor:plugin"],
     deps = [
         "//css/core:core-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jspecify-j2cl",
     ],
 )
@@ -251,4 +255,11 @@ css_bundle(
     css = "asset.css",
     root = ":asset_bindings",
     source_map = "asset.css.map",
+)
+
+filegroup(
+    name = "asset_test_tree",
+    testonly = True,
+    srcs = [":asset_bindings.js"],
+    visibility = ["//css/bundler/src/test/java/react4j/css/bundler:__pkg__"],
 )

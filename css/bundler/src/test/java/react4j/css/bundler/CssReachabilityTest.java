@@ -152,7 +152,7 @@ public final class CssReachabilityTest {
                     occurrences);
             entries.put(metadata.owner(), new Resource(updated, resource.css(), resource.map()));
         }
-        return new CssCatalogue(entries, "1".repeat(64));
+        return new CssCatalogue(entries, "1".repeat(64), Map.of());
     }
 
     private static String bundle(CssCatalogue catalogue, Set<String> live, String... globals) throws Exception {

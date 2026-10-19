@@ -3,6 +3,7 @@ exports_files(["defs.bzl"])
 test_suite(
     name = "tests",
     tests = [
+        "//css/bundler/src/test/java/react4j/css/bundler:asset_tests",
         "//css/bundler/src/test/java/react4j/css/bundler:tests",
         "//css/integration-tests/src/test/java/react4j/css/integration:asset_tests",
         "//css/integration-tests/src/test/java/react4j/css/integration:integration_tests",

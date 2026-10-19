@@ -3,6 +3,7 @@ package react4j.css.linker;
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.debugging.sourcemap.SourceMapParseException;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.SourceMapInput;
@@ -12,8 +13,8 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 /** Loads a binding's actual companion map and fills missing Java content from its declared tree. */
-record BindingSourceMap(SourceMapConsumerV3 mapping, SourceMapInput input) {
-    static BindingSourceMap read(Path source, Path tree) {
+public record BindingSourceMap(SourceMapConsumerV3 mapping, SourceMapInput input, JsonObject document) {
+    public static BindingSourceMap read(Path source, Path tree) {
         // Preserve the input path form so Closure and Bazel apply the same source-location mappings.
         var path = source.resolveSibling(source.getFileName().toString().replace(".impl.java.js", ".js.map"));
         try {
@@ -57,7 +58,8 @@ record BindingSourceMap(SourceMapConsumerV3 mapping, SourceMapInput input) {
             String enriched = json.toString();
             var mapping = new SourceMapConsumerV3();
             mapping.parse(enriched);
-            return new BindingSourceMap(mapping, new SourceMapInput(SourceFile.fromCode(path.toString(), enriched)));
+            return new BindingSourceMap(
+                    mapping, new SourceMapInput(SourceFile.fromCode(path.toString(), enriched)), json);
         } catch (IOException | SourceMapParseException | RuntimeException e) {
             throw new IllegalArgumentException("Invalid generated CSS binding source map: " + source, e);
         }

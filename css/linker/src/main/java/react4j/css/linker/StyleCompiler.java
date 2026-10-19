@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 import react4j.css.internal.CssLink;
 import react4j.css.internal.CssNames;
@@ -30,8 +31,11 @@ import react4j.css.internal.CssNames;
 final class StyleCompiler extends Compiler {
     private final CssLink link;
     private final Path report;
-    private final Map<String, CssLink.Value> symbols = new LinkedHashMap<>();
-    private final Map<String, String> compiledValues = new HashMap<>();
+
+    private record Binding(
+            String id, String source, String implementation, String method, String value, String compiled) {}
+
+    private final Map<String, Binding> symbols = new LinkedHashMap<>();
     private final Map<String, Map<String, String>> sources = new HashMap<>();
     private final Map<String, String> inputSources = new HashMap<>();
     private final Map<String, SourceMapConsumerV3> inputMaps = new HashMap<>();
@@ -46,16 +50,32 @@ final class StyleCompiler extends Compiler {
         var compiled = link.names().entries().stream()
                 .collect(Collectors.toMap(CssNames.Entry::symbol, CssNames.Entry::compiled));
         for (var value : link.values()) {
-            var returns = sources.computeIfAbsent(value.source(), ignored -> new HashMap<>());
-            String symbol = "$react4j$css$" + link.digest() + "$" + symbols.size();
-            returns.put(value.implementation() + "." + value.binding().method(), symbol);
-            symbols.put(symbol, value);
-            compiledValues.put(
-                    symbol,
+            bind(new Binding(
+                    value.id(),
+                    value.source(),
+                    value.implementation(),
+                    value.binding().method(),
+                    value.binding().value(),
                     value.binding().symbols().stream()
                             .map(id -> Objects.requireNonNull(compiled.get(id), id.id()))
-                            .collect(Collectors.joining(" ")));
+                            .collect(Collectors.joining(" "))));
         }
+        for (var value : link.assets()) {
+            bind(new Binding(
+                    value.id(),
+                    value.source(),
+                    value.implementation(),
+                    value.binding().method(),
+                    value.binding().value(),
+                    value.token()));
+        }
+    }
+
+    private void bind(Binding value) {
+        var returns = sources.computeIfAbsent(value.source(), ignored -> new HashMap<>());
+        String symbol = "$react4j$css$" + link.digest() + "$" + symbols.size();
+        returns.put(value.implementation() + "." + value.method(), symbol);
+        symbols.put(symbol, value);
     }
 
     @Override
@@ -77,7 +97,10 @@ final class StyleCompiler extends Compiler {
             throw new IllegalArgumentException("CSS name policy differs from Closure defines");
         }
         options.addUnknownDefinesToIgnore(ImmutableList.of(CssNames.COMPRESS, CssNames.PREFIX));
-        var bindingSources = link.values().stream().map(CssLink.Value::source).collect(Collectors.toSet());
+        var bindingSources = Stream.concat(
+                        link.values().stream().map(CssLink.Value::source),
+                        link.assets().stream().map(CssLink.Asset::source))
+                .collect(Collectors.toSet());
         var enrichedMaps = new HashMap<String, SourceMapInput>();
         var found = new HashSet<String>();
         for (var chunk : chunks) {
@@ -148,7 +171,6 @@ final class StyleCompiler extends Compiler {
                             && literal.isStringLit()
                             && literal.getString()
                                     .equals(Objects.requireNonNull(symbols.get(symbol))
-                                            .binding()
                                             .value())) {
                         seen.add(symbol);
                         literal.replaceWith(IR.name(symbol).srcref(literal));
@@ -182,8 +204,7 @@ final class StyleCompiler extends Compiler {
                         var value = symbols.get(node.getString());
                         if (null != value) {
                             live.add(value.id());
-                            node.replaceWith(IR.string(Objects.requireNonNull(compiledValues.get(node.getString())))
-                                    .srcref(node));
+                            node.replaceWith(IR.string(value.compiled()).srcref(node));
                             reportChangeToEnclosingScope(parent);
                         }
                     }

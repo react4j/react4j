@@ -16,7 +16,7 @@ public final class AssetIntegrationTest {
         var tree = Path.of(Objects.requireNonNull(System.getProperty("assets.tree")));
         var manifest = Path.of(Objects.requireNonNull(System.getProperty("assets.catalogue")));
         var definitions = AssetResource.readTrees(List.of(tree));
-        assertEquals(definitions.size(), 1);
+        assertEquals(definitions.size(), 2);
         var media = Objects.requireNonNull(definitions.get("react4j.css.integration.AssetFixtures$Media"));
         assertEquals(media.implementation(), "react4j.css.integration.AssetFixtures_Assets_Media");
         var catalogue = AssetResource.catalogue(List.of(manifest));

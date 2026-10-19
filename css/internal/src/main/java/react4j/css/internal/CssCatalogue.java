@@ -16,11 +16,17 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /** The deterministic collection shared by one JavaScript link and its CSS variants. */
-public record CssCatalogue(Map<String, Resource> resources, String digest) {
+public record CssCatalogue(Map<String, Resource> resources, String digest, Map<String, AssetResource> assets) {
     public record Resource(CssResource metadata, String css, JsonObject map) {}
 
     public CssCatalogue {
         resources = Collections.unmodifiableMap(new TreeMap<>(resources));
+        assets = Collections.unmodifiableMap(new TreeMap<>(assets));
+        for (var entry : assets.entrySet()) {
+            if (!entry.getKey().equals(entry.getValue().owner()) || resources.containsKey(entry.getKey())) {
+                throw new IllegalArgumentException("Conflicting CSS and asset definition: " + entry.getKey());
+            }
+        }
     }
 
     public static CssCatalogue read(List<Path> trees) throws IOException {
@@ -29,7 +35,10 @@ public record CssCatalogue(Map<String, Resource> resources, String digest) {
             try (var paths = Files.walk(tree)) {
                 for (var path : paths.filter(Files::isRegularFile).sorted().toList()) {
                     String name = tree.relativize(path).toString().replace('\\', '/');
-                    if (name.endsWith(".css") || name.endsWith(".css.map") || name.endsWith(".css.json")) {
+                    if (name.endsWith(".css")
+                            || name.endsWith(".css.map")
+                            || name.endsWith(".css.json")
+                            || name.endsWith(".assets.json")) {
                         if (null != files.putIfAbsent(name, path)) {
                             throw new IllegalArgumentException("Duplicate CSS resource: " + name);
                         }
@@ -38,12 +47,19 @@ public record CssCatalogue(Map<String, Resource> resources, String digest) {
             }
         }
         var definitions = new TreeMap<String, Resource>();
+        var assets = new TreeMap<String, AssetResource>();
         var hash = sha256();
         for (var entry : files.entrySet()) {
             String name = entry.getKey();
             String content = Files.readString(entry.getValue());
             hash.update(
                     (name.length() + ":" + name + content.length() + ":" + content).getBytes(StandardCharsets.UTF_8));
+            if (name.endsWith(".assets.json")) {
+                String owner = name.substring(0, name.length() - ".assets.json".length())
+                        .replace('/', '.');
+                assets.put(owner, AssetResource.read(content, owner));
+                continue;
+            }
             if (!name.endsWith(".css")) {
                 if (!files.containsKey(name.substring(0, name.lastIndexOf('.')))) {
                     throw new IllegalArgumentException("CSS metadata or source map without CSS: " + name);
@@ -68,7 +84,7 @@ public record CssCatalogue(Map<String, Resource> resources, String digest) {
                             content.substring(0, content.length() - reference.length()),
                             readMap(mapPath, file)));
         }
-        return new CssCatalogue(definitions, HexFormat.of().formatHex(hash.digest()));
+        return new CssCatalogue(definitions, HexFormat.of().formatHex(hash.digest()), assets);
     }
 
     static MessageDigest sha256() {
