@@ -1,11 +1,11 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `implementation-review`
+- Status: `closeout`
 - Current frontier: `none`
 - Planning reviewer: `/root/browser_runtime_planning` (`1/3` rounds; final confirmation `unused`); Findings: none.
 - Plan checkpoint: `automatic`; latest user “Do that” supplies implementation authority, no human checkpoint requested, planning review passed.
-- Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
+- Implementation reviewer: `/root/browser_runtime_review` (`1/5` rounds; final confirmation `unused`); Findings: none.
 
 ## Full-scope validation
 
@@ -38,5 +38,5 @@
 
 ## Workflow gates
 
-- Implementation review: ready for round 1 after this full-gate evidence commit; requires Findings: none.
-- Closeout: pending after review passes. Preserve needed run evidence in history/PR, update PR112, remove this exact temporary tree and push. Do not merge.
+- Implementation review: round 1 passed against 3a4adcb64..8f3ae4fab; Findings: none. Reviewed all requirements, migrated assertions/configuration, nine checked J2CL libraries, independent archive inventory/browser-only coverage and failure tests, preserved publication/dependency checks, documentation and full-gate evidence. Reviewer independently confirmed seven development/coverage suites and six optimized suites pass from cache. No residual risk identified.
+- Closeout: review passed; cleanup and publication pending. Preserve needed run evidence in history/PR, update PR112, remove this exact temporary tree and push. Do not merge.
