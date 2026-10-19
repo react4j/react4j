@@ -18,7 +18,6 @@ java_test(
         "SampleView.java",
     ],
     jvm_flags = [
-        "-Dreact4j.environment=development",
         "-Dbraincheck.environment=development",
     ],
     main_class = "isolated.Consumer",

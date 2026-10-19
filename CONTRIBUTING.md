@@ -10,7 +10,7 @@ Use Bazel 9.3.0 (pinned in `.bazelversion`, typically selected by Bazelisk) and 
 | --- | --- |
 | Complete local/CI gate | `tools/check.sh` |
 | Product archives | `bazel build //tools/release:maven_artifacts` |
-| Core and DOM JVM tests | `bazel test //core:tests //dom:tests` |
+| Core and DOM dependency checks | `bazel test //core:tests //dom:tests` |
 | Processor tests | `bazel test //processor:all_tests` |
 | Distribution and bundle tests | `bazel test //tools/release:tests` |
 | Browser tests, development | `bazel test //:browser_tests` |
@@ -43,7 +43,7 @@ Processor fixtures are in `processor/src/test/fixtures`. The harness checks comp
 
 Public `//:core` and `//:dom` provide J2CL libraries derived from the complete publication source archives; `//:css` supplies CSS annotations. `//:processor` and `//:css_processor` are annotation processor plugins. Other targets default to repository-only visibility, with explicit exceptions for dependencies of public macros. Internal Starlark files restrict loading separately.
 
-The repository's `java_j2cl_library` helper compiles a JVM target under the full Java 17 checker policy before forwarding sources to J2CL. This supports JVM tests and checks declarations stripped by J2CL as `@GwtIncompatible`. Publication source archives also depend on their JVM class outputs to validate the complete sources. These are repository verification requirements; downstream applications use native J2CL with their own checker selection. CSS linking requests J2CL's existing javac outputs as validations so JavaScript-only builds run those checks.
+Browser test libraries use the checked `j2cl_library` in `third_party/java/rules.bzl` to apply the repository's Error Prone/NullAway policy directly through J2CL, without a companion JVM compilation. Paired JVM/J2CL builds remain for repository artifacts with JVM consumers. Publication source archives depend on checked Java 17 class outputs, and bytecode dependency checks inspect those outputs without executing the runtime. Downstream applications use native J2CL with their own checker selection. CSS linking requests J2CL's existing javac outputs as validations so JavaScript-only builds run those checks.
 
 J2CL publication inputs exclude only separately loaded UMD asset directories; Java sources, native configuration and extern bytes are preserved. The [external consumer check](tools/check_bazel_consumer.sh) owns the public-target inventory and verifies allowed and denied dependency/load paths.
 
@@ -55,9 +55,9 @@ Write browser scenarios and assertions in checked Java/J2CL, called by thin Clos
 
 The full gate enforces [coverage.json](tools/verification/coverage.json), including per-class overrides. It writes `reports/coverage/jvm.lcov`, `runtime.lcov` and `summary.txt`.
 
-Core and DOM execute in pinned Chromium with real React and Arez assets, in both runtime configurations. Their coverage bundle preserves every owned J2CL module without optimization or pruning. The complete JVM compilation line inventory supplies the Java denominator; source maps and parsed Java expressions/callables establish browser execution. Ambiguous or unmapped execution remains uncovered. JVM-only `@GwtIncompatible` declarations, including methods in mixed-platform files, contribute their JVM counters to disjoint obligations in the same runtime root. Other configured roots use JVM coverage directly.
+Core and DOM execute in pinned Chromium with real React and Arez assets, in both runtime configurations. Their coverage bundle preserves every owned J2CL module without optimization or pruning. Publication class archives supply the complete Java line and method inventory without loading or executing runtime classes; source maps and parsed Java expressions/callables establish browser execution. Every runtime hit comes from Chromium. Ambiguous or unmapped execution remains uncovered. Other configured roots use JVM coverage directly.
 
-Browser branch obligations cover conditions, ternaries, short circuits, assertions, loop exits and switch arm entries, including fallthrough and unmatched defaults. These source decisions have stable identities independent of JVM branch numbering. Missing modules, source maps, declared sources, counters or JVM-only method evidence fail collection. When investigating a coverage failure, retain the raw reports and verify attribution before changing tests or rules.
+Browser branch obligations cover conditions, ternaries, short circuits, assertions, loop exits and switch arm entries, including fallthrough and unmatched defaults. These source decisions have stable identities independent of JVM branch numbering. Missing modules, source maps, declared sources, method inventories or counters fail collection. When investigating a coverage failure, retain the raw reports and verify attribution before changing tests or rules.
 
 ## Documentation and releases
 

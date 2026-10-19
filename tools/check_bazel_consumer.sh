@@ -103,6 +103,7 @@ package isolated;
 import jsinterop.annotations.JsMethod;
 import org.jspecify.annotations.NullMarked;
 import react4j.Keyed;
+import react4j.React;
 import react4j.dom.DOM;
 
 @NullMarked
@@ -110,10 +111,17 @@ public final class BrowserTest {
     private BrowserTest() {}
 
     @JsMethod
-    public static void verify() {
+    public static void verify(boolean production) {
         Keyed keyed = () -> "consumer-key";
         if (!"consumer-key".equals(Keyed.getKey(keyed)) || null == DOM.div("consumer")) {
             throw new AssertionError("Native J2CL consumer runtime");
+        }
+        if (production != React.shouldMinimizeInputKeys()
+                || production == React.enableViewNames()
+                || production == React.shouldValidateInputValues()
+                || production == React.shouldStoreDebugDataAsState()
+                || production == React.shouldCheckInvariants()) {
+            throw new AssertionError("Native J2CL consumer configuration");
         }
     }
 }
@@ -125,9 +133,10 @@ browser_test(name = "browser", srcs = ["browser_test.js"], deps = ["//src/main/j
 BUILD
 cat > "$workspace/src/test/js/isolated/browser_test.js" <<'JS'
 goog.module('isolated.BrowserTestSuite');
+const Mode = goog.require('react4j.browser.Mode');
 const Test = goog.require('isolated.BrowserTest');
 const testSuite = goog.require('goog.testing.testSuite');
-testSuite({ testNativeConsumer() { Test.verify(); } });
+testSuite({ testNativeConsumer() { Test.verify('production' === Mode.environment); } });
 JS
 cat > "$workspace/src/main/java/isolated/BUILD.bazel" <<'JAVA'
 load("@j2cl//build_defs:rules.bzl", "j2cl_library")

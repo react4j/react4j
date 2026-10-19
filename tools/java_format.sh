@@ -31,6 +31,7 @@ paths=(
   tools/verification/src/main/java
   tools/verification/src/test/java
   tools/release/src/main/java
+  tools/release/consumer/src/main/java
   tools/release/src/test/java
   tools/webtesting/src/main/java
   tools/testing/src/main/java

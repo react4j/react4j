@@ -4,6 +4,48 @@
       "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",
+      "target": "//core/src/test/js/react4j:browser_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//core/src/test/js/react4j:configuration_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//core/src/test/js/react4j:configuration_enabled_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//core/src/test/js/react4j:configuration_disabled_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//core/src/test/js/react4j:configuration_invalid_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//dom/src/test/js/react4j/dom:browser_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
       "target": "//doc-examples/src/test/js/react4j/examples:browser_tests",
       "requirement": "requires-network"
     },

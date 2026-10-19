@@ -26,12 +26,8 @@ public final class RuntimeCoverageExample {
         return null != strict && null != suspense ? 7 : -1;
     }
 
-    public static boolean production() {
-        return ReactConfig.isProductionEnvironment();
-    }
-
     public static void configuration() {
-        if (production()) {
+        if (ReactConfig.isProductionEnvironment()) {
             expectStateFailure(() -> ReactTestUtil.resetConfig(false));
             return;
         }
@@ -213,7 +209,7 @@ public final class RuntimeCoverageExample {
             check(!Objects.requireNonNull(expected.getMessage()).isEmpty(), "failure diagnostic");
             return;
         }
-        throw new IllegalStateException("Expected configuration/context failure");
+        throw new IllegalStateException("Expected configuration failure");
     }
 
     private static void check(boolean condition, String message) {
