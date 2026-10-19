@@ -33,9 +33,9 @@ public final class CssLinkTest {
                                                         List.of(),
                                                         List.of(new CssResource.SymbolId(
                                                                 "demo.Button", CssResource.SymbolKind.CLASS, "")))),
-                                                Map.of(),
                                                 List.of(new CssResource.Symbol(
-                                                        CssResource.SymbolKind.CLASS, "", "root", false))),
+                                                        CssResource.SymbolKind.CLASS, "", "root", false)),
+                                                List.of()),
                                         "",
                                         JsonParser.parseString("{}").getAsJsonObject())),
                         "1".repeat(64)),
@@ -136,8 +136,8 @@ public final class CssLinkTest {
                                     "root",
                                     List.of(),
                                     List.of(new CssResource.SymbolId("Button", CssResource.SymbolKind.CLASS, "")))),
-                            Map.of(),
-                            List.of(new CssResource.Symbol(CssResource.SymbolKind.CLASS, "", "root", false)))
+                            List.of(new CssResource.Symbol(CssResource.SymbolKind.CLASS, "", "root", false)),
+                            List.of())
                     .json();
             Files.writeString(tree.resolve("Button.css"), ".root{color:red;}" + SourceMap.reference("Button.css"));
             Files.writeString(
@@ -150,6 +150,8 @@ public final class CssLinkTest {
             };
             CssLink.main(args);
             var original = CssLink.read(Files.readString(output));
+            CssLink.main(args);
+            assertEquals(Files.readString(output), original.json());
             assertTrue(original.optimized());
             assertEquals(original, CssLink.create(CssCatalogue.read(List.of(tree, tree)), "//:app", true));
             Files.writeString(tree.resolve("Button.css"), ".root{color:blue;}" + SourceMap.reference("Button.css"));

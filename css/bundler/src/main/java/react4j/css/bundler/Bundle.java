@@ -197,8 +197,8 @@ public final class Bundle {
                 .filter(d -> retained.contains(d.metadata().owner())
                         && Kind.GLOBAL != d.metadata().kind())
                 .forEach(ordered::add);
-        if (null != link) {
-            var renamer = new CssRenamer(link.names());
+        var renamer = null == link ? null : new CssRenamer(link.names());
+        if (null != renamer) {
             ordered = new ArrayList<>(ordered.stream().map(renamer::rename).toList());
         }
         var writer = new StringBuilder("@layer shared,components;\n");
@@ -214,6 +214,9 @@ public final class Bundle {
                 }
             } catch (CssSyntax.InvalidCss e) {
                 throw new IllegalArgumentException(path + ": " + e.getMessage(), e);
+            }
+            if (null != renamer) {
+                renamer.checkShared(css, path.toString());
             }
             var mapped = new SourceMap.Writer();
             var lines = css.split("\n", -1);

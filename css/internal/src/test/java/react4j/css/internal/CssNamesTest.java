@@ -6,6 +6,9 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import org.testng.annotations.Test;
 import react4j.css.internal.CssResource.Binding;
 import react4j.css.internal.CssResource.Symbol;
@@ -21,8 +24,8 @@ public final class CssNamesTest {
                 List.of(),
                 bindings.isEmpty() ? "" : "Styled_Button",
                 bindings,
-                Map.of(),
-                symbols);
+                symbols,
+                List.of());
         return new CssCatalogue(
                 Map.of(
                         "Button",
@@ -88,6 +91,18 @@ public final class CssNamesTest {
     }
 
     @Test
+    public void animationCandidatesCannotBecomeCaseInsensitiveGrammarKeywords() {
+        var symbols = new ArrayList<Symbol>();
+        for (int i = 0; i < 5; i++) {
+            symbols.add(new Symbol(SymbolKind.ANIMATION, "animation" + i, "readable-" + i, false));
+        }
+        var table = CssNames.create(catalogue(symbols, List.of(), ""), new CssNames.Policy(true, "NON"));
+        assertEquals(
+                table.entries().stream().map(CssNames.Entry::compiled).toList(),
+                List.of("NONa", "NONb", "NONc", "NONd", "NONf"));
+    }
+
+    @Test
     public void canonicalCompositionsMustExistAndMatchTheJvmValue() {
         var root = new Symbol(SymbolKind.CLASS, "", "root", false);
         var binding = new Binding("style", SymbolKind.CLASS, "changed", List.of(), List.of(id("")));
@@ -109,6 +124,76 @@ public final class CssNamesTest {
         expectThrows(IllegalArgumentException.class, () -> new SymbolId("../Owner", SymbolKind.ID, "node"));
         expectThrows(IllegalArgumentException.class, () -> new SymbolId("Owner", SymbolKind.PROPERTY, ""));
         expectThrows(IllegalArgumentException.class, () -> new SymbolId("Owner", SymbolKind.CLASS, "bad name"));
+    }
+
+    @Test
+    public void everyKindIncludesCssOnlyNamesAndMultipleStableOrigins() {
+        var symbols = List.of(
+                new Symbol(SymbolKind.CLASS, "", "jcss-Local", false),
+                new Symbol(SymbolKind.ID, "control", "shared", false),
+                new Symbol(SymbolKind.PROPERTY, "accent", "--shared", false),
+                new Symbol(SymbolKind.ANIMATION, "pulse", "pulse", false),
+                new Symbol(SymbolKind.PROPERTY, "runtime", "--runtime", false));
+        var local = new CssResource(
+                "Local", CssResource.Kind.COMPONENT, List.of(), List.of(), "", List.of(), symbols, List.of());
+        var entries = new TreeMap<String, CssCatalogue.Resource>();
+        entries.put(
+                "Local",
+                new CssCatalogue.Resource(
+                        local, "", JsonParser.parseString("{}").getAsJsonObject()));
+        for (var owner : List.of("First", "Second")) {
+            var id = new SymbolId(owner, SymbolKind.ID, "shared");
+            var binding = new Binding("id", SymbolKind.ID, "shared", List.of(), List.of(id));
+            var metadata = new CssResource(
+                    owner,
+                    CssResource.Kind.GLOBAL,
+                    List.of(),
+                    List.of(),
+                    "Styled_" + owner,
+                    List.of(binding),
+                    List.of(new Symbol(SymbolKind.ID, "shared", "shared", true)),
+                    List.of());
+            entries.put(
+                    owner,
+                    new CssCatalogue.Resource(
+                            metadata,
+                            ".app-a{color:red;}",
+                            JsonParser.parseString("{}").getAsJsonObject()));
+        }
+        var table = CssNames.create(new CssCatalogue(entries, "1".repeat(64)), new CssNames.Policy(true, "app-"));
+        assertEquals(
+                table.entries().stream().map(entry -> entry.symbol().kind()).collect(Collectors.toSet()),
+                Set.of(SymbolKind.values()));
+        var shared = table.entries().stream()
+                .filter(entry -> "shared".equals(entry.readable()))
+                .toList();
+        assertEquals(shared.size(), 3);
+        assertEquals(shared.stream().filter(CssNames.Entry::stable).count(), 2L);
+        for (var entry : table.entries()) {
+            if (entry.stable()) {
+                assertEquals(entry.compiled(), "shared");
+                assertEquals(entry.getters(), List.of(entry.symbol().owner() + "#id"));
+            } else {
+                assertTrue(entry.compiled()
+                        .startsWith(SymbolKind.PROPERTY == entry.symbol().kind() ? "--app-" : "app-"));
+                assertNotEquals(entry.compiled(), "app-a");
+                assertTrue(entry.getters().isEmpty());
+            }
+        }
+        var bad = local.withOccurrences(
+                List.of(new CssResource.Occurrence(new SymbolId("Local", SymbolKind.ID, "missing"), 0, 1, List.of())));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> CssNames.create(
+                        new CssCatalogue(
+                                Map.of(
+                                        "Local",
+                                        new CssCatalogue.Resource(
+                                                bad,
+                                                "x",
+                                                JsonParser.parseString("{}").getAsJsonObject())),
+                                "1".repeat(64)),
+                        table.policy()));
     }
 
     @Test

@@ -3,10 +3,13 @@ package react4j.css.bundler;
 import static org.testng.Assert.*;
 
 import com.google.gson.JsonParser;
+import com.helger.css.reader.CSSReader;
+import com.helger.css.reader.CSSReaderSettings;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import org.testng.annotations.Test;
@@ -18,6 +21,7 @@ import react4j.css.internal.CssResource;
 import react4j.css.internal.CssResource.Binding;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssResource.SymbolKind;
+import react4j.css.internal.CssTokens;
 import react4j.css.internal.SourceMap;
 
 public final class CssReachabilityTest {
@@ -35,26 +39,37 @@ public final class CssReachabilityTest {
             Map<String, List<String>> providers,
             String... peers) {
         bindings = bindings.stream()
-                .map(binding -> new Binding(
-                        binding.method(),
-                        binding.kind(),
-                        binding.value(),
-                        binding.requires(),
-                        Arrays.stream(binding.value().split(" "))
-                                .map(token -> new CssResource.SymbolId(
-                                        binding.requires().isEmpty()
-                                                ? owner
-                                                : binding.requires()
-                                                        .get(binding.requires().size() - 1),
-                                        binding.kind(),
-                                        token))
-                                .toList()))
+                .map(binding -> {
+                    var required = SymbolKind.PROPERTY == binding.kind()
+                            ? providers.getOrDefault(binding.value(), List.of())
+                            : binding.requires();
+                    return new Binding(
+                            binding.method(),
+                            binding.kind(),
+                            binding.value(),
+                            required,
+                            Arrays.stream(binding.value().split(" "))
+                                    .map(token -> new CssResource.SymbolId(
+                                            required.isEmpty() ? owner : required.get(required.size() - 1),
+                                            binding.kind(),
+                                            token))
+                                    .toList());
+                })
                 .toList();
-        var symbols = bindings.stream()
-                .flatMap(binding -> Arrays.stream(binding.value().split(" "))
-                        .map(token -> new CssResource.Symbol(binding.kind(), token, token, true)))
-                .distinct()
-                .toList();
+        var symbols = new ArrayList<CssResource.Symbol>();
+        bindings.forEach(binding -> Arrays.stream(binding.value().split(" "))
+                .forEach(token -> symbols.add(new CssResource.Symbol(binding.kind(), token, token, true))));
+        var occurrences = new ArrayList<CssResource.Occurrence>();
+        for (var token : CssTokens.read(css)) {
+            if (SymbolKind.PROPERTY == token.kind() || SymbolKind.ANIMATION == token.kind()) {
+                symbols.add(new CssResource.Symbol(token.kind(), token.value(), token.value(), true));
+                occurrences.add(new CssResource.Occurrence(
+                        new CssResource.SymbolId(owner, token.kind(), token.value()),
+                        token.start(),
+                        token.end(),
+                        providers.getOrDefault(token.value(), List.of())));
+            }
+        }
         var dependencies = new ArrayList<>(includes);
         bindings.forEach(binding -> dependencies.addAll(binding.requires()));
         providers.values().forEach(dependencies::addAll);
@@ -66,8 +81,8 @@ public final class CssReachabilityTest {
                 includes,
                 bindings.isEmpty() ? "" : "Styled_" + owner,
                 bindings,
-                providers,
-                symbols);
+                symbols.stream().distinct().toList(),
+                occurrences);
         return new Resource(
                 metadata,
                 css,
@@ -82,9 +97,60 @@ public final class CssReachabilityTest {
     }
 
     private static CssCatalogue catalogue(Resource... resources) {
+        var animationOwners = new TreeMap<String, String>();
+        for (var resource : resources) {
+            var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(resource.css(), new CSSReaderSettings()));
+            sheet.getAllKeyframesRules()
+                    .forEach(frames -> animationOwners.put(
+                            frames.getAnimationName(), resource.metadata().owner()));
+        }
         var entries = new TreeMap<String, Resource>();
         for (var resource : resources) {
-            entries.put(resource.metadata().owner(), resource);
+            var metadata = resource.metadata();
+            var bindings = metadata.bindings().stream()
+                    .map(binding -> new Binding(
+                            binding.method(),
+                            binding.kind(),
+                            binding.value(),
+                            binding.requires(),
+                            binding.symbols().stream()
+                                    .map(id -> SymbolKind.ANIMATION == id.kind()
+                                            ? new CssResource.SymbolId(
+                                                    Objects.requireNonNull(animationOwners.get(id.name())),
+                                                    id.kind(),
+                                                    id.name())
+                                            : id)
+                                    .toList()))
+                    .toList();
+            var occurrences = metadata.occurrences().stream()
+                    .filter(use -> SymbolKind.ANIMATION != use.symbol().kind()
+                            || animationOwners.containsKey(use.symbol().name()))
+                    .map(use -> SymbolKind.ANIMATION == use.symbol().kind()
+                            ? new CssResource.Occurrence(
+                                    new CssResource.SymbolId(
+                                            Objects.requireNonNull(animationOwners.get(
+                                                    use.symbol().name())),
+                                            use.symbol().kind(),
+                                            use.symbol().name()),
+                                    use.start(),
+                                    use.end(),
+                                    use.requires())
+                            : use)
+                    .toList();
+            var symbols = metadata.symbols().stream()
+                    .filter(symbol -> SymbolKind.ANIMATION != symbol.kind()
+                            || metadata.owner().equals(animationOwners.get(symbol.name())))
+                    .toList();
+            var updated = new CssResource(
+                    metadata.owner(),
+                    metadata.kind(),
+                    metadata.dependencies(),
+                    metadata.includes(),
+                    metadata.implementation(),
+                    bindings,
+                    symbols,
+                    occurrences);
+            entries.put(metadata.owner(), new Resource(updated, resource.css(), resource.map()));
         }
         return new CssCatalogue(entries, "1".repeat(64));
     }
@@ -176,6 +242,43 @@ public final class CssReachabilityTest {
         for (var omitted : List.of("padding-left:13px", "margin-left:19px", "outline-width:23px", "padding-top:43px")) {
             assertFalse(second.contains(omitted), second);
         }
+    }
+
+    @Test
+    public void equalPropertySpellingsRetainOnlyTheProviderOfTheSurvivingAlias() throws Exception {
+        String css = ".root.first{color:var(--shared);}.root.second{background:var(--shared);}";
+        var consumer = resource(
+                "Consumer",
+                Kind.COMPONENT,
+                css,
+                List.of(
+                        binding("style", SymbolKind.CLASS, "root"),
+                        binding("first", SymbolKind.CLASS, "root first"),
+                        binding("second", SymbolKind.CLASS, "root second")),
+                List.of(),
+                Map.of("--shared", List.of("First", "Second")));
+        var uses = new ArrayList<CssResource.Occurrence>();
+        for (var token : CssTokens.read(css)) {
+            if (SymbolKind.PROPERTY == token.kind()) {
+                String provider = token.start() < css.indexOf(".root.second") ? "First" : "Second";
+                uses.add(new CssResource.Occurrence(
+                        new CssResource.SymbolId(provider, SymbolKind.PROPERTY, "--shared"),
+                        token.start(),
+                        token.end(),
+                        List.of(provider)));
+            }
+        }
+        consumer = new Resource(consumer.metadata().withOccurrences(uses), consumer.css(), consumer.map());
+        var catalogue = catalogue(
+                consumer,
+                global("First", "body{--shared:red;margin-left:13px;}"),
+                global("Second", "body{--shared:blue;margin-right:37px;}"));
+        String first = bundle(catalogue, Set.of("Consumer#first"));
+        assertTrue(first.contains("margin-left:13px"), first);
+        assertFalse(first.contains("margin-right:37px"), first);
+        String second = bundle(catalogue, Set.of("Consumer#second"));
+        assertTrue(second.contains("margin-right:37px"), second);
+        assertFalse(second.contains("margin-left:13px"), second);
     }
 
     @Test

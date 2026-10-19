@@ -159,13 +159,13 @@ _preview = rule(implementation = _preview_impl, attrs = {
 def _asset(name):
     return select({_PRODUCTION: "//tools/generation:" + name + "_prod", "//conditions:default": "//tools/generation:" + name + "_dev"})
 
-def browser_application(name, entry_point, deps, html, assets = {}):
+def browser_application(name, entry_point, deps, html, assets = {}, defs = []):
     css_js_binary(
         name = name + "_bundle",
         deps = deps,
         entry_points = [entry_point],
         compilation_level = select({_PRODUCTION: "ADVANCED", "//conditions:default": "BUNDLE"}),
-        defs = _compiler_defines(),
+        defs = _compiler_defines() + defs,
     )
     _preview(name = name, html = html, js = name + "_bundle.js", defines = _defines(), react = _asset("react"), dom = _asset("react_dom"), assets = assets)
 

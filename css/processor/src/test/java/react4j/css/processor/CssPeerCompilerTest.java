@@ -27,7 +27,7 @@ public final class CssPeerCompilerTest {
         return CssCompiler.component(
                 css,
                 "jcss-demo-Button",
-                new CssCompiler.Exports(List.of("style"), Set.of(), Set.of(), Set.of(), Set.of()),
+                new CssCompiler.Exports(List.of("style"), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 IMPORTS,
                 Map.of(),
@@ -38,7 +38,7 @@ public final class CssPeerCompilerTest {
         return CssCompiler.global(
                 css,
                 "jcss-demo-Global",
-                new CssCompiler.Exports(List.of(), Set.of(), Set.of(), Set.of(), Set.of()),
+                new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Global.java", css, 0, offset),
                 IMPORTS,
                 Map.of(),
@@ -58,7 +58,7 @@ public final class CssPeerCompilerTest {
             assertEquals(
                     rule.getSelectorsAsCSSString(new CSSWriterSettings(true), 0),
                     ".jcss-demo-Button:hover" + combinator.trim() + (combinator.isBlank() ? " " : "")
-                            + ".jcss-demo-Label[data-name=':css(other)']:not(:disabled):where(:focus)>.jcss-demo-Outer_0024_Other::before");
+                            + ".jcss-demo-Button--peer-label[data-name=':css(other)']:not(:disabled):where(:focus)>.jcss-demo-Button--peer-other::before");
             var value = rule.getAllDeclarations()
                     .get(0)
                     .getExpression()
@@ -78,10 +78,12 @@ public final class CssPeerCompilerTest {
                 result.output()
                         .css()
                         .contains(
-                                ":is(.jcss-demo-Button:hover,.jcss-demo-Button:focus)+.jcss-demo-Label:is(:hover,:focus){color:red;}"),
+                                ":is(.jcss-demo-Button:hover,.jcss-demo-Button:focus)+.jcss-demo-Button--peer-label:is(:hover,:focus){color:red;}"),
                 result.output().css());
         assertTrue(
-                result.output().css().contains("+.jcss-demo-Label>.jcss-demo-Outer_0024_Other{color:blue;}"),
+                result.output()
+                        .css()
+                        .contains("+.jcss-demo-Button--peer-label>.jcss-demo-Button--peer-other{color:blue;}"),
                 result.output().css());
         assertEquals(component("& + :css(label) {}").imports(), Set.of("label"));
     }
@@ -150,8 +152,7 @@ public final class CssPeerCompilerTest {
                         () -> CssCompiler.component(
                                 css,
                                 "jcss-demo-Button",
-                                new CssCompiler.Exports(
-                                        List.of("style", "active"), Set.of(), Set.of(), Set.of(), Set.of()),
+                                new CssCompiler.Exports(List.of("style", "active"), Set.of(), Set.of()),
                                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                                 IMPORTS,
                                 Map.of(),
@@ -175,13 +176,15 @@ public final class CssPeerCompilerTest {
             var result = global(selector + " { color: red; }");
             assertEquals(result.imports(), Set.of("label"));
             assertTrue(
-                    result.output().css().contains(".jcss-demo-Label"),
+                    result.output().css().contains(".jcss-demo-Global--peer-label"),
                     result.output().css());
             assertFalse(result.output().css().contains(":css("));
         }
         var result = global("body { & > :css(label) { animation-name: beat; } }");
         assertEquals(result.imports(), Set.of("label", "beat"));
-        assertTrue(result.output().css().contains("&>.jcss-demo-Label{animation-name:jcss-demo-Beat--keyframes;}"));
+        assertTrue(result.output()
+                .css()
+                .contains("&>.jcss-demo-Global--peer-label{animation-name:jcss-demo-Global--keyframes-beat;}"));
         var unused = global("[data-text=':css(label)'] { content: ':css(label)'; --peer: ':css(label)'; }");
         assertTrue(unused.imports().isEmpty());
     }
@@ -222,7 +225,7 @@ public final class CssPeerCompilerTest {
             var imported = CssCompiler.component(
                     source,
                     "root",
-                    new CssCompiler.Exports(List.of("style"), Set.of(), Set.of(), Set.of(), Set.of()),
+                    new CssCompiler.Exports(List.of("style"), Set.of(), Set.of()),
                     offset -> new SourceMap.Location("Button.java", source, 0, offset),
                     Map.of(alias, new CssCompiler.Import("demo.Label", Kind.COMPONENT, false)),
                     Map.of(),

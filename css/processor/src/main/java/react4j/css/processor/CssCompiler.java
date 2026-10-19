@@ -76,12 +76,7 @@ final class CssCompiler {
         }
     }
 
-    record Exports(
-            List<String> modifiers,
-            Set<String> ids,
-            Set<String> animations,
-            Set<String> authoredIds,
-            Set<String> authoredProperties) {}
+    record Exports(List<String> modifiers, Set<String> ids, Set<String> animations) {}
 
     record Result(
             SourceMap.Writer output,
@@ -96,16 +91,10 @@ final class CssCompiler {
 
     private void properties(CascadingStyleSheet sheet, Map<String, CssProperties.Import> imported) {
         CssProperties.rewrite(sheet, syntax, name -> {
-            var binding = imported.get(name);
-            String resolved;
-            if (null == binding) {
-                resolved = exports.authoredProperties().contains(name)
-                        ? "--" + name
-                        : "--" + root + "--" + Names.encode(name);
-            } else {
+            if (imported.containsKey(name)) {
                 usedProperties.add(name);
-                resolved = binding.binding().cssName();
             }
+            String resolved = "--" + root + "--" + Names.encode(name);
             properties.put(name, resolved);
             return resolved;
         });
@@ -113,10 +102,8 @@ final class CssCompiler {
 
     private void ids(CascadingStyleSheet sheet, Map<String, CssIds.Import> imported, boolean global) {
         var bindings = new LinkedHashMap<String, String>();
-        exports.ids()
-                .forEach(name -> bindings.put(
-                        name, exports.authoredIds().contains(name) ? name : root + "--id-" + Names.encode(name)));
-        imported.forEach((name, binding) -> bindings.put(name, binding.binding().cssName()));
+        exports.ids().forEach(name -> bindings.put(name, root + "--id-" + Names.encode(name)));
+        imported.keySet().forEach(name -> bindings.put(name, root + "--id-" + Names.encode(name)));
         ids = CssIds.rewrite(sheet, syntax, bindings, global);
     }
 
@@ -354,7 +341,7 @@ final class CssCompiler {
                 throw new IllegalArgumentException("Animation accessor must reference imported @Keyframes: " + name);
             }
             usedImports.add(name);
-            animations.put(name, imported.cssName());
+            animations.put(name, animationName(name));
         } else if (keyframes.containsKey(name)) {
             animations.put(name, animationName(name));
         } else {
@@ -483,7 +470,7 @@ final class CssCompiler {
                         throw syntax.invalid("Animation name must reference imported @Keyframes: " + name, simple);
                     }
                     usedImports.add(name);
-                    simple.setValue(binding.cssName());
+                    simple.setValue(animationName(name));
                 } else if (keyframes.containsKey(name)) {
                     simple.setValue(animationName(name));
                 } else {
@@ -591,7 +578,7 @@ final class CssCompiler {
             throw syntax.invalid("Unknown imported component name: " + alias, function);
         }
         usedImports.add(alias);
-        return "." + binding.cssName();
+        return "." + root + "--peer-" + Names.encode(alias);
     }
 
     private String globalSelector(CSSSelector selector) {

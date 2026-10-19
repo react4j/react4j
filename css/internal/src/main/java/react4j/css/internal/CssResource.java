@@ -7,8 +7,6 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 /** Identity and dependencies of one processor stylesheet, independent of JavaScript liveness. */
@@ -19,8 +17,8 @@ public record CssResource(
         List<String> includes,
         String implementation,
         List<Binding> bindings,
-        Map<String, List<String>> providers,
-        List<Symbol> symbols) {
+        List<Symbol> symbols,
+        List<Occurrence> occurrences) {
     private static final Pattern OWNER = Pattern.compile(
             "\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*(?:\\.\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)*");
 
@@ -120,31 +118,91 @@ public record CssResource(
         }
     }
 
+    public record Occurrence(SymbolId symbol, int start, int end, List<String> requires) {
+        public Occurrence {
+            if (start < 0 || end <= start) {
+                throw new IllegalArgumentException("Invalid CSS symbol occurrence span");
+            }
+            requires = List.copyOf(requires);
+            if (new HashSet<>(requires).size() != requires.size()
+                    || ((SymbolKind.ID == symbol.kind() || SymbolKind.CLASS == symbol.kind()) && !requires.isEmpty())) {
+                throw new IllegalArgumentException("Invalid CSS occurrence provider requirements");
+            }
+            requires.forEach(CssResource::path);
+        }
+
+        public JsonObject json() {
+            var json = new JsonObject();
+            json.add("symbol", symbol.json());
+            json.addProperty("start", start);
+            json.addProperty("end", end);
+            var providers = new JsonArray();
+            requires.forEach(providers::add);
+            json.add("requires", providers);
+            return json;
+        }
+
+        public static Occurrence read(JsonObject json) {
+            return new Occurrence(
+                    SymbolId.read(json.getAsJsonObject("symbol")),
+                    integer(json, "start"),
+                    integer(json, "end"),
+                    names(json, "requires"));
+        }
+    }
+
+    public CssResource withOccurrences(List<Occurrence> values) {
+        return new CssResource(owner, kind, dependencies, includes, implementation, bindings, symbols, values);
+    }
+
+    public CssResource project(List<SourceMap.Span> spans) {
+        var projected = new ArrayList<Occurrence>();
+        int offset = 0;
+        for (var span : spans) {
+            for (var occurrence : occurrences) {
+                if (occurrence.start() >= span.start() && occurrence.end() <= span.end()) {
+                    projected.add(new Occurrence(
+                            occurrence.symbol(),
+                            offset + occurrence.start() - span.start(),
+                            offset + occurrence.end() - span.start(),
+                            occurrence.requires()));
+                } else if (occurrence.start() < span.end() && occurrence.end() > span.start()) {
+                    throw new IllegalArgumentException("CSS pruning split a managed identifier");
+                }
+            }
+            offset += span.end() - span.start();
+        }
+        return withOccurrences(projected);
+    }
+
+    private static int integer(JsonObject json, String key) {
+        var value = json.get(key);
+        if (null == value || !value.toString().matches("0|[1-9][0-9]*")) {
+            throw new IllegalArgumentException("CSS occurrence requires a nonnegative integer " + key);
+        }
+        return Integer.parseInt(value.toString());
+    }
+
     public CssResource {
         path(owner);
         dependencies = List.copyOf(dependencies);
         includes = List.copyOf(includes);
         bindings = List.copyOf(bindings);
         symbols = List.copyOf(symbols);
+        occurrences = List.copyOf(occurrences);
+        int previousEnd = 0;
+        for (var occurrence : occurrences) {
+            if (occurrence.start() < previousEnd || !dependencies.containsAll(occurrence.requires())) {
+                throw new IllegalArgumentException("CSS occurrences require ordered spans and declared dependencies");
+            }
+            previousEnd = occurrence.end();
+        }
         var identities = new HashSet<String>();
         for (var symbol : symbols) {
             if (!identities.add(symbol.kind() + ":" + symbol.name())) {
                 throw new IllegalArgumentException("Duplicate owned CSS symbol: " + symbol.name());
             }
         }
-        var copied = new TreeMap<String, List<String>>();
-        for (var entry : providers.entrySet()) {
-            String symbol = entry.getKey();
-            var owners = entry.getValue();
-            if (symbol.isBlank()
-                    || owners.isEmpty()
-                    || new HashSet<>(owners).size() != owners.size()
-                    || !dependencies.containsAll(owners)) {
-                throw new IllegalArgumentException("CSS symbol providers must be distinct dependencies");
-            }
-            copied.put(symbol, List.copyOf(owners));
-        }
-        providers = Map.copyOf(copied);
         if (bindings.isEmpty() != implementation.isEmpty()) {
             throw new IllegalArgumentException("CSS bindings require their generated implementation");
         }
@@ -181,7 +239,7 @@ public record CssResource(
 
     public String json() {
         var json = new JsonObject();
-        json.addProperty("version", 6);
+        json.addProperty("version", 7);
         json.addProperty("owner", owner);
         json.addProperty("kind", kind.name());
         var entries = new JsonArray();
@@ -196,13 +254,6 @@ public record CssResource(
             methods.add(binding.json());
         }
         json.add("bindings", methods);
-        var references = new JsonObject();
-        new TreeMap<>(providers).forEach((symbol, owners) -> {
-            var values = new JsonArray();
-            owners.forEach(values::add);
-            references.add(symbol, values);
-        });
-        json.add("providers", references);
         var names = new JsonArray();
         for (var symbol : symbols) {
             var name = new JsonObject();
@@ -213,13 +264,16 @@ public record CssResource(
             names.add(name);
         }
         json.add("symbols", names);
+        var uses = new JsonArray();
+        occurrences.forEach(occurrence -> uses.add(occurrence.json()));
+        json.add("occurrences", uses);
         return json + "\n";
     }
 
     public static CssResource read(String source, String expectedOwner) {
         try {
             var json = JsonParser.parseString(source).getAsJsonObject();
-            if (!json.has("version") || !"6".equals(json.get("version").toString())) {
+            if (!json.has("version") || !"7".equals(json.get("version").toString())) {
                 throw new IllegalArgumentException("Unsupported CSS metadata version");
             }
             String owner = string(json, "owner");
@@ -231,9 +285,6 @@ public record CssResource(
                 var method = entry.getAsJsonObject();
                 bindings.add(Binding.read(method));
             }
-            var providers = new TreeMap<String, List<String>>();
-            var references = json.getAsJsonObject("providers");
-            references.keySet().forEach(key -> providers.put(key, names(references, key)));
             var symbols = new ArrayList<Symbol>();
             for (var item : json.getAsJsonArray("symbols")) {
                 var symbol = item.getAsJsonObject();
@@ -256,8 +307,10 @@ public record CssResource(
                     names(json, "includes"),
                     string(json, "implementation"),
                     bindings,
-                    providers,
-                    symbols);
+                    symbols,
+                    json.getAsJsonArray("occurrences").asList().stream()
+                            .map(item -> Occurrence.read(item.getAsJsonObject()))
+                            .toList());
         } catch (JsonParseException | IllegalStateException | ClassCastException | NullPointerException e) {
             throw new IllegalArgumentException("Invalid CSS metadata for " + expectedOwner, e);
         }

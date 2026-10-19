@@ -22,7 +22,7 @@ public final class CssPropertiesTest {
         return CssCompiler.component(
                 css,
                 ROOT,
-                new CssCompiler.Exports(List.of("style"), Set.of(), Set.of(), Set.of(), Set.of()),
+                new CssCompiler.Exports(List.of("style"), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
                 imports,
@@ -65,24 +65,26 @@ public final class CssPropertiesTest {
     }
 
     @Test
-    public void stableGlobalImportsKeepAuthoredPropertyNames() {
+    public void stableGlobalImportsKeepDistinctIntermediateAliases() {
         var binding = new CssProperties.Binding("theme.Defaults", "accent", Kind.GLOBAL, true);
         var result = component(
                 "color: var(--local); --local: blue;",
                 Map.of("local", new CssProperties.Import("theme.Defaults", binding)));
         assertTrue(binding.stable());
-        assertEquals(result.properties().get("local"), "--accent");
-        assertEquals(result.output().css(), "." + ROOT + "{color:var(--accent);--accent:blue;}");
+        assertEquals(binding.cssName(), "--accent");
+        assertEquals(result.properties().get("local"), "--" + ROOT + "--local");
+        assertEquals(
+                result.output().css(), "." + ROOT + "{color:var(--" + ROOT + "--local);--" + ROOT + "--local:blue;}");
         String css = ":root { --accent: red; color: var(--accent); }";
         var owned = CssCompiler.global(
                 css,
                 ROOT,
-                new CssCompiler.Exports(List.of(), Set.of(), Set.of(), Set.of(), Set.of("accent")),
+                new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
                 Map.of(),
                 Map.of());
-        assertEquals(owned.output().css(), ":root{--accent:red;color:var(--accent);}");
+        assertEquals(owned.output().css(), ":root{--" + ROOT + "--accent:red;color:var(--" + ROOT + "--accent);}");
     }
 
     @Test
@@ -91,10 +93,12 @@ public final class CssPropertiesTest {
         var imported = new CssProperties.Import("theme.Alias", binding);
         var result =
                 component("--local: gold; outline-color: var(--local);", Map.of("local", imported, "unused", imported));
-        assertEquals(result.properties(), Map.of("local", "--jcss-theme-Defaults--focus_002d_ring"));
+        assertEquals(result.properties(), Map.of("local", "--" + ROOT + "--local"));
         assertEquals(result.propertyImports(), Set.of("local"));
-        assertNotNull(
-                parse(result.output().css()).getAllStyleRules().get(0).getDeclarationOfPropertyName(binding.cssName()));
+        assertNotNull(parse(result.output().css())
+                .getAllStyleRules()
+                .get(0)
+                .getDeclarationOfPropertyName("--" + ROOT + "--local"));
     }
 
     @Test

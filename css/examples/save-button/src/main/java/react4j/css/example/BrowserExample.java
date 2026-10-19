@@ -91,6 +91,12 @@ public final class BrowserExample {
                                 new HtmlProps().id(EqualNames.get().id()).data("symbol", "equal-names"),
                                 "Stable ID sharing an animation's readable name"),
                         DOM.span(
+                                new HtmlProps()
+                                        .id("property-aliases")
+                                        .data("symbol", "property-aliases")
+                                        .className(CollisionStyles.get().first()),
+                                "Distinct canonical properties"),
+                        DOM.span(
                                 new HtmlProps().id(ImportedIds.get().zLive()).data("symbol", "shared-import"),
                                 "Checked shared ID"),
                         DOM.button(
@@ -428,6 +434,41 @@ public final class BrowserExample {
         @CssStable
         @CssId
         abstract String base();
+    }
+
+    @GlobalCss("""
+        :root { --accent: 13px; }
+        """)
+    static final class CollisionDefaults {}
+
+    @CssStable
+    @GlobalCss("""
+        [data-symbol=property-aliases] {
+          --jcss-react4j-css-example-BrowserExample_0024_CollisionDefaults--accent: 37px;
+          border-right: 37px solid;
+        }
+        """)
+    static final class CollisionPublicNames {}
+
+    @CssImport(value = CollisionDefaults.class, property = "accent", name = "first")
+    @CssImport(
+            value = CollisionPublicNames.class,
+            property = "jcss-react4j-css-example-BrowserExample_0024_CollisionDefaults--accent",
+            name = "second")
+    @Css("""
+        &.first { padding-left: var(--first); }
+        &.second { padding-right: var(--second); }
+        """)
+    abstract static class CollisionStyles {
+        static CollisionStyles get() {
+            return BrowserExample_Styled_CollisionStyles.get();
+        }
+
+        abstract String style();
+
+        abstract String first();
+
+        abstract String second();
     }
 
     @CssImport(Defaults.class)

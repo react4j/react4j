@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: `implementing`
-- Current frontier: `T05`
+- Current frontier: `T06`
 - Planning reviewer: `/root/css_compression_plan_review` (`2/3` rounds; final confirmation `unused`; passed)
 - Plan checkpoint: `automatic` — explicit implementation request, confirmed interview and passing planning review; no human checkpoint requested.
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -21,8 +21,8 @@
 | T02 | [Stable names in every mode](T02-stable-names.md) | complete | T01 |
 | T03 | [Checked shared IDs and liveness](T03-shared-ids.md) | complete | T02 |
 | T04 | [Component compression through a real link](T04-component-compression.md) | complete | T03 |
-| T05 | [Compress every symbol and protect variants](T05-complete-compression.md) | in_progress | T04 |
-| T06 | [Source content and map fidelity](T06-source-maps.md) | pending | T05 |
+| T05 | [Compress every symbol and protect variants](T05-complete-compression.md) | complete | T04 |
+| T06 | [Source content and map fidelity](T06-source-maps.md) | in_progress | T05 |
 | T07 | [Delivery verification and permanent docs](T07-delivery.md) | pending | T06 |
 
 ## Sequencing notes

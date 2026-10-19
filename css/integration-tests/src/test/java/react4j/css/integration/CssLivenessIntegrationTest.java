@@ -5,16 +5,24 @@ import static org.testng.Assert.*;
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
 import com.helger.css.decl.CSSMediaRule;
+import com.helger.css.decl.CSSSelector;
+import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CSSSupportsRule;
+import com.helger.css.decl.CascadingStyleSheet;
+import com.helger.css.decl.visit.CSSVisitor;
+import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
 import com.helger.css.writer.CSSWriterSettings;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import org.testng.annotations.Test;
 
 public final class CssLivenessIntegrationTest {
@@ -22,16 +30,31 @@ public final class CssLivenessIntegrationTest {
         return Files.readString(Path.of(Objects.requireNonNull(System.getProperty("css.liveness." + property))));
     }
 
-    private static String compiledClass(String owner, String name) throws Exception {
+    private static String compiled(String owner, String kind, String name) throws Exception {
         for (var item : JsonParser.parseString(input("names")).getAsJsonObject().getAsJsonArray("names")) {
             var symbol = item.getAsJsonObject();
             if (("react4j.css.integration." + owner).equals(symbol.get("owner").getAsString())
-                    && "CLASS".equals(symbol.get("kind").getAsString())
+                    && kind.equals(symbol.get("kind").getAsString())
                     && name.equals(symbol.get("name").getAsString())) {
                 return symbol.get("compiled").getAsString();
             }
         }
-        throw new AssertionError("Missing class in reverse-name artifact: " + owner + "#" + name);
+        throw new AssertionError("Missing symbol in reverse-name artifact: " + owner + "#" + name);
+    }
+
+    private static Set<String> classes(CascadingStyleSheet sheet) {
+        var classes = new HashSet<String>();
+        CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
+            @Override
+            public void onStyleRuleSelector(CSSSelector selector) {
+                for (var member : selector.getAllMembers()) {
+                    if (member instanceof CSSSelectorSimpleMember simple && simple.isClass()) {
+                        classes.add(simple.getValue().substring(1));
+                    }
+                }
+            }
+        });
+        return classes;
     }
 
     @Test
@@ -39,14 +62,16 @@ public final class CssLivenessIntegrationTest {
         String optimized = input("optimized");
         String development = input("development");
         assertEquals(input("alias").replace("alias.css.map", "optimized.css.map"), optimized);
-        assertTrue(optimized.contains("." + compiledClass("ButtonStyles", "success")), optimized);
-        assertFalse(optimized.contains("." + compiledClass("ButtonStyles", "cancel")), optimized);
-        assertFalse(optimized.contains("." + compiledClass("LivenessEntry$MapStyles", "dead")), optimized);
+        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
+                optimized, new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+        var classes = classes(sheet);
+        assertTrue(classes.contains(compiled("ButtonStyles", "CLASS", "success")), optimized);
+        assertFalse(classes.contains(compiled("ButtonStyles", "CLASS", "cancel")), optimized);
+        assertFalse(classes.contains(compiled("LivenessEntry$MapStyles", "CLASS", "dead")), optimized);
         assertTrue(development.contains("ButtonStyles--cancel"), development);
         assertTrue(development.contains("MapStyles--dead"), development);
         assertFalse(input("javascript").contains("$react4j$css$"));
-        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
-                optimized, new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+
         var components = sheet.getAllLayerRules().stream()
                 .filter(layer -> layer.getAllSelectors().equals(List.of("components")))
                 .findFirst()
@@ -65,15 +90,32 @@ public final class CssLivenessIntegrationTest {
                 new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
         var optimizedRules = optimized.getAllLayerRules().get(1).getAllStyleRules();
         var developmentRules = development.getAllLayerRules().get(1).getAllStyleRules();
+        String root = "jcss-react4j-css-integration-LivenessEntry_0024_";
+        var ids = Map.of(
+                "#" + root + "NestingDefaults--id-bound",
+                "#" + compiled("LivenessEntry$NestingDefaults", "ID", "bound"),
+                "#" + root + "NestingDefaults--id-negative",
+                "#" + compiled("LivenessEntry$NestingDefaults", "ID", "negative"));
+        for (var rule : developmentRules) {
+            for (var selector : rule.getAllSelectors()) {
+                for (int index = 0; index < selector.getMemberCount(); index++) {
+                    var member = selector.getMemberAtIndex(index);
+                    if (member instanceof CSSSelectorSimpleMember simple && ids.containsKey(simple.getValue())) {
+                        selector.removeMember(index);
+                        selector.addMember(
+                                index, new CSSSelectorSimpleMember(Objects.requireNonNull(ids.get(simple.getValue()))));
+                    }
+                }
+            }
+        }
         for (int i = 0; i < 5; i++) {
             assertEquals(
                     optimizedRules.get(i).getAsCSSString(settings, 0),
                     developmentRules.get(i).getAsCSSString(settings, 0));
         }
-        String root = "jcss-react4j-css-integration-LivenessEntry_0024_";
         assertEquals(
                 optimizedRules.get(0).getSelectorsAsCSSString(settings, 0),
-                ".ordinary,#" + root + "NestingDefaults--id-bound");
+                ".ordinary,#" + compiled("LivenessEntry$NestingDefaults", "ID", "bound"));
         assertEquals(
                 ((CSSStyleRule) optimizedRules.get(2).getAllRules().get(0)).getSelectorsAsCSSString(settings, 0),
                 ":not(&)");
@@ -88,7 +130,7 @@ public final class CssLivenessIntegrationTest {
         var consumer = new SourceMapConsumerV3();
         consumer.parse(input("map"));
         for (var pair : List.of(
-                new String[] {"." + compiledClass("LivenessEntry$MapStyles", "active"), "&.active {"},
+                new String[] {"." + compiled("LivenessEntry$MapStyles", "CLASS", "active"), "&.active {"},
                 new String[] {"letter-spacing:3px", "letter-spacing: 3px"},
                 new String[] {"color:rgb(1,2,3)", "color: rgb(1, 2, 3)"})) {
             int generated = css.indexOf(pair[0]);

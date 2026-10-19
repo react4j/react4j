@@ -8,8 +8,10 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.jspecify.annotations.NullMarked;
 import org.testng.annotations.Test;
 
@@ -44,6 +46,63 @@ public final class CssStableProcessorTest {
                         && name.equals(item.get("name").getAsString()))
                 .findFirst()
                 .orElseThrow();
+    }
+
+    @Test
+    public void equalReadableOccurrencesKeepCanonicalOwnersAndAliasProviderRequirements() throws Exception {
+        String local = source(
+                "Css",
+                "",
+                "&#control { --accent: red; color: var(--accent); }",
+                "abstract class Local",
+                "abstract String style(); @CssId abstract String control(); @CssCustomProperty abstract String"
+                        + " accent();");
+        String global = source(
+                "GlobalCss",
+                "@CssStable",
+                "#jcss-demo-Local--id-control { --jcss-demo-Local--accent: blue; }",
+                "abstract class PublicNames",
+                "@CssId(name=\"jcss-demo-Local--id-control\") abstract String id();");
+        String consumer = source(
+                "Css",
+                "@CssImport(value=Local.class,id=\"control\",name=\"local\")"
+                    + " @CssImport(value=PublicNames.class,id=\"jcss-demo-Local--id-control\",name=\"foreign\")@CssImport(value=Local.class,property=\"accent\",name=\"local\")"
+                    + " @CssImport(value=PublicNames.class,property=\"jcss-demo-Local--accent\",name=\"foreign\")",
+                "&#local { color: var(--local); } &#foreign { color: var(--foreign); }",
+                "abstract class Button",
+                "abstract String style();");
+        var result = CssProcessorTest.compile(
+                Map.of("Local.java", local, "PublicNames.java", global, "Button.java", consumer));
+        assertTrue(result.success(), result.diagnostics());
+        var metadata = JsonParser.parseString(text(result, "classes/demo/Button.css.json"))
+                .getAsJsonObject();
+        var occurrences = metadata.getAsJsonArray("occurrences");
+        assertNotNull(occurrences);
+        assert null != occurrences;
+        var owners = new HashSet<String>();
+        for (var item : occurrences) {
+            var occurrence = item.getAsJsonObject();
+            var symbol = occurrence.getAsJsonObject("symbol");
+            if ("CLASS".equals(symbol.get("kind").getAsString())) {
+                continue;
+            }
+            owners.add(symbol.get("owner").getAsString());
+            String value = text(result, "classes/demo/Button.css")
+                    .substring(
+                            occurrence.get("start").getAsInt(),
+                            occurrence.get("end").getAsInt());
+            assertEquals(
+                    value,
+                    "ID".equals(symbol.get("kind").getAsString())
+                            ? "jcss-demo-Local--id-control"
+                            : "--jcss-demo-Local--accent");
+            if ("PROPERTY".equals(symbol.get("kind").getAsString())) {
+                assertEquals(
+                        occurrence.getAsJsonArray("requires").get(0).getAsString(),
+                        symbol.get("owner").getAsString());
+            }
+        }
+        assertEquals(owners, Set.of("demo.Local", "demo.PublicNames"));
     }
 
     @Test

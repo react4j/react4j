@@ -1,6 +1,6 @@
 # T06 — Source content and map fidelity
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: T05
 - Spec coverage: R8; AC6.
 

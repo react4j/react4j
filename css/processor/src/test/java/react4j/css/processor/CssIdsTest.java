@@ -18,7 +18,7 @@ import react4j.css.internal.SourceMap;
 public final class CssIdsTest {
     private static final String ROOT = "jcss-demo-Button";
     private static final CssCompiler.Exports EXPORTS =
-            new CssCompiler.Exports(List.of("style"), Set.of("mask", "control"), Set.of(), Set.of(), Set.of());
+            new CssCompiler.Exports(List.of("style"), Set.of("mask", "control"), Set.of());
 
     private static CssCompiler.Result component(String css) {
         return CssCompiler.component(
@@ -43,18 +43,18 @@ public final class CssIdsTest {
     }
 
     @Test
-    public void authoredGlobalIdsCanCoexistWithScopedIds() {
+    public void globalIdsUseDistinctIntermediateNames() {
         String css = "#control { filter: url(#mask); }";
         var result = CssCompiler.global(
                 css,
                 ROOT,
-                new CssCompiler.Exports(List.of(), Set.of("control", "mask"), Set.of(), Set.of("control"), Set.of()),
+                new CssCompiler.Exports(List.of(), Set.of("control", "mask"), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
                 Map.of(),
                 Map.of());
-        assertEquals(result.ids(), Map.of("control", "control", "mask", ROOT + "--id-mask"));
-        assertEquals(result.output().css(), "#control{filter:url(#" + ROOT + "--id-mask);}");
+        assertEquals(result.ids(), Map.of("control", ROOT + "--id-control", "mask", ROOT + "--id-mask"));
+        assertEquals(result.output().css(), "#" + ROOT + "--id-control{filter:url(#" + ROOT + "--id-mask);}");
     }
 
     @Test
@@ -103,6 +103,8 @@ public final class CssIdsTest {
                 "url(#mask)",
                 "url('#mask')",
                 "url(\"#mask\")",
+                "url('#ma\\73 k')",
+                "url('#ma%73k')",
                 "URL( #mask )",
                 "var(--filter,url(#mask))",
                 "image-set(url(#mask) 1x)")) {
@@ -160,7 +162,7 @@ public final class CssIdsTest {
         var result = CssCompiler.global(
                 css,
                 ROOT,
-                new CssCompiler.Exports(List.of(), Set.of("ä"), Set.of(), Set.of(), Set.of()),
+                new CssCompiler.Exports(List.of(), Set.of("ä"), Set.of()),
                 offset -> new SourceMap.Location("Button.java", css, 0, offset),
                 Map.of(),
                 Map.of(),

@@ -29,6 +29,7 @@ import java.util.Set;
 import react4j.css.internal.CssExpressions;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
+import react4j.css.internal.CssTokens;
 
 /** Rewrites explicitly bound ID selectors and same-document fragments. */
 final class CssIds {
@@ -79,8 +80,16 @@ final class CssIds {
                 CssExpressions.visit(declaration.getExpression(), member -> {
                     if (member instanceof CSSExpressionMemberTermURI uri) {
                         String value = uri.getURIString();
-                        if (value.startsWith("#") && bindings.containsKey(value.substring(1))) {
-                            uri.setURIString("#" + resolve(value.substring(1)));
+                        if (value.startsWith("#")) {
+                            String name;
+                            try {
+                                name = CssTokens.fragmentName(value);
+                            } catch (IllegalArgumentException e) {
+                                throw syntax.invalid(String.valueOf(e.getMessage()), declaration);
+                            }
+                            if (bindings.containsKey(name)) {
+                                uri.setURIString("#" + resolve(name));
+                            }
                         }
                     }
                 });

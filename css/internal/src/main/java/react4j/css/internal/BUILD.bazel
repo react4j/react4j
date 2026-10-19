@@ -10,6 +10,7 @@ java_library(
         "CssRenamer.java",
         "CssResource.java",
         "CssSyntax.java",
+        "CssTokens.java",
         "SourceMap.java",
         "package-info.java",
     ],

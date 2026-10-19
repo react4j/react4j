@@ -5,7 +5,6 @@ import static org.testng.Assert.*;
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import org.testng.annotations.Test;
@@ -17,13 +16,20 @@ public final class CssPrunerTest {
     private static Resource resource(SourceMap.Writer writer) {
         return new Resource(
                 new CssResource(
-                        "Button", CssResource.Kind.COMPONENT, List.of(), List.of(), "", List.of(), Map.of(), List.of()),
+                        "Button",
+                        CssResource.Kind.COMPONENT,
+                        List.of(),
+                        List.of(),
+                        "",
+                        List.of(),
+                        List.of(),
+                        List.of()),
                 writer.css(),
                 JsonParser.parseString(writer.map("Button.css")).getAsJsonObject());
     }
 
     private static Resource prune(Resource resource, Set<String> known, Set<String> present) {
-        return new CssPruner(resource, known, present).prune(Set.of()).resource();
+        return new CssPruner(resource, known, present).prune(Set.of());
     }
 
     @Test

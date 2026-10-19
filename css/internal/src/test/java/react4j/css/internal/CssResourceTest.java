@@ -5,7 +5,6 @@ import static org.testng.Assert.*;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.testng.annotations.Test;
 
 public final class CssResourceTest {
@@ -26,7 +25,7 @@ public final class CssResourceTest {
                                 List.of(new CssResource.SymbolId(
                                         "demo.Button", CssResource.SymbolKind.CLASS, "token"))))
                         : List.of(),
-                Map.of(),
+                List.of(),
                 List.of());
     }
 
@@ -51,7 +50,7 @@ public final class CssResourceTest {
                 List.of(),
                 "Styled_Consumer",
                 List.of(binding),
-                Map.of(),
+                List.of(),
                 List.of());
         assertEquals(CssResource.read(resource.json(), "Consumer"), resource);
         expectThrows(
@@ -63,7 +62,7 @@ public final class CssResourceTest {
                         List.of(),
                         "Styled_Consumer",
                         List.of(binding),
-                        Map.of(),
+                        List.of(),
                         List.of()));
         expectThrows(
                 IllegalArgumentException.class,
@@ -100,7 +99,7 @@ public final class CssResourceTest {
                 new CssResource.Symbol(CssResource.SymbolKind.PROPERTY, "accent", "--accent", true),
                 new CssResource.Symbol(CssResource.SymbolKind.ANIMATION, "", "pulse", false)));
         var resource = new CssResource(
-                "Button", CssResource.Kind.COMPONENT, List.of(), List.of(), "", List.of(), Map.of(), symbols);
+                "Button", CssResource.Kind.COMPONENT, List.of(), List.of(), "", List.of(), symbols, List.of());
         symbols.clear();
         assertEquals(resource.symbols().size(), 5);
         assertEquals(CssResource.read(resource.json(), "Button"), resource);
@@ -126,8 +125,8 @@ public final class CssResourceTest {
                         List.of(),
                         "",
                         List.of(),
-                        Map.of(),
-                        List.of(resource.symbols().get(0), resource.symbols().get(0))));
+                        List.of(resource.symbols().get(0), resource.symbols().get(0)),
+                        List.of()));
         for (var replacement : List.of("null", "7", "{}", "\"true\"")) {
             var json = JsonParser.parseString(resource.json()).getAsJsonObject();
             json.getAsJsonArray("symbols").get(0).getAsJsonObject().add("stable", JsonParser.parseString(replacement));
@@ -159,7 +158,7 @@ public final class CssResourceTest {
     }
 
     @Test
-    public void bindingsAndMultipleProvidersAreValidatedAndImmutable() {
+    public void bindingsAndCanonicalCompositionsAreValidatedAndImmutable() {
         var bindings = new ArrayList<>(List.of(new CssResource.Binding(
                 "style",
                 CssResource.SymbolKind.CLASS,
@@ -174,12 +173,12 @@ public final class CssResourceTest {
                 List.of(),
                 "Styled_Button",
                 bindings,
-                Map.of("--accent", owners),
+                List.of(),
                 List.of());
         owners.clear();
         bindings.clear();
         assertEquals(resource.bindings().size(), 1);
-        assertEquals(resource.providers().get("--accent"), List.of("Defaults", "Theme"));
+        assertEquals(resource.dependencies(), List.of("Defaults", "Theme"));
         assertEquals(CssResource.read(resource.json(), "Button"), resource);
         for (var method : List.of("bad/name", "a.b", "")) {
             expectThrows(
@@ -208,7 +207,7 @@ public final class CssResourceTest {
                         List.of(),
                         "",
                         resource.bindings(),
-                        Map.of(),
+                        List.of(),
                         List.of()));
         expectThrows(
                 IllegalArgumentException.class,
@@ -219,7 +218,7 @@ public final class CssResourceTest {
                         List.of(),
                         "Styled_Button",
                         List.of(),
-                        Map.of(),
+                        List.of(),
                         List.of()));
         expectThrows(
                 IllegalArgumentException.class,
@@ -230,29 +229,66 @@ public final class CssResourceTest {
                         List.of(),
                         "Styled_Button",
                         List.of(resource.bindings().get(0), resource.bindings().get(0)),
-                        Map.of(),
+                        List.of(),
                         List.of()));
-        for (var providers : List.of(
-                Map.of("", List.of("Defaults")),
-                Map.of("--accent", List.<String>of()),
-                Map.of("--accent", List.of("Missing")),
-                Map.of("--accent", List.of("Defaults", "Defaults")))) {
-            expectThrows(
-                    IllegalArgumentException.class,
-                    () -> new CssResource(
-                            "Button",
-                            CssResource.Kind.GLOBAL,
-                            List.of("Defaults"),
-                            List.of(),
-                            "",
-                            List.of(),
-                            providers,
-                            List.of()));
-        }
-        for (var key : List.of("implementation", "bindings", "providers", "symbols")) {
+        for (var key : List.of("implementation", "bindings", "symbols", "occurrences")) {
             var json = JsonParser.parseString(resource.json()).getAsJsonObject();
             json.remove(key);
             expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "Button"));
+        }
+    }
+
+    @Test
+    public void canonicalOccurrencesAreImmutableValidatedAndProjectedWithPruning() {
+        var root = new CssResource.SymbolId("Consumer", CssResource.SymbolKind.CLASS, "");
+        var property = new CssResource.SymbolId("Provider", CssResource.SymbolKind.PROPERTY, "accent");
+        var uses = new ArrayList<>(List.of(
+                new CssResource.Occurrence(root, 1, 4, List.of()),
+                new CssResource.Occurrence(property, 8, 12, List.of("Provider"))));
+        var resource = new CssResource(
+                "Consumer", CssResource.Kind.COMPONENT, List.of("Provider"), List.of(), "", List.of(), List.of(), uses);
+        uses.clear();
+        assertEquals(resource.occurrences().size(), 2);
+        assertEquals(CssResource.read(resource.json(), "Consumer"), resource);
+        expectThrows(
+                UnsupportedOperationException.class,
+                () -> resource.occurrences().clear());
+        var projected = resource.project(List.of(new SourceMap.Span(0, 5), new SourceMap.Span(8, 13)));
+        assertEquals(
+                projected.occurrences(),
+                List.of(
+                        new CssResource.Occurrence(root, 1, 4, List.of()),
+                        new CssResource.Occurrence(property, 5, 9, List.of("Provider"))));
+        assertTrue(resource.project(List.of(new SourceMap.Span(12, 14)))
+                .occurrences()
+                .isEmpty());
+        expectThrows(IllegalArgumentException.class, () -> resource.project(List.of(new SourceMap.Span(2, 4))));
+        for (var span : List.of(new int[] {-1, 4}, new int[] {1, 1}, new int[] {4, 1})) {
+            expectThrows(
+                    IllegalArgumentException.class,
+                    () -> new CssResource.Occurrence(root, span[0], span[1], List.of()));
+        }
+        expectThrows(IllegalArgumentException.class, () -> new CssResource.Occurrence(root, 1, 4, List.of("Provider")));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> new CssResource.Occurrence(property, 1, 4, List.of("Provider", "Provider")));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> new CssResource.Occurrence(property, 1, 4, List.of("../Provider")));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> resource.withOccurrences(List.of(
+                        resource.occurrences().get(1), resource.occurrences().get(0))));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> resource.withOccurrences(
+                        List.of(new CssResource.Occurrence(property, 1, 4, List.of("Missing")))));
+        for (var field : List.of("start", "end")) {
+            for (var value : List.of("null", "-1", "1.5", "\"1\"", "2147483648", "{}")) {
+                var json = JsonParser.parseString(resource.json()).getAsJsonObject();
+                json.getAsJsonArray("occurrences").get(0).getAsJsonObject().add(field, JsonParser.parseString(value));
+                expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "Consumer"));
+            }
         }
     }
 
@@ -266,8 +302,8 @@ public final class CssResourceTest {
                 "null",
                 "1",
                 "{}",
-                valid.replace("\"version\":6", "\"version\":6.1"),
-                valid.replace("\"version\":6", "\"version\":\"1\""),
+                valid.replace("\"version\":7", "\"version\":7.1"),
+                valid.replace("\"version\":7", "\"version\":\"1\""),
                 valid.replace("COMPONENT", "UNKNOWN"),
                 valid.replace("[]", "[1]"),
                 valid.replace("[]", "[null]"),
@@ -282,7 +318,7 @@ public final class CssResourceTest {
             var json = JsonParser.parseString(valid).getAsJsonObject();
             json.remove(key);
             expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "demo.Button"));
-            for (var replacement : List.of("null", "{}", "true", "7")) {
+            for (var replacement : List.of("null", "{}", "true", "999")) {
                 json.add(key, JsonParser.parseString(replacement));
                 expectThrows(IllegalArgumentException.class, () -> CssResource.read(json.toString(), "demo.Button"));
             }

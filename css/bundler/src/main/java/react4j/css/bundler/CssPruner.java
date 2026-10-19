@@ -3,42 +3,33 @@ package react4j.css.bundler;
 import com.google.gson.JsonParser;
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.AbstractHasTopLevelRules;
-import com.helger.css.decl.CSSDeclaration;
-import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSKeyframesRule;
-import com.helger.css.decl.CSSNestedDeclarations;
 import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorMemberPseudoIs;
 import com.helger.css.decl.CSSSelectorMemberPseudoWhere;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
-import com.helger.css.decl.CSSSupportsRule;
 import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
 import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import react4j.css.internal.CssCatalogue.Resource;
-import react4j.css.internal.CssExpressions;
 import react4j.css.internal.SourceMap;
 
 /** Proves impossible selectors and copies surviving bytes with their original mappings. */
 final class CssPruner {
-    record Selection(Resource resource, Set<String> references) {}
-
     private final Resource resource;
     private final Set<String> known;
     private final Set<String> present;
     private final CascadingStyleSheet sheet;
     private final List<Integer> lines = new ArrayList<>();
     private final List<SourceMap.Span> removed = new ArrayList<>();
-    private final Set<String> references = new HashSet<>();
 
     CssPruner(Resource resource, Set<String> known, Set<String> present) {
         this.resource = resource;
@@ -61,9 +52,8 @@ final class CssPruner {
                 .collect(Collectors.toSet());
     }
 
-    Selection prune(Set<String> animations) {
+    Resource prune(Set<String> animations) {
         removed.clear();
-        references.clear();
         rules(sheet.getAllRules(), animations);
         var spans = new ArrayList<SourceMap.Span>();
         int offset = 0;
@@ -77,14 +67,11 @@ final class CssPruner {
         }
         spans.add(new SourceMap.Span(offset, resource.css().length()));
         var output = SourceMap.project(resource.css(), resource.map(), spans);
-        return new Selection(
-                new Resource(
-                        resource.metadata(),
-                        output.css(),
-                        JsonParser.parseString(
-                                        output.map(resource.map().get("file").getAsString()))
-                                .getAsJsonObject()),
-                Set.copyOf(references));
+        return new Resource(
+                resource.metadata().project(spans),
+                output.css(),
+                JsonParser.parseString(output.map(resource.map().get("file").getAsString()))
+                        .getAsJsonObject());
     }
 
     private boolean rules(List<?> rules, Set<String> animations) {
@@ -99,40 +86,21 @@ final class CssPruner {
                     }
                     selectors(style.getAllSelectors());
                 }
-                style.getAllDeclarations().forEach(this::declaration);
                 rules(style.getAllRules(), animations);
             } else if (rule instanceof CSSKeyframesRule frames) {
                 if (!animations.contains(frames.getAnimationName())) {
                     remove(frames);
                     continue;
                 }
-                frames.getAllBlocks()
-                        .forEach(block -> block.getAllDeclarations().forEach(this::declaration));
             } else if (rule instanceof AbstractHasTopLevelRules nested) {
                 if (!rules(nested.getAllRules(), animations)) {
                     remove((ICSSSourceLocationAware) rule);
                     continue;
                 }
-                if (rule instanceof CSSSupportsRule supports) {
-                    CssExpressions.supports(supports.getAllSupportConditionMembers(), this::declaration);
-                }
-            } else if (rule instanceof CSSNestedDeclarations declarations) {
-                declarations.getAllDeclarations().forEach(this::declaration);
             }
             retained = true;
         }
         return retained;
-    }
-
-    private void declaration(CSSDeclaration declaration) {
-        if (declaration.getProperty().startsWith("--")) {
-            references.add(declaration.getProperty());
-        }
-        CssExpressions.visit(declaration.getExpression(), member -> {
-            if (member instanceof CSSExpressionMemberTermSimple simple) {
-                references.add(simple.getValue());
-            }
-        });
     }
 
     private void selectors(List<CSSSelector> selectors) {

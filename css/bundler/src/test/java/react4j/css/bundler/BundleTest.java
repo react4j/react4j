@@ -24,6 +24,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import react4j.css.internal.CssCatalogue;
 import react4j.css.internal.CssLink;
+import react4j.css.internal.CssNames;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.SourceMap;
 
@@ -81,10 +82,52 @@ public final class BundleTest {
                                 List.of(),
                                 List.of(new CssResource.SymbolId(owner, CssResource.SymbolKind.PROPERTY, "example"))))
                         : List.of(),
-                Map.of(),
                 bindings
                         ? List.of(new CssResource.Symbol(CssResource.SymbolKind.PROPERTY, "example", "--example", true))
-                        : List.of());
+                        : List.of(),
+                List.of());
+    }
+
+    @Test
+    public void variantsRejectRawCollisionsWithoutChangingTheLinkedTable() throws Exception {
+        String css = ".readable-root{color:red;}";
+        var id = new CssResource.SymbolId("Button", CssResource.SymbolKind.CLASS, "");
+        var metadata = new CssResource(
+                "Button",
+                CssResource.Kind.COMPONENT,
+                List.of(),
+                List.of(),
+                "Styled_Button",
+                List.of(new CssResource.Binding(
+                        "style", CssResource.SymbolKind.CLASS, "readable-root", List.of(), List.of(id))),
+                List.of(new CssResource.Symbol(CssResource.SymbolKind.CLASS, "", "readable-root", false)),
+                List.of(new CssResource.Occurrence(id, 1, 14, List.of())));
+        var resource = new CssCatalogue.Resource(
+                metadata,
+                css,
+                JsonParser.parseString(new SourceMap.Writer().append(css).map("Button.css"))
+                        .getAsJsonObject());
+        var catalogue = new CssCatalogue(Map.of("Button", resource), "1".repeat(64));
+        var link = CssLink.create(catalogue, "//:app", true);
+        String original = link.json();
+        Path shared = dir().resolve("shared.css");
+        Files.writeString(shared, ".a{color:blue;}");
+        var error = expectThrows(
+                IllegalArgumentException.class,
+                () -> Bundle.assemble(catalogue, List.of(shared), List.of(), "app.css", link, Set.of("Button#style")));
+        assertTrue(String.valueOf(error.getMessage()).contains("shared.css: raw CSS name conflicts"));
+        assertEquals(link.json(), original);
+        assertTrue(Bundle.assemble(catalogue, List.of(), List.of(), "app.css", link, Set.of("Button#style"))
+                .css()
+                .contains(".a{color:red;}"));
+        var prefixed = CssLink.create(catalogue, "//:prefixed", true, new CssNames.Policy(true, "app-"));
+        assertTrue(Bundle.assemble(catalogue, List.of(shared), List.of(), "app.css", prefixed, Set.of("Button#style"))
+                .css()
+                .contains(".app-a{color:red;}"));
+        var readable = CssLink.create(catalogue, "//:readable", true, new CssNames.Policy(false, ""));
+        assertTrue(Bundle.assemble(catalogue, List.of(shared), List.of(), "app.css", readable, Set.of("Button#style"))
+                .css()
+                .contains(".readable-root{color:red;}"));
     }
 
     @Test

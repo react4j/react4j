@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
@@ -165,20 +166,41 @@ public record CssNames(Policy policy, List<Entry> entries) {
                                 "CSS binding value differs from its canonical composition: " + binding.method());
                     }
                 }));
+        catalogue
+                .resources()
+                .values()
+                .forEach(resource -> resource.metadata().occurrences().forEach(occurrence -> {
+                    var symbol = symbols.get(occurrence.symbol());
+                    if (null == symbol
+                            || occurrence.end() > resource.css().length()
+                            || !resource.css()
+                                    .substring(occurrence.start(), occurrence.end())
+                                    .equals(symbol.value())) {
+                        throw new IllegalArgumentException("CSS occurrence differs from its canonical catalogue: "
+                                + occurrence.symbol().id());
+                    }
+                }));
         var reserved = new HashSet<>(RESERVED);
         symbols.values().forEach(symbol -> reserved.add(symbol.value()));
         // Names outside the generated inventory are intentional authored names.
-        catalogue.resources().values().forEach(resource -> reserved.addAll(CssRenamer.names(resource.css())));
+        catalogue
+                .resources()
+                .values()
+                .forEach(resource -> reserved.addAll(CssTokens.read(resource.css()).stream()
+                        .map(CssTokens.Token::name)
+                        .toList()));
         var entries = new ArrayList<Entry>();
         int next = 0;
         for (var item : symbols.entrySet()) {
             var id = item.getKey();
             var symbol = item.getValue();
             String compiled = symbol.value();
-            if (policy.compressed() && !symbol.stable() && SymbolKind.CLASS == symbol.kind()) {
+            if (policy.compressed() && !symbol.stable()) {
                 do {
-                    compiled = policy.prefix() + shortName(next++);
-                } while (reserved.contains(compiled));
+                    compiled = (SymbolKind.PROPERTY == symbol.kind() ? "--" : "") + policy.prefix() + shortName(next++);
+                } while (reserved.contains(compiled)
+                        || SymbolKind.ANIMATION == symbol.kind()
+                                && RESERVED.contains(compiled.toLowerCase(Locale.ROOT)));
                 reserved.add(compiled);
             }
             entries.add(new Entry(id, symbol.value(), compiled, symbol.stable(), getters.getOrDefault(id, List.of())));

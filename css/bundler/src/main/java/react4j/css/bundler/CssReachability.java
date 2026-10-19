@@ -62,8 +62,8 @@ final class CssReachability {
             if (live.contains(value.id())) {
                 graph.activate(value.owner());
                 value.binding().requires().forEach(graph::activate);
-                if (CssResource.SymbolKind.ID != value.binding().kind()) {
-                    graph.reference(value.owner(), value.binding().value());
+                if (CssResource.SymbolKind.ANIMATION == value.binding().kind()) {
+                    value.binding().symbols().forEach(graph::animation);
                 }
             }
         }
@@ -72,9 +72,14 @@ final class CssReachability {
             graph.queued.remove(owner);
             var resource = Objects.requireNonNull(graph.resources.get(owner));
             resource.metadata().includes().forEach(graph::activate);
-            var selection = Objects.requireNonNull(graph.pruners.get(owner)).prune(graph.animations);
-            graph.retained.put(owner, selection.resource());
-            selection.references().forEach(symbol -> graph.reference(owner, symbol));
+            var selected = Objects.requireNonNull(graph.pruners.get(owner)).prune(graph.animations);
+            graph.retained.put(owner, selected);
+            for (var occurrence : selected.metadata().occurrences()) {
+                occurrence.requires().forEach(graph::activate);
+                if (CssResource.SymbolKind.ANIMATION == occurrence.symbol().kind()) {
+                    graph.animation(occurrence.symbol());
+                }
+            }
         }
         return graph.retained;
     }
@@ -94,18 +99,22 @@ final class CssReachability {
         }
     }
 
-    private void reference(String owner, String symbol) {
-        var providers = Objects.requireNonNull(resources.get(owner))
-                .metadata()
-                .providers()
-                .get(symbol);
-        if (null != providers) {
-            providers.forEach(this::activate);
+    private void animation(CssResource.SymbolId id) {
+        var resource = resources.get(id.owner());
+        if (null == resource) {
+            throw new IllegalArgumentException("Missing CSS animation owner: " + id.owner());
         }
-        var animationOwner = animationOwners.get(symbol);
-        if (null != animationOwner && animations.add(symbol)) {
-            activate(animationOwner);
-            enqueue(animationOwner);
+        var symbol = resource.metadata().symbols().stream()
+                .filter(candidate ->
+                        candidate.kind() == id.kind() && candidate.name().equals(id.name()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Missing canonical CSS animation: " + id.id()));
+        if (!id.owner().equals(animationOwners.get(symbol.value()))) {
+            throw new IllegalArgumentException("CSS animation differs from its canonical owner: " + id.id());
+        }
+        if (animations.add(symbol.value())) {
+            activate(id.owner());
+            enqueue(id.owner());
         }
     }
 }

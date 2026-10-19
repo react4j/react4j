@@ -58,12 +58,24 @@ testSuite({
   },
   testClassNamingPolicy() {
     const root = /** @type {!Element} */ (container.querySelector('#success')).classList.item(0);
+    const control = /** @type {!HTMLElement} */ (container.querySelector('[data-symbol=control]'));
+    const property = Example.successProperty();
+    const animation = computed('direct-animation').animationName;
     asserts.assertNotNull(root);
     if (Mode.environment === 'production' && variant !== 'uncompressed-') {
       asserts.assertFalse(root.startsWith('jcss-'));
+      asserts.assertFalse(control.id.startsWith('jcss-'));
+      asserts.assertFalse(property.startsWith('--jcss-'));
+      asserts.assertFalse(animation.startsWith('jcss-'));
+      asserts.assertEquals(variant === 'prefixed-', control.id.startsWith('app-'));
+      asserts.assertEquals(variant === 'prefixed-', property.startsWith('--app-'));
+      asserts.assertEquals(variant === 'prefixed-', animation.startsWith('app-'));
       asserts.assertEquals(variant === 'prefixed-', root.startsWith('app-'));
     } else {
       asserts.assertTrue(root.startsWith('jcss-'));
+      asserts.assertTrue(control.id.startsWith('jcss-'));
+      asserts.assertTrue(property.startsWith('--jcss-'));
+      asserts.assertTrue(animation.startsWith('jcss-'));
     }
   },
   testGeneratedBindingsAreSingletons() {
@@ -124,6 +136,14 @@ testSuite({
     asserts.assertEquals(Mode.environment === 'production' ? 0 : 1,
       names.filter(name => name.endsWith('--keyframes-unused')).length);
     asserts.assertArrayEquals(expected.sort(), names.filter(name => !name.endsWith('--keyframes-unused')).sort());
+  },
+  testEqualReadablePropertyAliasesKeepOnlyTheirOwnProvider() {
+    const node = /** @type {!HTMLElement} */ (container.querySelector('[data-symbol=property-aliases]'));
+    const actual = getComputedStyle(node);
+    const optimized = Mode.environment === 'production';
+    asserts.assertEquals(optimized ? '13px' : '37px', actual.paddingLeft);
+    asserts.assertEquals(optimized ? '0px' : '37px', actual.borderRightWidth);
+    asserts.assertEquals(!optimized, style.textContent.includes('border-right:37px'));
   },
   testCheckedIdsFragmentsAndJavaOnlyResourceBindings() {
     const control = /** @type {!HTMLElement} */ (container.querySelector('[data-symbol=control]'));
@@ -275,7 +295,7 @@ testSuite({
       if (!group) { group = []; groups.set(owner, group); ordered.push(group); }
       group.push(rules[i].cssText);
     }
-    asserts.assertEquals(Mode.environment === 'production' ? 3 : 4, groups.size);
+    asserts.assertEquals(Mode.environment === 'production' ? 4 : 5, groups.size);
     while (componentRules.length) layer.deleteRule(0);
     for (const animation of animations) layer.insertRule(animation, componentRules.length);
     for (let i = ordered.length - 1; i >= 0; i--) {

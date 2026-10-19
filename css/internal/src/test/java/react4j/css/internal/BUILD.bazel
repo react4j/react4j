@@ -8,6 +8,7 @@ java_testng(
         "CssRenamerTest.java",
         "CssResourceTest.java",
         "CssSyntaxTest.java",
+        "CssTokensTest.java",
         "SourceMapTest.java",
     ],
     test_classes = [
@@ -17,6 +18,7 @@ java_testng(
         "react4j.css.internal.CssResourceTest",
         "react4j.css.internal.SourceMapTest",
         "react4j.css.internal.CssSyntaxTest",
+        "react4j.css.internal.CssTokensTest",
     ],
     visibility = [
         "//:__pkg__",
