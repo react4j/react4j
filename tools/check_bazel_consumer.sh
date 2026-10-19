@@ -67,7 +67,7 @@ j2cl_library(
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     plugins = ["@react4j//:css_processor_plugin", "@sting//third_party/java:nullaway_plugin"],
     javacopts = ["-XDaddTypeAnnotationsToSymbol=true", "-Xep:ArrayEquals:ERROR", "-Xep:NullAway:ERROR", "-XepOpt:NullAway:OnlyNullMarked=true", "-XepOpt:NullAway:JSpecifyMode=true", "-XepOpt:NullAway:AssertsEnabled=true"],
-    deps = ["//src/main/assets/react4j/css/example:media", "@react4j//:core", "@react4j//:dom", "@react4j//:css", "@j2cl//:jsinterop-annotations-j2cl", "//:jspecify"],
+    deps = ["//src/main/assets/react4j/css/example:media", "@react4j//:dom", "@react4j//:css"],
 )
 closure_js_library(name = "entry", srcs = ["AssetsExample.entry.js"], deps = [":assets"])
 JAVA
@@ -137,7 +137,7 @@ j2cl_library(
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     plugins = ["@react4j//:processor", "@arez//:arez_processor_plugin", "@sting//third_party/java:nullaway_plugin"],
     javacopts = ["-XDaddTypeAnnotationsToSymbol=true", "-Xep:NullAway:ERROR", "-XepOpt:NullAway:OnlyNullMarked=true", "-XepOpt:NullAway:JSpecifyMode=true", "-XepOpt:NullAway:AssertsEnabled=true"],
-    deps = ["@react4j//:core", "@react4j//:dom", "@arez//:core-j2cl", "//:jspecify"],
+    deps = ["@react4j//:dom"],
     visibility = ["//src/test/js/isolated:__pkg__"],
 )
 JAVA
@@ -169,11 +169,12 @@ package(default_visibility = ["//:__pkg__"])
 j2cl_library(name = "array", srcs = ["BadArray.java"], javacopts = ["-Xep:ArrayEquals:ERROR"])
 j2cl_library(name = "null", srcs = ["BadNull.java"], plugins = ["@sting//third_party/java:nullaway_plugin"], javacopts = ["-XDaddTypeAnnotationsToSymbol=true", "-Xep:NullAway:ERROR", "-XepOpt:NullAway:OnlyNullMarked=true", "-XepOpt:NullAway:JSpecifyMode=true", "-XepOpt:NullAway:AssertsEnabled=true"], experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True, deps = ["//:jspecify"])
 JAVA
-expect_diagnostic() {
-  local mode="$1" target="$2" diagnostic="$3" log="$scratch/checker.log"
-  if bazel --output_base="$scratch/bazel" build -c "$mode" "$target" >"$log" 2>&1; then
+expect_failure() {
+  local diagnostic="$1" log="$scratch/failure.log"
+  shift
+  if bazel --output_base="$scratch/bazel" "$@" >"$log" 2>&1; then
     cat "$log" >&2
-    echo "Expected $diagnostic when linking $target in $mode" >&2
+    echo "Expected $diagnostic from bazel $*" >&2
     return 1
   fi
   if ! grep -Fq "$diagnostic" "$log"; then
@@ -181,25 +182,14 @@ expect_diagnostic() {
     return 1
   fi
 }
-expect_analysis_failure() {
-  local diagnostic="$1" log="$scratch/visibility.log"
-  if bazel --output_base="$scratch/bazel" build --nobuild //denied:target >"$log" 2>&1; then
-    cat "$log" >&2
-    echo "Expected $diagnostic for downstream dependency or load" >&2
-    return 1
-  fi
-  if ! grep -Fq "$diagnostic" "$log"; then
-    cat "$log" >&2
-    return 1
-  fi
-}
+
 cd "$workspace"
 bazel --output_base="$scratch/bazel" build //src/main/java/isolated:views //:application //:application_manifest @react4j//:core @react4j//:dom
 bazel --output_base="$scratch/bazel" build -c opt //:application //:application_manifest
 for mode in fastbuild opt; do
   bazel --output_base="$scratch/bazel" test -c "$mode" //src/test/js/isolated:browser --test_output=errors
-  expect_diagnostic "$mode" //:bad_array.js '[ArrayEquals]'
-  expect_diagnostic "$mode" //:bad_null.js '[NullAway]'
+  expect_failure '[ArrayEquals]' build -c "$mode" //:bad_array.js
+  expect_failure '[NullAway]' build -c "$mode" //:bad_null.js
 done
 mkdir "$workspace/denied"
 for target in \
@@ -214,11 +204,11 @@ for target in \
   '@react4j//third_party/java:jspecify-j2cl' \
   '@react4j//tools/browser:preview'; do
   printf 'filegroup(name = "target", testonly = True, srcs = ["%s"])\n' "$target" > "$workspace/denied/BUILD.bazel"
-  expect_analysis_failure 'not visible'
+  expect_failure 'not visible' build --nobuild //denied:target
 done
 for target in core-j2cl dom-j2cl react4j_processor_plugin; do
   printf 'filegroup(name = "target", srcs = ["@react4j//:%s"])\n' "$target" > "$workspace/denied/BUILD.bazel"
-  expect_analysis_failure 'no such target'
+  expect_failure 'no such target' build --nobuild //denied:target
 done
 for entry in \
   'tools/browser:java.bzl java_j2cl_library' \
@@ -231,6 +221,6 @@ for entry in \
   'tools/web-assets:defs.bzl prepare_file'; do
   read -r label symbol <<< "$entry"
   printf 'load("@react4j//%s", "%s")\nfilegroup(name = "target")\n' "$label" "$symbol" > "$workspace/denied/BUILD.bazel"
-  expect_analysis_failure 'not visible for loading'
+  expect_failure 'not visible for loading' build --nobuild //denied:target
 done
 echo 'External Bazel consumer passed with native J2CL, caller-owned checks, assets and enforced public boundaries'

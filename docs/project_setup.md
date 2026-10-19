@@ -60,7 +60,7 @@ Run Maven on Java 21+. Add the DOM library (which includes the core runtime tran
 </project>
 ```
 
-`-XDaddTypeAnnotationsToSymbol=true` preserves type-use annotations from compiled dependencies for processor inspection. Add compatible Arez/Sting processors when using those integrations. Keep full Error Prone and JSpecify-mode NullAway checking enabled in the application; the repository's compiler policy and generated-code checks provide the reference configuration.
+`-XDaddTypeAnnotationsToSymbol=true` preserves type-use annotations from compiled dependencies for processor inspection. Add compatible Arez/Sting processors when using those integrations. Configure Error Prone and JSpecify-mode NullAway in the application; its checker selection can differ from the repository policy.
 
 Generated source formatting is enabled by default. The JVM running the processor needs these exports, supplied through `.mvn/jvm.config` or `MAVEN_OPTS` when Maven runs javac in-process:
 
@@ -77,16 +77,15 @@ For forked javac, pass them with `-J`, such as `-J--add-exports=jdk.compiler/com
 
 ## Configure Bazel
 
-Public targets consume the assembled publication archives:
+Use these public targets with native `j2cl_library`:
 
-| Bazel label | Artifact |
+| Bazel label | Purpose |
 | --- | --- |
-| `@react4j//:core` | `react4j-core` binary/source jar |
-| `@react4j//:dom` | `react4j-dom` binary/source jar |
-| `@react4j//:processor` | Shaded `react4j-processor` jar |
-| `@react4j//:react4j_processor_plugin` | Assembled annotation processor |
-| `@react4j//:core-j2cl` | Core publication sources for J2CL |
-| `@react4j//:dom-j2cl` | DOM publication sources for J2CL |
+| `@react4j//:core` | Core browser library from publication sources |
+| `@react4j//:dom` | DOM browser library, exporting core |
+| `@react4j//:css` | CSS and asset annotations |
+| `@react4j//:processor` | React4j annotation processor plugin |
+| `@react4j//:css_processor_plugin` | CSS and asset annotation processor plugin |
 
 Bazel applies overrides and compiler patches from the application's root module. From the React4j checkout at the revision you intend to use, run `tools/export_bazel_config.sh /absolute/path/to/application`. Commit the generated `third_party/react4j/` configuration and regenerate it when updating React4j. For a local sibling checkout, the application module can use:
 
@@ -98,7 +97,25 @@ include("//third_party/react4j:dependencies.MODULE.bazel")
 
 For a published Git revision, replace the local override with a `git_override` pinned to that immutable revision and use configuration exported from the same revision. Merge duplicate dependency declarations or overrides with those already in the application. Apply the Java/toolchain options from React4j's `.bazelrc`; dependency repositories' rc files are not inherited.
 
-Use `@react4j//:react4j_processor_plugin` in Java targets' `plugins` and the public core/DOM targets in `deps`. Compile checked application source archives with J2CL and use the public J2CL dependencies. Load the patched React/ReactDOM UMD assets separately from the Closure bundle, as the runnable `doc-examples` build does. Development bundles require the runtime Closure define map before the bundle loads; optimized production folds the explicit definitions.
+Put the React4j processor in the native J2CL target's `plugins` and DOM or core in `deps`. Add the CSS processor and annotation dependency when authoring styles or assets. Add compatible Arez/Sting processors for generated integrations. Core and DOM export the framework dependencies used by generated code.
+
+J2CL runs javac with the application's `plugins` and `javacopts`; a separate Java library and React4j's internal checked-library helper are unnecessary. Choose Error Prone checks in the application. For JSpecify-mode NullAway, supply its plugin and these options:
+
+```text
+-XDaddTypeAnnotationsToSymbol=true
+-Xep:NullAway:ERROR
+-XepOpt:NullAway:OnlyNullMarked=true
+-XepOpt:NullAway:JSpecifyMode=true
+-XepOpt:NullAway:AssertsEnabled=true
+```
+
+`AssertsEnabled` lets NullAway use assertions in generated React4j/Arez code to refine nullness. Enable J2CL's `experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage` only with JSpecify static checking. The [external consumer check](https://github.com/react4j/react4j/blob/master/tools/check_bazel_consumer.sh) demonstrates native J2CL with application-selected checks, both processors and asset dependencies.
+
+Load `web_assets`, `css_js_binary`, `css_bundle` and `web_bundle` from `@react4j//css:defs.bzl` for [CSS and asset integration](https://github.com/react4j/react4j/blob/master/css/README.md). Asset catalogues are ordinary J2CL `deps`. CSS linking requests the existing J2CL javac action as validation, because JavaScript-only linking can otherwise skip configured checks.
+
+`@react4j//tools/browser:rules.bzl` offers optional `browser_application`, `browser_application_variant` and `browser_test` conveniences. They select the development/optimized runtime configuration, assemble React/ReactDOM with finalized application files and expose the build-only manifest, or run tests in pinned Chromium. Applications can instead use the lower-level CSS rules with their own packaging and browser-test infrastructure. Compression and deployment/cache policy belong downstream.
+
+Public support targets provide the linker worker, runtime assets, mode selection and Chromium dependencies for those macros; they are not additional library APIs. Examples, JVM imports, checker policy and implementation tools are repository-only. The external consumer check maintains and verifies the complete public-target inventory. If assembling a page directly, load the patched React/ReactDOM UMD assets separately from the Closure bundle and provide runtime Closure defines before a development bundle loads.
 
 ## Configure your IDE
 

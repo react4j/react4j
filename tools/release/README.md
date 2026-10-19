@@ -2,11 +2,11 @@
 
 `bazel build //tools/release:maven_artifacts` produces binary, source, Javadoc and POM files for `react4j-core`, `react4j-dom` and `react4j-processor`. `//tools/release:site_javadoc` builds the aggregate API archive.
 
-The public targets `//:core`, `//:dom`, `//:processor` and `//:react4j_processor_plugin` consume these assembled binary jars. Libraries and generated consumer classes target Java 17; annotation processing requires Java 21. Processor dependencies are shaded into its jar.
+Public `//:core` and `//:dom` provide J2CL libraries from the assembled source archives; `//:processor` wraps the shaded processor jar as a plugin. JVM jar imports are repository-only. Libraries and generated consumer classes target Java 17; annotation processing requires Java 21. Processor dependencies are shaded into its jar.
 
-Binary jars contain bytecode and metadata. Source jars contain all authored and generated Java, native JavaScript, and the pinned React/ReactDOM assets. J2CL consumers use a byte-preserving projection of these source archives that excludes only the public UMD asset directories from Closure compilation. Browser pages load the UMD scripts separately. Source archives depend on checked JVM class outputs, so building a J2CL consumer also enforces the owned Java checker policy.
+Binary jars contain bytecode and metadata. Source jars contain all authored and generated Java, native JavaScript, and the pinned React/ReactDOM assets. J2CL consumers use a byte-preserving projection of these source archives that excludes only the public UMD asset directories from Closure compilation. Browser pages load the UMD scripts separately. Source archives depend on checked JVM class outputs, so building the publication sources for J2CL also checks React4j's unstripped Java under the repository policy. Downstream application sources use native J2CL and their own checker selection.
 
-Run `bazel test //tools/release:archive_checks //tools/release/consumer/src/main/java/isolated:packaged_consumer` to inspect the artifacts and exercise both the public Bazel targets and an isolated Java 21 compiler/runtime. `tools/release/check_reproducibility.sh` compares all 13 archives/POMs against an independent Bazel build and removes its temporary build data.
+Run `bazel test //tools/release:archive_checks //tools/release/consumer/src/main/java/isolated:packaged_consumer` to inspect the artifacts and exercise an isolated Java 21 compiler/runtime. `tools/check_bazel_consumer.sh` verifies the public J2CL targets separately. `tools/release/check_reproducibility.sh` compares the publication archives and POMs against an independent Bazel build and removes its temporary build data.
 
 ## Dependency publication prerequisite
 

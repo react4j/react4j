@@ -352,7 +352,7 @@ Asset declarations follow the same stateless class, nested naming and effective-
 Declare files explicitly beside their asset sources:
 
 ```starlark
-load("//css:defs.bzl", "web_assets")
+load("@react4j//css:defs.bzl", "web_assets")
 
 web_assets(
     name = "media",
@@ -361,7 +361,7 @@ web_assets(
 )
 ```
 
-Add this catalogue to the owning `java_j2cl_library`'s `assets` list. The [example Java build](examples/save-button/src/main/java/react4j/css/example/BUILD.bazel) shows the complete setup. The catalogue derives logical paths from the package's `src/main/assets/` (or `src/test/assets/`) location. Files in that Bazel package retain their relative subdirectories; a source supplied by another package uses its basename. Explicit generated files work too: preprocess first and list the result in `web_assets`, as the [SVG example](examples/save-button/src/main/assets/react4j/css/example/BUILD.bazel) does. Filesystem scanning and Java string interpolation are unnecessary.
+Add this catalogue to the owning native `j2cl_library`'s `deps`. The catalogue derives logical paths from the package's `src/main/assets/` (or `src/test/assets/`) location. Files in that Bazel package retain their relative subdirectories; a source supplied by another package uses its basename. Explicit generated files work too: preprocess first and list the result in `web_assets`, as the [SVG example](examples/save-button/src/main/assets/react4j/css/example/BUILD.bazel) does. Filesystem scanning and Java string interpolation are unnecessary.
 
 ### CSS URLs and owned fonts
 
@@ -434,12 +434,12 @@ React4j emits uncompressed files. Downstream applications choose which retained 
 
 ## Build integration
 
-Apply `//css/processor:plugin` to the J2CL target that owns the style definitions and add `//css/core:core-j2cl` to its dependencies. Browser clients do not need to declare a separate Java library. See the [example Java build](examples/save-button/src/main/java/react4j/css/example/BUILD.bazel) for processor and dependency configuration.
+Apply `@react4j//:css_processor_plugin` to the native J2CL target that owns the definitions and add `@react4j//:css` to its dependencies. Browser clients configure their own compiler checks through J2CL; no separate Java library is required. See [Project Setup](../docs/project_setup.md#configure-bazel) for toolchain and JSpecify checking configuration.
 
 Use [css_js_binary and css_bundle](defs.bzl) to link JavaScript and collect its styles. The browser application and test macros already use this integration:
 
 ```starlark
-load("//css:defs.bzl", "css_bundle", "css_js_binary", "web_bundle")
+load("@react4j//css:defs.bzl", "css_bundle", "css_js_binary", "web_bundle")
 
 css_js_binary(
     name = "application_bundle",

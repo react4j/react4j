@@ -41,7 +41,11 @@ Processor fixtures are in `processor/src/test/fixtures`. The harness checks comp
 
 ## Browser and distribution boundaries
 
-Public `//:core`, `//:dom`, `//:processor` and `//:react4j_processor_plugin` use assembled publication jars. Public `//:core-j2cl` and `//:dom-j2cl` derive from the complete publication source archives. J2CL input excludes only separately loaded UMD asset directories; checked Java, native configuration and extern bytes are preserved. A source-only build still depends on static JVM checks.
+Public `//:core` and `//:dom` provide J2CL libraries derived from the complete publication source archives; `//:css` supplies CSS annotations. `//:processor` and `//:css_processor_plugin` are annotation processor plugins. Other targets default to repository-only visibility, with explicit exceptions for dependencies of public macros. Internal Starlark files restrict loading separately.
+
+The repository's `java_j2cl_library` helper compiles a JVM target under the full Java 17 checker policy before forwarding sources to J2CL. This supports JVM tests and checks declarations stripped by J2CL as `@GwtIncompatible`. Publication source archives also depend on their JVM class outputs to validate the complete sources. These are repository verification requirements; downstream applications use native J2CL with their own checker selection. CSS linking requests J2CL's existing javac outputs as validations so JavaScript-only builds run those checks.
+
+J2CL publication inputs exclude only separately loaded UMD asset directories; Java sources, native configuration and extern bytes are preserved. The [external consumer check](tools/check_bazel_consumer.sh) owns the public-target inventory and verifies allowed and denied dependency/load paths.
 
 Keep React/ReactDOM versions and browser mode switches aligned with the runtime and asset checks. Development uses BUNDLE plus runtime Closure defines; `-c opt` selects ADVANCED production. Browser tests load the real pinned runtime assets and verify rendering, generated inputs, context and configuration in both modes.
 
