@@ -76,9 +76,10 @@ browser_application(
     html = "public/index.html",
     styles = {":styles": "css/assets.css"},
 )
+filegroup(name = "application_manifest", srcs = [":application"], output_group = "manifest")
 BUILD
 cd "$workspace"
 bazel --output_base="$scratch/bazel" test //:consumer --test_output=errors
-bazel --output_base="$scratch/bazel" build //:application @react4j//:core-j2cl @react4j//:dom-j2cl @react4j//doc-examples:hello_world
-bazel --output_base="$scratch/bazel" build -c opt //:application @react4j//doc-examples:hello_world
+bazel --output_base="$scratch/bazel" build //:application //:application_manifest @react4j//:core-j2cl @react4j//:dom-j2cl @react4j//doc-examples:hello_world
+bazel --output_base="$scratch/bazel" build -c opt //:application //:application_manifest @react4j//doc-examples:hello_world
 echo 'External Bazel consumer passed with exported root configuration and publication archives'

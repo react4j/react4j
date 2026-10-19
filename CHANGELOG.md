@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Declare checked SVG, image and font files alongside Java components with `@Assets`/`@Asset`. Use checked CSS URLs and owned `@font-face` families, share families across styles, and automatically package surviving files with content-addressed URLs, source maps, useful Brotli representations and validated offline inventories. Asset byte changes preserve Java/J2CL/Closure build caches.
+* Declare checked SVG, image and font files alongside Java components with `@Assets`/`@Asset`. Use checked CSS URLs and owned `@font-face` families, share families across styles, and automatically package surviving files with content-addressed URLs, source maps and a complete build-only manifest for downstream deployment tooling. Asset byte changes preserve Java/J2CL/Closure build caches.
 
 * Compress generated CSS class, ID, animation and custom-property names in optimized builds, with a separate disable switch, optional link prefix, `@CssStable` contracts and a complete reverse-name artifact. Preserve authored CSS mappings and include generated binding Java in JavaScript source maps.
 * Share checked IDs across CSS definitions through selected `@CssImport` bindings. CSS accessor annotations follow the effective Java declaration, matching React4j interface conventions.

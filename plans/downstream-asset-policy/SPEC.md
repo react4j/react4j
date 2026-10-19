@@ -51,3 +51,7 @@ The assembler validates the linked inventory and exact linked file set, then add
 ## Open questions
 
 None.
+
+## Canonical owners
+
+[Checked Web Assets](../../docs/specs/web-assets.md) owns plain output, manifest completeness and downstream policy ownership. [Finalize asset URLs after linking](../../docs/adr/0003-finalize-asset-urls-after-linking.md) owns the unchanged content-independent declaration boundary. [Asset inventory](../../docs/glossary/README.md#asset-inventory) defines the output account; the CSS README owns authoring and Bazel usage. No new ADR is warranted for removing unshipped deployment policy.

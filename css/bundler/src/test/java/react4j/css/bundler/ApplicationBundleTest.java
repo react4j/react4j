@@ -145,7 +145,7 @@ public final class ApplicationBundleTest {
     }
 
     @Test
-    public void explicitApplicationFilesHaveNoReservedPolicyNames() throws Exception {
+    public void explicitFilesPreserveNamesAndNestedDestinations() throws Exception {
         var directory = Files.createTempDirectory("application-files");
         try {
             var options = options(directory);

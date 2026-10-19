@@ -397,15 +397,15 @@ Share a family through a selected import, for example `@CssImport(value = Fonts.
 
 Checked URLs also work in `image-set()` strings and preserve query/fragment suffixes, such as `url("asset:media.icon#mark")`. External HTTP(S), protocol-relative, data and blob URLs remain external; `url(#id)` remains a same-document reference. Other local file URLs must use a checked asset import. Asset imports alone do not retain every file.
 
-### Delivery and offline lists
+### Application files and downstream delivery
 
 The application finalizer combines surviving Java getters with references in every selected CSS variant. Only their files and explicit application assets are delivered. Optimized builds prune dead getters, rules and font faces; development builds conservatively retain available Java bindings. The [packaged example](examples/save-button/src/main/java/react4j/css/example/AssetsExample.java) demonstrates Java images, a CSS-only background, a font and an unused asset.
 
 URLs use a digest of the processed, uncompressed bytes and a media-type extension. Compatible identical files deduplicate. Java URLs resolve relative to the external classic application script, including under nested document routes; CSS URLs resolve relative to the deployed stylesheet. Serve the generated application tree intact. JavaScript and CSS source maps preserve their Java origins after URL finalization.
 
-Each file has independently cached preparation and pinned native Brotli actions. Useful `.br` representations accompany canonical files; omit them when compression is larger. Asset byte changes rerun preparation and final URL assembly while Java, J2CL and Closure compilation remain cached. Preparation may run for unused candidates on their first build, even though those candidates are excluded from delivery.
+Per-file preparation computes content metadata independently. Asset byte changes rerun preparation and final URL assembly while Java, J2CL and Closure compilation remain cached. Metadata preparation may run for unused candidates on their first build, even though those candidates are excluded from delivery.
 
-`browser_application` accepts finalized styles and an application-owned offline policy:
+`browser_application` combines finalized styles with explicit application files:
 
 ```starlark
 browser_application(
@@ -415,13 +415,22 @@ browser_application(
     html = "public/index.html",
     styles = {":styles": "css/application.css"},
     assets = {"public/favicon.ico": "favicon.ico"},
-    precache = ["app.js", "com/biz/ui/card/icon.svg"],
 )
 ```
 
-`precache` selects retained logical asset paths or explicit application destinations. An unknown path fails; selecting a dead asset does not make it live. Public `precache.json` and `on-demand.json` contain sorted canonical URL arrays relative to the application root. Feed them to the application's existing worker or fetching policy. They do not install a worker or trigger downloads themselves.
+The target's default output is the application directory. Its build-only `application.manifest.json` inventories every delivered file with its logical source, accessor, URL, SHA-256 digest, size, MIME type and retention reason, plus pruned candidates. The manifest stays outside the application directory. Expose it to a downstream Bazel action through its output group:
 
-The build-only `application.manifest.json` inventories every delivered file, logical source, accessor, URL, SHA-256 digest, size, useful representations and retention reason, plus pruned candidates. Expose it to another Bazel action with a filegroup whose `srcs` contains the application and whose `output_group` is `"manifest"`. Use the manifest's `representations` map to select identity/Brotli files for upload or further deployment processing. Serve a `.br` file at its canonical URL with the original MIME type, `Content-Encoding: br` and `Vary: Accept-Encoding`; the local preview supports this negotiation. The build-only inventory stays outside the application directory. See the [asset contract](../docs/specs/web-assets.md) for the delivery guarantees.
+```starlark
+filegroup(
+    name = "application_manifest",
+    srcs = [":application"],
+    output_group = "manifest",
+)
+```
+
+Downstream rules can take `:application` as a directory input and `:application_manifest` as a file input. The manifest's `assets` entries enumerate the delivered files: each `url` is a path relative to the directory, with `sha256`, `size` and `mediaType` describing its bytes. Multiple logical assets can share one URL. The `pruned` list records declared assets excluded by linking.
+
+React4j emits uncompressed files. Downstream applications choose which retained files to compress, how to serve them and which URLs to precache or fetch on demand. Apply those policies after linking to avoid processing discarded candidates. See the [asset contract](../docs/specs/web-assets.md) for the delivery guarantees.
 
 ## Build integration
 

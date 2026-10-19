@@ -30,7 +30,7 @@ public final class PreviewTest {
             var root = Files.createDirectory(directory.resolve("root"));
             var mounted = Files.createDirectories(root.resolve("mount/assets"));
             var source = mounted.resolve("icon.svg");
-            Files.writeString(source, "<svg><path d='M0 0L10 10'/></svg>".repeat(1000));
+            Files.writeString(source, "<svg><path d='M0 0L10 10'/></svg>");
             Files.writeString(root.resolve("index.html"), "<title>preview</title>");
             Files.writeString(root.resolve("mount/index.html"), "<title>mount</title>");
             var outside = directory.resolve("outside.svg");

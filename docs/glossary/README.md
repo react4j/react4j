@@ -36,4 +36,4 @@ A file identified by a canonical logical path, exposed through checked Java decl
 
 ### Asset inventory
 
-A build-only account of retained files and pruned [Checked asset](#checked-asset) candidates, connecting their source identities to deployment URLs, contents, representations and retention reasons.
+A build-only account of retained files and pruned [Checked asset](#checked-asset) candidates, connecting their source identities to deployment URLs, contents and retention reasons.
