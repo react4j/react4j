@@ -16,7 +16,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /** Assembles retained files and their useful representations into the deployable application tree. */
-public final class ApplicationBundle {
+final class ApplicationBundle {
     private ApplicationBundle() {}
 
     public static void main(String[] args) throws IOException {

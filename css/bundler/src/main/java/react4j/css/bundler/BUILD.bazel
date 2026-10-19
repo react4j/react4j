@@ -10,7 +10,7 @@ java_library(
     ],
     visibility = [
         "//:__pkg__",
-        "//css:__subpackages__",
+        "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
     ],
     deps = [
         "//css/internal/src/main/java/react4j/css/internal",
@@ -36,7 +36,7 @@ java_library(
     ],
     visibility = [
         "//:__pkg__",
-        "//css:__subpackages__",
+        "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
     ],
     deps = [
         ":content",
@@ -62,12 +62,25 @@ java_library(
     ],
     visibility = [
         "//:__pkg__",
-        "//css:__subpackages__",
-        "//tools/browser:__subpackages__",
+        "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
     ],
     deps = [
+        ":media",
         "//css/internal/src/main/java/react4j/css/internal",
         "@maven//:com_google_code_gson_gson",
+    ],
+)
+
+java_library(
+    name = "media",
+    srcs = [
+        "AssetMedia.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
+        "//tools/browser/src/main/java/react4j/browser:__pkg__",
     ],
 )
 
@@ -90,7 +103,7 @@ java_library(
     ],
     visibility = [
         "//:__pkg__",
-        "//css:__subpackages__",
+        "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
     ],
     deps = [
         ":content",

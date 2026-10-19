@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public final class BrowserAssets {
+final class BrowserAssets {
     private BrowserAssets() {}
 
     public static void main(String[] args) throws IOException {

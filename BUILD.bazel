@@ -17,6 +17,7 @@ java_format_check(
         "//css/bundler/src/main/java/react4j/css/bundler",
         "//css/bundler/src/main/java/react4j/css/bundler:assets",
         "//css/bundler/src/main/java/react4j/css/bundler:content",
+        "//css/bundler/src/main/java/react4j/css/bundler:media",
         "//css/bundler/src/main/java/react4j/css/bundler:packaging",
         "//css/bundler/src/test/java/react4j/css/bundler:tests",
         "//css/bundler/src/test/java/react4j/css/bundler:asset_tests",

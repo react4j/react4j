@@ -15,7 +15,7 @@ import java.util.TreeSet;
 import react4j.css.internal.AssetResource;
 
 /** Derives offline policy from retained URLs before the generated lists are independently compressed. */
-public final class ApplicationPlan {
+final class ApplicationPlan {
     private ApplicationPlan() {}
 
     public static void main(String[] args) throws IOException {

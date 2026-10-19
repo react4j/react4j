@@ -3,7 +3,11 @@ load("//css:defs.bzl", "css_bundle")
 load("//third_party/java:rules.bzl", "java_testng")
 load("//tools/browser:java.bzl", "java_j2cl_library")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = [
+    "//:__pkg__",
+    "//css:__pkg__",
+    "//css/integration-tests/src/test/js/react4j/css/integration:__pkg__",
+])
 
 java_j2cl_library(
     name = "fixture_contracts",

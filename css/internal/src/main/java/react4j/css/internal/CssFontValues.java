@@ -70,7 +70,7 @@ public final class CssFontValues {
             "ultra-expanded");
 
     public record Family(CSSExpression expression, int first, int last, String name) {
-        public List<CSSExpressionMemberTermSimple> terms() {
+        List<CSSExpressionMemberTermSimple> terms() {
             return expression.getAllMembers().subList(first, last).stream()
                     .map(CSSExpressionMemberTermSimple.class::cast)
                     .toList();

@@ -2,7 +2,7 @@ load("//css:defs.bzl", "web_assets")
 
 exports_files(
     ["Righteous-Regular.ttf"],
-    visibility = ["//css/examples/save-button:__subpackages__"],
+    visibility = ["//css/examples/save-button/src/main/assets/react4j/css/example:__pkg__"],
 )
 
 web_assets(

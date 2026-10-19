@@ -1,5 +1,7 @@
 """Shared per-file preparation for managed assets and application roots."""
 
+visibility(["//css", "//tools/browser"])
+
 ASSET_TOOL_ATTRIBUTES = {
     "_brotli": attr.label(default = Label("@brotli//:brotli"), executable = True, cfg = "exec"),
     "_prepare": attr.label(default = Label("//css/bundler/src/main/java/react4j/css/bundler:prepare_asset"), executable = True, cfg = "exec"),

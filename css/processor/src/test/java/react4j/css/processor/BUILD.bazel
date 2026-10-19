@@ -1,6 +1,9 @@
 load("//third_party/java:rules.bzl", "FORMATTER_JVM_FLAGS", "java_testng")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = [
+    "//:__pkg__",
+    "//css:__pkg__",
+])
 
 _PROCESSOR_JVM_FLAGS = FORMATTER_JVM_FLAGS + [
     "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",

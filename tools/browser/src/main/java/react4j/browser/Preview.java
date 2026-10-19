@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import org.jspecify.annotations.NullMarked;
-import react4j.css.bundler.AssetContent;
+import react4j.css.bundler.AssetMedia;
 
 @NullMarked
 public final class Preview {
@@ -66,7 +66,7 @@ public final class Preview {
                     return;
                 }
                 String contentType =
-                        AssetContent.media(file.getFileName().toString()).type();
+                        AssetMedia.forPath(file.getFileName().toString()).type();
                 if (contentType.startsWith("text/") || "application/json".equals(contentType)) {
                     contentType += "; charset=utf-8";
                 }

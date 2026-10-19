@@ -74,6 +74,7 @@ java_testng(
     deps = [
         "//css/bundler/src/main/java/react4j/css/bundler:assets",
         "//css/bundler/src/main/java/react4j/css/bundler:content",
+        "//css/bundler/src/main/java/react4j/css/bundler:media",
         "//css/internal/src/main/java/react4j/css/internal",
         "//third_party/java:ph_css",
         "@maven//:com_google_code_gson_gson",

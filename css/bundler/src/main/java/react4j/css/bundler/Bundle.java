@@ -26,7 +26,7 @@ import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
 /** Assembles processor resources from declared J2CL output trees. */
-public final class Bundle {
+final class Bundle {
     private Bundle() {}
 
     public static void main(String[] args) {

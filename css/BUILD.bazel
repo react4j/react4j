@@ -14,5 +14,5 @@ test_suite(
         "//css/processor/src/test/java/react4j/css/processor:processor_tests",
         "//css/processor/src/test/java/react4j/css/processor:unit_tests",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__pkg__"],
 )

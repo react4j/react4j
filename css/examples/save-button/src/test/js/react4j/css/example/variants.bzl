@@ -4,6 +4,8 @@ load("//css:defs.bzl", "css_bundle")
 load("//css/examples/save-button:assets.bzl", "asset_example")
 load("//tools/browser:rules.bzl", "browser_test")
 
+visibility("private")
+
 def naming_variant(name, defs):
     """Declares complete-link CSS and packaged-asset naming variants.
 

@@ -120,7 +120,7 @@ def css_js_binary(name, deps, compilation_level = "ADVANCED", **kwargs):
         **kwargs
     )
 
-CssBundleInfo = provider("Independently pruned CSS and map from a particular JavaScript link.", fields = ["css", "source_map", "root"])
+_CssBundleInfo = provider("Independently pruned CSS and map from a particular JavaScript link.", fields = ["css", "source_map", "root"])
 
 def _bundle_impl(ctx):
     trees = ctx.attr.root[_CssInfo].trees
@@ -153,7 +153,7 @@ def _bundle_impl(ctx):
     return [
         DefaultInfo(files = depset([ctx.outputs.css, ctx.outputs.source_map])),
         OutputGroupInfo(css = depset([ctx.outputs.css]), source_map = depset([ctx.outputs.source_map])),
-        CssBundleInfo(css = ctx.outputs.css, source_map = ctx.outputs.source_map, root = ctx.attr.root[ClosureJsBinaryInfo].bin.owner if ClosureJsBinaryInfo in ctx.attr.root else ctx.attr.root.label),
+        _CssBundleInfo(css = ctx.outputs.css, source_map = ctx.outputs.source_map, root = ctx.attr.root[ClosureJsBinaryInfo].bin.owner if ClosureJsBinaryInfo in ctx.attr.root else ctx.attr.root.label),
     ]
 
 css_bundle = rule(
@@ -195,7 +195,7 @@ def _web_bundle_impl(ctx):
     styles = {}
     style_inputs = []
     for target, name in ctx.attr.styles.items():
-        style = target[CssBundleInfo]
+        style = target[_CssBundleInfo]
         if style.root != binary.bin.owner:
             fail("Every CSS variant must share the web_bundle JavaScript root")
         if not name.endswith(".css") or name in styles.values():
@@ -220,7 +220,7 @@ web_bundle = rule(
     outputs = {"javascript": "%{name}.js", "manifest": "%{name}.manifest.json", "source_map": "%{name}.js.map"},
     attrs = {
         "root": attr.label(mandatory = True, providers = [ClosureJsBinaryInfo], aspects = [_collect]),
-        "styles": attr.label_keyed_string_dict(providers = [CssBundleInfo], doc = "CSS variant to application-relative .css deployment path."),
+        "styles": attr.label_keyed_string_dict(providers = [_CssBundleInfo], doc = "CSS variant to application-relative .css deployment path."),
         "_tool": attr.label(default = Label("//css/bundler/src/main/java/react4j/css/bundler:assets_tool"), executable = True, cfg = "exec"),
     },
 )

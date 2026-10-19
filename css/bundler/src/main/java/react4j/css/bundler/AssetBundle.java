@@ -17,7 +17,7 @@ import react4j.css.internal.CssCatalogue;
 import react4j.css.internal.CssLink;
 
 /** Finalizes linked asset URLs and writes a deterministic application asset inventory. */
-public final class AssetBundle {
+final class AssetBundle {
     private AssetBundle() {}
 
     public static void main(String[] args) throws IOException {

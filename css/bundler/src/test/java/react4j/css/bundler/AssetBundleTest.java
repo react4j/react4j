@@ -262,15 +262,15 @@ public final class AssetBundleTest {
         } finally {
             delete(directory);
         }
-        assertEquals(AssetContent.media("photo.JPEG"), new AssetContent.Media("jpg", "image/jpeg"));
-        assertEquals(AssetContent.media("data.map"), new AssetContent.Media("json", "application/json"));
+        assertEquals(AssetMedia.forPath("photo.JPEG"), new AssetMedia("jpg", "image/jpeg"));
+        assertEquals(AssetMedia.forPath("data.map"), new AssetMedia("json", "application/json"));
         for (var extension : List.of(
                 "svg", "png", "jpg", "gif", "webp", "avif", "ico", "woff", "woff2", "ttf", "otf", "css", "js", "json",
                 "txt", "xml", "html", "wav", "mp3", "ogg", "wasm", "pdf")) {
-            assertEquals(AssetContent.media("file." + extension).extension(), extension);
-            assertFalse(AssetContent.media("file." + extension).type().isBlank());
+            assertEquals(AssetMedia.forPath("file." + extension).extension(), extension);
+            assertFalse(AssetMedia.forPath("file." + extension).type().isBlank());
         }
-        assertEquals(AssetContent.media("unknown"), new AssetContent.Media("bin", "application/octet-stream"));
+        assertEquals(AssetMedia.forPath("unknown"), new AssetMedia("bin", "application/octet-stream"));
     }
 
     @Test

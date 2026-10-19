@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.HexFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import org.jspecify.annotations.Nullable;
@@ -17,14 +16,14 @@ import react4j.css.internal.AssetResource;
 import react4j.css.internal.CssLink;
 
 /** Independently prepared bytes and representations, with stable Bazel output paths. */
-public record AssetContent(
+record AssetContent(
         String logicalPath,
         Path source,
         String sha256,
         long size,
         @Nullable Path compressed,
         long compressedSize) {
-    public AssetContent {
+    AssetContent {
         AssetResource.validatePath(logicalPath);
         if (source.toString().isEmpty()
                 || !sha256.matches("[0-9a-f]{64}")
@@ -46,7 +45,7 @@ public record AssetContent(
                 prepare(args[0], Path.of(args[1]), Path.of(args[2])).json() + "\n");
     }
 
-    public static AssetContent prepare(String logicalPath, Path source, @Nullable Path compressed) throws IOException {
+    static AssetContent prepare(String logicalPath, Path source, @Nullable Path compressed) throws IOException {
         byte[] bytes = Files.readAllBytes(source);
         long length = null == compressed ? 0 : Files.size(compressed);
         boolean useful = length > 0 && length < bytes.length;
@@ -59,7 +58,7 @@ public record AssetContent(
                 useful ? length : 0);
     }
 
-    public JsonObject json() {
+    JsonObject json() {
         var json = new JsonObject();
         json.addProperty("version", 1);
         json.addProperty("logicalPath", logicalPath);
@@ -73,7 +72,7 @@ public record AssetContent(
         return json;
     }
 
-    public static AssetContent read(Path file) throws IOException {
+    static AssetContent read(Path file) throws IOException {
         try {
             return read(JsonParser.parseString(Files.readString(file)).getAsJsonObject());
         } catch (RuntimeException e) {
@@ -81,7 +80,7 @@ public record AssetContent(
         }
     }
 
-    public static AssetContent read(JsonObject json) {
+    static AssetContent read(JsonObject json) {
         try {
             if (!"1".equals(json.get("version").toString())) {
                 throw new IllegalArgumentException("Unsupported prepared asset version");
@@ -116,7 +115,7 @@ public record AssetContent(
         var content = read(json);
         if (!url.equals(string(representations, "identity"))
                 || !url.equals(content.url())
-                || !media(content.logicalPath()).type().equals(string(entry, "mediaType"))) {
+                || !AssetMedia.forPath(content.logicalPath()).type().equals(string(entry, "mediaType"))) {
             throw new IllegalArgumentException("Linked asset URL or media type differs from its content identity");
         }
         return content;
@@ -140,20 +139,20 @@ public record AssetContent(
         return Long.parseLong(value.getAsString());
     }
 
-    public String url() {
+    String url() {
         return "assets/"
                 + Base64.getUrlEncoder()
                         .withoutPadding()
                         .encodeToString(HexFormat.of().parseHex(sha256)) + "."
-                + media(logicalPath).extension();
+                + AssetMedia.forPath(logicalPath).extension();
     }
 
-    public JsonObject entry(String url, List<String> accessors, List<String> reasons) {
+    JsonObject entry(String url, List<String> accessors, List<String> reasons) {
         var entry = json();
         entry.remove("version");
         entry.remove("brotli");
         entry.addProperty("url", url);
-        entry.addProperty("mediaType", media(logicalPath).type());
+        entry.addProperty("mediaType", AssetMedia.forPath(logicalPath).type());
         var getters = new JsonArray();
         accessors.forEach(getters::add);
         entry.add("accessors", getters);
@@ -169,7 +168,7 @@ public record AssetContent(
         return entry;
     }
 
-    public void copy(Path directory, String url) throws IOException {
+    void copy(Path directory, String url) throws IOException {
         AssetResource.validatePath(url);
         if (Files.size(source) != size || !CssLink.digest(source).equals(sha256)) {
             throw new IllegalArgumentException("Prepared asset differs from its source bytes: " + logicalPath);
@@ -193,36 +192,5 @@ public record AssetContent(
         } else {
             Files.copy(source, destination);
         }
-    }
-
-    public record Media(String extension, String type) {}
-
-    public static Media media(String logical) {
-        String extension = logical.substring(logical.lastIndexOf('.') + 1).toLowerCase(Locale.ROOT);
-        return switch (extension) {
-            case "svg" -> new Media("svg", "image/svg+xml");
-            case "png" -> new Media("png", "image/png");
-            case "jpg", "jpeg" -> new Media("jpg", "image/jpeg");
-            case "gif" -> new Media("gif", "image/gif");
-            case "webp" -> new Media("webp", "image/webp");
-            case "avif" -> new Media("avif", "image/avif");
-            case "ico" -> new Media("ico", "image/x-icon");
-            case "woff" -> new Media("woff", "font/woff");
-            case "woff2" -> new Media("woff2", "font/woff2");
-            case "ttf" -> new Media("ttf", "font/ttf");
-            case "otf" -> new Media("otf", "font/otf");
-            case "css" -> new Media("css", "text/css");
-            case "js" -> new Media("js", "text/javascript");
-            case "json", "map" -> new Media("json", "application/json");
-            case "txt" -> new Media("txt", "text/plain");
-            case "xml" -> new Media("xml", "application/xml");
-            case "html" -> new Media("html", "text/html");
-            case "wav" -> new Media("wav", "audio/wav");
-            case "mp3" -> new Media("mp3", "audio/mpeg");
-            case "ogg" -> new Media("ogg", "audio/ogg");
-            case "wasm" -> new Media("wasm", "application/wasm");
-            case "pdf" -> new Media("pdf", "application/pdf");
-            default -> new Media("bin", "application/octet-stream");
-        };
     }
 }

@@ -1,1 +1,4 @@
-exports_files(["com.google.javascript.jscomp.CompilerFactory"])
+exports_files(
+    ["com.google.javascript.jscomp.CompilerFactory"],
+    visibility = ["//css/linker/src/main/java/react4j/css/linker:__pkg__"],
+)

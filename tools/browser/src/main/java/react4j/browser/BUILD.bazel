@@ -4,10 +4,11 @@ java_library(
     name = "preview",
     srcs = ["Preview.java"],
     visibility = [
-        "//tools/browser:__subpackages__",
+        "//tools/browser:__pkg__",
+        "//tools/browser/src/test/java/react4j/browser:__pkg__",
         "//tools/site/src/main/java/react4j/site:__pkg__",
     ],
-    deps = ["//css/bundler/src/main/java/react4j/css/bundler:content"],
+    deps = ["//css/bundler/src/main/java/react4j/css/bundler:media"],
 )
 
 java_binary(

@@ -3,6 +3,8 @@
 load("//css:defs.bzl", "css_bundle")
 load("//tools/browser:rules.bzl", "browser_application")
 
+visibility(["//css/examples/save-button/src/test/js/react4j/css/example"])
+
 def asset_example(name, defs = []):
     css_bundle(name = name + "_styles", root = ":" + name + "_bundle", css = name + ".css", source_map = name + ".css.map")
     browser_application(

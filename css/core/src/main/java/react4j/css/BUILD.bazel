@@ -1,7 +1,5 @@
 load("//third_party/java:rules.bzl", "java_library")
 
-package(default_visibility = ["//visibility:public"])
-
 java_library(
     name = "css",
     srcs = [
@@ -17,5 +15,9 @@ java_library(
         "GlobalCss.java",
         "Keyframes.java",
         "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css/core:__pkg__",
     ],
 )

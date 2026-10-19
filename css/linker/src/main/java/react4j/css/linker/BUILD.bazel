@@ -12,7 +12,8 @@ java_library(
     resources = ["//css/linker/src/main/resources/META-INF/services:com.google.javascript.jscomp.CompilerFactory"],
     visibility = [
         "//:__pkg__",
-        "//css:__subpackages__",
+        "//css/bundler/src/main/java/react4j/css/bundler:__pkg__",
+        "//css/linker/src/test/java/react4j/css/linker:__pkg__",
     ],
     deps = [
         "//css/internal/src/main/java/react4j/css/internal",
@@ -30,6 +31,7 @@ java_binary(
         "-XX:+UseParallelGC",
     ],
     main_class = "io.bazel.rules.closure.ClosureWorker",
+    # css_js_binary passes this as an explicit compiler dependency in caller packages.
     visibility = ["//visibility:public"],
     runtime_deps = [
         ":linker",

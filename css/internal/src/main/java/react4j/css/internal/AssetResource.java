@@ -80,7 +80,7 @@ public record AssetResource(String owner, String implementation, List<Binding> b
         return json + "\n";
     }
 
-    public static AssetResource read(String source, String expectedOwner) {
+    static AssetResource read(String source, String expectedOwner) {
         try {
             var json = JsonParser.parseString(source).getAsJsonObject();
             if (!"1".equals(json.get("version").toString()) || !expectedOwner.equals(string(json, "owner"))) {

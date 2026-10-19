@@ -1,5 +1,7 @@
 """An explicit preprocessing action whose output is a checked asset."""
 
+visibility("private")
+
 def _prepare_icon_impl(ctx):
     ctx.actions.expand_template(template = ctx.file.template, output = ctx.outputs.out, substitutions = {"@COLOR@": "#04c"})
 
