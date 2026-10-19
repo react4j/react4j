@@ -91,10 +91,11 @@ abstract class DrumMachineView {
         abstract String style();
     }
 
+    @CssImport(value = Fonts.class, font = "righteous", name = "heading")
     @Css("""
         font-size: 28px;
         color: #25ccf7;
-        font-family: 'Righteous', cursive;
+        font-family: heading, cursive;
         padding: 20px;
         margin: 0;
         text-transform: uppercase;

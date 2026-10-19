@@ -1,8 +1,9 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//tools/browser:java.bzl", "java_j2cl_library")
 
 package(default_visibility = [
     "//:__pkg__",
-    "//css/examples/save-button/src/test/js/react4j/css/example:__pkg__",
+    "//css/examples/save-button:__subpackages__",
 ])
 
 java_j2cl_library(
@@ -24,4 +25,29 @@ java_j2cl_library(
         "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jspecify-j2cl",
     ],
+)
+
+java_j2cl_library(
+    name = "assets",
+    srcs = ["AssetsExample.java"],
+    assets = ["//css/examples/save-button/src/main/assets/react4j/css/example:media"],
+    java_deps = [
+        "//css/core",
+        "//:core",
+        "//:dom",
+    ],
+    plugins = ["//css/processor:plugin"],
+    deps = [
+        "//:core-j2cl",
+        "//:dom-j2cl",
+        "//css/core:core-j2cl",
+        "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jspecify-j2cl",
+    ],
+)
+
+closure_js_library(
+    name = "assets_entry",
+    srcs = ["AssetsExample.entry.js"],
+    deps = [":assets"],
 )

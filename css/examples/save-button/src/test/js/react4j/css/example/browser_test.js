@@ -44,6 +44,79 @@ function snapshot() {
 }
 
 testSuite({
+  async testPackagedAssetsAtAnApplicationMountAndNestedRoute() {
+    const root = variant ? '/css/examples/save-button/src/test/js/react4j/css/example/' +
+      variant.slice(0, -1) + '_assets/' : '/css/examples/save-button/asset_example/';
+    const inventory = /** @type {!Object<string, *>} */ (await (await fetch(root.slice(0, -1) + '.manifest.json')).json());
+    const entries = /** @type {!Array<!Object<string, *>>} */ (inventory['assets']);
+    /**
+     * @param {string} suffix
+     * @return {string}
+     */
+    function assetUrl(suffix) {
+      const entry = entries.find(item => String(item['logicalPath']).endsWith(suffix));
+      if (!entry) throw new Error('Missing retained asset: ' + suffix);
+      return String(entry['url']);
+    }
+    /** @type {!Array<string>} */
+    const expected = ['card/icon.svg', 'card/react4j.png', 'card/prepared.svg', 'card/background.svg', 'Righteous-Regular.ttf'];
+    for (const suffix of expected) {
+      asserts.assertTrue(/^assets\/[A-Za-z0-9_-]{43}\.(svg|png|ttf)$/.test(assetUrl(suffix)));
+    }
+    const optimized = 'production' === Mode.environment;
+    asserts.assertEquals(!optimized, entries.some(item => String(item['logicalPath']).endsWith('card/unused.svg')));
+    const precache = /** @type {!Array<string>} */ (await (await fetch(root + 'precache.json')).json());
+    const onDemand = /** @type {!Array<string>} */ (await (await fetch(root + 'on-demand.json')).json());
+    const selected = ['app.js', assetUrl('card/icon.svg')];
+    if (!optimized) selected.push(assetUrl('card/unused.svg'));
+    asserts.assertArrayEquals(selected.sort(), precache);
+    for (const suffix of expected.slice(1)) asserts.assertTrue(onDemand.includes(assetUrl(suffix)));
+    asserts.assertFalse(onDemand.includes(assetUrl('card/icon.svg')));
+    asserts.assertTrue((await (await fetch(root + assetUrl('card/prepared.svg'))).text()).includes('fill="#04c"'));
+    /** @type {!Array<string>} */
+    const routes = ['index.html', 'nested/page.html'];
+    for (const route of routes) {
+      const frame = /** @type {!HTMLIFrameElement} */ (document.createElement('iframe'));
+      /** @type {!Promise<void>} */
+      const loaded = new Promise(resolve => { frame.onload = () => { resolve(undefined); }; });
+      frame.src = root + route;
+      document.body.appendChild(frame);
+      try {
+        await loaded;
+        const page = /** @type {!HTMLDocument} */ (frame.contentDocument);
+        const view = /** @type {!Window} */ (frame.contentWindow);
+        const deadline = Date.now() + 10000;
+        while (!page.querySelector('#card')) {
+          if (Date.now() > deadline) throw new Error('Packaged asset application did not render: ' + route);
+          await new Promise(resolve => setTimeout(resolve, 20));
+        }
+        const base = new URL(root, location.href).href;
+        /** @type {!Array<!Array<string>>} */
+        const images = [['icon', 'card/icon.svg'], ['photo', 'card/react4j.png'], ['prepared', 'card/prepared.svg']];
+        for (const pair of images) {
+          const image = /** @type {!HTMLImageElement} */ (page.getElementById(pair[0]));
+          await image.decode();
+          asserts.assertTrue(image.naturalWidth > 0);
+          asserts.assertEquals(base + assetUrl(pair[1]), image.src);
+        }
+        const card = /** @type {!HTMLElement} */ (page.getElementById('card'));
+        const css = view.getComputedStyle(card);
+        asserts.assertTrue(css.backgroundImage.includes(base + assetUrl('card/background.svg')));
+        const family = css.fontFamily.split(',')[0];
+        const fonts = await page.fonts.load('16px ' + family);
+        asserts.assertEquals(1, fonts.length);
+        asserts.assertEquals('loaded', fonts[0].status);
+        await page.fonts.ready;
+        /** @type {!Array<string>} */
+        const requested = view.performance.getEntriesByType('resource').map(entry => entry.name);
+        for (const suffix of expected) asserts.assertTrue(requested.includes(base + assetUrl(suffix)));
+        asserts.assertFalse(requested.some(name => name.endsWith('precache.json') || name.endsWith('on-demand.json')));
+        if (!optimized) asserts.assertFalse(requested.includes(base + assetUrl('card/unused.svg')));
+      } finally {
+        frame.remove();
+      }
+    }
+  },
   async setUp() {
     container = /** @type {!HTMLElement} */ (document.createElement('div'));
     document.body.appendChild(container);

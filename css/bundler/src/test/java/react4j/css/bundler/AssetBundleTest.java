@@ -215,6 +215,17 @@ public final class AssetBundleTest {
                     assertEquals(manifest.getAsJsonArray("assets").size(), 2);
                     assertTrue(manifest.getAsJsonArray("pruned").isEmpty());
                     assertTrue(manifest.toString().contains("css:alternate.css"));
+                    var cssOnly = manifest.getAsJsonArray("assets").asList().stream()
+                            .map(value -> value.getAsJsonObject())
+                            .filter(value ->
+                                    value.get("logicalPath").getAsString().endsWith("unused.svg"))
+                            .findFirst()
+                            .orElseThrow();
+                    assertEquals(
+                            cssOnly.getAsJsonArray("accessors").get(0).getAsString(),
+                            "react4j.css.integration.AssetFixtures$Media#unused");
+                    assertEquals(cssOnly.getAsJsonArray("retainedBy").size(), 1);
+                    assertEquals(cssOnly.getAsJsonArray("retainedBy").get(0).getAsString(), "css:alternate.css");
                     assertFalse(
                             Files.readString(directory.resolve("alternate.css")).contains("../assets/"));
                 }

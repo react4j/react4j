@@ -92,7 +92,8 @@ public final class CssRenamer {
                     ? compressed.values().stream()
                             .filter(candidate ->
                                     SymbolKind.FONT == candidate.symbol().kind()
-                                            && candidate.compiled().equalsIgnoreCase(raw))
+                                            && CssFontValues.canonical(candidate.compiled())
+                                                    .equals(raw))
                             .findFirst()
                             .orElse(null)
                     : compressed.get(raw);

@@ -70,7 +70,7 @@ testSuite({
       });
       /** @type {!Array<string>} */
       const owners = [
-        'BpmInput', 'DrumMachineView', 'FxButton', 'IndicatorView', 'PlayButton', 'StepButton', 'TrackView'
+        'BpmInput', 'DrumMachineView', 'Fonts', 'FxButton', 'IndicatorView', 'PlayButton', 'StepButton', 'TrackView'
       ];
       asserts.assertArrayEquals(owners.map(name => 'react4j/drumloop/views/' + name + '.java').sort(), Array.from(javaSources).sort());
       asserts.assertEquals('flex', view.getComputedStyle(page.querySelector('h1').parentElement).display);
@@ -91,14 +91,21 @@ testSuite({
       asserts.assertEquals('Component sizing must not reset unrelated elements', 16, outside.getBoundingClientRect().width);
       outside.remove();
       frame.width = '400';
-      await waitFor(() => 400 === container.getBoundingClientRect().width);
-      asserts.assertEquals(396, effects.getBoundingClientRect().width);
+      // Visible scrollbars reduce the iframe's available layout width on Linux.
+      await waitFor(() => page.documentElement.clientWidth === container.getBoundingClientRect().width);
+      asserts.assertEquals(page.documentElement.clientWidth - 4, effects.getBoundingClientRect().width);
       asserts.assertEquals(155, page.querySelector('h2').parentElement.getBoundingClientRect().width);
       frame.width = '1000';
       await waitFor(() => 800 === container.getBoundingClientRect().width);
       asserts.assertEquals(0, errors.length);
       await page.fonts.ready;
-      asserts.assertTrue(page.fonts.check('28px Righteous'));
+      const heading = view.getComputedStyle(page.querySelector('h1')).fontFamily.split(',')[0];
+      const faces = await page.fonts.load('28px ' + heading);
+      asserts.assertEquals(1, faces.length);
+      asserts.assertEquals('loaded', faces[0].status);
+      const fonts = view.performance.getEntriesByType('resource').filter(entry => entry.name.endsWith('.ttf'));
+      asserts.assertEquals(1, fonts.length);
+      asserts.assertTrue(fonts[0].name.startsWith(base + 'assets/'));
       const sounds = view.performance.getEntriesByType('resource').filter(entry => entry.name.endsWith('.wav'));
       asserts.assertEquals(11, sounds.length);
       asserts.assertTrue(sounds.every(entry => entry.name.startsWith(base + 'sounds/')));

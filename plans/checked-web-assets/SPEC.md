@@ -77,3 +77,14 @@ Authors declare package-relative assets once in Java and explicitly declare sour
 ## Open questions
 
 None.
+
+## Durable-knowledge classification
+
+- R1–R4 and asset portions of R6–R10: the checked-asset contract has no existing specification owner; promote to docs/specs/web-assets.md. Each is accepted, observable independently of the current implementation and required of a replacement. Concrete public syntax, canonical paths/URLs, digest identity and list formats constrain interoperability.
+- R5: font declaration/import identity belongs in css-bindings.md; spelling/stability in css-names.md; face retention in css-liveness.md. Source-map guarantees from R6 belong in css-source-maps.md. Extend these owners rather than duplicate them.
+- D2/D3: preserve byte-independent compilation and finalize direct URLs after linking; the caching/runtime-table tradeoff is surprising and costly to reverse. Adopt ADR 0003. D1 reuse of the existing processor is implementation structure; D4/D5 observable ownership/retention semantics belong in the specifications above.
+- Canonical language: extend CSS symbol and Complete link definitions for fonts/assets; define Checked asset and Asset inventory once in the existing glossary.
+- R11, exact tools/options, metadata versions, output layout and test configurations: examples, code and the user README own these. Delivery evidence remains in tasks. No new deferred issue is needed; existing mapping boundaries remain unchanged.
+- Specification-only audit: requirements below describe replacement-independent behavior, not action names, parsing classes, task sequence, mutable versions or evidence. Public protocol formats and the no-Node/JVM constraint are intentional conformance requirements.
+
+Canonical owners: [assets](../../docs/specs/web-assets.md), [bindings](../../docs/specs/css-bindings.md), [names](../../docs/specs/css-names.md), [liveness](../../docs/specs/css-liveness.md), [maps](../../docs/specs/css-source-maps.md), [cache boundary](../../docs/adr/0003-finalize-asset-urls-after-linking.md), [language](../../docs/glossary/README.md).

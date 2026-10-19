@@ -20,12 +20,9 @@ css_bundle(
 
 browser_application(
     name = "webspeechdemo",
-    assets = {
-        ":index.css": "css/index.css",
-        ":index.css.map": "css/index.css.map",
-    },
     entry_point = "react4j.webspeechdemo.MainEntry",
     html = "public/index.html",
+    styles = {":styles": "css/index.css"},
     deps = [":entry"],
 )
 

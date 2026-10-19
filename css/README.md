@@ -1,6 +1,6 @@
 # CSS-in-Java
 
-Define component styles alongside Java views with `react4j.css.Css`. The annotation processor checks selectors against Java accessors and generates namespaced CSS. Processing and bundling run entirely on the JVM.
+Define component styles alongside Java views with `react4j.css.Css`. The annotation processor checks selectors against Java accessors and generates namespaced CSS. Annotation processing, CSS compilation and URL finalization run on the JVM.
 
 ## Authoring
 
@@ -97,7 +97,7 @@ Symbol annotations follow the effective method declaration, using the same metho
 
 Component styles support root declarations and nested selectors beginning with `&`, including attributes and same-element `:is`, `:not` and `:where`. Import another component to target its root in a checked descendant or sibling selector. `@media` and `@supports` blocks require explicit nested selectors. Apply one component's root to each styled element. When modifiers conflict, stylesheet order determines precedence, regardless of class-token order.
 
-Raw descendant and sibling targets, global escapes, escaped selector or property identifiers, `:has`, `@container` and other at-rules are unsupported, except for the keyframes described below. CSS must be a literal Java text block. Validation checks syntax and selector/accessor agreement; it does not check property semantics or transform CSS for browser compatibility.
+Raw descendant and sibling targets, global escapes, escaped selector or property identifiers, `:has`, `@container` and other at-rules are unsupported, except for outer-level keyframes and font faces described below. CSS must be a literal Java text block. Validation checks syntax and selector/accessor agreement; it does not check property semantics or transform CSS for browser compatibility.
 
 ### Peer components
 
@@ -133,7 +133,7 @@ abstract class ButtonStyles {
 
 Component selectors start with `&`. Each later compound after a descendant, child (`>`), adjacent sibling (`+`) or general sibling (`~`) combinator must start with `:css(alias)`. Qualify peer roots with attributes or pseudo-classes. Peer modifier classes and peer references inside component selector functions are unsupported. Component reference cycles are allowed.
 
-The referenced type's annotation determines the import kind: named `@Css` imports supply peer roots, named `@Keyframes` imports supply animation names, and unnamed `@GlobalCss` imports include global rules. Component and animation aliases share a namespace within the importing definition. Property and ID aliases each use a separate namespace. Named imports are checked even when unused; a selector or animation reference creates the dependency.
+The referenced type's annotation determines the import kind: named `@Css` imports supply peer roots, named `@Keyframes` imports supply animation names, and unnamed `@GlobalCss` imports include global rules. Component and animation aliases share a namespace within the importing definition. Property, ID, font and asset aliases each use a separate namespace. Named imports are checked even when unused; a selector or animation reference creates the dependency.
 
 ### Animations
 
@@ -230,9 +230,9 @@ abstract String accentProperty();
 
 Explicit ID names omit `#`; property names omit `--`. Each accessor must match a CSS occurrence or, for IDs and animations, a checked import. Duplicate exports and conflicting annotations are errors. `style()` exposes the component root class and cannot carry a typed-symbol annotation.
 
-Bound IDs are rewritten in hash selectors and same-document fragment URLs, including nested expressions. Strings and asset URLs such as `icons.svg#mask` retain their text. Attribute selectors that reference bound IDs are rejected. An ID is static per definition; repeated component instances that need distinct DOM IDs must use separate instance IDs.
+Bound IDs are rewritten in hash selectors and same-document fragment URLs, including nested expressions. Fragments on checked file URLs retain their authored spelling. Attribute selectors that reference bound IDs are rejected. An ID is static per definition; repeated component instances that need distinct DOM IDs must use separate instance IDs.
 
-Share an ID with `@CssImport(value = Owner.class, id = "control", name = "local")`. The local alias defaults to the selected ID. All three definition kinds can consume selected IDs in selectors, fragment URLs or `@CssId` accessors. Providers may re-export imported aliases, including from separately compiled libraries. An import needs a CSS occurrence or an accessor; `id` and `property` selections are mutually exclusive.
+Share an ID with `@CssImport(value = Owner.class, id = "control", name = "local")`. The local alias defaults to the selected ID. All three definition kinds can consume selected IDs in selectors, fragment URLs or `@CssId` accessors. Providers may re-export imported aliases, including from separately compiled libraries. An import needs a CSS occurrence or an accessor; `id`, `property` and `font` selections are mutually exclusive.
 
 Every hash selector in `@GlobalCss` requires a local `@CssId` accessor or selected ID import. A surviving importing accessor activates its provider chain and their unconditional global inclusions. A selector or fragment reference alone neither activates an ID provider nor proves that its DOM element exists. Stable IDs with the same spelling can match across already active styles.
 
@@ -310,6 +310,119 @@ Both aliases resolve to Palette's property. Select `DarkPalette` as a global bun
 
 Raw shared stylesheets retain literal property names. Use a stable global property to share an authored property name with external CSS.
 
+## Files and fonts
+
+Declare package-relative file names with `@Assets` and `@Asset`. Keep the declarations alongside the component and use the ordinary React4j image API:
+
+```java
+@Assets
+abstract static class Media {
+    static Media get() {
+        return Card_Assets_Media.get();
+    }
+
+    @Asset("card/icon.svg")
+    abstract String icon();
+
+    @Asset("card/photo.png")
+    abstract String photo();
+
+    @Asset("card/heading.woff2")
+    abstract String headingFont();
+}
+
+// Inside Card's render method:
+DOM.img(new ImgProps().src(Media.get().icon()).alt("Saved"));
+DOM.img(new ImgProps().src(Media.get().photo()).alt("Preview"));
+```
+
+For `com.biz.ui.Card`, the corresponding source layout is:
+
+```text
+src/main/java/com/biz/ui/Card.java
+src/main/java/com/biz/ui/BUILD.bazel
+src/main/assets/com/biz/ui/BUILD.bazel
+src/main/assets/com/biz/ui/card/icon.svg
+src/main/assets/com/biz/ui/card/photo.png
+src/main/assets/com/biz/ui/card/heading.woff2
+```
+
+Asset declarations follow the same stateless class, nested naming and effective-interface-method rules as style definitions. Every abstract asset accessor needs `@Asset` and returns a parameterless `String`. Names are relative to the Java package, with `/` separators; absolute paths, traversal, queries and fragments are invalid. Java accessors expose finalized URLs in the browser and readable logical references on the JVM. Imports validate declarations even when optimization later removes their use.
+
+Declare files explicitly beside their asset sources:
+
+```starlark
+load("//css:defs.bzl", "web_assets")
+
+web_assets(
+    name = "media",
+    srcs = ["card/icon.svg", "card/photo.png", "card/heading.woff2"],
+    visibility = ["//src/main/java/com/biz/ui:__pkg__"],
+)
+```
+
+Add this catalogue to the owning `java_j2cl_library`'s `assets` list. The [example Java build](examples/save-button/src/main/java/react4j/css/example/BUILD.bazel) shows the complete setup. The catalogue derives logical paths from the package's `src/main/assets/` (or `src/test/assets/`) location. Files in that Bazel package retain their relative subdirectories; a source supplied by another package uses its basename. Explicit generated files work too: preprocess first and list the result in `web_assets`, as the [SVG example](examples/save-button/src/main/assets/react4j/css/example/BUILD.bazel) does. Filesystem scanning and Java string interpolation are unnecessary.
+
+### CSS URLs and owned fonts
+
+Import an asset type and refer to its accessors inside CSS:
+
+```java
+@CssImport(value = Media.class, name = "media")
+@Css("""
+    @font-face {
+      font-family: heading;
+      src: url("asset:media.headingFont") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    font-family: heading, sans-serif;
+    background-image: url("asset:media.icon");
+    """)
+abstract static class Styles {
+    static Styles get() {
+        return Card_Styled_Styles.get();
+    }
+
+    abstract String style();
+}
+```
+
+Declare `@font-face` at the outer level of `@Css` or `@GlobalCss`. Family names belong to their definition and are scoped and compressed with other CSS names. Multiple weights and styles share one family; retained family use keeps all its faces. Unused faces and their files are removed. Font-family matching uses Unicode case folding, without Unicode or quoted-whitespace normalization.
+
+Share a family through a selected import, for example `@CssImport(value = Fonts.class, font = "righteous", name = "heading")`, then use `font-family: heading, cursive`. The provider owns the name and faces; the importing style keeps that provider only while its family usage survives. [Drumloop's shared family](../examples/drumloop/src/main/java/react4j/drumloop/views/Fonts.java) serves four components this way. Family imports can also pass through separately compiled definitions and aliases.
+
+`font-family` lists, common `font` shorthand, `var()` fallbacks and ordinary face descriptors are parsed as CSS. Ambiguous dynamic shorthands that mix unresolved runtime values with managed family names are rejected; use a separate `font-family` declaration with a checked fallback. Managed family names hidden inside custom-property values are unsupported.
+
+Checked URLs also work in `image-set()` strings and preserve query/fragment suffixes, such as `url("asset:media.icon#mark")`. External HTTP(S), protocol-relative, data and blob URLs remain external; `url(#id)` remains a same-document reference. Other local file URLs must use a checked asset import. Asset imports alone do not retain every file.
+
+### Delivery and offline lists
+
+The application finalizer combines surviving Java getters with references in every selected CSS variant. Only their files and explicit application assets are delivered. Optimized builds prune dead getters, rules and font faces; development builds conservatively retain available Java bindings. The [packaged example](examples/save-button/src/main/java/react4j/css/example/AssetsExample.java) demonstrates Java images, a CSS-only background, a font and an unused asset.
+
+URLs use a digest of the processed, uncompressed bytes and a media-type extension. Compatible identical files deduplicate. Java URLs resolve relative to the external classic application script, including under nested document routes; CSS URLs resolve relative to the deployed stylesheet. Serve the generated application tree intact. JavaScript and CSS source maps preserve their Java origins after URL finalization.
+
+Each file has independently cached preparation and pinned native Brotli actions. Useful `.br` representations accompany canonical files; omit them when compression is larger. Asset byte changes rerun preparation and final URL assembly while Java, J2CL and Closure compilation remain cached. Preparation may run for unused candidates on their first build, even though those candidates are excluded from delivery.
+
+`browser_application` accepts finalized styles and an application-owned offline policy:
+
+```starlark
+browser_application(
+    name = "application",
+    entry_point = "com.biz.ui.Main",
+    deps = [":entry"],
+    html = "public/index.html",
+    styles = {":styles": "css/application.css"},
+    assets = {"public/favicon.ico": "favicon.ico"},
+    precache = ["app.js", "com/biz/ui/card/icon.svg"],
+)
+```
+
+`precache` selects retained logical asset paths or explicit application destinations. An unknown path fails; selecting a dead asset does not make it live. Public `precache.json` and `on-demand.json` contain sorted canonical URL arrays relative to the application root. Feed them to the application's existing worker or fetching policy. They do not install a worker or trigger downloads themselves.
+
+The build-only `application.manifest.json` inventories every delivered file, logical source, accessor, URL, SHA-256 digest, size, useful representations and retention reason, plus pruned candidates. Expose it to another Bazel action with a filegroup whose `srcs` contains the application and whose `output_group` is `"manifest"`. Use the manifest's `representations` map to select identity/Brotli files for upload or further deployment processing. Serve a `.br` file at its canonical URL with the original MIME type, `Content-Encoding: br` and `Vary: Accept-Encoding`; the local preview supports this negotiation. The build-only inventory stays outside the application directory. See the [asset contract](../docs/specs/web-assets.md) for the delivery guarantees.
+
 ## Build integration
 
 Apply `//css/processor:plugin` to the J2CL target that owns the style definitions and add `//css/core:core-j2cl` to its dependencies. Browser clients do not need to declare a separate Java library. See the [example Java build](examples/save-button/src/main/java/react4j/css/example/BUILD.bazel) for processor and dependency configuration.
@@ -317,7 +430,7 @@ Apply `//css/processor:plugin` to the J2CL target that owns the style definition
 Use [css_js_binary and css_bundle](defs.bzl) to link JavaScript and collect its styles. The browser application and test macros already use this integration:
 
 ```starlark
-load("//css:defs.bzl", "css_bundle", "css_js_binary")
+load("//css:defs.bzl", "css_bundle", "css_js_binary", "web_bundle")
 
 css_js_binary(
     name = "application_bundle",
@@ -334,9 +447,15 @@ css_bundle(
     css = "application.css",
     source_map = "application.css.map",
 )
+
+web_bundle(
+    name = "web",
+    root = ":application_bundle",
+    styles = {":styles": "css/application.css"},
+)
 ```
 
-Load the generated CSS with the application and serve its source map alongside it. Maps include the original Java and shared CSS source content. The [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) shows several CSS variants sharing one JavaScript link.
+Deploy the finalized JavaScript as `app.js` and its map as `app.js.map` at the application root, alongside the retained asset tree and CSS destinations from `web_bundle`; raw linked outputs contain intermediate asset references. `browser_application` performs this finalization and assembles the complete tree automatically. Load the generated CSS and serve its source map alongside it. Maps include the original Java and shared CSS source content. The [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) shows several CSS variants sharing one JavaScript link.
 
 Global roots use binary Java names; nested classes use `$`, such as `com.biz.ui.Main$Defaults`. Shared CSS files emit first in declared order, followed by globals. Globals emit dependency-first where dependencies are acyclic. Explicit global inclusions always precede their importer, including through property cycles. Declared roots establish the first visits, followed by other required definitions. Each definition emits once: listing a dependency again as a later root does not move it. Components are visited in Java owner order. The `shared` and `components` cascade layers give component styles precedence over shared files and globals. All inputs reject `!important`, which would reverse that precedence.
 
@@ -352,7 +471,7 @@ Generated names used in an optimized link must originate from checked accessors 
 
 `BUNDLE` compilation and `css_bundle` roots that are unlinked Closure libraries retain all component styles and resource definitions with generated Java bindings, plus their dependencies and explicitly selected globals. Other animations and globals remain excluded until required. Complete links produce validated liveness evidence; missing or stale evidence fails the build.
 
-Shared CSS files support style rules, `@media` and `@supports`, but cannot define keyframes. Put processed CSS sources in `src/main/css` and assets copied unchanged in `src/main/assets`. When packaging compiled style libraries, retain their generated `.css`, `.css.map` and `.css.json` resources. Keep generated binding Java beside its J2CL companion maps, or embed it in their `sourcesContent`, so optimized JavaScript maps can include the complete generated source. [Source maps](../docs/specs/css-source-maps.md) preserve generated Java origins for JavaScript and authored Java origins for CSS.
+Shared CSS files support style rules, `@media` and `@supports`, but cannot define keyframes. Put processed CSS sources in `src/main/css` and assets copied unchanged in `src/main/assets`. When packaging compiled style libraries, retain their generated `.css`, `.css.map`, `.css.json` and `.assets.json` resources. Keep generated binding Java beside its J2CL companion maps, or embed it in their `sourcesContent`, so optimized JavaScript maps can include the complete generated source. [Source maps](../docs/specs/css-source-maps.md) preserve generated Java origins for JavaScript and authored Java origins for CSS.
 
 For direct javac use, put the core annotation jar, JSpecify and application dependencies on the compilation classpath, and the standalone processor jar on the processor path. Parser and formatter dependencies are bundled with the processor.
 

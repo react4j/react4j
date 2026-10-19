@@ -1,0 +1,12 @@
+load("//css:defs.bzl", "web_assets")
+
+exports_files(
+    ["Righteous-Regular.ttf"],
+    visibility = ["//css/examples/save-button:__subpackages__"],
+)
+
+web_assets(
+    name = "fonts",
+    srcs = ["Righteous-Regular.ttf"],
+    visibility = ["//examples/drumloop/src/main/java/react4j/drumloop/views:__pkg__"],
+)

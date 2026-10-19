@@ -160,6 +160,11 @@ async function exerciseApplication(variant) {
     input(page, '#app li input[type=checkbox]').click();
     await waitFor(() => page.querySelectorAll('#app li input[type=checkbox]:checked').length === 1);
     asserts.assertEquals('1 item left', page.querySelector('#app article footer > span').textContent);
+    const toggle = input(page, '#app li input[type=checkbox]');
+    const toggleUrl = view.getComputedStyle(toggle, '::after').content;
+    asserts.assertTrue(toggleUrl.includes('/assets/'));
+    asserts.assertFalse(toggleUrl.includes('asset:'));
+    await waitFor(() => view.performance.getEntriesByType('resource').filter(entry => /\/assets\/[^/]+\.svg$/.test(entry.name)).length === 2);
     const completedLabel = /** @type {!HTMLInputElement} */ (page.querySelector('#app li input[type=checkbox]:checked')).nextElementSibling;
     asserts.assertEquals('line-through', view.getComputedStyle(completedLabel).textDecorationLine);
     await waitFor(() => view.getComputedStyle(completedLabel).color === 'rgb(217, 217, 217)');

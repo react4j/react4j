@@ -1,0 +1,10 @@
+load(":assets.bzl", "asset_example")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "public/index.html",
+    "public/nested.html",
+])
+
+asset_example(name = "asset_example")

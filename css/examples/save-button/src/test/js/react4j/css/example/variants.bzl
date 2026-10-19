@@ -1,14 +1,21 @@
 """Complete-link naming variants for the SaveButton browser regression suite."""
 
 load("//css:defs.bzl", "css_bundle")
+load("//css/examples/save-button:assets.bzl", "asset_example")
 load("//tools/browser:rules.bzl", "browser_test")
 
 def naming_variant(name, defs):
-    """Declares a complete-link browser naming variant with its independent CSS bundles."""
+    """Declares complete-link CSS and packaged-asset naming variants.
+
+    Args:
+        name: Target prefix and browser variant name.
+        defs: Closure naming definitions shared by each link.
+    """
+    asset_example(name = name + "_assets", defs = defs)
     browser_test(
         name = name + "_browser_tests",
         srcs = ["browser_test.js"],
-        data = [":" + name + "_" + style_name for style_name in ["styles", "alternate_styles", "component_styles"]],
+        data = [":" + name + "_" + style_name for style_name in ["styles", "alternate_styles", "component_styles"]] + [":" + name + "_assets", ":" + name + "_assets_manifest"],
         defs = defs + ["--define=react4j.css.example.variant='" + name + "-'"],
         entry_point = "react4j.css.example.BrowserTest",
         runtime_defines = {"react4j.css.example.variant": name + "-"},

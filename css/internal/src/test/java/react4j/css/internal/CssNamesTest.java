@@ -26,7 +26,7 @@ public final class CssNamesTest {
         }
         var metadata = new CssResource(
                 "Fonts", CssResource.Kind.GLOBAL, List.of(), List.of(), "", List.of(), symbols, List.of(), List.of());
-        var resource = new CssCatalogue.Resource(metadata, "body{font-family:'APP-A';}", new JsonObject());
+        var resource = new CssCatalogue.Resource(metadata, "body{font-family:'APP-A','app-ı';}", new JsonObject());
         var table = CssNames.create(
                 new CssCatalogue(Map.of("Fonts", resource), "1".repeat(64), Map.of()),
                 new CssNames.Policy(true, "app-"));
@@ -37,6 +37,8 @@ public final class CssNamesTest {
                         .count(),
                 70L);
         assertFalse(table.entries().stream().anyMatch(entry -> "app-a".equalsIgnoreCase(entry.compiled())));
+        assertTrue(table.entries().stream().anyMatch(entry -> "app-i".equals(entry.compiled())));
+        new CssRenamer(table).checkShared("body{font-family:'app-ı';}", "turkish-family.css");
         var first = table.entries().get(0);
         expectThrows(
                 IllegalArgumentException.class,

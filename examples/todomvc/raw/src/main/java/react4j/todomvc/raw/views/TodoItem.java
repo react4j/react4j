@@ -25,6 +25,7 @@ import react4j.dom.proptypes.html.attributeTypes.InputType;
 import react4j.todomvc.browser.HTMLInputElement;
 import react4j.todomvc.raw.model.AppData;
 import react4j.todomvc.raw.model.Todo;
+import react4j.todomvc.views.ItemAssets;
 
 @View(type = View.Type.STATEFUL)
 abstract class TodoItem {
@@ -204,6 +205,7 @@ abstract class TodoItem {
         abstract String editing();
     }
 
+    @CssImport(value = ItemAssets.class, name = "media")
     @Css("""
         outline: none;
         text-align: center;
@@ -217,10 +219,10 @@ abstract class TodoItem {
         -webkit-appearance: none;
         appearance: none;
         &:after {
-          content: url('toggle.svg');
+          content: url("asset:media.toggle");
         }
         &:checked:after {
-          content: url('toggle_checked.svg');
+          content: url("asset:media.checked");
         }
         @media screen and (-webkit-min-device-pixel-ratio: 0) {
           & {

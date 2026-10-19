@@ -129,9 +129,10 @@ public final class AssetBundle {
             content.copy(directory, url);
             entries.add(content.entry(
                     url,
-                    entry.getValue().stream()
-                            .filter(reason -> reason.startsWith("java:"))
-                            .map(reason -> reason.substring(5))
+                    link.assets().stream()
+                            .filter(asset -> asset.binding().path().equals(logical))
+                            .map(CssLink.Asset::id)
+                            .sorted()
                             .toList(),
                     List.copyOf(entry.getValue())));
             for (var asset : link.assets()) {

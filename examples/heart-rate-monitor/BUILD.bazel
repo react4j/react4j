@@ -20,12 +20,11 @@ css_bundle(
 browser_application(
     name = "heart-rate-monitor",
     assets = {
-        ":index.css": "css/index.css",
-        ":index.css.map": "css/index.css.map",
         "public/img/heart.svg": "img/heart.svg",
     },
     entry_point = "react4j.hrm.MainEntry",
     html = "public/index.html",
+    styles = {":styles": "css/index.css"},
     deps = [":entry"],
 )
 

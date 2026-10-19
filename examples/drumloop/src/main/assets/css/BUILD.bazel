@@ -1,4 +1,0 @@
-exports_files(
-    ["font.css"],
-    visibility = ["//examples/drumloop:__pkg__"],
-)

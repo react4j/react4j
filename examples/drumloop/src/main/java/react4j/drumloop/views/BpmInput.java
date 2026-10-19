@@ -7,6 +7,7 @@ import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 import react4j.css.Css;
+import react4j.css.CssImport;
 import react4j.dom.events.FormEvent;
 import react4j.dom.proptypes.html.InputProps;
 import react4j.dom.proptypes.html.attributeTypes.InputType;
@@ -37,6 +38,7 @@ abstract class BpmInput {
                 .onChange(this::onBpmChange));
     }
 
+    @CssImport(value = Fonts.class, font = "righteous", name = "heading")
     @Css("""
         box-sizing: border-box;
         color: #25ccf7;
@@ -44,7 +46,7 @@ abstract class BpmInput {
         font-size: 18px;
         background: none;
         padding: 10px;
-        font-family: 'Righteous', cursive;
+        font-family: heading, cursive;
         border-radius: 2px;
         margin: 2px 20px 2px 4px;
         align-self: center;

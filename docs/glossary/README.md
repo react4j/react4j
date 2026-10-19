@@ -4,7 +4,7 @@
 
 ### CSS symbol
 
-A managed class, ID, animation or custom-property name owned by a CSS definition. Checked Java accessors expose these names to application code; one accessor value can contain several CSS symbols, such as a component root and modifier.
+A managed class, ID, animation, custom-property or font-family name owned by a CSS definition. One checked accessor value can contain several CSS symbols, such as a component root and modifier.
 
 ### Stable CSS symbol
 
@@ -20,12 +20,20 @@ The annotated Java definition that authors a stylesheet and its unconditional gl
 
 ### Complete link
 
-A JavaScript compilation with an explicit application or exported-library boundary, within which generated style values can be analyzed after optimization.
+A JavaScript compilation with an explicit application or exported-library boundary, within which generated style and [Checked asset](#checked-asset) values can be analyzed after optimization.
 
 ### Liveness report
 
-Evidence from a [Complete link](#complete-link) identifying the generated accessor values that survive optimization, bound to its JavaScript output and generated style definitions.
+Evidence from a [Complete link](#complete-link) identifying the generated accessor values that survive optimization, bound to its JavaScript output and checked declarations.
 
 ### CSS variant
 
 A stylesheet bundle with its own explicit global roots and shared CSS, which can reuse the [Liveness report](#liveness-report) from the same JavaScript compilation.
+
+### Checked asset
+
+A file identified by a canonical logical path, exposed through checked Java declarations and available to Java or CSS consumers independently of its final deployment URL.
+
+### Asset inventory
+
+A build-only account of retained files and pruned [Checked asset](#checked-asset) candidates, connecting their source identities to deployment URLs, contents, representations and retention reasons.

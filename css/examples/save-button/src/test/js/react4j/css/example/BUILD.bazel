@@ -11,6 +11,8 @@ browser_test(
         ":alternate_styles",
         ":component_styles",
         ":styles",
+        "//css/examples/save-button:asset_example",
+        "//css/examples/save-button:asset_example_manifest",
     ],
     entry_point = "react4j.css.example.BrowserTest",
     deps = [

@@ -19,14 +19,9 @@ css_bundle(
 
 browser_application(
     name = "sting",
-    assets = {
-        "//examples/todomvc/src/main/assets/css:toggle.svg": "css/toggle.svg",
-        "//examples/todomvc/src/main/assets/css:toggle_checked.svg": "css/toggle_checked.svg",
-        ":index.css": "css/index.css",
-        ":index.css.map": "css/index.css.map",
-    },
     entry_point = "react4j.todomvc.sting.AppEntry",
     html = "//examples/todomvc:public/index.html",
+    styles = {":styles": "css/index.css"},
     deps = [":entry"],
 )
 

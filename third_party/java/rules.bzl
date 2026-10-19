@@ -111,14 +111,17 @@ FORMATTER_JVM_FLAGS = [
     "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
 ]
 
+_JSPECIFY = Label("//third_party/java:jspecify")
+_NULLAWAY = Label("//third_party/java:nullaway_plugin")
+
 def _compile_policy(srcs, javacopts, deps, plugins):
     options = _JAVACOPTS + _ERROR_PRONE_JAVACOPTS
     if srcs:
         options += _NULLAWAY_JAVACOPTS
-        if "//third_party/java:jspecify" not in deps:
-            deps = ["//third_party/java:jspecify"] + deps
-        if "//third_party/java:nullaway_plugin" not in plugins:
-            plugins = ["//third_party/java:nullaway_plugin"] + plugins
+        if _JSPECIFY not in [value if type(value) == "Label" else native.package_relative_label(value) for value in deps]:
+            deps = [_JSPECIFY] + deps
+        if _NULLAWAY not in [value if type(value) == "Label" else native.package_relative_label(value) for value in plugins]:
+            plugins = [_NULLAWAY] + plugins
     return (options + javacopts, deps, plugins)
 
 def java_library(name, srcs = [], javacopts = [], deps = [], plugins = [], **kwargs):
@@ -150,8 +153,8 @@ def java_testng(name, srcs, test_classes = [], test_class = None, test_methods =
         use_testrunner = False,
         main_class = "org.testng.TestNG",
         args = ["-testclass", ",".join(test_classes), "-verbose", "2"] + (["-methods", ",".join(test_methods)] if test_methods else []),
-        deps = ["//third_party/java:testng"] + deps if srcs else [],
-        runtime_deps = runtime_deps + (["//third_party/java:testng"] + deps if not srcs else []),
+        deps = [Label("//third_party/java:testng")] + deps if srcs else [],
+        runtime_deps = runtime_deps + ([Label("//third_party/java:testng")] + deps if not srcs else []),
         javacopts = javacopts,
         jvm_flags = jvm_flags,
         **kwargs

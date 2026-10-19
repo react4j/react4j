@@ -90,7 +90,7 @@ _DEVELOPMENT_DEFINES = {
 
 BrowserApplicationInfo = provider("Packaged browser directory and build-only asset inventory.", fields = ["directory", "manifest"])
 
-_PRODUCTION = "//tools/browser:production"
+_PRODUCTION = Label("//tools/browser:production")
 
 def _defines(test = False, extra = {}):
     production = dict(_PRODUCTION_DEFINES)
@@ -192,7 +192,7 @@ _preview = rule(implementation = _preview_impl, attrs = dict(ASSET_TOOL_ATTRIBUT
 }))
 
 def _asset(name):
-    return select({_PRODUCTION: "//tools/generation:" + name + "_prod", "//conditions:default": "//tools/generation:" + name + "_dev"})
+    return select({_PRODUCTION: Label("//tools/generation:" + name + "_prod"), "//conditions:default": Label("//tools/generation:" + name + "_dev")})
 
 def browser_application(name, entry_point, deps, html, assets = {}, styles = {}, precache = [], defs = []):
     css_js_binary(
@@ -244,7 +244,7 @@ def _runtime_impl(ctx):
 _runtime = rule(implementation = _runtime_impl, outputs = {"js": "%{name}.js"}, attrs = {"dom": attr.label(allow_single_file = True), "js": attr.label(allow_single_file = True), "react": attr.label(allow_single_file = True), "_assets": attr.label(default = Label("//tools/browser:assets"), executable = True, cfg = "exec")})
 
 def browser_test(name, srcs, deps, entry_point, data = [], defs = [], runtime_defines = {}):
-    closure_js_library(name = name + "_lib", testonly = True, srcs = srcs, deps = deps + ["//tools/browser:mode", "@rules_closure//closure/testing/library:asserts", "@rules_closure//closure/testing/library:testsuite"])
+    closure_js_library(name = name + "_lib", testonly = True, srcs = srcs, deps = deps + [Label("//tools/browser:mode"), Label("@rules_closure//closure/testing/library:asserts"), Label("@rules_closure//closure/testing/library:testsuite")])
     css_js_binary(
         name = name + "_bin",
         testonly = True,
@@ -254,4 +254,4 @@ def browser_test(name, srcs, deps, entry_point, data = [], defs = [], runtime_de
         defs = _compiler_defines(test = True) + defs,
     )
     _runtime(name = name + "_runtime", testonly = True, js = name + "_bin.js", react = _asset("react"), dom = _asset("react_dom"))
-    webdriver_test(name = name, test_file_js = name + "_runtime.js", data = data, browsers = ["//tools/webtesting:chromium"], runtime_defines = _defines(test = True, extra = runtime_defines))
+    webdriver_test(name = name, test_file_js = name + "_runtime.js", data = data, browsers = [Label("//tools/webtesting:chromium")], runtime_defines = _defines(test = True, extra = runtime_defines))

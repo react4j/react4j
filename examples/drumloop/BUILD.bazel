@@ -4,7 +4,10 @@ load("//tools/browser:rules.bzl", "browser_application", "browser_application_va
 
 package(default_visibility = ["//visibility:public"])
 
-exports_files(["landing.html"])
+exports_files([
+    "landing.html",
+    "public/fonts/OFL.txt",
+])
 
 closure_js_library(
     name = "entry",
@@ -22,11 +25,7 @@ css_bundle(
 browser_application(
     name = "drumloop",
     assets = {
-        "//examples/drumloop/src/main/assets/css:font.css": "css/font.css",
-        ":index.css": "css/index.css",
-        ":index.css.map": "css/index.css.map",
         "public/fonts/OFL.txt": "fonts/OFL.txt",
-        "public/fonts/Righteous-Regular.ttf": "fonts/Righteous-Regular.ttf",
         "public/sounds/bass.wav": "sounds/bass.wav",
         "public/sounds/clap.wav": "sounds/clap.wav",
         "public/sounds/hat2.wav": "sounds/hat2.wav",
@@ -41,6 +40,7 @@ browser_application(
     },
     entry_point = "react4j.drumloop.AppEntry",
     html = "public/index.html",
+    styles = {":styles": "css/index.css"},
     deps = [":entry"],
 )
 

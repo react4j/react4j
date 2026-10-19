@@ -6,6 +6,7 @@ import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 import react4j.css.Css;
+import react4j.css.CssImport;
 import react4j.dom.proptypes.html.BtnProps;
 import react4j.drumloop.model.DrumMachine;
 
@@ -28,11 +29,12 @@ abstract class PlayButton {
                 on ? "Stop" : "Play");
     }
 
+    @CssImport(value = Fonts.class, font = "righteous", name = "heading")
     @Css("""
         color: #FD7272;
         border: 2px solid #FD7272;
         background: none;
-        font-family: 'Righteous', cursive;
+        font-family: heading, cursive;
         padding: 10px;
         font-size: 18px;
         border-radius: 2px;

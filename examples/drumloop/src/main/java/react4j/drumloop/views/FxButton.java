@@ -11,6 +11,7 @@ import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
 import react4j.css.Css;
+import react4j.css.CssImport;
 import react4j.dom.proptypes.html.BtnProps;
 import react4j.drumloop.browser.audio.AudioBufferSourceNode;
 import react4j.drumloop.browser.audio.AudioContext;
@@ -123,6 +124,7 @@ abstract class FxButton {
         }
     }
 
+    @CssImport(value = Fonts.class, font = "righteous", name = "heading")
     @Css("""
         background: none;
         flex: 1;
@@ -132,7 +134,7 @@ abstract class FxButton {
         font-size: 24px;
         border-radius: 2px;
         padding: 20px;
-        font-family: 'Righteous', cursive;
+        font-family: heading, cursive;
         margin: 2px;
 
         &.held {

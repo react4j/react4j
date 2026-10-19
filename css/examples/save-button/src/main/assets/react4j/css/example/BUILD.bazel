@@ -1,0 +1,21 @@
+load("//css:defs.bzl", "web_assets")
+load(":prepare.bzl", "prepare_icon")
+
+prepare_icon(
+    name = "prepared_icon",
+    out = "card/prepared.svg",
+    template = "card/prepared.svg.template",
+)
+
+web_assets(
+    name = "media",
+    srcs = [
+        "card/background.svg",
+        "card/icon.svg",
+        "card/prepared.svg",
+        "card/react4j.png",
+        "card/unused.svg",
+        "//examples/drumloop/src/main/assets/react4j/drumloop/views:Righteous-Regular.ttf",
+    ],
+    visibility = ["//css/examples/save-button/src/main/java/react4j/css/example:__pkg__"],
+)
