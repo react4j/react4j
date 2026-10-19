@@ -60,6 +60,7 @@ public final class Owner {
         abstract String style();
 
         @Override
+        @CssCustomProperty
         public abstract String getAccent();
     }
 }

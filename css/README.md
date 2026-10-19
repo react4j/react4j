@@ -91,7 +91,7 @@ Accessors inherited from interfaces need no redeclaration and generate public ov
 
 Interfaces can also declare `@CssId`, `@CssAnimation` and `@CssCustomProperty` accessors, including for `@GlobalCss` and `@Keyframes` implementations. Names and CSS occurrences are checked in each consuming definition, including through separately compiled libraries. A standalone interface produces no CSS or bindings.
 
-An unannotated override inherits its symbol annotation. An explicitly annotated override may refine the local name within the same symbol kind. Matching inherited contracts merge; differing inherited names require an explicit annotated redeclaration to choose the mapping. Conflicting symbol kinds always fail. Plain declarations do not erase symbol annotations. The effective symbol method must stay abstract; a concrete/default implementation is an error, while re-abstraction permits generation. Ordinary unannotated helpers retain their Java behavior. Resource interfaces with only helpers need no Java binding.
+Symbol annotations follow the effective method declaration, using the same method collection as React4j. An inherited method needs no redeclaration. An override uses its own annotations and defaults; a plain override drops inherited symbol metadata, and an annotated override may change the symbol kind or name. Sibling declarations use the selected declaration without an additional annotation-conflict rule. Generated symbol accessors must be abstract. Unannotated concrete/default overrides are ordinary helpers; re-abstraction needs its own symbol annotation for typed symbols. Resource interfaces with only helpers need no Java binding.
 
 ## Supported CSS
 

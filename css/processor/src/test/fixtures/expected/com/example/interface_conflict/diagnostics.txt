@@ -1,1 +1,0 @@
-ERROR com/example/interface_conflict/Button.java:22:10: CSS accessor value inherits conflicting CSS names; redeclare it with an explicit symbol annotation

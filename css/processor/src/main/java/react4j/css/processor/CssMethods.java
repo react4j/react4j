@@ -2,9 +2,7 @@ package react4j.css.processor;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -13,6 +11,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Types;
+import org.realityforge.proton.ElementsUtil;
 
 /** Effective Java methods, retaining their types as members of the CSS definition. */
 final class CssMethods {
@@ -21,7 +20,7 @@ final class CssMethods {
     record Method(
             ExecutableElement element,
             ExecutableType type,
-            List<ExecutableElement> declarations,
+            ExecutableElement declaration,
             List<ExecutableType> signatures) {
         boolean isAccessor(Types types) {
             var string = type.getReturnType();
@@ -46,10 +45,7 @@ final class CssMethods {
         var elements = environment.getElementUtils();
         var types = environment.getTypeUtils();
         var methods = new ArrayList<Method>();
-        var declarations = new ArrayList<ExecutableElement>();
-        declarations.addAll(ElementFilter.methodsIn(owner.getEnclosedElements()));
-        interfaces(environment, owner, new HashSet<>(), declarations);
-        declarations.sort(Comparator.comparing(method -> method.getEnclosingElement() + "." + method));
+        var declarations = ElementsUtil.getMethods(owner, elements, types);
         var candidates = new ArrayList<>(ElementFilter.methodsIn(elements.getAllMembers(owner)));
         // javac can hide a public Object implementation behind an interface redeclaration.
         var object = elements.getTypeElement("java.lang.Object");
@@ -66,16 +62,7 @@ final class CssMethods {
         candidates.sort(Comparator.comparing(method -> method.getEnclosingElement() + "." + method));
         for (var candidate : candidates) {
             var type = (ExecutableType) types.asMemberOf((DeclaredType) owner.asType(), candidate);
-            var contracts = declarations.stream()
-                    .filter(declaration -> {
-                        if (!candidate.getSimpleName().contentEquals(declaration.getSimpleName())) {
-                            return false;
-                        }
-                        var inherited = (ExecutableType) types.asMemberOf((DeclaredType) owner.asType(), declaration);
-                        return sameSignature(types, type, inherited);
-                    })
-                    .toList();
-            var method = new Method(candidate, type, contracts, List.of(type));
+            var method = new Method(candidate, type, candidate, List.of(type));
             int index = -1;
             for (int i = 0; i < methods.size(); i++) {
                 var previous = methods.get(i);
@@ -103,9 +90,23 @@ final class CssMethods {
                 var selected = preferCandidate ? method : previous;
                 var signatures = new ArrayList<>(previous.signatures());
                 signatures.add(type);
-                methods.set(index, new Method(selected.element(), selected.type(), contracts, List.copyOf(signatures)));
+                methods.set(
+                        index,
+                        new Method(
+                                selected.element(), selected.type(), selected.declaration(), List.copyOf(signatures)));
             }
         }
+        methods.replaceAll(method -> {
+            var declaration = declarations.stream()
+                    .filter(candidate -> candidate
+                                    .getSimpleName()
+                                    .contentEquals(method.element().getSimpleName())
+                            && sameSignature(types, method.type(), (ExecutableType)
+                                    types.asMemberOf((DeclaredType) owner.asType(), candidate)))
+                    .findFirst()
+                    .orElseThrow();
+            return new Method(method.element(), method.type(), declaration, method.signatures());
+        });
         methods.sort(
                 Comparator.comparing(method -> method.element().getSimpleName().toString()));
         return List.copyOf(methods);
@@ -113,24 +114,5 @@ final class CssMethods {
 
     private static boolean sameSignature(Types types, ExecutableType first, ExecutableType second) {
         return types.isSubsignature((ExecutableType) types.erasure(first), (ExecutableType) types.erasure(second));
-    }
-
-    private static void interfaces(
-            ProcessingEnvironment environment,
-            TypeElement type,
-            Set<TypeElement> visited,
-            List<ExecutableElement> declarations) {
-        for (var parent : type.getInterfaces()) {
-            var contract = (TypeElement) environment.getTypeUtils().asElement(parent);
-            if (visited.add(contract)) {
-                for (var method : ElementFilter.methodsIn(contract.getEnclosedElements())) {
-                    if (!method.getModifiers().contains(Modifier.STATIC)
-                            && !method.getModifiers().contains(Modifier.PRIVATE)) {
-                        declarations.add(method);
-                    }
-                }
-                interfaces(environment, contract, visited, declarations);
-            }
-        }
     }
 }

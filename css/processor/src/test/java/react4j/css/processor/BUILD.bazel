@@ -14,7 +14,7 @@ _PROCESSOR_JVM_FLAGS = FORMATTER_JVM_FLAGS + [
 
 java_testng(
     name = "processor_tests",
-    size = "medium",
+    size = "large",
     srcs = [
         "CssInterfaceProcessorTest.java",
         "CssProcessorArtifactTest.java",

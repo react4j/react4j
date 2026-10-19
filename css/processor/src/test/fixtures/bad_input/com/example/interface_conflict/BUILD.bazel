@@ -1,7 +1,0 @@
-filegroup(
-    name = "files",
-    srcs = [
-        "Button.java",
-    ],
-    visibility = ["//css/processor/src/test/fixtures:__pkg__"],
-)

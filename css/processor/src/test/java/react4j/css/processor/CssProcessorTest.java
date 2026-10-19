@@ -23,6 +23,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.processing.Processor;
 import javax.tools.DiagnosticCollector;
@@ -64,7 +65,6 @@ public final class CssProcessorTest {
     public Object[][] fixtures() throws Exception {
         Object[][] fixtures = {
             new Object[] {"input", List.of("com/example/interface_symbols/Owner.java")},
-            new Object[] {"bad_input", List.of("com/example/interface_conflict/Button.java")},
             new Object[] {"input", List.of("com/example/interfaces/Owner.java")},
             new Object[] {"input", List.of("com/example/symbols/Owner.java")},
             new Object[] {"bad_input", List.of("com/example/attribute_id/Button.java")},
@@ -288,13 +288,14 @@ public final class CssProcessorTest {
             var compiler = ToolProvider.getSystemJavaCompiler();
             var diagnostics = new DiagnosticCollector<JavaFileObject>();
             boolean success;
+            String classpath = applicationClasspath();
             try (var manager = compiler.getStandardFileManager(diagnostics, null, null)) {
                 var options = new ArrayList<>(List.of(
                         "--release",
                         "17",
                         "-Xlint:deprecation,removal",
                         "-classpath",
-                        applicationClasspath(),
+                        classpath,
                         "-d",
                         classes.toString(),
                         "-s",
@@ -303,6 +304,7 @@ public final class CssProcessorTest {
                     options.addAll(List.of("--processor-path", processorJar().toString()));
                 }
                 options.addAll(processorOptions);
+                classpath = options.get(options.lastIndexOf("-classpath") + 1);
                 var task = compiler.getTask(
                         null, manager, diagnostics, options, null, manager.getJavaFileObjectsFromPaths(paths));
                 if (Boolean.getBoolean("css.processor.implementation")) {
@@ -313,7 +315,7 @@ public final class CssProcessorTest {
                 success = task.call();
             }
             if (success) {
-                StrictGeneratedCode.check(generated, classes, applicationClasspath());
+                StrictGeneratedCode.check(generated, classes, classpath);
             }
             var files = new LinkedHashMap<String, String>();
             for (var root : List.of(generated, classes)) {
@@ -327,8 +329,13 @@ public final class CssProcessorTest {
             }
             var values = new LinkedHashMap<String, String>();
             if (success) {
-                try (var loader = new URLClassLoader(
-                        new URL[] {classes.toUri().toURL()}, CssProcessorTest.class.getClassLoader())) {
+                var urls = new ArrayList<URL>();
+                urls.add(classes.toUri().toURL());
+                for (var entry : classpath.split(Pattern.quote(File.pathSeparator))) {
+                    urls.add(Path.of(entry).toUri().toURL());
+                }
+                try (var loader =
+                        new URLClassLoader(urls.toArray(URL[]::new), CssProcessorTest.class.getClassLoader())) {
                     for (var name : inspect) {
                         var type = loader.loadClass(name);
                         var factory = type.getDeclaredMethod("of");

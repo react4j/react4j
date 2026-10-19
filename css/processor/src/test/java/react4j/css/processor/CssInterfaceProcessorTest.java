@@ -213,151 +213,136 @@ public final class CssInterfaceProcessorTest {
     }
 
     @Test
-    public void unannotatedRedeclarationsInheritAndExplicitNamesRefine() throws Exception {
-        for (boolean refineInterface : List.of(false, true)) {
-            for (boolean refineOwner : List.of(false, true)) {
+    public void overridesUseTheirOwnAnnotationsAndDefaults() throws Exception {
+        for (var declaration : List.of("", "@CssCustomProperty", "@CssCustomProperty(name=\"child\")")) {
+            for (boolean overrideOwner : List.of(false, true)) {
                 String contract = "interface Base { @CssCustomProperty(name=\"base\") String value(); }"
-                        + "interface Contract extends Base { "
-                        + (refineInterface ? "@CssCustomProperty(name=\"child\") " : "") + "String value(); }";
-                String member = (refineOwner ? "@CssCustomProperty(name=\"owner\") " : "")
-                        + "public abstract String value(); abstract String style();"
-                        + "static Button of() { return Styled_Button.get(); }";
+                        + "interface Contract extends Base { " + declaration + " String value(); }";
+                boolean plain = overrideOwner || declaration.isEmpty();
                 var result = CssProcessorTest.compile(
                         Map.of(
                                 "Button.java",
                                 source(
                                         "Css",
-                                        "--base: red; --child: green; --owner: blue;",
+                                        "--base: red; --child: green; --value: blue;"
+                                                + (plain ? " &.value { color: red; }" : ""),
                                         "abstract class Button implements Contract",
-                                        member,
+                                        "abstract String style(); static Button of() { return Styled_Button.get(); }"
+                                                + (overrideOwner ? "public abstract String value();" : ""),
                                         contract)),
                         "demo.Button");
                 assertTrue(result.success(), result.diagnostics());
                 assertEquals(
                         result.values().get("demo.Button.value"),
-                        "--jcss-demo-Button--" + (refineOwner ? "owner" : refineInterface ? "child" : "base"));
+                        overrideOwner || declaration.isEmpty()
+                                ? "jcss-demo-Button jcss-demo-Button--value"
+                                : "--jcss-demo-Button--" + (declaration.contains("child") ? "child" : "value"));
             }
         }
     }
 
     @Test
-    public void equivalentAndPlainDiamondDeclarationsMergeInEitherOrder() throws Exception {
-        for (var second : List.of("", "@CssCustomProperty(name=\"accent\")")) {
+    public void siblingMetadataUsesOrdinaryDeclarationSelection() throws Exception {
+        for (var second : List.of("", "@CssCustomProperty(name=\"b\")")) {
             for (var order : List.of("A, B", "B, A")) {
+                boolean plain = "A, B".equals(order) && second.isEmpty();
+                String css = "--a: red; --b: blue;" + (plain ? " &.value { color: green; }" : "");
                 var result = CssProcessorTest.compile(
                         Map.of(
                                 "Button.java",
                                 source(
                                         "Css",
-                                        "--accent: red;",
+                                        css,
                                         "abstract class Button implements " + order,
                                         "abstract String style(); static Button of() { return Styled_Button.get(); }",
-                                        "interface A { @CssCustomProperty(name=\"accent\") String value(); }"
+                                        "interface A { @CssCustomProperty(name=\"a\") String value(); }"
                                                 + "interface B { " + second + " String value(); }")),
                         "demo.Button");
                 assertTrue(result.success(), result.diagnostics());
-                assertEquals(result.values().get("demo.Button.value"), "--jcss-demo-Button--accent");
+                assertEquals(
+                        result.values().get("demo.Button.value"),
+                        plain
+                                ? "jcss-demo-Button jcss-demo-Button--value"
+                                : "--jcss-demo-Button--" + ("A, B".equals(order) ? "b" : "a"));
             }
         }
     }
 
     @Test
-    public void conflictingDiamondNamesNeedAnExplicitAnnotatedRedeclaration() throws Exception {
-        String contracts = "interface A { @CssCustomProperty(name=\"a\") String value(); }"
-                + "interface B { @CssCustomProperty(name=\"b\") String value(); }";
-        for (var order : List.of("A, B", "B, A")) {
-            for (var member : List.of("", "public abstract String value();")) {
-                var invalid = CssProcessorTest.compile(Map.of(
-                        "Button.java",
-                        source(
-                                "Css",
-                                "--chosen: red;",
-                                "abstract class Button implements " + order,
-                                "abstract String style(); " + member,
-                                contracts)));
-                assertFalse(invalid.success());
-                assertTrue(
-                        invalid.diagnostics().contains("inherits conflicting CSS names; redeclare"),
-                        invalid.diagnostics());
-                assertFalse(invalid.files().containsKey("classes/demo/Button.css"));
-            }
-            var valid = CssProcessorTest.compile(Map.of(
-                    "Button.java",
-                    source(
-                            "Css",
-                            "--chosen: red;",
-                            "abstract class Button implements " + order,
-                            "abstract String style(); @CssCustomProperty(name=\"chosen\") public abstract String"
-                                    + " value();",
-                            contracts)));
-            assertTrue(valid.success(), valid.diagnostics());
-            var child = CssProcessorTest.compile(Map.of(
-                    "Button.java",
-                    source(
-                            "Css",
-                            "--chosen: red;",
-                            "abstract class Button implements Child",
-                            "abstract String style();",
-                            contracts + "interface Child extends " + order
-                                    + " { @CssCustomProperty(name=\"chosen\") String value(); }")));
-            assertTrue(child.success(), child.diagnostics());
-        }
-    }
-
-    @Test
-    public void changingSymbolKindsCannotBeResolvedByRedeclaration() throws Exception {
-        for (var other : List.of("CssId", "CssAnimation")) {
-            for (var shape : List.of("A, B", "B, A", "Child")) {
-                String contracts = "interface A { @CssCustomProperty String value(); }"
-                        + "interface B { @" + other + " String value(); }"
-                        + "interface Child extends A { @" + other + " String value(); }";
-                var result = CssProcessorTest.compile(Map.of(
-                        "Button.java",
-                        source(
-                                "Css",
-                                "--value: red;",
-                                "abstract class Button implements " + shape,
-                                "abstract String style(); @CssCustomProperty public abstract String value();",
-                                contracts)));
-                assertFalse(result.success());
-                assertTrue(result.diagnostics().contains("inherits conflicting symbol kinds"), result.diagnostics());
-                assertFalse(result.files().containsKey("classes/demo/Button.css"));
+    public void overridesCanChangeSymbolKindAndName() throws Exception {
+        for (var annotation : List.of("CssId", "CssAnimation")) {
+            for (var shape : List.of("Child", "A, B", "B, A")) {
+                for (boolean ownerOverride : List.of(false, true)) {
+                    boolean changed = !ownerOverride && !"B, A".equals(shape);
+                    var result = CssProcessorTest.compile(
+                            Map.of(
+                                    "Button.java",
+                                    source(
+                                            "Css",
+                                            "--chosen: red; --value: blue; filter: url(#control);"
+                                                    + " @keyframes control { to { opacity: 0; } }",
+                                            "abstract class Button implements " + shape,
+                                            "abstract String style(); static Button of() { return Styled_Button.get();"
+                                                    + " }"
+                                                    + (ownerOverride
+                                                            ? "@CssCustomProperty(name=\"chosen\") public abstract"
+                                                                    + " String value();"
+                                                            : ""),
+                                            "interface A { @CssCustomProperty String value(); }"
+                                                    + "interface B { @" + annotation
+                                                    + "(name=\"control\") String value(); }"
+                                                    + "interface Child extends A { @" + annotation
+                                                    + "(name=\"control\") String value(); }")),
+                            "demo.Button");
+                    assertTrue(result.success(), result.diagnostics());
+                    assertEquals(
+                            result.values().get("demo.Button.value"),
+                            changed
+                                    ? "jcss-demo-Button--" + ("CssId".equals(annotation) ? "id-" : "keyframes-")
+                                            + "control"
+                                    : "--jcss-demo-Button--" + (ownerOverride ? "chosen" : "value"));
+                }
             }
         }
     }
 
     @Test
-    public void concreteSymbolMethodsFailAndReabstractionRestoresGeneration() throws Exception {
+    public void effectiveConcreteAnnotationsFailAndUnannotatedHelpersEraseMetadata() throws Exception {
         for (var kind : List.of("Css", "GlobalCss", "Keyframes")) {
             String css = "color: var(--accent);";
             if (!"Css".equals(kind)) {
                 css = ("Keyframes".equals(kind) ? "to" : "body") + " { " + css + " }";
             }
-            for (boolean inheritedDefault : List.of(false, true)) {
+            String root = "Css".equals(kind) ? "abstract String style(); " : "";
+            for (var member : List.of(
+                    "",
+                    "public String value() { return \"manual\"; }",
+                    "@CssCustomProperty(name=\"accent\") public String value() { return \"manual\"; }",
+                    "public abstract String value();",
+                    "@CssCustomProperty(name=\"accent\") public abstract String value();")) {
+                boolean inheritedDefault = member.isEmpty();
+                boolean plainAbstract = "public abstract String value();".equals(member);
                 String contracts = "interface Contract { @CssCustomProperty(name=\"accent\") "
                         + (inheritedDefault ? "default String value() { return \"manual\"; }" : "String value();")
                         + " }";
-                String root = "Css".equals(kind) ? "abstract String style(); " : "";
-                var invalid = CssProcessorTest.compile(Map.of(
+                var result = CssProcessorTest.compile(Map.of(
                         "Button.java",
                         source(
                                 kind,
-                                css,
+                                css + (plainAbstract && "Css".equals(kind) ? " &.value { color: red; }" : ""),
                                 "abstract class Button implements Contract",
-                                root + (inheritedDefault ? "" : "public String value() { return \"manual\"; }"),
+                                root + member,
                                 contracts)));
-                assertFalse(invalid.success());
-                assertTrue(
-                        invalid.diagnostics().contains("CSS symbol accessors must be abstract"), invalid.diagnostics());
-                var valid = CssProcessorTest.compile(Map.of(
-                        "Button.java",
-                        source(
-                                kind,
-                                css,
-                                "abstract class Button implements Contract",
-                                root + "public abstract String value();",
-                                contracts)));
-                assertTrue(valid.success(), valid.diagnostics());
+                boolean valid = member.startsWith("public String")
+                        || member.startsWith("@CssCustomProperty") && member.contains("abstract")
+                        || plainAbstract && "Css".equals(kind);
+                assertEquals(result.success(), valid, kind + ": " + member + ": " + result.diagnostics());
+                if (!valid) {
+                    assertTrue(
+                            result.diagnostics()
+                                    .contains(plainAbstract ? "require a symbol annotation" : "must be abstract"),
+                            result.diagnostics());
+                }
             }
         }
     }
@@ -530,10 +515,15 @@ public final class CssInterfaceProcessorTest {
     }
 
     @Test
-    public void binaryContractsPreserveConflictAndAuthorValidation() throws Exception {
+    public void binaryContractsUseEffectiveMetadataAndPreserveAuthorValidation() throws Exception {
         String declarations = IMPORTS + "interface A { @CssCustomProperty(name=\"first\") String value(); }"
                 + "interface B { @CssCustomProperty(name=\"second\") String value(); }"
                 + "interface WrongKind extends A { @CssId String value(); }"
+                + "interface WrongAnimation extends A { @CssAnimation(name=\"pulse\") String value(); }"
+                + "interface Plain extends A { String value(); }"
+                + "interface Refined extends A { @CssCustomProperty String value(); }"
+                + "interface Helper extends A { default String value() { return \"manual\"; } }"
+                + "interface Reabstract extends Helper { String value(); }"
                 + "interface Invalid { @CssCustomProperty String value(int ignored); }"
                 + "interface Concrete { @CssCustomProperty default String value() { return \"manual\"; } }";
         var dependency = CssProcessorTest.compile(Map.of("Contracts.java", declarations));
@@ -548,32 +538,44 @@ public final class CssInterfaceProcessorTest {
                 Files.write(file, Base64.getDecoder().decode(entry.getValue()));
             }
             for (var entry : Map.of(
-                            "A, B",
-                            "inherits conflicting CSS names",
-                            "B, A",
-                            "inherits conflicting CSS names",
-                            "WrongKind",
-                            "inherits conflicting symbol kinds",
-                            "Invalid",
-                            "take no arguments and return String",
-                            "Concrete",
-                            "must be abstract")
+                            "A, B", "--jcss-demo-Button--second",
+                            "B, A", "--jcss-demo-Button--first",
+                            "WrongKind", "jcss-demo-Button--id-value",
+                            "WrongAnimation", "jcss-demo-Button--keyframes-pulse",
+                            "Plain", "jcss-demo-Button jcss-demo-Button--value",
+                            "Refined", "--jcss-demo-Button--value",
+                            "Helper", "manual",
+                            "Reabstract", "jcss-demo-Button jcss-demo-Button--value",
+                            "Invalid", "take no arguments and return String",
+                            "Concrete", "must be abstract")
                     .entrySet()) {
                 var result = CssProcessorTest.compile(
                         Map.of(
                                 "Button.java",
                                 source(
                                         "Css",
-                                        "--first: red;",
+                                        "--first: red; --second: blue; --value: green; filter: url(#value); @keyframes"
+                                                + " pulse { to { opacity: 0; } }"
+                                                + (List.of("Plain", "Reabstract")
+                                                                .contains(entry.getKey())
+                                                        ? " &.value { color: red; }"
+                                                        : ""),
                                         "abstract class Button implements " + entry.getKey(),
-                                        "abstract String style();",
+                                        "abstract String style(); static Button of() { return Styled_Button.get(); }",
                                         "")),
-                        List.of(
-                                "-classpath",
-                                CssProcessorTest.applicationClasspath() + File.pathSeparator + directory));
-                assertFalse(result.success(), entry.getKey());
-                assertTrue(result.diagnostics().contains(entry.getValue()), result.diagnostics());
-                assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
+                        List.of("-classpath", CssProcessorTest.applicationClasspath() + File.pathSeparator + directory),
+                        "demo.Button");
+                boolean valid = !List.of("Invalid", "Concrete").contains(entry.getKey());
+                assertEquals(result.success(), valid, result.diagnostics());
+                if ("Helper".equals(entry.getKey())) {
+                    assertFalse(
+                            text(result, "generated/demo/Styled_Button.java").contains("String value()"));
+                } else if (valid) {
+                    assertEquals(result.values().get("demo.Button.value"), entry.getValue());
+                } else {
+                    assertTrue(result.diagnostics().contains(entry.getValue()), result.diagnostics());
+                    assertFalse(result.files().containsKey("generated/demo/Styled_Button.java"));
+                }
             }
         } finally {
             try (var paths = Files.walk(directory)) {
@@ -611,7 +613,7 @@ public final class CssInterfaceProcessorTest {
     }
 
     @Test
-    public void everyEffectiveKeyframeContractMustLeaveItsOwnAnimationNameUnset() throws Exception {
+    public void selectedKeyframeDeclarationMustLeaveItsOwnAnimationNameUnset() throws Exception {
         String contracts = "interface A { @CssAnimation String getPulse(); }"
                 + "interface B { @CssAnimation(name=\"pulse\") String getPulse(); }";
         for (var order : List.of("A, B", "B, A")) {
@@ -623,9 +625,11 @@ public final class CssInterfaceProcessorTest {
                             "abstract class Button implements " + order,
                             "",
                             contracts)));
-            assertFalse(invalid.success());
-            assertTrue(invalid.diagnostics().contains("must not declare name"), invalid.diagnostics());
-            assertFalse(invalid.files().containsKey("generated/demo/Styled_Button.java"));
+            assertEquals(invalid.success(), "B, A".equals(order), invalid.diagnostics());
+            if (!invalid.success()) {
+                assertTrue(invalid.diagnostics().contains("must not declare name"), invalid.diagnostics());
+                assertFalse(invalid.files().containsKey("generated/demo/Styled_Button.java"));
+            }
             var refined = CssProcessorTest.compile(
                     Map.of(
                             "Button.java",

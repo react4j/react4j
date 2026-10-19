@@ -416,7 +416,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
         for (var inherited : inheritedMethods) {
             var method = inherited.element();
             if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
-                if (null != symbolAnnotation(owner, inherited)) {
+                if (null != symbolAnnotation(inherited.declaration())) {
                     throw new IllegalArgumentException(
                             "CSS symbol accessors must be abstract: " + method.getSimpleName());
                 }
@@ -427,7 +427,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         + " must take no arguments and return String without type parameters or throws");
             }
             methods.add(inherited);
-            deprecated |= inherited.declarations().stream().anyMatch(processingEnv.getElementUtils()::isDeprecated);
+            deprecated |= processingEnv.getElementUtils().isDeprecated(inherited.element())
+                    || processingEnv.getElementUtils().isDeprecated(inherited.declaration());
         }
         if (trees.getTree(owner).getMembers().stream()
                 .anyMatch(member -> member instanceof BlockTree block && !block.isStatic())) {
@@ -440,7 +441,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
         return new CssDescriptor(
                 owner,
                 processingEnv.getElementUtils().getBinaryName(owner).toString(),
-                parseAccessors(owner, methods, Kind.COMPONENT),
+                parseAccessors(methods, Kind.COMPONENT),
                 publicFactory(owner, inheritedMethods, "@Css"),
                 deprecated);
     }
@@ -460,54 +461,12 @@ public final class CssProcessor extends AbstractStandardProcessor {
         return found;
     }
 
-    private @Nullable AnnotationMirror symbolAnnotation(TypeElement owner, CssMethods.Method method) {
-        var annotated = method.declarations().stream()
-                .filter(declaration -> null != symbolAnnotation(declaration))
-                .toList();
-        if (annotated.isEmpty()) {
-            return null;
-        }
-        var kinds = annotated.stream()
-                .map(declaration -> Objects.requireNonNull(symbolAnnotation(declaration))
-                        .getAnnotationType()
-                        .toString())
-                .distinct()
-                .toList();
-        if (1 != kinds.size()) {
-            throw new IllegalArgumentException(
-                    "CSS accessor " + method.element().getSimpleName() + " inherits conflicting symbol kinds");
-        }
-        var specific = annotated.stream()
-                .filter(declaration -> annotated.stream()
-                        .noneMatch(other -> processingEnv.getElementUtils().overrides(other, declaration, owner)))
-                .toList();
-        if ("react4j.css.CssAnimation".equals(kinds.get(0))
-                && null != annotation(owner, "react4j.css.Keyframes")
-                && specific.stream()
-                        .anyMatch(declaration -> !"<default>"
-                                .equals(value(Objects.requireNonNull(symbolAnnotation(declaration)), "name")
-                                        .getValue()))) {
-            throw new IllegalArgumentException(
-                    "@CssAnimation on @Keyframes exposes its own name and must not declare name");
-        }
-        var names = specific.stream()
-                .map(declaration -> symbolName(declaration, Objects.requireNonNull(symbolAnnotation(declaration))))
-                .distinct()
-                .toList();
-        if (1 != names.size()) {
-            throw new IllegalArgumentException(
-                    "CSS accessor " + method.element().getSimpleName()
-                            + " inherits conflicting CSS names; redeclare it with an explicit symbol annotation");
-        }
-        return symbolAnnotation(specific.get(0));
-    }
-
-    private List<CssAccessor> parseAccessors(TypeElement owner, List<CssMethods.Method> methods, Kind ownerKind) {
+    private List<CssAccessor> parseAccessors(List<CssMethods.Method> methods, Kind ownerKind) {
         var names = new LinkedHashSet<String>();
         var accessors = new ArrayList<CssAccessor>();
         for (var inherited : methods) {
             var method = inherited.element();
-            var annotation = symbolAnnotation(owner, inherited);
+            var annotation = symbolAnnotation(inherited.declaration());
             var kind = null == annotation
                     ? CssAccessor.Kind.CLASS
                     : switch (annotation.getAnnotationType().toString()) {
@@ -524,6 +483,10 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 if (CssAccessor.Kind.PROPERTY == kind) {
                     CssProperties.checkName(name);
                 } else if (CssAccessor.Kind.ANIMATION == kind && Kind.KEYFRAMES == ownerKind) {
+                    if (!"<default>".equals(value(annotation, "name").getValue())) {
+                        throw new IllegalArgumentException(
+                                "@CssAnimation on @Keyframes exposes its own name and must not declare name");
+                    }
                     name = "";
                 } else {
                     CssCompiler.checkAlias(name, CssAccessor.Kind.ANIMATION == kind ? Kind.KEYFRAMES : Kind.COMPONENT);
@@ -559,7 +522,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
         var inheritedMethods = CssMethods.collect(processingEnv, owner);
         for (var inherited : inheritedMethods) {
             var method = inherited.element();
-            if (null != symbolAnnotation(owner, inherited)) {
+            if (null != symbolAnnotation(inherited.declaration())) {
                 if (!method.getModifiers().contains(Modifier.ABSTRACT)
                         || !inherited.isAccessor(processingEnv.getTypeUtils())) {
                     throw new IllegalArgumentException(
@@ -567,7 +530,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                                     + " type parameters or throws");
                 }
                 methods.add(inherited);
-                deprecated |= inherited.declarations().stream().anyMatch(processingEnv.getElementUtils()::isDeprecated);
+                deprecated |= processingEnv.getElementUtils().isDeprecated(inherited.element())
+                        || processingEnv.getElementUtils().isDeprecated(inherited.declaration());
             } else if (method.getModifiers().contains(Modifier.ABSTRACT)) {
                 throw new IllegalArgumentException(
                         "CSS resource abstract methods require a symbol annotation: " + method.getSimpleName());
@@ -584,7 +548,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
         return new CssDescriptor(
                 owner,
                 binaryName(owner),
-                parseAccessors(owner, methods, sourceKind(owner)),
+                parseAccessors(methods, sourceKind(owner)),
                 publicFactory(owner, inheritedMethods, "CSS"),
                 deprecated);
     }

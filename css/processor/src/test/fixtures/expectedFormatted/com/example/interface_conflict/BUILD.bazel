@@ -1,7 +1,0 @@
-filegroup(
-    name = "files",
-    srcs = [
-        "diagnostics.txt",
-    ],
-    visibility = ["//css/processor/src/test/fixtures:__pkg__"],
-)
