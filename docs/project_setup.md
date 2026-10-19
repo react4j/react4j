@@ -85,7 +85,7 @@ Use these public targets with native `j2cl_library`:
 | `@react4j//:dom` | DOM browser library, exporting core |
 | `@react4j//:css` | CSS and asset annotations |
 | `@react4j//:processor` | React4j annotation processor plugin |
-| `@react4j//:css_processor_plugin` | CSS and asset annotation processor plugin |
+| `@react4j//:css_processor` | CSS and asset annotation processor plugin |
 
 Bazel applies overrides and compiler patches from the application's root module. From the React4j checkout at the revision you intend to use, run `tools/export_bazel_config.sh /absolute/path/to/application`. Commit the generated `third_party/react4j/` configuration and regenerate it when updating React4j. For a local sibling checkout, the application module can use:
 

@@ -24,7 +24,7 @@ java_j2cl_library(
         "//third_party/java:sting_core",
     ],
     plugins = [
-        "//:css_processor_plugin",
+        "//:css_processor",
         "//:processor",
         "@arez//:arez_processor_plugin",
         "@sting//:sting_processor_plugin",

@@ -18,7 +18,7 @@ java_j2cl_library(
     ],
     plugins = [
         "//:processor",
-        "//:css_processor_plugin",
+        "//:css_processor",
         "@arez//:arez_processor_plugin",
     ],
     deps = [
@@ -39,7 +39,7 @@ java_j2cl_library(
     name = "assets",
     srcs = ["ItemAssets.java"],
     java_deps = ["//css/core"],
-    plugins = ["//:css_processor_plugin"],
+    plugins = ["//:css_processor"],
     deps = [
         "//:css",
         "//examples/todomvc/src/main/assets/react4j/todomvc/views:toggles",

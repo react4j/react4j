@@ -24,7 +24,7 @@ and project support please visit the [GitHub project](https://github.com/react4j
 
 Run `bazel build //tools/release:maven_artifacts` to build the core, DOM and processor archives. Use `tools/check.sh` for the shared local/CI gate and `tools/examples.sh serve` for a local J2CL example. Bazel downloads the pinned Java toolchains and browser dependencies.
 
-Bazel applications use `@react4j//:core`, `@react4j//:dom` and `@react4j//:css` as J2CL dependencies, with `@react4j//:processor` and `@react4j//:css_processor_plugin` for annotation processing. See [Project Setup](docs/project_setup.md) for Java/JSpecify requirements and the [release guide](tools/release/README.md) for archive layout and dependency publication prerequisites.
+Bazel applications use `@react4j//:core`, `@react4j//:dom` and `@react4j//:css` as J2CL dependencies, with `@react4j//:processor` and `@react4j//:css_processor` for annotation processing. See [Project Setup](docs/project_setup.md) for Java/JSpecify requirements and the [release guide](tools/release/README.md) for archive layout and dependency publication prerequisites.
 
 # Contributing
 

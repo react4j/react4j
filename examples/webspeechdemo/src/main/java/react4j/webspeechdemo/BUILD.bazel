@@ -18,7 +18,7 @@ java_j2cl_library(
         "//:_dom_java",
     ],
     plugins = [
-        "//:css_processor_plugin",
+        "//:css_processor",
         "//:processor",
         "@arez//:arez_processor_plugin",
     ],

@@ -22,7 +22,7 @@ java_j2cl_library(
         "//examples/todomvc/raw/src/main/java/react4j/todomvc/raw/model:model_java",
     ],
     plugins = [
-        "//:css_processor_plugin",
+        "//:css_processor",
         "//:processor",
         "@arez//:arez_processor_plugin",
     ],

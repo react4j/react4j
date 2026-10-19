@@ -18,7 +18,7 @@ java_j2cl_library(
         "package-info.java",
     ],
     java_deps = ["//css/core"],
-    plugins = ["//:css_processor_plugin"],
+    plugins = ["//:css_processor"],
     deps = [
         "//:css",
         "//third_party/java:jspecify-j2cl",
@@ -40,7 +40,7 @@ java_j2cl_library(
         ":fixture_contracts_java",
         "//css/core",
     ],
-    plugins = ["//:css_processor_plugin"],
+    plugins = ["//:css_processor"],
     deps = [
         ":fixture_contracts",
         "//:css",
@@ -61,7 +61,7 @@ java_j2cl_library(
         ":fixture_dependency_java",
         "//css/core",
     ],
-    plugins = ["//:css_processor_plugin"],
+    plugins = ["//:css_processor"],
     deps = [
         ":fixture_contracts",
         ":fixture_dependency",
@@ -81,7 +81,7 @@ java_j2cl_library(
         ":fixture_dependency_java",
         "//css/core",
     ],
-    plugins = ["//:css_processor_plugin"],
+    plugins = ["//:css_processor"],
     deps = [
         ":fixture_dependency",
         "//:css",
@@ -204,7 +204,7 @@ java_j2cl_library(
         "//css/core",
         "//third_party/java:jsinterop_annotations",
     ],
-    plugins = ["//:css_processor_plugin"],
+    plugins = ["//:css_processor"],
     deps = [
         ":fixture_bindings",
         ":fixture_contracts",
@@ -226,7 +226,7 @@ java_j2cl_library(
         "//css/core",
         "//third_party/java:jsinterop_annotations",
     ],
-    plugins = ["//:css_processor_plugin"],
+    plugins = ["//:css_processor"],
     deps = [
         "//:css",
         "//css/integration-tests/src/test/assets/react4j/css/integration:media",

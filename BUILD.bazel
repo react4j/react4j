@@ -223,7 +223,7 @@ alias(
 )
 
 alias(
-    name = "css_processor_plugin",
+    name = "css_processor",
     actual = "//css/processor:plugin",
     visibility = ["//visibility:public"],
 )

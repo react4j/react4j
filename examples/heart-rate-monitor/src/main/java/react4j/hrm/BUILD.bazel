@@ -20,7 +20,7 @@ java_j2cl_library(
         "//third_party/java:jsinterop_annotations",
     ],
     plugins = [
-        "//:css_processor_plugin",
+        "//:css_processor",
         "//:processor",
         "@arez//:arez_processor_plugin",
     ],

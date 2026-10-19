@@ -19,7 +19,7 @@ java_j2cl_library(
         "//:_core_java",
         "//:_dom_java",
     ],
-    plugins = ["//:css_processor_plugin"],
+    plugins = ["//:css_processor"],
     deps = [
         "//:core",
         "//:css",
@@ -37,7 +37,7 @@ java_j2cl_library(
         "//:_core_java",
         "//:_dom_java",
     ],
-    plugins = ["//:css_processor_plugin"],
+    plugins = ["//:css_processor"],
     deps = [
         "//:core",
         "//:css",

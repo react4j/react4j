@@ -13,7 +13,7 @@ trap cleanup EXIT
 public_targets='
 //:core
 //:css
-//:css_processor_plugin
+//:css_processor
 //:dom
 //:processor
 //css:defs.bzl
@@ -65,7 +65,7 @@ j2cl_library(
     name = "assets",
     srcs = ["AssetsExample.java"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
-    plugins = ["@react4j//:css_processor_plugin", "@sting//third_party/java:nullaway_plugin"],
+    plugins = ["@react4j//:css_processor", "@sting//third_party/java:nullaway_plugin"],
     javacopts = ["-XDaddTypeAnnotationsToSymbol=true", "-Xep:ArrayEquals:ERROR", "-Xep:NullAway:ERROR", "-XepOpt:NullAway:OnlyNullMarked=true", "-XepOpt:NullAway:JSpecifyMode=true", "-XepOpt:NullAway:AssertsEnabled=true"],
     deps = ["//src/main/assets/react4j/css/example:media", "@react4j//:dom", "@react4j//:css"],
 )
@@ -206,7 +206,7 @@ for target in \
   printf 'filegroup(name = "target", testonly = True, srcs = ["%s"])\n' "$target" > "$workspace/denied/BUILD.bazel"
   expect_failure 'not visible' build --nobuild //denied:target
 done
-for target in core-j2cl dom-j2cl react4j_processor_plugin; do
+for target in core-j2cl dom-j2cl react4j_processor_plugin css_processor_plugin; do
   printf 'filegroup(name = "target", srcs = ["@react4j//:%s"])\n' "$target" > "$workspace/denied/BUILD.bazel"
   expect_failure 'no such target' build --nobuild //denied:target
 done
