@@ -1,11 +1,11 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `implementation-review`
-- Current frontier: implementation review
+- Status: `review-passed`
+- Current frontier: closeout
 - Planning reviewer: `/root/downstream_policy_planning` (`1/3` rounds; final confirmation unused); Findings: none. Whole plan and affected packaging/build/preview/contracts checked.
 - Plan checkpoint: automatic (explicit implementation instruction and passing independent planning review)
-- Implementation reviewer: `/root/downstream_policy_implementation` (`1/5` rounds; final confirmation unused); round 1 in progress.
+- Implementation reviewer: `/root/downstream_policy_implementation` (`1/5` rounds; final confirmation unused); Findings: none; complete scope and final cleanup verified.
 
 ## Full-scope validation
 
@@ -29,4 +29,4 @@ T01 changes the packaging contract atomically across tools, Bazel and consumers 
 
 ## Review evidence
 
-Round 1 independently confirmed the full scope, action graphs and real directory/manifest correspondence. A stale site-copy test name was updated to refer to assets rather than representations; its behavior is unchanged. The focused site suite and Java formatting passed after the rename. Final reviewer disposition pending.
+Round 1 independently confirmed the full scope, action graphs and real directory/manifest correspondence. A stale site-copy test name was updated to refer to assets rather than representations; its behavior is unchanged. The focused site suite and Java formatting passed after the rename. Final reviewer disposition: Findings: none. No residual risk identified.
