@@ -5,7 +5,7 @@
 - Current frontier: implementation review
 - Plan checkpoint: automatic (explicit implementation authority, verified user steering and passing revised planning review)
 - Planning reviewer: /root/public_bazel_api_planning (2/3 rounds consumed; final confirmation unused); revised plan passed round2, Findings: none.
-- Implementation reviewer: pending (0/5 rounds; final confirmation unused)
+- Implementation reviewer: /root/public_bazel_api_review (1/5 rounds consumed; final confirmation unused); round1 documentation finding fixed, confirmation pending.
 
 ## Full-scope validation
 
@@ -38,3 +38,8 @@ Native J2CL integration removes the need for a public fixed-policy checked-libra
 - Native J2CL checker selection, assertion refinements and optional application/test wrappers belong in Project Setup; the internal Java 17/unstripped compilation and JVM/publication obligations belong in [CONTRIBUTING](../../../CONTRIBUTING.md#browser-and-distribution-boundaries) and the [release guide](../../../tools/release/README.md).
 - Ordinary J2CL asset dependencies belong in the [CSS guide](../../../css/README.md#build-integration). Existing asset, liveness and source-map specifications retain their behavior unchanged.
 - Domain classification: these conclusions already have durable code/reader-documentation owners, so specification qualification criterion 4 does not hold. Native build wiring and private alias implementation are reversible details; no decision passes all ADR criteria. No new glossary term or user-authorized deferred issue is introduced. Domain link validation passes; the complete site gate validates the changed reader docs.
+
+## Implementation review history
+
+- Round1: one P2 finding: blanket Java 17 wording obscures the native J2CL path. Personally verified native J2CL class major65 and publication class major61. Qualify setup/contributor/IDE/release/changelog wording: publication and JVM verification use Java 17, generated sources remain compatible, pinned J2CL intermediate compilation uses Java 21. No implementation behavior changes.
+- Fix validation: complete site build/check passes (27032 local file/fragment links, zero broken); domain links and diff checks pass. Prior full implementation gate remains applicable; only reader documentation and plan evidence changed. Existing durable-owner classification is unchanged.

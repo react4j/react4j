@@ -25,3 +25,5 @@ Full gate, domain-link validation, obsolete-label and visibility audits; indepen
 - Simplify removes duplicate failure-check plumbing and redundant downstream dependencies; native views now need only public dom, and the CSS/asset example adds css/catalogue dependencies. The full gate verifies this reduced dependency graph.
 - Obsolete-label audit finds no active old root callers; only explicit denial probes and internal CSS backings remain. Single CSS/asset changelog row and unrelated TodoMVC/DOM entries are preserved.
 - Domain classification and canonical reader-documentation owners are recorded in TASKMAP. Domain link validation and complete site validation pass. No qualifying new domain artifact is required.
+
+- Review correction: qualify all Java 17 guarantees against native J2CL intermediate Java 21 bytecode; site/domain-link checks pass after the documentation-only fix.

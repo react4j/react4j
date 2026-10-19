@@ -2,7 +2,7 @@
 title: Project Setup
 ---
 
-React4j applications compile Java to JavaScript with J2CL. The runtime and generated classes target Java 17; run annotation processing on Java 21 or later. The processor shades its compiler dependencies.
+React4j applications compile Java to JavaScript with J2CL. Published libraries target Java 17 and generated sources remain Java 17-compatible; run annotation processing on Java 21 or later. The processor shades its compiler dependencies.
 
 Owned nullness contracts use JSpecify `@NullMarked`, `@NullUnmarked`, `@NonNull` and `@Nullable`. Mark application packages and specify nullable values explicitly. Legacy nullness annotations are ignored. Nullable AUTODETECT inputs are optional; an explicitly required nullable input needs a builder call and accepts null. Optional non-null references need a non-null default or a tree-context source.
 
@@ -99,7 +99,7 @@ For a published Git revision, replace the local override with a `git_override` p
 
 Put the React4j processor in the native J2CL target's `plugins` and DOM or core in `deps`. Add the CSS processor and annotation dependency when authoring styles or assets. Add compatible Arez/Sting processors for generated integrations. Core and DOM export the framework dependencies used by generated code.
 
-J2CL runs javac with the application's `plugins` and `javacopts`; a separate Java library and React4j's internal checked-library helper are unnecessary. Choose Error Prone checks in the application. For JSpecify-mode NullAway, supply its plugin and these options:
+The pinned J2CL compiler emits Java 21 intermediate bytecode for browser compilation. J2CL runs javac with the application's `plugins` and `javacopts`; a separate Java library and React4j's internal checked-library helper are unnecessary. Choose Error Prone checks in the application. For JSpecify-mode NullAway, supply its plugin and these options:
 
 ```text
 -XDaddTypeAnnotationsToSymbol=true
