@@ -7,7 +7,6 @@ java_library(
     srcs = [
         "Context.java",
         "Contexts.java",
-        "GwtIncompatible.java",
         "JsError.java",
         "Keyed.java",
         "React.java",

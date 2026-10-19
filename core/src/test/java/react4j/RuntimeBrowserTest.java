@@ -2,6 +2,7 @@ package react4j;
 
 import static react4j.webtesting.Checks.check;
 
+import arez.Arez;
 import jsinterop.annotations.JsMethod;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
@@ -17,17 +18,20 @@ public final class RuntimeBrowserTest {
     @JsMethod
     public static BrowserPromise run() throws Throwable {
         RuntimeCoverageExample.configuration();
-        RuntimeCoverageExample.registry();
         check(
                 "[1,2,3,\"4\",5.5,6.5,\"text\",[\"nested\"]]".equals(Browser.json(RuntimeCoverageExample.nodes())),
                 "Node overloads");
-        var introspected = Browser.json(RuntimeCoverageExample.introspection());
-        check(
-                "[null,\"AUTODETECT\",42,true,4200000000,2.5,5,3,\"x\",\"<Stream>\",\"plain\"]".equals(introspected),
-                "Introspection: " + introspected);
+        if (Arez.areSpiesEnabled() && Arez.arePropertyIntrospectorsEnabled()) {
+            var introspected = Browser.json(RuntimeCoverageExample.introspection());
+            check(
+                    "[null,\"AUTODETECT\",42,true,4200000000,2.5,5,3,\"x\",\"<Stream>\",\"plain\"]"
+                            .equals(introspected),
+                    "Introspection: " + introspected);
+        }
         RuntimeCoverageExample.stateUpdates();
         var root = Browser.append("div");
         try {
+            ContextsTest.run(root);
             var element = RuntimeCoverageExample.element(component());
             check(
                     "copy-key".equals(element.key())
@@ -91,7 +95,7 @@ public final class RuntimeBrowserTest {
     private static native JsPropertyMap<@Nullable Object> state(NativeView view);
 
     @JsMethod
-    private static native void render(@Nullable ReactNode element, Browser.Element root);
+    static native void render(@Nullable ReactNode element, Browser.Element root);
 
     @JsMethod
     private static native void unmount(Browser.Element root);

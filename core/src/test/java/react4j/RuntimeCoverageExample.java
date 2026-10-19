@@ -56,29 +56,6 @@ public final class RuntimeCoverageExample {
         ReactTestUtil.setViewEnableNames(true);
     }
 
-    public static void registry() {
-        if (production()) {
-            return;
-        }
-        Contexts.clear();
-        Contexts.register(String.class);
-        Contexts.register(Boolean.class, Boolean.TRUE);
-        Contexts.register(Integer.class, "qualified");
-        Contexts.register(Object.class, "qualified", new Object());
-        check(Contexts.get(String.class) == Contexts.get(String.class, ""), "default qualifier");
-        check(null != Contexts.get(Integer.class, "qualified"), "qualified registration");
-        expectStateFailure(() -> Contexts.register(String.class));
-        expectStateFailure(() -> Contexts.register(int.class));
-        expectStateFailure(() -> Contexts.get(int.class));
-        expectStateFailure(() -> Contexts.get(Double.class));
-        expectStateFailure(() -> Contexts.get(String.class, "missing"));
-        ReactTestUtil.noCheckInvariants();
-        Contexts.register(Float.class);
-        check(null != Contexts.get(Float.class), "unchecked registration");
-        ReactTestUtil.checkInvariants();
-        Contexts.clear();
-    }
-
     public static ReactElement element(Object constructor) {
         var original = ReactElement.createViewElement(Js.uncheckedCast(constructor));
         original.input("label", "original");
@@ -104,8 +81,11 @@ public final class RuntimeCoverageExample {
     }
 
     public static @Nullable ReactNode[] nodes() {
-        check("key".equals(Keyed.getKey((Keyed) () -> "key")), "keyed value");
-        check(null == Keyed.getKey(null) && null == Keyed.getKey(new Object()), "unkeyed values");
+        Keyed keyed = () -> "key";
+        check("key".equals(keyed.getKey()) && "key".equals(Keyed.getKey(keyed)), "keyed value");
+        check(
+                null == Keyed.getKey(null) && null == Keyed.getKey(new Object()) && null == Keyed.getKey("plain"),
+                "unkeyed values");
         check(3 == Feature.values().length && Feature.ENABLE == Feature.valueOf("ENABLE"), "feature enum");
         check(2 == OnInputChange.Phase.values().length, "input-change phase enum");
         check(0 < View.Type.values().length, "view type enum");

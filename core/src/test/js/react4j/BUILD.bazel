@@ -1,4 +1,58 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//tools/browser:rules.bzl", "browser_test")
+
+package(default_visibility = ["//:__pkg__"])
+
+browser_test(
+    name = "browser_tests",
+    srcs = ["browser_test.js"],
+    entry_point = "react4j.BrowserTest",
+    deps = ["//core/src/test/java/react4j:runtime_coverage"],
+)
+
+browser_test(
+    name = "configuration_tests",
+    srcs = ["configuration_test.js"],
+    entry_point = "react4j.ConfigurationTest",
+    deps = ["//core/src/test/java/react4j:runtime_coverage"],
+)
+
+_CONFIGURATIONS = {
+    profile: dict([
+        (
+            "react4j." + key,
+            value,
+        )
+        for key in [
+            "enable_view_names",
+            "minimize_input_keys",
+            "validate_input_values",
+            "store_debug_data_as_state",
+            "check_invariants",
+        ]
+    ] + [
+        ("react4j.environment", environment),
+        ("react4j.test.configuration", profile),
+        ("braincheck.check_invariants", "true"),
+    ])
+    for profile, value, environment in [
+        ("enabled", "true", "development"),
+        ("disabled", "false", "production"),
+        ("invalid", "invalid", "other"),
+    ]
+}
+
+[
+    browser_test(
+        name = "configuration_" + profile + "_tests",
+        srcs = ["configuration_test.js"],
+        defs = ["--define=%s=%s" % item for item in values.items()],
+        entry_point = "react4j.ConfigurationTest",
+        runtime_defines = values,
+        deps = ["//core/src/test/java/react4j:runtime_coverage"],
+    )
+    for profile, values in _CONFIGURATIONS.items()
+]
 
 closure_js_library(
     name = "runtime_test",

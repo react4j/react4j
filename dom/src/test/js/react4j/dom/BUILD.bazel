@@ -1,4 +1,14 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//tools/browser:rules.bzl", "browser_test")
+
+package(default_visibility = ["//:__pkg__"])
+
+browser_test(
+    name = "browser_tests",
+    srcs = ["browser_test.js"],
+    entry_point = "react4j.dom.BrowserTest",
+    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
+)
 
 closure_js_library(
     name = "properties_test",

@@ -1,11 +1,10 @@
+load("@j2cl//build_defs:rules.bzl", _j2cl_library = "j2cl_library")
 load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_library = "java_library", _java_plugin = "java_plugin", _java_test = "java_test")
 
 visibility(["//..."])
 
-# Java 17 products use the same strict checker policy as the pinned Sting module.
+# Products and browser tests share the pinned Sting module's strict checker policy.
 _JAVACOPTS = [
-    "--release",
-    "17",
     "-Werror",
     "-Xlint:all,-processing,-serial,-this-escape",
     "-Xmaxerrs",
@@ -114,17 +113,31 @@ FORMATTER_JVM_FLAGS = [
 ]
 
 _JSPECIFY = Label("//third_party/java:jspecify")
+_JSPECIFY_J2CL = Label("//third_party/java:jspecify-j2cl")
 _NULLAWAY = Label("//third_party/java:nullaway_plugin")
 
-def _compile_policy(srcs, javacopts, deps, plugins):
-    options = _JAVACOPTS + _ERROR_PRONE_JAVACOPTS
+def _compile_policy(srcs, javacopts, deps, plugins, j2cl = False):
+    options = ([] if j2cl else ["--release", "17"]) + _JAVACOPTS + _ERROR_PRONE_JAVACOPTS
     if srcs:
         options += _NULLAWAY_JAVACOPTS
-        if _JSPECIFY not in [value if type(value) == "Label" else native.package_relative_label(value) for value in deps]:
-            deps = [_JSPECIFY] + deps
+        jspecify = _JSPECIFY_J2CL if j2cl else _JSPECIFY
+        if jspecify not in [value if type(value) == "Label" else native.package_relative_label(value) for value in deps]:
+            deps = [jspecify] + deps
         if _NULLAWAY not in [value if type(value) == "Label" else native.package_relative_label(value) for value in plugins]:
             plugins = [_NULLAWAY] + plugins
     return (options + javacopts, deps, plugins)
+
+def j2cl_library(name, srcs = [], javacopts = [], deps = [], plugins = [], **kwargs):
+    options, deps, plugins = _compile_policy(srcs, javacopts, deps, plugins, j2cl = True)
+    _j2cl_library(
+        name = name,
+        srcs = srcs,
+        javacopts = options,
+        deps = deps,
+        plugins = plugins,
+        experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+        **kwargs
+    )
 
 def java_library(name, srcs = [], javacopts = [], deps = [], plugins = [], **kwargs):
     options, deps, plugins = _compile_policy(srcs, javacopts, deps, plugins)
@@ -164,7 +177,7 @@ def java_testng(name, srcs, test_classes = [], test_class = None, test_methods =
 
 def _checker_options_impl(ctx):
     output = ctx.actions.declare_file(ctx.label.name + ".txt")
-    ctx.actions.write(output, "\n".join(_JAVACOPTS + _ERROR_PRONE_JAVACOPTS + _NULLAWAY_JAVACOPTS) + "\n")
+    ctx.actions.write(output, "\n".join(["--release", "17"] + _JAVACOPTS + _ERROR_PRONE_JAVACOPTS + _NULLAWAY_JAVACOPTS) + "\n")
     return [DefaultInfo(files = depset([output]))]
 
 strict_checker_options = rule(implementation = _checker_options_impl)

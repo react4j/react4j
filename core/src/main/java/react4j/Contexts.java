@@ -20,10 +20,6 @@ public final class Contexts {
      * The map containing all the contexts. See the class javadocs for further details.
      */
     private static final Map<Class<?>, Map<String, Context<?>>> c_contexts = new HashMap<>();
-    /**
-     * Context provider.
-     */
-    private static ContextProvider c_contextProvider = new DefaultContextProvider();
 
     private Contexts() {}
 
@@ -89,7 +85,7 @@ public final class Contexts {
                             + "' but a context already exists with that type and name");
         }
         assert !map.containsKey(qualifier);
-        map.put(qualifier, c_contextProvider.createContext(defaultValue));
+        map.put(qualifier, React.createContext(defaultValue));
     }
 
     /**
@@ -135,25 +131,7 @@ public final class Contexts {
         return (Context<T>) map.get(qualifier);
     }
 
-    static void setContextProvider(final ContextProvider contextProvider) {
-        c_contextProvider = contextProvider;
-    }
-
     static void clear() {
         c_contexts.clear();
-    }
-
-    /**
-     * Interface used to provide context. This can be switched out as part of testing.
-     */
-    interface ContextProvider {
-        <T> Context<T> createContext(@Nullable T defaultValue);
-    }
-
-    static class DefaultContextProvider implements ContextProvider {
-        @Override
-        public <T> Context<T> createContext(@Nullable final T defaultValue) {
-            return React.createContext(defaultValue);
-        }
     }
 }

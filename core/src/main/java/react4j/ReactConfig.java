@@ -5,17 +5,16 @@ import org.realityforge.braincheck.BrainCheckConfig;
 /**
  * Location of all compile time configuration settings for framework.
  */
-@SuppressWarnings("FieldMayBeFinal")
+@SuppressWarnings({"FieldMayBeFinal", "StringEquality"})
 final class ReactConfig {
 
-    private static final ConfigProvider PROVIDER = new ConfigProvider();
-
-    private static final boolean PRODUCTION_ENVIRONMENT = PROVIDER.isProductionEnvironment();
-    private static boolean ENABLE_VIEW_NAMES = PROVIDER.enableViewNames();
-    private static boolean MINIMIZE_INPUT_KEYS = PROVIDER.shouldMinimizeInputKeys();
-    private static boolean SHOULD_VALIDATE_INPUT_VALUES = PROVIDER.shouldValidateInputValues();
-    private static boolean SHOULD_STORE_DEBUG_DATA_AS_STATE = PROVIDER.shouldStoreDebugDataAsState();
-    private static boolean CHECK_INVARIANTS = PROVIDER.shouldCheckInvariants();
+    private static final boolean PRODUCTION_ENVIRONMENT = "production" == System.getProperty("react4j.environment");
+    private static boolean ENABLE_VIEW_NAMES = "true" == System.getProperty("react4j.enable_view_names");
+    private static boolean MINIMIZE_INPUT_KEYS = "true" == System.getProperty("react4j.minimize_input_keys");
+    private static boolean SHOULD_VALIDATE_INPUT_VALUES = "true" == System.getProperty("react4j.validate_input_values");
+    private static boolean SHOULD_STORE_DEBUG_DATA_AS_STATE =
+            "true" == System.getProperty("react4j.store_debug_data_as_state");
+    private static boolean CHECK_INVARIANTS = "true" == System.getProperty("react4j.check_invariants");
 
     private ReactConfig() {}
 
@@ -91,79 +90,5 @@ final class ReactConfig {
 
     static void setCheckInvariants(final boolean checkInvariants) {
         CHECK_INVARIANTS = checkInvariants;
-    }
-
-    @SuppressWarnings("SimplifiableConditionalExpression")
-    private static final class ConfigProvider extends AbstractConfigProvider {
-        @GwtIncompatible
-        @Override
-        boolean isProductionEnvironment() {
-            return "production".equals(System.getProperty("react4j.environment", "production"));
-        }
-
-        @GwtIncompatible
-        @Override
-        boolean enableViewNames() {
-            return "true"
-                    .equals(System.getProperty("react4j.enable_view_names", PRODUCTION_ENVIRONMENT ? "false" : "true"));
-        }
-
-        @GwtIncompatible
-        @Override
-        boolean shouldMinimizeInputKeys() {
-            return "true"
-                    .equals(System.getProperty(
-                            "react4j.minimize_input_keys", PRODUCTION_ENVIRONMENT ? "true" : "false"));
-        }
-
-        @GwtIncompatible
-        @Override
-        boolean shouldValidateInputValues() {
-            return "true"
-                    .equals(System.getProperty(
-                            "react4j.validate_input_values", PRODUCTION_ENVIRONMENT ? "false" : "true"));
-        }
-
-        @GwtIncompatible
-        @Override
-        boolean shouldStoreDebugDataAsState() {
-            return "true"
-                    .equals(System.getProperty(
-                            "react4j.store_debug_data_as_state", PRODUCTION_ENVIRONMENT ? "false" : "true"));
-        }
-
-        @GwtIncompatible
-        @Override
-        boolean shouldCheckInvariants() {
-            return "true"
-                    .equals(System.getProperty("react4j.check_invariants", PRODUCTION_ENVIRONMENT ? "false" : "true"));
-        }
-    }
-
-    @SuppressWarnings({"unused", "StringEquality"})
-    private abstract static class AbstractConfigProvider {
-        boolean isProductionEnvironment() {
-            return "production" == System.getProperty("react4j.environment");
-        }
-
-        boolean enableViewNames() {
-            return "true" == System.getProperty("react4j.enable_view_names");
-        }
-
-        boolean shouldMinimizeInputKeys() {
-            return "true" == System.getProperty("react4j.minimize_input_keys");
-        }
-
-        boolean shouldValidateInputValues() {
-            return "true" == System.getProperty("react4j.validate_input_values");
-        }
-
-        boolean shouldStoreDebugDataAsState() {
-            return "true" == System.getProperty("react4j.store_debug_data_as_state");
-        }
-
-        boolean shouldCheckInvariants() {
-            return "true" == System.getProperty("react4j.check_invariants");
-        }
     }
 }

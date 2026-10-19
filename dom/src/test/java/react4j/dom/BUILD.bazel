@@ -1,29 +1,20 @@
-load("//tools/browser:java.bzl", "java_j2cl_library")
+load("//third_party/java:rules.bzl", "j2cl_library")
 
 package(default_visibility = [
     "//:__pkg__",
     "//dom/src/test/js/react4j/dom:__pkg__",
 ])
 
-java_j2cl_library(
+j2cl_library(
     name = "runtime_coverage",
     testonly = True,
     srcs = [
         "EventsBrowserTest.java",
+        "EventsBrowserTest.native.js",
         "PropertiesBrowserTest.java",
+        "PropertiesBrowserTest.native.js",
         "RuntimeBrowserTest.java",
         "RuntimeCoverageExample.java",
-    ],
-    java_deps = [
-        "//tools/webtesting/src/main/java/react4j/webtesting:browser_java",
-        "//core",
-        "//dom",
-        "//third_party/java:arez_core",
-        "//third_party/java:jsinterop_annotations",
-    ],
-    native_srcs = [
-        "PropertiesBrowserTest.native.js",
-        "EventsBrowserTest.native.js",
     ],
     deps = [
         "//:core",

@@ -1,4 +1,4 @@
-load("//tools/browser:java.bzl", "java_j2cl_library")
+load("//third_party/java:rules.bzl", "j2cl_library")
 
 package(default_visibility = [
     "//:__pkg__",
@@ -11,19 +11,15 @@ package(default_visibility = [
     "//examples/webspeechdemo/src/test/java/react4j/webspeechdemo:__pkg__",
 ])
 
-java_j2cl_library(
+j2cl_library(
     name = "browser",
     testonly = True,
     srcs = [
         "Browser.java",
+        "Browser.native.js",
         "BrowserPromise.java",
         "Checks.java",
     ],
-    java_deps = [
-        "//third_party/java:jsinterop_annotations",
-        "//third_party/java:base",
-    ],
-    native_srcs = ["Browser.native.js"],
     deps = [
         "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jsinterop_base-j2cl",

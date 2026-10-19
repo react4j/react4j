@@ -19,13 +19,16 @@ public final class RuntimeCoverageExample {
     private RuntimeCoverageExample() {}
 
     public static void classNames() {
-        var props = new HtmlProps().className("first", null, "second");
+        var props = new HtmlProps();
+        check(props == props.className("first", null, "second"), "class composition builder identity");
         check("first second".equals(props.getClassName()), "class composition");
         props.className();
         props.className((String) null);
         check("first second".equals(props.getClassName()), "empty composition preserves existing class");
-        new HtmlProps().className();
-        new HtmlProps().className((String) null);
+        props.className(null, null);
+        check("first second".equals(props.getClassName()), "all-null composition preserves existing class");
+        check(null == new HtmlProps().className().getClassName(), "empty composition leaves absent class");
+        check(null == new HtmlProps().className((String) null).getClassName(), "null composition leaves absent class");
         if (React.shouldCheckInvariants()) {
             invalidClass("", "Empty classname");
             invalidClass(" ", "Empty classname");

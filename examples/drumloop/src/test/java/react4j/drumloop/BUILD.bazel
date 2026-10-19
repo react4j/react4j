@@ -1,20 +1,17 @@
-load("//tools/browser:java.bzl", "java_j2cl_library")
+load("//third_party/java:rules.bzl", "j2cl_library")
 
 package(default_visibility = [
     "//:__pkg__",
     "//examples/drumloop/src/test/js/react4j/drumloop:__pkg__",
 ])
 
-java_j2cl_library(
+j2cl_library(
     name = "browser_tests",
     testonly = True,
-    srcs = ["DrumloopBrowserTest.java"],
-    java_deps = [
-        "//tools/webtesting/src/main/java/react4j/webtesting:browser_java",
-        "//third_party/java:base",
-        "//third_party/java:jsinterop_annotations",
+    srcs = [
+        "DrumloopBrowserTest.java",
+        "DrumloopBrowserTest.native.js",
     ],
-    native_srcs = ["DrumloopBrowserTest.native.js"],
     deps = [
         "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jsinterop_base-j2cl",

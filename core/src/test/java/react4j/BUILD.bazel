@@ -1,5 +1,4 @@
-load("//third_party/java:rules.bzl", "java_testng")
-load("//tools/browser:java.bzl", "java_j2cl_library")
+load("//third_party/java:rules.bzl", "j2cl_library")
 
 package(default_visibility = [
     "//:__pkg__",
@@ -8,53 +7,16 @@ package(default_visibility = [
     "//tools/verification/src/test/js/react4j/verification:__pkg__",
 ])
 
-java_testng(
-    name = "tests",
-    size = "small",
-    srcs = [
-        "AbstractTest.java",
-        "ContextsTest.java",
-        "KeyedTest.java",
-        "//core/src/test/java/react4j/test:sources",
-    ],
-    data = ["//core/src/main/java/react4j"],
-    jvm_flags = [
-        "-Dbraincheck.environment=development",
-        "-Dzemeckis.environment=development",
-        "-Darez.environment=development",
-        "-Dreact4j.environment=development",
-        "-Dreact4j.core.compile_target=$(rootpath //core/src/main/java/react4j)",
-    ],
-    test_classes = [
-        "react4j.ContextsTest",
-        "react4j.KeyedTest",
-        "react4j.test.JDependTest",
-    ],
-    visibility = ["//:__subpackages__"],
-    deps = [
-        "//core",
-        "//third_party/java:arez_core",
-        "//third_party/java:arez_testng",
-        "//third_party/java:jdepend",
-        "//third_party/java:mockito_core",
-    ],
-)
-
-java_j2cl_library(
+j2cl_library(
     name = "runtime_coverage",
     testonly = True,
     srcs = [
+        "ContextsTest.java",
+        "ReactConfigTest.java",
         "RuntimeBrowserTest.java",
+        "RuntimeBrowserTest.native.js",
         "RuntimeCoverageExample.java",
     ],
-    java_deps = [
-        "//tools/webtesting/src/main/java/react4j/webtesting:browser_java",
-        "//third_party/java:base",
-        "//third_party/java:arez_core",
-        "//core",
-        "//third_party/java:jsinterop_annotations",
-    ],
-    native_srcs = ["RuntimeBrowserTest.native.js"],
     deps = [
         "//:core",
         "//third_party/java:jsinterop_annotations-j2cl",
@@ -63,15 +25,4 @@ java_j2cl_library(
         "//tools/webtesting/src/main/java/react4j/webtesting:browser",
         "@arez//:core-j2cl",
     ],
-)
-
-java_testng(
-    name = "configuration_tests",
-    srcs = ["ReactConfigTest.java"],
-    jvm_flags = [
-        "-Dbraincheck.environment=development",
-        "-Dbraincheck.check_invariants=true",
-    ],
-    test_class = "react4j.ReactConfigTest",
-    deps = ["//core/src/main/java/react4j"],
 )
