@@ -1,11 +1,11 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementation-review
-- Current frontier: implementation review
+- Status: closing
+- Current frontier: closeout
 - Plan checkpoint: automatic (explicit implementation authority, verified user steering and passing revised planning review)
 - Planning reviewer: /root/public_bazel_api_planning (2/3 rounds consumed; final confirmation unused); revised plan passed round2, Findings: none.
-- Implementation reviewer: /root/public_bazel_api_review (1/5 rounds consumed; final confirmation unused); round1 documentation finding fixed, confirmation pending.
+- Implementation reviewer: /root/public_bazel_api_review (2/5 rounds consumed; final confirmation unused); round2 passes, Findings: none.
 
 ## Full-scope validation
 
@@ -43,3 +43,9 @@ Native J2CL integration removes the need for a public fixed-policy checked-libra
 
 - Round1: one P2 finding: blanket Java 17 wording obscures the native J2CL path. Personally verified native J2CL class major65 and publication class major61. Qualify setup/contributor/IDE/release/changelog wording: publication and JVM verification use Java 17, generated sources remain compatible, pinned J2CL intermediate compilation uses Java 21. No implementation behavior changes.
 - Fix validation: complete site build/check passes (27032 local file/fragment links, zero broken); domain links and diff checks pass. Prior full implementation gate remains applicable; only reader documentation and plan evidence changed. Existing durable-owner classification is unchanged.
+
+- Round2: Findings none. Reviewer independently confirms the documentation fix and Java 21/17 bytecode distinction, clean scope/diff and passing 27032-link site check. Prior complete implementation review/full-gate coverage remains applicable; no residual risk identified.
+
+## Closeout gate
+
+All four tasks and their checks pass. Two planning rounds and two implementation review rounds consumed; neither final confirmation allowance used. Final knowledge sweep reuses the recorded classifications: bytecode wording clarifies existing build configuration; no new qualifying domain artifact or unpromoted conclusion remains. Canonical reader docs and their links are validated. Implementation and evidence commits are in history. Remove only plans/public-bazel-api, commit its deletion and publish PR112; never merge.
