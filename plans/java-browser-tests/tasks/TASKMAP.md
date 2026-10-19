@@ -1,11 +1,11 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `implementation-review`
-- Current frontier: `implementation review`
+- Status: `complete`
+- Current frontier: `closeout`
 - Planning reviewer: `/root/java_browser_planning_review` (`1/3` rounds; final confirmation `unused`; Findings: none)
 - Plan checkpoint: `automatic` (accepted implementation authority; planning review passed)
-- Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
+- Implementation reviewer: `/root/java_browser_implementation_review` (`1/5` rounds; final confirmation `unused`; Findings: none)
 - Authority: user explicitly requested the Java/JS split, then extended it to every JavaScript test added by PR112; no human checkpoint requested. Existing branch publication remains authorized; do not merge.
 - Base: 424077f39 (visibility audit complete, full gate passed).
 
@@ -33,9 +33,15 @@
 
 - Planning round 1: Findings: none. Reviewer checked every added/modified JS driver, native overlay discovery and measurement/attribution fixtures. Shared support is limited to concrete migrated cases; real modes, cleanup and coverage remain required. Final confirmation unused.
 
+- Implementation round 1: Findings: none. Reviewer independently compared the complete migration to original scenarios, checked native boundaries, resource/lifecycle behavior, overlay discovery, unchanged coverage, explicit builds/visibility/formatting, gate logs and final CSS retry evidence. Diff and canonical links passed. Residual: Linux CI on the final publication remains pending.
+
 ## Promoted knowledge
 
 - Contributor test-language policy is recorded in [CONTRIBUTING.md](../../../CONTRIBUTING.md#browser-and-distribution-boundaries). It owns the development workflow; no duplicate domain specification is needed.
 - Coverage obligations and floors retain their existing [contributor contract](../../../CONTRIBUTING.md#coverage). CSS behavior, assets and maps retain their existing [liveness](../../../docs/specs/css-liveness.md), [asset](../../../docs/specs/web-assets.md) and [source-map](../../../docs/specs/css-source-maps.md) owners; this migration changes no product contract.
 - Native/Java fixture structure and runner choice are reversible test implementation decisions below the ADR threshold. No new domain language or deliberately deferred product requirement was introduced. Deferred compression remains outside this migration.
 - Domain classification completed using domain-modeling qualification/replacement gates. Canonical link validation passed.
+
+## Final knowledge sweep
+
+- No new durable conclusions since promotion. CONTRIBUTING.md owns the Java/native testing policy; the existing product and coverage contracts remain unchanged. All tasks and checks are complete; independent review passed on its first round. The active plan tree may be removed after this evidence is committed.
