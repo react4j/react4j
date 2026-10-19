@@ -3,7 +3,7 @@
 - Spec: [SPEC.md](../SPEC.md)
 - Status: planned
 - Current frontier: T01
-- Planning reviewer: /root/bazel_facade_planning (1/3 rounds; final confirmation unused); Findings: none.
+- Planning reviewer: /root/bazel_facade_planning (2/3 rounds; final confirmation unused); Findings: none.
 - Plan checkpoint: automatic; accepted scope and implementation authority from user “accept”, no human pause requested, planning review passed.
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
 
@@ -16,7 +16,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Public facade and symbolic composition](T01-public-boundary.md) | pending | None |
+| T01 | [Public facade and symbolic composition](T01-public-boundary.md) | in_progress | None |
 | T02 | [Delivery verification](T02-delivery.md) | pending | T01 |
 
 ## Promoted knowledge
@@ -26,3 +26,5 @@
 ## Review history
 
 - Round 1: Findings: none. Reviewed all requirements/tasks, alias-only ownership, macro feasibility and visibility, caller-private inputs/link children/provider identities, patch export and full delivery verification. Real nested composition remains subject to implementation tests.
+
+- Planning round 2: verified pinned Bazel checks select condition visibility at the symbolic definition package, without ordinary label argument delegation. Round 2 passed with Findings: none: fixture/docs use narrow condition grants; no new options, public targets or implementation relocation. External completion and precise grants remain implementation gates.

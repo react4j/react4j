@@ -1,12 +1,12 @@
 # T01 — Public facade and symbolic composition
 
-- Status: pending
+- Status: in_progress
 - Blocked by: None
 - Spec coverage: R1–R3, AC1–AC3
 
 ## Delivers
 
-One alias-only root entry point, typed symbolic orchestration, private support dependencies and narrowly patched Closure test helper. Extend the real external consumer to prove all exports/provider identities, caller-private label forwarding, exposed link children, private helpers, requested target visibility and every denied former support/module path.
+One alias-only root entry point, typed symbolic orchestration, private support dependencies and narrowly patched Closure test helper. Extend the real external consumer to prove all exports/provider identities, caller-private ordinary label forwarding and narrowly granted select conditions, exposed link children, private helpers, requested target visibility and every denied former support/module path.
 
 ## Acceptance criteria
 

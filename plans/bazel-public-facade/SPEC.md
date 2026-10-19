@@ -22,7 +22,7 @@ Downstream consumers currently load implementation files and can directly depend
 ## Requirements and acceptance
 
 - R1 / AC1: Downstream BUILD and .bzl files can load all nine symbols solely from @react4j//:defs.bzl, with unchanged provider identities. Existing public libraries/plugins remain usable; direct loads of the old modules fail.
-- R2 / AC2: Native downstream J2CL compilation, CSS linking/variants, asset packaging and Chromium tests work in fastbuild and opt, including caller-private inputs and custom compiler defines. Existing generated outputs and independently rooted CSS continue to work.
+- R2 / AC2: Native downstream J2CL compilation, CSS linking/variants, asset packaging and Chromium tests work in fastbuild and opt, including caller-private ordinary dependency/file inputs and custom compiler defines. Bazel requires select() conditions to grant visibility to the symbolic implementation packages; document this constraint and verify narrowly granted conditions rather than relying on legacy public defaults. Existing generated outputs and independently rooted CSS continue to work.
 - R3 / AC3: Only five public library/processor targets and root defs.bzl remain in the public inventory (generated files inherit their owners). Direct downstream dependencies on each of the eight former support targets fail. Symbolic generated helpers are private while documented main/link targets respect requested visibility.
 - R4 / AC4: Existing checker enforcement, full tests, runtime coverage, site and publication/reproducibility checks pass. Public setup/CSS documentation uses the new load path; simplify and independent implementation review pass; plan removed at closeout and PR112 updated.
 
@@ -33,6 +33,7 @@ Downstream consumers currently load implementation files and can directly depend
 | Alias facade, no relocation | User correction; one public API without changing ownership | Check direct aliases and consumer provider checks |
 | Symbolic composition | Existing Closure/WebDriver rules own the actual work; definition-site privileges hide tools | Real external consumer in both modes; negative access tests |
 | Export existing link children | CSS variants are separately declared by callers | Exercise application_bundle and test_bin from consumer and examples; keep other helpers hidden |
+| Narrow select condition grants | A real pinned-Bazel probe showed condition keys do not receive ordinary label-argument visibility delegation | Custom conditions grant only the symbolic definition packages, without becoming public; verify both modes and document the affected packages |
 | Minimal Closure naming patch | gen_html_<name> violates symbolic target names | Verify real browser tests and independent downstream patch export |
 
 ## Knowledge ownership
