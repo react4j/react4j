@@ -1,7 +1,12 @@
 load("//third_party/java:rules.bzl", "java_testng")
 load("//tools/browser:java.bzl", "java_j2cl_library")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = [
+    "//:__pkg__",
+    "//core:__pkg__",
+    "//core/src/test/js/react4j:__pkg__",
+    "//tools/verification/src/test/js/react4j/verification:__pkg__",
+])
 
 java_testng(
     name = "tests",

@@ -11,5 +11,8 @@ browser_test(
         "//examples/todomvc/sting",
     ],
     entry_point = "react4j.todomvc.BrowserTest",
-    deps = ["@rules_closure//closure/testing/library:testcase"],
+    deps = [
+        "//examples/todomvc/src/test/java/react4j/todomvc:browser_tests",
+        "@rules_closure//closure/testing/library:testcase",
+    ],
 )

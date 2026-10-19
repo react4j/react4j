@@ -5,6 +5,10 @@ package(default_visibility = [
     "//core/src/test/java/react4j:__pkg__",
     "//css/examples/save-button/src/test/java/react4j/css/example:__pkg__",
     "//dom/src/test/java/react4j/dom:__pkg__",
+    "//examples/drumloop/src/test/java/react4j/drumloop:__pkg__",
+    "//examples/heart-rate-monitor/src/test/java/react4j/hrm:__pkg__",
+    "//examples/todomvc/src/test/java/react4j/todomvc:__pkg__",
+    "//examples/webspeechdemo/src/test/java/react4j/webspeechdemo:__pkg__",
 ])
 
 java_j2cl_library(
@@ -15,10 +19,14 @@ java_j2cl_library(
         "BrowserPromise.java",
         "Checks.java",
     ],
-    java_deps = ["//third_party/java:jsinterop_annotations"],
+    java_deps = [
+        "//third_party/java:jsinterop_annotations",
+        "//third_party/java:base",
+    ],
     native_srcs = ["Browser.native.js"],
     deps = [
         "//third_party/java:jsinterop_annotations-j2cl",
+        "//third_party/java:jsinterop_base-j2cl",
         "//third_party/java:jspecify-j2cl",
     ],
 )

@@ -1,6 +1,9 @@
 load("//tools/browser:java.bzl", "java_j2cl_library")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = [
+    "//:__pkg__",
+    "//examples/drumloop/src/test/js/react4j/drumloop:__pkg__",
+])
 
 java_j2cl_library(
     name = "cache_tests",

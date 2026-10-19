@@ -45,6 +45,8 @@ Public `//:core`, `//:dom`, `//:processor` and `//:react4j_processor_plugin` use
 
 Keep React/ReactDOM versions and browser mode switches aligned with the runtime and asset checks. Development uses BUNDLE plus runtime Closure defines; `-c opt` selects ADVANCED production. Browser tests load the real pinned runtime assets and verify rendering, generated inputs, context and configuration in both modes.
 
+Write browser scenarios and assertions in checked Java/J2CL, called by thin Closure test-suite modules. Keep native JavaScript for browser/service instrumentation, generated-overlay discovery and interop fixtures. Compare observations in Java using explicit assertion failures that remain active in optimized builds.
+
 ## Coverage
 
 The full gate enforces [coverage.json](tools/verification/coverage.json), including per-class overrides. It writes `reports/coverage/jvm.lcov`, `runtime.lcov` and `summary.txt`.

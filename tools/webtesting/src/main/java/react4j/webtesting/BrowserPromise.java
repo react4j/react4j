@@ -18,6 +18,9 @@ public final class BrowserPromise {
     @JsMethod(name = "finally")
     public native BrowserPromise finallyDo(Action cleanup);
 
+    @JsMethod(name = "finally")
+    public native BrowserPromise finallyRun(Cleanup cleanup);
+
     @JsOverlay
     public BrowserPromise thenDo(Action action) {
         return then(value -> {
@@ -30,6 +33,12 @@ public final class BrowserPromise {
     public interface Step {
         @Nullable
         Object run(@Nullable Object value);
+    }
+
+    @JsFunction
+    public interface Cleanup {
+        @Nullable
+        Object run();
     }
 
     @JsFunction

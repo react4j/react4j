@@ -1,7 +1,7 @@
-/** @param {function():*} read @return {*} */
-ReactCacheTest.catchThrown = function(read) {
-  try { read(); } catch (error) { return error; }
-  throw new Error('Expected read to throw');
+/** @param {function():*} read @return {!Object} */
+ReactCacheTest.catchRead = function(read) {
+  try { read(); } catch (error) { return {thrown: true, value: error}; }
+  return {thrown: false, value: null};
 };
 /** @param {string} value @return {!Promise<string>} */
 ReactCacheTest.resolve = function(value) { return Promise.resolve(value); };

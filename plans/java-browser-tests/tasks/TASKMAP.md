@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `implementing`
-- Current frontier: `T04`
+- Status: `implementation-review`
+- Current frontier: `implementation review`
 - Planning reviewer: `/root/java_browser_planning_review` (`1/3` rounds; final confirmation `unused`; Findings: none)
 - Plan checkpoint: `automatic` (accepted implementation authority; planning review passed)
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -12,7 +12,7 @@
 ## Full-scope validation
 
 - Gate: tools/check.sh, all changed browser scenarios in both modes, native/assertion boundary audit and document-link validation.
-- Evidence: pending
+- Evidence: `tools/check.sh` passed (45 default tests, 8 optimized browsers, 23 JVM coverage targets, runtime collector in both environments, unchanged floors, hermeticity, external consumer, site/release and 15 independent archive checks). Final CSS timeout configuration subsequently passed all three variants in both modes. Formatter/buildifier, case-name/native-boundary audit and canonical link validation passed. See T04 for prior-CI timeout evidence and the isolated local WebDriver startup retry.
 
 ## Tasks
 
@@ -21,7 +21,7 @@
 | T01 | [Core runtime and browser support](T01-core-and-support.md) | complete | None |
 | T02 | [DOM probes and coverage drivers](T02-dom-and-coverage.md) | complete | T01 |
 | T03 | [CSS browser assertions](T03-css-browser.md) | complete | T01 |
-| T04 | [Example scenarios and full delivery](T04-examples-and-closeout.md) | pending | T02,T03 |
+| T04 | [Example scenarios and full delivery](T04-examples-and-closeout.md) | complete | T02,T03 |
 
 ## Sequencing notes
 
@@ -35,4 +35,7 @@
 
 ## Promoted knowledge
 
-- pending classification; contributor test-language policy belongs in CONTRIBUTING.md. Existing coverage obligations are preserved, not redefined.
+- Contributor test-language policy is recorded in [CONTRIBUTING.md](../../../CONTRIBUTING.md#browser-and-distribution-boundaries). It owns the development workflow; no duplicate domain specification is needed.
+- Coverage obligations and floors retain their existing [contributor contract](../../../CONTRIBUTING.md#coverage). CSS behavior, assets and maps retain their existing [liveness](../../../docs/specs/css-liveness.md), [asset](../../../docs/specs/web-assets.md) and [source-map](../../../docs/specs/css-source-maps.md) owners; this migration changes no product contract.
+- Native/Java fixture structure and runner choice are reversible test implementation decisions below the ADR threshold. No new domain language or deliberately deferred product requirement was introduced. Deferred compression remains outside this migration.
+- Domain classification completed using domain-modeling qualification/replacement gates. Canonical link validation passed.

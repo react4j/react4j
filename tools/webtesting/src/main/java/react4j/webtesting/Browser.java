@@ -1,16 +1,77 @@
 package react4j.webtesting;
 
+import static react4j.webtesting.Checks.check;
+
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 @NullMarked
 public final class Browser {
     private Browser() {}
+
+    @JsMethod
+    public static native Frame blankFrame(int width, int height);
+
+    @JsMethod
+    private static native BrowserPromise fetch(String url);
+
+    @JsMethod
+    private static native BrowserPromise write(Frame frame, String html);
+
+    @JsMethod
+    public static native void setValue(Element element, String value);
+
+    @JsMethod
+    public static native void mouse(Element element, String type, boolean shift);
+
+    @JsMethod
+    public static native void key(Element element, int code);
+
+    @JsMethod
+    public static native void blurTo(Element element, Element target);
+
+    @JsMethod
+    public static native Element[] queryAll(Object root, String selector);
+
+    @JsMethod
+    public static native String pseudoStyle(Element element, String pseudo, String property);
+
+    @JsMethod
+    public static native BrowserPromise reload(Frame frame);
+
+    @JsMethod
+    public static native String[] observeErrors(Frame frame);
+
+    @JsMethod
+    public static native String[] styleNames(Element element);
+
+    @JsMethod
+    public static native Element appendIn(Page page, String tag);
+
+    @JsMethod
+    public static native void cssText(Element element, String text);
+
+    public static BrowserPromise loadApplication(Frame frame, String root, String setup) {
+        return fetch(root + "index.html")
+                .then(value -> {
+                    Response response = Js.uncheckedCast(value);
+                    check(response.isOk(), "Load application: " + root);
+                    return response.text();
+                })
+                .then(html -> write(
+                        frame,
+                        Browser.string(html)
+                                .replace(
+                                        "<head>",
+                                        "<head><base href=\"" + absoluteUrl(root) + "\"><script>" + setup
+                                                + "</script>")));
+    }
 
     @JsMethod
     public static native Element append(String tag);
@@ -120,7 +181,7 @@ public final class Browser {
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Element")
     public static class Element {
-        protected Element() {}
+        private Element() {}
 
         @JsProperty
         public native String getTextContent();
@@ -143,11 +204,41 @@ public final class Browser {
         @JsProperty
         public native int getNaturalWidth();
 
+        @JsProperty
+        public native int getClientWidth();
+
         public native BrowserPromise decode();
 
         public native void focus();
 
         public native void blur();
+
+        public native void click();
+
+        public native boolean contains(Element element);
+
+        @JsProperty
+        public native Element getParentElement();
+
+        @JsProperty
+        public native Element getNextElementSibling();
+
+        @JsProperty
+        public native Element getPreviousElementSibling();
+
+        @JsProperty
+        public native boolean isComplete();
+
+        @JsProperty
+        public native boolean isDisabled();
+
+        @JsProperty
+        public native String getValue();
+
+        @JsProperty
+        public native String getPlaceholder();
+
+        public native Rect getBoundingClientRect();
 
         public native boolean matches(String selector);
 
@@ -166,12 +257,48 @@ public final class Browser {
         private Frame() {}
 
         @JsProperty
+        public native void setWidth(String width);
+
+        @JsProperty
+        public native void setHeight(String height);
+
+        @JsProperty
         public native Page getContentDocument();
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Document")
     public static final class Page {
         private Page() {}
+
+        @JsProperty
+        public native Element getDocumentElement();
+
+        @JsProperty
+        public native Element getActiveElement();
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "DOMRect")
+    public static final class Rect {
+        private Rect() {}
+
+        @JsProperty
+        public native double getWidth();
+
+        @JsProperty
+        public native double getTop();
+
+        @JsProperty
+        public native double getBottom();
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Response")
+    private static final class Response {
+        private Response() {}
+
+        @JsProperty
+        public native boolean isOk();
+
+        public native BrowserPromise text();
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Animation")

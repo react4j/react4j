@@ -1,12 +1,14 @@
 goog.module('react4j.css.example.BrowserTest');
 const Mode = goog.require('react4j.browser.Mode');
 const Test = goog.require('react4j.css.example.CssBrowserTest');
+const TestCase = goog.require('goog.testing.TestCase');
 const testSuite = goog.require('goog.testing.testSuite');
 /** @define {string} */
 const variant = goog.define('react4j.css.example.variant', '');
 /** @type {!Test} */
 let test;
 testSuite({
+  setUpPage() { TestCase.getActiveTestCase().promiseTimeout = 30000; },
   setUp() { test = new Test('production' === Mode.environment, variant); return test.setUp(); },
   tearDown() { test.tearDown(); },
   testPackagedAssetsAtAnApplicationMountAndNestedRoute() { return test.testPackagedAssetsAtAnApplicationMountAndNestedRoute(); },

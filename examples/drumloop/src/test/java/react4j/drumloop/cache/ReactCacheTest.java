@@ -145,8 +145,25 @@ public final class ReactCacheTest {
         }
     }
 
+    private static @Nullable Object catchThrown(ReadFn read) {
+        var result = catchRead(read);
+        check(result.isThrown(), "Expected read to throw");
+        return result.getValue();
+    }
+
     @JsMethod
-    private static native @Nullable Object catchThrown(ReadFn read);
+    private static native ReadResult catchRead(ReadFn read);
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    private static final class ReadResult {
+        private ReadResult() {}
+
+        @JsProperty
+        public native boolean isThrown();
+
+        @JsProperty
+        public native @Nullable Object getValue();
+    }
 
     @JsMethod
     private static native Thenable newThenable();

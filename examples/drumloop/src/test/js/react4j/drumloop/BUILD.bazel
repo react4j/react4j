@@ -8,6 +8,7 @@ browser_test(
     data = ["//examples/drumloop"],
     entry_point = "react4j.drumloop.BrowserTest",
     deps = [
+        "//examples/drumloop/src/test/java/react4j/drumloop:browser_tests",
         "//examples/drumloop/src/test/java/react4j/drumloop/cache:cache_tests",
         "@rules_closure//closure/testing/library:testcase",
     ],

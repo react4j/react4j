@@ -88,3 +88,63 @@ Browser.same = function(first, second) { return first === second; };
 Browser.computed = function(element, property) { return getComputedStyle(element).getPropertyValue(property); };
 /** @param {!Element} element @param {string} property @return {string} */
 Browser.inlineStyle = function(element, property) { return element.style.getPropertyValue(property); };
+/** @param {number} width @param {number} height @return {!HTMLIFrameElement} */
+Browser.blankFrame = function(width, height) {
+  const frame = /** @type {!HTMLIFrameElement} */ (document.createElement('iframe'));
+  frame.width = String(width);
+  frame.height = String(height);
+  document.body.appendChild(frame);
+  return frame;
+};
+/** @param {string} url @return {!Promise<!Response>} */
+Browser.fetch = function(url) { return fetch(url); };
+/** @param {!HTMLIFrameElement} frame @param {string} html @return {!Promise<void>} */
+Browser.write = function(frame, html) {
+  const loaded = new Promise(resolve => { frame.onload = () => resolve(); });
+  const page = frame.contentDocument;
+  page.open(); page.write(html); page.close();
+  return loaded;
+};
+/** @param {!Element} element @param {string} value */
+Browser.setValue = function(element, value) {
+  const prototype = element.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype :
+    element.tagName === 'SELECT' ? HTMLSelectElement.prototype : HTMLInputElement.prototype;
+  const control = /** @type {!HTMLInputElement|!HTMLSelectElement|!HTMLTextAreaElement} */ (element);
+  Object.getOwnPropertyDescriptor(prototype, 'value').set.call(control, value);
+  element.dispatchEvent(new Event(element.tagName === 'SELECT' ? 'change' : 'input', {bubbles: true}));
+};
+/** @param {!Element} element @param {string} type @param {boolean} shift */
+Browser.mouse = function(element, type, shift) { element.dispatchEvent(new MouseEvent(type, {bubbles: true, shiftKey: shift})); };
+/** @param {!Element} element @param {number} code */
+Browser.key = function(element, code) { element.dispatchEvent(new KeyboardEvent('keydown', {keyCode: code, which: code, bubbles: true})); };
+/** @param {!Element} element @param {!Element} target */
+Browser.blurTo = function(element, target) { element.dispatchEvent(new FocusEvent('blur', {relatedTarget: target})); };
+/** @param {*} root @param {string} selector @return {!Array<!Element>} */
+Browser.queryAll = function(root, selector) { return Array.from(root.querySelectorAll(selector)); };
+/** @param {!Element} element @param {string} pseudo @param {string} property @return {string} */
+Browser.pseudoStyle = function(element, pseudo, property) { return element.ownerDocument.defaultView.getComputedStyle(element, pseudo).getPropertyValue(property); };
+/** @param {!HTMLIFrameElement} frame @return {!Promise<void>} */
+Browser.reload = function(frame) {
+  const loaded = new Promise(resolve => { frame.onload = () => resolve(); });
+  frame.contentWindow.location.reload();
+  return loaded;
+};
+/** @param {!HTMLIFrameElement} frame @return {!Array<string>} */
+Browser.observeErrors = function(frame) {
+  const errors = [];
+  const view = frame.contentWindow;
+  view.addEventListener('error', event => errors.push(event.message));
+  const nativeError = view.console.error.bind(view.console);
+  view.console.error = (...args) => { errors.push(args.map(String).join(' ')); nativeError(...args); };
+  return errors;
+};
+/** @param {!Element} element @return {!Array<string>} */
+Browser.styleNames = function(element) { return Array.from(element.style); };
+/** @param {!Document} page @param {string} tag @return {!Element} */
+Browser.appendIn = function(page, tag) {
+  const element = page.createElement(tag);
+  page.body.appendChild(element);
+  return element;
+};
+/** @param {!Element} element @param {string} text */
+Browser.cssText = function(element, text) { element.style.cssText = text; };
