@@ -1,6 +1,6 @@
 # T01 — Native J2CL assets and caller-owned checks
 
-- Status: pending
+- Status: complete
 - Blocked by: None
 - Spec coverage: R2, R5; AC1, AC3
 
@@ -10,10 +10,10 @@ Ordinary J2CL libraries declare web_assets in deps and configure their own check
 
 ## Acceptance criteria
 
-- [ ] Official metadata-only Closure provider makes web_assets usable in J2CL deps and existing aspect collection retains catalogues transitively.
-- [ ] JavaScript-only link rejects deliberate Error Prone and NullAway violations using caller configuration; valid code builds without a second Java library.
-- [ ] External consumer uses native J2CL with both processors and real assets, preserving both modes, pruning, maps and manifest access.
-- [ ] Redundant helper asset attachment is removed and callers migrate; no new public rule or option.
+- [x] Official metadata-only Closure provider makes web_assets usable in J2CL deps and existing aspect collection retains catalogues transitively.
+- [x] JavaScript-only link rejects deliberate Error Prone and NullAway violations using caller configuration; valid code builds without a second Java library.
+- [x] External consumer uses native J2CL with both processors and real assets, preserving both modes, pruning, maps and manifest access.
+- [x] Redundant helper asset attachment is removed and callers migrate; no new public rule or option.
 
 ## Validation
 
@@ -21,4 +21,7 @@ Focused asset/processor/browser checks and external consumer in both modes, mean
 
 ## Evidence
 
-Pending.
+- Focused asset bundler and integration suites pass; six CSS browser variants pass across fastbuild/opt.
+- Disposable external workspace passes native @View/@Css/@Assets compilation, generated-source strict dependencies, application/manifest builds and exact ArrayEquals/NullAway rejection from JS-only links in both modes.
+- Native public J2CL exports now supply framework dependencies referenced by generated code; downstream NullAway enables assertion refinements. No additional Java compilation adapter is introduced.
+- Buildifier, shell syntax, diff whitespace and hermeticity checks pass. Temporary probe packages removed.

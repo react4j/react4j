@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: planned
-- Current frontier: T01
+- Status: implementing
+- Current frontier: T02
 - Plan checkpoint: automatic (explicit implementation authority, verified user steering and passing revised planning review)
 - Planning reviewer: /root/public_bazel_api_planning (2/3 rounds consumed; final confirmation unused); revised plan passed round2, Findings: none.
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -16,7 +16,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Native J2CL integration](T01-native-j2cl.md) | pending | None |
+| T01 | [Native J2CL integration](T01-native-j2cl.md) | complete | None |
 | T02 | [J2CL-first root API](T02-labels.md) | pending | T01 |
 | T03 | [Enforced downstream boundary](T03-visibility.md) | pending | T02 |
 | T04 | [Contract and delivery](T04-delivery.md) | pending | T03 |

@@ -1,6 +1,7 @@
 """Bazel rules for CSS-in-Java."""
 
-load("@rules_closure//closure:defs.bzl", "ClosureJsBinaryInfo", "closure_js_binary")
+load("@j2cl//build_defs/internal_do_not_use:provider.bzl", "J2clInfo")
+load("@rules_closure//closure:defs.bzl", "CLOSURE_JS_TOOLCHAIN_ATTRS", "ClosureJsBinaryInfo", "closure_js_binary", "create_closure_js_library")
 load("//tools/web-assets:defs.bzl", "ASSET_TOOL_ATTRIBUTES", "prepare_file")
 
 WebAssetsInfo = provider("Declared logical asset paths and their byte-independent catalogue.", fields = ["files", "manifest", "prepared"])
@@ -31,12 +32,12 @@ def _web_assets_impl(ctx):
         metadata = prepare_file(ctx, file, logical, ctx.label.name + "_prepared/" + relative)
         prepared.append(metadata)
     ctx.actions.write(ctx.outputs.manifest, json.encode({path: manifest[path] for path in sorted(manifest)}))
-    return [DefaultInfo(files = depset([ctx.outputs.manifest])), WebAssetsInfo(files = files, manifest = ctx.outputs.manifest, prepared = prepared)]
+    return [DefaultInfo(files = depset([ctx.outputs.manifest])), WebAssetsInfo(files = files, manifest = ctx.outputs.manifest, prepared = prepared), create_closure_js_library(ctx)]
 
 web_assets = rule(
     implementation = _web_assets_impl,
     outputs = {"manifest": "%{name}.assets.json"},
-    attrs = dict(ASSET_TOOL_ATTRIBUTES, srcs = attr.label_list(allow_files = True, mandatory = True)),
+    attrs = dict(CLOSURE_JS_TOOLCHAIN_ATTRS, **dict(ASSET_TOOL_ATTRIBUTES, srcs = attr.label_list(allow_files = True, mandatory = True))),
 )
 
 _CssInfo = provider("Transitive J2CL resources and byte-independent asset catalogues.", fields = ["trees", "asset_manifests", "asset_files", "prepared"])
@@ -51,7 +52,7 @@ def _collect_impl(target, ctx):
         own = [target[WebAssetsInfo].manifest]
         files = [depset(target[WebAssetsInfo].files.values())]
         prepared = [depset(target[WebAssetsInfo].prepared)]
-    for attribute in ["deps", "exports", "srcs", "assets"]:
+    for attribute in ["deps", "exports", "srcs"]:
         for dep in getattr(ctx.rule.attr, attribute, []):
             if _CssInfo in dep:
                 transitive.append(dep[_CssInfo].trees)
@@ -61,9 +62,12 @@ def _collect_impl(target, ctx):
 
     # J2CL declares its per-library JavaScript directory as a tree artifact.
     trees = [file for file in target[DefaultInfo].files.to_list() if file.is_directory and file.basename.endswith(".js")]
-    return [_CssInfo(trees = depset(trees, transitive = transitive), asset_manifests = depset(own, transitive = manifests), asset_files = depset(transitive = files), prepared = depset(transitive = prepared))]
 
-_collect = aspect(implementation = _collect_impl, attr_aspects = ["deps", "exports", "srcs", "assets"])
+    # JS linking can otherwise skip J2CL's full javac action and its configured checks.
+    validations = target[J2clInfo]._private_.java_info.runtime_output_jars if J2clInfo in target else []
+    return [_CssInfo(trees = depset(trees, transitive = transitive), asset_manifests = depset(own, transitive = manifests), asset_files = depset(transitive = files), prepared = depset(transitive = prepared)), OutputGroupInfo(_validation = depset(validations))]
+
+_collect = aspect(implementation = _collect_impl, attr_aspects = ["deps", "exports", "srcs"])
 
 def _configuration_impl(ctx):
     trees = depset(transitive = [dep[_CssInfo].trees for dep in ctx.attr.deps])

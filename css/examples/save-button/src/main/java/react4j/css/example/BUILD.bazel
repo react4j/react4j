@@ -32,7 +32,6 @@ java_j2cl_library(
 java_j2cl_library(
     name = "assets",
     srcs = ["AssetsExample.java"],
-    assets = ["//css/examples/save-button/src/main/assets/react4j/css/example:media"],
     java_deps = [
         "//css/core",
         "//:core",
@@ -43,6 +42,7 @@ java_j2cl_library(
         "//:core-j2cl",
         "//:dom-j2cl",
         "//css/core:core-j2cl",
+        "//css/examples/save-button/src/main/assets/react4j/css/example:media",
         "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jspecify-j2cl",
     ],

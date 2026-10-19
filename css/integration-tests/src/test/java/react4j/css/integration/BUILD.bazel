@@ -222,7 +222,6 @@ java_j2cl_library(
         "CssAssetStyles.java",
         "package-info.java",
     ],
-    assets = ["//css/integration-tests/src/test/assets/react4j/css/integration:media"],
     java_deps = [
         "//css/core",
         "//third_party/java:jsinterop_annotations",
@@ -230,6 +229,7 @@ java_j2cl_library(
     plugins = ["//css/processor:plugin"],
     deps = [
         "//css/core:core-j2cl",
+        "//css/integration-tests/src/test/assets/react4j/css/integration:media",
         "//third_party/java:jsinterop_annotations-j2cl",
         "//third_party/java:jspecify-j2cl",
     ],
