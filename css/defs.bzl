@@ -3,7 +3,7 @@
 load("@rules_closure//closure:defs.bzl", "ClosureJsBinaryInfo", "closure_js_binary")
 load("//tools/web-assets:defs.bzl", "ASSET_TOOL_ATTRIBUTES", "prepare_file")
 
-WebAssetsInfo = provider("Declared logical asset paths and their byte-independent catalogue.", fields = ["files", "manifest", "prepared", "representations"])
+WebAssetsInfo = provider("Declared logical asset paths and their byte-independent catalogue.", fields = ["files", "manifest", "prepared"])
 
 # Read by collection aspects; source bytes are inputs only to asset processing/packaging.
 def _web_assets_impl(ctx):
@@ -15,7 +15,6 @@ def _web_assets_impl(ctx):
     files = {}
     manifest = {}
     prepared = []
-    representations = []
     for file in ctx.files.srcs:
         if file.is_directory:
             fail("web_assets requires individually declared files: " + str(file))
@@ -29,11 +28,10 @@ def _web_assets_impl(ctx):
             fail("Invalid logical asset path: " + logical)
         files[logical] = file
         manifest[logical] = file.path
-        metadata, compressed = prepare_file(ctx, file, logical, ctx.label.name + "_prepared/" + relative)
+        metadata = prepare_file(ctx, file, logical, ctx.label.name + "_prepared/" + relative)
         prepared.append(metadata)
-        representations.append(compressed)
     ctx.actions.write(ctx.outputs.manifest, json.encode({path: manifest[path] for path in sorted(manifest)}))
-    return [DefaultInfo(files = depset([ctx.outputs.manifest])), WebAssetsInfo(files = files, manifest = ctx.outputs.manifest, prepared = prepared, representations = representations)]
+    return [DefaultInfo(files = depset([ctx.outputs.manifest])), WebAssetsInfo(files = files, manifest = ctx.outputs.manifest, prepared = prepared)]
 
 web_assets = rule(
     implementation = _web_assets_impl,
@@ -51,7 +49,7 @@ def _collect_impl(target, ctx):
     prepared = []
     if WebAssetsInfo in target:
         own = [target[WebAssetsInfo].manifest]
-        files = [depset(target[WebAssetsInfo].files.values() + target[WebAssetsInfo].representations)]
+        files = [depset(target[WebAssetsInfo].files.values())]
         prepared = [depset(target[WebAssetsInfo].prepared)]
     for attribute in ["deps", "exports", "srcs", "assets"]:
         for dep in getattr(ctx.rule.attr, attribute, []):

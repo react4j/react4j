@@ -57,8 +57,7 @@ final class AssetBundle {
                 if (null != previous
                         && (!previous.source().equals(content.source())
                                 || !previous.sha256().equals(content.sha256())
-                                || previous.size() != content.size()
-                                || previous.compressedSize() != content.compressedSize())) {
+                                || previous.size() != content.size())) {
                     throw new IllegalArgumentException("Conflicting prepared asset: " + content.logicalPath());
                 }
             } else if ("--style".equals(option)) {

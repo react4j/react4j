@@ -1,13 +1,5 @@
 module(name = "react4j")
 
-bazel_dep(name = "brotli", version = "1.2.0.bcr.3")
-single_version_override(
-    module_name = "brotli",
-    patch_strip = 1,
-    patches = ["//third_party/bazel/patches:brotli_omit_darwin_libm.patch"],
-    version = "1.2.0.bcr.3",
-)
-
 bazel_dep(name = "braincheck")
 git_override(
     module_name = "braincheck",

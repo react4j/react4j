@@ -17,7 +17,6 @@ def asset_example(name, defs = []):
             Label("//css/examples/save-button:public/nested.html"): "nested/page.html",
             Label("//examples/drumloop:public/fonts/OFL.txt"): "fonts/OFL.txt",
         },
-        precache = ["app.js", "react4j/css/example/card/icon.svg", "react4j/css/example/card/unused.svg"],
         defs = defs,
     )
     native.filegroup(name = name + "_manifest", srcs = [":" + name], output_group = "manifest")

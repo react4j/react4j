@@ -75,7 +75,6 @@ browser_application(
     deps = ["//src/main/java/react4j/css/example:entry"],
     html = "public/index.html",
     styles = {":styles": "css/assets.css"},
-    precache = ["react4j/css/example/card/icon.svg", "react4j/css/example/card/unused.svg"],
 )
 BUILD
 cd "$workspace"

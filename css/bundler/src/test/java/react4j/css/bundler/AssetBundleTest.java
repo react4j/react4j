@@ -60,7 +60,7 @@ public final class AssetBundleTest {
             var metadata = directory.resolve("prepared" + index++ + ".json");
             Files.writeString(
                     metadata,
-                    AssetContent.prepare(entry.getKey(), Path.of(entry.getValue()), null)
+                    AssetContent.prepare(entry.getKey(), Path.of(entry.getValue()))
                             .json()
                             .toString());
             options.addAll(List.of("--prepared", metadata.toString()));
@@ -98,8 +98,6 @@ public final class AssetBundleTest {
                 assertEquals(
                         first.getAsJsonArray("retainedBy").get(0).getAsString(),
                         "java:react4j.css.integration.AssetFixtures$Media#icon");
-                assertEquals(
-                        first.getAsJsonObject("representations").get("identity").getAsString(), url);
                 String js = Files.readString(directory.resolve("web/app.js"));
                 assertTrue(
                         js.contains("globalThis.document.currentScript.src"),

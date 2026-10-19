@@ -14,8 +14,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import react4j.css.internal.AssetResource;
 
-/** Assembles retained files and their useful representations into the deployable application tree. */
+/** Assembles retained assets and explicit application files into the deployable tree. */
 final class ApplicationBundle {
     private ApplicationBundle() {}
 
@@ -28,31 +29,36 @@ final class ApplicationBundle {
 
     static void run(List<String> args) throws IOException {
         var options = new TreeMap<String, Path>();
-        var lists = new TreeMap<String, AssetContent>();
-        var required = Set.of("--directory", "--manifest", "--assets-directory", "--plan");
+        var roots = new ArrayList<AssetContent>();
+        var required = Set.of("--directory", "--manifest", "--assets-directory", "--assets-manifest");
         for (int i = 0; i < args.size(); i += 2) {
             if (i + 1 == args.size()) {
                 throw new IllegalArgumentException("Missing application bundle option value");
             }
             String option = args.get(i);
             String value = args.get(i + 1);
-            if ("--inventory".equals(option)) {
-                var content = AssetContent.read(Path.of(value));
-                if (null != lists.putIfAbsent(content.logicalPath(), content)) {
-                    throw new IllegalArgumentException("Repeated application inventory: " + content.logicalPath());
-                }
+            if ("--prepared".equals(option)) {
+                roots.add(AssetContent.read(Path.of(value)));
             } else if (!required.contains(option) || null != options.putIfAbsent(option, Path.of(value))) {
                 throw new IllegalArgumentException("Unknown or repeated application option: " + option);
             }
         }
-        if (!options.keySet().equals(required) || !lists.keySet().equals(Set.of("precache.json", "on-demand.json"))) {
-            throw new IllegalArgumentException(
-                    "Expected application outputs, retained asset inputs and prepared offline lists");
+        if (!options.keySet().equals(required)) {
+            throw new IllegalArgumentException("Expected application outputs and retained asset inputs");
         }
-        var plan = JsonParser.parseString(Files.readString(Objects.requireNonNull(options.get("--plan"))))
+        var inventory = JsonParser.parseString(
+                        Files.readString(Objects.requireNonNull(options.get("--assets-manifest"))))
                 .getAsJsonObject();
-        if (!"1".equals(plan.get("version").toString())) {
-            throw new IllegalArgumentException("Unsupported application plan");
+        if (!"1".equals(inventory.get("version").toString())) {
+            throw new IllegalArgumentException("Unsupported linked asset inventory");
+        }
+        var candidates = new TreeSet<String>();
+        for (var item : inventory.getAsJsonArray("pruned")) {
+            String path = item.getAsString();
+            AssetResource.validatePath(path);
+            if (!candidates.add(path)) {
+                throw new IllegalArgumentException("Repeated pruned asset: " + path);
+            }
         }
         var directory = Objects.requireNonNull(options.get("--directory"));
         Files.createDirectories(directory);
@@ -64,21 +70,16 @@ final class ApplicationBundle {
         var assetsDirectory = Objects.requireNonNull(options.get("--assets-directory"));
         var entries = new ArrayList<JsonObject>();
         var expected = new TreeSet<String>();
-        for (var item : plan.getAsJsonArray("assets")) {
+        for (var item : inventory.getAsJsonArray("assets")) {
             var entry = item.getAsJsonObject();
             var content = AssetContent.managed(entry);
+            if (!candidates.add(content.logicalPath())) {
+                throw new IllegalArgumentException("Repeated linked asset: " + content.logicalPath());
+            }
             var staged = new AssetContent(
-                    content.logicalPath(),
-                    assetsDirectory.resolve(content.url()),
-                    content.sha256(),
-                    content.size(),
-                    null == content.compressed() ? null : assetsDirectory.resolve(content.compressed()),
-                    content.compressedSize());
+                    content.logicalPath(), assetsDirectory.resolve(content.url()), content.sha256(), content.size());
             staged.copy(directory, content.url());
             expected.add(content.url());
-            if (null != content.compressed()) {
-                expected.add(content.url() + ".br");
-            }
             entries.add(entry.deepCopy());
         }
         try (var paths = Files.walk(assetsDirectory)) {
@@ -90,29 +91,20 @@ final class ApplicationBundle {
                 throw new IllegalArgumentException("Linked asset directory differs from its inventory");
             }
         }
-        for (var item : plan.getAsJsonArray("roots")) {
-            var content = AssetContent.read(item.getAsJsonObject());
-            content.copy(directory, content.logicalPath());
-            entries.add(content.entry(content.logicalPath(), List.of(), List.of("application")));
-        }
-        for (var entry : lists.entrySet()) {
-            var content = entry.getValue();
-            String key = "precache.json".equals(entry.getKey()) ? "precache" : "onDemand";
-            if (!Files.readString(content.source()).equals(plan.get(key) + "\n")) {
-                throw new IllegalArgumentException("Offline list differs from its application plan: " + entry.getKey());
+        for (var content : roots) {
+            String destination = content.logicalPath();
+            if (!expected.add(destination)) {
+                throw new IllegalArgumentException("Duplicate application destination: " + destination);
             }
-            content.copy(directory, entry.getKey());
-            var metadata = content.entry(entry.getKey(), List.of(), List.of("application:inventory"));
-            metadata.addProperty("source", "generated:" + entry.getKey());
-            entries.add(metadata);
+            content.copy(directory, destination);
+            entries.add(content.entry(destination, List.of(), List.of("application")));
         }
         entries.sort(Comparator.comparing(
                         (JsonObject entry) -> entry.get("logicalPath").getAsString())
                 .thenComparing(entry -> entry.get("url").getAsString()));
         var assets = new JsonArray();
         entries.forEach(assets::add);
-        plan.remove("roots");
-        plan.add("assets", assets);
-        Files.writeString(Objects.requireNonNull(options.get("--manifest")), plan + "\n");
+        inventory.add("assets", assets);
+        Files.writeString(Objects.requireNonNull(options.get("--manifest")), inventory + "\n");
     }
 }

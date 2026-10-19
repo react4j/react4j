@@ -91,10 +91,8 @@ java_testng(
     data = [
         "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web",
         "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web.manifest.json",
-        "@brotli",
     ],
     jvm_flags = [
-        "-Dbrotli=$(rootpath @brotli//:brotli)",
         "-Dapplication.assets=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web)",
         "-Dapplication.manifest=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web.manifest.json)",
     ],

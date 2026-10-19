@@ -1,6 +1,6 @@
 # T01 — Policy-free plain packaging
 
-- Status: pending
+- Status: complete
 - Blocked by: None
 - Spec coverage: R1, R2, R3, R4; AC1, AC2, AC3
 
@@ -10,9 +10,9 @@ Uncompressed assets from metadata preparation through application assembly and p
 
 ## Acceptance criteria
 
-- [ ] Plain preparation and packaging validate bytes, destinations, retained/pruned inventory and exact output file sets; formerly reserved list names are ordinary explicit files.
-- [ ] No compressor or offline planner action, metadata or dependency remains in either mode.
-- [ ] Preview and example tests consume canonical files; existing source-map/liveness checks remain.
+- [x] Plain preparation and packaging validate bytes, destinations, retained/pruned inventory and exact output file sets; formerly reserved list names are ordinary explicit files.
+- [x] No compressor or offline planner action, metadata or dependency remains in either mode.
+- [x] Preview and example tests consume canonical files; existing source-map/liveness checks remain.
 
 ## Validation
 
@@ -20,4 +20,4 @@ Focused bundler and preview tests, actual example builds and Java browser tests;
 
 ## Evidence
 
-Pending.
+Focused packaging/asset/preview suites passed; all three CSS browser suites passed in both fastbuild and opt. Added alias deduplication and empty-asset application cases also passed. Java formatting and buildifier applied. Bundler coverage: 97.27% lines, 90.74% branches; AssetContent 100/100 and ApplicationBundle 100/97.06. Both aquery graphs have one BrowserApplication, 15 PrepareWebAsset and zero compression/planner actions; resolved module graph has no Brotli dependency. `git diff --check` passed.

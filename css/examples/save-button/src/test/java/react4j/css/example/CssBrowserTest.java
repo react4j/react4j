@@ -82,30 +82,7 @@ public final class CssBrowserTest {
                                 "Hashed URL: " + suffix);
                     }
                     check(!_optimized == hasAsset(entries, "card/unused.svg"), "Unused asset pruning");
-                    return Browser.fetchJson(root + "precache.json")
-                            .then(precache -> {
-                                var selected = new ArrayList<String>();
-                                selected.add("app.js");
-                                selected.add(assetUrl(entries, "card/icon.svg"));
-                                if (!_optimized) {
-                                    selected.add(assetUrl(entries, "card/unused.svg"));
-                                }
-                                selected.sort(String::compareTo);
-                                arrayEqual(selected.toArray(new String[0]), Js.uncheckedCast(precache));
-                                return Browser.fetchJson(root + "on-demand.json");
-                            })
-                            .then(onDemand -> {
-                                List<String> urls = Arrays.asList(Js.<String[]>uncheckedCast(onDemand));
-                                for (int i = 1; i < expected.length; i++) {
-                                    check(
-                                            urls.contains(assetUrl(entries, expected[i])),
-                                            "On-demand asset: " + expected[i]);
-                                }
-                                check(
-                                        !urls.contains(assetUrl(entries, "card/icon.svg")),
-                                        "Precached icon excluded from on-demand list");
-                                return Browser.fetchText(root + assetUrl(entries, "card/prepared.svg"));
-                            })
+                    return Browser.fetchText(root + assetUrl(entries, "card/prepared.svg"))
                             .then(text -> {
                                 check(Browser.string(text).contains("fill=\"#04c\""), "Preprocessed SVG");
                                 return packagedRoute(root, "index.html", entries, expected);
@@ -161,11 +138,6 @@ public final class CssBrowserTest {
                                             requested.contains(base + assetUrl(entries, suffix)),
                                             "Requested asset: " + suffix);
                                 }
-                                check(
-                                        requested.stream()
-                                                .noneMatch(name -> name.endsWith("precache.json")
-                                                        || name.endsWith("on-demand.json")),
-                                        "Inventory lists are not downloaded automatically");
                                 if (!_optimized) {
                                     check(
                                             !requested.contains(base + assetUrl(entries, "card/unused.svg")),

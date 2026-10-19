@@ -126,53 +126,26 @@ def _preview_impl(ctx):
             fail("CSS output collides with an application destination: " + destination)
         roots[destination] = source
     for target, destination in ctx.attr.assets.items():
-        if destination.startswith("/") or any([part in ["", ".", ".."] for part in destination.split("/")]) or destination in roots or destination in ["precache.json", "on-demand.json"]:
+        if destination.startswith("/") or any([part in ["", ".", ".."] for part in destination.split("/")]) or destination in roots:
             fail("Invalid or duplicate browser asset destination: " + destination)
         sources = target[DefaultInfo].files.to_list()
         if len(sources) != 1:
             fail("Each browser asset must contain exactly one file: %s" % target.label)
         roots[destination] = sources[0]
-    plan = ctx.actions.declare_file(ctx.label.name + ".plan.json")
-    precache = ctx.actions.declare_file(ctx.label.name + "_lists/precache.json")
-    on_demand = ctx.actions.declare_file(ctx.label.name + "_lists/on-demand.json")
-    plan_args = ctx.actions.args()
-    plan_args.use_param_file("@%s", use_always = True)
-    plan_args.set_param_file_format("multiline")
-    plan_args.add("--manifest", bundle.manifest)
-    plan_args.add("--output", plan)
-    plan_args.add("--precache-output", precache)
-    plan_args.add("--on-demand-output", on_demand)
-    plan_args.add_all(ctx.attr.precache, before_each = "--precache")
     prepared = []
-    representations = []
     for destination, source in roots.items():
-        metadata, compressed = prepare_file(ctx, source, destination, ctx.label.name + "_prepared/" + destination)
-        prepared.append(metadata)
-        representations.append(compressed)
-    plan_args.add_all(prepared, before_each = "--prepared")
-    ctx.actions.run(
-        executable = ctx.executable._planner,
-        inputs = [bundle.manifest] + prepared,
-        outputs = [plan, precache, on_demand],
-        arguments = [plan_args],
-        mnemonic = "BrowserAssetPlan",
-    )
-    inventory = []
-    for source, name in [(precache, "precache.json"), (on_demand, "on-demand.json")]:
-        metadata, compressed = prepare_file(ctx, source, name, ctx.label.name + "_prepared/" + name)
-        inventory.append(metadata)
-        representations.append(compressed)
+        prepared.append(prepare_file(ctx, source, destination, ctx.label.name + "_prepared/" + destination))
     args = ctx.actions.args()
     args.use_param_file("@%s", use_always = True)
     args.set_param_file_format("multiline")
     args.add("--directory", directory.path)
     args.add("--manifest", manifest)
     args.add("--assets-directory", bundle.directory.path)
-    args.add("--plan", plan)
-    args.add_all(inventory, before_each = "--inventory")
+    args.add("--assets-manifest", bundle.manifest)
+    args.add_all(prepared, before_each = "--prepared")
     ctx.actions.run(
         executable = ctx.executable._packager,
-        inputs = [bundle.directory, plan, precache, on_demand] + roots.values() + inventory + representations,
+        inputs = [bundle.directory, bundle.manifest] + roots.values() + prepared,
         outputs = [directory, manifest],
         arguments = [args],
         mnemonic = "BrowserApplication",
@@ -185,16 +158,14 @@ _preview = rule(implementation = _preview_impl, attrs = dict(ASSET_TOOL_ATTRIBUT
     "defines": attr.string_dict(),
     "dom": attr.label(allow_single_file = True, mandatory = True),
     "html": attr.label(allow_single_file = True, mandatory = True),
-    "precache": attr.string_list(doc = "Retained logical assets or explicit application destinations selected for offline installation."),
     "react": attr.label(allow_single_file = True, mandatory = True),
     "_packager": attr.label(default = Label("//css/bundler/src/main/java/react4j/css/bundler:application_tool"), executable = True, cfg = "exec"),
-    "_planner": attr.label(default = Label("//css/bundler/src/main/java/react4j/css/bundler:application_plan_tool"), executable = True, cfg = "exec"),
 }))
 
 def _asset(name):
     return select({_PRODUCTION: Label("//tools/generation:" + name + "_prod"), "//conditions:default": Label("//tools/generation:" + name + "_dev")})
 
-def browser_application(name, entry_point, deps, html, assets = {}, styles = {}, precache = [], defs = []):
+def browser_application(name, entry_point, deps, html, assets = {}, styles = {}, defs = []):
     css_js_binary(
         name = name + "_bundle",
         deps = deps,
@@ -203,7 +174,7 @@ def browser_application(name, entry_point, deps, html, assets = {}, styles = {},
         defs = _compiler_defines() + defs,
     )
     web_bundle(name = name + "_web", root = name + "_bundle", styles = styles)
-    _preview(name = name, html = html, bundle = name + "_web", defines = _defines(), react = _asset("react"), dom = _asset("react_dom"), assets = assets, precache = precache)
+    _preview(name = name, html = html, bundle = name + "_web", defines = _defines(), react = _asset("react"), dom = _asset("react_dom"), assets = assets)
 
 def _mode_transition_impl(_settings, attr):
     return {"//command_line_option:compilation_mode": attr.mode}

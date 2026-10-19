@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `planned`
-- Current frontier: `T01`
+- Status: `implementing`
+- Current frontier: `T02`
 - Planning reviewer: `/root/downstream_policy_planning` (`1/3` rounds; final confirmation unused); Findings: none. Whole plan and affected packaging/build/preview/contracts checked.
 - Plan checkpoint: automatic (explicit implementation instruction and passing independent planning review)
 - Implementation reviewer: pending (`0/5` rounds; final confirmation unused)
@@ -16,7 +16,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Policy-free plain packaging](T01-packaging.md) | pending | None |
+| T01 | [Policy-free plain packaging](T01-packaging.md) | complete | None |
 | T02 | [Downstream contract and delivery](T02-delivery.md) | pending | T01 |
 
 ## Sequencing notes

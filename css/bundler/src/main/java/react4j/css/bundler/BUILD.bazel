@@ -98,7 +98,6 @@ java_library(
     name = "packaging",
     srcs = [
         "ApplicationBundle.java",
-        "ApplicationPlan.java",
         "package-info.java",
     ],
     visibility = [
@@ -115,13 +114,6 @@ java_library(
 java_binary(
     name = "application_tool",
     main_class = "react4j.css.bundler.ApplicationBundle",
-    visibility = ["//tools/browser:__pkg__"],
-    runtime_deps = [":packaging"],
-)
-
-java_binary(
-    name = "application_plan_tool",
-    main_class = "react4j.css.bundler.ApplicationPlan",
     visibility = ["//tools/browser:__pkg__"],
     runtime_deps = [":packaging"],
 )

@@ -6,10 +6,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import org.jspecify.annotations.NullMarked;
 import react4j.css.bundler.AssetMedia;
 
@@ -70,23 +66,6 @@ public final class Preview {
                 if (contentType.startsWith("text/") || "application/json".equals(contentType)) {
                     contentType += "; charset=utf-8";
                 }
-                String accepted =
-                        String.join(",", exchange.getRequestHeaders().getOrDefault("Accept-Encoding", List.of()));
-                var qualities = encodings(accepted);
-                double identity = qualities.getOrDefault("identity", 0 == qualities.getOrDefault("*", 1.0) ? 0.0 : 1.0);
-                double brotli = qualities.getOrDefault("br", qualities.getOrDefault("*", 0.0));
-                var compressed = file.resolveSibling(file.getFileName() + ".br");
-                if (brotli > 0
-                        && brotli >= identity
-                        && Files.isRegularFile(compressed)
-                        && compressed.toRealPath().startsWith(root)) {
-                    file = compressed;
-                    exchange.getResponseHeaders().set("Content-Encoding", "br");
-                } else if (identity <= 0) {
-                    exchange.sendResponseHeaders(406, -1);
-                    return;
-                }
-                exchange.getResponseHeaders().set("Vary", "Accept-Encoding");
                 exchange.getResponseHeaders().set("Content-Type", contentType);
                 exchange.getResponseHeaders().set("Cache-Control", "no-store");
                 if ("HEAD".equals(method)) {
@@ -100,31 +79,5 @@ public final class Preview {
         });
         server.start();
         return server;
-    }
-
-    private static Map<String, Double> encodings(String header) {
-        var encodings = new HashMap<String, Double>();
-        for (var item : header.split(",")) {
-            var parts = item.trim().toLowerCase(Locale.ROOT).split(";");
-            if (parts[0].isEmpty()) {
-                continue;
-            }
-            double quality = 1;
-            for (int i = 1; i < parts.length; i++) {
-                var parameter = parts[i].trim();
-                if (parameter.startsWith("q=")) {
-                    try {
-                        quality = Double.parseDouble(parameter.substring(2));
-                        if (!Double.isFinite(quality) || quality < 0 || quality > 1) {
-                            quality = 0;
-                        }
-                    } catch (NumberFormatException ignored) {
-                        quality = 0;
-                    }
-                }
-            }
-            encodings.put(parts[0], quality);
-        }
-        return encodings;
     }
 }
