@@ -3,6 +3,7 @@ load("//third_party/java:rules.bzl", "java_binary", "java_library")
 java_library(
     name = "linker",
     srcs = [
+        "BindingSourceMap.java",
         "CssCompilerFactory.java",
         "StyleCompiler.java",
         "package-info.java",
@@ -15,6 +16,7 @@ java_library(
     ],
     deps = [
         "//css/internal/src/main/java/react4j/css/internal",
+        "@maven//:com_google_code_gson_gson",
         "@rules_closure//closure/compiler",
         "@rules_closure//java/com/google/javascript/jscomp:compiler_factory",
     ],

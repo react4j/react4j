@@ -5,6 +5,7 @@ import static org.testng.Assert.*;
 import com.google.debugging.sourcemap.FilePosition;
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.debugging.sourcemap.SourceMapGeneratorV3;
+import com.google.gson.JsonParser;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerFactory;
@@ -150,7 +151,12 @@ public final class StyleCompilerTest {
             assertNotNull(origin);
             assert null != origin;
             assertTrue(origin.getOriginalFile().endsWith("demo/Styled_Button.java"), origin.toString());
-            assertEquals(origin.getColumnPosition(), code.indexOf("success()") + 1);
+            String declaration = Files.readString(source.resolveSibling("Styled_Button.java"))
+                    .lines()
+                    .filter(line -> line.contains("String success()"))
+                    .findFirst()
+                    .orElseThrow();
+            assertEquals(origin.getColumnPosition(), declaration.indexOf("success()") + 1);
         } finally {
             remove(directory);
         }
@@ -440,6 +446,118 @@ public final class StyleCompilerTest {
     }
 
     @Test
+    public void composedMapsCarryFullGeneratedJavaContentThroughCompilerReset() throws Exception {
+        Path directory = Files.createTempDirectory("css-java-content");
+        try {
+            Path source = directory.resolve("input.js/demo/Styled_Button.impl.java.js");
+            Files.createDirectories(source.getParent());
+            mappedSource(source, "class Button { style() { return 'root'; }} window.result=new Button().style();");
+            String java = Files.readString(source.resolveSibling("Styled_Button.java"));
+            Path extern = directory.resolve("extern.js");
+            Files.writeString(extern, "var window;");
+            Path output = directory.resolve("app.js");
+            Path map = directory.resolve("app.js.map");
+            var link = testLink("//:app", true, List.of(value("style", "root")));
+            var compiler = new StyleCompiler(link, directory.resolve("live.json"));
+            assertEquals(
+                    new Runner(compiler, new String[] {
+                                "--js",
+                                source.toString(),
+                                "--externs",
+                                extern.toString(),
+                                "--env",
+                                "CUSTOM",
+                                "--compilation_level",
+                                "ADVANCED",
+                                "--create_source_map",
+                                map.toString(),
+                                "--source_map_include_content",
+                                "--js_output_file",
+                                output.toString()
+                            })
+                            .execute(),
+                    0);
+            compiler.finish(output);
+            assertTrue(Files.exists(map), "ADVANCED: " + Files.readString(output));
+            var document = JsonParser.parseString(Files.readString(map)).getAsJsonObject();
+            var contents = document.getAsJsonArray("sourcesContent");
+            assertNotNull(contents);
+            assert null != contents;
+            int found = -1;
+            var sources = document.getAsJsonArray("sources");
+            for (int i = 0; i < sources.size(); i++) {
+                if (sources.get(i).getAsString().endsWith("demo/Styled_Button.java")) {
+                    found = i;
+                }
+            }
+            assertTrue(found >= 0, document.toString());
+            assertFalse(contents.get(found).isJsonNull(), document.toString());
+            assertEquals(contents.get(found).getAsString(), java);
+            var consumer = new SourceMapConsumerV3();
+            consumer.parse(document.toString());
+            String js = Files.readString(output);
+            int literal = js.indexOf("'root'");
+            if (literal < 0) {
+                literal = js.indexOf("\"root\"");
+            }
+            assertTrue(literal >= 0, js);
+            var generatedLine = (int) js.substring(0, literal)
+                            .chars()
+                            .filter(c -> '\n' == c)
+                            .count()
+                    + 1;
+            int generatedColumn = literal + 1 - js.lastIndexOf('\n', literal);
+            var origin = consumer.getMappingForLine(generatedLine, generatedColumn);
+            assertNotNull(origin, "ADVANCED: " + document);
+            assert null != origin;
+            assertTrue(origin.getOriginalFile().endsWith("demo/Styled_Button.java"));
+            assertEquals(origin.getLineNumber(), 3);
+        } finally {
+            remove(directory);
+        }
+    }
+
+    @Test
+    public void developmentKeepsReadableBindingsAndTheirCompanionMapOrigins() throws Exception {
+        Path directory = Files.createTempDirectory("css-development-map");
+        try {
+            Path source = directory.resolve("input.js/demo/Styled_Button.impl.java.js");
+            Files.createDirectories(source.getParent());
+            String code = "class Button { style() { return 'root'; }} window.result=new Button().style();";
+            mappedSource(source, code);
+            var compiler = new StyleCompiler(
+                    testLink("//:app", false, List.of(value("style", "root"))), directory.resolve("live.json"));
+            var extern = directory.resolve("extern.js");
+            Files.writeString(extern, "var window;");
+            var output = directory.resolve("app.js");
+            assertEquals(
+                    new Runner(compiler, new String[] {
+                                "--js",
+                                source.toString(),
+                                "--externs",
+                                extern.toString(),
+                                "--env",
+                                "CUSTOM",
+                                "--compilation_level",
+                                "BUNDLE",
+                                "--js_output_file",
+                                output.toString()
+                            })
+                            .execute(),
+                    0);
+            assertTrue(Files.readString(output).contains(code));
+            var origin = compiler.getSourceMapping(source.toString(), 1, code.indexOf("return"));
+            assertNotNull(origin);
+            assert null != origin;
+            assertTrue(origin.getOriginalFile().endsWith("demo/Styled_Button.java"));
+            assertEquals(origin.getLineNumber(), 3);
+            assertEquals(origin.getIdentifier(), "demo.Styled_Button.style");
+        } finally {
+            remove(directory);
+        }
+    }
+
+    @Test
     public void compilerRejectsInvalidOrMismatchedCssDefines() throws Exception {
         Path directory = Files.createTempDirectory("css-defines");
         try {
@@ -499,16 +617,28 @@ public final class StyleCompilerTest {
         relative = relative.substring(relative.lastIndexOf(".js/") + 4).replace(".impl.java.js", "");
         String owner = relative.replace('/', '.');
         var generator = new SourceMapGeneratorV3();
+        String packageName = owner.contains(".") ? owner.substring(0, owner.lastIndexOf('.')) : "";
+        var java = new StringBuilder(packageName.isEmpty() ? "" : "package " + packageName + ";\n");
+        java.append("final class ").append(name).append(" {\n");
         var methods = Pattern.compile("([\\p{javaJavaIdentifierStart}][\\p{javaJavaIdentifierPart}]*)\\(\\)\\s*\\{")
                 .matcher(code);
         while (methods.find()) {
+            String body = code.substring(methods.end(), code.indexOf('}', methods.end()));
+            var literal = Pattern.compile("return\\s+(['\"])(.*?)\\1").matcher(body);
+            String value = literal.find() ? literal.group(2) : "";
+            String declaration = "  String " + methods.group(1) + "() { return \""
+                    + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\"; }\n";
+            var line = (int) java.chars().filter(c -> '\n' == c).count();
             generator.addMapping(
                     name + ".java",
                     owner + "." + methods.group(1),
-                    new FilePosition(0, methods.start()),
+                    new FilePosition(line, declaration.indexOf(methods.group(1) + "()")),
                     new FilePosition(0, methods.start()),
                     new FilePosition(0, code.indexOf('}', methods.end()) + 1));
+            java.append(declaration);
         }
+        java.append("}\n");
+        Files.writeString(path.resolveSibling(name + ".java"), java);
         var output = new StringBuilder();
         generator.appendTo(output, name + ".js");
         Files.writeString(path.resolveSibling(name + ".js.map"), output);

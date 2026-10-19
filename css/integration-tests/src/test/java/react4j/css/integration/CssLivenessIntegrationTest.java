@@ -81,6 +81,45 @@ public final class CssLivenessIntegrationTest {
     }
 
     @Test
+    public void optimizedJavascriptMapsInlinedStyleValuesToCompleteGeneratedBindingJava() throws Exception {
+        var document = JsonParser.parseString(input("javascript_map")).getAsJsonObject();
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(document.toString());
+        String js = input("javascript");
+        for (var owner : List.of("ButtonStyles", "LivenessEntry$MapStyles")) {
+            String value = compiled(owner, "CLASS", "ButtonStyles".equals(owner) ? "success" : "active");
+            String literal = "\"" + compiled(owner, "CLASS", "") + " " + value + "\"";
+            int at = js.indexOf(literal);
+            assertTrue(at >= 0, literal + " in " + js);
+            at++;
+            int line = (int) js.substring(0, at).chars().filter(c -> '\n' == c).count() + 1;
+            int column = at - js.lastIndexOf('\n', at);
+            var origin = Objects.requireNonNull(consumer.getMappingForLine(line, column));
+            var sources = document.getAsJsonArray("sources");
+            int found = -1;
+            for (int i = 0; i < sources.size(); i++) {
+                if (sources.get(i).getAsString().equals(origin.getOriginalFile())) {
+                    found = i;
+                }
+            }
+            assertTrue(found >= 0, origin.toString());
+            String java = document.getAsJsonArray("sourcesContent").get(found).getAsString();
+            assertTrue(origin.getOriginalFile().endsWith(".java"), origin.toString());
+            assertTrue(java.contains("@Generated(\"react4j.css.processor.CssProcessor\")"), java);
+            assertTrue(java.contains("return \"jcss-react4j-css-integration-"), java);
+            String treeProperty = "ButtonStyles".equals(owner) ? "css.tree" : "css.liveness.binding_tree";
+            var tree = Path.of(Objects.requireNonNull(System.getProperty(treeProperty)));
+            String name =
+                    origin.getOriginalFile().substring(origin.getOriginalFile().lastIndexOf('/') + 1);
+            assertEquals(
+                    java,
+                    Files.readString(tree.resolve("react4j/css/integration").resolve(name)));
+            String originalLine = java.lines().toList().get(origin.getLineNumber() - 1);
+            assertTrue(originalLine.contains("return"), originalLine);
+        }
+    }
+
+    @Test
     public void globalNativeNestingRetainsContextsForDeadCheckedIds() throws Exception {
         var settings = new CSSWriterSettings(true);
         var optimized = Objects.requireNonNull(CSSReader.readFromStringReader(

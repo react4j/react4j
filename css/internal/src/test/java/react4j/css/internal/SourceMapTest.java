@@ -5,6 +5,7 @@ import static org.testng.Assert.*;
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
 import java.util.List;
+import java.util.Objects;
 import org.testng.annotations.Test;
 
 public final class SourceMapTest {
@@ -92,6 +93,58 @@ public final class SourceMapTest {
                 SourceMap.project("x", emptyMap, List.of(new SourceMap.Span(0, 1)))
                         .css(),
                 "x");
+    }
+
+    @Test
+    public void replacementAndPruningPreserveAnchorsAcrossCrLfTabsAndUtf16() throws Exception {
+        String java = "class Styles {\r\n\t// 😀\r\n}\r\n";
+        var before = new SourceMap.Location("Styles.java", java, 1, 1);
+        var token = new SourceMap.Location("Styles.java", java, 2, 4);
+        var after = new SourceMap.Location("Styles.java", java, 0, 0);
+        var original = new SourceMap.Writer()
+                .append("discard\r\n")
+                .append("\t😀.", before)
+                .append("longName", token)
+                .append(" {\r\n", after)
+                .append("  ")
+                .append("color:red", after)
+                .append(";}");
+        var map = JsonParser.parseString(original.map("original.css")).getAsJsonObject();
+        int start = original.css().indexOf("longName");
+        for (String replacement : List.of("a", "muchLongerThanTheOriginalName")) {
+            var renamed =
+                    SourceMap.replace(original.css(), map, List.of(new SourceMap.Edit(start, start + 8, replacement)));
+            var pruned = SourceMap.project(
+                    renamed.css(),
+                    JsonParser.parseString(renamed.map("renamed.css")).getAsJsonObject(),
+                    List.of(new SourceMap.Span(9, renamed.css().length())));
+            var consumer = new SourceMapConsumerV3();
+            consumer.parse(pruned.map("final.css"));
+            assertEquals(pruned.css(), "\t😀." + replacement + " {\r\n  color:red;}");
+            assertEquals(
+                    Objects.requireNonNull(consumer.getMappingForLine(1, 1)).getLineNumber(), 2);
+            for (int col = 5; col < 5 + replacement.length(); col++) {
+                var origin = consumer.getMappingForLine(1, col);
+                assertNotNull(origin);
+                assert null != origin;
+                assertEquals(origin.getLineNumber(), 3);
+                assertEquals(origin.getColumnPosition(), 5);
+            }
+            assertEquals(
+                    Objects.requireNonNull(consumer.getMappingForLine(1, 5 + replacement.length()))
+                            .getLineNumber(),
+                    1);
+            assertNull(consumer.getMappingForLine(2, 1));
+            assertEquals(
+                    Objects.requireNonNull(consumer.getMappingForLine(2, 3)).getLineNumber(), 1);
+            assertEquals(
+                    JsonParser.parseString(pruned.map("final.css"))
+                            .getAsJsonObject()
+                            .getAsJsonArray("sourcesContent")
+                            .get(0)
+                            .getAsString(),
+                    java);
+        }
     }
 
     @Test

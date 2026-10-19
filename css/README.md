@@ -352,7 +352,7 @@ Generated names used in an optimized link must originate from checked accessors 
 
 `BUNDLE` compilation and `css_bundle` roots that are unlinked Closure libraries retain all component styles and resource definitions with generated Java bindings, plus their dependencies and explicitly selected globals. Other animations and globals remain excluded until required. Complete links produce validated liveness evidence; missing or stale evidence fails the build.
 
-Shared CSS files support style rules, `@media` and `@supports`, but cannot define keyframes. Put processed CSS sources in `src/main/css` and assets copied unchanged in `src/main/assets`. When packaging compiled style libraries, retain their generated `.css`, `.css.map` and `.css.json` resources.
+Shared CSS files support style rules, `@media` and `@supports`, but cannot define keyframes. Put processed CSS sources in `src/main/css` and assets copied unchanged in `src/main/assets`. When packaging compiled style libraries, retain their generated `.css`, `.css.map` and `.css.json` resources. Keep generated binding Java beside its J2CL companion maps, or embed it in their `sourcesContent`, so optimized JavaScript maps can include the complete generated source. JavaScript maps retain their generated Java origins; CSS maps resolve to authored Java.
 
 For direct javac use, put the core annotation jar, JSpecify and application dependencies on the compilation classpath, and the standalone processor jar on the processor path. Parser and formatter dependencies are bundled with the processor.
 

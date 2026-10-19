@@ -1,6 +1,6 @@
 # T07 — Delivery verification and permanent docs
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: T06
 - Spec coverage: R9; AC7, full-scope reconciliation of AC1–AC6.
 

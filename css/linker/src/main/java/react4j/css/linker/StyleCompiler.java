@@ -1,13 +1,13 @@
 package react4j.css.linker;
 
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
-import com.google.debugging.sourcemap.SourceMapParseException;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
 import com.google.javascript.jscomp.JSChunk;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.SourceMapInput;
 import com.google.javascript.jscomp.jarjar.com.google.common.collect.ImmutableList;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.Node;
@@ -77,10 +77,8 @@ final class StyleCompiler extends Compiler {
             throw new IllegalArgumentException("CSS name policy differs from Closure defines");
         }
         options.addUnknownDefinesToIgnore(ImmutableList.of(CssNames.COMPRESS, CssNames.PREFIX));
-        if (!link.optimized()) {
-            super.initChunks(externs, chunks, options);
-            return;
-        }
+        var bindingSources = link.values().stream().map(CssLink.Value::source).collect(Collectors.toSet());
+        var enrichedMaps = new HashMap<String, SourceMapInput>();
         var found = new HashSet<String>();
         for (var chunk : chunks) {
             for (var input : chunk.getInputs()) {
@@ -88,20 +86,24 @@ final class StyleCompiler extends Compiler {
                 // J2CL modules are package-relative inside the declared .js tree artifact.
                 int tree = path.lastIndexOf(".js/");
                 String source = tree < 0 ? path : path.substring(tree + 4);
-                if (sources.containsKey(source)) {
+                if (bindingSources.contains(source)) {
                     inputSources.put(input.getName(), source);
-                    try {
-                        String mapName =
-                                Path.of(source).getFileName().toString().replace(".impl.java.js", ".js.map");
-                        var consumer = new SourceMapConsumerV3();
-                        consumer.parse(Files.readString(Path.of(input.getName()).resolveSibling(mapName)));
-                        inputMaps.put(input.getName(), consumer);
-                    } catch (IOException | SourceMapParseException e) {
-                        throw new IllegalArgumentException("Invalid generated CSS binding source map: " + source, e);
+                    var pathToSource = Path.of(input.getName()).toAbsolutePath();
+                    var treeRoot = pathToSource;
+                    for (int i = 0; i < Path.of(source).getNameCount(); i++) {
+                        treeRoot = Objects.requireNonNull(treeRoot.getParent());
                     }
+                    var map = BindingSourceMap.read(Path.of(input.getName()), treeRoot);
+                    inputMaps.put(input.getName(), map.mapping());
+                    enrichedMaps.put(input.getName(), map.input());
                     found.add(source);
                 }
             }
+        }
+        if (!link.optimized()) {
+            super.initChunks(externs, chunks, options);
+            enrichedMaps.forEach(this::addInputSourceMap);
+            return;
         }
         for (var source : sources.keySet()) {
             if (!found.contains(source)) {
@@ -118,6 +120,7 @@ final class StyleCompiler extends Compiler {
         extended.add(SourceFile.fromCode("react4j-css-symbols.externs.js", declarations.toString()));
         options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, (external, root) -> symbolize(root));
         super.initChunks(extended, chunks, options);
+        enrichedMaps.forEach(this::addInputSourceMap);
     }
 
     private void symbolize(Node root) {
