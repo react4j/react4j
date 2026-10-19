@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: `implementing`
-- Current frontier: `T03`
+- Current frontier: `T04`
 - Planning reviewer: `/root/java_browser_planning_review` (`1/3` rounds; final confirmation `unused`; Findings: none)
 - Plan checkpoint: `automatic` (accepted implementation authority; planning review passed)
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -20,7 +20,7 @@
 | --- | --- | --- | --- |
 | T01 | [Core runtime and browser support](T01-core-and-support.md) | complete | None |
 | T02 | [DOM probes and coverage drivers](T02-dom-and-coverage.md) | complete | T01 |
-| T03 | [CSS browser assertions](T03-css-browser.md) | pending | T01 |
+| T03 | [CSS browser assertions](T03-css-browser.md) | complete | T01 |
 | T04 | [Example scenarios and full delivery](T04-examples-and-closeout.md) | pending | T02,T03 |
 
 ## Sequencing notes

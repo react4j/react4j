@@ -39,6 +39,7 @@ java_format_check(
         "//css/integration-tests/src/test/java/react4j/css/integration:peer_bindings_java",
         "//css/processor/src/test/java/react4j/css/processor:processor_tests",
         "//css/examples/save-button/src/main/java/react4j/css/example:browser_java",
+        "//css/examples/save-button/src/test/java/react4j/css/example:browser_tests_java",
         "//css/examples/save-button/src/main/java/react4j/css/example:assets_java",
         "//core",
         "//core:tests",

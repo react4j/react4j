@@ -3,6 +3,7 @@ load("//tools/browser:java.bzl", "java_j2cl_library")
 package(default_visibility = [
     "//:__pkg__",
     "//core/src/test/java/react4j:__pkg__",
+    "//css/examples/save-button/src/test/java/react4j/css/example:__pkg__",
     "//dom/src/test/java/react4j/dom:__pkg__",
 ])
 

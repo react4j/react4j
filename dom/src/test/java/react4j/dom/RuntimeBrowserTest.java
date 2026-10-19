@@ -40,14 +40,15 @@ public final class RuntimeBrowserTest {
             check(target.getTextContent().isEmpty(), "Portal cleanup");
             var root = RuntimeCoverageExample.root(container);
             RuntimeCoverageExample.renderRoot(root, "first");
-            return Browser.until(() -> "first".equals(container.getTextContent()), 5000, "React root did not commit")
+            return Browser.until(
+                            () -> "first".equals(container.getTextContent()), 5000, 25, "React root did not commit")
                     .then(value -> Browser.callback(
                             done -> RuntimeCoverageExample.renderRootCallback(root, "second", done::run)))
                     .then(value -> {
                         check("second".equals(container.getTextContent()), "Root render callback");
                         RuntimeCoverageExample.unmountRoot(root);
                         return Browser.until(
-                                () -> container.getTextContent().isEmpty(), 5000, "React root did not unmount");
+                                () -> container.getTextContent().isEmpty(), 5000, 25, "React root did not unmount");
                     })
                     .then(value -> {
                         var other = RuntimeCoverageExample.root(target);

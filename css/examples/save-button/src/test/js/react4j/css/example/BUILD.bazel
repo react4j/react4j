@@ -16,7 +16,7 @@ browser_test(
     ],
     entry_point = "react4j.css.example.BrowserTest",
     deps = [
-        "//css/examples/save-button/src/main/java/react4j/css/example:browser",
+        "//css/examples/save-button/src/test/java/react4j/css/example:browser_tests",
         "@rules_closure//closure/testing/library:testcase",
     ],
 )
