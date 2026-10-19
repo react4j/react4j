@@ -1,5 +1,10 @@
 load("//third_party/java:rules.bzl", "java_testng")
 
+package(default_visibility = [
+    "//:__pkg__",
+    "//css:__pkg__",
+])
+
 java_testng(
     name = "tests",
     srcs = [
@@ -11,10 +16,6 @@ java_testng(
         "react4j.css.bundler.BundleTest",
         "react4j.css.bundler.CssPrunerTest",
         "react4j.css.bundler.CssReachabilityTest",
-    ],
-    visibility = [
-        "//:__pkg__",
-        "//css:__pkg__",
     ],
     deps = [
         "//css/bundler/src/main/java/react4j/css/bundler",
@@ -72,9 +73,38 @@ java_testng(
     test_class = "react4j.css.bundler.AssetBundleTest",
     deps = [
         "//css/bundler/src/main/java/react4j/css/bundler:assets",
+        "//css/bundler/src/main/java/react4j/css/bundler:content",
         "//css/internal/src/main/java/react4j/css/internal",
         "//third_party/java:ph_css",
         "@maven//:com_google_code_gson_gson",
         "@maven//:com_google_javascript_closure_compiler_unshaded",
+    ],
+)
+
+java_testng(
+    name = "packaging_tests",
+    srcs = [
+        "ApplicationBundleTest.java",
+        "AssetContentTest.java",
+    ],
+    data = [
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web.manifest.json",
+        "@brotli",
+    ],
+    jvm_flags = [
+        "-Dbrotli=$(rootpath @brotli//:brotli)",
+        "-Dapplication.assets=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web)",
+        "-Dapplication.manifest=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web.manifest.json)",
+    ],
+    test_classes = [
+        "react4j.css.bundler.AssetContentTest",
+        "react4j.css.bundler.ApplicationBundleTest",
+    ],
+    deps = [
+        "//css/bundler/src/main/java/react4j/css/bundler:content",
+        "//css/bundler/src/main/java/react4j/css/bundler:packaging",
+        "//css/internal/src/main/java/react4j/css/internal",
+        "@maven//:com_google_code_gson_gson",
     ],
 )

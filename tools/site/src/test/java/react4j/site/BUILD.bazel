@@ -4,6 +4,8 @@ java_testng(
     name = "all_tests",
     size = "small",
     srcs = ["SiteTest.java"],
+    data = ["//examples/drumloop"],
+    jvm_flags = ["-Dapplication.directory=$(rootpath //examples/drumloop:drumloop)"],
     test_class = "react4j.site.SiteTest",
     visibility = [
         "//:__pkg__",

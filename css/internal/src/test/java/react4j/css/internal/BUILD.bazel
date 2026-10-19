@@ -14,6 +14,7 @@ java_testng(
         "CssTokensTest.java",
         "MappedTextTest.java",
         "SourceMapTest.java",
+        "UnicodeCaseFoldTest.java",
     ],
     test_classes = [
         "react4j.css.internal.AssetLinkTest",
@@ -24,6 +25,7 @@ java_testng(
         "react4j.css.internal.CssRenamerTest",
         "react4j.css.internal.CssResourceTest",
         "react4j.css.internal.SourceMapTest",
+        "react4j.css.internal.UnicodeCaseFoldTest",
         "react4j.css.internal.CssSyntaxTest",
         "react4j.css.internal.CssTokensTest",
         "react4j.css.internal.MappedTextTest",

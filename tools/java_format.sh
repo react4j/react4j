@@ -26,6 +26,7 @@ paths=(
   tools/site/src/main/java
   tools/site/src/test/java
   tools/browser/src/main/java
+  tools/browser/src/test/java
   tools/consumer/src/main/java
   tools/verification/src/main/java
   tools/verification/src/test/java

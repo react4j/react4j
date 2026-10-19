@@ -7,10 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.HexFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
@@ -34,6 +31,7 @@ public final class AssetBundle {
         var trees = new ArrayList<Path>();
         var manifests = new ArrayList<Path>();
         var styles = new ArrayList<AssetCss>();
+        var prepared = new TreeMap<String, AssetContent>();
         var options = new TreeMap<String, String>();
         var required = Set.of(
                 "--directory",
@@ -53,6 +51,16 @@ public final class AssetBundle {
             String value = args.get(i + 1);
             if ("--input".equals(option)) {
                 trees.add(Path.of(value));
+            } else if ("--prepared".equals(option)) {
+                var content = AssetContent.read(Path.of(value));
+                var previous = prepared.putIfAbsent(content.logicalPath(), content);
+                if (null != previous
+                        && (!previous.source().equals(content.source())
+                                || !previous.sha256().equals(content.sha256())
+                                || previous.size() != content.size()
+                                || previous.compressedSize() != content.compressedSize())) {
+                    throw new IllegalArgumentException("Conflicting prepared asset: " + content.logicalPath());
+                }
             } else if ("--style".equals(option)) {
                 styles.add(AssetCss.read(value));
             } else if ("--asset-catalogue".equals(option)) {
@@ -77,6 +85,15 @@ public final class AssetBundle {
         var files = AssetResource.catalogue(manifests);
         AssetResource.validate(catalogue.assets(), files);
         CssLink.validateCssAssets(catalogue, files);
+        if (!prepared.keySet().equals(files.keySet())) {
+            throw new IllegalArgumentException("Prepared assets differ from the declared asset catalogue");
+        }
+        for (var content : prepared.values()) {
+            if (!content.source().equals(Path.of(Objects.requireNonNull(files.get(content.logicalPath()))))) {
+                throw new IllegalArgumentException(
+                        "Prepared asset source differs from its catalogue: " + content.logicalPath());
+            }
+        }
         var javascript = Path.of(options.get("--javascript"));
         var live = link.readReport(Files.readString(Path.of(options.get("--liveness"))), CssLink.digest(javascript));
         var directory = Path.of(options.get("--directory"));
@@ -106,45 +123,17 @@ public final class AssetBundle {
         var entries = new JsonArray();
         for (var entry : retained.entrySet()) {
             String logical = entry.getKey();
-            var source = Path.of(Objects.requireNonNull(files.get(logical)));
-            byte[] bytes = Files.readAllBytes(source);
-            String digest = CssLink.digest(bytes);
-            var media = media(logical);
-            String url = "assets/"
-                    + Base64.getUrlEncoder()
-                            .withoutPadding()
-                            .encodeToString(HexFormat.of().parseHex(digest)) + "." + media.extension();
+            var content = Objects.requireNonNull(prepared.get(logical));
+            String url = content.url();
             fileUrls.put(logical, url);
-            var output = directory.resolve(url);
-            Files.createDirectories(Objects.requireNonNull(output.getParent()));
-            if (Files.exists(output)) {
-                if (!Arrays.equals(bytes, Files.readAllBytes(output))) {
-                    throw new IllegalArgumentException("Conflicting content-addressed asset: " + url);
-                }
-            } else {
-                Files.write(output, bytes);
-            }
-            var item = new JsonObject();
-            item.addProperty("logicalPath", logical);
-            item.addProperty("source", source.toString().replace('\\', '/'));
-            item.addProperty("url", url);
-            item.addProperty("mediaType", media.type());
-            item.addProperty("sha256", digest);
-            item.addProperty("size", bytes.length);
-            var getters = new JsonArray();
-            var reasons = new JsonArray();
-            for (var accessor : entry.getValue()) {
-                if (accessor.startsWith("java:")) {
-                    getters.add(accessor.substring(5));
-                }
-                reasons.add(accessor);
-            }
-            item.add("accessors", getters);
-            item.add("retainedBy", reasons);
-            var representations = new JsonObject();
-            representations.addProperty("identity", url);
-            item.add("representations", representations);
-            entries.add(item);
+            content.copy(directory, url);
+            entries.add(content.entry(
+                    url,
+                    entry.getValue().stream()
+                            .filter(reason -> reason.startsWith("java:"))
+                            .map(reason -> reason.substring(5))
+                            .toList(),
+                    List.copyOf(entry.getValue())));
             for (var asset : link.assets()) {
                 if (asset.binding().path().equals(logical) && entry.getValue().contains("java:" + asset.id())) {
                     urls.put(link.optimized() ? asset.token() : asset.binding().value(), url);
@@ -170,36 +159,5 @@ public final class AssetBundle {
         }
         inventory.add("pruned", pruned);
         Files.writeString(Path.of(options.get("--manifest")), inventory + "\n");
-    }
-
-    record Media(String extension, String type) {}
-
-    static Media media(String logical) {
-        String extension = logical.substring(logical.lastIndexOf('.') + 1).toLowerCase(Locale.ROOT);
-        return switch (extension) {
-            case "svg" -> new Media("svg", "image/svg+xml");
-            case "png" -> new Media("png", "image/png");
-            case "jpg", "jpeg" -> new Media("jpg", "image/jpeg");
-            case "gif" -> new Media("gif", "image/gif");
-            case "webp" -> new Media("webp", "image/webp");
-            case "avif" -> new Media("avif", "image/avif");
-            case "ico" -> new Media("ico", "image/x-icon");
-            case "woff" -> new Media("woff", "font/woff");
-            case "woff2" -> new Media("woff2", "font/woff2");
-            case "ttf" -> new Media("ttf", "font/ttf");
-            case "otf" -> new Media("otf", "font/otf");
-            case "css" -> new Media("css", "text/css");
-            case "js" -> new Media("js", "text/javascript");
-            case "json", "map" -> new Media("json", "application/json");
-            case "txt" -> new Media("txt", "text/plain");
-            case "xml" -> new Media("xml", "application/xml");
-            case "html" -> new Media("html", "text/html");
-            case "wav" -> new Media("wav", "audio/wav");
-            case "mp3" -> new Media("mp3", "audio/mpeg");
-            case "ogg" -> new Media("ogg", "audio/ogg");
-            case "wasm" -> new Media("wasm", "application/wasm");
-            case "pdf" -> new Media("pdf", "application/pdf");
-            default -> new Media("bin", "application/octet-stream");
-        };
     }
 }

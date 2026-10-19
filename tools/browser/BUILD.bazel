@@ -21,11 +21,16 @@ closure_js_library(
 
 java_binary(
     name = "preview",
-    srcs = ["//tools/browser/src/main/java/react4j/browser:preview_sources"],
     main_class = "react4j.browser.Preview",
+    runtime_deps = ["//tools/browser/src/main/java/react4j/browser:preview"],
 )
 
 alias(
     name = "assets",
     actual = "//tools/browser/src/main/java/react4j/browser:assets",
+)
+
+test_suite(
+    name = "tests",
+    tests = ["//tools/browser/src/test/java/react4j/browser:tests"],
 )

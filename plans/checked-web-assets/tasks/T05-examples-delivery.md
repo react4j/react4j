@@ -1,6 +1,6 @@
 # T05 — Examples, downstream contracts and full gates
 
-- Status: `pending`
+- Status: `in_progress`
 - Blocked by: T04
 - Spec coverage: R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11; AC1,AC2,AC3,AC4,AC5
 

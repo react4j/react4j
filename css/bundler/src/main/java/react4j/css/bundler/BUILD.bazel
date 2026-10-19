@@ -34,8 +34,12 @@ java_library(
         "AssetJavaScript.java",
         "package-info.java",
     ],
-    visibility = ["//css:__subpackages__"],
+    visibility = [
+        "//:__pkg__",
+        "//css:__subpackages__",
+    ],
     deps = [
+        ":content",
         "//css/internal/src/main/java/react4j/css/internal",
         "//css/linker/src/main/java/react4j/css/linker",
         "@maven//:com_google_code_gson_gson",
@@ -48,4 +52,63 @@ java_binary(
     main_class = "react4j.css.bundler.AssetBundle",
     visibility = ["//css:__pkg__"],
     runtime_deps = [":assets"],
+)
+
+java_library(
+    name = "content",
+    srcs = [
+        "AssetContent.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css:__subpackages__",
+        "//tools/browser:__subpackages__",
+    ],
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "@maven//:com_google_code_gson_gson",
+    ],
+)
+
+java_binary(
+    name = "prepare_asset",
+    main_class = "react4j.css.bundler.AssetContent",
+    visibility = [
+        "//css:__pkg__",
+        "//tools/browser:__pkg__",
+    ],
+    runtime_deps = [":content"],
+)
+
+java_library(
+    name = "packaging",
+    srcs = [
+        "ApplicationBundle.java",
+        "ApplicationPlan.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css:__subpackages__",
+    ],
+    deps = [
+        ":content",
+        "//css/internal/src/main/java/react4j/css/internal",
+        "@maven//:com_google_code_gson_gson",
+    ],
+)
+
+java_binary(
+    name = "application_tool",
+    main_class = "react4j.css.bundler.ApplicationBundle",
+    visibility = ["//tools/browser:__pkg__"],
+    runtime_deps = [":packaging"],
+)
+
+java_binary(
+    name = "application_plan_tool",
+    main_class = "react4j.css.bundler.ApplicationPlan",
+    visibility = ["//tools/browser:__pkg__"],
+    runtime_deps = [":packaging"],
 )

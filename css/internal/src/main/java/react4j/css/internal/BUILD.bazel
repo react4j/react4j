@@ -16,8 +16,10 @@ java_library(
         "CssUrls.java",
         "MappedText.java",
         "SourceMap.java",
+        "UnicodeCaseFold.java",
         "package-info.java",
     ],
+    resources = ["@unicode_case_folding//file"],
     visibility = [
         "//:__pkg__",
         "//css:__subpackages__",

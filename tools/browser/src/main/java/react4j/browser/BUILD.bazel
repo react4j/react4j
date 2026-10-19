@@ -1,9 +1,13 @@
-load("//third_party/java:rules.bzl", "java_binary")
+load("//third_party/java:rules.bzl", "java_binary", "java_library")
 
-filegroup(
-    name = "preview_sources",
+java_library(
+    name = "preview",
     srcs = ["Preview.java"],
-    visibility = ["//tools/browser:__pkg__"],
+    visibility = [
+        "//tools/browser:__subpackages__",
+        "//tools/site/src/main/java/react4j/site:__pkg__",
+    ],
+    deps = ["//css/bundler/src/main/java/react4j/css/bundler:content"],
 )
 
 java_binary(

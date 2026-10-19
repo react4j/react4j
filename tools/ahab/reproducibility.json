@@ -52,6 +52,26 @@
       "spec": {
         "reproducibility": "always"
       }
+    },
+    "//css/bundler/src/main/java/react4j/css/bundler/application_tool": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//css/bundler/src/main/java/react4j/css/bundler/application_plan_tool": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//css/bundler/src/main/java/react4j/css/bundler/prepare_asset": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//css/bundler/src/main/java/react4j/css/bundler/assets_tool": {
+      "spec": {
+        "reproducibility": "always"
+      }
     }
   }
 }

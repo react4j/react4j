@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -25,8 +26,12 @@ public final class AssetBundleTest {
                 System.getProperty("asset." + (optimized ? "optimized" : "development") + "." + kind)));
     }
 
-    private static List<String> args(Path directory, boolean optimized) {
-        return new ArrayList<>(List.of(
+    private static List<String> args(Path directory, boolean optimized) throws IOException {
+        return args(directory, optimized, input(optimized, "catalogue"));
+    }
+
+    private static List<String> args(Path directory, boolean optimized, Path catalogue) throws IOException {
+        var options = new ArrayList<>(List.of(
                 "--directory",
                 directory.resolve("web").toString(),
                 "--manifest",
@@ -49,7 +54,18 @@ public final class AssetBundleTest {
                 "--input",
                 input(optimized, "tree").toString(),
                 "--asset-catalogue",
-                input(optimized, "catalogue").toString()));
+                catalogue.toString()));
+        int index = 0;
+        for (var entry : AssetResource.catalogue(List.of(catalogue)).entrySet()) {
+            var metadata = directory.resolve("prepared" + index++ + ".json");
+            Files.writeString(
+                    metadata,
+                    AssetContent.prepare(entry.getKey(), Path.of(entry.getValue()), null)
+                            .json()
+                            .toString());
+            options.addAll(List.of("--prepared", metadata.toString()));
+        }
+        return options;
     }
 
     private static List<String> change(List<String> args, String key, Path value) {
@@ -222,7 +238,7 @@ public final class AssetBundleTest {
             files.addProperty("react4j/css/integration/unused.svg", second.toString());
             var manifest = directory.resolve("files.json");
             Files.writeString(manifest, files.toString());
-            AssetBundle.run(change(args(directory, false), "--asset-catalogue", manifest));
+            AssetBundle.run(args(directory, false, manifest));
             var inventory = JsonParser.parseString(Files.readString(directory.resolve("manifest.json")))
                     .getAsJsonObject();
             assertEquals(inventory.getAsJsonArray("assets").size(), 2);
@@ -235,15 +251,15 @@ public final class AssetBundleTest {
         } finally {
             delete(directory);
         }
-        assertEquals(AssetBundle.media("photo.JPEG"), new AssetBundle.Media("jpg", "image/jpeg"));
-        assertEquals(AssetBundle.media("data.map"), new AssetBundle.Media("json", "application/json"));
+        assertEquals(AssetContent.media("photo.JPEG"), new AssetContent.Media("jpg", "image/jpeg"));
+        assertEquals(AssetContent.media("data.map"), new AssetContent.Media("json", "application/json"));
         for (var extension : List.of(
                 "svg", "png", "jpg", "gif", "webp", "avif", "ico", "woff", "woff2", "ttf", "otf", "css", "js", "json",
                 "txt", "xml", "html", "wav", "mp3", "ogg", "wasm", "pdf")) {
-            assertEquals(AssetBundle.media("file." + extension).extension(), extension);
-            assertFalse(AssetBundle.media("file." + extension).type().isBlank());
+            assertEquals(AssetContent.media("file." + extension).extension(), extension);
+            assertFalse(AssetContent.media("file." + extension).type().isBlank());
         }
-        assertEquals(AssetBundle.media("unknown"), new AssetBundle.Media("bin", "application/octet-stream"));
+        assertEquals(AssetContent.media("unknown"), new AssetContent.Media("bin", "application/octet-stream"));
     }
 
     @Test
@@ -309,6 +325,40 @@ public final class AssetBundleTest {
         expectThrows(
                 IllegalArgumentException.class,
                 () -> AssetJavaScript.rewrite("window.result=1;", new JsonObject(), link, Map.of()));
+    }
+
+    @Test
+    public void bootstrapStaysInsideAnImmediatelyInvokedOutputWrapper() throws Exception {
+        var link = CssLink.read(Files.readString(input(true, "config")));
+        var asset = link.assets().get(0);
+        for (String wrapper : List.of(
+                "(function(){%s})();",
+                "(function(){%s}).call(globalThis);",
+                "!function(){%s}();",
+                "void function(){%s}();",
+                "(function(){%s}).apply(globalThis,[]);",
+                "(()=>{%s})();")) {
+            String code = wrapper.formatted("'use strict';window.result=\"" + asset.token() + "\";");
+            var map = JsonParser.parseString(new SourceMap.Writer()
+                            .append(code, new SourceMap.Location("Binding.java", "complete java", 1, 0))
+                            .map("app.js"))
+                    .getAsJsonObject();
+            var result = AssetJavaScript.rewrite(code, map, link, Map.of(asset.token(), "assets/icon.svg"));
+            assertTrue(result.text().startsWith(code.substring(0, code.indexOf("window.result"))), result.text());
+            assertTrue(
+                    result.text().indexOf("'use strict'") < result.text().indexOf("var $r4jAssetBase"), result.text());
+            assertTrue(
+                    result.text().indexOf("var $r4jAssetBase") < result.text().indexOf("window.result"), result.text());
+        }
+        for (String code : List.of(
+                "(function(value){window.result=value;})(\"" + asset.token() + "\");",
+                "window.getAsset=function(){return \"" + asset.token() + "\";};",
+                "(function(){window.result=\"" + asset.token() + "\";})();window.other=1;")) {
+            var map =
+                    JsonParser.parseString(new SourceMap.Writer().map("app.js")).getAsJsonObject();
+            var result = AssetJavaScript.rewrite(code, map, link, Map.of(asset.token(), "assets/icon.svg"));
+            assertTrue(result.text().startsWith("var $r4jAssetBase="), result.text());
+        }
     }
 
     @Test

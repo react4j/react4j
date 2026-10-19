@@ -1,8 +1,9 @@
 """Bazel rules for CSS-in-Java."""
 
 load("@rules_closure//closure:defs.bzl", "ClosureJsBinaryInfo", "closure_js_binary")
+load("//tools/web-assets:defs.bzl", "ASSET_TOOL_ATTRIBUTES", "prepare_file")
 
-WebAssetsInfo = provider("Declared logical asset paths and their byte-independent catalogue.", fields = ["files", "manifest"])
+WebAssetsInfo = provider("Declared logical asset paths and their byte-independent catalogue.", fields = ["files", "manifest", "prepared", "representations"])
 
 # Read by collection aspects; source bytes are inputs only to asset processing/packaging.
 def _web_assets_impl(ctx):
@@ -13,11 +14,14 @@ def _web_assets_impl(ctx):
     prefix = package_path.split(roots[0], 1)[1]
     files = {}
     manifest = {}
+    prepared = []
+    representations = []
     for file in ctx.files.srcs:
         if file.is_directory:
             fail("web_assets requires individually declared files: " + str(file))
-        local_prefix = ctx.label.package + "/"
-        relative = file.short_path[len(local_prefix):] if file.short_path.startswith(local_prefix) else file.basename
+        own_package = file.owner.package == ctx.label.package and file.owner.repo_name == ctx.label.repo_name
+        marker = "/" + ctx.label.package + "/"
+        relative = ("/" + file.short_path).split(marker, 1)[1] if own_package else file.basename
         logical = prefix + relative
         if logical in files:
             fail("Duplicate declared logical asset path: " + logical)
@@ -25,35 +29,41 @@ def _web_assets_impl(ctx):
             fail("Invalid logical asset path: " + logical)
         files[logical] = file
         manifest[logical] = file.path
+        metadata, compressed = prepare_file(ctx, file, logical, ctx.label.name + "_prepared/" + relative)
+        prepared.append(metadata)
+        representations.append(compressed)
     ctx.actions.write(ctx.outputs.manifest, json.encode({path: manifest[path] for path in sorted(manifest)}))
-    return [DefaultInfo(files = depset([ctx.outputs.manifest])), WebAssetsInfo(files = files, manifest = ctx.outputs.manifest)]
+    return [DefaultInfo(files = depset([ctx.outputs.manifest])), WebAssetsInfo(files = files, manifest = ctx.outputs.manifest, prepared = prepared, representations = representations)]
 
 web_assets = rule(
     implementation = _web_assets_impl,
     outputs = {"manifest": "%{name}.assets.json"},
-    attrs = {"srcs": attr.label_list(allow_files = True, mandatory = True)},
+    attrs = dict(ASSET_TOOL_ATTRIBUTES, srcs = attr.label_list(allow_files = True, mandatory = True)),
 )
 
-_CssInfo = provider("Transitive J2CL resources and byte-independent asset catalogues.", fields = ["trees", "asset_manifests", "asset_files"])
+_CssInfo = provider("Transitive J2CL resources and byte-independent asset catalogues.", fields = ["trees", "asset_manifests", "asset_files", "prepared"])
 
 def _collect_impl(target, ctx):
     transitive = []
     manifests = []
     files = []
     own = []
+    prepared = []
     if WebAssetsInfo in target:
         own = [target[WebAssetsInfo].manifest]
-        files = [depset(target[WebAssetsInfo].files.values())]
+        files = [depset(target[WebAssetsInfo].files.values() + target[WebAssetsInfo].representations)]
+        prepared = [depset(target[WebAssetsInfo].prepared)]
     for attribute in ["deps", "exports", "srcs", "assets"]:
         for dep in getattr(ctx.rule.attr, attribute, []):
             if _CssInfo in dep:
                 transitive.append(dep[_CssInfo].trees)
                 manifests.append(dep[_CssInfo].asset_manifests)
                 files.append(dep[_CssInfo].asset_files)
+                prepared.append(dep[_CssInfo].prepared)
 
     # J2CL declares its per-library JavaScript directory as a tree artifact.
     trees = [file for file in target[DefaultInfo].files.to_list() if file.is_directory and file.basename.endswith(".js")]
-    return [_CssInfo(trees = depset(trees, transitive = transitive), asset_manifests = depset(own, transitive = manifests), asset_files = depset(transitive = files))]
+    return [_CssInfo(trees = depset(trees, transitive = transitive), asset_manifests = depset(own, transitive = manifests), asset_files = depset(transitive = files), prepared = depset(transitive = prepared))]
 
 _collect = aspect(implementation = _collect_impl, attr_aspects = ["deps", "exports", "srcs", "assets"])
 
@@ -181,6 +191,7 @@ def _web_bundle_impl(ctx):
     args.add("--link", label.repo_name + "//" + label.package + ":" + label.name)
     args.add_all(resources.trees, before_each = "--input", expand_directories = False)
     args.add_all(resources.asset_manifests, before_each = "--asset-catalogue")
+    args.add_all(resources.prepared, before_each = "--prepared")
     styles = {}
     style_inputs = []
     for target, name in ctx.attr.styles.items():
@@ -197,7 +208,7 @@ def _web_bundle_impl(ctx):
         args.add("--style", json.encode({"input": style.css.path, "map": style.source_map.path, "name": name, "output": output.path, "outputMap": source_map.path}))
     ctx.actions.run(
         executable = ctx.executable._tool,
-        inputs = depset([binary.bin, binary.map, binary.compiler_config, binary.compiler_report] + style_inputs, transitive = [resources.trees, resources.asset_manifests, resources.asset_files]),
+        inputs = depset([binary.bin, binary.map, binary.compiler_config, binary.compiler_report] + style_inputs, transitive = [resources.trees, resources.asset_manifests, resources.asset_files, resources.prepared]),
         outputs = [directory, ctx.outputs.manifest, ctx.outputs.javascript, ctx.outputs.source_map] + styles.keys(),
         arguments = [args],
         mnemonic = "WebBundle",

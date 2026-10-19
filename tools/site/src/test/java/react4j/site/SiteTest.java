@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.jspecify.annotations.NullMarked;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -261,6 +262,28 @@ public final class SiteTest {
         } finally {
             delete(source);
             delete(destination);
+        }
+    }
+
+    @Test
+    public void copiesPackagedApplicationTreesIncludingRepresentationsAndSourceMaps() throws Exception {
+        var source = Path.of(Objects.requireNonNull(System.getProperty("application.directory")))
+                .toRealPath();
+        var output = Files.createTempDirectory("site-tree");
+        try {
+            var destination = output.resolve("examples/component");
+            SiteBuilder.copyAsset(source, destination);
+            try (var paths = Files.walk(source)) {
+                for (var file : paths.filter(Files::isRegularFile).toList()) {
+                    Assert.assertEquals(Files.mismatch(file, destination.resolve(source.relativize(file))), -1L);
+                }
+            }
+            SiteBuilder.copyAsset(source.resolve("app.js"), output.resolve("plain.js"));
+            Assert.assertEquals(Files.mismatch(source.resolve("app.js"), output.resolve("plain.js")), -1L);
+            SiteLinks.check(output);
+            Assert.expectThrows(IOException.class, () -> SiteBuilder.copyAsset(source, destination));
+        } finally {
+            delete(output);
         }
     }
 

@@ -37,6 +37,22 @@ public final class CssAssetFontProcessorTest {
     }
 
     @Test
+    public void unicodeCaseFoldingDataIsIncludedInBothProcessorDistributions() throws Exception {
+        var result = CssProcessorTest.compile(Map.of(
+                "Media.java",
+                MEDIA,
+                "Fonts.java",
+                FONTS.replace("My Heading", "Straße"),
+                "Button.java",
+                consumer(
+                        "Css",
+                        "@CssImport(value=Fonts.class,font=\"STRASSE\",name=\"heading\")",
+                        "font-family:heading;")));
+        assertTrue(result.success(), result.diagnostics());
+        assertTrue(text(result, "classes/demo/Button.css").contains("jcss-demo-Fonts--font-strasse"));
+    }
+
+    @Test
     public void sourceAndSeparatelyCompiledAssetAndFontImportsResolveInEveryDefinitionKind() throws Exception {
         var dependencies = CssProcessorTest.compile(Map.of("Media.java", MEDIA, "Fonts.java", FONTS));
         assertTrue(dependencies.success(), dependencies.diagnostics());

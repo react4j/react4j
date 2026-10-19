@@ -7,6 +7,7 @@ import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.CSSReaderSettings;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -15,6 +16,7 @@ import java.util.TreeMap;
 import org.testng.annotations.Test;
 import react4j.css.internal.CssCatalogue;
 import react4j.css.internal.CssCatalogue.Resource;
+import react4j.css.internal.CssFontValues;
 import react4j.css.internal.CssLink;
 import react4j.css.internal.CssNames;
 import react4j.css.internal.CssResource;
@@ -25,6 +27,91 @@ import react4j.css.internal.CssTokens;
 import react4j.css.internal.SourceMap;
 
 public final class CssReachabilityTest {
+    private static Resource fonted(
+            Resource resource, Map<String, CssResource.SymbolId> references, List<CssResource.Symbol> owned) {
+        var metadata = resource.metadata();
+        var dependencies = new ArrayList<>(metadata.dependencies());
+        references.values().stream()
+                .map(CssResource.SymbolId::owner)
+                .filter(owner -> !owner.equals(metadata.owner()))
+                .forEach(dependencies::add);
+        var symbols = new ArrayList<>(metadata.symbols());
+        symbols.addAll(owned);
+        var occurrences = new ArrayList<>(metadata.occurrences());
+        for (var token : CssTokens.read(resource.css())) {
+            var id = references.get(token.name());
+            if (SymbolKind.FONT == token.kind() && null != id) {
+                occurrences.add(new CssResource.Occurrence(
+                        id,
+                        token.start(),
+                        token.end(),
+                        id.owner().equals(metadata.owner()) ? List.of() : List.of(id.owner())));
+            }
+        }
+        var updated = new CssResource(
+                metadata.owner(),
+                metadata.kind(),
+                dependencies.stream().distinct().toList(),
+                metadata.includes(),
+                metadata.implementation(),
+                metadata.bindings(),
+                symbols,
+                occurrences.stream()
+                        .sorted(Comparator.comparingInt(CssResource.Occurrence::start))
+                        .toList(),
+                CssFontValues.uses(
+                        resource.css(), references.values().stream().distinct().toList()));
+        return new Resource(updated, resource.css(), resource.map());
+    }
+
+    @Test
+    public void survivingStaticAndDynamicFontUsageRetainsAllWeightsOnlyFromSelectedFamilies() {
+        var heading = new CssResource.SymbolId("Fonts", SymbolKind.FONT, "heading");
+        var unused = new CssResource.SymbolId("Fonts", SymbolKind.FONT, "unused");
+        var fonts = fonted(
+                global(
+                        "Fonts",
+                        "@font-face{font-family:heading;src:url(https://example.test/regular.woff2);font-weight:400;}"
+                            + "@font-face{font-family:heading;src:url(https://example.test/bold.woff2);font-weight:700;}"
+                            + "@font-face{font-family:unused;src:url(https://example.test/unused.woff2);}"),
+                Map.of("heading", heading, "unused", unused),
+                List.of(
+                        new CssResource.Symbol(SymbolKind.FONT, "heading", "heading", false),
+                        new CssResource.Symbol(SymbolKind.FONT, "unused", "unused", false)));
+        for (var body : List.of(
+                ".root{font-family:heading;}.root.dead{font-family:unused;}",
+                ".root{font-family:var(--runtime,heading);}",
+                ".root{color:red;}.root.dead{font-family:var(--runtime);}")) {
+            boolean deadOnly = body.contains("color:red");
+            var consumer = fonted(
+                    resource(
+                            "View",
+                            Kind.COMPONENT,
+                            body,
+                            List.of(
+                                    binding("style", SymbolKind.CLASS, "root"),
+                                    binding("dead", SymbolKind.CLASS, "root dead")),
+                            List.of(),
+                            Map.of()),
+                    body.contains("font-family:unused") || deadOnly
+                            ? Map.of("heading", heading, "unused", unused)
+                            : Map.of("heading", heading),
+                    List.of());
+            var catalogue = new CssCatalogue(Map.of("View", consumer, "Fonts", fonts), "1".repeat(64), Map.of());
+            var link = CssLink.create(catalogue, "//:app", true, new CssNames.Policy(false, ""));
+            var retained = CssReachability.prune(catalogue, link, Set.of("View#style"), List.of());
+            if (deadOnly) {
+                assertFalse(retained.containsKey("Fonts"));
+            } else {
+                var selected = Objects.requireNonNull(CSSReader.readFromStringReader(
+                        Objects.requireNonNull(retained.get("Fonts")).css(), new CSSReaderSettings()));
+                assertEquals(selected.getFontFaceRuleCount(), 2);
+                assertTrue(selected.getAllFontFaceRules().stream()
+                        .allMatch(face -> "heading".equals(CssFontValues.face(face))));
+            }
+        }
+    }
+
     private static Binding binding(String method, SymbolKind kind, String value) {
         return new Binding(
                 method, kind, value, List.of(), List.of(new CssResource.SymbolId("demo.Button", kind, "token")));

@@ -76,6 +76,13 @@
       "mnemonic": "TestRunner",
       "target": "//tools/verification/src/test/java/react4j/verification:runtime_coverage_tests",
       "requirement": "requires-network"
+    },
+    {
+      "reason": "The preview HTTP tests bind a loopback server to verify real content negotiation; build actions remain sandboxed without network access",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//tools/browser/src/test/java/react4j/browser:tests",
+      "requirement": "requires-network"
     }
   ]
 }

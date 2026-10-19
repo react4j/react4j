@@ -98,11 +98,11 @@ final class CssFonts {
                             && "font".equalsIgnoreCase(CSSParseHelper.unescapeURL(declaration.getProperty()))) {
                         CssExpressions.visit(declaration.getExpression(), member -> {
                             if (member instanceof CSSExpressionMemberTermSimple term
-                                    && managed.contains(CssFontValues.canonical(
+                                    && managed.contains(CssFontValues.canonical(CSSParseHelper.unescapeURL(
                                             term.isStringLiteral()
                                                     ? Objects.requireNonNull(
                                                             CSSParseHelper.extractStringValue(term.getValue()))
-                                                    : term.getValue()))) {
+                                                    : term.getValue())))) {
                                 throw new IllegalArgumentException(
                                         "Dynamic font shorthand with a managed family requires font-family longhand");
                             }

@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: `implementing`
-- Current frontier: `T04`
+- Current frontier: `T05`
 - Planning reviewer: `/root/assets_planning_review` (`2/3` rounds; final confirmation `unused`)
 - Plan checkpoint: automatic; accepted scope and explicit implementation authority, planning review passed
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -21,8 +21,8 @@
 | T01 | [Checked asset declarations](T01-declarations.md) | complete | None |
 | T02 | [Java asset liveness and late URLs](T02-java-link.md) | complete | T01 |
 | T03 | [CSS assets and owned fonts](T03-css-fonts.md) | complete | T02 |
-| T04 | [Manifest packaging and compression](T04-packaging.md) | pending | T03 |
-| T05 | [Examples, downstream contracts and full gates](T05-examples-delivery.md) | pending | T04 |
+| T04 | [Manifest packaging and compression](T04-packaging.md) | complete | T03 |
+| T05 | [Examples, downstream contracts and full gates](T05-examples-delivery.md) | in_progress | T04 |
 
 ## Sequencing notes
 

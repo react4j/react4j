@@ -1,0 +1,11 @@
+diff -urN orig/BUILD.bazel new/BUILD.bazel
+--- orig/BUILD.bazel	2026-07-08 10:00:00
++++ new/BUILD.bazel	2026-09-21 10:00:00
+@@ -124,6 +124,7 @@
+     linkopts = select({
+         ":clang-cl": [],
+         ":msvc": [],
++        "@bazel_tools//src/conditions:darwin": [],
+         "//conditions:default": ["-lm"],
+     }),
+     deps = [":brotlicommon"],

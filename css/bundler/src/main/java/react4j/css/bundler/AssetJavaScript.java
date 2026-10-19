@@ -87,8 +87,9 @@ final class AssetJavaScript {
         }
         var edits = new ArrayList<SourceMap.Edit>();
         if (!literals.isEmpty()) {
-            int prologue = 0;
-            for (var node = script.getFirstChild(); null != node; node = node.getNext()) {
+            var scope = captureScope(script, literals);
+            int prologue = scope.isScript() ? 0 : scope.getSourceOffset() + 1;
+            for (var node = scope.getFirstChild(); null != node; node = node.getNext()) {
                 var expression = node.getFirstChild();
                 if (!node.isExprResult() || null == expression || !expression.isStringLit()) {
                     prologue = node.getSourceOffset();
@@ -112,6 +113,49 @@ final class AssetJavaScript {
         var result = new MappedText(javascript, map).replace(edits);
         result.map().addProperty("file", "app.js");
         return result;
+    }
+
+    private static Node captureScope(Node script, List<Node> literals) {
+        Node statement = null;
+        for (var node = script.getFirstChild(); null != node; node = node.getNext()) {
+            if (node.isExprResult()
+                    && Objects.requireNonNull(node.getFirstChild()).isStringLit()) {
+                continue;
+            }
+            if (null != statement) {
+                return script;
+            }
+            statement = node;
+        }
+        if (null == statement || !statement.isExprResult()) {
+            return script;
+        }
+        var call = Objects.requireNonNull(statement.getFirstChild());
+        while (call.isNot() || call.isVoid()) {
+            call = Objects.requireNonNull(call.getFirstChild());
+        }
+        if (!call.isCall()) {
+            return script;
+        }
+        var function = Objects.requireNonNull(call.getFirstChild());
+        if (function.isGetProp() && ("call".equals(function.getString()) || "apply".equals(function.getString()))) {
+            function = Objects.requireNonNull(function.getFirstChild());
+        }
+        if (!function.isFunction()
+                || !Objects.requireNonNull(function.getLastChild()).isBlock()) {
+            return script;
+        }
+        var body = Objects.requireNonNull(function.getLastChild());
+        for (var literal : literals) {
+            var parent = literal.getParent();
+            while (null != parent && parent != body) {
+                parent = parent.getParent();
+            }
+            if (null == parent) {
+                return script;
+            }
+        }
+        return body;
     }
 
     private static String quote(String value) {

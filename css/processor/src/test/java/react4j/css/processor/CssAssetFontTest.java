@@ -140,4 +140,18 @@ public final class CssAssetFontTest {
             expectThrows(CssSyntax.InvalidCss.class, () -> component(css));
         }
     }
+
+    @Test
+    public void unicodeFontMatchingPreservesQuotedWhitespaceAndNormalization() {
+        var result = component("@font-face{font-family:'Straße';src:url(asset:media.font);}font-family:'STRASSE';");
+        assertEquals(result.fonts(), Map.of("strasse", "jcss-demo-Button--font-strasse"));
+        assertTrue(result.output().css().contains("font-family:jcss-demo-Button--font-strasse"));
+        var spaces = component("@font-face{font-family:'A  B';src:url(asset:media.font);}font-family:'a b';");
+        assertEquals(spaces.fonts().keySet(), Set.of("a  b"));
+        assertTrue(
+                spaces.output().css().contains("font-family:'a b'"),
+                spaces.output().css());
+        var normalization = component("@font-face{font-family:'Å';src:url(asset:media.font);}font-family:'Å';");
+        assertTrue(normalization.output().css().contains("font-family:'Å'"));
+    }
 }

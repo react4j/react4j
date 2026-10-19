@@ -116,11 +116,10 @@ public final class CssFontValues {
     }
 
     public static String canonical(String family) {
-        String value = CSSParseHelper.unescapeURL(family).trim().replaceAll("\\s+", " ");
-        if (value.isEmpty() || value.codePoints().anyMatch(c -> Character.isISOControl(c))) {
+        if (family.isEmpty() || family.codePoints().anyMatch(Character::isISOControl)) {
             throw new IllegalArgumentException("Font family must be a nonempty static name");
         }
-        return CssTokens.asciiLower(value);
+        return UnicodeCaseFold.fold(family);
     }
 
     public static String face(CSSFontFaceRule face) {
@@ -307,7 +306,8 @@ public final class CssFontValues {
                     }
                     words.add(value);
                 }
-                families.add(new Family(expression, first, last, canonical(String.join(" ", words))));
+                families.add(new Family(
+                        expression, first, last, canonical(CSSParseHelper.unescapeURL(String.join(" ", words)))));
             }
             first = last + 1;
             if (first == members.size()) {

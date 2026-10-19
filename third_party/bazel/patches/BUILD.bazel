@@ -1,4 +1,5 @@
 exports_files([
+    "brotli_omit_darwin_libm.patch",
     "rules_cc_allowlist_macos_sdk_root.patch",
     "j2cl_configure_class_output.patch",
     "j2cl_preserve_css_resources.patch",

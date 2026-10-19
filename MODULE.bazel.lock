@@ -76,6 +76,8 @@
     "https://bcr.bazel.build/modules/bazel_worker_java/0.0.5/MODULE.bazel": "50865fcdb8939e3470611435d71bb83b26560bf73fa746dbbb019b8a91afa943",
     "https://bcr.bazel.build/modules/bazel_worker_java/0.0.8/MODULE.bazel": "e76479eae70bd4e8f5f4c2dfc5d03ab971cfb18750246c7b3f3454c5c2ee6629",
     "https://bcr.bazel.build/modules/bazel_worker_java/0.0.8/source.json": "9395c4679444bc47bf7e51a710366a4480aa371c6f6bed01868e2fabcf11acec",
+    "https://bcr.bazel.build/modules/brotli/1.2.0.bcr.3/MODULE.bazel": "9a69f0de5e6ae550c4b8faca2dc6d4b2c70a5e1ffbb45caacfee44b3dea78283",
+    "https://bcr.bazel.build/modules/brotli/1.2.0.bcr.3/source.json": "2248bf1d5239c75a041f8ea7f49a820b804c3f2c6c2437444dc9295e6ef84826",
     "https://bcr.bazel.build/modules/buildifier_prebuilt/10.0.1/MODULE.bazel": "5befcf0b6bf57fdf132ae6f4b19a43a766a78a09d017031edcac38dbac8817e1",
     "https://bcr.bazel.build/modules/buildifier_prebuilt/10.0.1/source.json": "853f30a35e598b4e9f98966e103f783a95759b989376231d88cf53ac79a6207f",
     "https://bcr.bazel.build/modules/buildozer/8.5.1/MODULE.bazel": "a35d9561b3fc5b18797c330793e99e3b834a473d5fbd3d7d7634aafc9bdb6f8f",

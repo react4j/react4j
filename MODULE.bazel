@@ -1,5 +1,13 @@
 module(name = "react4j")
 
+bazel_dep(name = "brotli", version = "1.2.0.bcr.3")
+single_version_override(
+    module_name = "brotli",
+    patch_strip = 1,
+    patches = ["//third_party/bazel/patches:brotli_omit_darwin_libm.patch"],
+    version = "1.2.0.bcr.3",
+)
+
 bazel_dep(name = "braincheck")
 git_override(
     module_name = "braincheck",
@@ -617,6 +625,13 @@ _http_file(
 )
 
 # --- depgen-generated repository rules end ---
+
+_http_file(
+    name = "unicode_case_folding",
+    downloaded_file_path = "src/main/resources/react4j/css/internal/CaseFolding.txt",
+    sha256 = "ff8d8fefbf123574205085d6714c36149eb946d717a0c585c27f0f4ef58c4183",
+    urls = ["https://www.unicode.org/Public/17.0.0/ucd/CaseFolding.txt"],
+)
 
 _http_file(
     name = "react_development",

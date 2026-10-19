@@ -1,0 +1,14 @@
+load("//tools/webtesting:defs.bzl", "java_browser_testng")
+
+java_browser_testng(
+    name = "tests",
+    srcs = ["PreviewTest.java"],
+    data = ["@brotli"],
+    jvm_flags = ["-Dbrotli=$(rootpath @brotli//:brotli)"],
+    test_class = "react4j.browser.PreviewTest",
+    visibility = [
+        "//:__pkg__",
+        "//tools/browser:__pkg__",
+    ],
+    deps = ["//tools/browser/src/main/java/react4j/browser:preview"],
+)
