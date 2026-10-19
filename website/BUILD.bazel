@@ -55,5 +55,5 @@ react4j_site(
     home = "home.html",
     layout = "layout.html",
     navigation = "navigation.txt",
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )

@@ -1,5 +1,5 @@
 alias(
     name = "bundler",
     actual = "//css/bundler/src/main/java/react4j/css/bundler:tool",
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )

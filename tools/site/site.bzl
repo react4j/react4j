@@ -1,6 +1,8 @@
 load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 load("//tools/browser:rules.bzl", "BrowserApplicationInfo")
 
+visibility(["//website"])
+
 def _site_impl(ctx):
     out = ctx.actions.declare_directory(ctx.label.name)
 

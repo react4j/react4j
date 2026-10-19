@@ -1,8 +1,8 @@
 load("@j2cl//build_defs:rules.bzl", "j2cl_import", "j2cl_library")
 load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_import = "java_import", _java_library = "java_library")
-load(":rules.bzl", "strict_checker_options", _java_test = "java_test")
+load(":rules.bzl", "strict_checker_options", _java_test = "java_test", exports_files = "repository_files")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
 alias(
     name = "arez_core",

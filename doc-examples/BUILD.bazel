@@ -4,7 +4,7 @@ load("//third_party/java:rules.bzl", "java_library")
 load("//tools/browser:rules.bzl", "browser_application")
 load("//tools/release:release.bzl", "release_source_jar")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
 java_library(
     name = "java",

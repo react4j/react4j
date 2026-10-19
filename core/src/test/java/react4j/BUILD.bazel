@@ -30,7 +30,7 @@ java_testng(
         "react4j.KeyedTest",
         "react4j.test.JDependTest",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
     deps = [
         "//core",
         "//third_party/java:arez_core",

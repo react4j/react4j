@@ -1,5 +1,7 @@
 """Declared unoptimized J2CL module inputs for runtime coverage."""
 
+visibility(["//tools/verification", "//tools/verification/src/test/java/react4j/verification"])
+
 def _j2cl_modules_impl(ctx):
     trees = [file for file in ctx.files.library if file.is_directory]
     if len(trees) != 1:

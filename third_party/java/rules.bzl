@@ -1,5 +1,7 @@
 load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_library = "java_library", _java_plugin = "java_plugin", _java_test = "java_test")
 
+visibility(["//..."])
+
 # Java 17 products use the same strict checker policy as the pinned Sting module.
 _JAVACOPTS = [
     "--release",
@@ -166,3 +168,7 @@ def _checker_options_impl(ctx):
     return [DefaultInfo(files = depset([output]))]
 
 strict_checker_options = rule(implementation = _checker_options_impl)
+
+# Depgen emits its configuration export without an explicit visibility.
+def repository_files(srcs):
+    native.exports_files(srcs, visibility = ["//:__subpackages__"])

@@ -5,6 +5,8 @@ load("@rules_closure//closure/testing:webdriver_test.bzl", "webdriver_test")
 load("//css:defs.bzl", "WebBundleInfo", "css_js_binary", "web_bundle")
 load("//tools/web-assets:defs.bzl", "ASSET_TOOL_ATTRIBUTES", "prepare_file")
 
+visibility("public")
+
 _PRODUCTION_DEFINES = {
     "arez.check_api_invariants": "false",
     "arez.check_expensive_invariants": "false",

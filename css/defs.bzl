@@ -4,7 +4,9 @@ load("@j2cl//build_defs/internal_do_not_use:provider.bzl", "J2clInfo")
 load("@rules_closure//closure:defs.bzl", "CLOSURE_JS_TOOLCHAIN_ATTRS", "ClosureJsBinaryInfo", "closure_js_binary", "create_closure_js_library")
 load("//tools/web-assets:defs.bzl", "ASSET_TOOL_ATTRIBUTES", "prepare_file")
 
-WebAssetsInfo = provider("Declared logical asset paths and their byte-independent catalogue.", fields = ["files", "manifest", "prepared"])
+visibility("public")
+
+_WebAssetsInfo = provider("Declared logical asset paths and their byte-independent catalogue.", fields = ["files", "manifest", "prepared"])
 
 # Read by collection aspects; source bytes are inputs only to asset processing/packaging.
 def _web_assets_impl(ctx):
@@ -32,7 +34,7 @@ def _web_assets_impl(ctx):
         metadata = prepare_file(ctx, file, logical, ctx.label.name + "_prepared/" + relative)
         prepared.append(metadata)
     ctx.actions.write(ctx.outputs.manifest, json.encode({path: manifest[path] for path in sorted(manifest)}))
-    return [DefaultInfo(files = depset([ctx.outputs.manifest])), WebAssetsInfo(files = files, manifest = ctx.outputs.manifest, prepared = prepared), create_closure_js_library(ctx)]
+    return [DefaultInfo(files = depset([ctx.outputs.manifest])), _WebAssetsInfo(files = files, manifest = ctx.outputs.manifest, prepared = prepared), create_closure_js_library(ctx)]
 
 web_assets = rule(
     implementation = _web_assets_impl,
@@ -48,10 +50,10 @@ def _collect_impl(target, ctx):
     files = []
     own = []
     prepared = []
-    if WebAssetsInfo in target:
-        own = [target[WebAssetsInfo].manifest]
-        files = [depset(target[WebAssetsInfo].files.values())]
-        prepared = [depset(target[WebAssetsInfo].prepared)]
+    if _WebAssetsInfo in target:
+        own = [target[_WebAssetsInfo].manifest]
+        files = [depset(target[_WebAssetsInfo].files.values())]
+        prepared = [depset(target[_WebAssetsInfo].prepared)]
     for attribute in ["deps", "exports", "srcs"]:
         for dep in getattr(ctx.rule.attr, attribute, []):
             if _CssInfo in dep:

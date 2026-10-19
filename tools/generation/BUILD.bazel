@@ -1,6 +1,6 @@
 load(":generation.bzl", "dom_source", "react_asset")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
 alias(
     name = "dom_generator",
@@ -22,6 +22,7 @@ react_asset(
     src = "@react_development//file",
     out = "react4j/public/dev/react.js",
     mode = "development",
+    visibility = ["//visibility:public"],
 )
 
 react_asset(
@@ -29,6 +30,7 @@ react_asset(
     src = "@react_production//file",
     out = "react4j/public/react.js",
     mode = "production",
+    visibility = ["//visibility:public"],
 )
 
 react_asset(
@@ -36,6 +38,7 @@ react_asset(
     src = "@react_dom_development//file",
     out = "react4j/dom/public/dev/react-dom.js",
     mode = "copy",
+    visibility = ["//visibility:public"],
 )
 
 react_asset(
@@ -43,6 +46,7 @@ react_asset(
     src = "@react_dom_production//file",
     out = "react4j/dom/public/react-dom.js",
     mode = "copy",
+    visibility = ["//visibility:public"],
 )
 
 filegroup(

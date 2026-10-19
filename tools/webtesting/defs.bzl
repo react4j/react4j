@@ -2,6 +2,8 @@
 
 load("//third_party/java:rules.bzl", "java_binary")
 
+visibility(["//tools/browser/src/test/java/react4j/browser", "//tools/verification/src/test/java/react4j/verification"])
+
 def _loopback_test_impl(ctx):
     runner = ctx.executable.runner
     launcher = ctx.actions.declare_file(ctx.label.name + ".sh")

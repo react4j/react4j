@@ -28,7 +28,7 @@ java_test(
         "@sting//:sting_processor_plugin",
     ],
     use_testrunner = False,
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
     deps = [
         "//:_core_java",
         "//:_dom_java",

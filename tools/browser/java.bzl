@@ -4,6 +4,8 @@ load("@j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 load("//third_party/java:rules.bzl", "java_library")
 
+visibility(["//..."])
+
 def _checked_sources_impl(ctx):
     java_info = ctx.attr.java[JavaInfo]
     return [

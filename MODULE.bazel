@@ -55,9 +55,7 @@ git_override(
 
 bazel_dep(name = "j2cl", version = "20260918")
 bazel_dep(name = "rules_closure", version = "0.17.0")
-
-bazel_dep(name = "rules_webtesting", version = "0.4.1", dev_dependency = True)
-
+bazel_dep(name = "rules_webtesting", version = "0.4.1")
 bazel_dep(name = "jsinterop_base", version = "1.2.0")
 bazel_dep(name = "rules_jvm_external", version = "7.1")
 bazel_dep(name = "rules_cc", version = "0.2.25")

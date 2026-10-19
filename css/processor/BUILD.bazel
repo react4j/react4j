@@ -1,7 +1,7 @@
 load("@rules_java//java:defs.bzl", "java_import", "java_plugin")
 load("//tools/release:release.bzl", "release_jar")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
 release_jar(
     name = "processor_jar",

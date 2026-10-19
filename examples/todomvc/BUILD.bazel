@@ -3,5 +3,5 @@ exports_files(
         "landing.html",
         "public/index.html",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )

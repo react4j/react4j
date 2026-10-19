@@ -1,22 +1,29 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//third_party/java:rules.bzl", "java_binary")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
-exports_files([
-    "java.bzl",
-    "rules.bzl",
-])
+exports_files(
+    ["rules.bzl"],
+    visibility = ["//visibility:public"],
+)
+
+exports_files(
+    ["java.bzl"],
+    visibility = ["//:__subpackages__"],
+)
 
 config_setting(
     name = "production",
     values = {"compilation_mode": "opt"},
+    visibility = ["//visibility:public"],
 )
 
 closure_js_library(
     name = "mode",
     testonly = True,
     srcs = ["mode.js"],
+    visibility = ["//visibility:public"],
 )
 
 java_binary(

@@ -7,5 +7,5 @@ exports_files(
         "logo.svg",
         "todomvc.svg",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )

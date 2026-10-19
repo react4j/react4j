@@ -18,7 +18,7 @@ java_testng(
         "react4j.dom.test.DomJDependTest",
         "react4j.dom.test.HtmlPropsTest",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
     deps = [
         "//dom",
         "//third_party/java:jdepend",

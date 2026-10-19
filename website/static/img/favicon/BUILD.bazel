@@ -1,4 +1,4 @@
 exports_files(
     ["favicon.ico"],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )

@@ -1,5 +1,7 @@
 load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 
+visibility(["//css/processor", "//doc-examples", "//tools/release"])
+
 ReleaseVersionInfo = provider("Maven version selected by a release build setting.", fields = ["value"])
 
 def _version_impl(ctx):

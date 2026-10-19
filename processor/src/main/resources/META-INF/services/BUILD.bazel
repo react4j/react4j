@@ -1,4 +1,4 @@
 exports_files(
     ["javax.annotation.processing.Processor"],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )

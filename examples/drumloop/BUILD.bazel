@@ -2,12 +2,15 @@ load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//css:defs.bzl", "css_bundle")
 load("//tools/browser:rules.bzl", "browser_application", "browser_application_variant")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
-exports_files([
-    "landing.html",
-    "public/fonts/OFL.txt",
-])
+exports_files(
+    [
+        "landing.html",
+        "public/fonts/OFL.txt",
+    ],
+    visibility = ["//:__subpackages__"],
+)
 
 closure_js_library(
     name = "entry",

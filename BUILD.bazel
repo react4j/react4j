@@ -2,9 +2,12 @@ load("@j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@rules_java//java:defs.bzl", "java_import", "java_plugin")
 load("@rules_palantir_java_format//:defs.bzl", "java_format_check")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
-exports_files(["LICENSE"])
+exports_files(
+    ["LICENSE"],
+    visibility = ["//:__subpackages__"],
+)
 
 java_format_check(
     name = "java_format_check",
@@ -151,13 +154,14 @@ java_import(
     name = "_processor_java",
     jars = ["//tools/release:processor_jar"],
     srcjar = "//tools/release:processor_sources",
-    visibility = ["//:__subpackages__"],
+    visibility = ["//visibility:private"],
 )
 
 java_plugin(
     name = "processor",
     generates_api = True,
     processor_class = "react4j.processor.React4jProcessor",
+    visibility = ["//visibility:public"],
     deps = [":_processor_java"],
 )
 
@@ -172,11 +176,12 @@ _BROWSER_RUNTIME = [
     "@arez//:core-j2cl",
 ]
 
+# Public aliases keep J2CL's generated Wasm/Kotlin companion targets private.
 j2cl_library(
     name = "_core_j2cl",
     srcs = ["//tools/release:core_j2cl_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
-    visibility = ["//:__subpackages__"],
+    visibility = ["//visibility:private"],
     exports = _BROWSER_RUNTIME,
     deps = _BROWSER_RUNTIME,
 )
@@ -185,7 +190,7 @@ j2cl_library(
     name = "_dom_j2cl",
     srcs = ["//tools/release:dom_j2cl_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
-    visibility = ["//:__subpackages__"],
+    visibility = ["//visibility:private"],
     exports = [":_core_j2cl"],
     deps = [
         ":_core_j2cl",
@@ -202,21 +207,25 @@ j2cl_library(
 alias(
     name = "core",
     actual = ":_core_j2cl",
+    visibility = ["//visibility:public"],
 )
 
 alias(
     name = "dom",
     actual = ":_dom_j2cl",
+    visibility = ["//visibility:public"],
 )
 
 alias(
     name = "css",
     actual = "//css/core:core-j2cl",
+    visibility = ["//visibility:public"],
 )
 
 alias(
     name = "css_processor_plugin",
     actual = "//css/processor:plugin",
+    visibility = ["//visibility:public"],
 )
 
 test_suite(

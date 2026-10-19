@@ -1,4 +1,7 @@
-exports_files(["defs.bzl"])
+exports_files(
+    ["defs.bzl"],
+    visibility = ["//visibility:public"],
+)
 
 test_suite(
     name = "tests",

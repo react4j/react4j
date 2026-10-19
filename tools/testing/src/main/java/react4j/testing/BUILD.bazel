@@ -4,7 +4,7 @@ java_binary(
     name = "golden_updater",
     srcs = ["GoldenUpdater.java"],
     main_class = "react4j.testing.GoldenUpdater",
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )
 
 java_library(

@@ -1,6 +1,6 @@
 load("//tools/browser:java.bzl", "java_j2cl_library")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
 java_j2cl_library(
     name = "todomvc",
@@ -33,4 +33,7 @@ java_j2cl_library(
     ],
 )
 
-exports_files(["App.entry.js"])
+exports_files(
+    ["App.entry.js"],
+    visibility = ["//:__subpackages__"],
+)

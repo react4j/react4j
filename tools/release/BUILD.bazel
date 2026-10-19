@@ -1,7 +1,7 @@
 load("//third_party/java:rules.bzl", "java_test")
 load(":release.bzl", "release_jar", "release_javadoc_jar", "release_pom", "release_source_inputs", "release_source_jar", "release_version", "release_version_file")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
 release_version(
     name = "version",
