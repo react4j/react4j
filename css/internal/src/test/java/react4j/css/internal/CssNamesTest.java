@@ -228,6 +228,76 @@ public final class CssNamesTest {
     }
 
     @Test
+    public void attributeNamesAreReservedIncludingListsEscapesAndAsciiCaseFlags() {
+        for (String selector : List.of(
+                "[class~=a]",
+                "[class='other a']",
+                "[CLASS=A i]",
+                "[\\63 lass='\\61 ']",
+                ":is([class=a])",
+                ":not([class=a])",
+                ":where([class=a])")) {
+            var table = CssNames.create(
+                    catalogue(
+                            List.of(new Symbol(SymbolKind.CLASS, "", "root", false)),
+                            List.of(),
+                            selector + "{color:red;}"),
+                    new CssNames.Policy(true, ""));
+            assertNotEquals(table.entries().get(0).compiled(), "a", selector);
+        }
+        for (String selector : List.of(
+                "[id=a]",
+                "[ID=A i]",
+                "[href='#a']",
+                "[src='#a']",
+                "[for=a]",
+                "[form=a]",
+                "[list=a]",
+                "[headers='other a']",
+                "[aria-labelledby='a other']",
+                "[aria-describedby=a]",
+                "[aria-controls=a]",
+                "[aria-owns=a]",
+                "[aria-activedescendant=a]",
+                "[aria-details=a]",
+                "[aria-errormessage=a]")) {
+            var table = CssNames.create(
+                    catalogue(
+                            List.of(new Symbol(SymbolKind.ID, "control", "scoped-control", false)),
+                            List.of(),
+                            selector + "{color:red;}"),
+                    new CssNames.Policy(true, ""));
+            assertNotEquals(table.entries().get(0).compiled(), "a", selector);
+        }
+        var broad = catalogue(
+                List.of(new Symbol(SymbolKind.CLASS, "", "root", false)), List.of(), "[class^=app]{color:red;}");
+        expectThrows(IllegalArgumentException.class, () -> CssNames.create(broad, new CssNames.Policy(true, "app-")));
+        assertEquals(
+                CssNames.create(broad, new CssNames.Policy(false, "app-"))
+                        .entries()
+                        .get(0)
+                        .compiled(),
+                "root");
+    }
+
+    @Test
+    public void escapedRawAnimationAndVariableContextsReserveTheirActualNames() {
+        for (var kind : List.of(SymbolKind.ANIMATION, SymbolKind.PROPERTY, SymbolKind.ID)) {
+            String css =
+                    switch (kind) {
+                        case ANIMATION -> "body{anima\\74 ion-name:a;}";
+                        case PROPERTY -> "body{color:v\\61 r(--a);}";
+                        default -> "body{filter:u\\72 l('#a');}";
+                    };
+            String readable = SymbolKind.PROPERTY == kind ? "--scoped" : "scoped";
+            var table = CssNames.create(
+                    catalogue(List.of(new Symbol(kind, "name", readable, false)), List.of(), css),
+                    new CssNames.Policy(true, ""));
+            assertNotEquals(table.entries().get(0).compiled(), SymbolKind.PROPERTY == kind ? "--a" : "a");
+        }
+    }
+
+    @Test
     public void controlsUseNormalDefinesWithStrictTypesAndModeDefaults() {
         assertEquals(CssNames.Policy.defines(List.of(), true), new CssNames.Policy(true, ""));
         assertEquals(CssNames.Policy.defines(List.of(), false), new CssNames.Policy(false, ""));

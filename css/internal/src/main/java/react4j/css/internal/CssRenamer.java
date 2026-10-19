@@ -48,12 +48,28 @@ public final class CssRenamer {
 
     /** Raw variant names must not acquire the meaning of a compressed generated symbol. */
     public void checkShared(String css, String path) {
-        for (var token : CssTokens.read(css)) {
+        checkNames(CssTokens.parse(css), path);
+    }
+
+    void checkNames(CssTokens.Parsed parsed, String path) {
+        for (var token : parsed.tokens()) {
             String raw = token.name();
             var entry = compressed.get(raw);
             if (null != entry && token.kind() == entry.symbol().kind()) {
                 throw new IllegalArgumentException(path + ": raw CSS name conflicts with a compressed symbol: " + raw
                         + " (" + entry.symbol().id() + "); mark the symbol stable or use a distinct link prefix");
+            }
+        }
+        for (var attribute : parsed.attributes()) {
+            for (var entry : compressed.values()) {
+                if (attribute.kind() == entry.symbol().kind()
+                        && (attribute.references(entry.compiled())
+                                || attribute.gains(entry.readable(), entry.compiled()))) {
+                    throw new IllegalArgumentException(
+                            path + ": raw CSS attribute selector conflicts with a compressed symbol: "
+                                    + attribute.value() + " (" + entry.symbol().id()
+                                    + "); mark the symbol stable, change the link prefix or disable compression");
+                }
             }
         }
     }

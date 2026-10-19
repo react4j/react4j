@@ -9,6 +9,7 @@ import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.ECSSExpressionOperator;
 import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
+import com.helger.css.parser.CSSParseHelper;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.UnaryOperator;
@@ -60,7 +61,7 @@ final class CssProperties {
                 CssExpressions.visit(expression, member -> {
                     if (member instanceof CSSExpressionMemberFunction function) {
                         var nested = function.getExpression();
-                        if ("var".equalsIgnoreCase(function.getFunctionName())) {
+                        if ("var".equalsIgnoreCase(CSSParseHelper.unescapeURL(function.getFunctionName()))) {
                             if (null == nested) {
                                 throw syntax.invalid("var() requires a custom property name", declaration);
                             }

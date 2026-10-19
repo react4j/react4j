@@ -106,6 +106,36 @@ public final class CssStableProcessorTest {
     }
 
     @Test
+    public void escapedFunctionsKeepCanonicalFragmentAndVariableOccurrences() throws Exception {
+        String css = "&#mask { --accent: red; filter: u\\72 l('#mask'); color: v\\61 r(--accent); }";
+        var result = CssProcessorTest.compile(Map.of(
+                "Button.java",
+                source(
+                        "Css",
+                        "",
+                        css.replace("\\", "\\\\"),
+                        "abstract class Button",
+                        "abstract String style(); @CssId abstract String mask(); @CssCustomProperty abstract"
+                                + " String accent();")));
+        assertTrue(result.success(), result.diagnostics());
+        String output = text(result, "classes/demo/Button.css");
+        assertTrue(output.contains("#jcss-demo-Button--id-mask"), output);
+        var metadata = JsonParser.parseString(text(result, "classes/demo/Button.css.json"))
+                .getAsJsonObject();
+        for (String kind : List.of("ID", "PROPERTY")) {
+            assertEquals(
+                    metadata.getAsJsonArray("occurrences").asList().stream()
+                            .filter(item -> kind.equals(item.getAsJsonObject()
+                                    .getAsJsonObject("symbol")
+                                    .get("kind")
+                                    .getAsString()))
+                            .count(),
+                    2L,
+                    output);
+        }
+    }
+
+    @Test
     public void finalGlobalResourcesCanStabilizeCssOnlyProperties() throws Exception {
         var result = CssProcessorTest.compile(Map.of(
                 "Button.java",

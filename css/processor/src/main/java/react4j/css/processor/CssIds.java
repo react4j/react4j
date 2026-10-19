@@ -1,6 +1,7 @@
 package react4j.css.processor;
 
 import com.helger.css.decl.CSSDeclaration;
+import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSExpressionMemberTermURI;
 import com.helger.css.decl.CSSSelector;
@@ -19,6 +20,7 @@ import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.ECSSAttributeCase;
 import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
+import com.helger.css.parser.CSSParseHelper;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -75,20 +77,37 @@ final class CssIds {
                 return resolved;
             }
 
+            private String fragment(String value, CSSDeclaration declaration) {
+                if (!value.startsWith("#")) {
+                    return value;
+                }
+                String name;
+                try {
+                    name = CssTokens.fragmentName(value);
+                } catch (IllegalArgumentException e) {
+                    throw syntax.invalid(String.valueOf(e.getMessage()), declaration);
+                }
+                return bindings.containsKey(name) ? "#" + resolve(name) : value;
+            }
+
             @Override
             public void onDeclaration(CSSDeclaration declaration) {
                 CssExpressions.visit(declaration.getExpression(), member -> {
                     if (member instanceof CSSExpressionMemberTermURI uri) {
-                        String value = uri.getURIString();
-                        if (value.startsWith("#")) {
-                            String name;
-                            try {
-                                name = CssTokens.fragmentName(value);
-                            } catch (IllegalArgumentException e) {
-                                throw syntax.invalid(String.valueOf(e.getMessage()), declaration);
-                            }
-                            if (bindings.containsKey(name)) {
-                                uri.setURIString("#" + resolve(name));
+                        uri.setURIString(fragment(uri.getURIString(), declaration));
+                    } else if (member instanceof CSSExpressionMemberFunction function
+                            && "url".equalsIgnoreCase(CSSParseHelper.unescapeURL(function.getFunctionName()))) {
+                        var expression = function.getExpression();
+                        if (null != expression
+                                && 1 == expression.getMemberCount()
+                                && expression.getMemberAtIndex(0) instanceof CSSExpressionMemberTermSimple first) {
+                            String raw = first.getValue();
+                            boolean quoted = raw.startsWith("'") || raw.startsWith("\"");
+                            String value = CSSParseHelper.unescapeURL(
+                                    quoted ? Objects.requireNonNull(CSSParseHelper.extractStringValue(raw)) : raw);
+                            String resolved = fragment(value, declaration);
+                            if (!resolved.equals(value)) {
+                                first.setValue(quoted ? raw.charAt(0) + resolved + raw.charAt(0) : resolved);
                             }
                         }
                     }
@@ -112,21 +131,8 @@ final class CssIds {
                 if (value.startsWith("\"") || value.startsWith("'")) {
                     value = value.substring(1, value.length() - 1);
                 }
-                boolean uri = Set.of("href", "xlink:href", "src").contains(name);
-                boolean id = Set.of(
-                                "id",
-                                "for",
-                                "headers",
-                                "list",
-                                "form",
-                                "aria-labelledby",
-                                "aria-describedby",
-                                "aria-controls",
-                                "aria-owns",
-                                "aria-activedescendant",
-                                "aria-details",
-                                "aria-errormessage")
-                        .contains(name);
+                boolean uri = CssTokens.isUriAttribute(name);
+                boolean id = CssTokens.isIdAttribute(name);
                 if ((!uri && !id) || bindings.isEmpty()) {
                     return;
                 }

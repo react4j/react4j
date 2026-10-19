@@ -104,7 +104,7 @@ public final class CssPropertiesTest {
     @Test
     public void allDefinitionKindsAndConditionalContextsAreVisited() {
         for (var kind : Kind.values()) {
-            String body = "--x: red; color: var(--y);";
+            String body = "--x: red; color: v\\61 r(--y);";
             String css = Kind.COMPONENT == kind
                     ? body
                     : Kind.GLOBAL == kind ? "body { " + body + " }" : "to { " + body + " }";

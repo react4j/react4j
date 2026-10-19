@@ -344,7 +344,7 @@ With `ADVANCED` compilation, CSS follows accessor values that survive JavaScript
 
 Configure naming through ordinary `css_js_binary` Closure `defs`. Use `--define=react4j.css.compress_names=false` to keep readable names while retaining optimized pruning. An optional quoted string, `--define=react4j.css.name_prefix='app-'`, prefixes compressed names for links that share a page. Assignments are deterministic for identical inputs and shared by every CSS variant of the link; they may change between releases. Development, `BUNDLE`, unlinked libraries and JVM accessors keep readable names.
 
-Shared CSS keeps its authored names. Additional raw names in a CSS variant that collide with a compressed name fail bundling; the variant cannot change the link's assignments. Mark the defining symbol stable or choose a distinct link prefix. Custom properties retain their leading `--` when compressed.
+Shared CSS keeps its authored names. Additional raw names in a CSS variant that collide with a compressed name fail bundling; the variant cannot change the link's assignments. Literal class/ID attribute references are reserved too. Broader attribute comparisons fail if shortening a name would make them start matching it. Mark the defining symbol stable or choose a distinct link prefix. Custom properties retain their leading `--` when compressed.
 
 The link's `.css-live.json` report is also the reverse-name artifact. It lists every candidate, including unused and CSS-only names, with its canonical owner, kind, authored name, readable name, compiled name, stability and getters. Keep it with build/debugging artifacts; browser assets do not need it.
 

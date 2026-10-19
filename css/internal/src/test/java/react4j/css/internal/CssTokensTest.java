@@ -10,6 +10,27 @@ import react4j.css.internal.CssResource.SymbolKind;
 
 public final class CssTokensTest {
     @Test
+    public void escapedGrammarNamesStillExposeActualSymbolReferences() {
+        String css = "body{anima\\74 ion-name:c;anima\\74 ion:d 1s;color:v\\61 r(--e);--\\66 :red;\\2d \\2d g:blue;}";
+        var tokens = CssTokens.read(css);
+        assertEquals(values(tokens, SymbolKind.ANIMATION), Set.of("c", "d", "1s"));
+        assertEquals(
+                tokens.stream()
+                        .filter(token -> SymbolKind.PROPERTY == token.kind())
+                        .map(CssTokens.Token::name)
+                        .collect(Collectors.toSet()),
+                Set.of("--e", "--f", "--g"));
+        for (var token : tokens) {
+            assertEquals(css.substring(token.start(), token.end()), token.value());
+        }
+        assertTrue(CssTokens.read("[class=a][id=b]{content:'c';}").isEmpty());
+        assertEquals(values(CssTokens.read("body{filter:u\\72 l('#f');}"), SymbolKind.ID), Set.of("f"));
+        var other = CssTokens.read("body{a:u\\72 l();b:u\\72 l(var(--path));c:u\\72 l('icon.svg#a');}");
+        assertTrue(values(other, SymbolKind.ID).isEmpty());
+        assertEquals(values(other, SymbolKind.PROPERTY), Set.of("--path"));
+    }
+
+    @Test
     public void tokensDistinguishSelectorsPropertiesAnimationsAndSameDocumentFragments() {
         String css = "/* 😀 */\r\n@supports (--a:var(--b,calc(var(--c)*1))) {\n"
                 + ".root:is(.m,:not(#id),:where(.w)):has(.h){--d:var(--e);filter:url(\"#mask\");"

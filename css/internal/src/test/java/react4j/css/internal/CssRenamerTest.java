@@ -14,6 +14,75 @@ import react4j.css.internal.CssResource.SymbolKind;
 
 public final class CssRenamerTest {
     @Test
+    public void escapedRawGrammarCannotHideLateAnimationPropertyOrFragmentCollisions() {
+        for (var kind : List.of(SymbolKind.ANIMATION, SymbolKind.PROPERTY, SymbolKind.ID)) {
+            String compiled = SymbolKind.PROPERTY == kind ? "--a" : "a";
+            var table = new CssNames(
+                    new CssNames.Policy(true, ""),
+                    List.of(new CssNames.Entry(
+                            new SymbolId("Owner", kind, "name"),
+                            SymbolKind.PROPERTY == kind ? "--scoped" : "scoped",
+                            compiled,
+                            false,
+                            List.of())));
+            String css =
+                    switch (kind) {
+                        case ANIMATION -> "body{anima\\74 ion-name:a;}";
+                        case PROPERTY -> "@supports (color:v\\61 r(--a)){body{color:red;}}";
+                        default -> "body{filter:u\\72 l('#a');}";
+                    };
+            expectThrows(IllegalArgumentException.class, () -> new CssRenamer(table).checkShared(css, "variant.css"));
+        }
+    }
+
+    @Test
+    public void rawAttributeComparisonsCannotAcquireCompressedNames() {
+        for (var kind : List.of(SymbolKind.CLASS, SymbolKind.ID)) {
+            var renamer = new CssRenamer(new CssNames(
+                    new CssNames.Policy(true, ""),
+                    List.of(new CssNames.Entry(new SymbolId("Owner", kind, "name"), "source", "a", false, List.of()))));
+            String attribute = SymbolKind.CLASS == kind ? "class" : "id";
+            for (String operator : List.of("=", "~=", "|=", "^=", "$=", "*=")) {
+                for (String value : List.of("'a'", "'A' i", "'\\61 '")) {
+                    String css = "[" + attribute + operator + value + "]{color:red;}";
+                    var error =
+                            expectThrows(IllegalArgumentException.class, () -> renamer.checkShared(css, "variant.css"));
+                    assertTrue(String.valueOf(error.getMessage())
+                            .contains("variant.css: raw CSS attribute selector conflicts"));
+                }
+            }
+            renamer.checkShared("[" + attribute + "='A']{color:red;}", "variant.css");
+            renamer.checkShared("[" + attribute + "]{color:red;}", "variant.css");
+        }
+        var id = new CssRenamer(new CssNames(
+                new CssNames.Policy(true, ""),
+                List.of(new CssNames.Entry(
+                        new SymbolId("Owner", SymbolKind.ID, "control"), "source", "a", false, List.of()))));
+        for (String selector :
+                List.of("[href='#a']", "[src='#a']", "[for=a]", "[headers='other a']", "[aria-controls='other a']")) {
+            expectThrows(
+                    IllegalArgumentException.class, () -> id.checkShared(selector + "{color:red;}", "variant.css"));
+        }
+        id.checkShared("[href='icon.svg#a']{color:red;}", "variant.css");
+        var prefixed = new CssRenamer(new CssNames(
+                new CssNames.Policy(true, "app-"),
+                List.of(new CssNames.Entry(
+                        new SymbolId("Owner", SymbolKind.CLASS, ""), "original", "app-a", false, List.of()))));
+        for (String selector : List.of("[class^=app]", "[class$=a]", "[class*=pp]", "[class|=app]", "[class^=APP i]")) {
+            expectThrows(
+                    IllegalArgumentException.class,
+                    () -> prefixed.checkShared(selector + "{color:red;}", "variant.css"));
+        }
+        prefixed.checkShared("[class*=a]{color:red;}", "variant.css");
+        prefixed.checkShared("[data-name=app-a]{color:red;}", "variant.css");
+        new CssRenamer(new CssNames(
+                        new CssNames.Policy(true, ""),
+                        List.of(new CssNames.Entry(
+                                new SymbolId("Owner", SymbolKind.CLASS, ""), "original", "a", false, List.of()))))
+                .checkShared("[class*=a]{color:red;}", "variant.css");
+    }
+
+    @Test
     public void parsedClassEditsPreserveStringsAttributesNativeNestingAndAuthoredAnchors() throws Exception {
         String selector = ".readable:is(.modifier,:not(.readable))";
         var writer = new SourceMap.Writer()

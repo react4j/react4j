@@ -179,14 +179,24 @@ public record CssNames(Policy policy, List<Entry> entries) {
                     }
                 }));
         var reserved = new HashSet<>(RESERVED);
+        var insensitive = new HashSet<String>();
+        var parsed = new TreeMap<String, CssTokens.Parsed>();
         symbols.values().forEach(symbol -> reserved.add(symbol.value()));
         // Names outside the generated inventory are intentional authored names.
-        catalogue
-                .resources()
-                .values()
-                .forEach(resource -> reserved.addAll(CssTokens.read(resource.css()).stream()
-                        .map(CssTokens.Token::name)
-                        .toList()));
+        catalogue.resources().forEach((owner, resource) -> {
+            var references = CssTokens.parse(resource.css());
+            parsed.put(owner, references);
+            references.tokens().forEach(token -> reserved.add(token.name()));
+            for (var attribute : references.attributes()) {
+                attribute.names().forEach(name -> {
+                    if (attribute.insensitive()) {
+                        insensitive.add(CssTokens.asciiLower(name));
+                    } else {
+                        reserved.add(name);
+                    }
+                });
+            }
+        });
         var entries = new ArrayList<Entry>();
         int next = 0;
         for (var item : symbols.entrySet()) {
@@ -197,13 +207,17 @@ public record CssNames(Policy policy, List<Entry> entries) {
                 do {
                     compiled = (SymbolKind.PROPERTY == symbol.kind() ? "--" : "") + policy.prefix() + shortName(next++);
                 } while (reserved.contains(compiled)
+                        || insensitive.contains(CssTokens.asciiLower(compiled))
                         || SymbolKind.ANIMATION == symbol.kind()
                                 && RESERVED.contains(compiled.toLowerCase(Locale.ROOT)));
                 reserved.add(compiled);
             }
             entries.add(new Entry(id, symbol.value(), compiled, symbol.stable(), getters.getOrDefault(id, List.of())));
         }
-        return new CssNames(policy, entries);
+        var table = new CssNames(policy, entries);
+        var checker = new CssRenamer(table);
+        parsed.forEach((owner, references) -> checker.checkNames(references, owner));
+        return table;
     }
 
     private static String shortName(int ordinal) {

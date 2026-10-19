@@ -111,11 +111,14 @@ public final class BundleTest {
         var link = CssLink.create(catalogue, "//:app", true);
         String original = link.json();
         Path shared = dir().resolve("shared.css");
-        Files.writeString(shared, ".a{color:blue;}");
-        var error = expectThrows(
-                IllegalArgumentException.class,
-                () -> Bundle.assemble(catalogue, List.of(shared), List.of(), "app.css", link, Set.of("Button#style")));
-        assertTrue(String.valueOf(error.getMessage()).contains("shared.css: raw CSS name conflicts"));
+        for (var raw : List.of(".a{color:blue;}", "[class~=a]{color:blue;}", "[CLASS=A i]{color:blue;}")) {
+            Files.writeString(shared, raw);
+            var error = expectThrows(
+                    IllegalArgumentException.class,
+                    () -> Bundle.assemble(
+                            catalogue, List.of(shared), List.of(), "app.css", link, Set.of("Button#style")));
+            assertTrue(String.valueOf(error.getMessage()).contains("shared.css: raw CSS"));
+        }
         assertEquals(link.json(), original);
         assertTrue(Bundle.assemble(catalogue, List.of(), List.of(), "app.css", link, Set.of("Button#style"))
                 .css()

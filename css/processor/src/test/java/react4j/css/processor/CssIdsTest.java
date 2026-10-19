@@ -43,6 +43,15 @@ public final class CssIdsTest {
     }
 
     @Test
+    public void escapedUrlFunctionsKeepExternalAndUnboundValuesAndCheckEncodedFragments() {
+        for (String uri :
+                List.of("u\\72 l()", "u\\72 l(var(--path))", "u\\72 l('icons.svg#mask')", "u\\72 l('#other')")) {
+            assertTrue(component("filter:" + uri + ";").ids().isEmpty());
+        }
+        expectThrows(CssSyntax.InvalidCss.class, () -> component("filter:u\\72 l('#bad%');"));
+    }
+
+    @Test
     public void globalIdsUseDistinctIntermediateNames() {
         String css = "#control { filter: url(#mask); }";
         var result = CssCompiler.global(
@@ -101,6 +110,9 @@ public final class CssIdsTest {
     public void fragmentsWorkInEveryDeclarationContextAndNormalizeQuotes() {
         for (var uri : List.of(
                 "url(#mask)",
+                "u\\72 l('#mask')",
+                "u\\72 l(#mask)",
+                "u\\72 l('#ma%73k')",
                 "url('#mask')",
                 "url(\"#mask\")",
                 "url('#ma\\73 k')",
