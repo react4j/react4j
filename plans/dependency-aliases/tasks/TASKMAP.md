@@ -1,11 +1,11 @@
 # Task map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementation-review
-- Current frontier: implementation review
+- Status: closing
+- Current frontier: exact-tree cleanup, then ordered publication and remote pin verification
 - Planning reviewer: dependency_aliases_planning; 1/3 rounds consumed, final confirmation unused. Findings: none; complete plan, native source owners, patch export, standalone Replicant configuration, visibility, existing checker producers and delivery order verified.
 - Plan checkpoint: automatic; user explicitly authorized implementation and planning review passed.
-- Implementation reviewer: dependency_aliases_review; 1/5 rounds consumed, final confirmation unused. Round 1 found one P2 omission: formatter write/watch commands retained upstream labels. Added private aliases and routed both commands; focused validation passes, awaiting round 2 confirmation.
+- Implementation reviewer: dependency_aliases_review; 2/5 rounds consumed, final confirmation unused. Round 1 found one P2 omission: formatter write/watch commands retained upstream labels. Commit 042b370da fixed both through private aliases and passed focused checks. Round 2: Findings: none; prior full-scope coverage confirmed. Final remote Rose pin verification remains the explicit publication gate.
 
 | Task | Status | Blocked by |
 | --- | --- | --- |
@@ -25,3 +25,5 @@ Primary implements; independent reviewers remain read-only. Keep existing Root/R
 ## Promoted knowledge
 
 [Bazel integration](../../../docs/specs/bazel-integration.md) owns provider identity, shared runtime compilation, caller selection and private implementation boundaries. [Consumer setup](../../../docs/project_setup.md#configure-bazel) explains aliases and root configuration; BUILD/consumer checks own the exact inventory. Classification and specification-only audit passed; Root and Rose documentation validators passed. No qualifying ADR, glossary, use-case or deferred artifact was introduced.
+
+Final knowledge sweep: the formatter correction adds only private tool wiring and introduces no new durable requirement or decision. Existing classifications remain valid. All tasks and local gates are complete; independent review passed. Remove only plans/dependency-aliases, publish Root, pin isolated Rose to that immutable SHA, resolve/build/test without a local override, publish the draft update and report any remaining CI/UI limits. No merge or deployment.
