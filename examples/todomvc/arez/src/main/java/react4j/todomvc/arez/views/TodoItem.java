@@ -14,6 +14,8 @@ import react4j.annotations.Input;
 import react4j.annotations.PostUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import react4j.css.Css;
+import react4j.css.CssImport;
 import react4j.dom.events.FormEvent;
 import react4j.dom.events.KeyboardEvent;
 import react4j.dom.proptypes.html.BtnProps;
@@ -24,6 +26,7 @@ import react4j.dom.proptypes.html.attributeTypes.InputType;
 import react4j.todomvc.arez.model.AppData;
 import react4j.todomvc.arez.model.Todo;
 import react4j.todomvc.browser.HTMLInputElement;
+import react4j.todomvc.views.ItemAssets;
 
 @View
 abstract class TodoItem {
@@ -122,24 +125,228 @@ abstract class TodoItem {
 
     @Render
     ReactNode render() {
+        var itemStyle = ItemStyle.get();
+        var viewStyle = ViewStyle.get();
+        var labelStyle = LabelStyle.get();
+        var editStyle = EditStyle.get();
         final boolean completed = _todo.isCompleted();
+        final boolean editing = isTodoBeingEdited();
         return li(
-                new HtmlProps().className(completed ? "checked" : null, isTodoBeingEdited() ? "editing" : null),
+                new HtmlProps().className(editing ? itemStyle.editing() : itemStyle.style()),
                 div(
-                        new HtmlProps().className("view"),
+                        new HtmlProps().className(editing ? viewStyle.editing() : viewStyle.style()),
                         input(new InputProps()
-                                .className("toggle")
+                                .className(ToggleStyle.get().style())
                                 .type(InputType.checkbox)
                                 .checked(completed)
                                 .onChange(e -> _todo.toggle())),
-                        label(new LabelProps().onDoubleClick(e -> onEdit(_todo)), _todo.getTitle()),
-                        button(new BtnProps().className("destroy").onClick(e -> AppData.model.destroy(_todo)))),
+                        label(
+                                new LabelProps()
+                                        .className(completed ? labelStyle.completed() : labelStyle.style())
+                                        .onDoubleClick(e -> onEdit(_todo)),
+                                _todo.getTitle()),
+                        button(new BtnProps()
+                                .className(DestroyStyle.get().style())
+                                .onClick(e -> AppData.model.destroy(_todo)))),
                 input(new InputProps()
                         .ref(e -> _editField = Js.uncheckedCast(e))
-                        .className("edit")
+                        .className(editing ? editStyle.editing() : editStyle.style())
                         .value(getEditText())
                         .onBlur(e -> onSubmitTodo(_todo))
                         .onChange(this::handleChange)
                         .onKeyDown(e -> handleKeyDown(e, _todo))));
+    }
+
+    @Css("""
+        position: relative;
+        font-size: 24px;
+        border-bottom: 1px solid #ededed;
+        --todo-destroy-display: none;
+        &:hover {
+          --todo-destroy-display: block;
+        }
+        &:last-child {
+          border-bottom: none;
+        }
+        &.editing {
+          border-bottom: none;
+          padding: 0;
+        }
+        &.editing:last-child {
+          margin-bottom: -1px;
+        }
+        """)
+    abstract static class ItemStyle {
+        static ItemStyle get() {
+            return TodoItem_Styled_ItemStyle.get();
+        }
+
+        abstract String style();
+
+        abstract String editing();
+    }
+
+    @Css("""
+        &.editing {
+          display: none;
+        }
+        """)
+    abstract static class ViewStyle {
+        static ViewStyle get() {
+            return TodoItem_Styled_ViewStyle.get();
+        }
+
+        abstract String style();
+
+        abstract String editing();
+    }
+
+    @CssImport(value = ItemAssets.class, name = "media")
+    @Css("""
+        outline: none;
+        text-align: center;
+        width: 40px;
+        height: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        margin: auto 0;
+        border: none;
+        -webkit-appearance: none;
+        appearance: none;
+        &:after {
+          content: url("asset:media.toggle");
+        }
+        &:checked:after {
+          content: url("asset:media.checked");
+        }
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+          & {
+            background: none;
+            height: 40px;
+          }
+        }
+        """)
+    abstract static class ToggleStyle {
+        static ToggleStyle get() {
+            return TodoItem_Styled_ToggleStyle.get();
+        }
+
+        abstract String style();
+    }
+
+    @Css("""
+        white-space: pre-line;
+        word-break: break-all;
+        padding: 15px 60px 15px 15px;
+        margin-left: 45px;
+        display: block;
+        line-height: 1.2;
+        transition: color 0.4s;
+        &.completed {
+          color: #d9d9d9;
+          text-decoration: line-through;
+        }
+        """)
+    abstract static class LabelStyle {
+        static LabelStyle get() {
+            return TodoItem_Styled_LabelStyle.get();
+        }
+
+        abstract String style();
+
+        abstract String completed();
+    }
+
+    @CssImport(value = ItemStyle.class, property = "todo-destroy-display")
+    @Css("""
+        padding: 0;
+        border: 0;
+        background: none;
+        vertical-align: baseline;
+        font-family: inherit;
+        font-weight: inherit;
+        -webkit-appearance: none;
+        appearance: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-font-smoothing: antialiased;
+        font-smoothing: antialiased;
+        outline: none;
+        display: var(--todo-destroy-display);
+        position: absolute;
+        top: 0;
+        right: 10px;
+        bottom: 0;
+        width: 40px;
+        height: 40px;
+        margin: auto 0;
+        font-size: 30px;
+        color: #cc9a9a;
+        margin-bottom: 11px;
+        transition: color 0.2s ease-out;
+        &:hover {
+          color: #af5b5e;
+        }
+        &:after {
+          content: '\\00D7';
+        }
+        """)
+    abstract static class DestroyStyle {
+        static DestroyStyle get() {
+            return TodoItem_Styled_DestroyStyle.get();
+        }
+
+        abstract String style();
+    }
+
+    @Css("""
+        position: relative;
+        margin: 0;
+        width: 100%;
+        font-size: 24px;
+        font-family: inherit;
+        font-weight: inherit;
+        line-height: 1.4em;
+        outline: none;
+        color: inherit;
+        padding: 6px;
+        border: 1px solid #999;
+        box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        -moz-font-smoothing: antialiased;
+        font-smoothing: antialiased;
+        display: none;
+        &.editing {
+          display: block;
+          width: 506px;
+          padding: 13px 17px 12px 17px;
+          margin: 0 0 0 43px;
+        }
+
+        &::-webkit-input-placeholder {
+          font-style: italic;
+          font-weight: 300;
+          color: #e6e6e6;
+        }
+        &::-moz-placeholder {
+          font-style: italic;
+          font-weight: 300;
+          color: #e6e6e6;
+        }
+        &::input-placeholder {
+          font-style: italic;
+          font-weight: 300;
+          color: #e6e6e6;
+        }
+        """)
+    abstract static class EditStyle {
+        static EditStyle get() {
+            return TodoItem_Styled_EditStyle.get();
+        }
+
+        abstract String style();
+
+        abstract String editing();
     }
 }

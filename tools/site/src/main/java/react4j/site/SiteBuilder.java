@@ -87,8 +87,7 @@ final class SiteBuilder {
         extractApi(Objects.requireNonNull(files.get("--api")), output);
         for (final var asset : assets.entrySet()) {
             final var destination = destination(output, asset.getValue());
-            Files.createDirectories(destination.getParent());
-            Files.copy(asset.getKey(), destination);
+            copyAsset(asset.getKey(), destination);
         }
         write(
                 output,
@@ -98,6 +97,22 @@ final class SiteBuilder {
                         + " href=\"/examples/hello_world/\">Hello World</a></body></html>");
         write(output, ".nojekyll", "");
         SiteLinks.check(output);
+    }
+
+    static void copyAsset(Path source, Path destination) throws IOException {
+        if (Files.isDirectory(source)) {
+            var root = source.toRealPath();
+            try (var paths = Files.walk(root)) {
+                for (var file : paths.filter(Files::isRegularFile).sorted().toList()) {
+                    var target = destination.resolve(root.relativize(file));
+                    Files.createDirectories(Objects.requireNonNull(target.getParent()));
+                    Files.copy(file, target);
+                }
+            }
+        } else {
+            Files.createDirectories(Objects.requireNonNull(destination.getParent()));
+            Files.copy(source, destination);
+        }
     }
 
     private static Map<String, String> readSources(final List<Path> jars) throws IOException {

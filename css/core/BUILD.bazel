@@ -1,0 +1,14 @@
+load("@j2cl//build_defs:rules.bzl", "j2cl_import")
+
+package(default_visibility = ["//:__subpackages__"])
+
+alias(
+    name = "core",
+    actual = "//css/core/src/main/java/react4j/css",
+)
+
+# Annotation declarations need compiler bytecode, not browser JavaScript.
+j2cl_import(
+    name = "core-j2cl",
+    jar = ":core",
+)

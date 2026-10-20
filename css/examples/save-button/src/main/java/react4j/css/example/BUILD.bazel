@@ -1,0 +1,56 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//css/examples/save-button:__pkg__",
+    "//css/examples/save-button/src/test/java/react4j/css/example:__pkg__",
+    "//css/examples/save-button/src/test/js/react4j/css/example:__pkg__",
+    "//tools/browser/src/test/js/react4j/browser:__pkg__",
+])
+
+java_j2cl_library(
+    name = "browser",
+    srcs = [
+        "BrowserExample.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        "//css/core",
+        "//:_core_java",
+        "//:_dom_java",
+    ],
+    plugins = ["//:css_processor"],
+    deps = [
+        "//:core",
+        "//:css",
+        "//:dom",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
+    name = "assets",
+    srcs = ["AssetsExample.java"],
+    java_deps = [
+        "//css/core",
+        "//:_core_java",
+        "//:_dom_java",
+    ],
+    plugins = ["//:css_processor"],
+    deps = [
+        "//:core",
+        "//:css",
+        "//:dom",
+        "//css/examples/save-button/src/main/assets/react4j/css/example:media",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+closure_js_library(
+    name = "assets_entry",
+    srcs = ["AssetsExample.entry.js"],
+    deps = [":assets"],
+)

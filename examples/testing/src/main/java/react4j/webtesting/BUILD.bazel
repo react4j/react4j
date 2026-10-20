@@ -1,0 +1,32 @@
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("//examples:checks.bzl", "JAVACOPTS")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//core/src/test/java/react4j:__pkg__",
+    "//css/examples/save-button/src/test/java/react4j/css/example:__pkg__",
+    "//dom/src/test/java/react4j/dom:__pkg__",
+    "//examples/drumloop/src/test/java/react4j/drumloop:__pkg__",
+    "//examples/heart-rate-monitor/src/test/java/react4j/hrm:__pkg__",
+    "//examples/todomvc/src/test/java/react4j/todomvc:__pkg__",
+    "//examples/webspeechdemo/src/test/java/react4j/webspeechdemo:__pkg__",
+])
+
+j2cl_library(
+    name = "browser",
+    testonly = True,
+    srcs = [
+        "Browser.java",
+        "Browser.native.js",
+        "BrowserPromise.java",
+        "Checks.java",
+    ],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    javacopts = JAVACOPTS,
+    plugins = ["@react4j//third_party:nullaway_plugin"],
+    deps = [
+        "@react4j//third_party:jsinterop_annotations-j2cl",
+        "@react4j//third_party:jsinterop_base-j2cl",
+        "@react4j//third_party:jspecify-j2cl",
+    ],
+)

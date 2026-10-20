@@ -1,0 +1,15 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "Owner$Button.css",
+        "Owner$Button.css.json",
+        "Owner$Button.css.map",
+        "Owner$Fonts.css",
+        "Owner$Fonts.css.json",
+        "Owner$Fonts.css.map",
+        "Owner$Media.assets.json",
+        "Owner_Assets_Media.java",
+        "Owner_Styled_Button.java",
+    ],
+    visibility = ["//css/processor/src/test/fixtures:__pkg__"],
+)

@@ -1,0 +1,1 @@
+ERROR com/example/instance_initializer/Button.java:10:10: @Css style classes must not declare instance initializers

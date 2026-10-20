@@ -1,5 +1,7 @@
 """Declared Java actions for DOM sources and pinned React assets."""
 
+visibility("private")
+
 def _dom_source_impl(ctx):
     ctx.actions.run(
         executable = ctx.executable._tool,

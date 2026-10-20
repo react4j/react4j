@@ -1,0 +1,35 @@
+{
+  "roots": [
+    { "path": "core/src/main/java", "report": "runtime.lcov", "lines": 95, "branches": 85 },
+    { "path": "dom/src/main/java", "report": "runtime.lcov", "lines": 95, "branches": 85 },
+    { "path": "processor/src/main/java", "report": "jvm.lcov", "lines": 95, "branches": 85 },
+    {
+      "path": "css/processor/src/main/java", "report": "jvm.lcov",
+      "lines": 95,
+      "branches": 85,
+      "classes": [
+        { "path": "react4j/css/processor/Names.java", "lines": 95, "branches": 85 },
+        { "path": "react4j/css/processor/TextBlock.java", "lines": 95, "branches": 85 },
+        { "path": "react4j/css/processor/CssCompiler.java", "lines": 95, "branches": 85 }
+      ]
+    },
+    {
+      "path": "css/internal/src/main/java", "report": "jvm.lcov",
+      "lines": 95,
+      "branches": 85,
+      "classes": [
+        { "path": "react4j/css/internal/SourceMap.java", "lines": 95, "branches": 85 },
+        { "path": "react4j/css/internal/CssResource.java", "lines": 95, "branches": 85 }
+      ]
+    },
+    { "path": "css/linker/src/main/java", "report": "jvm.lcov", "lines": 95, "branches": 85 },
+    {
+      "path": "css/bundler/src/main/java", "report": "jvm.lcov",
+      "lines": 95,
+      "branches": 85,
+      "classes": [
+        { "path": "react4j/css/bundler/Bundle.java", "lines": 95, "branches": 85 }
+      ]
+    }
+  ]
+}

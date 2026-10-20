@@ -1,4 +1,4 @@
-load("//tools/browser:rules.bzl", "browser_test")
+load("@react4j//:defs.bzl", "browser_test")
 
 package(default_visibility = ["//:__pkg__"])
 
@@ -8,7 +8,8 @@ browser_test(
     data = ["//examples/drumloop"],
     entry_point = "react4j.drumloop.BrowserTest",
     deps = [
+        "//examples/drumloop/src/test/java/react4j/drumloop:browser_tests",
         "//examples/drumloop/src/test/java/react4j/drumloop/cache:cache_tests",
-        "@rules_closure//closure/testing/library:testcase",
+        "@react4j//third_party:closure_testcase",
     ],
 )

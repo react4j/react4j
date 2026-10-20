@@ -1,0 +1,1 @@
+ERROR com/example/instance_field/Button.java:10:10: @Css style classes must not declare fields: value

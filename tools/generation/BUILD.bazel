@@ -1,6 +1,6 @@
 load(":generation.bzl", "dom_source", "react_asset")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
 alias(
     name = "dom_generator",
@@ -19,30 +19,50 @@ dom_source(
 
 react_asset(
     name = "react_dev",
-    src = "@react_development//file",
+    src = "//third_party:react_development",
     out = "react4j/public/dev/react.js",
     mode = "development",
+    visibility = [
+        "//tools/browser:__pkg__",
+        "//tools/release:__pkg__",
+        "//tools/verification/src/main/java/react4j/verification:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
 )
 
 react_asset(
     name = "react_prod",
-    src = "@react_production//file",
+    src = "//third_party:react_production",
     out = "react4j/public/react.js",
     mode = "production",
+    visibility = [
+        "//tools/browser:__pkg__",
+        "//tools/release:__pkg__",
+    ],
 )
 
 react_asset(
     name = "react_dom_dev",
-    src = "@react_dom_development//file",
+    src = "//third_party:react_dom_development",
     out = "react4j/dom/public/dev/react-dom.js",
     mode = "copy",
+    visibility = [
+        "//tools/browser:__pkg__",
+        "//tools/release:__pkg__",
+        "//tools/verification/src/main/java/react4j/verification:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
 )
 
 react_asset(
     name = "react_dom_prod",
-    src = "@react_dom_production//file",
+    src = "//third_party:react_dom_production",
     out = "react4j/dom/public/react-dom.js",
     mode = "copy",
+    visibility = [
+        "//tools/browser:__pkg__",
+        "//tools/release:__pkg__",
+    ],
 )
 
 filegroup(

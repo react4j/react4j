@@ -1,5 +1,7 @@
 load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 
+visibility(["//css/processor", "//doc-examples", "//tools/release"])
+
 ReleaseVersionInfo = provider("Maven version selected by a release build setting.", fields = ["value"])
 
 def _version_impl(ctx):
@@ -25,7 +27,8 @@ def _direct_java_source_jars(java_targets):
 def _release_jar_impl(ctx):
     out = ctx.actions.declare_file(ctx.attr.out)
     class_jars = _direct_java_class_jars(ctx.attr.java_targets)
-    input_jars = class_jars + ctx.files.jars
+    runtime_jars = depset(transitive = [target[JavaInfo].transitive_runtime_jars for target in ctx.attr.runtime_java_targets]).to_list()
+    input_jars = depset(class_jars + ctx.files.jars + runtime_jars).to_list()
     resource_files = ctx.files.resource_files
     if len(resource_files) != len(ctx.attr.resource_entries):
         fail("resource_files and resource_entries must have the same length")
@@ -60,6 +63,7 @@ release_jar = rule(
         "relocations": attr.string_list(),
         "resource_entries": attr.string_list(),
         "resource_files": attr.label_list(allow_files = True),
+        "runtime_java_targets": attr.label_list(providers = [JavaInfo]),
         "_jar_builder": attr.label(
             default = Label("//tools/release:jar_builder"),
             executable = True,

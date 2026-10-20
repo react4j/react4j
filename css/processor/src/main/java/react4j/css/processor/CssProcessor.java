@@ -1,0 +1,1164 @@
+package react4j.css.processor;
+
+import com.sun.source.tree.BlockTree;
+import com.sun.source.tree.LiteralTree;
+import com.sun.source.util.Trees;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.function.IntFunction;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
+import javax.tools.StandardLocation;
+import org.jspecify.annotations.Nullable;
+import org.realityforge.proton.AbstractStandardProcessor;
+import org.realityforge.proton.ElementsUtil;
+import react4j.css.internal.CssFontValues;
+import react4j.css.internal.CssResource;
+import react4j.css.internal.CssResource.Kind;
+import react4j.css.internal.CssSyntax;
+import react4j.css.internal.SourceMap;
+
+/** Validates component CSS in the JVM, then emits static bindings and CSS resources. */
+@SupportedAnnotationTypes({
+    "react4j.css.Css",
+    "react4j.css.Assets",
+    "react4j.css.Asset",
+    "react4j.css.Keyframes",
+    "react4j.css.CssImport",
+    "react4j.css.CssImports",
+    "react4j.css.GlobalCss",
+    "react4j.css.CssCustomProperty",
+    "react4j.css.CssId",
+    "react4j.css.CssAnimation",
+    "react4j.css.CssStable"
+})
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
+public final class CssProcessor extends AbstractStandardProcessor {
+
+    private static final String CSS_ANNOTATION = "react4j.css.Css";
+    private final Map<String, Set<String>> propertyNames = new HashMap<>();
+
+    @Override
+    protected String getOptionPrefix() {
+        return "react4j.css";
+    }
+
+    @Override
+    protected String getIssueTrackerURL() {
+        return "https://github.com/react4j/react4j/issues";
+    }
+
+    @Override
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment round) {
+        var owners = new TreeMap<String, TypeElement>();
+        for (var name : getSupportedAnnotationTypes()) {
+            var annotationType = processingEnv.getElementUtils().getTypeElement(name);
+            if (null != annotationType) {
+                for (var element : round.getElementsAnnotatedWith(annotationType)) {
+                    var owner = element instanceof TypeElement type
+                            ? type
+                            : (TypeElement) Objects.requireNonNull(element.getEnclosingElement());
+                    if (ElementKind.INTERFACE == owner.getKind()
+                            && null == annotation(owner, "react4j.css.CssStable")
+                            && owner.getAnnotationMirrors().stream()
+                                    .noneMatch(mirror -> List.of(
+                                                    CSS_ANNOTATION,
+                                                    "react4j.css.Assets",
+                                                    "react4j.css.GlobalCss",
+                                                    "react4j.css.Keyframes",
+                                                    "react4j.css.CssImport",
+                                                    "react4j.css.CssImports")
+                                            .contains(mirror.getAnnotationType().toString()))) {
+                        continue;
+                    }
+                    owners.put(binaryName(owner), owner);
+                }
+            }
+        }
+        for (var owner : owners.values()) {
+            try {
+                process(owner);
+            } catch (IllegalArgumentException | IOException e) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, e.getMessage(), owner);
+            }
+        }
+        return true;
+    }
+
+    private void process(TypeElement owner) throws IOException {
+        if (null != annotation(owner, "react4j.css.Assets")) {
+            for (var name : List.of("Css", "GlobalCss", "Keyframes", "CssStable", "CssImport", "CssImports")) {
+                if (null != annotation(owner, "react4j.css." + name)) {
+                    throw new IllegalArgumentException("@Assets cannot be combined with @" + name);
+                }
+            }
+            validateResourceType(owner);
+            var definition = AssetDeclarations.parse(processingEnv, owner);
+            var generated = CssGenerator.buildType(
+                    processingEnv,
+                    owner,
+                    "Assets_",
+                    definition.publicFactory(),
+                    definition.deprecated(),
+                    definition.methods(),
+                    definition.values());
+            emitTypeSpec(definition.packageName(), generated.type());
+            AssetDeclarations.emit(processingEnv, owner, generated.implementation(), definition);
+            return;
+        }
+        for (var method : owner.getEnclosedElements()) {
+            if (null != annotation(method, "react4j.css.Asset")) {
+                throw new IllegalArgumentException("@Asset methods require an @Assets definition");
+            }
+        }
+        Kind kind = sourceKind(owner);
+        CssDescriptor descriptor = Kind.COMPONENT == kind ? parse(owner) : null;
+        if (Kind.COMPONENT != kind) {
+            validateResourceType(owner);
+            descriptor = resourceDescriptor(owner);
+        }
+        var imports = imports(owner, kind);
+        var compiled = compileCss(owner, kind, descriptor, imports);
+        if (null == compiled) {
+            return;
+        }
+        var definitions = definitions(owner, kind, descriptor, compiled, imports);
+        var resolved = CssSymbols.resolve(compiled.output(), definitions);
+        var result = new CssCompiler.Result(
+                resolved.output(),
+                compiled.imports(),
+                readable(compiled.properties(), CssResource.SymbolKind.PROPERTY, definitions),
+                compiled.propertyImports(),
+                readable(compiled.ids(), CssResource.SymbolKind.ID, definitions),
+                readable(compiled.animations(), CssResource.SymbolKind.ANIMATION, definitions),
+                readable(compiled.fonts(), CssResource.SymbolKind.FONT, definitions));
+        for (var name : imports.properties().keySet().stream().sorted().toList()) {
+            if (!result.propertyImports().contains(name)) {
+                throw new IllegalArgumentException("Unused custom property import: " + name);
+            }
+        }
+        for (var name : imports.ids().keySet().stream().sorted().toList()) {
+            if (!result.ids().containsKey(name)
+                    && (null == descriptor
+                            || descriptor.accessors().stream()
+                                    .noneMatch(accessor ->
+                                            CssAccessor.Kind.ID == accessor.kind() && name.equals(accessor.name())))) {
+                throw new IllegalArgumentException("Unused ID import: " + name);
+            }
+        }
+        for (var name : imports.fonts().keySet()) {
+            if (!result.fonts().containsKey(name)) {
+                throw new IllegalArgumentException("Unused font import: " + name);
+            }
+        }
+        String implementation = "";
+        var bound = new ArrayList<CssResource.Binding>();
+        if (null != descriptor) {
+            validateStableImports(owner, descriptor, imports);
+            var values = bindings(descriptor, result, imports);
+            var generated = CssGenerator.buildType(processingEnv, descriptor, values);
+            emitTypeSpec(descriptor.packageName(), generated.type());
+            implementation = generated.implementation();
+            for (var accessor : descriptor.accessors()) {
+                String method = accessor.method().getSimpleName().toString();
+                bound.add(new CssResource.Binding(
+                        method,
+                        CssResource.SymbolKind.valueOf(accessor.kind().name()),
+                        Objects.requireNonNull(values.get(method)),
+                        bindingProviders(accessor, imports),
+                        composition(owner, accessor, imports)));
+            }
+        }
+        String ownerName = binaryName(owner);
+        String resource = CssResource.path(ownerName);
+        String file = resource.substring(resource.lastIndexOf('/') + 1);
+        var dependencies = new LinkedHashSet<>(imports.globals());
+        imports.named().entrySet().stream()
+                .filter(entry -> result.imports().contains(entry.getKey()))
+                .map(entry -> entry.getValue().owner())
+                .distinct()
+                .sorted()
+                .forEach(dependencies::add);
+        imports.properties().values().stream()
+                .map(CssProperties.Import::provider)
+                .sorted()
+                .forEach(dependencies::add);
+        imports.ids().values().stream()
+                .flatMap(binding -> binding.providers().stream())
+                .sorted()
+                .forEach(dependencies::add);
+        imports.fonts().values().stream().map(CssFonts.Import::owner).sorted().forEach(dependencies::add);
+        var metadata = new CssResource(
+                ownerName,
+                kind,
+                List.copyOf(dependencies),
+                imports.globals(),
+                implementation,
+                bound,
+                symbols(owner, kind, descriptor, result, imports),
+                resolved.occurrences(),
+                CssFontValues.uses(
+                        resolved.output().css(),
+                        definitions.values().stream()
+                                .map(CssSymbols.Definition::symbol)
+                                .filter(id -> CssResource.SymbolKind.FONT == id.kind())
+                                .distinct()
+                                .sorted(Comparator.comparing(CssResource.SymbolId::id))
+                                .toList()));
+        var output = result.output();
+        for (var entry : Map.of(
+                        resource,
+                        output.css() + SourceMap.reference(file),
+                        resource + ".map",
+                        output.map(file),
+                        resource + ".json",
+                        metadata.json())
+                .entrySet()) {
+            try (var stream = processingEnv
+                    .getFiler()
+                    .createResource(StandardLocation.CLASS_OUTPUT, "", entry.getKey(), owner)
+                    .openOutputStream()) {
+                stream.write(entry.getValue().getBytes(StandardCharsets.UTF_8));
+            }
+        }
+    }
+
+    private static Map<String, String> readable(
+            Map<String, String> values,
+            CssResource.SymbolKind kind,
+            Map<CssSymbols.Key, CssSymbols.Definition> definitions) {
+        var result = new LinkedHashMap<String, String>();
+        values.forEach((name, value) -> result.put(
+                name,
+                Objects.requireNonNull(definitions.get(new CssSymbols.Key(kind, value)))
+                        .readable()));
+        return Map.copyOf(result);
+    }
+
+    private Map<CssSymbols.Key, CssSymbols.Definition> definitions(
+            TypeElement owner,
+            Kind kind,
+            @Nullable CssDescriptor descriptor,
+            CssCompiler.Result result,
+            Imports imports) {
+        String ownerName = binaryName(owner);
+        String root = Names.root(ownerName);
+        var definitions = new LinkedHashMap<CssSymbols.Key, CssSymbols.Definition>();
+        if (Kind.COMPONENT == kind) {
+            definitions.put(
+                    new CssSymbols.Key(CssResource.SymbolKind.CLASS, root),
+                    new CssSymbols.Definition(
+                            new CssResource.SymbolId(ownerName, CssResource.SymbolKind.CLASS, ""), root, List.of()));
+            assert null != descriptor;
+            for (var accessor : descriptor.accessors()) {
+                if (CssAccessor.Kind.CLASS == accessor.kind() && !"style".equals(accessor.name())) {
+                    String value = root + "--" + Names.encode(accessor.name());
+                    definitions.put(
+                            new CssSymbols.Key(CssResource.SymbolKind.CLASS, value),
+                            new CssSymbols.Definition(
+                                    new CssResource.SymbolId(ownerName, CssResource.SymbolKind.CLASS, accessor.name()),
+                                    value,
+                                    List.of()));
+                }
+            }
+        }
+        result.properties().forEach((name, value) -> {
+            var imported = imports.properties().get(name);
+            var id = new CssResource.SymbolId(
+                    null == imported ? ownerName : imported.binding().owner(),
+                    CssResource.SymbolKind.PROPERTY,
+                    null == imported ? name : imported.binding().name());
+            String readable = null != imported
+                    ? imported.binding().cssName()
+                    : Kind.GLOBAL == kind && stable(owner, CssResource.SymbolKind.PROPERTY, name) ? "--" + name : value;
+            definitions.put(
+                    new CssSymbols.Key(CssResource.SymbolKind.PROPERTY, value),
+                    new CssSymbols.Definition(
+                            id, readable, null == imported ? List.of() : List.of(imported.provider())));
+        });
+        result.ids().forEach((name, value) -> {
+            var imported = imports.ids().get(name);
+            var id = new CssResource.SymbolId(
+                    null == imported ? ownerName : imported.binding().owner(),
+                    CssResource.SymbolKind.ID,
+                    null == imported ? name : imported.binding().name());
+            String readable = null != imported
+                    ? imported.binding().cssName()
+                    : Kind.GLOBAL == kind && stable(owner, CssResource.SymbolKind.ID, name) ? name : value;
+            definitions.put(
+                    new CssSymbols.Key(CssResource.SymbolKind.ID, value),
+                    new CssSymbols.Definition(id, readable, List.of()));
+        });
+        result.animations().forEach((name, value) -> {
+            if (!imports.named().containsKey(name)) {
+                definitions.put(
+                        new CssSymbols.Key(CssResource.SymbolKind.ANIMATION, value),
+                        new CssSymbols.Definition(
+                                new CssResource.SymbolId(ownerName, CssResource.SymbolKind.ANIMATION, name),
+                                value,
+                                List.of()));
+            }
+        });
+        result.fonts().forEach((name, value) -> {
+            var imported = imports.fonts().get(name);
+            definitions.put(
+                    new CssSymbols.Key(CssResource.SymbolKind.FONT, value),
+                    new CssSymbols.Definition(
+                            new CssResource.SymbolId(
+                                    null == imported ? ownerName : imported.owner(),
+                                    CssResource.SymbolKind.FONT,
+                                    null == imported ? name : imported.name()),
+                            null == imported ? value : imported.cssName(),
+                            null == imported ? List.of() : List.of(imported.owner())));
+        });
+        imports.named().forEach((alias, imported) -> {
+            boolean animation = Kind.KEYFRAMES == imported.kind();
+            var symbolKind = animation ? CssResource.SymbolKind.ANIMATION : CssResource.SymbolKind.CLASS;
+            String intermediate = root + (animation ? "--keyframes-" : "--peer-") + Names.encode(alias);
+            definitions.put(
+                    new CssSymbols.Key(symbolKind, intermediate),
+                    new CssSymbols.Definition(
+                            new CssResource.SymbolId(imported.owner(), symbolKind, ""),
+                            imported.cssName(),
+                            animation ? List.of(imported.owner()) : List.of()));
+        });
+        return definitions;
+    }
+
+    private String binaryName(TypeElement owner) {
+        return processingEnv.getElementUtils().getBinaryName(owner).toString();
+    }
+
+    private static List<String> bindingProviders(CssAccessor accessor, Imports imports) {
+        return switch (accessor.kind()) {
+            case ID ->
+                imports.ids().containsKey(accessor.name())
+                        ? imports.ids().get(accessor.name()).providers()
+                        : List.of();
+            case PROPERTY ->
+                imports.properties().containsKey(accessor.name())
+                        ? List.of(imports.properties().get(accessor.name()).provider())
+                        : List.of();
+            case ANIMATION ->
+                imports.named().containsKey(accessor.name())
+                        ? List.of(imports.named().get(accessor.name()).owner())
+                        : List.of();
+            case CLASS -> List.of();
+        };
+    }
+
+    private List<CssResource.SymbolId> composition(TypeElement owner, CssAccessor accessor, Imports imports) {
+        var kind = CssResource.SymbolKind.valueOf(accessor.kind().name());
+        String name = accessor.name();
+        String provider = binaryName(owner);
+        if (CssResource.SymbolKind.CLASS == kind) {
+            var root = new CssResource.SymbolId(provider, kind, "");
+            return "style".equals(name) ? List.of(root) : List.of(root, new CssResource.SymbolId(provider, kind, name));
+        }
+        if (CssResource.SymbolKind.PROPERTY == kind && imports.properties().containsKey(name)) {
+            var binding = imports.properties().get(name).binding();
+            provider = binding.owner();
+            name = binding.name();
+        } else if (CssResource.SymbolKind.ID == kind && imports.ids().containsKey(name)) {
+            var binding = imports.ids().get(name).binding();
+            provider = binding.owner();
+            name = binding.name();
+        } else if (CssResource.SymbolKind.ANIMATION == kind && imports.named().containsKey(name)) {
+            provider = imports.named().get(name).owner();
+            name = "";
+        }
+        return List.of(new CssResource.SymbolId(provider, kind, name));
+    }
+
+    static @Nullable AnnotationMirror annotation(Element owner, String name) {
+        return owner.getAnnotationMirrors().stream()
+                .filter(a -> a.getAnnotationType().toString().equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private AnnotationValue value(AnnotationMirror annotation, String name) {
+        return processingEnv.getElementUtils().getElementValuesWithDefaults(annotation).entrySet().stream()
+                .filter(e -> e.getKey().getSimpleName().contentEquals(name))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Missing annotation value: " + name));
+    }
+
+    private static String annotationName(Kind kind) {
+        return switch (kind) {
+            case COMPONENT -> CSS_ANNOTATION;
+            case GLOBAL -> "react4j.css.GlobalCss";
+            case KEYFRAMES -> "react4j.css.Keyframes";
+        };
+    }
+
+    private Kind sourceKind(TypeElement owner) {
+        var kinds = new ArrayList<Kind>();
+        for (var kind : Kind.values()) {
+            if (null != annotation(owner, annotationName(kind))) {
+                kinds.add(kind);
+            }
+        }
+        if (1 != kinds.size()) {
+            throw new IllegalArgumentException(
+                    "Declare exactly one of @Css, @GlobalCss or @Keyframes on a CSS definition");
+        }
+        return kinds.get(0);
+    }
+
+    private void validateResourceType(TypeElement owner) {
+        if (ElementKind.CLASS != owner.getKind()
+                || !owner.getTypeParameters().isEmpty()
+                || !isType(owner.getSuperclass(), "java.lang.Object")
+                || owner.getModifiers().contains(Modifier.PRIVATE)
+                || owner.getModifiers().contains(Modifier.SEALED)
+                || (owner.getNestingKind().isNested() && !owner.getModifiers().contains(Modifier.STATIC))) {
+            throw new IllegalArgumentException(
+                    "CSS resource definitions require an accessible, non-generic class extending Object; nested"
+                            + " classes must be static");
+        }
+        for (var enclosing = owner.getEnclosingElement();
+                enclosing instanceof TypeElement;
+                enclosing = enclosing.getEnclosingElement()) {
+            if (enclosing.getModifiers().contains(Modifier.PRIVATE)) {
+                throw new IllegalArgumentException("CSS resource definitions must be accessible from their package");
+            }
+        }
+        for (var member : owner.getEnclosedElements()) {
+            if (ElementKind.FIELD == member.getKind()
+                    || (ElementKind.CONSTRUCTOR == member.getKind()
+                            && Elements.Origin.EXPLICIT
+                                    == ElementsUtil.getOrigin(processingEnv.getElementUtils(), member))) {
+                throw new IllegalArgumentException("CSS resource definitions must not declare fields or constructors");
+            }
+        }
+        if (Trees.instance(processingEnv).getTree(owner).getMembers().stream().anyMatch(BlockTree.class::isInstance)) {
+            throw new IllegalArgumentException("CSS resource definitions must not declare initializers");
+        }
+    }
+
+    private record Imports(
+            Map<String, CssCompiler.Import> named,
+            List<String> globals,
+            Map<String, CssProperties.Import> properties,
+            Map<String, CssIds.Import> ids,
+            Map<String, String> assets,
+            Map<String, CssFonts.Import> fonts) {}
+
+    private List<AnnotationMirror> importMirrors(TypeElement owner) {
+        var mirrors = new ArrayList<AnnotationMirror>();
+        var direct = annotation(owner, "react4j.css.CssImport");
+        if (null != direct) {
+            mirrors.add(direct);
+        }
+        var container = annotation(owner, "react4j.css.CssImports");
+        if (null != container) {
+            for (var item : (List<?>) value(container, "value").getValue()) {
+                mirrors.add((AnnotationMirror) ((AnnotationValue) item).getValue());
+            }
+        }
+        var ids = new LinkedHashSet<String>();
+        for (var mirror : mirrors) {
+            String property = selection(mirror, "property");
+            String id = selection(mirror, "id");
+            String font = selection(mirror, "font");
+            if (!font.isEmpty() && (!id.isEmpty() || !property.isEmpty())) {
+                throw new IllegalArgumentException("@CssImport font, id and property are mutually exclusive");
+            }
+            if (!property.isEmpty() && !id.isEmpty()) {
+                throw new IllegalArgumentException("@CssImport id and property are mutually exclusive");
+            }
+            if (!id.isEmpty()) {
+                CssCompiler.checkAlias(id, Kind.COMPONENT);
+                var alias = (String) value(mirror, "name").getValue();
+                String local = alias.isEmpty() ? id : alias;
+                CssCompiler.checkAlias(local, Kind.COMPONENT);
+                if (!ids.add(local)) {
+                    throw new IllegalArgumentException("Duplicate imported ID: " + local);
+                }
+            }
+        }
+        return mirrors;
+    }
+
+    private String selection(AnnotationMirror mirror, String name) {
+        var selected = (String) value(mirror, name).getValue();
+        if (selected.isEmpty()
+                && mirror.getElementValues().keySet().stream()
+                        .anyMatch(key -> key.getSimpleName().contentEquals(name))) {
+            throw new IllegalArgumentException(
+                    "@CssImport " + name + " must not be empty; omit it to import a definition");
+        }
+        return selected;
+    }
+
+    private TypeElement importTarget(AnnotationMirror mirror) {
+        Object target = value(mirror, "value").getValue();
+        if (!(target instanceof TypeMirror type)
+                || !(processingEnv.getTypeUtils().asElement(type) instanceof TypeElement element)
+                || ElementKind.CLASS != element.getKind()
+                || (null == annotation(element, CSS_ANNOTATION)
+                        && null == annotation(element, "react4j.css.GlobalCss")
+                        && null == annotation(element, "react4j.css.Keyframes")
+                        && null == annotation(element, "react4j.css.Assets"))) {
+            throw new IllegalArgumentException(
+                    "@CssImport must reference a @Css, @GlobalCss, @Keyframes or @Assets class: " + target);
+        }
+        if (null == annotation(element, "react4j.css.Assets")) {
+            sourceKind(element);
+        }
+        return element;
+    }
+
+    private CssProperties.Binding resolveProperty(TypeElement owner, String name, Set<String> visiting) {
+        String key = binaryName(owner) + "#" + name;
+        if (!visiting.add(key)) {
+            throw new IllegalArgumentException("Cyclic custom property import without an owner: " + key);
+        }
+        var css = annotation(owner, annotationName(sourceKind(owner)));
+        assert null != css;
+        if (!propertyNames
+                .computeIfAbsent(
+                        binaryName(owner),
+                        ignored ->
+                                CssProperties.names((String) value(css, "value").getValue(), sourceKind(owner)))
+                .contains(name)) {
+            throw new IllegalArgumentException("Unknown custom property " + name + " in " + binaryName(owner));
+        }
+        boolean stable = stable(owner, CssResource.SymbolKind.PROPERTY, name);
+        CssProperties.Binding binding = new CssProperties.Binding(binaryName(owner), name, sourceKind(owner), stable);
+        boolean imported = false;
+        for (var mirror : importMirrors(owner)) {
+            var property = (String) value(mirror, "property").getValue();
+            var alias = (String) value(mirror, "name").getValue();
+            if (!property.isEmpty() && name.equals(alias.isEmpty() ? property : alias)) {
+                if (imported) {
+                    throw new IllegalArgumentException("Duplicate imported custom property: " + name);
+                }
+                imported = true;
+                CssProperties.checkName(property);
+                binding = resolveProperty(importTarget(mirror), property, visiting);
+            }
+        }
+        visiting.remove(key);
+        return binding;
+    }
+
+    private CssIds.Import resolveId(TypeElement owner, String name, Set<String> visiting) {
+        String ownerName = binaryName(owner);
+        String key = ownerName + "#" + name;
+        if (!visiting.add(key)) {
+            throw new IllegalArgumentException("Cyclic ID import without an owner: " + key);
+        }
+        var declared = new LinkedHashSet<String>();
+        for (var method : CssMethods.collect(processingEnv, owner)) {
+            var annotation = symbolAnnotation(method.declaration());
+            if (null != annotation
+                    && "react4j.css.CssId".equals(annotation.getAnnotationType().toString())) {
+                if (!method.element().getModifiers().contains(Modifier.ABSTRACT)
+                        || !method.isAccessor(processingEnv.getTypeUtils())) {
+                    throw new IllegalArgumentException(
+                            "CSS ID accessors must be abstract, take no arguments and return String");
+                }
+                declared.add(symbolName(method.declaration(), annotation));
+            }
+        }
+        Kind kind = sourceKind(owner);
+        var css = annotation(owner, annotationName(kind));
+        assert null != css;
+        boolean occurs = CssIds.names((String) value(css, "value").getValue(), kind, Set.of(name))
+                .contains(name);
+        for (var mirror : importMirrors(owner)) {
+            var id = (String) value(mirror, "id").getValue();
+            var alias = (String) value(mirror, "name").getValue();
+            if (!id.isEmpty() && name.equals(alias.isEmpty() ? id : alias)) {
+                if (!occurs && !declared.contains(name)) {
+                    throw new IllegalArgumentException("Unused ID import: " + name);
+                }
+                var resolved = resolveId(importTarget(mirror), id, visiting);
+                var providers = new LinkedHashSet<String>();
+                providers.add(ownerName);
+                providers.addAll(resolved.providers());
+                visiting.remove(key);
+                return new CssIds.Import(List.copyOf(providers), resolved.binding());
+            }
+        }
+        if (!declared.contains(name) || !occurs) {
+            throw new IllegalArgumentException("Unknown ID " + name + " in " + ownerName);
+        }
+        visiting.remove(key);
+        return new CssIds.Import(
+                List.of(ownerName),
+                new CssIds.Binding(ownerName, name, kind, stable(owner, CssResource.SymbolKind.ID, name)));
+    }
+
+    private CssFonts.Import resolveFont(TypeElement owner, String selected, Set<String> visiting) {
+        String name = CssFontValues.canonical(selected);
+        String ownerName = binaryName(owner);
+        String key = ownerName + "#font:" + name;
+        if (!visiting.add(key)) {
+            throw new IllegalArgumentException("Cyclic font import without an owner: " + key);
+        }
+        Kind kind = sourceKind(owner);
+        var annotation = annotation(owner, annotationName(kind));
+        assert null != annotation;
+        if (CssFonts.names((String) value(annotation, "value").getValue(), kind).contains(name)) {
+            visiting.remove(key);
+            return new CssFonts.Import(ownerName, name, stable(owner, CssResource.SymbolKind.FONT, name));
+        }
+        for (var mirror : importMirrors(owner)) {
+            var font = (String) value(mirror, "font").getValue();
+            var alias = (String) value(mirror, "name").getValue();
+            if (!font.isEmpty() && name.equals(CssFontValues.canonical(alias.isEmpty() ? font : alias))) {
+                var imported = resolveFont(importTarget(mirror), font, visiting);
+                visiting.remove(key);
+                return imported;
+            }
+        }
+        throw new IllegalArgumentException("Unknown owned font family " + name + " in " + ownerName);
+    }
+
+    private Imports imports(TypeElement owner, Kind kind) {
+        var mirrors = importMirrors(owner);
+        var imports = new LinkedHashMap<String, CssCompiler.Import>();
+        var globals = new ArrayList<String>();
+        var properties = new LinkedHashMap<String, CssProperties.Import>();
+        var ids = new LinkedHashMap<String, CssIds.Import>();
+        var assets = new LinkedHashMap<String, String>();
+        var assetAliases = new LinkedHashSet<String>();
+        var fonts = new LinkedHashMap<String, CssFonts.Import>();
+        for (var mirror : mirrors) {
+            var alias = (String) value(mirror, "name").getValue();
+            var element = importTarget(mirror);
+            if (null != annotation(element, "react4j.css.Assets")) {
+                if (!selection(mirror, "id").isEmpty()
+                        || !selection(mirror, "property").isEmpty()
+                        || !selection(mirror, "font").isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "@Assets imports select a named asset catalogue without id, property or font");
+                }
+                CssCompiler.checkAlias(alias, Kind.COMPONENT);
+                if (null != Trees.instance(processingEnv).getPath(element)) {
+                    validateResourceType(element);
+                }
+                if (!assetAliases.add(alias)) {
+                    throw new IllegalArgumentException("Duplicate imported asset catalogue: " + alias);
+                }
+                var declaration = AssetDeclarations.parse(processingEnv, element);
+                for (var binding : declaration.bindings()) {
+                    assets.put(alias + "." + binding.method(), binding.path());
+                }
+                continue;
+            }
+            Kind targetKind = sourceKind(element);
+            if (null != Trees.instance(processingEnv).getPath(element)) {
+                if (Kind.COMPONENT == targetKind) {
+                    parse(element);
+                } else {
+                    validateResourceType(element);
+                }
+            }
+            String name = binaryName(element);
+            var property = (String) value(mirror, "property").getValue();
+            var id = (String) value(mirror, "id").getValue();
+            var font = (String) value(mirror, "font").getValue();
+            if (!font.isEmpty()) {
+                String local = CssFontValues.canonical(alias.isEmpty() ? font : alias);
+                if (CssFontValues.RESERVED.contains(local)) {
+                    throw new IllegalArgumentException("Reserved imported font family: " + local);
+                }
+                if (null != fonts.putIfAbsent(local, resolveFont(element, font, new LinkedHashSet<>()))) {
+                    throw new IllegalArgumentException("Duplicate imported font family: " + local);
+                }
+            } else if (!id.isEmpty()) {
+                ids.put(alias.isEmpty() ? id : alias, resolveId(element, id, new LinkedHashSet<>()));
+            } else if (!property.isEmpty()) {
+                CssProperties.checkName(property);
+                String local = alias.isEmpty() ? property : alias;
+                CssProperties.checkName(local);
+                var binding = resolveProperty(element, property, new LinkedHashSet<>());
+                if (null != properties.putIfAbsent(local, new CssProperties.Import(name, binding))) {
+                    throw new IllegalArgumentException("Duplicate imported custom property: " + local);
+                }
+            } else if (Kind.KEYFRAMES == kind) {
+                throw new IllegalArgumentException(
+                        "@CssImport is only supported on stylesheet definitions unless importing a property or ID");
+            } else if (Kind.GLOBAL == targetKind) {
+                if (!alias.isEmpty()) {
+                    throw new IllegalArgumentException("Global CSS imports must not declare a name: " + name);
+                }
+                if (name.equals(binaryName(owner))) {
+                    throw new IllegalArgumentException("CSS definitions must not import themselves as global styles");
+                }
+                if (globals.contains(name)) {
+                    throw new IllegalArgumentException("Duplicate imported global stylesheet: " + name);
+                }
+                globals.add(name);
+            } else {
+                CssCompiler.checkAlias(alias, targetKind);
+                if (null
+                        != imports.putIfAbsent(
+                                alias,
+                                new CssCompiler.Import(
+                                        name,
+                                        targetKind,
+                                        stable(
+                                                element,
+                                                Kind.KEYFRAMES == targetKind
+                                                        ? CssResource.SymbolKind.ANIMATION
+                                                        : CssResource.SymbolKind.CLASS,
+                                                "")))) {
+                    throw new IllegalArgumentException("Duplicate imported CSS name: " + alias);
+                }
+            }
+        }
+        return new Imports(
+                Map.copyOf(imports),
+                List.copyOf(globals),
+                Map.copyOf(properties),
+                Map.copyOf(ids),
+                Map.copyOf(assets),
+                Map.copyOf(fonts));
+    }
+
+    private CssDescriptor parse(TypeElement owner) {
+        if (ElementKind.CLASS != owner.getKind()
+                || !owner.getModifiers().contains(Modifier.ABSTRACT)
+                || !owner.getTypeParameters().isEmpty()
+                || !isType(owner.getSuperclass(), "java.lang.Object")
+                || owner.getModifiers().contains(Modifier.PRIVATE)
+                || (owner.getNestingKind().isNested() && !owner.getModifiers().contains(Modifier.STATIC))) {
+            throw new IllegalArgumentException(
+                    "@Css requires an accessible abstract, non-generic style class extending Object; nested classes"
+                            + " must be static");
+        }
+        if (owner.getModifiers().contains(Modifier.SEALED)) {
+            throw new IllegalArgumentException("@Css style classes must not be sealed");
+        }
+        boolean deprecated = processingEnv.getElementUtils().isDeprecated(owner);
+        for (var enclosing = owner.getEnclosingElement();
+                enclosing instanceof TypeElement;
+                enclosing = enclosing.getEnclosingElement()) {
+            if (enclosing.getModifiers().contains(Modifier.PRIVATE)) {
+                throw new IllegalArgumentException("@Css style classes must be accessible from their package");
+            }
+            deprecated |= processingEnv.getElementUtils().isDeprecated(enclosing);
+        }
+        var trees = Trees.instance(processingEnv);
+        var methods = new ArrayList<CssMethods.Method>();
+        for (var member : owner.getEnclosedElements()) {
+            if (ElementKind.FIELD == member.getKind()) {
+                throw new IllegalArgumentException(
+                        "@Css style classes must not declare fields: " + member.getSimpleName());
+            } else if (ElementKind.CONSTRUCTOR == member.getKind()) {
+                if (Elements.Origin.EXPLICIT == ElementsUtil.getOrigin(processingEnv.getElementUtils(), member)) {
+                    throw new IllegalArgumentException("@Css style classes must not declare constructors");
+                }
+            }
+        }
+        var inheritedMethods = CssMethods.collect(processingEnv, owner);
+        for (var inherited : inheritedMethods) {
+            var method = inherited.element();
+            if (null != annotation(inherited.declaration(), "react4j.css.Asset")) {
+                throw new IllegalArgumentException("@Asset methods require an @Assets definition");
+            }
+            if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
+                if (null != symbolAnnotation(inherited.declaration())
+                        || null != annotation(inherited.declaration(), "react4j.css.CssStable")) {
+                    throw new IllegalArgumentException(
+                            "CSS symbol accessors must be abstract: " + method.getSimpleName());
+                }
+                continue;
+            }
+            if (!inherited.isAccessor(processingEnv.getTypeUtils())) {
+                throw new IllegalArgumentException("CSS accessor " + method.getSimpleName()
+                        + " must take no arguments and return String without type parameters or throws");
+            }
+            methods.add(inherited);
+            deprecated |= processingEnv.getElementUtils().isDeprecated(inherited.element())
+                    || processingEnv.getElementUtils().isDeprecated(inherited.declaration());
+        }
+        if (trees.getTree(owner).getMembers().stream()
+                .anyMatch(member -> member instanceof BlockTree block && !block.isStatic())) {
+            throw new IllegalArgumentException("@Css style classes must not declare instance initializers");
+        }
+
+        if (methods.stream().noneMatch(m -> m.element().getSimpleName().contentEquals("style"))) {
+            throw new IllegalArgumentException("@Css style classes require abstract String style()");
+        }
+        return new CssDescriptor(
+                owner,
+                processingEnv.getElementUtils().getBinaryName(owner).toString(),
+                parseAccessors(methods, Kind.COMPONENT),
+                CssMethods.publicFactory(processingEnv, owner, inheritedMethods, "@Css"),
+                deprecated);
+    }
+
+    private @Nullable AnnotationMirror symbolAnnotation(Element member) {
+        AnnotationMirror found = null;
+        for (var name : List.of("CssId", "CssAnimation", "CssCustomProperty")) {
+            var annotation = annotation(member, "react4j.css." + name);
+            if (null != annotation) {
+                if (null != found) {
+                    throw new IllegalArgumentException(
+                            "CSS accessors must declare only one symbol annotation: " + member.getSimpleName());
+                }
+                found = annotation;
+            }
+        }
+        return found;
+    }
+
+    private List<CssAccessor> parseAccessors(List<CssMethods.Method> methods, Kind ownerKind) {
+        var names = new LinkedHashSet<String>();
+        var accessors = new ArrayList<CssAccessor>();
+        for (var inherited : methods) {
+            var method = inherited.element();
+            var annotation = symbolAnnotation(inherited.declaration());
+            var kind = null == annotation
+                    ? CssAccessor.Kind.CLASS
+                    : switch (annotation.getAnnotationType().toString()) {
+                        case "react4j.css.CssId" -> CssAccessor.Kind.ID;
+                        case "react4j.css.CssAnimation" -> CssAccessor.Kind.ANIMATION;
+                        default -> CssAccessor.Kind.PROPERTY;
+                    };
+            String name = method.getSimpleName().toString();
+            if (null != annotation) {
+                if ("style".equals(name)) {
+                    throw new IllegalArgumentException("style() must be an unannotated component class accessor");
+                }
+                name = symbolName(method, annotation);
+                if (CssAccessor.Kind.PROPERTY == kind) {
+                    CssProperties.checkName(name);
+                } else if (CssAccessor.Kind.ANIMATION == kind && Kind.KEYFRAMES == ownerKind) {
+                    if (!"<default>".equals(value(annotation, "name").getValue())) {
+                        throw new IllegalArgumentException(
+                                "@CssAnimation on @Keyframes exposes its own name and must not declare name");
+                    }
+                    name = "";
+                } else {
+                    CssCompiler.checkAlias(name, CssAccessor.Kind.ANIMATION == kind ? Kind.KEYFRAMES : Kind.COMPONENT);
+                }
+                if (!names.add(kind + ":" + name)) {
+                    throw new IllegalArgumentException("Duplicate CSS symbol accessor: " + name);
+                }
+            }
+            accessors.add(new CssAccessor(method, kind, name));
+        }
+        return List.copyOf(accessors);
+    }
+
+    private String symbolName(ExecutableElement method, AnnotationMirror annotation) {
+        String name = (String) value(annotation, "name").getValue();
+        if ("<default>".equals(name)) {
+            name = method.getSimpleName().toString();
+            if (name.matches("get[A-Z].*")) {
+                name = name.substring(3, 4).toLowerCase(Locale.ROOT) + name.substring(4);
+            }
+        }
+        return name;
+    }
+
+    private @Nullable CssDescriptor resourceDescriptor(TypeElement owner) {
+        var methods = new ArrayList<CssMethods.Method>();
+        boolean deprecated = processingEnv.getElementUtils().isDeprecated(owner);
+        for (var enclosing = owner.getEnclosingElement();
+                enclosing instanceof TypeElement;
+                enclosing = enclosing.getEnclosingElement()) {
+            deprecated |= processingEnv.getElementUtils().isDeprecated(enclosing);
+        }
+        var inheritedMethods = CssMethods.collect(processingEnv, owner);
+        for (var inherited : inheritedMethods) {
+            var method = inherited.element();
+            if (null != annotation(inherited.declaration(), "react4j.css.Asset")) {
+                throw new IllegalArgumentException("@Asset methods require an @Assets definition");
+            }
+            if (null != symbolAnnotation(inherited.declaration())
+                    || null != annotation(inherited.declaration(), "react4j.css.CssStable")) {
+                if (!method.getModifiers().contains(Modifier.ABSTRACT)
+                        || !inherited.isAccessor(processingEnv.getTypeUtils())) {
+                    throw new IllegalArgumentException(
+                            "CSS symbol accessors must be abstract, take no arguments and return String without"
+                                    + " type parameters or throws");
+                }
+                if (null == symbolAnnotation(inherited.declaration())) {
+                    throw new IllegalArgumentException(
+                            "CSS resource abstract methods require a symbol annotation: " + method.getSimpleName());
+                }
+                methods.add(inherited);
+                deprecated |= processingEnv.getElementUtils().isDeprecated(inherited.element())
+                        || processingEnv.getElementUtils().isDeprecated(inherited.declaration());
+            } else if (method.getModifiers().contains(Modifier.ABSTRACT)) {
+                throw new IllegalArgumentException(
+                        "CSS resource abstract methods require a symbol annotation: " + method.getSimpleName());
+            }
+        }
+        if (methods.isEmpty()) {
+            return null;
+        }
+        if (!owner.getModifiers().contains(Modifier.ABSTRACT)
+                || owner.getModifiers().contains(Modifier.FINAL)) {
+            throw new IllegalArgumentException("CSS resource bindings require an abstract, non-final class");
+        }
+
+        return new CssDescriptor(
+                owner,
+                binaryName(owner),
+                parseAccessors(methods, sourceKind(owner)),
+                CssMethods.publicFactory(processingEnv, owner, inheritedMethods, "CSS"),
+                deprecated);
+    }
+
+    private Map<String, String> bindings(CssDescriptor descriptor, CssCompiler.Result result, Imports imports) {
+        var bindings = new LinkedHashMap<String, String>();
+        for (var accessor : descriptor.accessors()) {
+            String method = accessor.method().getSimpleName().toString();
+            String name = accessor.name();
+            String token =
+                    switch (accessor.kind()) {
+                        case CLASS ->
+                            descriptor.rootClassName()
+                                    + ("style".equals(name)
+                                            ? ""
+                                            : " " + descriptor.rootClassName() + "--" + Names.encode(name));
+                        case PROPERTY -> result.properties().get(name);
+                        case ID ->
+                            imports.ids().containsKey(name)
+                                    ? imports.ids().get(name).binding().cssName()
+                                    : result.ids().get(name);
+                        case ANIMATION -> result.animations().get(name);
+                    };
+            if (null == token) {
+                throw new IllegalArgumentException(
+                        "CSS " + accessor.kind().name().toLowerCase(Locale.ROOT) + " accessor " + method
+                                + "() has no matching CSS occurrence: " + name);
+            }
+            bindings.put(method, token);
+        }
+        return bindings;
+    }
+
+    private boolean stable(TypeElement owner, CssResource.SymbolKind kind, String name) {
+        if (null != annotation(owner, "react4j.css.CssStable")) {
+            return true;
+        }
+        return methodStable(owner, kind, name);
+    }
+
+    private boolean methodStable(TypeElement owner, CssResource.SymbolKind kind, String name) {
+        for (var method : CssMethods.collect(processingEnv, owner)) {
+            var declaration = method.declaration();
+            if (null == annotation(declaration, "react4j.css.CssStable")) {
+                continue;
+            }
+            var annotation = symbolAnnotation(declaration);
+            var symbolKind = null == annotation
+                    ? CssResource.SymbolKind.CLASS
+                    : switch (annotation.getAnnotationType().toString()) {
+                        case "react4j.css.CssId" -> CssResource.SymbolKind.ID;
+                        case "react4j.css.CssAnimation" -> CssResource.SymbolKind.ANIMATION;
+                        default -> CssResource.SymbolKind.PROPERTY;
+                    };
+            String symbolName =
+                    null == annotation ? declaration.getSimpleName().toString() : symbolName(declaration, annotation);
+            if (CssResource.SymbolKind.CLASS == symbolKind && "style".equals(symbolName)
+                    || CssResource.SymbolKind.ANIMATION == symbolKind && Kind.KEYFRAMES == sourceKind(owner)) {
+                symbolName = "";
+            }
+            if (symbolKind == kind && symbolName.equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void validateStableImports(TypeElement owner, CssDescriptor descriptor, Imports imports) {
+        for (var accessor : descriptor.accessors()) {
+            var kind = CssResource.SymbolKind.valueOf(accessor.kind().name());
+            if (!methodStable(owner, kind, accessor.name())) {
+                continue;
+            }
+            var property = imports.properties().get(accessor.name());
+            var animation = imports.named().get(accessor.name());
+            var id = imports.ids().get(accessor.name());
+            if (CssResource.SymbolKind.PROPERTY == kind
+                            && null != property
+                            && !property.binding().stable()
+                    || CssResource.SymbolKind.ANIMATION == kind && null != animation && !animation.stable()
+                    || CssResource.SymbolKind.ID == kind
+                            && null != id
+                            && !id.binding().stable()) {
+                throw new IllegalArgumentException(
+                        "@CssStable importing accessor conflicts with its defining owner's policy: "
+                                + accessor.method().getSimpleName());
+            }
+        }
+    }
+
+    private List<CssResource.Symbol> symbols(
+            TypeElement owner,
+            Kind kind,
+            @Nullable CssDescriptor descriptor,
+            CssCompiler.Result result,
+            Imports imports) {
+        var symbols = new ArrayList<CssResource.Symbol>();
+        if (Kind.COMPONENT == kind) {
+            String root = Names.root(binaryName(owner));
+            symbols.add(new CssResource.Symbol(
+                    CssResource.SymbolKind.CLASS, "", root, stable(owner, CssResource.SymbolKind.CLASS, "")));
+            assert null != descriptor;
+            descriptor.accessors().stream()
+                    .filter(accessor -> CssAccessor.Kind.CLASS == accessor.kind() && !"style".equals(accessor.name()))
+                    .forEach(accessor -> symbols.add(new CssResource.Symbol(
+                            CssResource.SymbolKind.CLASS,
+                            accessor.name(),
+                            root + "--" + Names.encode(accessor.name()),
+                            stable(owner, CssResource.SymbolKind.CLASS, accessor.name()))));
+        }
+        result.properties().forEach((name, value) -> {
+            if (!imports.properties().containsKey(name)) {
+                symbols.add(new CssResource.Symbol(
+                        CssResource.SymbolKind.PROPERTY,
+                        name,
+                        value,
+                        stable(owner, CssResource.SymbolKind.PROPERTY, name)));
+            }
+        });
+        result.ids().forEach((name, value) -> {
+            if (!imports.ids().containsKey(name)) {
+                symbols.add(new CssResource.Symbol(
+                        CssResource.SymbolKind.ID, name, value, stable(owner, CssResource.SymbolKind.ID, name)));
+            }
+        });
+        result.animations().forEach((name, value) -> {
+            if (!imports.named().containsKey(name)) {
+                symbols.add(new CssResource.Symbol(
+                        CssResource.SymbolKind.ANIMATION,
+                        name,
+                        value,
+                        stable(owner, CssResource.SymbolKind.ANIMATION, name)));
+            }
+        });
+        result.fonts().forEach((name, value) -> {
+            if (!imports.fonts().containsKey(name)) {
+                symbols.add(new CssResource.Symbol(
+                        CssResource.SymbolKind.FONT, name, value, stable(owner, CssResource.SymbolKind.FONT, name)));
+            }
+        });
+        return symbols.stream()
+                .sorted(Comparator.comparing(CssResource.Symbol::kind).thenComparing(CssResource.Symbol::name))
+                .toList();
+    }
+
+    private static CssCompiler.Exports exports(@Nullable CssDescriptor descriptor) {
+        return null == descriptor ? new CssCompiler.Exports(List.of(), Set.of(), Set.of()) : descriptor.exports();
+    }
+
+    private CssCompiler.@Nullable Result compileCss(
+            TypeElement owner, Kind kind, @Nullable CssDescriptor descriptor, Imports imports) throws IOException {
+        var trees = Trees.instance(processingEnv);
+        var annotation = owner.getAnnotationMirrors().stream()
+                .filter(a -> annotationName(kind).equals(a.getAnnotationType().toString()))
+                .findFirst()
+                .orElseThrow();
+        var value = value(annotation, "value");
+        var path = trees.getPath(owner);
+        var unit = path.getCompilationUnit();
+        var literal = trees.getTree(owner, annotation, value);
+        if (!(literal instanceof LiteralTree text) || !(text.getValue() instanceof String css)) {
+            throw new IllegalArgumentException("@" + annotationName(kind).substring("react4j.css.".length())
+                    + " requires a literal Java text block; constants and concatenation are unsupported");
+        }
+        String source = unit.getSourceFile().getCharContent(true).toString();
+        var start = (int) trees.getSourcePositions().getStartPosition(unit, literal);
+        var end = (int) trees.getSourcePositions().getEndPosition(unit, literal);
+        var block = TextBlock.decode(source.substring(start, end), start, css);
+        String sourceName = processingEnv
+                .getElementUtils()
+                .getPackageOf(owner)
+                .getQualifiedName()
+                .toString()
+                .replace('.', '/');
+        sourceName = (sourceName.isEmpty() ? "" : sourceName + "/")
+                + Path.of(unit.getSourceFile().getName()).getFileName();
+        final String mappedSource = sourceName;
+        try {
+            IntFunction<SourceMap.Location> locations = offset -> {
+                int original = block.offsets()[Math.min(offset, block.value().length())];
+                long line = unit.getLineMap().getLineNumber(original);
+                return new SourceMap.Location(mappedSource, source, (int) line - 1, (int)
+                        (original - unit.getLineMap().getStartPosition(line)));
+            };
+            if (Kind.KEYFRAMES == kind) {
+                return CssCompiler.keyframes(
+                        block.value(),
+                        Names.root(binaryName(owner)),
+                        exports(descriptor),
+                        locations,
+                        imports.properties(),
+                        imports.ids(),
+                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
+            }
+            if (Kind.GLOBAL == kind) {
+                return CssCompiler.global(
+                        block.value(),
+                        Names.root(binaryName(owner)),
+                        exports(descriptor),
+                        locations,
+                        imports.named(),
+                        imports.properties(),
+                        imports.ids(),
+                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
+            }
+            assert null != descriptor;
+            return CssCompiler.component(
+                    block.value(),
+                    descriptor.rootClassName(),
+                    exports(descriptor),
+                    locations,
+                    imports.named(),
+                    imports.properties(),
+                    imports.ids(),
+                    new CssCompiler.Resources(imports.assets(), imports.fonts()));
+        } catch (CssSyntax.InvalidCss e) {
+            int offset = block.offsets()[Math.max(0, Math.min(block.value().length(), e.offset()))];
+            String location =
+                    unit.getSourceFile().getName() + ":" + unit.getLineMap().getLineNumber(offset) + ":"
+                            + unit.getLineMap().getColumnNumber(offset);
+            processingEnv
+                    .getMessager()
+                    .printMessage(Diagnostic.Kind.ERROR, location + ": " + e.getMessage(), owner, annotation, value);
+            return null;
+        }
+    }
+
+    private boolean isType(TypeMirror type, String name) {
+        return processingEnv.getTypeUtils().asElement(type) instanceof TypeElement element
+                && element.getQualifiedName().contentEquals(name);
+    }
+}

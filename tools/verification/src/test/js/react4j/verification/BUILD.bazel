@@ -1,0 +1,46 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
+
+package(default_visibility = [
+    "//tools/verification/src/main/java/react4j/verification:__pkg__",
+    "//tools/verification/src/test/java/react4j/verification:__pkg__",
+])
+
+closure_js_library(
+    name = "fixture_lib",
+    testonly = True,
+    srcs = ["fixture_test.js"],
+    deps = [
+        "//tools/verification/src/test/java/react4j/verification/fixture",
+    ],
+)
+
+closure_js_binary(
+    name = "fixture",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    dependency_mode = "SORT_ONLY",
+    deps = [":fixture_lib"],
+)
+
+closure_js_library(
+    name = "runtime_lib",
+    testonly = True,
+    srcs = ["runtime_test.js"],
+    deps = [
+        "//:dom",
+        "//core/src/test/java/react4j:runtime_coverage",
+        "//core/src/test/js/react4j:runtime_test",
+        "//dom/src/test/js/react4j/dom:events_test",
+        "//dom/src/test/js/react4j/dom:properties_test",
+        "//dom/src/test/js/react4j/dom:runtime_test",
+        "//tools/browser:mode",
+    ],
+)
+
+closure_js_binary(
+    name = "runtime",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    dependency_mode = "SORT_ONLY",
+    deps = [":runtime_lib"],
+)

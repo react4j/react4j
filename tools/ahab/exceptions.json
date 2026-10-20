@@ -4,6 +4,48 @@
       "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",
+      "target": "//core/src/test/js/react4j:browser_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//core/src/test/js/react4j:configuration_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//core/src/test/js/react4j:configuration_enabled_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//core/src/test/js/react4j:configuration_disabled_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//core/src/test/js/react4j:configuration_invalid_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//dom/src/test/js/react4j/dom:browser_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
       "target": "//doc-examples/src/test/js/react4j/examples:browser_tests",
       "requirement": "requires-network"
     },
@@ -33,6 +75,62 @@
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",
       "target": "//examples/todomvc/src/test/js/react4j/todomvc:browser_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The CSS integration browser test uses the existing WebDriver loopback runner; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//css/examples/save-button/src/test/js/react4j/css/example:browser_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The CSS integration browser test uses the existing WebDriver loopback runner; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//css/examples/save-button/src/test/js/react4j/css/example:prefixed_browser_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The CSS integration browser test uses the existing WebDriver loopback runner; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//css/examples/save-button/src/test/js/react4j/css/example:uncompressed_browser_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "Pinned Chromium and ChromeDriver communicate over loopback during the JVM browser test; build actions remain sandboxed without network access",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//tools/verification/src/test/java/react4j/verification:application_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "Pinned Chromium and ChromeDriver communicate over loopback during the JVM browser test; build actions remain sandboxed without network access",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//tools/verification/src/test/java/react4j/verification:browser_coverage_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "Pinned Chromium and ChromeDriver communicate over loopback during the JVM browser test; build actions remain sandboxed without network access",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//tools/verification/src/test/java/react4j/verification:instrumenter_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "Pinned Chromium and ChromeDriver communicate over loopback during the JVM browser test; build actions remain sandboxed without network access",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//tools/verification/src/test/java/react4j/verification:runtime_coverage_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "The preview HTTP tests bind a loopback server to verify real content negotiation; build actions remain sandboxed without network access",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//tools/browser/src/test/java/react4j/browser:tests",
       "requirement": "requires-network"
     }
   ]

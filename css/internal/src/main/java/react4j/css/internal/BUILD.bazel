@@ -1,0 +1,38 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+java_library(
+    name = "internal",
+    srcs = [
+        "AssetResource.java",
+        "CssCatalogue.java",
+        "CssExpressions.java",
+        "CssFontValues.java",
+        "CssLink.java",
+        "CssNames.java",
+        "CssRenamer.java",
+        "CssResource.java",
+        "CssSyntax.java",
+        "CssTokens.java",
+        "CssUrls.java",
+        "MappedText.java",
+        "SourceMap.java",
+        "UnicodeCaseFold.java",
+        "package-info.java",
+    ],
+    resources = ["//third_party:unicode_case_folding"],
+    visibility = [
+        "//:__pkg__",
+        "//css/bundler/src/main/java/react4j/css/bundler:__pkg__",
+        "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
+        "//css/integration-tests/src/test/java/react4j/css/integration:__pkg__",
+        "//css/internal/src/test/java/react4j/css/internal:__pkg__",
+        "//css/linker/src/main/java/react4j/css/linker:__pkg__",
+        "//css/linker/src/test/java/react4j/css/linker:__pkg__",
+        "//css/processor/src/main/java/react4j/css/processor:__pkg__",
+        "//css/processor/src/test/java/react4j/css/processor:__pkg__",
+    ],
+    deps = [
+        "//third_party:gson",
+        "//third_party/java:ph_css",
+    ],
+)

@@ -1,0 +1,230 @@
+package(default_visibility = ["//:__subpackages__"])
+
+alias(
+    name = "arez_core",
+    actual = "@arez//:core",
+)
+
+alias(
+    name = "arez_core-j2cl",
+    actual = "@arez//:core-j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "arez_processor_jar",
+    actual = "@arez//tools/release:processor_jar",
+)
+
+alias(
+    name = "arez_processor_plugin",
+    actual = "@arez//:arez_processor_plugin",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "arez_processor_runtime",
+    actual = "@arez//:processor",
+)
+
+alias(
+    name = "arez_testng",
+    actual = "@arez//:testng",
+)
+
+alias(
+    name = "braincheck_core-j2cl",
+    actual = "@braincheck//core/src/main/java/org/realityforge/braincheck:core-j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "chromium_local",
+    actual = "@rules_webtesting//browsers:chromium-local",
+)
+
+alias(
+    name = "closure_asserts",
+    actual = "@rules_closure//closure/testing/library:asserts",
+)
+
+alias(
+    name = "closure_compiler",
+    actual = "@rules_closure//closure/compiler",
+)
+
+alias(
+    name = "closure_compiler_factory",
+    actual = "@rules_closure//java/com/google/javascript/jscomp:compiler_factory",
+)
+
+alias(
+    name = "closure_compiler_unshaded",
+    actual = "@maven//:com_google_javascript_closure_compiler_unshaded",
+)
+
+alias(
+    name = "closure_testcase",
+    actual = "@rules_closure//closure/testing/library:testcase",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "closure_testsuite",
+    actual = "@rules_closure//closure/testing/library:testsuite",
+)
+
+alias(
+    name = "closure_worker_main",
+    actual = "@rules_closure//java/io/bazel/rules/closure:worker_main",
+)
+
+alias(
+    name = "error_prone_core",
+    actual = "@sting//third_party/java:error_prone_core",
+)
+
+alias(
+    name = "grim_annotations-j2cl",
+    actual = "//third_party/java:grim_annotations-j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "gson",
+    actual = "@maven//:com_google_code_gson_gson",
+)
+
+alias(
+    name = "java_coverage_runner",
+    actual = "@bazel_tools//tools/jdk:JacocoCoverageRunner",
+)
+
+alias(
+    name = "java_runfiles",
+    actual = "@rules_java//java/runfiles",
+)
+
+alias(
+    name = "javaemul_internal_annotations-j2cl",
+    actual = "//third_party/java:javaemul_internal_annotations-j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "javapoet_jar",
+    actual = "@javapoet//file",
+)
+
+alias(
+    name = "jsinterop_annotations-j2cl",
+    actual = "@j2cl//:jsinterop-annotations-j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "jsinterop_base-j2cl",
+    actual = "@jsinterop_base//:jsinterop-base-j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "jspecify-j2cl",
+    actual = "//third_party/java:jspecify-j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "nullaway",
+    actual = "@sting//third_party/java:nullaway",
+)
+
+alias(
+    name = "nullaway_plugin",
+    actual = "@sting//third_party/java:nullaway_plugin",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "org_jetbrains_annotations-j2cl",
+    actual = "//third_party/java:org_jetbrains_annotations-j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "palantir_java_format",
+    actual = "@rules_palantir_java_format//:java_format",
+)
+
+alias(
+    name = "palantir_java_format_watch",
+    actual = "@rules_palantir_java_format//:java_format_watch",
+)
+
+alias(
+    name = "proton_core",
+    actual = "@proton//:core",
+)
+
+alias(
+    name = "proton_qa",
+    actual = "@proton//:qa",
+)
+
+alias(
+    name = "react_development",
+    actual = "@react_development//file",
+)
+
+alias(
+    name = "react_dom_development",
+    actual = "@react_dom_development//file",
+)
+
+alias(
+    name = "react_dom_production",
+    actual = "@react_dom_production//file",
+)
+
+alias(
+    name = "react_production",
+    actual = "@react_production//file",
+)
+
+alias(
+    name = "sting_core",
+    actual = "@sting//:core",
+)
+
+alias(
+    name = "sting_core-j2cl",
+    actual = "//third_party/java:sting_core-j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "sting_processor_jar",
+    actual = "@sting//tools/release:processor_jar",
+)
+
+alias(
+    name = "sting_processor_plugin",
+    actual = "@sting//:sting_processor_plugin",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "sting_processor_runtime",
+    actual = "@sting//:processor",
+)
+
+alias(
+    name = "unicode_case_folding",
+    actual = "@unicode_case_folding//file",
+)
+
+alias(
+    name = "zemeckis_core-j2cl",
+    actual = "@zemeckis//core/src/main/java/zemeckis:core-j2cl",
+    visibility = ["//visibility:public"],
+)

@@ -1,4 +1,4 @@
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
 filegroup(
     name = "sources",
@@ -11,7 +11,10 @@ filegroup(
     ],
 )
 
-exports_files([
-    "HelloWorld.entry.js",
-    "public/index.html",
-])
+exports_files(
+    [
+        "HelloWorld.entry.js",
+        "public/index.html",
+    ],
+    visibility = ["//:__subpackages__"],
+)

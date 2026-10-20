@@ -1,4 +1,4 @@
 exports_files(
     ["site.css"],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )

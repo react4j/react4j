@@ -1,0 +1,1 @@
+ERROR com/example/multiple_animation_names/Button.java:7:6: com/example/multiple_animation_names/Button.java:10:22: Each animation accepts one name

@@ -1,6 +1,6 @@
 load("//third_party/java:rules.bzl", "java_library")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
 java_library(
     name = "core",
@@ -9,5 +9,7 @@ java_library(
 
 test_suite(
     name = "tests",
-    tests = ["//core/src/test/java/react4j:tests"],
+    tests = [
+        "//core/src/test/java/react4j/test:tests",
+    ],
 )

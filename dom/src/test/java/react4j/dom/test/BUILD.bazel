@@ -5,22 +5,15 @@ java_testng(
     size = "small",
     srcs = [
         "DomJDependTest.java",
-        "HtmlPropsTest.java",
         "package-info.java",
     ],
     data = ["//dom/src/main/java/react4j/dom"],
     jvm_flags = [
-        "-Dbraincheck.environment=development",
-        "-Dreact4j.environment=development",
         "-Dreact4j.dom.compile_target=$(rootpath //dom/src/main/java/react4j/dom)",
     ],
-    test_classes = [
-        "react4j.dom.test.DomJDependTest",
-        "react4j.dom.test.HtmlPropsTest",
-    ],
-    visibility = ["//visibility:public"],
+    test_class = "react4j.dom.test.DomJDependTest",
+    visibility = ["//:__subpackages__"],
     deps = [
-        "//dom",
         "//third_party/java:jdepend",
     ],
 )

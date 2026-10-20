@@ -1,0 +1,111 @@
+load("//third_party/java:rules.bzl", "java_testng")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//css:__pkg__",
+])
+
+java_testng(
+    name = "tests",
+    srcs = [
+        "BundleTest.java",
+        "CssPrunerTest.java",
+        "CssReachabilityTest.java",
+    ],
+    test_classes = [
+        "react4j.css.bundler.BundleTest",
+        "react4j.css.bundler.CssPrunerTest",
+        "react4j.css.bundler.CssReachabilityTest",
+    ],
+    deps = [
+        "//css/bundler/src/main/java/react4j/css/bundler",
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party:closure_compiler_unshaded",
+        "//third_party:gson",
+        "//third_party/java:ph_css",
+    ],
+)
+
+java_testng(
+    name = "asset_tests",
+    size = "medium",
+    srcs = ["AssetBundleTest.java"],
+    data = [
+        "//css/integration-tests/src/test/assets/react4j/css/integration:asset.svg",
+        "//css/integration-tests/src/test/assets/react4j/css/integration:media.assets.json",
+        "//css/integration-tests/src/test/assets/react4j/css/integration:unused.svg",
+        "//css/integration-tests/src/test/java/react4j/css/integration:asset_test_tree",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_alternate.css",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_alternate.css.map",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_development.css",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_development.css.map",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_development.css-live.json",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_development.js",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_development.js.map",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_development_config",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized.css",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized.css.map",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized.css-live.json",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized.js",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized.js.map",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_config",
+    ],
+    jvm_flags = [
+        "-Dasset.optimized.alternate=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_alternate.css)",
+        "-Dasset.optimized.alternatemap=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_alternate.css.map)",
+        "-Dasset.optimized.javascript=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized.js)",
+        "-Dasset.optimized.css=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized.css)",
+        "-Dasset.optimized.cssmap=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized.css.map)",
+        "-Dasset.optimized.map=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized.js.map)",
+        "-Dasset.optimized.config=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_config)",
+        "-Dasset.optimized.report=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized.css-live.json)",
+        "-Dasset.optimized.tree=$(rootpath //css/integration-tests/src/test/java/react4j/css/integration:asset_test_tree)",
+        "-Dasset.optimized.catalogue=$(rootpath //css/integration-tests/src/test/assets/react4j/css/integration:media.assets.json)",
+        "-Dasset.development.javascript=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_development.js)",
+        "-Dasset.development.css=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_development.css)",
+        "-Dasset.development.cssmap=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_development.css.map)",
+        "-Dasset.development.map=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_development.js.map)",
+        "-Dasset.development.config=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_development_config)",
+        "-Dasset.development.report=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_development.css-live.json)",
+        "-Dasset.development.tree=$(rootpath //css/integration-tests/src/test/java/react4j/css/integration:asset_test_tree)",
+        "-Dasset.development.catalogue=$(rootpath //css/integration-tests/src/test/assets/react4j/css/integration:media.assets.json)",
+    ],
+    test_class = "react4j.css.bundler.AssetBundleTest",
+    deps = [
+        "//css/bundler/src/main/java/react4j/css/bundler:assets",
+        "//css/bundler/src/main/java/react4j/css/bundler:content",
+        "//css/bundler/src/main/java/react4j/css/bundler:media",
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party:closure_compiler_unshaded",
+        "//third_party:gson",
+        "//third_party/java:ph_css",
+    ],
+)
+
+java_testng(
+    name = "packaging_tests",
+    srcs = [
+        "ApplicationBundleTest.java",
+        "ApplicationConfigurationTest.java",
+        "AssetContentTest.java",
+    ],
+    data = [
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web",
+        "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web.manifest.json",
+    ],
+    jvm_flags = [
+        "-Dapplication.assets=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web)",
+        "-Dapplication.manifest=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web.manifest.json)",
+    ],
+    test_classes = [
+        "react4j.css.bundler.AssetContentTest",
+        "react4j.css.bundler.ApplicationBundleTest",
+        "react4j.css.bundler.ApplicationConfigurationTest",
+    ],
+    deps = [
+        "//css/bundler/src/main/java/react4j/css/bundler:content",
+        "//css/bundler/src/main/java/react4j/css/bundler:packaging",
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party:gson",
+    ],
+)

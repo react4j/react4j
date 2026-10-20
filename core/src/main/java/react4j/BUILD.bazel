@@ -1,13 +1,12 @@
 load("//third_party/java:rules.bzl", "java_library")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
 java_library(
     name = "react4j",
     srcs = [
         "Context.java",
         "Contexts.java",
-        "GwtIncompatible.java",
         "JsError.java",
         "Keyed.java",
         "React.java",
@@ -22,7 +21,7 @@ java_library(
     ],
     resources = ["react4j.js"],
     deps = [
-        "//third_party/java:arez_core",
+        "//third_party:arez_core",
         "//third_party/java:base",
         "//third_party/java:braincheck_core",
         "//third_party/java:javaemul_internal_annotations",
@@ -32,8 +31,11 @@ java_library(
     ],
 )
 
-exports_files([
-    "ReactConfig.native.js",
-    "react4j.js",
-    "react.externs.js",
-])
+exports_files(
+    [
+        "ReactConfig.native.js",
+        "react4j.js",
+        "react.externs.js",
+    ],
+    visibility = ["//:__subpackages__"],
+)

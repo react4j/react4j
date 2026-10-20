@@ -1,0 +1,8 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "Defaults.java",
+        "Theme.java",
+    ],
+    visibility = ["//css/processor/src/test/fixtures:__pkg__"],
+)

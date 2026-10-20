@@ -1,0 +1,160 @@
+load("//third_party/java:rules.bzl", "java_testng")
+load("//tools/verification:defs.bzl", "j2cl_modules")
+load("//tools/webtesting:defs.bzl", "java_browser_testng")
+
+java_testng(
+    name = "coverage_tests",
+    srcs = ["CoverageCheckTest.java"],
+    data = ["//tools/verification:coverage.json"],
+    test_class = "react4j.verification.CoverageCheckTest",
+    visibility = ["//:__pkg__"],
+    deps = ["//tools/verification/src/main/java/react4j/verification:coverage"],
+)
+
+java_browser_testng(
+    name = "browser_coverage_tests",
+    size = "medium",
+    srcs = ["BrowserCoverageTest.java"],
+    data = [
+        "//tools/webtesting:chromium",
+        "//tools/webtesting:chromium.gen.json",
+    ],
+    jvm_flags = ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)"],
+    test_class = "react4j.verification.BrowserCoverageTest",
+    visibility = ["//:__pkg__"],
+    deps = [
+        "//third_party:gson",
+        "//tools/verification/src/main/java/react4j/verification:browser_coverage",
+    ],
+)
+
+java_browser_testng(
+    name = "instrumenter_tests",
+    size = "medium",
+    srcs = ["CoverageInstrumenterTest.java"],
+    data = [
+        "//tools/webtesting:chromium",
+        "//tools/webtesting:chromium.gen.json",
+    ],
+    jvm_flags = ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)"],
+    test_class = "react4j.verification.CoverageInstrumenterTest",
+    visibility = ["//:__pkg__"],
+    deps = [
+        "//third_party:closure_compiler",
+        "//third_party:gson",
+        "//tools/verification/src/main/java/react4j/verification:browser_coverage",
+        "//tools/verification/src/main/java/react4j/verification:coverage_instrumenter",
+    ],
+)
+
+java_browser_testng(
+    name = "runtime_coverage_tests",
+    size = "medium",
+    srcs = ["RuntimeCoverageTest.java"],
+    data = [
+        ":fixture_modules",
+        "//tools/generation:react_dev",
+        "//tools/generation:react_dom_dev",
+        "//tools/release:core_jar",
+        "//tools/release:core_sources",
+        "//tools/release:dom_jar",
+        "//tools/release:dom_sources",
+        "//tools/verification:core_modules",
+        "//tools/verification:dom_modules",
+        "//tools/verification:runtime_sources",
+        "//tools/verification/src/test/java/react4j/verification/fixture:libfixture_java.jar",
+        "//tools/verification/src/test/java/react4j/verification/fixture:libfixture_java-src.jar",
+        "//tools/verification/src/test/js/react4j/verification:fixture.js",
+        "//tools/verification/src/test/js/react4j/verification:runtime.js",
+        "//tools/webtesting:chromium",
+        "//tools/webtesting:chromium.gen.json",
+    ],
+    jvm_flags = [
+        "-Dcoverage.runtime.bundle=$(rootpath //tools/verification/src/test/js/react4j/verification:runtime.js)",
+        "-Dcoverage.runtime.react=$(rootpath //tools/generation:react_dev)",
+        "-Dcoverage.runtime.react-dom=$(rootpath //tools/generation:react_dom_dev)",
+        "-Dcoverage.runtime.sources=$(rootpath //tools/verification:runtime_sources)",
+        "-Dcoverage.runtime.core.jar=$(rootpath //tools/release:core_jar)",
+        "-Dcoverage.runtime.dom.jar=$(rootpath //tools/release:dom_jar)",
+        "-Dcoverage.runtime.core.sources=$(rootpath //tools/release:core_sources)",
+        "-Dcoverage.runtime.dom.sources=$(rootpath //tools/release:dom_sources)",
+        "-Dcoverage.runtime.core.modules=$(rootpath //tools/verification:core_modules)",
+        "-Dcoverage.runtime.dom.modules=$(rootpath //tools/verification:dom_modules)",
+        "-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)",
+        "-Dcoverage.fixture.bundle=$(rootpath //tools/verification/src/test/js/react4j/verification:fixture.js)",
+        "-Dcoverage.fixture.jar=$(rootpath //tools/verification/src/test/java/react4j/verification/fixture:libfixture_java.jar)",
+        "-Dcoverage.fixture.sources=$(rootpath //tools/verification/src/test/java/react4j/verification/fixture:libfixture_java-src.jar)",
+        "-Dcoverage.fixture.modules=$(rootpath :fixture_modules)",
+    ],
+    test_class = "react4j.verification.RuntimeCoverageTest",
+    visibility = ["//:__pkg__"],
+    deps = [
+        "//third_party:closure_compiler",
+        "//third_party:gson",
+        "//tools/verification/src/main/java/react4j/verification:browser_coverage",
+        "//tools/verification/src/main/java/react4j/verification:coverage",
+        "//tools/verification/src/main/java/react4j/verification:coverage_instrumenter",
+        "//tools/verification/src/main/java/react4j/verification:java_coverage",
+        "//tools/verification/src/main/java/react4j/verification:lcov_report",
+        "//tools/verification/src/main/java/react4j/verification:runtime_coverage_lib",
+    ],
+)
+
+j2cl_modules(
+    name = "fixture_modules",
+    testonly = True,
+    library = "//tools/verification/src/test/java/react4j/verification/fixture",
+)
+
+java_testng(
+    name = "lcov_report_tests",
+    srcs = ["LcovReportTest.java"],
+    test_class = "react4j.verification.LcovReportTest",
+    visibility = ["//:__pkg__"],
+    deps = ["//tools/verification/src/main/java/react4j/verification:lcov_report"],
+)
+
+java_browser_testng(
+    name = "application_tests",
+    size = "large",
+    srcs = ["BrowserApplicationTest.java"],
+    data = [
+        "//tools/browser/src/test/js/react4j/browser:application_" + runtime + "_" + level + "_" + maps
+        for runtime in [
+            "development",
+            "production",
+        ]
+        for level in [
+            "BUNDLE",
+            "ADVANCED",
+        ]
+        for maps in [
+            "maps",
+            "no_maps",
+        ]
+    ] + [
+        "//tools/webtesting:chromium",
+        "//tools/webtesting:chromium.gen.json",
+    ],
+    jvm_flags = [
+        "-Dapplication.%s.%s.%s=$(rootpath //tools/browser/src/test/js/react4j/browser:application_%s_%s_%s)" % (runtime, level, maps, runtime, level, maps)
+        for runtime in [
+            "development",
+            "production",
+        ]
+        for level in [
+            "BUNDLE",
+            "ADVANCED",
+        ]
+        for maps in [
+            "maps",
+            "no_maps",
+        ]
+    ] + ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)"],
+    test_class = "react4j.verification.BrowserApplicationTest",
+    visibility = ["//:__pkg__"],
+    deps = [
+        "//third_party:gson",
+        "//tools/verification/src/main/java/react4j/verification:browser_coverage",
+    ],
+)

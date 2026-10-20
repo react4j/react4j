@@ -31,7 +31,7 @@ public final class JarBuilder {
 
     /** Merges the declared jars and resources into one release archive. */
     public static void main(final String[] args) throws Exception {
-        if (args.length == 0 || !"merge".equals(args[0])) {
+        if (0 == args.length || !"merge".equals(args[0])) {
             throw new IllegalArgumentException("Usage: merge --output <jar> --input <jar>...");
         }
 
@@ -66,7 +66,7 @@ public final class JarBuilder {
                     throw new IllegalArgumentException("Unknown argument: " + args[i]);
             }
         }
-        if (output == null) {
+        if (null == output) {
             throw new IllegalArgumentException("Missing --output");
         }
         merge(output, inputs, resources, relocations, exclusions);
@@ -162,7 +162,7 @@ public final class JarBuilder {
     private static byte[] relocateClass(final byte[] content, final Map<String, String> relocations)
             throws IOException {
         // Rewrite names in constant-pool strings while leaving class structure and bytecode intact.
-        if (content.length < 10 || readU4(content, 0) != 0xCAFEBABEL) {
+        if (content.length < 10 || 0xCAFEBABEL != readU4(content, 0)) {
             throw new IOException("Invalid class file in release jar");
         }
         final int count = readU2(content, 8);
@@ -172,7 +172,7 @@ public final class JarBuilder {
         for (int index = 1; index < count; index++) {
             final int tag = content[offset++];
             output.write(tag);
-            if (tag == 1) {
+            if (1 == tag) {
                 final int length = readU2(content, offset);
                 offset += 2;
                 byte[] value = Arrays.copyOfRange(content, offset, offset + length);
@@ -201,7 +201,7 @@ public final class JarBuilder {
                         };
                 output.write(content, offset, size);
                 offset += size;
-                if (tag == 5 || tag == 6) {
+                if (5 == tag || 6 == tag) {
                     index++;
                 }
             }
@@ -280,7 +280,7 @@ public final class JarBuilder {
             final Map<String, byte[]> entries, final String name, final byte[] content, final boolean keepFirst)
             throws IOException {
         final byte[] existing = entries.get(name);
-        if (existing == null) {
+        if (null == existing) {
             entries.put(name, content);
         } else if (keepFirst || Arrays.equals(existing, content)) {
             return;

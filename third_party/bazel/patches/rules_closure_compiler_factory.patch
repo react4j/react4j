@@ -1,0 +1,218 @@
+diff --git a/closure/private/defs.bzl b/closure/private/defs.bzl
+--- a/closure/private/defs.bzl
++++ b/closure/private/defs.bzl
+@@ -102,7 +102,7 @@
+     "exports": "",
+ })
+
+-ClosureJsBinaryInfo = provider("ClosureJsBinaryInfo", fields = ["bin", "map", "language"])
++ClosureJsBinaryInfo = provider("ClosureJsBinaryInfo", fields = ["bin", "map", "language", "compiler_config", "compiler_report"])
+ ClosureCssBinaryInfo = provider("ClosureCssBinaryInfo", fields = ["bin", "map", "renaming_map", "labels"])
+
+ ClosureCssLibraryInfo = provider("ClosureCssLibraryInfo", fields = [
+diff --git a/closure/compiler/closure_js_binary.bzl b/closure/compiler/closure_js_binary.bzl
+--- a/closure/compiler/closure_js_binary.bzl
++++ b/closure/compiler/closure_js_binary.bzl
+@@ -106,6 +106,14 @@
+     # granularity of error suppression, and adds the suppression codes to printed
+     # error messages.
+     inputs = []
++    extension_args = []
++    if bool(ctx.file.compiler_config) != bool(ctx.outputs.compiler_report):
++        fail("compiler_config and compiler_report must be supplied together")
++    if ctx.file.compiler_config:
++        inputs.append(ctx.file.compiler_config)
++        outputs.append(ctx.outputs.compiler_report)
++        files.append(ctx.outputs.compiler_report)
++        extension_args = ["--compiler_config", ctx.file.compiler_config.path, "--compiler_report", ctx.outputs.compiler_report.path]
+     args = [
+         "JsCompiler",
+         "--js_output_file",
+@@ -251,7 +259,7 @@
+         args = [arg for arg in args if arg not in ctx.attr.nodefs]
+
+     all_args = ctx.actions.args()
+-    all_args.add_all(args)
++    all_args.add_all(args + extension_args)
+
+     # We shall now pass all transitive sources, including externs files.
+     all_args.add_all(
+@@ -277,7 +285,7 @@
+     ctx.actions.run(
+         inputs = inputs,
+         outputs = outputs,
+-        executable = ctx.executable._ClosureWorker,
++        executable = ctx.executable.compiler,
+         arguments = [all_args],
+         mnemonic = "ClosureLink",
+         execution_requirements = {"supports-workers": "1"},
+@@ -297,6 +305,8 @@
+             bin = ctx.outputs.bin,
+             map = ctx.outputs.map,
+             language = ctx.attr.language,
++            compiler_config = ctx.file.compiler_config,
++            compiler_report = ctx.outputs.compiler_report,
+         ),
+         js,
+         DefaultInfo(
+@@ -321,6 +331,9 @@
+     implementation = _impl,
+     attrs = dict({
+         "compilation_level": attr.string(default = "ADVANCED"),
++        "compiler": attr.label(default = Label("//java/io/bazel/rules/closure:ClosureWorker"), executable = True, cfg = "exec"),
++        "compiler_config": attr.label(allow_single_file = True),
++        "compiler_report": attr.output(),
+         "css": attr.label(providers = [ClosureCssBinaryInfo]),
+         "debug": attr.bool(default = False),
+         "defs": attr.string_list(),
+diff --git a/java/com/google/javascript/jscomp/JsCompiler.java b/java/com/google/javascript/jscomp/JsCompiler.java
+--- a/java/com/google/javascript/jscomp/JsCompiler.java
++++ b/java/com/google/javascript/jscomp/JsCompiler.java
+@@ -35,6 +35,7 @@
+ import java.util.List;
+ import java.util.Map;
+ import java.util.Set;
++import java.util.ServiceLoader;
+ import javax.inject.Inject;
+
+ /**
+@@ -91,6 +92,8 @@
+     List<String> roots = new ArrayList<>();
+     Set<DiagnosticType> globalSuppressions = new HashSet<>();
+     Path outputErrors = null;
++    Path compilerConfig = null;
++    Path compilerReport = null;
+     boolean expectFailure = false;
+     boolean expectWarnings = false;
+     boolean exportTestFunctions = false;
+@@ -106,6 +109,12 @@
+     while (iargs.hasNext()) {
+       String arg = iargs.next();
+       switch (arg) {
++        case "--compiler_config":
++          compilerConfig = Paths.get(iargs.next());
++          continue;
++        case "--compiler_report":
++          compilerReport = Paths.get(iargs.next());
++          continue;
+         case "--info":
+           infos.add(JsCheckerHelper.loadClosureJsLibraryInfo(Paths.get(iargs.next())));
+           continue;
+@@ -173,7 +182,24 @@
+
+     // Run the compiler, capturing error messages.
+     boolean failed = false;
+-    Compiler compiler = new Compiler();
++    Compiler compiler;
++    CompilerFactory factory = null;
++    if (null == compilerConfig && null == compilerReport) {
++      compiler = new Compiler();
++    } else {
++      if (null == compilerConfig || null == compilerReport) {
++        throw new IOException("compiler_config and compiler_report must be supplied together");
++      }
++      var factories = ServiceLoader.load(CompilerFactory.class).iterator();
++      if (!factories.hasNext()) {
++        throw new IOException("No CompilerFactory is available for compiler_config");
++      }
++      factory = factories.next();
++      if (factories.hasNext()) {
++        throw new IOException("Multiple CompilerFactory implementations are available");
++      }
++      compiler = factory.create(compilerConfig, compilerReport);
++    }
+     JsCheckerErrorFormatter errorFormatter = new JsCheckerErrorFormatter(compiler, roots, labels);
+     errorFormatter.setColorize(true);
+     JsCheckerErrorManager errorManager = new JsCheckerErrorManager(errorFormatter);
+@@ -190,6 +216,9 @@
+       failed |= runner.go() != 0;
+     }
+     failed |= runner.hasErrors();
++    if (!failed && null != factory && null != jsOutputFile) {
++      factory.finish(compiler, jsOutputFile);
++    }
+
+     // Output error messages based on diagnostic settings.
+     if (!expectFailure && !expectWarnings) {
+diff --git a/java/com/google/javascript/jscomp/BUILD b/java/com/google/javascript/jscomp/BUILD
+--- a/java/com/google/javascript/jscomp/BUILD
++++ b/java/com/google/javascript/jscomp/BUILD
+@@ -39,6 +39,7 @@
+         "//javatests/com/google/javascript/jscomp:__pkg__",
+     ],
+     deps = [
++        ":compiler_factory",
+         "//closure/compiler",
+         "//java/io/bazel/rules/closure:build_info_java_proto",
+         "//java/io/bazel/rules/closure:webpath",
+@@ -50,3 +51,10 @@
+         "@maven//:args4j_args4j",
+     ],
+ )
++
++java_library(
++    name = "compiler_factory",
++    srcs = ["CompilerFactory.java"],
++    visibility = ["//visibility:public"],
++    deps = ["//closure/compiler"],
++)
+diff --git a/java/com/google/javascript/jscomp/CompilerFactory.java b/java/com/google/javascript/jscomp/CompilerFactory.java
+--- /dev/null
++++ b/java/com/google/javascript/jscomp/CompilerFactory.java
+@@ -0,0 +1,12 @@
++package com.google.javascript.jscomp;
++
++import java.io.IOException;
++import java.nio.file.Path;
++
++/** Creates a compiler configured by an opaque, declared build input. */
++public interface CompilerFactory {
++  Compiler create(Path configuration, Path report) throws IOException;
++
++  /** Completes extension output after the successful compilation has written JavaScript. */
++  default void finish(Compiler compiler, Path javascript) throws IOException {}
++}
+diff --git a/java/io/bazel/rules/closure/BUILD b/java/io/bazel/rules/closure/BUILD
+--- a/java/io/bazel/rules/closure/BUILD
++++ b/java/io/bazel/rules/closure/BUILD
+@@ -20,13 +20,19 @@
+
+ java_binary(
+     name = "ClosureWorker",
+-    srcs = ["ClosureWorker.java"],
+     jvm_flags = [
+         "-Xmx2g",
+         "-Xss20m",  # JSCompiler needs big stacks for recursive parsing
+         "-XX:+UseParallelGC",  # Best GC when app isn't latency sensitive
+     ],
+     main_class = "io.bazel.rules.closure.ClosureWorker",
++    visibility = ["//visibility:public"],
++    runtime_deps = [":worker_main"],
++)
++
++java_library(
++    name = "worker_main",
++    srcs = ["ClosureWorker.java"],
+     visibility = ["//visibility:public"],
+     deps = [
+         "//java/com/google/javascript/jscomp",
+diff --git a/closure/defs.bzl b/closure/defs.bzl
+--- a/closure/defs.bzl
++++ b/closure/defs.bzl
+@@ -18,7 +18,7 @@
+ load("//closure/compiler:closure_js_aspect.bzl", _closure_js_aspect = "closure_js_aspect")
+ load("//closure/compiler:closure_js_binary.bzl", _closure_js_binary = "closure_js_binary")
+ load("//closure/compiler:closure_js_library.bzl", _closure_js_library = "closure_js_library", _create_closure_js_library = "create_closure_js_library")
+-load("//closure/private:defs.bzl", _CLOSURE_JS_TOOLCHAIN_ATTRS = "CLOSURE_JS_TOOLCHAIN_ATTRS", _ClosureJsLibraryInfo = "ClosureJsLibraryInfo")
++load("//closure/private:defs.bzl", _CLOSURE_JS_TOOLCHAIN_ATTRS = "CLOSURE_JS_TOOLCHAIN_ATTRS", _ClosureJsLibraryInfo = "ClosureJsLibraryInfo", _ClosureJsBinaryInfo = "ClosureJsBinaryInfo")
+ load("//closure/private:files_equal_test.bzl", _files_equal_test = "files_equal_test")
+ load("//closure/stylesheets:closure_css_binary.bzl", _closure_css_binary = "closure_css_binary")
+ load("//closure/stylesheets:closure_css_library.bzl", _closure_css_library = "closure_css_library")
+@@ -30,6 +30,7 @@
+ closure_js_library = _closure_js_library
+ create_closure_js_library = _create_closure_js_library
+ ClosureJsLibraryInfo = _ClosureJsLibraryInfo
++ClosureJsBinaryInfo = _ClosureJsBinaryInfo
+ CLOSURE_JS_TOOLCHAIN_ATTRS = _CLOSURE_JS_TOOLCHAIN_ATTRS
+ files_equal_test = _files_equal_test
+ closure_css_binary = _closure_css_binary

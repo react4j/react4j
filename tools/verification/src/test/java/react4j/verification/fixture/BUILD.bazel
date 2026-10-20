@@ -1,0 +1,22 @@
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    "//tools/verification/src/test/js/react4j/verification:__pkg__",
+])
+
+java_j2cl_library(
+    name = "fixture",
+    testonly = True,
+    srcs = [
+        "MeasurementFixture.java",
+    ],
+    java_deps = [
+        "//third_party/java:jsinterop_annotations",
+    ],
+    deps = [
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)

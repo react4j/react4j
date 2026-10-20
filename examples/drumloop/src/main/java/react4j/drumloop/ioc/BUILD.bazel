@@ -1,25 +1,24 @@
-load("//tools/browser:java.bzl", "java_j2cl_library")
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("//examples:checks.bzl", "JAVACOPTS")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
-java_j2cl_library(
+j2cl_library(
     name = "ioc",
     srcs = [
         "DrumLoopInjector.java",
         "package-info.java",
     ],
-    java_deps = [
-        "//examples/drumloop/src/main/java/react4j/drumloop/model:model_java",
-        "//examples/drumloop/src/main/java/react4j/drumloop/views:views_java",
-        "//third_party/java:sting_core",
-    ],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    javacopts = JAVACOPTS,
     plugins = [
-        "@sting//:sting_processor_plugin",
+        "@react4j//third_party:nullaway_plugin",
+        "@react4j//third_party:sting_processor_plugin",
     ],
     deps = [
         "//examples/drumloop/src/main/java/react4j/drumloop/model",
         "//examples/drumloop/src/main/java/react4j/drumloop/views",
-        "//third_party/java:jspecify-j2cl",
-        "//third_party/java:sting_core-j2cl",
+        "@react4j//third_party:jspecify-j2cl",
+        "@react4j//third_party:sting_core-j2cl",
     ],
 )

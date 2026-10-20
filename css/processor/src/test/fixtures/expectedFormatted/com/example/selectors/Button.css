@@ -1,0 +1,2 @@
+.jcss-com-example-selectors-Button{content:".fake";}.jcss-com-example-selectors-Button:is(.jcss-com-example-selectors-Button--success,:not(.jcss-com-example-selectors-Button--cancel))[data-label=".fake"]{color:green;}.jcss-com-example-selectors-Button:where(.jcss-com-example-selectors-Button--cancel){color:red;}.jcss-com-example-selectors-Button{color:blue;}
+/*# sourceMappingURL=Button.css.map */

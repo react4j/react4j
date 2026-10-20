@@ -4,7 +4,7 @@ load("//third_party/java:rules.bzl", "java_library")
 load("//tools/browser:rules.bzl", "browser_application")
 load("//tools/release:release.bzl", "release_source_jar")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
 java_library(
     name = "java",
@@ -20,12 +20,12 @@ java_library(
         "//doc-examples/src/main/java/react4j/examples/hello_world:sources",
     ],
     plugins = [
-        "//:react4j_processor_plugin",
-        "@arez//:arez_processor_plugin",
+        "//:processor",
+        "//third_party:arez_processor_plugin",
     ],
     deps = [
-        "//:core",
-        "//:dom",
+        "//:_core_java",
+        "//:_dom_java",
     ],
 )
 
@@ -40,14 +40,14 @@ j2cl_library(
     srcs = [":sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     deps = [
-        "//:core-j2cl",
-        "//:dom-j2cl",
-        "//third_party/java:braincheck_core-j2cl",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jsinterop_base-j2cl",
-        "//third_party/java:jspecify-j2cl",
-        "//third_party/java:org_jetbrains_annotations-j2cl",
-        "@arez//:core-j2cl",
+        "//:core",
+        "//:dom",
+        "//third_party:arez_core-j2cl",
+        "//third_party:braincheck_core-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+        "//third_party:org_jetbrains_annotations-j2cl",
     ],
 )
 

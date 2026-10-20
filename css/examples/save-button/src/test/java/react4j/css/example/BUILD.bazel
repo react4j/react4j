@@ -1,0 +1,19 @@
+load("//third_party/java:rules.bzl", "j2cl_library")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//css/examples/save-button/src/test/js/react4j/css/example:__pkg__",
+])
+
+j2cl_library(
+    name = "browser_tests",
+    testonly = True,
+    srcs = ["CssBrowserTest.java"],
+    deps = [
+        "//css/examples/save-button/src/main/java/react4j/css/example:browser",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)

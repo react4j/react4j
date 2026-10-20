@@ -1,4 +1,4 @@
-load("//tools/browser:rules.bzl", "browser_test")
+load("@react4j//:defs.bzl", "browser_test")
 
 package(default_visibility = ["//:__pkg__"])
 
@@ -7,5 +7,8 @@ browser_test(
     srcs = ["browser_test.js"],
     data = ["//examples/webspeechdemo"],
     entry_point = "react4j.webspeechdemo.BrowserTest",
-    deps = ["@rules_closure//closure/testing/library:testcase"],
+    deps = [
+        "//examples/webspeechdemo/src/test/java/react4j/webspeechdemo:browser_tests",
+        "@react4j//third_party:closure_testcase",
+    ],
 )

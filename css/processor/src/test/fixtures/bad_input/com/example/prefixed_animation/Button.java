@@ -1,0 +1,13 @@
+package com.example.prefixed_animation;
+
+import org.jspecify.annotations.NullMarked;
+import react4j.css.Css;
+
+@NullMarked
+@Css("""
+    @keyframes pulse {}
+    -webkit-animation: pulse 1s;
+    """)
+abstract class Button {
+    abstract String style();
+}

@@ -1,0 +1,1 @@
+ERROR com/example/constant/Button.java:8:10: @Css requires a literal Java text block; constants and concatenation are unsupported

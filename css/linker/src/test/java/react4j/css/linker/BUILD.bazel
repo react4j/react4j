@@ -1,0 +1,24 @@
+load("//third_party/java:rules.bzl", "java_testng")
+
+java_testng(
+    name = "tests",
+    srcs = [
+        "BindingSourceMapTest.java",
+        "StyleCompilerTest.java",
+    ],
+    test_classes = [
+        "react4j.css.linker.BindingSourceMapTest",
+        "react4j.css.linker.StyleCompilerTest",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css:__pkg__",
+    ],
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/linker/src/main/java/react4j/css/linker",
+        "//third_party:closure_compiler",
+        "//third_party:closure_compiler_factory",
+        "//third_party:gson",
+    ],
+)

@@ -366,14 +366,7 @@ public final class ArtifactCheck {
                             && view.contains("@NullableString@Nullable[]array()"),
                     "Lost compiled inherited/nested/array contracts");
             var java = Path.of(home, "bin", "java").toString();
-            run(List.of(
-                    java,
-                    "-ea",
-                    "-Dreact4j.environment=development",
-                    "-Dbraincheck.environment=development",
-                    "-classpath",
-                    cp,
-                    "isolated.Consumer"));
+            run(List.of(java, "-ea", "-Dbraincheck.environment=development", "-classpath", cp, "isolated.Consumer"));
             try (var files = Files.walk(classes)) {
                 for (var file :
                         files.filter(path -> path.toString().endsWith(".class")).toList()) {

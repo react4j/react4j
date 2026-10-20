@@ -1,6 +1,8 @@
 load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 load("//tools/browser:rules.bzl", "BrowserApplicationInfo")
 
+visibility(["//website"])
+
 def _site_impl(ctx):
     out = ctx.actions.declare_directory(ctx.label.name)
 
@@ -24,9 +26,9 @@ def _site_impl(ctx):
 
     browser_files = []
     for application, destination in ctx.attr.browser_examples.items():
-        for file, path in application[BrowserApplicationInfo].assets.items():
-            browser_files.append(file)
-            args.add("--asset", "%s=%s/%s" % (file.path, destination, path))
+        directory = application[BrowserApplicationInfo].directory
+        browser_files.append(directory)
+        args.add("--asset", "%s=%s" % (directory.path, destination))
 
     ctx.actions.run(
         executable = ctx.executable._builder,

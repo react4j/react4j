@@ -5,6 +5,8 @@ import static react4j.dom.DOM.*;
 import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import react4j.css.Css;
+import react4j.css.CssCustomProperty;
 import react4j.dom.proptypes.html.CssProps;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.drumloop.model.DrumMachine;
@@ -23,7 +25,49 @@ abstract class IndicatorView {
         final int step = _drumMachine.getCurrentStep();
 
         return div(
-                new HtmlProps().className("indicatorContainer"),
-                on ? div(new HtmlProps().className("indicator").style(new CssProps().left(step * 37.5 + "px"))) : null);
+                new HtmlProps().className(IndicatorsStyle.get().style()),
+                on
+                        ? div(new HtmlProps()
+                                .className(IndicatorStyle.get().style())
+                                .style(new CssProps()
+                                        .customProperty(IndicatorStyle.get().left(), step * 37.5 + "px")))
+                        : null);
+    }
+
+    @Css("""
+        box-sizing: border-box;
+        position: absolute;
+        width: 600px;
+        top: 0;
+        right: 0;
+        height: 100%;
+        padding: 4px 2px;
+        pointer-events: none;
+        """)
+    abstract static class IndicatorsStyle {
+        static IndicatorsStyle get() {
+            return IndicatorView_Styled_IndicatorsStyle.get();
+        }
+
+        abstract String style();
+    }
+
+    @Css("""
+        position: absolute;
+        top: 0;
+        width: 38px;
+        height: 100%;
+        background: #00ff0020;
+        left: var(--indicator-left);
+        """)
+    abstract static class IndicatorStyle {
+        static IndicatorStyle get() {
+            return IndicatorView_Styled_IndicatorStyle.get();
+        }
+
+        abstract String style();
+
+        @CssCustomProperty(name = "indicator-left")
+        abstract String left();
     }
 }

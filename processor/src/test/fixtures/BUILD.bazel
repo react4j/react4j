@@ -112,5 +112,5 @@ filegroup(
         "//processor/src/test/fixtures/input/com/example/render:files",
         "//processor/src/test/fixtures/input/com/example/schedule_render:files",
     ],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )

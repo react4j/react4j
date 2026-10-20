@@ -1,0 +1,1 @@
+ERROR com/example/keyframe_important/Button.java:7:6: com/example/keyframe_important/Button.java:9:23: !important declarations defeat shared/component precedence

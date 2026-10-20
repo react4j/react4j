@@ -1,0 +1,1 @@
+ERROR com/example/nonstatic_nested/Outer.java:9:14: @Css requires an accessible abstract, non-generic style class extending Object; nested classes must be static

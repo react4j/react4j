@@ -1,0 +1,15 @@
+load("//css:defs.bzl", "web_assets")
+
+package(default_visibility = [
+    "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
+    "//css/integration-tests/src/test/java/react4j/css/integration:__pkg__",
+])
+
+web_assets(
+    name = "media",
+    testonly = True,
+    srcs = [
+        "asset.svg",
+        "unused.svg",
+    ],
+)

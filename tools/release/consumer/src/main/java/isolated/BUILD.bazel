@@ -18,21 +18,20 @@ java_test(
         "SampleView.java",
     ],
     jvm_flags = [
-        "-Dreact4j.environment=development",
         "-Dbraincheck.environment=development",
     ],
     main_class = "isolated.Consumer",
     plugins = [
-        "//:react4j_processor_plugin",
-        "@arez//:arez_processor_plugin",
-        "@sting//:sting_processor_plugin",
+        "//:processor",
+        "//third_party:arez_processor_plugin",
+        "//third_party:sting_processor_plugin",
     ],
     use_testrunner = False,
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
     deps = [
-        "//:core",
-        "//:dom",
-        "//third_party/java:sting_core",
+        "//:_core_java",
+        "//:_dom_java",
+        "//third_party:sting_core",
     ],
 )
 

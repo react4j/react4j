@@ -2,15 +2,53 @@ load("@j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@rules_java//java:defs.bzl", "java_import", "java_plugin")
 load("@rules_palantir_java_format//:defs.bzl", "java_format_check")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["//:__subpackages__"])
 
-exports_files(["LICENSE"])
+exports_files(
+    ["LICENSE"],
+    visibility = ["//:__subpackages__"],
+)
+
+exports_files(
+    ["defs.bzl"],
+    visibility = ["//visibility:public"],
+)
 
 java_format_check(
     name = "java_format_check",
     testonly = True,
     remediation = "tools/java_format.sh write",
     targets = [
+        "//css/core/src/main/java/react4j/css",
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/internal/src/test/java/react4j/css/internal:tests",
+        "//css/bundler/src/main/java/react4j/css/bundler",
+        "//css/bundler/src/main/java/react4j/css/bundler:assets",
+        "//css/bundler/src/main/java/react4j/css/bundler:content",
+        "//css/bundler/src/main/java/react4j/css/bundler:media",
+        "//css/bundler/src/main/java/react4j/css/bundler:packaging",
+        "//css/bundler/src/test/java/react4j/css/bundler:tests",
+        "//css/bundler/src/test/java/react4j/css/bundler:asset_tests",
+        "//css/bundler/src/test/java/react4j/css/bundler:packaging_tests",
+        "//css/linker/src/main/java/react4j/css/linker",
+        "//css/linker/src/test/java/react4j/css/linker:tests",
+        "//css/processor/src/test/fixtures:inputs",
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//css/processor/src/test/java/react4j/css/processor:compiler_tests",
+        "//css/processor/src/test/java/react4j/css/processor:asset_font_tests",
+        "//css/processor/src/test/java/react4j/css/processor:names_tests",
+        "//css/processor/src/test/java/react4j/css/processor:peer_compiler_tests",
+        "//css/processor/src/test/java/react4j/css/processor:text_block_tests",
+        "//css/integration-tests/src/test/java/react4j/css/integration:integration_tests",
+        "//css/integration-tests/src/test/java/react4j/css/integration:asset_tests",
+        "//css/integration-tests/src/test/java/react4j/css/integration:fixture_dependency_java",
+        "//css/integration-tests/src/test/java/react4j/css/integration:fixture_bindings_java",
+        "//css/integration-tests/src/test/java/react4j/css/integration:liveness_entry_java",
+        "//css/integration-tests/src/test/java/react4j/css/integration:peer_bindings_java",
+        "//css/processor/src/test/java/react4j/css/processor:processor_tests",
+        "//css/examples/save-button/src/main/java/react4j/css/example:browser_java",
+        "//css/examples/save-button/src/test/java/react4j/css/example:browser_tests",
+        "//css/examples/save-button/src/main/java/react4j/css/example:assets_java",
         "//core",
         "//core:tests",
         "//dom",
@@ -18,40 +56,62 @@ java_format_check(
         "//processor",
         "//processor/src/test/java/react4j/processor:test_classes",
         "//tools/testing/src/main/java/react4j/testing:golden_updater",
+        "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
         "//tools/browser:preview",
+        "//tools/browser/src/test/java/react4j/browser:tests_runner",
         "//tools/browser:assets",
         "//tools/consumer:config",
         "//tools/verification:coverage_check",
+        "//tools/verification/src/main/java/react4j/verification:browser_coverage",
+        "//tools/verification/src/main/java/react4j/verification:coverage_instrumenter",
+        "//tools/verification/src/main/java/react4j/verification:java_coverage",
+        "//tools/verification/src/main/java/react4j/verification:lcov_report",
+        "//tools/verification/src/main/java/react4j/verification:runtime_coverage_lib",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//core/src/test/java/react4j:runtime_coverage",
+        "//dom/src/test/java/react4j/dom:runtime_coverage",
+        "//tools/verification/src/test/java/react4j/verification/fixture:fixture_java",
+        "//tools/verification/src/test/java/react4j/verification:browser_coverage_tests_runner",
+        "//tools/verification/src/test/java/react4j/verification:coverage_tests",
+        "//tools/verification/src/test/java/react4j/verification:instrumenter_tests_runner",
+        "//tools/verification/src/test/java/react4j/verification:lcov_report_tests",
+        "//tools/verification/src/test/java/react4j/verification:runtime_coverage_tests_runner",
         "//doc-examples:java",
-        "//examples/drumloop/src/main/java/react4j/drumloop/browser/audio:audio_java",
-        "//examples/drumloop/src/main/java/react4j/drumloop/browser/core:core_java",
-        "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise:promise_java",
-        "//examples/drumloop/src/main/java/react4j/drumloop/browser:browser_java",
-        "//examples/drumloop/src/main/java/react4j/drumloop/cache:cache_java",
-        "//examples/drumloop/src/main/java/react4j/drumloop/ioc:ioc_java",
-        "//examples/drumloop/src/main/java/react4j/drumloop/model:model_java",
-        "//examples/drumloop/src/main/java/react4j/drumloop/views:views_java",
-        "//examples/drumloop/src/main/java/react4j/drumloop:drumloop_java",
-        "//examples/drumloop/src/test/java/react4j/drumloop/cache:cache_tests_java",
-        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/bluetooth:bluetooth_java",
-        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/core:core_java",
-        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/promise:promise_java",
-        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser:browser_java",
-        "//examples/heart-rate-monitor/src/main/java/react4j/hrm:hrm_java",
-        "//examples/todomvc/arez/src/main/java/react4j/todomvc/arez/model:model_java",
-        "//examples/todomvc/arez/src/main/java/react4j/todomvc/arez/views:views_java",
-        "//examples/todomvc/arez/src/main/java/react4j/todomvc/arez:todomvc_java",
-        "//examples/todomvc/raw/src/main/java/react4j/todomvc/raw/model:model_java",
-        "//examples/todomvc/raw/src/main/java/react4j/todomvc/raw/views:views_java",
-        "//examples/todomvc/raw/src/main/java/react4j/todomvc/raw:todomvc_java",
-        "//examples/todomvc/src/main/java/react4j/todomvc/browser:browser_java",
-        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/ioc:ioc_java",
-        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/model:model_java",
-        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/views:views_java",
-        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting:todomvc_java",
-        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser/speech:speech_java",
-        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser:browser_java",
-        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo:webspeechdemo_java",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/audio:audio",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/core:core",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise:promise",
+        "//examples/drumloop/src/main/java/react4j/drumloop/browser:browser",
+        "//examples/drumloop/src/main/java/react4j/drumloop/cache:cache",
+        "//examples/drumloop/src/main/java/react4j/drumloop/ioc:ioc",
+        "//examples/drumloop/src/main/java/react4j/drumloop/model:model",
+        "//examples/drumloop/src/main/java/react4j/drumloop/views:views",
+        "//examples/drumloop/src/main/java/react4j/drumloop:drumloop",
+        "//examples/drumloop/src/test/java/react4j/drumloop/cache:cache_tests",
+        "//examples/drumloop/src/test/java/react4j/drumloop:browser_tests",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/bluetooth:bluetooth",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/core:core",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser/promise:promise",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm/browser:browser",
+        "//examples/heart-rate-monitor/src/main/java/react4j/hrm:hrm",
+        "//examples/heart-rate-monitor/src/test/java/react4j/hrm:browser_tests",
+        "//examples/todomvc/arez/src/main/java/react4j/todomvc/arez/model:model",
+        "//examples/todomvc/arez/src/main/java/react4j/todomvc/arez/views:views",
+        "//examples/todomvc/arez/src/main/java/react4j/todomvc/arez:todomvc",
+        "//examples/todomvc/raw/src/main/java/react4j/todomvc/raw/model:model",
+        "//examples/todomvc/raw/src/main/java/react4j/todomvc/raw/views:views",
+        "//examples/todomvc/raw/src/main/java/react4j/todomvc/raw:todomvc",
+        "//examples/todomvc/src/main/java/react4j/todomvc/browser:browser",
+        "//examples/todomvc/src/main/java/react4j/todomvc/views:assets",
+        "//examples/todomvc/src/main/java/react4j/todomvc/views:views",
+        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/ioc:ioc",
+        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/model:model",
+        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/views:views",
+        "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting:todomvc",
+        "//examples/todomvc/src/test/java/react4j/todomvc:browser_tests",
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser/speech:speech",
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo/browser:browser",
+        "//examples/webspeechdemo/src/main/java/react4j/webspeechdemo:webspeechdemo",
+        "//examples/webspeechdemo/src/test/java/react4j/webspeechdemo:browser_tests",
         "//tools/site/src/main/java/react4j/site:site",
         "//tools/site:tool",
         "//tools/site/src/test/java/react4j/site:all_tests",
@@ -63,11 +123,12 @@ java_format_check(
         "//tools/release:javadoc_jar_builder",
         "//tools/generation:dom_generator",
         "//tools/generation:react_asset_patcher",
+        "//tools/verification/src/test/java/react4j/verification:application_tests_runner",
     ],
 )
 
 _RUNTIME = [
-    "//third_party/java:arez_core",
+    "//third_party:arez_core",
     "//third_party/java:base",
     "//third_party/java:braincheck_core",
     "//third_party/java:javaemul_internal_annotations",
@@ -78,72 +139,117 @@ _RUNTIME = [
 ]
 
 java_import(
-    name = "core",
+    name = "_core_java",
     jars = ["//tools/release:core_jar"],
     srcjar = "//tools/release:core_sources",
+    visibility = ["//:__subpackages__"],
     exports = _RUNTIME,
 )
 
 java_import(
-    name = "dom",
+    name = "_dom_java",
     jars = ["//tools/release:dom_jar"],
     srcjar = "//tools/release:dom_sources",
-    exports = [":core"] + _RUNTIME,
+    visibility = ["//:__subpackages__"],
+    exports = [":_core_java"] + _RUNTIME,
 )
 
 java_import(
-    name = "processor",
+    name = "_processor_java",
     jars = ["//tools/release:processor_jar"],
     srcjar = "//tools/release:processor_sources",
+    visibility = ["//visibility:private"],
 )
 
 java_plugin(
-    name = "react4j_processor_plugin",
+    name = "processor",
     generates_api = True,
     processor_class = "react4j.processor.React4jProcessor",
-    deps = [":processor"],
+    visibility = ["//visibility:public"],
+    deps = [":_processor_java"],
 )
 
+_BROWSER_RUNTIME = [
+    "//third_party:braincheck_core-j2cl",
+    "//third_party:javaemul_internal_annotations-j2cl",
+    "//third_party:jsinterop_annotations-j2cl",
+    "//third_party:jsinterop_base-j2cl",
+    "//third_party:jspecify-j2cl",
+    "//third_party:org_jetbrains_annotations-j2cl",
+    "//third_party:zemeckis_core-j2cl",
+    "//third_party:arez_core-j2cl",
+]
+
+# Public aliases keep J2CL's generated Wasm/Kotlin companion targets private.
 j2cl_library(
-    name = "core-j2cl",
+    name = "_core_j2cl",
     srcs = ["//tools/release:core_j2cl_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
-    deps = [
-        "//third_party/java:braincheck_core-j2cl",
-        "//third_party/java:javaemul_internal_annotations-j2cl",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jsinterop_base-j2cl",
-        "//third_party/java:jspecify-j2cl",
-        "//third_party/java:org_jetbrains_annotations-j2cl",
-        "//third_party/java:zemeckis_core-j2cl",
-        "@arez//:core-j2cl",
-    ],
+    visibility = ["//visibility:private"],
+    exports = _BROWSER_RUNTIME,
+    deps = _BROWSER_RUNTIME,
 )
 
 j2cl_library(
-    name = "dom-j2cl",
+    name = "_dom_j2cl",
     srcs = ["//tools/release:dom_j2cl_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    visibility = ["//visibility:private"],
+    exports = [":_core_j2cl"],
     deps = [
-        ":core-j2cl",
-        "//third_party/java:braincheck_core-j2cl",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jsinterop_base-j2cl",
-        "//third_party/java:jspecify-j2cl",
-        "//third_party/java:org_jetbrains_annotations-j2cl",
-        "//third_party/java:zemeckis_core-j2cl",
-        "@arez//:core-j2cl",
+        ":_core_j2cl",
+        "//third_party:arez_core-j2cl",
+        "//third_party:braincheck_core-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+        "//third_party:org_jetbrains_annotations-j2cl",
+        "//third_party:zemeckis_core-j2cl",
     ],
+)
+
+alias(
+    name = "core",
+    actual = ":_core_j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "dom",
+    actual = ":_dom_j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "css",
+    actual = "//css/core:core-j2cl",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "css_processor",
+    actual = "//css/processor:plugin",
+    visibility = ["//visibility:public"],
 )
 
 test_suite(
     name = "browser_tests",
     tests = [
+        "//core/src/test/js/react4j:browser_tests",
+        "//core/src/test/js/react4j:configuration_disabled_tests",
+        "//core/src/test/js/react4j:configuration_enabled_tests",
+        "//core/src/test/js/react4j:configuration_invalid_tests",
+        "//core/src/test/js/react4j:configuration_tests",
+        "//css/examples/save-button/src/test/js/react4j/css/example:browser_tests",
+        "//css/examples/save-button/src/test/js/react4j/css/example:prefixed_browser_tests",
+        "//css/examples/save-button/src/test/js/react4j/css/example:uncompressed_browser_tests",
         "//doc-examples/src/test/js/react4j/examples:browser_tests",
+        "//dom/src/test/js/react4j/dom:browser_tests",
         "//examples/drumloop/src/test/js/react4j/drumloop:browser_tests",
         "//examples/heart-rate-monitor/src/test/js/react4j/hrm:browser_tests",
         "//examples/todomvc/src/test/js/react4j/todomvc:browser_tests",
         "//examples/webspeechdemo/src/test/js/react4j/webspeechdemo:browser_tests",
+        "//tools/verification/src/test/java/react4j/verification:application_tests",
     ],
 )
 
@@ -151,6 +257,13 @@ test_suite(
     name = "jvm_tests",
     tests = [
         "//core:tests",
+        "//css/bundler/src/test/java/react4j/css/bundler:asset_tests",
+        "//css/bundler/src/test/java/react4j/css/bundler:packaging_tests",
+        "//css/bundler/src/test/java/react4j/css/bundler:tests",
+        "//css/internal/src/test/java/react4j/css/internal:tests",
+        "//css/linker/src/test/java/react4j/css/linker:tests",
+        "//css/processor/src/test/java/react4j/css/processor:implementation_tests",
+        "//css/processor/src/test/java/react4j/css/processor:unit_tests",
         "//dom:tests",
         "//processor:all_tests",
     ],
@@ -161,8 +274,17 @@ test_suite(
     tests = [
         ":browser_tests",
         ":jvm_tests",
+        "//css/integration-tests/src/test/java/react4j/css/integration:asset_tests",
+        "//css/integration-tests/src/test/java/react4j/css/integration:integration_tests",
+        "//css/processor/src/test/java/react4j/css/processor:processor_tests",
         "//third_party/java:verify_config_sha256",
+        "//tools/browser:tests",
         "//tools/release:tests",
         "//tools/site:tests",
+        "//tools/verification/src/test/java/react4j/verification:browser_coverage_tests",
+        "//tools/verification/src/test/java/react4j/verification:coverage_tests",
+        "//tools/verification/src/test/java/react4j/verification:instrumenter_tests",
+        "//tools/verification/src/test/java/react4j/verification:lcov_report_tests",
+        "//tools/verification/src/test/java/react4j/verification:runtime_coverage_tests",
     ],
 )

@@ -1,0 +1,5 @@
+alias(
+    name = "bundler",
+    actual = "//css/bundler/src/main/java/react4j/css/bundler:tool",
+    visibility = ["//:__subpackages__"],
+)

@@ -1,0 +1,140 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//css:defs.bzl", "css_bundle", "css_js_binary", "web_bundle")
+load(":link_config.bzl", "link_config")
+
+package(default_visibility = [
+    "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
+    "//css/integration-tests/src/test/java/react4j/css/integration:__pkg__",
+])
+
+closure_js_library(
+    name = "entry",
+    testonly = True,
+    srcs = ["entry.js"],
+    deps = ["//css/integration-tests/src/test/java/react4j/css/integration:liveness_entry"],
+)
+
+css_js_binary(
+    name = "optimized",
+    testonly = True,
+    compilation_level = "ADVANCED",
+    entry_points = ["react4j.css.integration.LivenessLink"],
+    deps = [":entry"],
+)
+
+css_bundle(
+    name = "optimized_styles",
+    testonly = True,
+    css = "optimized.css",
+    globals = ["react4j.css.integration.LivenessEntry$NestingDefaults"],
+    root = ":optimized",
+    source_map = "optimized.css.map",
+)
+
+alias(
+    name = "optimized_alias",
+    testonly = True,
+    actual = ":optimized",
+)
+
+css_bundle(
+    name = "alias_styles",
+    testonly = True,
+    css = "alias.css",
+    globals = ["react4j.css.integration.LivenessEntry$NestingDefaults"],
+    root = ":optimized_alias",
+    source_map = "alias.css.map",
+)
+
+css_js_binary(
+    name = "development",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    entry_points = ["react4j.css.integration.LivenessLink"],
+    deps = [":entry"],
+)
+
+css_bundle(
+    name = "development_styles",
+    testonly = True,
+    css = "development.css",
+    globals = ["react4j.css.integration.LivenessEntry$NestingDefaults"],
+    root = ":development",
+    source_map = "development.css.map",
+)
+
+closure_js_library(
+    name = "asset_entry",
+    testonly = True,
+    srcs = ["asset_entry.js"],
+    deps = ["//css/integration-tests/src/test/java/react4j/css/integration:asset_bindings"],
+)
+
+css_js_binary(
+    name = "asset_optimized",
+    testonly = True,
+    compilation_level = "ADVANCED",
+    entry_points = ["react4j.css.integration.AssetLink"],
+    deps = [":asset_entry"],
+)
+
+css_js_binary(
+    name = "asset_development",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    entry_points = ["react4j.css.integration.AssetLink"],
+    deps = [":asset_entry"],
+)
+
+web_bundle(
+    name = "asset_optimized_web",
+    testonly = True,
+    root = ":asset_optimized",
+    styles = {":asset_optimized_styles": "styles/app.css"},
+)
+
+web_bundle(
+    name = "asset_development_web",
+    testonly = True,
+    root = ":asset_development",
+    styles = {":asset_development_styles": "styles/app.css"},
+)
+
+css_bundle(
+    name = "asset_optimized_styles",
+    testonly = True,
+    css = "asset_optimized.css",
+    root = ":asset_optimized",
+    source_map = "asset_optimized.css.map",
+)
+
+css_bundle(
+    name = "asset_development_styles",
+    testonly = True,
+    css = "asset_development.css",
+    root = ":asset_development",
+    source_map = "asset_development.css.map",
+)
+
+css_bundle(
+    name = "asset_alternate_styles",
+    testonly = True,
+    css = "asset_alternate.css",
+    globals = ["react4j.css.integration.CssAssetStyles$Additional"],
+    root = ":asset_optimized",
+    source_map = "asset_alternate.css.map",
+)
+
+link_config(
+    name = "asset_optimized_config",
+    testonly = True,
+    root = ":asset_optimized",
+    visibility = ["//css/bundler/src/test/java/react4j/css/bundler:__pkg__"],
+)
+
+link_config(
+    name = "asset_development_config",
+    testonly = True,
+    root = ":asset_development",
+    visibility = ["//css/bundler/src/test/java/react4j/css/bundler:__pkg__"],
+)

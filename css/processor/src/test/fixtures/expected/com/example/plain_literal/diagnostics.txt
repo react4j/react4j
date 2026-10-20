@@ -1,0 +1,1 @@
+ERROR com/example/plain_literal/Button.java:8:10: CSS definitions require a literal Java text block

@@ -1,0 +1,121 @@
+load("//third_party/java:rules.bzl", "java_binary", "java_library")
+
+java_library(
+    name = "bundler",
+    srcs = [
+        "Bundle.java",
+        "CssPruner.java",
+        "CssReachability.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
+    ],
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party:gson",
+        "//third_party/java:ph_css",
+    ],
+)
+
+java_binary(
+    name = "tool",
+    main_class = "react4j.css.bundler.Bundle",
+    visibility = ["//css/bundler:__pkg__"],
+    runtime_deps = [":bundler"],
+)
+
+java_library(
+    name = "assets",
+    srcs = [
+        "AssetBundle.java",
+        "AssetCss.java",
+        "AssetJavaScript.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
+    ],
+    deps = [
+        ":content",
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/linker/src/main/java/react4j/css/linker",
+        "//third_party:closure_compiler",
+        "//third_party:gson",
+    ],
+)
+
+java_binary(
+    name = "assets_tool",
+    main_class = "react4j.css.bundler.AssetBundle",
+    visibility = ["//css:__pkg__"],
+    runtime_deps = [":assets"],
+)
+
+java_library(
+    name = "content",
+    srcs = [
+        "AssetContent.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
+    ],
+    deps = [
+        ":media",
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party:gson",
+    ],
+)
+
+java_library(
+    name = "media",
+    srcs = [
+        "AssetMedia.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
+        "//tools/browser/src/main/java/react4j/browser:__pkg__",
+    ],
+)
+
+java_binary(
+    name = "prepare_asset",
+    main_class = "react4j.css.bundler.AssetContent",
+    visibility = [
+        "//css:__pkg__",
+        "//tools/browser:__pkg__",
+    ],
+    runtime_deps = [":content"],
+)
+
+java_library(
+    name = "packaging",
+    srcs = [
+        "ApplicationBundle.java",
+        "ApplicationConfiguration.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
+    ],
+    deps = [
+        ":content",
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party:closure_compiler",
+        "//third_party:gson",
+    ],
+)
+
+java_binary(
+    name = "application_tool",
+    main_class = "react4j.css.bundler.ApplicationBundle",
+    visibility = ["//tools/browser:__pkg__"],
+    runtime_deps = [":packaging"],
+)

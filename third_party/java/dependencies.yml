@@ -12,6 +12,7 @@ options:
     java_test: false
   failOnMissingPom: false
 artifacts:
+  - coord: com.helger:ph-css:8.2.3
   - coord: org.commonmark:commonmark:0.30.1
   - coord: org.commonmark:commonmark-ext-gfm-tables:0.30.1
   - coord: io.github.eisop:dataflow-errorprone:3.41.0-eisop1

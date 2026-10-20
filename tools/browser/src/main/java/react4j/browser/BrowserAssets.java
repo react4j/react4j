@@ -7,13 +7,11 @@ import java.nio.file.Path;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public final class BrowserAssets {
+final class BrowserAssets {
     private BrowserAssets() {}
 
     public static void main(String[] args) throws IOException {
-        if (args.length == 3 && args[0].equals("copy")) {
-            Files.copy(Path.of(args[1]), Path.of(args[2]));
-        } else if (args.length == 5 && args[0].equals("bundle")) {
+        if (5 == args.length && "bundle".equals(args[0])) {
             try (var output = Files.newOutputStream(Path.of(args[4]))) {
                 for (int i = 1; i <= 3; i++) {
                     if (i > 1) {
@@ -23,8 +21,7 @@ public final class BrowserAssets {
                 }
             }
         } else {
-            throw new IllegalArgumentException(
-                    "Expected copy <source> <output> or bundle <react> <dom> <compiled> <output>");
+            throw new IllegalArgumentException("Expected bundle <react> <dom> <compiled> <output>");
         }
     }
 }

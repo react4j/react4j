@@ -4,7 +4,7 @@ java_binary(
     name = "golden_updater",
     srcs = ["GoldenUpdater.java"],
     main_class = "react4j.testing.GoldenUpdater",
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )
 
 java_library(
@@ -12,12 +12,16 @@ java_library(
     testonly = True,
     srcs = ["StrictGeneratedCode.java"],
     data = ["//third_party/java:strict_checker_options"],
-    visibility = ["//processor:__subpackages__"],
+    visibility = [
+        "//:__pkg__",
+        "//css/processor/src/test/java/react4j/css/processor:__pkg__",
+        "//processor:__subpackages__",
+    ],
     deps = [
+        "//third_party:error_prone_core",
+        "//third_party:nullaway",
+        "//third_party:proton_qa",
         "//third_party/java:dataflow_errorprone",
-        "//third_party/java:error_prone_core",
-        "//third_party/java:nullaway",
-        "//third_party/java:proton_qa",
         "//third_party/java:testng",
     ],
 )

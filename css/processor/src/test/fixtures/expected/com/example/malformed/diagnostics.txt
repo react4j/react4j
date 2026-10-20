@@ -1,0 +1,1 @@
+ERROR com/example/malformed/Button.java:7:6: com/example/malformed/Button.java:8:14: Invalid CSS: Encountered unexpected token: ";" ";"

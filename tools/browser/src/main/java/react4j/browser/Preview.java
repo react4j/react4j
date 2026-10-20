@@ -6,31 +6,38 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Locale;
 import org.jspecify.annotations.NullMarked;
+import react4j.css.bundler.AssetMedia;
 
 @NullMarked
 public final class Preview {
     private Preview() {}
 
     public static void main(String[] args) throws IOException {
-        if (args.length == 1 && args[0].equals("--help")) {
+        if (1 == args.length && "--help".equals(args[0])) {
             System.out.println("Usage: preview <directory> (http://localhost:3000)");
             return;
         }
-        if (args.length != 1) {
+        if (1 != args.length) {
             throw new IllegalArgumentException("Expected a directory");
         }
         serve(Path.of(args[0]));
     }
 
     public static void serve(final Path directory) throws IOException {
+        start(directory, 3000);
+        System.out.println("Serving " + directory.toRealPath()
+                + " at http://localhost:3000; rebuild with tools/examples.sh build or tools/site.sh build and"
+                + " refresh the browser");
+    }
+
+    static HttpServer start(Path directory, int port) throws IOException {
         final var root = directory.toRealPath();
-        final var server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), 3000), 0);
+        final var server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), port), 0);
         server.createContext("/", exchange -> {
             try (exchange) {
                 final var method = exchange.getRequestMethod();
-                if (!method.equals("GET") && !method.equals("HEAD")) {
+                if (!"GET".equals(method) && !"HEAD".equals(method)) {
                     exchange.getResponseHeaders().set("Allow", "GET, HEAD");
                     exchange.sendResponseHeaders(405, -1);
                     return;
@@ -54,25 +61,14 @@ public final class Preview {
                     exchange.sendResponseHeaders(404, -1);
                     return;
                 }
-                final var name = file.getFileName().toString();
-                final var extension = name.substring(name.lastIndexOf('.') + 1).toLowerCase(Locale.ROOT);
-                final var contentType =
-                        switch (extension) {
-                            case "html" -> "text/html; charset=utf-8";
-                            case "css" -> "text/css; charset=utf-8";
-                            case "js" -> "text/javascript; charset=utf-8";
-                            case "svg" -> "image/svg+xml";
-                            case "png" -> "image/png";
-                            case "ico" -> "image/x-icon";
-                            case "json" -> "application/json";
-                            case "xml" -> "application/xml";
-                            case "wav" -> "audio/wav";
-                            case "ttf" -> "font/ttf";
-                            default -> "application/octet-stream";
-                        };
+                String contentType =
+                        AssetMedia.forPath(file.getFileName().toString()).type();
+                if (contentType.startsWith("text/") || "application/json".equals(contentType)) {
+                    contentType += "; charset=utf-8";
+                }
                 exchange.getResponseHeaders().set("Content-Type", contentType);
                 exchange.getResponseHeaders().set("Cache-Control", "no-store");
-                if (method.equals("HEAD")) {
+                if ("HEAD".equals(method)) {
                     exchange.getResponseHeaders().set("Content-Length", Long.toString(Files.size(file)));
                     exchange.sendResponseHeaders(200, -1);
                 } else {
@@ -82,8 +78,6 @@ public final class Preview {
             }
         });
         server.start();
-        System.out.println("Serving " + root
-                + " at http://localhost:3000; rebuild with tools/examples.sh build or tools/site.sh build and"
-                + " refresh the browser");
+        return server;
     }
 }

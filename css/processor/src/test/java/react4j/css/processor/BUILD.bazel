@@ -1,0 +1,175 @@
+load("//third_party/java:rules.bzl", "FORMATTER_JVM_FLAGS", "java_testng")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//css:__pkg__",
+])
+
+_PROCESSOR_JVM_FLAGS = FORMATTER_JVM_FLAGS + [
+    "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED",
+    "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+    "--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+]
+
+java_testng(
+    name = "processor_tests",
+    size = "large",
+    srcs = [
+        "AssetProcessorTest.java",
+        "CssAssetFontProcessorTest.java",
+        "CssIdImportProcessorTest.java",
+        "CssInterfaceProcessorTest.java",
+        "CssProcessorArtifactTest.java",
+        "CssProcessorTest.java",
+        "CssResourceProcessorTest.java",
+        "CssStableProcessorTest.java",
+        "CssSymbolProcessorTest.java",
+    ],
+    data = [
+        "//css/processor:processor_jar",
+        "//css/processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
+    jvm_flags = _PROCESSOR_JVM_FLAGS + ["-Dcss.processor.jar=$(rootpath //css/processor:processor_jar)"],
+    test_classes = [
+        "react4j.css.processor.AssetProcessorTest",
+        "react4j.css.processor.CssAssetFontProcessorTest",
+        "react4j.css.processor.CssIdImportProcessorTest",
+        "react4j.css.processor.CssProcessorArtifactTest",
+        "react4j.css.processor.CssInterfaceProcessorTest",
+        "react4j.css.processor.CssProcessorTest",
+        "react4j.css.processor.CssResourceProcessorTest",
+        "react4j.css.processor.CssStableProcessorTest",
+        "react4j.css.processor.CssSymbolProcessorTest",
+    ],
+    deps = [
+        "//css/core",
+        "//third_party:closure_compiler_unshaded",
+        "//third_party:gson",
+        "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
+    ],
+)
+
+java_testng(
+    name = "implementation_tests",
+    size = "medium",
+    srcs = [
+        "AssetProcessorTest.java",
+        "CssAssetFontProcessorTest.java",
+        "CssIdImportProcessorTest.java",
+        "CssInterfaceProcessorTest.java",
+        "CssProcessorTest.java",
+        "CssResourceProcessorTest.java",
+        "CssStableProcessorTest.java",
+        "CssSymbolProcessorTest.java",
+    ],
+    data = [
+        "//css/processor/src/test/fixtures",
+        "//third_party/java:strict_checker_options",
+    ],
+    jvm_flags = _PROCESSOR_JVM_FLAGS + ["-Dcss.processor.implementation=true"],
+    test_classes = [
+        "react4j.css.processor.AssetProcessorTest",
+        "react4j.css.processor.CssAssetFontProcessorTest",
+        "react4j.css.processor.CssIdImportProcessorTest",
+        "react4j.css.processor.CssInterfaceProcessorTest",
+        "react4j.css.processor.CssProcessorTest",
+        "react4j.css.processor.CssResourceProcessorTest",
+        "react4j.css.processor.CssStableProcessorTest",
+        "react4j.css.processor.CssSymbolProcessorTest",
+    ],
+    deps = [
+        "//css/core",
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//third_party:closure_compiler_unshaded",
+        "//third_party:gson",
+        "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
+    ],
+)
+
+java_testng(
+    name = "compiler_tests",
+    srcs = ["CssCompilerTest.java"],
+    test_class = "react4j.css.processor.CssCompilerTest",
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//third_party/java:ph_css",
+    ],
+)
+
+java_testng(
+    name = "peer_compiler_tests",
+    srcs = ["CssPeerCompilerTest.java"],
+    test_class = "react4j.css.processor.CssPeerCompilerTest",
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//third_party:closure_compiler_unshaded",
+        "//third_party/java:ph_css",
+    ],
+)
+
+java_testng(
+    name = "ids_tests",
+    srcs = ["CssIdsTest.java"],
+    test_class = "react4j.css.processor.CssIdsTest",
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//third_party/java:ph_css",
+    ],
+)
+
+java_testng(
+    name = "properties_tests",
+    srcs = ["CssPropertiesTest.java"],
+    test_class = "react4j.css.processor.CssPropertiesTest",
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//third_party/java:ph_css",
+    ],
+)
+
+java_testng(
+    name = "names_tests",
+    srcs = ["NamesTest.java"],
+    test_class = "react4j.css.processor.NamesTest",
+    deps = ["//css/processor/src/main/java/react4j/css/processor"],
+)
+
+java_testng(
+    name = "text_block_tests",
+    srcs = ["TextBlockTest.java"],
+    test_class = "react4j.css.processor.TextBlockTest",
+    deps = ["//css/processor/src/main/java/react4j/css/processor"],
+)
+
+test_suite(
+    name = "unit_tests",
+    tests = [
+        ":asset_font_tests",
+        ":compiler_tests",
+        ":ids_tests",
+        ":names_tests",
+        ":peer_compiler_tests",
+        ":properties_tests",
+        ":text_block_tests",
+    ],
+)
+
+java_testng(
+    name = "asset_font_tests",
+    srcs = ["CssAssetFontTest.java"],
+    test_class = "react4j.css.processor.CssAssetFontTest",
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//third_party/java:ph_css",
+    ],
+)

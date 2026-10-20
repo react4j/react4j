@@ -1,76 +1,26 @@
-load("@j2cl//build_defs:rules.bzl", "j2cl_import", "j2cl_library")
+load("@j2cl//build_defs:rules.bzl", "j2cl_import")
 load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_import = "java_import", _java_library = "java_library")
-load(":rules.bzl", "strict_checker_options", _java_test = "java_test")
+load(":rules.bzl", "strict_checker_options", _java_test = "java_test", exports_files = "repository_files")
 
-package(default_visibility = ["//visibility:public"])
-
-alias(
-    name = "arez_core",
-    actual = "@arez//:core",
-)
-
-alias(
-    name = "arez_testng",
-    actual = "@arez//:testng",
-)
-
-alias(
-    name = "arez_processor_runtime",
-    actual = "@arez//:processor",
-)
+package(default_visibility = ["//:__subpackages__"])
 
 _java_library(
     name = "arez_processor",
-    exported_plugins = ["@arez//:arez_processor_plugin"],
-    exports = ["@arez//:processor"],
-)
-
-alias(
-    name = "sting_processor_runtime",
-    actual = "@sting//:processor",
-)
-
-alias(
-    name = "proton_core",
-    actual = "@proton//:core",
-)
-
-alias(
-    name = "proton_qa",
-    actual = "@proton//:qa",
-)
-
-alias(
-    name = "sting_core",
-    actual = "@sting//:core",
+    exported_plugins = ["//third_party:arez_processor_plugin"],
+    exports = ["//third_party:arez_processor_runtime"],
 )
 
 _java_library(
     name = "sting_processor",
-    exported_plugins = ["@sting//:sting_processor_plugin"],
-    exports = ["@sting//:processor"],
-)
-
-alias(
-    name = "nullaway_plugin",
-    actual = "@sting//third_party/java:nullaway_plugin",
+    exported_plugins = ["//third_party:sting_processor_plugin"],
+    exports = ["//third_party:sting_processor_runtime"],
 )
 
 strict_checker_options(name = "strict_checker_options")
 
-alias(
-    name = "error_prone_core",
-    actual = "@sting//third_party/java:error_prone_core",
-)
-
-alias(
-    name = "nullaway",
-    actual = "@sting//third_party/java:nullaway",
-)
-
 j2cl_import(
     name = "sting_core-j2cl",
-    jar = ":sting_core",
+    jar = "//third_party:sting_core",
 )
 
 # Browser annotations are bytecode-only imports; they do not produce JavaScript modules.
@@ -92,37 +42,6 @@ j2cl_import(
 j2cl_import(
     name = "org_jetbrains_annotations-j2cl",
     jar = ":org_jetbrains_annotations",
-)
-
-alias(
-    name = "jsinterop_annotations-j2cl",
-    actual = "@j2cl//:jsinterop-annotations-j2cl",
-)
-
-alias(
-    name = "jsinterop_base-j2cl",
-    actual = "@jsinterop_base//:jsinterop-base-j2cl",
-)
-
-# Share Arez's compilation so the linked application has one Braincheck module set.
-alias(
-    name = "braincheck_core-j2cl",
-    actual = "@arez//third_party/java:braincheck_core-j2cl",
-)
-
-j2cl_library(
-    name = "zemeckis_core-j2cl",
-    # This release bundles its Java and native configuration companions together.
-    srcs = ["@zemeckis//tools/release:zemeckis_core_jar"],
-    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
-    deps = [
-        ":braincheck_core-j2cl",
-        ":grim_annotations-j2cl",
-        ":jsinterop_annotations-j2cl",
-        ":jsinterop_base-j2cl",
-        ":jspecify-j2cl",
-        ":org_jetbrains_annotations-j2cl",
-    ],
 )
 
 _java_import(
@@ -154,11 +73,40 @@ _java_import(
 # DO NOT EDIT: Content is auto-generated from //third_party/java:dependencies.yml by https://github.com/realityforge/bazel-depgen version 0.26
 
 # SHA256 of the configuration content that generated this content
-_CONFIG_SHA256 = "8171958B00751A242935A1270DD8CE2D98A4FAF559721A3AED4CDC37BA7AB17A"
+_CONFIG_SHA256 = "8FB6510178C33A75B48C3725A0E23E43B4056C9DCDF7EB831C4F0AA03E5B2261"
 
 exports_files(["dependencies.yml"])
 
 # Dependency Graph Generated from the input data
+# +- com.helger:ph-css:jar:8.2.3 [compile]
+# |  +- com.helger.commons:ph-typeconvert:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  +- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-base:jar:12.5.1 [compile]
+# |  |     +- org.slf4j:slf4j-api:jar:2.0.18 [compile]
+# |  |     \- com.helger.commons:ph-annotations:jar:12.5.1 [compile]
+# |  +- com.helger.commons:ph-cache:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-annotations:jar:12.5.1 [compile]
+# |  |  |  \- org.jspecify:jspecify:jar:1.0.1 [compile]
+# |  |  +- com.helger.commons:ph-base:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-statistics:jar:12.5.1 [compile]
+# |  |     \- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  +- com.helger.commons:ph-io:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-annotations:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-base:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-typeconvert:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-statistics:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-cache:jar:12.5.1 [compile]
+# |  +- com.helger.commons:ph-mime:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  +- com.helger.commons:ph-text:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-annotations:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-base:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-typeconvert:jar:12.5.1 [compile]
+# |  |  +- com.helger.commons:ph-collection:jar:12.5.1 [compile]
+# |  |  \- com.helger.commons:ph-cache:jar:12.5.1 [compile]
+# |  \- org.slf4j:slf4j-api:jar:2.0.18 [compile]
 # +- org.commonmark:commonmark:jar:0.30.1 [compile]
 # +- org.commonmark:commonmark-ext-gfm-tables:jar:0.30.1 [compile]
 # |  \- org.commonmark:commonmark:jar:0.30.1 [compile]
@@ -172,7 +120,7 @@ exports_files(["dependencies.yml"])
 # |  \- org.jspecify:jspecify:jar:0.3.0 [compile] (conflicts with 1.0.1)
 # +- org.jspecify:jspecify:jar:1.0.1 [compile]
 # +- org.testng:testng:jar:7.10.2 [compile]
-# |  +- org.slf4j:slf4j-api:jar:1.7.36 [compile]
+# |  +- org.slf4j:slf4j-api:jar:1.7.36 [compile] (conflicts with 2.0.18)
 # |  +- com.beust:jcommander:jar:1.82 [compile]
 # |  +- org.webjars:jquery:jar:3.7.1 [runtime]
 # |  +- com.google.inject:guice:jar:5.1.0 [compile, optional]
@@ -257,6 +205,123 @@ _java_import(
     jars = ["@jsinterop_annotations//file"],
     srcjar = "@jsinterop_annotations__sources//file",
     tags = ["maven_coordinates=com.google.jsinterop:jsinterop-annotations:2.0.0"],
+)
+
+_java_import(
+    name = "ph_annotations",
+    jars = ["@ph_annotations//file"],
+    srcjar = "@ph_annotations__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-annotations:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [":jspecify"],
+)
+
+_java_import(
+    name = "ph_base",
+    jars = ["@ph_base//file"],
+    srcjar = "@ph_base__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-base:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":ph_annotations",
+        ":slf4j_api",
+    ],
+)
+
+_java_import(
+    name = "ph_cache",
+    jars = ["@ph_cache//file"],
+    srcjar = "@ph_cache__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-cache:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":ph_annotations",
+        ":ph_base",
+        ":ph_statistics",
+    ],
+)
+
+_java_import(
+    name = "ph_collection",
+    jars = ["@ph_collection//file"],
+    srcjar = "@ph_collection__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-collection:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [":ph_base"],
+)
+
+_java_import(
+    name = "ph_io",
+    jars = ["@ph_io//file"],
+    srcjar = "@ph_io__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-io:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":ph_annotations",
+        ":ph_base",
+        ":ph_cache",
+        ":ph_collection",
+        ":ph_statistics",
+        ":ph_typeconvert",
+    ],
+)
+
+_java_import(
+    name = "ph_mime",
+    jars = ["@ph_mime//file"],
+    srcjar = "@ph_mime__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-mime:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [":ph_collection"],
+)
+
+_java_import(
+    name = "ph_statistics",
+    jars = ["@ph_statistics//file"],
+    srcjar = "@ph_statistics__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-statistics:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [":ph_collection"],
+)
+
+_java_import(
+    name = "ph_text",
+    jars = ["@ph_text//file"],
+    srcjar = "@ph_text__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-text:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":ph_annotations",
+        ":ph_base",
+        ":ph_cache",
+        ":ph_collection",
+        ":ph_typeconvert",
+    ],
+)
+
+_java_import(
+    name = "ph_typeconvert",
+    jars = ["@ph_typeconvert//file"],
+    srcjar = "@ph_typeconvert__sources//file",
+    tags = ["maven_coordinates=com.helger.commons:ph-typeconvert:12.5.1"],
+    visibility = ["//visibility:private"],
+    deps = [":ph_collection"],
+)
+
+_java_import(
+    name = "ph_css",
+    jars = ["@ph_css//file"],
+    srcjar = "@ph_css__sources//file",
+    tags = ["maven_coordinates=com.helger:ph-css:8.2.3"],
+    deps = [
+        ":ph_cache",
+        ":ph_collection",
+        ":ph_io",
+        ":ph_mime",
+        ":ph_text",
+        ":ph_typeconvert",
+        ":slf4j_api",
+    ],
 )
 
 _java_import(
@@ -386,7 +451,7 @@ _java_import(
     name = "slf4j_api",
     jars = ["@slf4j_api//file"],
     srcjar = "@slf4j_api__sources//file",
-    tags = ["maven_coordinates=org.slf4j:slf4j-api:1.7.36"],
+    tags = ["maven_coordinates=org.slf4j:slf4j-api:2.0.18"],
     visibility = ["//visibility:private"],
 )
 

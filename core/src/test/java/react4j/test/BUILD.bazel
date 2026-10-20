@@ -1,8 +1,15 @@
-filegroup(
-    name = "sources",
+load("//third_party/java:rules.bzl", "java_testng")
+
+java_testng(
+    name = "tests",
+    size = "small",
     srcs = [
         "JDependTest.java",
         "package-info.java",
     ],
-    visibility = ["//core/src/test/java/react4j:__pkg__"],
+    data = ["//core/src/main/java/react4j"],
+    jvm_flags = ["-Dreact4j.core.compile_target=$(rootpath //core/src/main/java/react4j)"],
+    test_class = "react4j.test.JDependTest",
+    visibility = ["//core:__pkg__"],
+    deps = ["//third_party/java:jdepend"],
 )

@@ -1,0 +1,1 @@
+{"version":1,"owner":"com.example.assets.Owner$Media","implementation":"com.example.assets.Owner_Assets_Media","bindings":[{"method":"font","path":"com/example/assets/card/heading.ttf"},{"method":"icon","path":"com/example/assets/card/edit.svg"},{"method":"portrait","path":"com/example/assets/card/portrait.png"}]}

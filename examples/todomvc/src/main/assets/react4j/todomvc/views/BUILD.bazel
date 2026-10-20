@@ -1,0 +1,10 @@
+load("@react4j//:defs.bzl", "web_assets")
+
+web_assets(
+    name = "toggles",
+    srcs = [
+        "toggle.svg",
+        "toggle_checked.svg",
+    ],
+    visibility = ["//examples/todomvc/src/main/java/react4j/todomvc/views:__pkg__"],
+)

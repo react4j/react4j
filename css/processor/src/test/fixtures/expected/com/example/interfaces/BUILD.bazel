@@ -1,0 +1,14 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "Owner$First.css",
+        "Owner$First.css.json",
+        "Owner$First.css.map",
+        "Owner$Second.css",
+        "Owner$Second.css.json",
+        "Owner$Second.css.map",
+        "Owner_Styled_First.java",
+        "Owner_Styled_Second.java",
+    ],
+    visibility = ["//css/processor/src/test/fixtures:__pkg__"],
+)

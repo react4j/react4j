@@ -29,7 +29,6 @@ public final class ReactTestUtil {
             validateInputValues();
             storeDebugDataAsState();
         }
-        Contexts.setContextProvider(new Contexts.DefaultContextProvider());
         Contexts.clear();
     }
 

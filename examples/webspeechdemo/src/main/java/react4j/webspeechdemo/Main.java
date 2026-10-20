@@ -1,6 +1,7 @@
 package react4j.webspeechdemo;
 
 import jsinterop.annotations.JsMethod;
+import react4j.css.GlobalCss;
 import react4j.dom.ReactDOM;
 import react4j.webspeechdemo.browser.Console;
 import react4j.webspeechdemo.browser.Element;
@@ -19,4 +20,11 @@ public final class Main {
             Console.log("Speech API not present");
         }
     }
+
+    @GlobalCss("""
+        body {
+          background-color: #333;
+        }
+        """)
+    static final class Defaults {}
 }

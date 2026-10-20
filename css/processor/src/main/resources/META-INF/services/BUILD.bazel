@@ -1,0 +1,4 @@
+exports_files(
+    ["javax.annotation.processing.Processor"],
+    visibility = ["//css/processor/src/main/java/react4j/css/processor:__pkg__"],
+)

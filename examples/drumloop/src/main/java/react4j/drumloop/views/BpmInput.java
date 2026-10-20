@@ -6,6 +6,8 @@ import jsinterop.base.Js;
 import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import react4j.css.Css;
+import react4j.css.CssImport;
 import react4j.dom.events.FormEvent;
 import react4j.dom.proptypes.html.InputProps;
 import react4j.dom.proptypes.html.attributeTypes.InputType;
@@ -28,11 +30,32 @@ abstract class BpmInput {
     @Render
     ReactNode render() {
         return input(new InputProps()
-                .className("bpmInput")
+                .className(BpmStyle.get().style())
                 .type(InputType.number)
                 .value(String.valueOf(_drumMachine.getBpm()))
                 .min("60")
                 .max("180")
                 .onChange(this::onBpmChange));
+    }
+
+    @CssImport(value = Fonts.class, font = "righteous", name = "heading")
+    @Css("""
+        box-sizing: border-box;
+        color: #25ccf7;
+        border: 2px solid #25ccf7;
+        font-size: 18px;
+        background: none;
+        padding: 10px;
+        font-family: heading, cursive;
+        border-radius: 2px;
+        margin: 2px 20px 2px 4px;
+        align-self: center;
+        """)
+    abstract static class BpmStyle {
+        static BpmStyle get() {
+            return BpmInput_Styled_BpmStyle.get();
+        }
+
+        abstract String style();
     }
 }

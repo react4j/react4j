@@ -1,33 +1,28 @@
-load("//third_party/java:rules.bzl", "java_testng")
+load("//third_party/java:rules.bzl", "j2cl_library")
 
-java_testng(
-    name = "tests",
-    size = "small",
+package(default_visibility = [
+    "//:__pkg__",
+    "//core:__pkg__",
+    "//core/src/test/js/react4j:__pkg__",
+    "//tools/verification/src/test/js/react4j/verification:__pkg__",
+])
+
+j2cl_library(
+    name = "runtime_coverage",
+    testonly = True,
     srcs = [
-        "AbstractTest.java",
         "ContextsTest.java",
-        "KeyedTest.java",
-        "//core/src/test/java/react4j/test:sources",
+        "ReactConfigTest.java",
+        "RuntimeBrowserTest.java",
+        "RuntimeBrowserTest.native.js",
+        "RuntimeCoverageExample.java",
     ],
-    data = ["//core/src/main/java/react4j"],
-    jvm_flags = [
-        "-Dbraincheck.environment=development",
-        "-Dzemeckis.environment=development",
-        "-Darez.environment=development",
-        "-Dreact4j.environment=development",
-        "-Dreact4j.core.compile_target=$(rootpath //core/src/main/java/react4j)",
-    ],
-    test_classes = [
-        "react4j.ContextsTest",
-        "react4j.KeyedTest",
-        "react4j.test.JDependTest",
-    ],
-    visibility = ["//visibility:public"],
     deps = [
-        "//core",
-        "//third_party/java:arez_core",
-        "//third_party/java:arez_testng",
-        "//third_party/java:jdepend",
-        "//third_party/java:mockito_core",
+        "//:core",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:arez_core-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )

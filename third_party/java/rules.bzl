@@ -1,106 +1,8 @@
+load("@j2cl//build_defs:rules.bzl", _j2cl_library = "j2cl_library")
 load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_library = "java_library", _java_plugin = "java_plugin", _java_test = "java_test")
+load("//examples:checks.bzl", "BASE_JAVACOPTS", "JAVACOPTS")
 
-# Java 17 products use the same strict checker policy as the pinned Sting module.
-_JAVACOPTS = [
-    "--release",
-    "17",
-    "-Werror",
-    "-Xlint:all,-processing,-serial,-this-escape",
-    "-Xmaxerrs",
-    "10000",
-    "-Xmaxwarns",
-    "10000",
-]
-_ERROR_PRONE_JAVACOPTS = [
-    "-Xep:AlmostJavadoc:ERROR",
-    "-Xep:AlreadyChecked:ERROR",
-    "-Xep:AmbiguousMethodReference:ERROR",
-    "-Xep:AnnotateFormatMethod:ERROR",
-    "-Xep:ArrayAsKeyOfSetOrMap:ERROR",
-    "-Xep:AssertEqualsArgumentOrderChecker:ERROR",
-    "-Xep:AssertThrowsMultipleStatements:ERROR",
-    "-Xep:AttemptedNegativeZero:ERROR",
-    "-Xep:BadComparable:ERROR",
-    "-Xep:BadImport:ERROR",
-    "-Xep:BadInstanceof:ERROR",
-    "-Xep:BareDotMetacharacter:ERROR",
-    "-Xep:BigDecimalEquals:ERROR",
-    "-Xep:BigDecimalLiteralDouble:ERROR",
-    "-Xep:BoxedPrimitiveConstructor:ERROR",
-    "-Xep:ClassCanBeStatic:ERROR",
-    "-Xep:ClassName:ERROR",
-    "-Xep:DefaultLocale:ERROR",
-    "-Xep:DeprecatedVariable:ERROR",
-    "-Xep:DuplicateBranches:ERROR",
-    "-Xep:EmptyBlockTag:ERROR",
-    "-Xep:EmptyCatch:ERROR",
-    "-Xep:EmptyIf:ERROR",
-    "-Xep:EmptyTopLevelDeclaration:ERROR",
-    "-Xep:EqualsBrokenForNull:ERROR",
-    "-Xep:EqualsMissingNullable:ERROR",
-    "-Xep:FieldCanBeLocal:ERROR",
-    "-Xep:FieldCanBeStatic:ERROR",
-    "-Xep:Finalize:ERROR",
-    "-Xep:ForEachIterable:ERROR",
-    "-Xep:InconsistentHashCode:ERROR",
-    "-Xep:LongLiteralLowerCaseSuffix:ERROR",
-    "-Xep:MissingBraces:ERROR",
-    "-Xep:MissingDefault:ERROR",
-    "-Xep:MissingRuntimeRetention:ERROR",
-    "-Xep:MixedArrayDimensions:ERROR",
-    "-Xep:MultiVariableDeclaration:ERROR",
-    "-Xep:MultipleTopLevelClasses:ERROR",
-    "-Xep:NonOverridingEquals:ERROR",
-    "-Xep:NotJavadoc:ERROR",
-    "-Xep:NullOptional:ERROR",
-    "-Xep:NullablePrimitive:ERROR",
-    "-Xep:NullablePrimitiveArray:ERROR",
-    "-Xep:NullableTypeParameter:ERROR",
-    "-Xep:NullableWildcard:ERROR",
-    "-Xep:PackageLocation:ERROR",
-    "-Xep:ParameterMissingNullable:ERROR",
-    "-Xep:ParameterName:ERROR",
-    "-Xep:PublicApiNamedStreamShouldReturnStream:ERROR",
-    "-Xep:RedundantOverride:ERROR",
-    "-Xep:RedundantThrows:ERROR",
-    "-Xep:RemoveUnusedImports:ERROR",
-    "-Xep:ReturnAtTheEndOfVoidFunction:ERROR",
-    "-Xep:ReturnFromVoid:ERROR",
-    "-Xep:ReturnMissingNullable:ERROR",
-    "-Xep:ReturnsNullCollection:ERROR",
-    "-Xep:SelfAlwaysReturnsThis:ERROR",
-    "-Xep:SunApi:ERROR",
-    "-Xep:SystemExitOutsideMain:ERROR",
-    "-Xep:ToStringReturnsNull:ERROR",
-    "-Xep:UnnecessarilyVisible:ERROR",
-    "-Xep:UnnecessaryAnonymousClass:ERROR",
-    "-Xep:UnnecessaryBoxedAssignment:ERROR",
-    "-Xep:UnnecessaryMethodReference:ERROR",
-    "-Xep:UnnecessaryOptionalGet:ERROR",
-    "-Xep:UnsynchronizedOverridesSynchronized:ERROR",
-    "-Xep:UnusedLabel:ERROR",
-    "-Xep:UnusedTypeParameter:ERROR",
-    "-Xep:UnusedVariable:ERROR",
-    "-Xep:UseCorrectAssertInTests:ERROR",
-    "-Xep:UsingJsr305CheckReturnValue:ERROR",
-    "-Xep:VoidMissingNullable:ERROR",
-    "-Xep:FieldCanBeFinal:ERROR",
-    "-Xep:FieldMissingNullable:ERROR",
-    "-Xep:PrivateConstructorForUtilityClass:ERROR",
-    "-Xep:UnnecessaryDefaultInEnumSwitch:ERROR",
-    "-Xep:UnnecessarilyFullyQualified:ERROR",
-    "-Xep:Varifier:ERROR",
-]
-
-_NULLAWAY_JAVACOPTS = [
-    "-XDaddTypeAnnotationsToSymbol=true",
-    "-Xep:NullAway:ERROR",
-    "-Xep:RequireExplicitNullMarking:ERROR",
-    "-Xep:JSpecifyUnrecognizedAnnotationLocation:ERROR",
-    "-XepOpt:NullAway:OnlyNullMarked=true",
-    "-XepOpt:NullAway:JSpecifyMode=true",
-    "-XepOpt:NullAway:AssertsEnabled=true",
-]
+visibility(["//..."])
 
 FORMATTER_JVM_FLAGS = [
     "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
@@ -111,15 +13,31 @@ FORMATTER_JVM_FLAGS = [
     "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
 ]
 
-def _compile_policy(srcs, javacopts, deps, plugins):
-    options = _JAVACOPTS + _ERROR_PRONE_JAVACOPTS
+_JSPECIFY = Label("//third_party/java:jspecify")
+_JSPECIFY_J2CL = Label("//third_party:jspecify-j2cl")
+_NULLAWAY = Label("//third_party:nullaway_plugin")
+
+def _compile_policy(srcs, javacopts, deps, plugins, j2cl = False):
+    options = ([] if j2cl else ["--release", "17"]) + (JAVACOPTS if srcs else BASE_JAVACOPTS)
     if srcs:
-        options += _NULLAWAY_JAVACOPTS
-        if "//third_party/java:jspecify" not in deps:
-            deps = ["//third_party/java:jspecify"] + deps
-        if "//third_party/java:nullaway_plugin" not in plugins:
-            plugins = ["//third_party/java:nullaway_plugin"] + plugins
+        jspecify = _JSPECIFY_J2CL if j2cl else _JSPECIFY
+        if jspecify not in [value if type(value) == "Label" else native.package_relative_label(value) for value in deps]:
+            deps = [jspecify] + deps
+        if _NULLAWAY not in [value if type(value) == "Label" else native.package_relative_label(value) for value in plugins]:
+            plugins = [_NULLAWAY] + plugins
     return (options + javacopts, deps, plugins)
+
+def j2cl_library(name, srcs = [], javacopts = [], deps = [], plugins = [], **kwargs):
+    options, deps, plugins = _compile_policy(srcs, javacopts, deps, plugins, j2cl = True)
+    _j2cl_library(
+        name = name,
+        srcs = srcs,
+        javacopts = options,
+        deps = deps,
+        plugins = plugins,
+        experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+        **kwargs
+    )
 
 def java_library(name, srcs = [], javacopts = [], deps = [], plugins = [], **kwargs):
     options, deps, plugins = _compile_policy(srcs, javacopts, deps, plugins)
@@ -150,8 +68,8 @@ def java_testng(name, srcs, test_classes = [], test_class = None, test_methods =
         use_testrunner = False,
         main_class = "org.testng.TestNG",
         args = ["-testclass", ",".join(test_classes), "-verbose", "2"] + (["-methods", ",".join(test_methods)] if test_methods else []),
-        deps = ["//third_party/java:testng"] + deps if srcs else [],
-        runtime_deps = runtime_deps + (["//third_party/java:testng"] + deps if not srcs else []),
+        deps = [Label("//third_party/java:testng")] + deps if srcs else [],
+        runtime_deps = runtime_deps + ([Label("//third_party/java:testng")] + deps if not srcs else []),
         javacopts = javacopts,
         jvm_flags = jvm_flags,
         **kwargs
@@ -159,7 +77,11 @@ def java_testng(name, srcs, test_classes = [], test_class = None, test_methods =
 
 def _checker_options_impl(ctx):
     output = ctx.actions.declare_file(ctx.label.name + ".txt")
-    ctx.actions.write(output, "\n".join(_JAVACOPTS + _ERROR_PRONE_JAVACOPTS + _NULLAWAY_JAVACOPTS) + "\n")
+    ctx.actions.write(output, "\n".join(["--release", "17"] + JAVACOPTS) + "\n")
     return [DefaultInfo(files = depset([output]))]
 
 strict_checker_options = rule(implementation = _checker_options_impl)
+
+# Depgen emits its configuration export without an explicit visibility.
+def repository_files(srcs):
+    native.exports_files(srcs, visibility = ["//:__subpackages__"])

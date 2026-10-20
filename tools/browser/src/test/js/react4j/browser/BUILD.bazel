@@ -1,0 +1,70 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//:defs.bzl", "browser_application", "css_bundle")
+
+package(default_visibility = ["//tools/verification/src/test/java/react4j/verification:__pkg__"])
+
+closure_js_library(
+    name = "entry",
+    testonly = True,
+    srcs = ["application.js"],
+    deps = [
+        "//:core",
+        "//css/examples/save-button/src/main/java/react4j/css/example:assets",
+    ],
+)
+
+[
+    css_bundle(
+        name = "styles_" + runtime + "_" + level + "_" + maps,
+        testonly = True,
+        css = runtime + "_" + level + "_" + maps + ".css",
+        root = ":application_" + runtime + "_" + level + "_" + maps + "_bundle",
+        shared = ["//tools/browser/src/test/css/react4j/browser:application.css"],
+        source_map = runtime + "_" + level + "_" + maps + ".css.map",
+    )
+    for runtime in [
+        "development",
+        "production",
+    ]
+    for level in [
+        "BUNDLE",
+        "ADVANCED",
+    ]
+    for maps in [
+        "maps",
+        "no_maps",
+    ]
+]
+
+[
+    browser_application(
+        name = "application_" + runtime + "_" + level + "_" + maps,
+        testonly = True,
+        compilation_level = level,
+        defs = [
+            "--define=react4j.browser.text='first'",
+            "--define=react4j.browser.text='custom=string'",
+            "--define=react4j.browser.flag=true",
+            "--define=react4j.browser.number=12.5",
+            "--define=react4j.enable_view_names='false'",
+        ],
+        entry_point = "react4j.browser.Application",
+        html = "index.html" if "ADVANCED" == level else None,
+        include_source_maps = "maps" == maps,
+        runtime_mode = runtime,
+        styles = {":styles_" + runtime + "_" + level + "_" + maps: "css/application.css"},
+        deps = [":entry"],
+    )
+    for runtime in [
+        "development",
+        "production",
+    ]
+    for level in [
+        "BUNDLE",
+        "ADVANCED",
+    ]
+    for maps in [
+        "maps",
+        "no_maps",
+    ]
+]

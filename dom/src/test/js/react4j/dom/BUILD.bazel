@@ -1,0 +1,35 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//tools/browser:rules.bzl", "browser_test")
+
+package(default_visibility = ["//:__pkg__"])
+
+browser_test(
+    name = "browser_tests",
+    srcs = ["browser_test.js"],
+    entry_point = "react4j.dom.BrowserTest",
+    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
+)
+
+closure_js_library(
+    name = "properties_test",
+    testonly = True,
+    srcs = ["properties_test.js"],
+    visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
+    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
+)
+
+closure_js_library(
+    name = "events_test",
+    testonly = True,
+    srcs = ["events_test.js"],
+    visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
+    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
+)
+
+closure_js_library(
+    name = "runtime_test",
+    testonly = True,
+    srcs = ["runtime_test.js"],
+    visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
+    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
+)

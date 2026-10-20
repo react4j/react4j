@@ -1,0 +1,270 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+load("//css:defs.bzl", "css_bundle")
+load("//third_party/java:rules.bzl", "java_testng")
+load("//tools/browser:java.bzl", "java_j2cl_library")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//css:__pkg__",
+    "//css/integration-tests/src/test/js/react4j/css/integration:__pkg__",
+])
+
+java_j2cl_library(
+    name = "fixture_contracts",
+    testonly = True,
+    srcs = [
+        "StyleContracts.java",
+        "StyleState.java",
+        "package-info.java",
+    ],
+    java_deps = ["//css/core"],
+    plugins = ["//:css_processor"],
+    deps = [
+        "//:css",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
+    name = "fixture_dependency",
+    testonly = True,
+    srcs = [
+        "PropertyTheme.java",
+        "SharedDefaults.java",
+        "SharedLabel.java",
+        "SharedPulse.java",
+        "UnselectedDefaults.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        ":fixture_contracts_java",
+        "//css/core",
+    ],
+    plugins = ["//:css_processor"],
+    deps = [
+        ":fixture_contracts",
+        "//:css",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
+    name = "fixture_bindings",
+    testonly = True,
+    srcs = [
+        "ButtonStyles.java",
+        "SymbolStyles.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        ":fixture_contracts_java",
+        ":fixture_dependency_java",
+        "//css/core",
+    ],
+    plugins = ["//:css_processor"],
+    deps = [
+        ":fixture_contracts",
+        ":fixture_dependency",
+        "//:css",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
+    name = "peer_bindings",
+    testonly = True,
+    srcs = [
+        "PeerStyles.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        ":fixture_dependency_java",
+        "//css/core",
+    ],
+    plugins = ["//:css_processor"],
+    deps = [
+        ":fixture_dependency",
+        "//:css",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+closure_js_library(
+    name = "left",
+    testonly = True,
+    exports = [
+        ":fixture_bindings",
+        ":peer_bindings",
+    ],
+)
+
+closure_js_library(
+    name = "right",
+    testonly = True,
+    exports = [":fixture_bindings"],
+)
+
+closure_js_library(
+    name = "graph",
+    testonly = True,
+    exports = [
+        ":left",
+        ":right",
+    ],
+)
+
+css_bundle(
+    name = "fixture_styles",
+    testonly = True,
+    css = "fixture.css",
+    root = ":graph",
+    source_map = "fixture.css.map",
+)
+
+css_bundle(
+    name = "selected_styles",
+    testonly = True,
+    css = "selected.css",
+    globals = ["react4j.css.integration.UnselectedDefaults"],
+    root = ":graph",
+    source_map = "selected.css.map",
+)
+
+java_testng(
+    name = "integration_tests",
+    srcs = [
+        "CssIntegrationTest.java",
+        "CssLivenessIntegrationTest.java",
+        "package-info.java",
+    ],
+    data = [
+        "ButtonStyles.java",
+        "LivenessEntry.java",
+        "PropertyTheme.java",
+        "SharedDefaults.java",
+        "SharedPulse.java",
+        "SymbolStyles.java",
+        ":fixture.css",
+        ":fixture.css.map",
+        ":fixture_bindings.js",
+        ":liveness_entry.js",
+        ":selected.css",
+        ":selected.css.map",
+        "//css/integration-tests/src/test/js/react4j/css/integration:alias.css",
+        "//css/integration-tests/src/test/js/react4j/css/integration:development.css",
+        "//css/integration-tests/src/test/js/react4j/css/integration:optimized.css",
+        "//css/integration-tests/src/test/js/react4j/css/integration:optimized.css.map",
+        "//css/integration-tests/src/test/js/react4j/css/integration:optimized.css-live.json",
+        "//css/integration-tests/src/test/js/react4j/css/integration:optimized.js",
+        "//css/integration-tests/src/test/js/react4j/css/integration:optimized.js.map",
+    ],
+    jvm_flags = [
+        "-Dcss.liveness.binding_tree=$(rootpath :liveness_entry.js)",
+        "-Dcss.liveness.source=$(rootpath LivenessEntry.java)",
+        "-Dcss.liveness.development=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:development.css)",
+        "-Dcss.liveness.alias=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:alias.css)",
+        "-Dcss.liveness.optimized=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.css)",
+        "-Dcss.liveness.map=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.css.map)",
+        "-Dcss.liveness.javascript_map=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.js.map)",
+        "-Dcss.liveness.javascript=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.js)",
+        "-Dcss.liveness.names=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:optimized.css-live.json)",
+        "-Dcss.fixture=$(rootpath :fixture.css)",
+        "-Dcss.map=$(rootpath :fixture.css.map)",
+        "-Dcss.tree=$(rootpath :fixture_bindings.js)",
+        "-Dcss.source=$(rootpath ButtonStyles.java)",
+        "-Dcss.symbols_source=$(rootpath SymbolStyles.java)",
+        "-Dcss.frames_source=$(rootpath SharedPulse.java)",
+        "-Dcss.globals_source=$(rootpath SharedDefaults.java)",
+        "-Dcss.selected=$(rootpath :selected.css)",
+    ],
+    test_classes = [
+        "react4j.css.integration.CssIntegrationTest",
+        "react4j.css.integration.CssLivenessIntegrationTest",
+    ],
+    deps = [
+        ":fixture_bindings_java",
+        ":fixture_contracts_java",
+        ":fixture_dependency_java",
+        "//third_party:closure_compiler_unshaded",
+        "//third_party:gson",
+        "//third_party/java:ph_css",
+    ],
+)
+
+java_j2cl_library(
+    name = "liveness_entry",
+    testonly = True,
+    srcs = [
+        "LivenessEntry.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        ":fixture_bindings_java",
+        ":fixture_contracts_java",
+        "//css/core",
+        "//third_party/java:jsinterop_annotations",
+    ],
+    plugins = ["//:css_processor"],
+    deps = [
+        ":fixture_bindings",
+        ":fixture_contracts",
+        "//:css",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
+    name = "asset_bindings",
+    testonly = True,
+    srcs = [
+        "AssetFixtures.java",
+        "CssAssetStyles.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        "//css/core",
+        "//third_party/java:jsinterop_annotations",
+    ],
+    plugins = ["//:css_processor"],
+    deps = [
+        "//:css",
+        "//css/integration-tests/src/test/assets/react4j/css/integration:media",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+java_testng(
+    name = "asset_tests",
+    srcs = [
+        "AssetIntegrationTest.java",
+        "package-info.java",
+    ],
+    data = [
+        ":asset.css",
+        ":asset_bindings.js",
+        "//css/integration-tests/src/test/assets/react4j/css/integration:media.assets.json",
+    ],
+    jvm_flags = [
+        "-Dassets.tree=$(rootpath :asset_bindings.js)",
+        "-Dassets.catalogue=$(rootpath //css/integration-tests/src/test/assets/react4j/css/integration:media.assets.json)",
+    ],
+    test_class = "react4j.css.integration.AssetIntegrationTest",
+    deps = ["//css/internal/src/main/java/react4j/css/internal"],
+)
+
+css_bundle(
+    name = "asset_styles",
+    testonly = True,
+    css = "asset.css",
+    root = ":asset_bindings",
+    source_map = "asset.css.map",
+)
+
+filegroup(
+    name = "asset_test_tree",
+    testonly = True,
+    srcs = [":asset_bindings.js"],
+    visibility = ["//css/bundler/src/test/java/react4j/css/bundler:__pkg__"],
+)

@@ -1,0 +1,48 @@
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("//examples:checks.bzl", "JAVACOPTS")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//examples/todomvc:__subpackages__",
+])
+
+j2cl_library(
+    name = "views",
+    srcs = [
+        "Page.java",
+        "package-info.java",
+    ],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    javacopts = JAVACOPTS,
+    plugins = [
+        "@react4j//third_party:nullaway_plugin",
+        "@react4j//:processor",
+        "@react4j//:css_processor",
+        "@react4j//third_party:arez_processor_plugin",
+    ],
+    deps = [
+        "@react4j//:core",
+        "@react4j//:css",
+        "@react4j//:dom",
+        "@react4j//third_party:arez_core-j2cl",
+        "@react4j//third_party:jsinterop_annotations-j2cl",
+        "@react4j//third_party:jsinterop_base-j2cl",
+        "@react4j//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "assets",
+    srcs = ["ItemAssets.java"],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    javacopts = JAVACOPTS,
+    plugins = [
+        "@react4j//third_party:nullaway_plugin",
+        "@react4j//:css_processor",
+    ],
+    deps = [
+        "//examples/todomvc/src/main/assets/react4j/todomvc/views:toggles",
+        "@react4j//:css",
+        "@react4j//third_party:jspecify-j2cl",
+    ],
+)

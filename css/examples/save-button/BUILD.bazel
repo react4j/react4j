@@ -1,0 +1,13 @@
+load(":assets.bzl", "asset_example")
+
+package(default_visibility = ["//css/examples/save-button/src/test/js/react4j/css/example:__pkg__"])
+
+exports_files(
+    [
+        "public/index.html",
+        "public/nested.html",
+    ],
+    visibility = ["//css/examples/save-button/src/test/js/react4j/css/example:__pkg__"],
+)
+
+asset_example(name = "asset_example")

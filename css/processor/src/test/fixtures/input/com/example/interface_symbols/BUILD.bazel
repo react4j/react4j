@@ -1,0 +1,7 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "Owner.java",
+    ],
+    visibility = ["//css/processor/src/test/fixtures:__pkg__"],
+)

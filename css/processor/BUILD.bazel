@@ -1,0 +1,54 @@
+load("@rules_java//java:defs.bzl", "java_import", "java_plugin")
+load("//tools/release:release.bzl", "release_jar")
+
+package(default_visibility = ["//:__subpackages__"])
+
+release_jar(
+    name = "processor_jar",
+    out = "css-processor.jar",
+    exclude_prefixes = [
+        "org/jspecify/",
+        "javax/annotation/",
+        "META-INF/maven/com.fasterxml.jackson",
+        "META-INF/maven/com.google.code.findbugs/jsr305/",
+        "META-INF/maven/com.google.errorprone/error_prone_annotations/",
+        "META-INF/maven/com.google.j2objc/j2objc-annotations/",
+        "react4j/css/processor/vendor/proton/vendor/google/errorprone/",
+        "react4j/css/processor/vendor/proton/vendor/google/j2objc/",
+        "react4j/css/processor/vendor/proton/vendor/jackson/",
+        "react4j/css/processor/vendor/proton/vendor/jspecify/",
+        "META-INF/services/react4j.css.processor.vendor.proton.vendor.jackson.",
+        "LICENSE",
+        "NOTICE",
+        "META-INF/LICENSE",
+        "META-INF/NOTICE",
+        "META-INF/DEPENDENCIES",
+        "META-INF/versions/",
+        "META-INF/buildinfo.xml",
+        "META-INF/sbom/",
+    ],
+    relocations = [
+        "com.helger=react4j.css.processor.vendor.helger",
+        "com.palantir.javapoet=react4j.css.processor.vendor.javapoet",
+        "org.realityforge.proton=react4j.css.processor.vendor.proton",
+        "org.slf4j=react4j.css.processor.vendor.slf4j",
+        "com.google.gson=react4j.css.processor.vendor.gson",
+        "react4j.css.internal=react4j.css.processor.internal",
+    ],
+    resource_entries = ["META-INF/LICENSE"],
+    resource_files = ["//:LICENSE"],
+    runtime_java_targets = ["//css/processor/src/main/java/react4j/css/processor"],
+)
+
+java_import(
+    name = "processor",
+    jars = [":processor_jar"],
+)
+
+java_plugin(
+    name = "plugin",
+    # Generated subclasses implement authored APIs; javac Trees are needed only in full compilation.
+    generates_api = False,
+    processor_class = "react4j.css.processor.CssProcessor",
+    deps = [":processor"],
+)

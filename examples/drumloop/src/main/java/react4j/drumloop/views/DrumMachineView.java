@@ -5,6 +5,9 @@ import static react4j.dom.DOM.*;
 import react4j.ReactNode;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import react4j.css.Css;
+import react4j.css.CssImport;
+import react4j.css.GlobalCss;
 import react4j.dom.proptypes.html.HtmlProps;
 import react4j.drumloop.model.DrumMachine;
 
@@ -19,10 +22,10 @@ abstract class DrumMachineView {
     @Render
     ReactNode render() {
         return div(
-                new HtmlProps().className("container"),
+                new HtmlProps().className(ContainerStyle.get().style()),
                 div(
-                        new HtmlProps().className("header"),
-                        h1(new HtmlProps().className("logo"), "Trap Lord 9000"),
+                        new HtmlProps().className(HeaderStyle.get().style()),
+                        h1(new HtmlProps().className(LogoStyle.get().style()), "Trap Lord 9000"),
                         BpmInputBuilder.build(),
                         PlayButtonBuilder.build()),
                 suspense(
@@ -30,13 +33,113 @@ abstract class DrumMachineView {
                         4000,
                         fragment(
                                 div(
-                                        new HtmlProps().className("stepSequencer"),
+                                        new HtmlProps()
+                                                .className(SequencerStyle.get().style()),
                                         IndicatorBuilder.build(),
                                         fragment(_drumMachine.getTracks().stream()
                                                 .map(TrackBuilder::track))),
                                 div(
-                                        new HtmlProps().className("buttonContainer"),
+                                        new HtmlProps()
+                                                .className(ButtonsStyle.get().style()),
                                         fragment(_drumMachine.getEffects().stream()
                                                 .map(FxButtonBuilder::sound))))));
+    }
+
+    @GlobalCss("""
+        body {
+          background: #333;
+          margin: 0;
+        }
+        """)
+    static final class Defaults {}
+
+    @CssImport(Defaults.class)
+    @Css("""
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        max-width: 800px;
+        margin: auto;
+        background: linear-gradient(to bottom right, #222, #0a0a0a);
+        border: 2px solid black;
+        border-radius: 4px;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        """)
+    abstract static class ContainerStyle {
+        static ContainerStyle get() {
+            return DrumMachineView_Styled_ContainerStyle.get();
+        }
+
+        abstract String style();
+    }
+
+    @Css("""
+        flex: 0 1 auto;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        align-items: center;
+        """)
+    abstract static class HeaderStyle {
+        static HeaderStyle get() {
+            return DrumMachineView_Styled_HeaderStyle.get();
+        }
+
+        abstract String style();
+    }
+
+    @CssImport(value = Fonts.class, font = "righteous", name = "heading")
+    @Css("""
+        font-size: 28px;
+        color: #25ccf7;
+        font-family: heading, cursive;
+        padding: 20px;
+        margin: 0;
+        text-transform: uppercase;
+        display: inline-block;
+        """)
+    abstract static class LogoStyle {
+        static LogoStyle get() {
+            return DrumMachineView_Styled_LogoStyle.get();
+        }
+
+        abstract String style();
+    }
+
+    @Css("""
+        box-sizing: border-box;
+        flex: 1;
+        flex-direction: row;
+        align-items: stretch;
+        width: 100%;
+        padding: 0 20px 10px;
+        display: flex;
+        """)
+    abstract static class ButtonsStyle {
+        static ButtonsStyle get() {
+            return DrumMachineView_Styled_ButtonsStyle.get();
+        }
+
+        abstract String style();
+    }
+
+    @Css("""
+        box-sizing: border-box;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        border: 1px solid #555;
+        margin: 0 20px 20px;
+        position: relative;
+        """)
+    abstract static class SequencerStyle {
+        static SequencerStyle get() {
+            return DrumMachineView_Styled_SequencerStyle.get();
+        }
+
+        abstract String style();
     }
 }

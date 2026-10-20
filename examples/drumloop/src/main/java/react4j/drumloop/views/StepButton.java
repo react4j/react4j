@@ -8,6 +8,7 @@ import react4j.ReactNode;
 import react4j.annotations.Input;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import react4j.css.Css;
 import react4j.dom.proptypes.html.BtnProps;
 import react4j.drumloop.model.StepCell;
 
@@ -22,13 +23,14 @@ abstract class StepButton {
 
     @Render
     ReactNode render() {
-        final boolean oddBar = (_cell.beat() / 4) % 2 == 1;
+        var stepStyle = StepStyle.get();
+        final boolean oddBar = 1 == (_cell.beat() / 4) % 2;
         return button(new BtnProps()
+                .data("step", Integer.toString(_cell.beat()))
                 .className(
-                        "step_button",
-                        oddBar ? "step_button_odd" : null,
-                        _cell.on() ? "step_button_on" : null,
-                        _cell.doubled() ? "step_button_doubled" : null)
+                        _cell.on() ? stepStyle.on() : stepStyle.style(),
+                        oddBar ? stepStyle.odd() : null,
+                        _cell.doubled() ? stepStyle.doubled() : null)
                 .onClick(e -> toggleCell(e.isShiftKey())));
     }
 
@@ -48,5 +50,43 @@ abstract class StepButton {
                 _cell.setOn();
             }
         }
+    }
+
+    @Css("""
+        flex: 1;
+        background: #FD7272;
+        opacity: 0.35;
+        border-radius: 2px;
+        margin: 2px;
+
+        &.on {
+          opacity: 1;
+        }
+
+        &.odd {
+          background: #25CCF7;
+        }
+
+        @keyframes doubled {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+
+        &.doubled {
+          animation: doubled 0.5s linear infinite;
+        }
+        """)
+    abstract static class StepStyle {
+        static StepStyle get() {
+            return StepButton_Styled_StepStyle.get();
+        }
+
+        abstract String style();
+
+        abstract String on();
+
+        abstract String odd();
+
+        abstract String doubled();
     }
 }
