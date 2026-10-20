@@ -1,0 +1,4 @@
+exports_files(
+    ["application.css"],
+    visibility = ["//tools/browser/src/test/js/react4j/browser:__pkg__"],
+)

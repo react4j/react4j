@@ -144,8 +144,7 @@ final class AssetBundle {
             style.write(fileUrls);
         }
         String code = Files.readString(javascript);
-        var mapped = AssetJavaScript.rewrite(
-                code, AssetJavaScript.mapping(code, Path.of(options.get("--map")), link, trees), link, urls);
+        var mapped = AssetJavaScript.finalizeBundle(code, Path.of(options.get("--map")), link, trees, urls);
         Files.writeString(Path.of(options.get("--output-js")), mapped.text());
         Files.writeString(Path.of(options.get("--output-map")), mapped.map() + "\n");
         var inventory = new JsonObject();

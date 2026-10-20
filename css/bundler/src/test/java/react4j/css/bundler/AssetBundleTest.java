@@ -15,8 +15,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import org.testng.annotations.Test;
 import react4j.css.internal.AssetResource;
+import react4j.css.internal.CssCatalogue;
 import react4j.css.internal.CssLink;
 import react4j.css.internal.SourceMap;
 
@@ -395,6 +397,47 @@ public final class AssetBundleTest {
             assertTrue(AssetJavaScript.mapping("", empty, link, List.of(input(false, "tree")))
                     .getAsJsonArray("sections")
                     .isEmpty());
+        } finally {
+            delete(directory);
+        }
+    }
+
+    @Test
+    public void developmentFinalizationChecksTokensAndSupportsSuppliedAndEmptyMaps() throws Exception {
+        var directory = Files.createTempDirectory("asset-development-finalize");
+        try {
+            var link = CssLink.read(Files.readString(input(false, "config")));
+            String code = Files.readString(input(false, "javascript"));
+            var urls = new TreeMap<String, String>();
+            for (var asset : link.assets()) {
+                urls.put(asset.binding().value(), "assets/" + asset.binding().method() + ".svg");
+            }
+            var empty = directory.resolve("empty.map");
+            Files.writeString(empty, "");
+            var supplied = directory.resolve("supplied.map");
+            Files.writeString(
+                    supplied,
+                    AssetJavaScript.mapping(code, empty, link, List.of(input(false, "tree")))
+                            .toString());
+            for (var map : List.of(empty, supplied)) {
+                var result = AssetJavaScript.finalizeBundle(code, map, link, List.of(input(false, "tree")), urls);
+                assertTrue(result.text().contains("globalThis.document.currentScript.src"));
+                assertTrue(result.text().endsWith("//# sourceMappingURL=app.js.map\n"));
+                assertTrue(result.text().contains("assets/icon.svg"));
+                assertEquals(result.map().get("file").getAsString(), "app.js");
+            }
+            expectThrows(
+                    IllegalArgumentException.class,
+                    () -> AssetJavaScript.finalizeBundle(
+                            code + "\nwindow.bad='react4j-asset:unknown';",
+                            empty,
+                            link,
+                            List.of(input(false, "tree")),
+                            urls));
+            var none = CssLink.create(CssCatalogue.read(List.of()), "empty", false);
+            var result = AssetJavaScript.finalizeBundle("window.example=1;", empty, none, List.of(), Map.of());
+            assertEquals(result.text(), "window.example=1;\n//# sourceMappingURL=app.js.map\n");
+            assertTrue(result.map().getAsJsonArray("sections").isEmpty());
         } finally {
             delete(directory);
         }

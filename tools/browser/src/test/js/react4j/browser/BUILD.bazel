@@ -19,6 +19,7 @@ closure_js_library(
         testonly = True,
         css = runtime + "_" + level + "_" + maps + ".css",
         root = ":application_" + runtime + "_" + level + "_" + maps + "_bundle",
+        shared = ["//tools/browser/src/test/css/react4j/browser:application.css"],
         source_map = runtime + "_" + level + "_" + maps + ".css.map",
     )
     for runtime in [

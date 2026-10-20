@@ -32,6 +32,11 @@ final class AssetJavaScript {
     private AssetJavaScript() {}
 
     static MappedText rewrite(String javascript, JsonObject map, CssLink link, Map<String, String> urls) {
+        return rewrite(javascript, map, link, urls, true);
+    }
+
+    private static MappedText rewrite(
+            String javascript, JsonObject map, CssLink link, Map<String, String> urls, boolean appendMap) {
         var compiler = new Compiler();
         var options = new CompilerOptions();
         options.setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT_NEXT);
@@ -108,10 +113,15 @@ final class AssetJavaScript {
                 edits.add(new SourceMap.Edit(start, start + literal.getLength(), "(" + base + "+" + quote(url) + ")"));
             }
         }
-        edits.add(new SourceMap.Edit(javascript.length(), javascript.length(), "\n//# sourceMappingURL=app.js.map\n"));
+        if (appendMap) {
+            edits.add(new SourceMap.Edit(
+                    javascript.length(), javascript.length(), "\n//# sourceMappingURL=app.js.map\n"));
+        }
         edits.sort(Comparator.comparingInt(SourceMap.Edit::start));
         var result = new MappedText(javascript, map).replace(edits);
-        result.map().addProperty("file", "app.js");
+        if (appendMap) {
+            result.map().addProperty("file", "app.js");
+        }
         return result;
     }
 
@@ -162,6 +172,62 @@ final class AssetJavaScript {
         return new JsonPrimitive(value).toString();
     }
 
+    private record Input(int start, String code, JsonObject map, boolean assets) {}
+
+    static MappedText finalizeBundle(
+            String javascript, Path supplied, CssLink link, List<Path> trees, Map<String, String> urls)
+            throws IOException {
+        // BUNDLE inputs have already been checked by Closure. Only generated bindings need edits.
+        // Reserved optimized tokens take the full validation path, including malformed/unbound tokens.
+        if (link.optimized() || !Files.readString(supplied).isBlank() || javascript.contains("react4j-asset:")) {
+            return rewrite(javascript, mapping(javascript, supplied, link, trees), link, urls);
+        }
+        var inputs = inputs(javascript, link, trees);
+        var output = new StringBuilder(javascript.length() + 128);
+        var sections = new JsonArray();
+        int cursor = 0;
+        var position = new Position(0, 0);
+        for (var input : inputs.values()) {
+            output.append(javascript, cursor, input.start());
+            position = position.advance(javascript, cursor, input.start());
+            var mapped = input.assets()
+                    ? rewrite(input.code(), input.map(), link, urls, false)
+                    : new MappedText(input.code(), input.map());
+            var section = new JsonObject();
+            section.add("offset", position.json());
+            section.add("map", mapped.map());
+            sections.add(section);
+            output.append(mapped.text());
+            position = position.advance(mapped.text(), 0, mapped.text().length());
+            cursor = input.start() + input.code().length();
+        }
+        output.append(javascript, cursor, javascript.length()).append("\n//# sourceMappingURL=app.js.map\n");
+        return new MappedText(output.toString(), document(sections));
+    }
+
+    private record Position(int line, int column) {
+        Position advance(String text, int start, int end) {
+            int nextLine = line;
+            int nextColumn = column;
+            for (int i = start; i < end; i++) {
+                if ('\n' == text.charAt(i)) {
+                    nextLine++;
+                    nextColumn = 0;
+                } else {
+                    nextColumn++;
+                }
+            }
+            return new Position(nextLine, nextColumn);
+        }
+
+        JsonObject json() {
+            var result = new JsonObject();
+            result.addProperty("line", line);
+            result.addProperty("column", column);
+            return result;
+        }
+    }
+
     static JsonObject mapping(String javascript, Path supplied, CssLink link, List<Path> trees) throws IOException {
         String source = Files.readString(supplied);
         if (!source.isBlank()) {
@@ -170,8 +236,24 @@ final class AssetJavaScript {
         if (link.optimized()) {
             throw new IllegalArgumentException("Optimized JavaScript requires a source map");
         }
+        var sections = new JsonArray();
+        var position = new Position(0, 0);
+        int cursor = 0;
+        for (var input : inputs(javascript, link, trees).values()) {
+            position = position.advance(javascript, cursor, input.start());
+            var section = new JsonObject();
+            section.add("offset", position.json());
+            section.add("map", input.map());
+            sections.add(section);
+            cursor = input.start();
+        }
+        return document(sections);
+    }
+
+    private static TreeMap<Integer, Input> inputs(String javascript, CssLink link, List<Path> trees)
+            throws IOException {
         // Closure BUNDLE preserves input bytes but emits no map. Compose the actual companion maps.
-        var sections = new TreeMap<Integer, JsonObject>();
+        var sections = new TreeMap<Integer, Input>();
         var names = Stream.concat(
                         link.values().stream().map(CssLink.Value::source),
                         link.assets().stream().map(CssLink.Asset::source))
@@ -224,29 +306,18 @@ final class AssetJavaScript {
             }
             document.add("sources", sources);
             document.remove("sourceRoot");
-            sections.put(start, document);
+            boolean assets =
+                    link.assets().stream().anyMatch(asset -> asset.source().equals(name));
+            sections.put(start, new Input(start, code, document, assets));
         }
+        return sections;
+    }
+
+    private static JsonObject document(JsonArray sections) {
         var result = new JsonObject();
         result.addProperty("version", 3);
         result.addProperty("file", "app.js");
-        var values = new JsonArray();
-        for (var entry : sections.entrySet()) {
-            var section = new JsonObject();
-            var offset = new JsonObject();
-            int start = entry.getKey();
-            offset.addProperty(
-                    "line",
-                    javascript
-                            .substring(0, start)
-                            .chars()
-                            .filter(c -> '\n' == c)
-                            .count());
-            offset.addProperty("column", start - javascript.lastIndexOf('\n', start - 1) - 1);
-            section.add("offset", offset);
-            section.add("map", entry.getValue());
-            values.add(section);
-        }
-        result.add("sections", values);
+        result.add("sections", sections);
         return result;
     }
 }
