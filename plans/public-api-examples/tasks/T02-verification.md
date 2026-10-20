@@ -14,3 +14,5 @@ Evidence:
 - Simplify review completed across the migration, compiler settings, helper consumers, verification script and affected docs; no additional changes needed. `git diff --check`, shell syntax and documentation-link checks pass.
 - User follow-up: fetched remote master and verified local/remote master at `adfbc02527d0afed1d4998bf35710821d0d65d34`, already an ancestor of HEAD. Requested `git merge --no-edit origin/master` reports `Already up to date.` No integration changes required.
 - Independent implementation review and final closeout are workflow gates tracked in the task map.
+
+Final verification scheduling: after the formatter fix, a full-gate rerun built all downstream variants but three of five simultaneous browser-service startups failed before executing tests. The pinned `rules_webtesting/go/wtl/service/wsl/wsl.go` sets a one-second health deadline. The expanded external check now limits local test jobs to one; fresh verification passes all five fastbuild suites; optimized and full-gate completion pending. No retry or test suppression added.

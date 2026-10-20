@@ -222,8 +222,9 @@ printf '%s\n' '//src/test/js/isolated:browser' >> "$scratch/browser-tests"
 bazel --output_base="$scratch/bazel" build --target_pattern_file="$scratch/example-applications"
 bazel --output_base="$scratch/bazel" build //src/main/java/isolated:views //:application //:application_manifest //:contract //exported:main_targets @react4j//:core @react4j//:dom
 bazel --output_base="$scratch/bazel" build -c opt //:application //:application_manifest //:contract //exported:main_targets
+# The pinned launcher gives its WebDriver service only one second to start.
 for mode in fastbuild opt; do
-  bazel --output_base="$scratch/bazel" test -c "$mode" --target_pattern_file="$scratch/browser-tests" --test_output=errors
+  bazel --output_base="$scratch/bazel" test -c "$mode" --local_test_jobs=1 --target_pattern_file="$scratch/browser-tests" --test_output=errors
   expect_failure '[ArrayEquals]' build -c "$mode" //:bad_array.js
   expect_failure '[NullAway]' build -c "$mode" //:bad_null.js
 done

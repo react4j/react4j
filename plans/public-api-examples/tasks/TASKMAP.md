@@ -5,7 +5,7 @@
 - Frontier: None (implementation complete)
 - Planning reviewer: `/root/examples_public_planning` — Findings: none (1/3 rounds; final confirmation unused)
 - Plan checkpoint: automatic — user implementation request, existing delivery authority, passing independent planning review
-- Implementation reviewer: `/root/examples_public_review` (1/5 rounds; final confirmation unused). Round 1: P2 formatting scans omitted native J2CL sources. Fixed: explicit authored-source filegroups, including three affected native browser-test peers. 105 formatter scans include all 163 example Java sources. Negative control rejects unformatted application, browser-test and helper Java; restored check passes. Round 2 pending. Final full-gate rerun pending.
+- Implementation reviewer: `/root/examples_public_review` (2/5 rounds; final confirmation unused). Round 1: P2 formatting scans omitted native J2CL sources. Fixed: explicit authored-source filegroups, including three affected native browser-test peers. 105 formatter scans include all 163 example Java sources. Negative control rejects unformatted application, browser-test and helper Java; restored check passes. Round 2: Findings: none; all 39 conversions and negative controls verified. A final full-gate rerun reached external tests, where three services failed the pinned launcher's one-second health deadline during concurrent cold starts (test exit 127 before test code). Running the five disposable-workspace browser suites serially; fresh full gate in progress, with all five downstream suites passing fastbuild. Round 3 pending for this verification scheduling change and final evidence.
 
 | Task | Status | Dependencies |
 | --- | --- | --- |
