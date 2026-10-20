@@ -1,6 +1,6 @@
 # Verification and publication
 
-- Status: pending
+- Status: in_progress
 - Blocked by: T03
 - Spec coverage: R4/AC4
 
