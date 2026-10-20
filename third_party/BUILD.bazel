@@ -34,7 +34,7 @@ alias(
 
 alias(
     name = "braincheck_core-j2cl",
-    actual = "@braincheck//core/src/main/java/org/realityforge/braincheck:core-j2cl",
+    actual = "@braincheck//:core-j2cl",
     visibility = ["//visibility:public"],
 )
 
@@ -189,6 +189,17 @@ alias(
 alias(
     name = "react_production",
     actual = "@react_production//file",
+)
+
+filegroup(
+    name = "react_runtime_assets",
+    srcs = [
+        "//tools/generation:react_dev",
+        "//tools/generation:react_dom_dev",
+        "//tools/generation:react_dom_prod",
+        "//tools/generation:react_prod",
+    ],
+    visibility = ["//visibility:public"],
 )
 
 alias(
