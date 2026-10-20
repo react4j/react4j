@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: planned
-- Current frontier: T01
+- Status: implementing
+- Current frontier: T02
 - Planning reviewer: /root/bazel_facade_planning (2/3 rounds; final confirmation unused); Findings: none.
 - Plan checkpoint: automatic; accepted scope and implementation authority from user “accept”, no human pause requested, planning review passed.
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -16,7 +16,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Public facade and symbolic composition](T01-public-boundary.md) | in_progress | None |
+| T01 | [Public facade and symbolic composition](T01-public-boundary.md) | complete | None |
 | T02 | [Delivery verification](T02-delivery.md) | pending | T01 |
 
 ## Promoted knowledge

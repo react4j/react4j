@@ -14,18 +14,9 @@ public_targets='
 //:core
 //:css
 //:css_processor
+//:defs.bzl
 //:dom
 //:processor
-//css:defs.bzl
-//css/linker/src/main/java/react4j/css/linker:worker
-//tools/browser:mode
-//tools/browser:production
-//tools/browser:rules.bzl
-//tools/generation:react_dev
-//tools/generation:react_dom_dev
-//tools/generation:react_dom_prod
-//tools/generation:react_prod
-//tools/webtesting:chromium
 '
 # Include exported sources and generated outputs; generated files belong to their generating API target.
 (cd "$root" && bazel query 'visible(@rules_java//java:defs.bzl, //...:all-targets)' --output=xml) > "$scratch/public.xml"
@@ -50,7 +41,7 @@ cp "$asset_files/card/icon.svg" "$asset_files/card/prepared.svg"
 cp "$root/examples/drumloop/src/main/assets/react4j/drumloop/views/Righteous-Regular.ttf" "$asset_files/"
 cp "$root/css/examples/save-button/public/index.html" "$workspace/public/"
 cat > "$asset_files/BUILD.bazel" <<'ASSETS'
-load("@react4j//css:defs.bzl", "web_assets")
+load("@react4j//:defs.bzl", "web_assets")
 web_assets(
     name = "media",
     srcs = ["card/icon.svg", "card/background.svg", "card/unused.svg", "card/prepared.svg", "card/react4j.png", "Righteous-Regular.ttf"],
@@ -81,10 +72,10 @@ include("//third_party/react4j:dependencies.MODULE.bazel")
 MODULE
 cat > "$workspace/BUILD.bazel" <<'BUILD'
 load("@j2cl//build_defs:rules.bzl", "j2cl_import")
-load("@react4j//css:defs.bzl", "css_bundle", "css_js_binary")
-load("@react4j//tools/browser:rules.bzl", "browser_application")
+load("@react4j//:defs.bzl", "browser_application", "browser_application_variant", "css_bundle", "css_js_binary", "web_bundle")
+load(":contract.bzl", "bundle_contract")
 j2cl_import(name = "jspecify", jar = "@maven//:org_jspecify_jspecify", visibility = ["//visibility:public"])
-config_setting(name = "optimized", values = {"compilation_mode": "opt"})
+config_setting(name = "optimized", values = {"compilation_mode": "opt"}, visibility = ["@react4j//css:__pkg__", "@react4j//tools/browser:__pkg__"])
 css_js_binary(name = "bad_array", deps = ["//src/main/java/checks:array"], compilation_level = select({":optimized": "ADVANCED", "//conditions:default": "BUNDLE"}))
 css_js_binary(name = "bad_null", deps = ["//src/main/java/checks:null"], compilation_level = select({":optimized": "ADVANCED", "//conditions:default": "BUNDLE"}))
 css_bundle(name = "styles", root = ":application_bundle", css = "application.css", source_map = "application.css.map")
@@ -94,9 +85,33 @@ browser_application(
     deps = ["//src/main/java/react4j/css/example:entry"],
     html = "public/index.html",
     styles = {":styles": "css/assets.css"},
+    defs = select({":optimized": ["--define=react4j.css.name_prefix='consumer-'"], "//conditions:default": []}),
+    visibility = ["//exported:__pkg__"],
 )
 filegroup(name = "application_manifest", srcs = [":application"], output_group = "manifest")
+css_js_binary(name = "standalone", deps = ["//src/main/java/react4j/css/example:entry"], entry_points = ["react4j.css.example.AssetsEntry"], compilation_level = select({":optimized": "ADVANCED", "//conditions:default": "BUNDLE"}), visibility = ["//exported:__pkg__"])
+css_bundle(name = "standalone_styles", root = ":standalone", css = "standalone.css", source_map = "standalone.css.map")
+web_bundle(name = "web", root = ":standalone", styles = {":standalone_styles": "css/assets.css"})
+browser_application_variant(name = "development", application = ":application", mode = "fastbuild")
+browser_application_variant(name = "production", application = ":application", mode = "opt")
+bundle_contract(name = "contract", applications = [":application", ":development", ":production"], web = ":web")
 BUILD
+cat > "$workspace/contract.bzl" <<'STARLARK'
+load("@react4j//:defs.bzl", "BrowserApplicationInfo", "WebBundleInfo")
+
+def _contract_impl(ctx):
+    manifests = [application[BrowserApplicationInfo].manifest for application in ctx.attr.applications]
+    manifests.append(ctx.attr.web[WebBundleInfo].manifest)
+    return [DefaultInfo(files = depset(manifests))]
+
+bundle_contract = rule(
+    implementation = _contract_impl,
+    attrs = {
+        "applications": attr.label_list(providers = [BrowserApplicationInfo]),
+        "web": attr.label(providers = [WebBundleInfo]),
+    },
+)
+STARLARK
 cat > "$workspace/src/main/java/isolated/BrowserTest.java" <<'JAVA'
 package isolated;
 
@@ -128,8 +143,9 @@ public final class BrowserTest {
 JAVA
 mkdir -p "$workspace/src/test/js/isolated"
 cat > "$workspace/src/test/js/isolated/BUILD.bazel" <<'BUILD'
-load("@react4j//tools/browser:rules.bzl", "browser_test")
-browser_test(name = "browser", srcs = ["browser_test.js"], deps = ["//src/main/java/isolated:views"], entry_point = "isolated.BrowserTestSuite")
+load("@react4j//:defs.bzl", "browser_test", "css_bundle")
+browser_test(name = "browser", srcs = ["browser_test.js"], deps = ["//src/main/java/isolated:views"], data = [":styles"], defs = select({"//:optimized": ["--define=react4j.css.name_prefix='consumer-'"], "//conditions:default": []}), entry_point = "isolated.BrowserTestSuite", visibility = ["//exported:__pkg__"])
+css_bundle(name = "styles", testonly = True, root = ":browser_bin", css = "test.css", source_map = "test.css.map")
 BUILD
 cat > "$workspace/src/test/js/isolated/browser_test.js" <<'JS'
 goog.module('isolated.BrowserTestSuite');
@@ -192,9 +208,13 @@ expect_failure() {
   fi
 }
 
+mkdir "$workspace/exported"
+cat > "$workspace/exported/BUILD.bazel" <<'BUILD'
+filegroup(name = "main_targets", testonly = True, srcs = ["//:application", "//:application_bundle", "//:standalone", "//src/test/js/isolated:browser", "//src/test/js/isolated:browser_bin"])
+BUILD
 cd "$workspace"
-bazel --output_base="$scratch/bazel" build //src/main/java/isolated:views //:application //:application_manifest @react4j//:core @react4j//:dom
-bazel --output_base="$scratch/bazel" build -c opt //:application //:application_manifest
+bazel --output_base="$scratch/bazel" build //src/main/java/isolated:views //:application //:application_manifest //:contract //exported:main_targets @react4j//:core @react4j//:dom
+bazel --output_base="$scratch/bazel" build -c opt //:application //:application_manifest //:contract //exported:main_targets
 for mode in fastbuild opt; do
   bazel --output_base="$scratch/bazel" test -c "$mode" //src/test/js/isolated:browser --test_output=errors
   expect_failure '[ArrayEquals]' build -c "$mode" //:bad_array.js
@@ -211,7 +231,27 @@ for target in \
   '@react4j//css/processor:plugin' \
   '@react4j//doc-examples:j2cl' \
   '@react4j//third_party/java:jspecify-j2cl' \
-  '@react4j//tools/browser:preview'; do
+  '@react4j//tools/browser:preview' \
+  '@react4j//css/linker/src/main/java/react4j/css/linker:worker' \
+  '@react4j//tools/browser:production' \
+  '@react4j//tools/browser:mode' \
+  '@react4j//tools/generation:react_dev' \
+  '@react4j//tools/generation:react_prod' \
+  '@react4j//tools/generation:react_dom_dev' \
+  '@react4j//tools/generation:react_dom_prod' \
+  '@react4j//tools/webtesting:chromium' \
+  '//:application' \
+  '//:application_bundle' \
+  '//:standalone' \
+  '//src/test/js/isolated:browser' \
+  '//src/test/js/isolated:browser_bin' \
+  '//:optimized' \
+  '//:standalone_css_catalogue' \
+  '//:application_web' \
+  '//src/test/js/isolated:browser_lib' \
+  '//src/test/js/isolated:browser_runtime' \
+  '//src/test/js/isolated:browser_html' \
+  '//src/test/js/isolated:browser_test_runner'; do
   printf 'filegroup(name = "target", testonly = True, srcs = ["%s"])\n' "$target" > "$workspace/denied/BUILD.bazel"
   expect_failure 'not visible' build --nobuild //denied:target
 done
@@ -227,7 +267,9 @@ for entry in \
   'tools/site:site.bzl react4j_site' \
   'tools/verification:defs.bzl j2cl_modules' \
   'tools/webtesting:defs.bzl java_browser_testng' \
-  'tools/web-assets:defs.bzl prepare_file'; do
+  'tools/web-assets:defs.bzl prepare_file' \
+  'css:defs.bzl css_bundle' \
+  'tools/browser:rules.bzl browser_test'; do
   read -r label symbol <<< "$entry"
   printf 'load("@react4j//%s", "%s")\nfilegroup(name = "target")\n' "$label" "$symbol" > "$workspace/denied/BUILD.bazel"
   expect_failure 'not visible for loading' build --nobuild //denied:target

@@ -4,7 +4,7 @@ load("@j2cl//build_defs/internal_do_not_use:provider.bzl", "J2clInfo")
 load("@rules_closure//closure:defs.bzl", "CLOSURE_JS_TOOLCHAIN_ATTRS", "ClosureJsBinaryInfo", "closure_js_binary", "create_closure_js_library")
 load("//tools/web-assets:defs.bzl", "ASSET_TOOL_ATTRIBUTES", "prepare_file")
 
-visibility("public")
+visibility(["//..."])
 
 _WebAssetsInfo = provider("Declared logical asset paths and their byte-independent catalogue.", fields = ["files", "manifest", "prepared"])
 
@@ -104,15 +104,15 @@ _configuration = rule(
     },
 )
 
-def css_js_binary(name, deps, compilation_level = "ADVANCED", **kwargs):
+def _css_js_binary_impl(name, visibility, deps, compilation_level, defs, testonly, **kwargs):
     """Complete Closure link producing evidence for independently rooted CSS bundles."""
     _configuration(
         name = name + "_css_catalogue",
         binary_name = name,
         compilation_level = compilation_level,
         deps = deps,
-        defs = kwargs.get("defs", []),
-        testonly = kwargs.get("testonly", False),
+        defs = defs,
+        testonly = testonly,
     )
     closure_js_binary(
         name = name,
@@ -121,8 +121,25 @@ def css_js_binary(name, deps, compilation_level = "ADVANCED", **kwargs):
         compiler = Label("//css/linker/src/main/java/react4j/css/linker:worker"),
         compiler_config = name + "_css_catalogue.json",
         compiler_report = name + ".css-live.json",
+        defs = defs,
+        testonly = testonly,
+        visibility = visibility,
         **kwargs
     )
+
+css_js_binary = macro(
+    implementation = _css_js_binary_impl,
+    inherit_attrs = closure_js_binary,
+    attrs = {
+        "compilation_level": attr.string(default = "ADVANCED"),
+        "compiler": None,
+        "compiler_config": None,
+        "compiler_report": None,
+        "defs": attr.string_list(),
+        "deps": attr.label_list(mandatory = True),
+        "testonly": attr.bool(default = False, configurable = False),
+    },
+)
 
 _CssBundleInfo = provider("Independently pruned CSS and map from a particular JavaScript link.", fields = ["css", "source_map", "root"])
 

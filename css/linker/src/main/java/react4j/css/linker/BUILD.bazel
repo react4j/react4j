@@ -31,8 +31,7 @@ java_binary(
         "-XX:+UseParallelGC",
     ],
     main_class = "io.bazel.rules.closure.ClosureWorker",
-    # css_js_binary passes this as an explicit compiler dependency in caller packages.
-    visibility = ["//visibility:public"],
+    visibility = ["//css:__pkg__"],
     runtime_deps = [
         ":linker",
         "@rules_closure//java/io/bazel/rules/closure:worker_main",

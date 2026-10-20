@@ -5,7 +5,7 @@ load("@rules_closure//closure/testing:webdriver_test.bzl", "webdriver_test")
 load("//css:defs.bzl", "WebBundleInfo", "css_js_binary", "web_bundle")
 load("//tools/web-assets:defs.bzl", "ASSET_TOOL_ATTRIBUTES", "prepare_file")
 
-visibility("public")
+visibility(["//..."])
 
 _PRODUCTION_DEFINES = {
     "arez.check_api_invariants": "false",
@@ -167,16 +167,29 @@ _preview = rule(implementation = _preview_impl, attrs = dict(ASSET_TOOL_ATTRIBUT
 def _asset(name):
     return select({_PRODUCTION: Label("//tools/generation:" + name + "_prod"), "//conditions:default": Label("//tools/generation:" + name + "_dev")})
 
-def browser_application(name, entry_point, deps, html, assets = {}, styles = {}, defs = []):
+def _browser_application_impl(name, visibility, entry_point, deps, html, assets, styles, defs):
     css_js_binary(
         name = name + "_bundle",
         deps = deps,
         entry_points = [entry_point],
         compilation_level = select({_PRODUCTION: "ADVANCED", "//conditions:default": "BUNDLE"}),
         defs = _compiler_defines() + defs,
+        visibility = visibility,
     )
     web_bundle(name = name + "_web", root = name + "_bundle", styles = styles)
-    _preview(name = name, html = html, bundle = name + "_web", defines = _defines(), react = _asset("react"), dom = _asset("react_dom"), assets = assets)
+    _preview(name = name, html = html, bundle = name + "_web", defines = _defines(), react = _asset("react"), dom = _asset("react_dom"), assets = assets, visibility = visibility)
+
+browser_application = macro(
+    implementation = _browser_application_impl,
+    attrs = {
+        "assets": attr.label_keyed_string_dict(allow_files = True),
+        "defs": attr.string_list(),
+        "deps": attr.label_list(mandatory = True),
+        "entry_point": attr.string(mandatory = True, configurable = False),
+        "html": attr.label(mandatory = True, allow_single_file = True),
+        "styles": attr.label_keyed_string_dict(),
+    },
+)
 
 def _mode_transition_impl(_settings, attr):
     return {"//command_line_option:compilation_mode": attr.mode}
@@ -216,7 +229,7 @@ def _runtime_impl(ctx):
 
 _runtime = rule(implementation = _runtime_impl, outputs = {"js": "%{name}.js"}, attrs = {"dom": attr.label(allow_single_file = True), "js": attr.label(allow_single_file = True), "react": attr.label(allow_single_file = True), "_assets": attr.label(default = Label("//tools/browser:assets"), executable = True, cfg = "exec")})
 
-def browser_test(name, srcs, deps, entry_point, data = [], defs = [], runtime_defines = {}):
+def _browser_test_impl(name, visibility, srcs, deps, entry_point, data, defs, runtime_defines):
     closure_js_library(name = name + "_lib", testonly = True, srcs = srcs, deps = deps + [Label("//tools/browser:mode"), Label("@rules_closure//closure/testing/library:asserts"), Label("@rules_closure//closure/testing/library:testsuite")])
     css_js_binary(
         name = name + "_bin",
@@ -225,6 +238,19 @@ def browser_test(name, srcs, deps, entry_point, data = [], defs = [], runtime_de
         entry_points = [entry_point],
         compilation_level = select({_PRODUCTION: "ADVANCED", "//conditions:default": "BUNDLE"}),
         defs = _compiler_defines(test = True) + defs,
+        visibility = visibility,
     )
     _runtime(name = name + "_runtime", testonly = True, js = name + "_bin.js", react = _asset("react"), dom = _asset("react_dom"))
-    webdriver_test(name = name, test_file_js = name + "_runtime.js", data = data, browsers = [Label("//tools/webtesting:chromium")], runtime_defines = _defines(test = True, extra = runtime_defines))
+    webdriver_test(name = name, test_file_js = name + "_runtime.js", data = data, browsers = [Label("//tools/webtesting:chromium")], runtime_defines = _defines(test = True, extra = runtime_defines), visibility = visibility)
+
+browser_test = macro(
+    implementation = _browser_test_impl,
+    attrs = {
+        "data": attr.label_list(allow_files = True),
+        "defs": attr.string_list(),
+        "deps": attr.label_list(mandatory = True),
+        "entry_point": attr.string(mandatory = True, configurable = False),
+        "runtime_defines": attr.string_dict(configurable = False),
+        "srcs": attr.label_list(mandatory = True, allow_files = True),
+    },
+)

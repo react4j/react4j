@@ -9,6 +9,11 @@ exports_files(
     visibility = ["//:__subpackages__"],
 )
 
+exports_files(
+    ["defs.bzl"],
+    visibility = ["//visibility:public"],
+)
+
 java_format_check(
     name = "java_format_check",
     testonly = True,

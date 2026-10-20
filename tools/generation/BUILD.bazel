@@ -22,7 +22,12 @@ react_asset(
     src = "@react_development//file",
     out = "react4j/public/dev/react.js",
     mode = "development",
-    visibility = ["//visibility:public"],
+    visibility = [
+        "//tools/browser:__pkg__",
+        "//tools/release:__pkg__",
+        "//tools/verification/src/main/java/react4j/verification:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
 )
 
 react_asset(
@@ -30,7 +35,10 @@ react_asset(
     src = "@react_production//file",
     out = "react4j/public/react.js",
     mode = "production",
-    visibility = ["//visibility:public"],
+    visibility = [
+        "//tools/browser:__pkg__",
+        "//tools/release:__pkg__",
+    ],
 )
 
 react_asset(
@@ -38,7 +46,12 @@ react_asset(
     src = "@react_dom_development//file",
     out = "react4j/dom/public/dev/react-dom.js",
     mode = "copy",
-    visibility = ["//visibility:public"],
+    visibility = [
+        "//tools/browser:__pkg__",
+        "//tools/release:__pkg__",
+        "//tools/verification/src/main/java/react4j/verification:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
 )
 
 react_asset(
@@ -46,7 +59,10 @@ react_asset(
     src = "@react_dom_production//file",
     out = "react4j/dom/public/react-dom.js",
     mode = "copy",
-    visibility = ["//visibility:public"],
+    visibility = [
+        "//tools/browser:__pkg__",
+        "//tools/release:__pkg__",
+    ],
 )
 
 filegroup(

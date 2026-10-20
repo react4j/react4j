@@ -1,0 +1,9 @@
+diff --git a/closure/testing/webdriver_test.bzl b/closure/testing/webdriver_test.bzl
+--- a/closure/testing/webdriver_test.bzl
++++ b/closure/testing/webdriver_test.bzl
+@@ -43,4 +43,4 @@
+-    html = "gen_html_%s" % name
++    html = "%s_html" % name
+     _gen_test_html(
+         name = html,
+         test_file_js = test_file_js,

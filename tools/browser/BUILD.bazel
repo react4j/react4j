@@ -5,7 +5,7 @@ package(default_visibility = ["//:__subpackages__"])
 
 exports_files(
     ["rules.bzl"],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )
 
 exports_files(
@@ -16,14 +16,14 @@ exports_files(
 config_setting(
     name = "production",
     values = {"compilation_mode": "opt"},
-    visibility = ["//visibility:public"],
+    visibility = ["//css:__pkg__"],
 )
 
 closure_js_library(
     name = "mode",
     testonly = True,
     srcs = ["mode.js"],
-    visibility = ["//visibility:public"],
+    visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
 )
 
 java_binary(

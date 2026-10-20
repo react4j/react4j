@@ -1,6 +1,6 @@
 exports_files(
     ["defs.bzl"],
-    visibility = ["//visibility:public"],
+    visibility = ["//:__subpackages__"],
 )
 
 test_suite(
