@@ -5,7 +5,7 @@
 - Current frontier: implementation review
 - Planning reviewer: dependency_aliases_planning; 1/3 rounds consumed, final confirmation unused. Findings: none; complete plan, native source owners, patch export, standalone Replicant configuration, visibility, existing checker producers and delivery order verified.
 - Plan checkpoint: automatic; user explicitly authorized implementation and planning review passed.
-- Implementation reviewer: pending (0/5 rounds; final confirmation unused)
+- Implementation reviewer: dependency_aliases_review; 1/5 rounds consumed, final confirmation unused. Round 1 found one P2 omission: formatter write/watch commands retained upstream labels. Added private aliases and routed both commands; focused validation passes, awaiting round 2 confirmation.
 
 | Task | Status | Blocked by |
 | --- | --- | --- |

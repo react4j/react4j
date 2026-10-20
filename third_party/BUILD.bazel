@@ -152,6 +152,16 @@ alias(
 )
 
 alias(
+    name = "palantir_java_format",
+    actual = "@rules_palantir_java_format//:java_format",
+)
+
+alias(
+    name = "palantir_java_format_watch",
+    actual = "@rules_palantir_java_format//:java_format_watch",
+)
+
+alias(
     name = "proton_core",
     actual = "@proton//:core",
 )

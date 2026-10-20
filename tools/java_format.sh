@@ -60,6 +60,6 @@ for path in "${paths[@]}"; do
 done
 case "$mode" in
   check) exec bazel build //:java_format_check ;;
-  write) exec bazel run @rules_palantir_java_format//:java_format -- "${format_roots[@]}" ;;
-  watch) exec bazel run @rules_palantir_java_format//:java_format_watch -- "${format_roots[@]}" ;;
+  write) exec bazel run //third_party:palantir_java_format -- "${format_roots[@]}" ;;
+  watch) exec bazel run //third_party:palantir_java_format_watch -- "${format_roots[@]}" ;;
 esac
