@@ -1,11 +1,11 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementation-review
+- Status: closeout
 - Current frontier: none
 - Planning reviewer: /root/bazel_facade_planning (2/3 rounds; final confirmation unused); Findings: none.
 - Plan checkpoint: automatic; accepted scope and implementation authority from user “accept”, no human pause requested, planning review passed.
-- Implementation reviewer: pending (0/5 rounds; final confirmation unused)
+- Implementation reviewer: /root/bazel_facade_review (1/5 rounds; final confirmation unused); Findings: none.
 
 ## Full-scope validation
 
@@ -31,5 +31,5 @@
 
 ## Workflow gates
 
-- Implementation review: ready for round 1 against the committed implementation, limit 5 plus one final confirmation; requires Findings: none.
-- Closeout: after review, record evidence, remove this exact temporary tree, update/push PR112 and leave Merge to the user.
+- Implementation review: round 1 passed against 6d4decb11..47f3f39e8; Findings: none. Reviewed every requirement, identity-preserving aliases, macro attributes/visibility/link children, restricted supports, patch/export, metadata fixture, downstream positive/negative checks and permanent guides. Independently verified inventory, patch/export, Bash syntax and clean diff; full-gate evidence confirmed.
+- Closeout: review passed; record evidence, remove this exact temporary tree, update/push PR112 and leave Merge to the user.
