@@ -33,7 +33,7 @@ paths=(
   tools/release/src/main/java
   tools/release/consumer/src/main/java
   tools/release/src/test/java
-  tools/webtesting/src/main/java
+  examples/testing/src/main/java
   tools/testing/src/main/java
   core/src/main/java
   core/src/test/java

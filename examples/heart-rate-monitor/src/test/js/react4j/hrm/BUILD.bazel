@@ -1,4 +1,4 @@
-load("//tools/browser:rules.bzl", "browser_test")
+load("@react4j//:defs.bzl", "browser_test")
 
 package(default_visibility = ["//:__pkg__"])
 

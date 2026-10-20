@@ -1,4 +1,4 @@
-load("//css:defs.bzl", "web_assets")
+load("@react4j//:defs.bzl", "web_assets")
 
 exports_files(
     ["Righteous-Regular.ttf"],

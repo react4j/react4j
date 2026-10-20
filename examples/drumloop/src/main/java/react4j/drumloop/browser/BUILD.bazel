@@ -1,8 +1,9 @@
-load("//tools/browser:java.bzl", "java_j2cl_library")
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("//examples:checks.bzl", "JAVACOPTS")
 
 package(default_visibility = ["//:__subpackages__"])
 
-java_j2cl_library(
+j2cl_library(
     name = "browser",
     srcs = [
         "Document.java",
@@ -12,15 +13,13 @@ java_j2cl_library(
         "WindowGlobal.java",
         "package-info.java",
     ],
-    java_deps = [
-        "//examples/drumloop/src/main/java/react4j/drumloop/browser/core:core_java",
-        "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise:promise_java",
-        "//third_party/java:jsinterop_annotations",
-    ],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    javacopts = JAVACOPTS,
+    plugins = ["@sting//third_party/java:nullaway_plugin"],
     deps = [
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/core",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jspecify-j2cl",
+        "//examples/third_party/java:jspecify",
+        "@j2cl//:jsinterop-annotations-j2cl",
     ],
 )

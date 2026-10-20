@@ -1,107 +1,8 @@
 load("@j2cl//build_defs:rules.bzl", _j2cl_library = "j2cl_library")
 load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_library = "java_library", _java_plugin = "java_plugin", _java_test = "java_test")
+load("//examples:checks.bzl", "BASE_JAVACOPTS", "JAVACOPTS")
 
 visibility(["//..."])
-
-# Products and browser tests share the pinned Sting module's strict checker policy.
-_JAVACOPTS = [
-    "-Werror",
-    "-Xlint:all,-processing,-serial,-this-escape",
-    "-Xmaxerrs",
-    "10000",
-    "-Xmaxwarns",
-    "10000",
-]
-_ERROR_PRONE_JAVACOPTS = [
-    "-Xep:AlmostJavadoc:ERROR",
-    "-Xep:AlreadyChecked:ERROR",
-    "-Xep:AmbiguousMethodReference:ERROR",
-    "-Xep:AnnotateFormatMethod:ERROR",
-    "-Xep:ArrayAsKeyOfSetOrMap:ERROR",
-    "-Xep:AssertEqualsArgumentOrderChecker:ERROR",
-    "-Xep:AssertThrowsMultipleStatements:ERROR",
-    "-Xep:AttemptedNegativeZero:ERROR",
-    "-Xep:BadComparable:ERROR",
-    "-Xep:BadImport:ERROR",
-    "-Xep:BadInstanceof:ERROR",
-    "-Xep:BareDotMetacharacter:ERROR",
-    "-Xep:BigDecimalEquals:ERROR",
-    "-Xep:BigDecimalLiteralDouble:ERROR",
-    "-Xep:BoxedPrimitiveConstructor:ERROR",
-    "-Xep:ClassCanBeStatic:ERROR",
-    "-Xep:ClassName:ERROR",
-    "-Xep:DefaultLocale:ERROR",
-    "-Xep:DeprecatedVariable:ERROR",
-    "-Xep:DuplicateBranches:ERROR",
-    "-Xep:EmptyBlockTag:ERROR",
-    "-Xep:EmptyCatch:ERROR",
-    "-Xep:EmptyIf:ERROR",
-    "-Xep:EmptyTopLevelDeclaration:ERROR",
-    "-Xep:EqualsBrokenForNull:ERROR",
-    "-Xep:EqualsMissingNullable:ERROR",
-    "-Xep:FieldCanBeLocal:ERROR",
-    "-Xep:FieldCanBeStatic:ERROR",
-    "-Xep:Finalize:ERROR",
-    "-Xep:ForEachIterable:ERROR",
-    "-Xep:InconsistentHashCode:ERROR",
-    "-Xep:LongLiteralLowerCaseSuffix:ERROR",
-    "-Xep:MissingBraces:ERROR",
-    "-Xep:MissingDefault:ERROR",
-    "-Xep:MissingRuntimeRetention:ERROR",
-    "-Xep:MixedArrayDimensions:ERROR",
-    "-Xep:MultiVariableDeclaration:ERROR",
-    "-Xep:MultipleTopLevelClasses:ERROR",
-    "-Xep:NonOverridingEquals:ERROR",
-    "-Xep:NotJavadoc:ERROR",
-    "-Xep:NullOptional:ERROR",
-    "-Xep:NullablePrimitive:ERROR",
-    "-Xep:NullablePrimitiveArray:ERROR",
-    "-Xep:NullableTypeParameter:ERROR",
-    "-Xep:NullableWildcard:ERROR",
-    "-Xep:PackageLocation:ERROR",
-    "-Xep:ParameterMissingNullable:ERROR",
-    "-Xep:ParameterName:ERROR",
-    "-Xep:PublicApiNamedStreamShouldReturnStream:ERROR",
-    "-Xep:RedundantOverride:ERROR",
-    "-Xep:RedundantThrows:ERROR",
-    "-Xep:RemoveUnusedImports:ERROR",
-    "-Xep:ReturnAtTheEndOfVoidFunction:ERROR",
-    "-Xep:ReturnFromVoid:ERROR",
-    "-Xep:ReturnMissingNullable:ERROR",
-    "-Xep:ReturnsNullCollection:ERROR",
-    "-Xep:SelfAlwaysReturnsThis:ERROR",
-    "-Xep:SunApi:ERROR",
-    "-Xep:SystemExitOutsideMain:ERROR",
-    "-Xep:ToStringReturnsNull:ERROR",
-    "-Xep:UnnecessarilyVisible:ERROR",
-    "-Xep:UnnecessaryAnonymousClass:ERROR",
-    "-Xep:UnnecessaryBoxedAssignment:ERROR",
-    "-Xep:UnnecessaryMethodReference:ERROR",
-    "-Xep:UnnecessaryOptionalGet:ERROR",
-    "-Xep:UnsynchronizedOverridesSynchronized:ERROR",
-    "-Xep:UnusedLabel:ERROR",
-    "-Xep:UnusedTypeParameter:ERROR",
-    "-Xep:UnusedVariable:ERROR",
-    "-Xep:UseCorrectAssertInTests:ERROR",
-    "-Xep:UsingJsr305CheckReturnValue:ERROR",
-    "-Xep:VoidMissingNullable:ERROR",
-    "-Xep:FieldCanBeFinal:ERROR",
-    "-Xep:FieldMissingNullable:ERROR",
-    "-Xep:PrivateConstructorForUtilityClass:ERROR",
-    "-Xep:UnnecessaryDefaultInEnumSwitch:ERROR",
-    "-Xep:UnnecessarilyFullyQualified:ERROR",
-    "-Xep:Varifier:ERROR",
-]
-
-_NULLAWAY_JAVACOPTS = [
-    "-XDaddTypeAnnotationsToSymbol=true",
-    "-Xep:NullAway:ERROR",
-    "-Xep:RequireExplicitNullMarking:ERROR",
-    "-Xep:JSpecifyUnrecognizedAnnotationLocation:ERROR",
-    "-XepOpt:NullAway:OnlyNullMarked=true",
-    "-XepOpt:NullAway:JSpecifyMode=true",
-    "-XepOpt:NullAway:AssertsEnabled=true",
-]
 
 FORMATTER_JVM_FLAGS = [
     "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
@@ -117,9 +18,8 @@ _JSPECIFY_J2CL = Label("//third_party/java:jspecify-j2cl")
 _NULLAWAY = Label("//third_party/java:nullaway_plugin")
 
 def _compile_policy(srcs, javacopts, deps, plugins, j2cl = False):
-    options = ([] if j2cl else ["--release", "17"]) + _JAVACOPTS + _ERROR_PRONE_JAVACOPTS
+    options = ([] if j2cl else ["--release", "17"]) + (JAVACOPTS if srcs else BASE_JAVACOPTS)
     if srcs:
-        options += _NULLAWAY_JAVACOPTS
         jspecify = _JSPECIFY_J2CL if j2cl else _JSPECIFY
         if jspecify not in [value if type(value) == "Label" else native.package_relative_label(value) for value in deps]:
             deps = [jspecify] + deps
@@ -177,7 +77,7 @@ def java_testng(name, srcs, test_classes = [], test_class = None, test_methods =
 
 def _checker_options_impl(ctx):
     output = ctx.actions.declare_file(ctx.label.name + ".txt")
-    ctx.actions.write(output, "\n".join(["--release", "17"] + _JAVACOPTS + _ERROR_PRONE_JAVACOPTS + _NULLAWAY_JAVACOPTS) + "\n")
+    ctx.actions.write(output, "\n".join(["--release", "17"] + JAVACOPTS) + "\n")
     return [DefaultInfo(files = depset([output]))]
 
 strict_checker_options = rule(implementation = _checker_options_impl)

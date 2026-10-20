@@ -1,4 +1,5 @@
-load("//third_party/java:rules.bzl", "j2cl_library")
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("//examples:checks.bzl", "JAVACOPTS")
 
 package(default_visibility = [
     "//:__pkg__",
@@ -12,11 +13,14 @@ j2cl_library(
         "ReactCacheTest.java",
         "ReactCacheTest.native.js",
     ],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    javacopts = JAVACOPTS,
+    plugins = ["@sting//third_party/java:nullaway_plugin"],
     deps = [
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise",
         "//examples/drumloop/src/main/java/react4j/drumloop/cache",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jsinterop_base-j2cl",
-        "//third_party/java:jspecify-j2cl",
+        "//examples/third_party/java:jspecify",
+        "@j2cl//:jsinterop-annotations-j2cl",
+        "@jsinterop_base//:jsinterop-base-j2cl",
     ],
 )

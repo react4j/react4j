@@ -1,48 +1,48 @@
-load("//tools/browser:java.bzl", "java_j2cl_library")
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("//examples:checks.bzl", "JAVACOPTS")
 
 package(default_visibility = [
     "//:__pkg__",
     "//examples/todomvc:__subpackages__",
 ])
 
-java_j2cl_library(
+j2cl_library(
     name = "views",
     srcs = [
         "Page.java",
         "package-info.java",
     ],
-    java_deps = [
-        "//:_core_java",
-        "//:_dom_java",
-        "//css/core",
-    ],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    javacopts = JAVACOPTS,
     plugins = [
-        "//:processor",
-        "//:css_processor",
+        "@sting//third_party/java:nullaway_plugin",
+        "@react4j//:processor",
+        "@react4j//:css_processor",
         "@arez//:arez_processor_plugin",
     ],
     deps = [
-        "//:core",
-        "//:css",
-        "//:dom",
-        "//third_party/java:braincheck_core-j2cl",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jsinterop_base-j2cl",
-        "//third_party/java:jspecify-j2cl",
-        "//third_party/java:org_jetbrains_annotations-j2cl",
-        "//third_party/java:zemeckis_core-j2cl",
+        "//examples/third_party/java:jspecify",
         "@arez//:core-j2cl",
+        "@j2cl//:jsinterop-annotations-j2cl",
+        "@jsinterop_base//:jsinterop-base-j2cl",
+        "@react4j//:core",
+        "@react4j//:css",
+        "@react4j//:dom",
     ],
 )
 
-java_j2cl_library(
+j2cl_library(
     name = "assets",
     srcs = ["ItemAssets.java"],
-    java_deps = ["//css/core"],
-    plugins = ["//:css_processor"],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    javacopts = JAVACOPTS,
+    plugins = [
+        "@sting//third_party/java:nullaway_plugin",
+        "@react4j//:css_processor",
+    ],
     deps = [
-        "//:css",
+        "//examples/third_party/java:jspecify",
         "//examples/todomvc/src/main/assets/react4j/todomvc/views:toggles",
-        "//third_party/java:jspecify-j2cl",
+        "@react4j//:css",
     ],
 )

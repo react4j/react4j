@@ -1,0 +1,13 @@
+load("@j2cl//build_defs:rules.bzl", "j2cl_import")
+
+package(default_visibility = ["//examples:__subpackages__"])
+
+j2cl_import(
+    name = "jspecify",
+    jar = "@maven//:org_jspecify_jspecify",
+)
+
+j2cl_import(
+    name = "sting",
+    jar = "@sting//:core",
+)

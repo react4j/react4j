@@ -1,35 +1,28 @@
-load("//tools/browser:java.bzl", "java_j2cl_library")
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("//examples:checks.bzl", "JAVACOPTS")
 
 package(default_visibility = ["//:__subpackages__"])
 
-java_j2cl_library(
+j2cl_library(
     name = "todomvc",
     srcs = [
         "App.java",
         "package-info.java",
     ],
-    java_deps = [
-        "//:_core_java",
-        "//:_dom_java",
-        "//examples/todomvc/src/main/java/react4j/todomvc/browser:browser_java",
-        "//examples/todomvc/src/main/java/react4j/todomvc/views:views_java",
-        "//examples/todomvc/arez/src/main/java/react4j/todomvc/arez/model:model_java",
-        "//examples/todomvc/arez/src/main/java/react4j/todomvc/arez/views:views_java",
-    ],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    javacopts = JAVACOPTS,
+    plugins = ["@sting//third_party/java:nullaway_plugin"],
     deps = [
-        "//:core",
-        "//:dom",
+        "//examples/third_party/java:jspecify",
         "//examples/todomvc/arez/src/main/java/react4j/todomvc/arez/model",
         "//examples/todomvc/arez/src/main/java/react4j/todomvc/arez/views",
         "//examples/todomvc/src/main/java/react4j/todomvc/browser",
         "//examples/todomvc/src/main/java/react4j/todomvc/views",
-        "//third_party/java:braincheck_core-j2cl",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jsinterop_base-j2cl",
-        "//third_party/java:jspecify-j2cl",
-        "//third_party/java:org_jetbrains_annotations-j2cl",
-        "//third_party/java:zemeckis_core-j2cl",
         "@arez//:core-j2cl",
+        "@j2cl//:jsinterop-annotations-j2cl",
+        "@jsinterop_base//:jsinterop-base-j2cl",
+        "@react4j//:core",
+        "@react4j//:dom",
     ],
 )
 

@@ -1,0 +1,4 @@
+exports_files(
+    ["checks.bzl"],
+    visibility = ["//:__subpackages__"],
+)
