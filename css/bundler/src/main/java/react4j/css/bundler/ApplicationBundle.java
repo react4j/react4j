@@ -29,7 +29,10 @@ final class ApplicationBundle {
 
     static void run(List<String> args) throws IOException {
         var options = new TreeMap<String, Path>();
-        var roots = new ArrayList<AssetContent>();
+        var roots = new TreeMap<String, Path>();
+        var definitions = new ArrayList<String>();
+        var stripMaps = new TreeSet<String>();
+        var optional = Set.of("--html", "--configuration");
         var required = Set.of("--directory", "--manifest", "--assets-directory", "--assets-manifest");
         for (int i = 0; i < args.size(); i += 2) {
             if (i + 1 == args.size()) {
@@ -37,13 +40,23 @@ final class ApplicationBundle {
             }
             String option = args.get(i);
             String value = args.get(i + 1);
-            if ("--prepared".equals(option)) {
-                roots.add(AssetContent.read(Path.of(value)));
-            } else if (!required.contains(option) || null != options.putIfAbsent(option, Path.of(value))) {
+            if ("--root".equals(option)) {
+                var root = JsonParser.parseString(value).getAsJsonObject();
+                String name = root.get("name").getAsString();
+                AssetResource.validatePath(name);
+                if (null != roots.putIfAbsent(name, Path.of(root.get("source").getAsString()))) {
+                    throw new IllegalArgumentException("Duplicate application destination: " + name);
+                }
+            } else if ("--define".equals(option)) {
+                definitions.add(value);
+            } else if ("--strip-map".equals(option)) {
+                stripMaps.add(value);
+            } else if (!(required.contains(option) || optional.contains(option))
+                    || null != options.putIfAbsent(option, Path.of(value))) {
                 throw new IllegalArgumentException("Unknown or repeated application option: " + option);
             }
         }
-        if (!options.keySet().equals(required)) {
+        if (!options.keySet().containsAll(required)) {
             throw new IllegalArgumentException("Expected application outputs and retained asset inputs");
         }
         var inventory = JsonParser.parseString(
@@ -91,12 +104,42 @@ final class ApplicationBundle {
                 throw new IllegalArgumentException("Linked asset directory differs from its inventory");
             }
         }
-        for (var content : roots) {
-            String destination = content.logicalPath();
+        String defines = ApplicationConfiguration.defines(definitions);
+        if (options.containsKey("--html")) {
+            if (null != roots.putIfAbsent("index.html", Objects.requireNonNull(options.get("--html")))) {
+                throw new IllegalArgumentException("Duplicate application destination: index.html");
+            }
+        }
+        if (options.containsKey("--configuration")) {
+            String destination =
+                    Objects.requireNonNull(options.get("--configuration")).toString();
+            AssetResource.validatePath(destination);
+            if (roots.containsKey(destination) || !expected.add(destination)) {
+                throw new IllegalArgumentException("Duplicate application destination: " + destination);
+            }
+            var target = directory.resolve(destination);
+            Files.createDirectories(Objects.requireNonNull(target.getParent()));
+            Files.writeString(target, "var CLOSURE_DEFINES = " + defines + ";\n");
+            entries.add(
+                    AssetContent.prepare(destination, target).entry(destination, List.of(), List.of("application")));
+        }
+        for (var root : roots.entrySet()) {
+            String destination = root.getKey();
             if (!expected.add(destination)) {
                 throw new IllegalArgumentException("Duplicate application destination: " + destination);
             }
-            content.copy(directory, destination);
+            var source = root.getValue();
+            var target = directory.resolve(destination);
+            Files.createDirectories(Objects.requireNonNull(target.getParent()));
+            if ("index.html".equals(destination) && options.containsKey("--html")) {
+                Files.writeString(target, Files.readString(source).replace("@@DEFINES@@", defines));
+            } else if (stripMaps.contains(destination)) {
+                Files.writeString(target, ApplicationConfiguration.withoutSourceMap(Files.readString(source)));
+            } else {
+                Files.copy(source, target);
+            }
+            var delivered = AssetContent.prepare(destination, target);
+            var content = new AssetContent(destination, source, delivered.sha256(), delivered.size());
             entries.add(content.entry(destination, List.of(), List.of("application")));
         }
         entries.sort(Comparator.comparing(

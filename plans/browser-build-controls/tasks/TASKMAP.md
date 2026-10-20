@@ -1,15 +1,15 @@
 # Task map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: planned
-- Current frontier: T01
+- Status: implementing
+- Current frontier: T02
 - Plan checkpoint: automatic; user explicitly authorized implementation, no human checkpoint, planning review passed.
 - Planning reviewer: browser_controls_planning; 1/3 rounds consumed, final confirmation unused; Findings: none. Complete scope, controls/defaults, optional HTML/config, assembly/cache boundaries, Rose delivery contracts and blocked full-Rose gate checked.
 - Implementation reviewer: pending (0/5; final confirmation unused)
 
 | Task | Status | Blocked by |
 | --- | --- | --- |
-| [T01 Independent browser application settings](T01-controls.md) | pending | None |
+| [T01 Independent browser application settings](T01-controls.md) | complete | None |
 | [T02 Development overhead and cache boundaries](T02-performance.md) | pending | T01 |
 | [T03 Rose public application delivery](T03-rose.md) | pending | T02 |
 | [T04 Validation and documentation](T04-validation.md) | pending | T03 |

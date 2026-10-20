@@ -98,6 +98,7 @@ java_library(
     name = "packaging",
     srcs = [
         "ApplicationBundle.java",
+        "ApplicationConfiguration.java",
         "package-info.java",
     ],
     visibility = [
@@ -108,6 +109,7 @@ java_library(
         ":content",
         "//css/internal/src/main/java/react4j/css/internal",
         "@maven//:com_google_code_gson_gson",
+        "@rules_closure//closure/compiler",
     ],
 )
 

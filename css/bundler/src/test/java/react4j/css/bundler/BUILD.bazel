@@ -86,6 +86,7 @@ java_testng(
     name = "packaging_tests",
     srcs = [
         "ApplicationBundleTest.java",
+        "ApplicationConfigurationTest.java",
         "AssetContentTest.java",
     ],
     data = [
@@ -99,6 +100,7 @@ java_testng(
     test_classes = [
         "react4j.css.bundler.AssetContentTest",
         "react4j.css.bundler.ApplicationBundleTest",
+        "react4j.css.bundler.ApplicationConfigurationTest",
     ],
     deps = [
         "//css/bundler/src/main/java/react4j/css/bundler:content",

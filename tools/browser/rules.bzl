@@ -3,7 +3,6 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("@rules_closure//closure/testing:webdriver_test.bzl", "webdriver_test")
 load("//css:defs.bzl", "WebBundleInfo", "css_js_binary", "web_bundle")
-load("//tools/web-assets:defs.bzl", "ASSET_TOOL_ATTRIBUTES", "prepare_file")
 
 visibility(["//..."])
 
@@ -104,26 +103,37 @@ def _defines(test = False, extra = {}):
     development.update(extra)
     return select({_PRODUCTION: production, "//conditions:default": development})
 
-def _compiler_defines(test = False):
+def _compiler_defines(test = False, runtime_mode = ""):
     # The jsunit harness needs goog.DEBUG while application flags retain their mode.
     production = ["--define=goog.DEBUG=" + ("true" if test else "false")]
     development = ["--define=goog.DEBUG=true"]
     if test:
-        production.append("--define=react4j.examples.environment=production")
-        development.append("--define=react4j.examples.environment=development")
-    return select({
-        _PRODUCTION: production + ["--define=%s=%s" % item for item in _PRODUCTION_DEFINES.items()],
-        "//conditions:default": development + ["--define=%s=%s" % item for item in _DEVELOPMENT_DEFINES.items()],
-    })
+        production.append('--define=react4j.examples.environment="production"')
+        development.append('--define=react4j.examples.environment="development"')
+    production += ["--define=%s=%s" % (key, json.encode(value)) for key, value in _PRODUCTION_DEFINES.items()]
+    development += ["--define=%s=%s" % (key, json.encode(value)) for key, value in _DEVELOPMENT_DEFINES.items()]
+    return _mode_value(runtime_mode, production, development)
+
+def _mode_value(runtime_mode, production, development):
+    if runtime_mode:
+        return production if runtime_mode == "production" else development
+    return select({_PRODUCTION: production, "//conditions:default": development})
 
 def _preview_impl(ctx):
     bundle = ctx.attr.bundle[WebBundleInfo]
     directory = ctx.actions.declare_directory(ctx.label.name)
     manifest = ctx.actions.declare_file(ctx.label.name + ".manifest.json")
-    html = ctx.actions.declare_file(ctx.label.name + "_shell.html")
-    ctx.actions.expand_template(template = ctx.file.html, output = html, substitutions = {"@@DEFINES@@": json.encode(ctx.attr.defines)})
-    roots = {"app.js": bundle.javascript, "app.js.map": bundle.source_map, "index.html": html, "react-dom.js": ctx.file.dom, "react.js": ctx.file.react}
+    roots = {"app.js": bundle.javascript, "react-dom.js": ctx.file.dom, "react.js": ctx.file.react}
+    strip_maps = []
+    if ctx.attr.include_source_maps:
+        roots["app.js.map"] = bundle.source_map
+    else:
+        strip_maps.append("app.js")
     for source, destination in bundle.styles.items():
+        if not ctx.attr.include_source_maps:
+            if destination.endswith(".map"):
+                continue
+            strip_maps.append(destination)
         if destination in roots:
             fail("CSS output collides with an application destination: " + destination)
         roots[destination] = source
@@ -134,9 +144,6 @@ def _preview_impl(ctx):
         if len(sources) != 1:
             fail("Each browser asset must contain exactly one file: %s" % target.label)
         roots[destination] = sources[0]
-    prepared = []
-    for destination, source in roots.items():
-        prepared.append(prepare_file(ctx, source, destination, ctx.label.name + "_prepared/" + destination))
     args = ctx.actions.args()
     args.use_param_file("@%s", use_always = True)
     args.set_param_file_format("multiline")
@@ -144,50 +151,70 @@ def _preview_impl(ctx):
     args.add("--manifest", manifest)
     args.add("--assets-directory", bundle.directory.path)
     args.add("--assets-manifest", bundle.manifest)
-    args.add_all(prepared, before_each = "--prepared")
+    for destination, source in roots.items():
+        args.add("--root", json.encode({"name": destination, "source": source.path}))
+    args.add_all(strip_maps, before_each = "--strip-map")
+    args.add_all(ctx.attr.defines, before_each = "--define")
+    if ctx.file.html:
+        args.add("--html", ctx.file.html)
+    elif ctx.attr.compilation_level == "BUNDLE":
+        args.add("--configuration", "config.js")
     ctx.actions.run(
         executable = ctx.executable._packager,
-        inputs = [bundle.directory, bundle.manifest] + roots.values() + prepared,
+        inputs = [bundle.directory, bundle.manifest] + roots.values() + ([ctx.file.html] if ctx.file.html else []),
         outputs = [directory, manifest],
         arguments = [args],
         mnemonic = "BrowserApplication",
     )
     return [DefaultInfo(files = depset([directory]), runfiles = ctx.runfiles([directory])), BrowserApplicationInfo(directory = directory, manifest = manifest), OutputGroupInfo(manifest = depset([manifest]))]
 
-_preview = rule(implementation = _preview_impl, attrs = dict(ASSET_TOOL_ATTRIBUTES, **{
+_preview = rule(implementation = _preview_impl, attrs = {
     "assets": attr.label_keyed_string_dict(allow_files = True),
     "bundle": attr.label(mandatory = True, providers = [WebBundleInfo]),
-    "defines": attr.string_dict(),
+    "compilation_level": attr.string(mandatory = True, values = ["BUNDLE", "ADVANCED"]),
+    "defines": attr.string_list(),
     "dom": attr.label(allow_single_file = True, mandatory = True),
-    "html": attr.label(allow_single_file = True, mandatory = True),
+    "html": attr.label(allow_single_file = True),
+    "include_source_maps": attr.bool(default = True),
     "react": attr.label(allow_single_file = True, mandatory = True),
     "_packager": attr.label(default = Label("//css/bundler/src/main/java/react4j/css/bundler:application_tool"), executable = True, cfg = "exec"),
-}))
+})
 
-def _asset(name):
-    return select({_PRODUCTION: Label("//tools/generation:" + name + "_prod"), "//conditions:default": Label("//tools/generation:" + name + "_dev")})
+def _asset(name, runtime_mode = ""):
+    return _mode_value(runtime_mode, Label("//tools/generation:" + name + "_prod"), Label("//tools/generation:" + name + "_dev"))
 
-def _browser_application_impl(name, visibility, entry_point, deps, html, assets, styles, defs):
+def _browser_application_impl(name, visibility, entry_point, deps, html, assets, styles, defs, compilation_level, runtime_mode, include_source_maps, testonly):
+    if compilation_level not in ["", "BUNDLE", "ADVANCED"]:
+        fail("compilation_level must be BUNDLE or ADVANCED")
+    if runtime_mode not in ["", "development", "production"]:
+        fail("runtime_mode must be development or production")
+    level = compilation_level if compilation_level else select({_PRODUCTION: "ADVANCED", "//conditions:default": "BUNDLE"})
+    defines = _compiler_defines(runtime_mode = runtime_mode) + defs
     css_js_binary(
         name = name + "_bundle",
+        testonly = testonly,
         deps = deps,
         entry_points = [entry_point],
-        compilation_level = select({_PRODUCTION: "ADVANCED", "//conditions:default": "BUNDLE"}),
-        defs = _compiler_defines() + defs,
+        compilation_level = level,
+        defs = defines,
         visibility = visibility,
     )
-    web_bundle(name = name + "_web", root = name + "_bundle", styles = styles)
-    _preview(name = name, html = html, bundle = name + "_web", defines = _defines(), react = _asset("react"), dom = _asset("react_dom"), assets = assets, visibility = visibility)
+    web_bundle(name = name + "_web", testonly = testonly, root = name + "_bundle", styles = styles)
+    _preview(name = name, testonly = testonly, html = html, bundle = name + "_web", defines = defines, compilation_level = level, include_source_maps = include_source_maps, react = _asset("react", runtime_mode), dom = _asset("react_dom", runtime_mode), assets = assets, visibility = visibility)
 
 browser_application = macro(
     implementation = _browser_application_impl,
     attrs = {
         "assets": attr.label_keyed_string_dict(allow_files = True),
+        "compilation_level": attr.string(default = "", configurable = False),
         "defs": attr.string_list(),
         "deps": attr.label_list(mandatory = True),
         "entry_point": attr.string(mandatory = True, configurable = False),
-        "html": attr.label(mandatory = True, allow_single_file = True),
+        "html": attr.label(allow_single_file = True),
+        "include_source_maps": attr.bool(default = True),
+        "runtime_mode": attr.string(default = "", configurable = False),
         "styles": attr.label_keyed_string_dict(),
+        "testonly": attr.bool(default = False, configurable = False),
     },
 )
 

@@ -6,6 +6,7 @@ package(default_visibility = [
     "//css/examples/save-button:__pkg__",
     "//css/examples/save-button/src/test/java/react4j/css/example:__pkg__",
     "//css/examples/save-button/src/test/js/react4j/css/example:__pkg__",
+    "//tools/browser/src/test/js/react4j/browser:__pkg__",
 ])
 
 java_j2cl_library(

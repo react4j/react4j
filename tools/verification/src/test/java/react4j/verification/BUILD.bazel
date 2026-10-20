@@ -113,3 +113,48 @@ java_testng(
     visibility = ["//:__pkg__"],
     deps = ["//tools/verification/src/main/java/react4j/verification:lcov_report"],
 )
+
+java_browser_testng(
+    name = "application_tests",
+    size = "large",
+    srcs = ["BrowserApplicationTest.java"],
+    data = [
+        "//tools/browser/src/test/js/react4j/browser:application_" + runtime + "_" + level + "_" + maps
+        for runtime in [
+            "development",
+            "production",
+        ]
+        for level in [
+            "BUNDLE",
+            "ADVANCED",
+        ]
+        for maps in [
+            "maps",
+            "no_maps",
+        ]
+    ] + [
+        "//tools/webtesting:chromium",
+        "//tools/webtesting:chromium.gen.json",
+    ],
+    jvm_flags = [
+        "-Dapplication.%s.%s.%s=$(rootpath //tools/browser/src/test/js/react4j/browser:application_%s_%s_%s)" % (runtime, level, maps, runtime, level, maps)
+        for runtime in [
+            "development",
+            "production",
+        ]
+        for level in [
+            "BUNDLE",
+            "ADVANCED",
+        ]
+        for maps in [
+            "maps",
+            "no_maps",
+        ]
+    ] + ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)"],
+    test_class = "react4j.verification.BrowserApplicationTest",
+    visibility = ["//:__pkg__"],
+    deps = [
+        "//tools/verification/src/main/java/react4j/verification:browser_coverage",
+        "@maven//:com_google_code_gson_gson",
+    ],
+)

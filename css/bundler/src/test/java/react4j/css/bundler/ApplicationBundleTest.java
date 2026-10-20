@@ -23,10 +23,11 @@ public final class ApplicationBundleTest {
         return Path.of(Objects.requireNonNull(System.getProperty("application." + kind)));
     }
 
-    private static Path prepare(Path directory, String name, Path source) throws Exception {
-        var metadata = directory.resolve(name.replace('/', '_') + ".prepared.json");
-        Files.writeString(metadata, AssetContent.prepare(name, source).json().toString());
-        return metadata;
+    private static String root(String name, Path source) {
+        var json = new JsonObject();
+        json.addProperty("name", name);
+        json.addProperty("source", source.toString());
+        return json.toString();
     }
 
     private static List<String> options(Path directory) throws Exception {
@@ -37,7 +38,7 @@ public final class ApplicationBundleTest {
                 "--manifest", directory.resolve("manifest.json").toString(),
                 "--assets-directory", input("assets").toString(),
                 "--assets-manifest", input("manifest").toString(),
-                "--prepared", prepare(directory, "index.html", html).toString()));
+                "--root", root("index.html", html)));
     }
 
     private static List<String> change(List<String> args, String key, Path value) {
@@ -152,8 +153,7 @@ public final class ApplicationBundleTest {
             for (var name : List.of("precache.json", "on-demand.json", "nested/page.html")) {
                 var source = directory.resolve(name.replace('/', '_'));
                 Files.writeString(source, "application supplied " + name);
-                options.addAll(
-                        List.of("--prepared", prepare(directory, name, source).toString()));
+                options.addAll(List.of("--root", root(name, source)));
             }
             ApplicationBundle.main(options.toArray(String[]::new));
             for (var name : List.of("precache.json", "on-demand.json", "nested/page.html")) {
@@ -214,8 +214,7 @@ public final class ApplicationBundleTest {
                             .getAsString())) {
                 var run = Files.createTempDirectory(directory, "collision");
                 var args = options(run);
-                args.addAll(List.of(
-                        "--prepared", prepare(run, name, input("manifest")).toString()));
+                args.addAll(List.of("--root", root(name, input("manifest"))));
                 expectThrows(IllegalArgumentException.class, () -> ApplicationBundle.run(args));
             }
             var empty = Files.createDirectory(directory.resolve("empty-assets"));
@@ -236,6 +235,66 @@ public final class ApplicationBundleTest {
             expectThrows(
                     IllegalArgumentException.class,
                     () -> ApplicationBundle.run(change(options(extraRun), "--assets-directory", extra)));
+        } finally {
+            AssetContentTest.delete(directory);
+        }
+    }
+
+    @Test
+    public void configurationHtmlAndMapPublicationDescribeDeliveredBytes() throws Exception {
+        var directory = Files.createTempDirectory("application-settings");
+        try {
+            var html = directory.resolve("template.html");
+            Files.writeString(html, "<script>var CLOSURE_DEFINES=@@DEFINES@@;</script>");
+            var javascript = directory.resolve("input.js");
+            Files.writeString(javascript, "window.value=1;\n//# sourceMappingURL=app.js.map\n");
+            var args = options(directory);
+            args.subList(args.size() - 2, args.size()).clear();
+            args.addAll(List.of(
+                    "--html",
+                    html.toString(),
+                    "--define",
+                    "--define=sample='</script>'",
+                    "--root",
+                    root("app.js", javascript),
+                    "--strip-map",
+                    "app.js"));
+            ApplicationBundle.run(args);
+            assertEquals(Files.readString(directory.resolve("web/app.js")), "window.value=1;\n");
+            String rendered = Files.readString(directory.resolve("web/index.html"));
+            assertFalse(rendered.contains("@@DEFINES@@"));
+            assertFalse(rendered.contains("</script>'"));
+            assertTrue(rendered.contains("\\u003c/script\\u003e"));
+            var manifest = JsonParser.parseString(Files.readString(directory.resolve("manifest.json")))
+                    .getAsJsonObject();
+            for (var item : manifest.getAsJsonArray("assets")) {
+                var entry = item.getAsJsonObject();
+                assertEquals(
+                        CssLink.digest(directory
+                                .resolve("web")
+                                .resolve(entry.get("url").getAsString())),
+                        entry.get("sha256").getAsString());
+            }
+            var run = Files.createDirectory(directory.resolve("configuration"));
+            args = options(run);
+            args.subList(args.size() - 2, args.size()).clear();
+            args.addAll(List.of(
+                    "--configuration", "config.js", "--define", "--define=flag", "--define", "--define=number=42"));
+            ApplicationBundle.run(args);
+            assertEquals(
+                    Files.readString(run.resolve("web/config.js")),
+                    "var CLOSURE_DEFINES = {\"flag\":true,\"number\":42};\n");
+            assertFalse(Files.exists(run.resolve("web/index.html")));
+            for (var invalid : List.of(
+                    List.of("--html", html.toString()),
+                    List.of("--configuration", "index.html"),
+                    List.of("--configuration", "../escape"),
+                    List.of("--root", root("../escape", javascript)))) {
+                var bad = Files.createTempDirectory(directory, "bad");
+                var arguments = options(bad);
+                arguments.addAll(invalid);
+                expectThrows(IllegalArgumentException.class, () -> ApplicationBundle.run(arguments));
+            }
         } finally {
             AssetContentTest.delete(directory);
         }

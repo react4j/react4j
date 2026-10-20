@@ -1,6 +1,6 @@
 # Independent browser application settings
 
-- Status: pending
+- Status: complete
 - Blocked by: None
 - Spec coverage: R1, R2 / AC1, AC2
 
@@ -10,8 +10,8 @@ Decouple application runtime and optimization, align custom define values in com
 
 ## Acceptance
 
-- [ ] Delivered behavior satisfies assigned spec criteria.
-- [ ] Meaningful verification passes and limitations are explicit.
+- [x] Delivered behavior satisfies assigned spec criteria.
+- [x] Meaningful verification passes and limitations are explicit.
 
 ## Validation
 
@@ -19,4 +19,4 @@ Unit/packaging tests; browser matrix; invalid configuration tests; formatter and
 
 ## Evidence
 
-Pending.
+`bazel test //tools/verification/src/test/java/react4j/verification:application_tests //css/bundler/src/test/java/react4j/css/bundler:packaging_tests --test_output=errors` passed (eight real-runtime compilation/map combinations; nine packaging/configuration tests). Invalid runtime/compilation macro invocations rejected with expected diagnostics. Buildifier applied, `bazel build //:java_format_check` and `git diff --check` passed. Existing mode defaults remain selected from compilation_mode; full example-mode verification follows in T04.
