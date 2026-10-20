@@ -1,8 +1,8 @@
 # Task map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementing
-- Current frontier: T04
+- Status: implementation-review
+- Current frontier: implementation review
 - Planning reviewer: dependency_aliases_planning; 1/3 rounds consumed, final confirmation unused. Findings: none; complete plan, native source owners, patch export, standalone Replicant configuration, visibility, existing checker producers and delivery order verified.
 - Plan checkpoint: automatic; user explicitly authorized implementation and planning review passed.
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -12,11 +12,11 @@
 | [T01 Dependency facade](T01-facade.md) | complete | None |
 | [T02 Canonical runtime compilation](T02-runtime.md) | complete | T01 |
 | [T03 Rose convergence](T03-rose.md) | complete | T02 |
-| [T04 Verification and publication](T04-delivery.md) | in_progress | T03 |
+| [T04 Verification and publication](T04-delivery.md) | complete | T03 |
 
 ## Full-scope gate
 
-Pending full Root gate, affected Replicant checks, real Rose links and delivery fixtures, public boundary checks, canonical promotion, review and remote pin validation.
+All Root tools/check.sh stages passed, with the documentation-only site link correction and affected suffix rerun recorded in T04. Standalone Replicant complete check passes (98 tests plus release checks). Real Acal/Rose development, production and diagnostic links, seven delivery tests, uncompressed fixture and WAR pass. Configured local/compression boundaries and warm no-op were verified; public inventory/visibility, canonical ownership and caller-owned checker failures pass externally. Root/Rose documentation validators and spec-only audit pass. Independent implementation review, exact-tree cleanup, publication and final normal remote pin validation are the remaining ordered closeout gates. Full authenticated Rose UI and full iBazel edit-latency parity remain unverified.
 
 ## Sequencing
 
