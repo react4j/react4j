@@ -28,6 +28,7 @@ printf '%s\n' "$public_targets" | sed '/^$/d' | LC_ALL=C sort > "$scratch/public
 diff -u "$scratch/public.expected" "$scratch/public.actual"
 "$root/tools/export_bazel_config.sh" "$workspace"
 cp "$root/.bazelrc" "$root/.bazelversion" "$workspace/"
+cp -R "$root/examples" "$workspace/examples"
 mkdir -p "$workspace/src/main/java/isolated"
 cp "$root/tools/release/consumer/src/main/java/isolated/Parent.java" "$root/tools/release/consumer/src/main/java/isolated/SampleView.java" "$workspace/src/main/java/isolated/"
 asset_java="$workspace/src/main/java/react4j/css/example"
@@ -213,10 +214,16 @@ cat > "$workspace/exported/BUILD.bazel" <<'BUILD'
 filegroup(name = "main_targets", testonly = True, srcs = ["//:application", "//:application_bundle", "//:standalone", "//src/test/js/isolated:browser", "//src/test/js/isolated:browser_bin"])
 BUILD
 cd "$workspace"
+bazel --output_base="$scratch/bazel" query 'kind("browser_application_variant rule", //examples/...)' > "$scratch/example-applications"
+bazel --output_base="$scratch/bazel" query 'tests(//examples/...)' > "$scratch/browser-tests"
+test -s "$scratch/example-applications"
+test -s "$scratch/browser-tests"
+printf '%s\n' '//src/test/js/isolated:browser' >> "$scratch/browser-tests"
+bazel --output_base="$scratch/bazel" build --target_pattern_file="$scratch/example-applications"
 bazel --output_base="$scratch/bazel" build //src/main/java/isolated:views //:application //:application_manifest //:contract //exported:main_targets @react4j//:core @react4j//:dom
 bazel --output_base="$scratch/bazel" build -c opt //:application //:application_manifest //:contract //exported:main_targets
 for mode in fastbuild opt; do
-  bazel --output_base="$scratch/bazel" test -c "$mode" //src/test/js/isolated:browser --test_output=errors
+  bazel --output_base="$scratch/bazel" test -c "$mode" --target_pattern_file="$scratch/browser-tests" --test_output=errors
   expect_failure '[ArrayEquals]' build -c "$mode" //:bad_array.js
   expect_failure '[NullAway]' build -c "$mode" //:bad_null.js
 done
@@ -274,4 +281,4 @@ for entry in \
   printf 'load("@react4j//%s", "%s")\nfilegroup(name = "target")\n' "$label" "$symbol" > "$workspace/denied/BUILD.bazel"
   expect_failure 'not visible for loading' build --nobuild //denied:target
 done
-echo 'External Bazel consumer passed with native J2CL, caller-owned checks, assets and enforced public boundaries'
+echo 'External Bazel consumer passed with native J2CL, copied examples, caller-owned checks, assets and enforced public boundaries'
