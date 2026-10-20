@@ -6,12 +6,18 @@ package(default_visibility = [
     "//examples/todomvc:__subpackages__",
 ])
 
-j2cl_library(
-    name = "views",
+filegroup(
+    name = "views_sources",
     srcs = [
         "Page.java",
         "package-info.java",
     ],
+    visibility = ["//:__pkg__"],
+)
+
+j2cl_library(
+    name = "views",
+    srcs = [":views_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     javacopts = JAVACOPTS,
     plugins = [
@@ -31,9 +37,15 @@ j2cl_library(
     ],
 )
 
+filegroup(
+    name = "assets_sources",
+    srcs = ["ItemAssets.java"],
+    visibility = ["//:__pkg__"],
+)
+
 j2cl_library(
     name = "assets",
-    srcs = ["ItemAssets.java"],
+    srcs = [":assets_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     javacopts = JAVACOPTS,
     plugins = [

@@ -6,13 +6,20 @@ package(default_visibility = [
     "//examples/drumloop/src/test/js/react4j/drumloop:__pkg__",
 ])
 
-j2cl_library(
-    name = "cache_tests",
+filegroup(
+    name = "cache_tests_sources",
     testonly = True,
     srcs = [
         "ReactCacheTest.java",
         "ReactCacheTest.native.js",
     ],
+    visibility = ["//:__pkg__"],
+)
+
+j2cl_library(
+    name = "cache_tests",
+    testonly = True,
+    srcs = [":cache_tests_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     javacopts = JAVACOPTS,
     plugins = ["@sting//third_party/java:nullaway_plugin"],

@@ -12,8 +12,8 @@ package(default_visibility = [
     "//examples/webspeechdemo/src/test/java/react4j/webspeechdemo:__pkg__",
 ])
 
-j2cl_library(
-    name = "browser",
+filegroup(
+    name = "browser_sources",
     testonly = True,
     srcs = [
         "Browser.java",
@@ -21,6 +21,13 @@ j2cl_library(
         "BrowserPromise.java",
         "Checks.java",
     ],
+    visibility = ["//:__pkg__"],
+)
+
+j2cl_library(
+    name = "browser",
+    testonly = True,
+    srcs = [":browser_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     javacopts = JAVACOPTS,
     plugins = ["@sting//third_party/java:nullaway_plugin"],
