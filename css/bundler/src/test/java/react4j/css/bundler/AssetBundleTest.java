@@ -13,9 +13,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 import org.testng.annotations.Test;
 import react4j.css.internal.AssetResource;
 import react4j.css.internal.CssCatalogue;
@@ -438,6 +440,60 @@ public final class AssetBundleTest {
             var result = AssetJavaScript.finalizeBundle("window.example=1;", empty, none, List.of(), Map.of());
             assertEquals(result.text(), "window.example=1;\n//# sourceMappingURL=app.js.map\n");
             assertTrue(result.map().getAsJsonArray("sections").isEmpty());
+        } finally {
+            delete(directory);
+        }
+    }
+
+    @Test
+    public void developmentFinalizationChecksEscapedReservedTokens() throws Exception {
+        var directory = Files.createTempDirectory("asset-escaped-tokens");
+        try {
+            var empty = directory.resolve("empty.map");
+            Files.writeString(empty, "");
+            var link = CssLink.create(CssCatalogue.read(List.of()), "empty", false);
+            String prefix = "react4j-asset:";
+            var tokens = new ArrayList<String>();
+            tokens.add(prefix.chars()
+                    .mapToObj(value -> String.format(Locale.ROOT, "\\u%04x", value))
+                    .collect(Collectors.joining()));
+            for (int i = 0; i < prefix.length(); i++) {
+                char value = prefix.charAt(i);
+                var escapes = new ArrayList<>(List.of(
+                        String.format(Locale.ROOT, "\\u%04x", (int) value),
+                        String.format(Locale.ROOT, "\\u%04X", (int) value),
+                        String.format(Locale.ROOT, "\\u{000%x}", (int) value),
+                        String.format(Locale.ROOT, "\\x%02x", (int) value),
+                        String.format(Locale.ROOT, "\\%o", (int) value),
+                        String.format(Locale.ROOT, "\\%03o", (int) value)));
+                if ("bfnrtv0123456789".indexOf(value) < 0) {
+                    escapes.add("\\" + value);
+                }
+                for (var escape : escapes) {
+                    tokens.add(prefix.substring(0, i) + escape + prefix.substring(i + 1));
+                }
+                for (var newline : List.of("\n", "\r", "\r\n")) {
+                    tokens.add(prefix.substring(0, i) + "\\" + newline + prefix.substring(i));
+                }
+            }
+            for (var token : tokens) {
+                var error = expectThrows(
+                        "Escaped token: " + token,
+                        IllegalArgumentException.class,
+                        () -> AssetJavaScript.finalizeBundle(
+                                "window.result='" + token + "unknown';", empty, link, List.of(), Map.of()));
+                assertTrue(
+                        Objects.requireNonNull(error.getMessage()).startsWith("Asset URL token has no live binding:"),
+                        error.getMessage());
+            }
+            for (String code : List.of(
+                    "window.result='react4j\\u002dother:ordinary';",
+                    "window.result='react4j-asse\\t:ordinary';",
+                    "window.result='\\\\u0072eact4j-asset:ordinary';",
+                    "// react4j\\u002dasset:comment\nwindow.result=1;")) {
+                var result = AssetJavaScript.finalizeBundle(code, empty, link, List.of(), Map.of());
+                assertEquals(result.text(), code + "\n//# sourceMappingURL=app.js.map\n");
+            }
         } finally {
             delete(directory);
         }

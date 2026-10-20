@@ -5,7 +5,7 @@
 - Current frontier: implementation review
 - Plan checkpoint: automatic; user explicitly authorized implementation, no human checkpoint, planning review passed.
 - Planning reviewer: browser_controls_planning; 1/3 rounds consumed, final confirmation unused; Findings: none. Complete scope, controls/defaults, optional HTML/config, assembly/cache boundaries, Rose delivery contracts and blocked full-Rose gate checked.
-- Implementation reviewer: pending (0/5; final confirmation unused)
+- Implementation reviewer: browser_controls_review; round 1/5 found one P2 reserved-token validation regression in the BUNDLE fast path. Confirmed and fixed with escape-aware candidate detection plus Closure validation; round 2 pending, final confirmation unused. Full prior scope was reviewed; no other findings.
 
 | Task | Status | Blocked by |
 | --- | --- | --- |

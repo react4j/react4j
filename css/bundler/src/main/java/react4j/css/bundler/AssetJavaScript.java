@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
 import react4j.css.internal.CssLink;
@@ -29,7 +30,56 @@ import react4j.css.internal.SourceMap;
 import react4j.css.linker.BindingSourceMap;
 
 final class AssetJavaScript {
+    private static final String TOKEN_PREFIX = "react4j-asset:";
+    private static final Pattern ASSET_TOKEN = assetToken();
+
     private AssetJavaScript() {}
+
+    private static Pattern assetToken() {
+        var expression = new StringBuilder();
+        for (char value : TOKEN_PREFIX.toCharArray()) {
+            if (!expression.isEmpty()) {
+                expression.append("(?:\\\\(?:\\r\\n|[\\r\\n\\u2028\\u2029]))*+");
+            }
+            String hex = Integer.toHexString(value);
+            expression
+                    .append("(?:")
+                    .append(Pattern.quote(Character.toString(value)))
+                    .append("|\\\\(?i:u(?:00")
+                    .append(hex)
+                    .append("|\\{0*")
+                    .append(hex)
+                    .append("\\})|x")
+                    .append(hex)
+                    .append("|0?")
+                    .append(Integer.toOctalString(value))
+                    .append(')');
+            if ("bfnrtv0123456789".indexOf(value) < 0) {
+                expression.append('|').append(Pattern.quote("\\" + value));
+            }
+            expression.append(')');
+        }
+        return Pattern.compile(expression.toString());
+    }
+
+    private static boolean hasAssetToken(String javascript) {
+        if (javascript.contains(TOKEN_PREFIX)) {
+            return true;
+        }
+        var matcher = ASSET_TOKEN.matcher(javascript);
+        // The first escape in a token follows at most one raw prefix. Scan escapes rather than
+        // matching the pattern at every position in a potentially very large development bundle.
+        for (int escape = javascript.indexOf('\\'); escape >= 0; escape = javascript.indexOf('\\', escape + 1)) {
+            for (int length = 0; length < TOKEN_PREFIX.length() && length <= escape; length++) {
+                int start = escape - length;
+                if (javascript.regionMatches(start, TOKEN_PREFIX, 0, length)
+                        && matcher.region(start, javascript.length()).lookingAt()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     static MappedText rewrite(String javascript, JsonObject map, CssLink link, Map<String, String> urls) {
         return rewrite(javascript, map, link, urls, true);
@@ -179,7 +229,7 @@ final class AssetJavaScript {
             throws IOException {
         // BUNDLE inputs have already been checked by Closure. Only generated bindings need edits.
         // Reserved optimized tokens take the full validation path, including malformed/unbound tokens.
-        if (link.optimized() || !Files.readString(supplied).isBlank() || javascript.contains("react4j-asset:")) {
+        if (link.optimized() || !Files.readString(supplied).isBlank() || hasAssetToken(javascript)) {
             return rewrite(javascript, mapping(javascript, supplied, link, trees), link, urls);
         }
         var inputs = inputs(javascript, link, trees);
