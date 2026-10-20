@@ -34,7 +34,7 @@ alias(
 
 alias(
     name = "braincheck_core-j2cl",
-    actual = "@arez//third_party/java:braincheck_core-j2cl",
+    actual = "@braincheck//core/src/main/java/org/realityforge/braincheck:core-j2cl",
     visibility = ["//visibility:public"],
 )
 
@@ -215,6 +215,6 @@ alias(
 
 alias(
     name = "zemeckis_core-j2cl",
-    actual = "//third_party/java:zemeckis_core-j2cl",
+    actual = "@zemeckis//core/src/main/java/zemeckis:core-j2cl",
     visibility = ["//visibility:public"],
 )

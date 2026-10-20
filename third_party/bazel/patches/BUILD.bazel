@@ -1,5 +1,7 @@
 exports_files(
     [
+        "arez_use_canonical_j2cl_dependencies.patch",
+        "zemeckis_use_canonical_j2cl_dependencies.patch",
         "rules_cc_allowlist_macos_sdk_root.patch",
         "j2cl_configure_class_output.patch",
         "j2cl_preserve_css_resources.patch",

@@ -131,9 +131,11 @@ package isolated;
 
 import jsinterop.annotations.JsMethod;
 import org.jspecify.annotations.NullMarked;
+import org.realityforge.braincheck.BrainCheckConfig;
 import react4j.Keyed;
 import react4j.React;
 import react4j.dom.DOM;
+import zemeckis.Zemeckis;
 
 @NullMarked
 public final class BrowserTest {
@@ -144,6 +146,11 @@ public final class BrowserTest {
         Keyed keyed = () -> "consumer-key";
         if (!"consumer-key".equals(Keyed.getKey(keyed)) || null == DOM.div("consumer")) {
             throw new AssertionError("Native J2CL consumer runtime");
+        }
+        if (production == BrainCheckConfig.verboseErrorMessages()
+                || production == BrainCheckConfig.checkApiInvariants()
+                || production == Zemeckis.areNamesEnabled()) {
+            throw new AssertionError("Shared native dependency configuration");
         }
         if (production != React.shouldMinimizeInputKeys()
                 || production == React.enableViewNames()
@@ -176,7 +183,7 @@ j2cl_library(
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     plugins = ["@react4j//:processor", "@react4j//third_party:arez_processor_plugin", "@react4j//third_party:nullaway_plugin"],
     javacopts = ["-XDaddTypeAnnotationsToSymbol=true", "-Xep:NullAway:ERROR", "-XepOpt:NullAway:OnlyNullMarked=true", "-XepOpt:NullAway:JSpecifyMode=true", "-XepOpt:NullAway:AssertsEnabled=true"],
-    deps = ["@react4j//:dom"],
+    deps = ["@react4j//:dom", "@react4j//third_party:arez_core-j2cl", "@react4j//third_party:braincheck_core-j2cl", "@react4j//third_party:zemeckis_core-j2cl"],
     visibility = ["//src/test/js/isolated:__pkg__"],
 )
 JAVA
