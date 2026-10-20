@@ -24,4 +24,4 @@ Primary implements; independent reviewers remain read-only. Keep existing Root/R
 
 ## Promoted knowledge
 
-Pending classification during T04. Public alias inventory remains owned by BUILD/consumer checks; durable identity and caller-selection requirements belong with existing Bazel integration contracts.
+[Bazel integration](../../../docs/specs/bazel-integration.md) owns provider identity, shared runtime compilation, caller selection and private implementation boundaries. [Consumer setup](../../../docs/project_setup.md#configure-bazel) explains aliases and root configuration; BUILD/consumer checks own the exact inventory. Classification and specification-only audit passed; Root and Rose documentation validators passed. No qualifying ADR, glossary, use-case or deferred artifact was introduced.

@@ -7,7 +7,7 @@
 * Restore grey, struck-through labels for completed tasks in all three TodoMVC examples.
 * Add String-based `CssProps.customProperty` and HTML `data` fluent APIs for CSS custom properties and data attributes, including nullable removal without JavaScript casts.
 * Upgrade JSpecify to version `1.0.1`.
-* Build against pinned Braincheck and Zemeckis publication archives in Bazel.
+* Use public `@react4j//third_party` aliases for shared browser libraries and optional processors/checkers. Reuse native Arez, Braincheck and Zemeckis compilations across transitive dependencies to avoid duplicate Closure modules; applications retain dependency-version and compiler-check selection.
 * Support JsInterop 1.2 nullness contracts when reading required JavaScript inputs and context components. Emit JSpecify qualifiers directly on generated types so consumer builds pass AnnotationPosition. Accept an absent inline style in DOM props and a null context children array, including generated context providers without a render method.
 * Import the raw, Arez and Sting TodoMVC examples with checked Bazel/J2CL builds, shared assets, browser coverage and local preview commands. Correct the remaining-task counts and raw view subscriptions. Build the existing site routes here and retire the separately hosted Dagger demo.
 * Correct implicit default constructor handling under Turbine using Proton's origin query, preserving validation and diagnostics for explicitly written constructors.

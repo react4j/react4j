@@ -101,7 +101,11 @@ For a published Git revision, replace the local override with a `git_override` p
 
 Put the React4j processor in the native J2CL target's `plugins` and DOM or core in `deps`. Add the CSS processor and annotation dependency when authoring styles or assets. Add compatible Arez/Sting processors for generated integrations. Core and DOM export the framework dependencies used by generated code.
 
-The pinned J2CL compiler emits Java 21 intermediate bytecode for browser compilation. J2CL runs javac with the application's `plugins` and `javacopts`; a separate Java library and React4j's internal checked-library helper are unnecessary. Choose Error Prone checks in the application. For JSpecify-mode NullAway, supply its plugin and these options:
+Use the public dependency aliases in `@react4j//third_party` for dependencies your own sources use directly, such as `:arez_core-j2cl`, `:braincheck_core-j2cl`, `:zemeckis_core-j2cl` and `:jspecify-j2cl`. Optional processor aliases include `:arez_processor_plugin`, `:sting_processor_plugin` and `:nullaway_plugin`. The [alias definitions](https://github.com/react4j/react4j/blob/master/third_party/BUILD.bazel) declare which targets are public.
+
+Aliases forward the upstream providers and reuse their compilation. Libraries linked into the same application must also share those targets: recompiling the same runtime sources under another label produces duplicate Closure modules. The exported module configuration routes transitive Arez and Zemeckis dependencies to the same native owners. Aliases do not isolate versions; the application's root module resolves and overrides versions for the complete graph. These guarantees are recorded in the [Bazel integration contract](specs/bazel-integration.md).
+
+The pinned J2CL compiler emits Java 21 intermediate bytecode for browser compilation. J2CL runs javac with the application's `plugins` and `javacopts`; a separate Java library and React4j's internal checked-library helper are unnecessary. Choose Error Prone checks in the application. For JSpecify-mode NullAway, add `@react4j//third_party:nullaway_plugin` to `plugins` and supply these options:
 
 ```text
 -XDaddTypeAnnotationsToSymbol=true
