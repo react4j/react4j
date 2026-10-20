@@ -10,18 +10,14 @@ git_override(
 bazel_dep(name = "zemeckis")
 git_override(
     module_name = "zemeckis",
-    commit = "94ba5af646b322c235b8d895b99999ec251ede5b",
-    patch_strip = 1,
-    patches = ["//third_party/bazel/patches:zemeckis_use_canonical_j2cl_dependencies.patch"],
+    commit = "c5b547c086cfa28e23bfe5b2db436da02959dd6f",
     remote = "https://github.com/realityforge/zemeckis.git",
 )
 
 bazel_dep(name = "arez")
 git_override(
     module_name = "arez",
-    commit = "0321e1ed4f45a3ca77572ab3f101ee7dff9c40e2",
-    patch_strip = 1,
-    patches = ["//third_party/bazel/patches:arez_use_canonical_j2cl_dependencies.patch"],
+    commit = "b20279ba4790a2f9f9992ac96aecb82adb6d3b2d",
     remote = "https://github.com/arez/arez.git",
 )
 
