@@ -18,10 +18,10 @@ java_library(
         "//processor:__subpackages__",
     ],
     deps = [
+        "//third_party:error_prone_core",
+        "//third_party:nullaway",
+        "//third_party:proton_qa",
         "//third_party/java:dataflow_errorprone",
-        "//third_party/java:error_prone_core",
-        "//third_party/java:nullaway",
-        "//third_party/java:proton_qa",
         "//third_party/java:testng",
     ],
 )

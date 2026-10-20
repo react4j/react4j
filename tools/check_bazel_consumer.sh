@@ -17,6 +17,20 @@ public_targets='
 //:defs.bzl
 //:dom
 //:processor
+//third_party:arez_core-j2cl
+//third_party:arez_processor_plugin
+//third_party:braincheck_core-j2cl
+//third_party:closure_testcase
+//third_party:grim_annotations-j2cl
+//third_party:javaemul_internal_annotations-j2cl
+//third_party:jsinterop_annotations-j2cl
+//third_party:jsinterop_base-j2cl
+//third_party:jspecify-j2cl
+//third_party:nullaway_plugin
+//third_party:org_jetbrains_annotations-j2cl
+//third_party:sting_core-j2cl
+//third_party:sting_processor_plugin
+//third_party:zemeckis_core-j2cl
 '
 # Include exported sources and generated outputs; generated files belong to their generating API target.
 (cd "$root" && bazel query 'visible(@rules_java//java:defs.bzl, //...:all-targets)' --output=xml) > "$scratch/public.xml"
@@ -57,7 +71,7 @@ j2cl_library(
     name = "assets",
     srcs = ["AssetsExample.java"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
-    plugins = ["@react4j//:css_processor", "@sting//third_party/java:nullaway_plugin"],
+    plugins = ["@react4j//:css_processor", "@react4j//third_party:nullaway_plugin"],
     javacopts = ["-XDaddTypeAnnotationsToSymbol=true", "-Xep:ArrayEquals:ERROR", "-Xep:NullAway:ERROR", "-XepOpt:NullAway:OnlyNullMarked=true", "-XepOpt:NullAway:JSpecifyMode=true", "-XepOpt:NullAway:AssertsEnabled=true"],
     deps = ["//src/main/assets/react4j/css/example:media", "@react4j//:dom", "@react4j//:css"],
 )
@@ -72,10 +86,9 @@ local_path_override(module_name = "react4j", path = "$module_path")
 include("//third_party/react4j:dependencies.MODULE.bazel")
 MODULE
 cat > "$workspace/BUILD.bazel" <<'BUILD'
-load("@j2cl//build_defs:rules.bzl", "j2cl_import")
 load("@react4j//:defs.bzl", "browser_application", "browser_application_variant", "css_bundle", "css_js_binary", "web_bundle")
 load(":contract.bzl", "bundle_contract")
-j2cl_import(name = "jspecify", jar = "@maven//:org_jspecify_jspecify", visibility = ["//visibility:public"])
+alias(name = "jspecify", actual = "@react4j//third_party:jspecify-j2cl", visibility = ["//visibility:public"])
 config_setting(name = "optimized", values = {"compilation_mode": "opt"}, visibility = ["@react4j//css:__pkg__", "@react4j//tools/browser:__pkg__"])
 css_js_binary(name = "bad_array", deps = ["//src/main/java/checks:array"], compilation_level = select({":optimized": "ADVANCED", "//conditions:default": "BUNDLE"}))
 css_js_binary(name = "bad_null", deps = ["//src/main/java/checks:null"], compilation_level = select({":optimized": "ADVANCED", "//conditions:default": "BUNDLE"}))
@@ -161,7 +174,7 @@ j2cl_library(
     name = "views",
     srcs = ["Parent.java", "SampleView.java", "BrowserTest.java"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
-    plugins = ["@react4j//:processor", "@arez//:arez_processor_plugin", "@sting//third_party/java:nullaway_plugin"],
+    plugins = ["@react4j//:processor", "@react4j//third_party:arez_processor_plugin", "@react4j//third_party:nullaway_plugin"],
     javacopts = ["-XDaddTypeAnnotationsToSymbol=true", "-Xep:NullAway:ERROR", "-XepOpt:NullAway:OnlyNullMarked=true", "-XepOpt:NullAway:JSpecifyMode=true", "-XepOpt:NullAway:AssertsEnabled=true"],
     deps = ["@react4j//:dom"],
     visibility = ["//src/test/js/isolated:__pkg__"],
@@ -193,7 +206,7 @@ cat > "$workspace/src/main/java/checks/BUILD.bazel" <<'JAVA'
 load("@j2cl//build_defs:rules.bzl", "j2cl_library")
 package(default_visibility = ["//:__pkg__"])
 j2cl_library(name = "array", srcs = ["BadArray.java"], javacopts = ["-Xep:ArrayEquals:ERROR"])
-j2cl_library(name = "null", srcs = ["BadNull.java"], plugins = ["@sting//third_party/java:nullaway_plugin"], javacopts = ["-XDaddTypeAnnotationsToSymbol=true", "-Xep:NullAway:ERROR", "-XepOpt:NullAway:OnlyNullMarked=true", "-XepOpt:NullAway:JSpecifyMode=true", "-XepOpt:NullAway:AssertsEnabled=true"], experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True, deps = ["//:jspecify"])
+j2cl_library(name = "null", srcs = ["BadNull.java"], plugins = ["@react4j//third_party:nullaway_plugin"], javacopts = ["-XDaddTypeAnnotationsToSymbol=true", "-Xep:NullAway:ERROR", "-XepOpt:NullAway:OnlyNullMarked=true", "-XepOpt:NullAway:JSpecifyMode=true", "-XepOpt:NullAway:AssertsEnabled=true"], experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True, deps = ["//:jspecify"])
 JAVA
 expect_failure() {
   local diagnostic="$1" log="$scratch/failure.log"
@@ -239,6 +252,9 @@ for target in \
   '@react4j//css/processor:plugin' \
   '@react4j//doc-examples:j2cl' \
   '@react4j//third_party/java:jspecify-j2cl' \
+  '@react4j//third_party:gson' \
+  '@react4j//third_party:closure_compiler' \
+  '@react4j//third_party:arez_processor_runtime' \
   '@react4j//tools/browser:preview' \
   '@react4j//css/linker/src/main/java/react4j/css/linker:worker' \
   '@react4j//tools/browser:production' \

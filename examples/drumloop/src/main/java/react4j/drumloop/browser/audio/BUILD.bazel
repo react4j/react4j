@@ -17,11 +17,11 @@ j2cl_library(
     ],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     javacopts = JAVACOPTS,
-    plugins = ["@sting//third_party/java:nullaway_plugin"],
+    plugins = ["@react4j//third_party:nullaway_plugin"],
     deps = [
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/core",
         "//examples/drumloop/src/main/java/react4j/drumloop/browser/promise",
-        "//examples/third_party/java:jspecify",
-        "@j2cl//:jsinterop-annotations-j2cl",
+        "@react4j//third_party:jsinterop_annotations-j2cl",
+        "@react4j//third_party:jspecify-j2cl",
     ],
 )

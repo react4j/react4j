@@ -20,9 +20,9 @@ java_testng(
     deps = [
         "//css/bundler/src/main/java/react4j/css/bundler",
         "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party:closure_compiler_unshaded",
+        "//third_party:gson",
         "//third_party/java:ph_css",
-        "@maven//:com_google_code_gson_gson",
-        "@maven//:com_google_javascript_closure_compiler_unshaded",
     ],
 )
 
@@ -76,9 +76,9 @@ java_testng(
         "//css/bundler/src/main/java/react4j/css/bundler:content",
         "//css/bundler/src/main/java/react4j/css/bundler:media",
         "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party:closure_compiler_unshaded",
+        "//third_party:gson",
         "//third_party/java:ph_css",
-        "@maven//:com_google_code_gson_gson",
-        "@maven//:com_google_javascript_closure_compiler_unshaded",
     ],
 )
 
@@ -106,6 +106,6 @@ java_testng(
         "//css/bundler/src/main/java/react4j/css/bundler:content",
         "//css/bundler/src/main/java/react4j/css/bundler:packaging",
         "//css/internal/src/main/java/react4j/css/internal",
-        "@maven//:com_google_code_gson_gson",
+        "//third_party:gson",
     ],
 )

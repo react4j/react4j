@@ -14,8 +14,8 @@ FORMATTER_JVM_FLAGS = [
 ]
 
 _JSPECIFY = Label("//third_party/java:jspecify")
-_JSPECIFY_J2CL = Label("//third_party/java:jspecify-j2cl")
-_NULLAWAY = Label("//third_party/java:nullaway_plugin")
+_JSPECIFY_J2CL = Label("//third_party:jspecify-j2cl")
+_NULLAWAY = Label("//third_party:nullaway_plugin")
 
 def _compile_policy(srcs, javacopts, deps, plugins, j2cl = False):
     options = ([] if j2cl else ["--release", "17"]) + (JAVACOPTS if srcs else BASE_JAVACOPTS)

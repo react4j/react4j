@@ -25,8 +25,8 @@ java_j2cl_library(
         "//:core",
         "//:css",
         "//:dom",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jspecify-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )
 
@@ -44,8 +44,8 @@ java_j2cl_library(
         "//:css",
         "//:dom",
         "//css/examples/save-button/src/main/assets/react4j/css/example:media",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jspecify-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )
 

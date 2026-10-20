@@ -21,7 +21,7 @@ java_j2cl_library(
     plugins = ["//:css_processor"],
     deps = [
         "//:css",
-        "//third_party/java:jspecify-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )
 
@@ -44,7 +44,7 @@ java_j2cl_library(
     deps = [
         ":fixture_contracts",
         "//:css",
-        "//third_party/java:jspecify-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )
 
@@ -66,7 +66,7 @@ java_j2cl_library(
         ":fixture_contracts",
         ":fixture_dependency",
         "//:css",
-        "//third_party/java:jspecify-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )
 
@@ -85,7 +85,7 @@ java_j2cl_library(
     deps = [
         ":fixture_dependency",
         "//:css",
-        "//third_party/java:jspecify-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )
 
@@ -185,9 +185,9 @@ java_testng(
         ":fixture_bindings_java",
         ":fixture_contracts_java",
         ":fixture_dependency_java",
+        "//third_party:closure_compiler_unshaded",
+        "//third_party:gson",
         "//third_party/java:ph_css",
-        "@maven//:com_google_code_gson_gson",
-        "@maven//:com_google_javascript_closure_compiler_unshaded",
     ],
 )
 
@@ -209,8 +209,8 @@ java_j2cl_library(
         ":fixture_bindings",
         ":fixture_contracts",
         "//:css",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jspecify-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )
 
@@ -230,8 +230,8 @@ java_j2cl_library(
     deps = [
         "//:css",
         "//css/integration-tests/src/test/assets/react4j/css/integration:media",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jspecify-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )
 

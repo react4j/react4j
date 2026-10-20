@@ -27,9 +27,9 @@ java_library(
     ],
     deps = [
         "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party:gson",
+        "//third_party:proton_core",
         "//third_party/java:javapoet",
         "//third_party/java:ph_css",
-        "//third_party/java:proton_core",
-        "@maven//:com_google_code_gson_gson",
     ],
 )

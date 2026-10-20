@@ -3,7 +3,7 @@ load("@rules_webtesting//web:web.bzl", "custom_browser")
 # Chromium 123 old headless leaves documents unfocused on macOS.
 custom_browser(
     name = "chromium",
-    browser = "@rules_webtesting//browsers:chromium-local",
+    browser = "//third_party:chromium_local",
     metadata = "chromium.json",
     visibility = [
         "//tools/browser:__pkg__",

@@ -16,7 +16,7 @@ java_j2cl_library(
         "//third_party/java:jsinterop_annotations",
     ],
     deps = [
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jspecify-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )

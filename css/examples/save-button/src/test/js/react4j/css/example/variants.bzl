@@ -23,7 +23,7 @@ def naming_variant(name, defs):
         runtime_defines = {"react4j.css.example.variant": name + "-"},
         deps = [
             "//css/examples/save-button/src/test/java/react4j/css/example:browser_tests",
-            "@rules_closure//closure/testing/library:testcase",
+            "//third_party:closure_testcase",
         ],
     )
     for style_name, output, globals in [

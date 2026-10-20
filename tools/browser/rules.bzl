@@ -257,7 +257,7 @@ def _runtime_impl(ctx):
 _runtime = rule(implementation = _runtime_impl, outputs = {"js": "%{name}.js"}, attrs = {"dom": attr.label(allow_single_file = True), "js": attr.label(allow_single_file = True), "react": attr.label(allow_single_file = True), "_assets": attr.label(default = Label("//tools/browser:assets"), executable = True, cfg = "exec")})
 
 def _browser_test_impl(name, visibility, srcs, deps, entry_point, data, defs, runtime_defines):
-    closure_js_library(name = name + "_lib", testonly = True, srcs = srcs, deps = deps + [Label("//tools/browser:mode"), Label("@rules_closure//closure/testing/library:asserts"), Label("@rules_closure//closure/testing/library:testsuite")])
+    closure_js_library(name = name + "_lib", testonly = True, srcs = srcs, deps = deps + [Label("//tools/browser:mode"), Label("//third_party:closure_asserts"), Label("//third_party:closure_testsuite")])
     css_js_binary(
         name = name + "_bin",
         testonly = True,

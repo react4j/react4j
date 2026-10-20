@@ -21,7 +21,7 @@ java_library(
     ],
     plugins = [
         "//:processor",
-        "@arez//:arez_processor_plugin",
+        "//third_party:arez_processor_plugin",
     ],
     deps = [
         "//:_core_java",
@@ -42,12 +42,12 @@ j2cl_library(
     deps = [
         "//:core",
         "//:dom",
-        "//third_party/java:braincheck_core-j2cl",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jsinterop_base-j2cl",
-        "//third_party/java:jspecify-j2cl",
-        "//third_party/java:org_jetbrains_annotations-j2cl",
-        "@arez//:core-j2cl",
+        "//third_party:arez_core-j2cl",
+        "//third_party:braincheck_core-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+        "//third_party:org_jetbrains_annotations-j2cl",
     ],
 )
 

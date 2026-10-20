@@ -23,8 +23,8 @@ java_browser_testng(
     test_class = "react4j.verification.BrowserCoverageTest",
     visibility = ["//:__pkg__"],
     deps = [
+        "//third_party:gson",
         "//tools/verification/src/main/java/react4j/verification:browser_coverage",
-        "@maven//:com_google_code_gson_gson",
     ],
 )
 
@@ -40,10 +40,10 @@ java_browser_testng(
     test_class = "react4j.verification.CoverageInstrumenterTest",
     visibility = ["//:__pkg__"],
     deps = [
+        "//third_party:closure_compiler",
+        "//third_party:gson",
         "//tools/verification/src/main/java/react4j/verification:browser_coverage",
         "//tools/verification/src/main/java/react4j/verification:coverage_instrumenter",
-        "@maven//:com_google_code_gson_gson",
-        "@rules_closure//closure/compiler",
     ],
 )
 
@@ -89,14 +89,14 @@ java_browser_testng(
     test_class = "react4j.verification.RuntimeCoverageTest",
     visibility = ["//:__pkg__"],
     deps = [
+        "//third_party:closure_compiler",
+        "//third_party:gson",
         "//tools/verification/src/main/java/react4j/verification:browser_coverage",
         "//tools/verification/src/main/java/react4j/verification:coverage",
         "//tools/verification/src/main/java/react4j/verification:coverage_instrumenter",
         "//tools/verification/src/main/java/react4j/verification:java_coverage",
         "//tools/verification/src/main/java/react4j/verification:lcov_report",
         "//tools/verification/src/main/java/react4j/verification:runtime_coverage_lib",
-        "@maven//:com_google_code_gson_gson",
-        "@rules_closure//closure/compiler",
     ],
 )
 
@@ -154,7 +154,7 @@ java_browser_testng(
     test_class = "react4j.verification.BrowserApplicationTest",
     visibility = ["//:__pkg__"],
     deps = [
+        "//third_party:gson",
         "//tools/verification/src/main/java/react4j/verification:browser_coverage",
-        "@maven//:com_google_code_gson_gson",
     ],
 )

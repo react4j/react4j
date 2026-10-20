@@ -14,8 +14,8 @@ java_library(
     ],
     deps = [
         "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party:gson",
         "//third_party/java:ph_css",
-        "@maven//:com_google_code_gson_gson",
     ],
 )
 
@@ -42,8 +42,8 @@ java_library(
         ":content",
         "//css/internal/src/main/java/react4j/css/internal",
         "//css/linker/src/main/java/react4j/css/linker",
-        "@maven//:com_google_code_gson_gson",
-        "@rules_closure//closure/compiler",
+        "//third_party:closure_compiler",
+        "//third_party:gson",
     ],
 )
 
@@ -67,7 +67,7 @@ java_library(
     deps = [
         ":media",
         "//css/internal/src/main/java/react4j/css/internal",
-        "@maven//:com_google_code_gson_gson",
+        "//third_party:gson",
     ],
 )
 
@@ -108,8 +108,8 @@ java_library(
     deps = [
         ":content",
         "//css/internal/src/main/java/react4j/css/internal",
-        "@maven//:com_google_code_gson_gson",
-        "@rules_closure//closure/compiler",
+        "//third_party:closure_compiler",
+        "//third_party:gson",
     ],
 )
 

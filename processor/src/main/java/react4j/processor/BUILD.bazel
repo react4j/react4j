@@ -31,7 +31,7 @@ java_library(
     resource_strip_prefix = "processor/src/main/resources",
     resources = ["//processor/src/main/resources/META-INF/services:javax.annotation.processing.Processor"],
     deps = [
+        "//third_party:proton_core",
         "//third_party/java:javapoet",
-        "//third_party/java:proton_core",
     ],
 )

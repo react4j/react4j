@@ -23,15 +23,15 @@ java_test(
     main_class = "isolated.Consumer",
     plugins = [
         "//:processor",
-        "@arez//:arez_processor_plugin",
-        "@sting//:sting_processor_plugin",
+        "//third_party:arez_processor_plugin",
+        "//third_party:sting_processor_plugin",
     ],
     use_testrunner = False,
     visibility = ["//:__subpackages__"],
     deps = [
         "//:_core_java",
         "//:_dom_java",
-        "//third_party/java:sting_core",
+        "//third_party:sting_core",
     ],
 )
 

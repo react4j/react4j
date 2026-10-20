@@ -17,9 +17,9 @@ java_library(
     ],
     deps = [
         "//css/internal/src/main/java/react4j/css/internal",
-        "@maven//:com_google_code_gson_gson",
-        "@rules_closure//closure/compiler",
-        "@rules_closure//java/com/google/javascript/jscomp:compiler_factory",
+        "//third_party:closure_compiler",
+        "//third_party:closure_compiler_factory",
+        "//third_party:gson",
     ],
 )
 
@@ -34,7 +34,7 @@ java_binary(
     visibility = ["//css:__pkg__"],
     runtime_deps = [
         ":linker",
-        "@rules_closure//java/io/bazel/rules/closure:worker_main",
+        "//third_party:closure_worker_main",
     ],
 )
 

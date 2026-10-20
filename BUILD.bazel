@@ -128,7 +128,7 @@ java_format_check(
 )
 
 _RUNTIME = [
-    "//third_party/java:arez_core",
+    "//third_party:arez_core",
     "//third_party/java:base",
     "//third_party/java:braincheck_core",
     "//third_party/java:javaemul_internal_annotations",
@@ -170,14 +170,14 @@ java_plugin(
 )
 
 _BROWSER_RUNTIME = [
-    "//third_party/java:braincheck_core-j2cl",
-    "//third_party/java:javaemul_internal_annotations-j2cl",
-    "//third_party/java:jsinterop_annotations-j2cl",
-    "//third_party/java:jsinterop_base-j2cl",
-    "//third_party/java:jspecify-j2cl",
-    "//third_party/java:org_jetbrains_annotations-j2cl",
-    "//third_party/java:zemeckis_core-j2cl",
-    "@arez//:core-j2cl",
+    "//third_party:braincheck_core-j2cl",
+    "//third_party:javaemul_internal_annotations-j2cl",
+    "//third_party:jsinterop_annotations-j2cl",
+    "//third_party:jsinterop_base-j2cl",
+    "//third_party:jspecify-j2cl",
+    "//third_party:org_jetbrains_annotations-j2cl",
+    "//third_party:zemeckis_core-j2cl",
+    "//third_party:arez_core-j2cl",
 ]
 
 # Public aliases keep J2CL's generated Wasm/Kotlin companion targets private.
@@ -198,13 +198,13 @@ j2cl_library(
     exports = [":_core_j2cl"],
     deps = [
         ":_core_j2cl",
-        "//third_party/java:braincheck_core-j2cl",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jsinterop_base-j2cl",
-        "//third_party/java:jspecify-j2cl",
-        "//third_party/java:org_jetbrains_annotations-j2cl",
-        "//third_party/java:zemeckis_core-j2cl",
-        "@arez//:core-j2cl",
+        "//third_party:arez_core-j2cl",
+        "//third_party:braincheck_core-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+        "//third_party:org_jetbrains_annotations-j2cl",
+        "//third_party:zemeckis_core-j2cl",
     ],
 )
 

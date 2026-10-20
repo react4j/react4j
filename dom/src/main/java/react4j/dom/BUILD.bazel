@@ -18,7 +18,7 @@ java_library(
     ],
     deps = [
         "//core",
-        "//third_party/java:arez_core",
+        "//third_party:arez_core",
         "//third_party/java:base",
         "//third_party/java:braincheck_core",
         "//third_party/java:jsinterop_annotations",

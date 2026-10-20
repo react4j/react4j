@@ -12,8 +12,8 @@ j2cl_library(
     deps = [
         "//css/examples/save-button/src/main/java/react4j/css/example:browser",
         "//examples/testing/src/main/java/react4j/webtesting:browser",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jsinterop_base-j2cl",
-        "//third_party/java:jspecify-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )

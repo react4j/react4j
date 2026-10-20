@@ -19,7 +19,7 @@ java_library(
         "UnicodeCaseFold.java",
         "package-info.java",
     ],
-    resources = ["@unicode_case_folding//file"],
+    resources = ["//third_party:unicode_case_folding"],
     visibility = [
         "//:__pkg__",
         "//css/bundler/src/main/java/react4j/css/bundler:__pkg__",
@@ -32,7 +32,7 @@ java_library(
         "//css/processor/src/test/java/react4j/css/processor:__pkg__",
     ],
     deps = [
+        "//third_party:gson",
         "//third_party/java:ph_css",
-        "@maven//:com_google_code_gson_gson",
     ],
 )

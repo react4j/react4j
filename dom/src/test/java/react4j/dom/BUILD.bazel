@@ -20,8 +20,8 @@ j2cl_library(
         "//:core",
         "//:dom",
         "//examples/testing/src/main/java/react4j/webtesting:browser",
-        "//third_party/java:jsinterop_annotations-j2cl",
-        "//third_party/java:jspecify-j2cl",
-        "@arez//:core-j2cl",
+        "//third_party:arez_core-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
     ],
 )

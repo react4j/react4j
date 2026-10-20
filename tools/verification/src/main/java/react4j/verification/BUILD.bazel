@@ -7,7 +7,7 @@ java_library(
         "//:__pkg__",
         "//tools/verification/src/test/java/react4j/verification:__pkg__",
     ],
-    deps = ["@maven//:com_google_code_gson_gson"],
+    deps = ["//third_party:gson"],
 )
 
 java_binary(
@@ -31,8 +31,8 @@ java_library(
         "//tools/verification/src/test/java/react4j/verification:__pkg__",
     ],
     deps = [
-        "@maven//:com_google_code_gson_gson",
-        "@rules_java//java/runfiles",
+        "//third_party:gson",
+        "//third_party:java_runfiles",
     ],
 )
 
@@ -43,7 +43,7 @@ java_library(
         "//:__pkg__",
         "//tools/verification/src/test/java/react4j/verification:__pkg__",
     ],
-    deps = ["@rules_closure//closure/compiler"],
+    deps = ["//third_party:closure_compiler"],
 )
 
 java_library(
@@ -83,10 +83,10 @@ java_library(
         ":coverage_instrumenter",
         ":java_coverage",
         ":lcov_report",
-        "@bazel_tools//tools/jdk:JacocoCoverageRunner",
-        "@maven//:com_google_code_gson_gson",
-        "@rules_closure//closure/compiler",
-        "@rules_java//java/runfiles",
+        "//third_party:closure_compiler",
+        "//third_party:gson",
+        "//third_party:java_coverage_runner",
+        "//third_party:java_runfiles",
     ],
 )
 

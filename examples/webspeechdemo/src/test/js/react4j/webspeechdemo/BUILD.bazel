@@ -9,6 +9,6 @@ browser_test(
     entry_point = "react4j.webspeechdemo.BrowserTest",
     deps = [
         "//examples/webspeechdemo/src/test/java/react4j/webspeechdemo:browser_tests",
-        "@rules_closure//closure/testing/library:testcase",
+        "@react4j//third_party:closure_testcase",
     ],
 )

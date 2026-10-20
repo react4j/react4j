@@ -11,18 +11,18 @@ j2cl_library(
     ],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     javacopts = JAVACOPTS,
-    plugins = ["@sting//third_party/java:nullaway_plugin"],
+    plugins = ["@react4j//third_party:nullaway_plugin"],
     deps = [
-        "//examples/third_party/java:jspecify",
         "//examples/todomvc/src/main/java/react4j/todomvc/browser",
         "//examples/todomvc/src/main/java/react4j/todomvc/views",
         "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/ioc",
         "//examples/todomvc/sting/src/main/java/react4j/todomvc/sting/views",
-        "@arez//:core-j2cl",
-        "@j2cl//:jsinterop-annotations-j2cl",
-        "@jsinterop_base//:jsinterop-base-j2cl",
         "@react4j//:core",
         "@react4j//:dom",
+        "@react4j//third_party:arez_core-j2cl",
+        "@react4j//third_party:jsinterop_annotations-j2cl",
+        "@react4j//third_party:jsinterop_base-j2cl",
+        "@react4j//third_party:jspecify-j2cl",
     ],
 )
 
