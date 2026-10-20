@@ -44,14 +44,9 @@ j2cl_import(
     jar = ":org_jetbrains_annotations",
 )
 
-_java_import(
+alias(
     name = "braincheck_core",
-    jars = ["@braincheck//tools/release:braincheck_core_jar"],
-    srcjar = "@braincheck//tools/release:braincheck_core_sources_jar",
-    deps = [
-        ":jsinterop_annotations",
-        ":jspecify",
-    ],
+    actual = "@braincheck//:core",
 )
 
 _java_import(

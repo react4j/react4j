@@ -3,21 +3,21 @@ module(name = "react4j")
 bazel_dep(name = "braincheck")
 git_override(
     module_name = "braincheck",
-    commit = "da61a26bb5b0577cb6b76fbccf9eff3158fd1e1f",
+    commit = "d1c717ab04e54281d811c15c1f84daa264675761",
     remote = "https://github.com/realityforge/braincheck.git",
 )
 
 bazel_dep(name = "zemeckis")
 git_override(
     module_name = "zemeckis",
-    commit = "c5b547c086cfa28e23bfe5b2db436da02959dd6f",
+    commit = "9c363cb6a7881eabdfdbedabb576bc395d53baac",
     remote = "https://github.com/realityforge/zemeckis.git",
 )
 
 bazel_dep(name = "arez")
 git_override(
     module_name = "arez",
-    commit = "9dfc6ec6ba99c140043a5f9f1e54e104530a754d",
+    commit = "bac86f65b445609b2067e565464035a1ad045447",
     remote = "https://github.com/arez/arez.git",
 )
 
