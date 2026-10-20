@@ -41,7 +41,7 @@ Processor fixtures are in `processor/src/test/fixtures`. The harness checks comp
 
 ## Browser and distribution boundaries
 
-Public `//:core` and `//:dom` provide J2CL libraries derived from the complete publication source archives; `//:css` supplies CSS annotations. `//:processor` and `//:css_processor` are annotation processor plugins. Other targets default to repository-only visibility, with explicit exceptions for dependencies of public macros. Internal Starlark files restrict loading separately.
+Public `//:core` and `//:dom` provide J2CL libraries derived from the complete publication source archives; `//:css` supplies CSS annotations. `//:processor` and `//:css_processor` are annotation processor plugins. Root `//:defs.bzl` re-exports the public build rules, macros and providers. Supporting targets and implementation Starlark modules restrict access to repository consumers.
 
 Browser test libraries use the checked `j2cl_library` in `third_party/java/rules.bzl` to apply the repository's Error Prone/NullAway policy directly through J2CL, without a companion JVM compilation. Paired JVM/J2CL builds remain for repository artifacts with JVM consumers. Publication source archives depend on checked Java 17 class outputs, and bytecode dependency checks inspect those outputs without executing the runtime. Downstream applications use native J2CL with their own checker selection. CSS linking requests J2CL's existing javac outputs as validations so JavaScript-only builds run those checks.
 

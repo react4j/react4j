@@ -113,11 +113,24 @@ The pinned J2CL compiler emits Java 21 intermediate bytecode for browser compila
 
 `AssertsEnabled` lets NullAway use assertions in generated React4j/Arez code to refine nullness. Enable J2CL's `experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage` only with JSpecify static checking. The [external consumer check](https://github.com/react4j/react4j/blob/master/tools/check_bazel_consumer.sh) demonstrates native J2CL with application-selected checks, both processors and asset dependencies.
 
-Load `web_assets`, `css_js_binary`, `css_bundle` and `web_bundle` from `@react4j//css:defs.bzl` for [CSS and asset integration](https://github.com/react4j/react4j/blob/master/css/README.md). Asset catalogues are ordinary J2CL `deps`. CSS linking requests the existing J2CL javac action as validation, because JavaScript-only linking can otherwise skip configured checks.
+Load `web_assets`, `css_js_binary`, `css_bundle` and `web_bundle` from `@react4j//:defs.bzl` for [CSS and asset integration](https://github.com/react4j/react4j/blob/master/css/README.md). Asset catalogues are ordinary J2CL `deps`. CSS linking requests the existing J2CL javac action as validation, because JavaScript-only linking can otherwise skip configured checks.
 
-`@react4j//tools/browser:rules.bzl` offers optional `browser_application`, `browser_application_variant` and `browser_test` conveniences. They select the development/optimized runtime configuration, assemble React/ReactDOM with finalized application files and expose the build-only manifest, or run tests in pinned Chromium. Applications can instead use the lower-level CSS rules with their own packaging and browser-test infrastructure. Compression and deployment/cache policy belong downstream.
+The same `@react4j//:defs.bzl` entry point offers optional `browser_application`, `browser_application_variant` and `browser_test` conveniences. They select the development/optimized runtime configuration, assemble React/ReactDOM with finalized application files and expose the build-only manifest, or run tests in pinned Chromium. Applications can instead use the lower-level CSS rules with their own packaging and browser-test infrastructure. Compression and deployment/cache policy belong downstream.
 
-Public support targets provide the linker worker, runtime assets, mode selection and Chromium dependencies for those macros; they are not additional library APIs. Examples, JVM imports, checker policy and implementation tools are repository-only. The external consumer check maintains and verifies the complete public-target inventory. If assembling a page directly, load the patched React/ReactDOM UMD assets separately from the Closure bundle and provide runtime Closure defines before a development bundle loads.
+Application and test macros expose their main target and JavaScript link target (`<name>_bundle` and `<name>_bin`, respectively) with the requested `visibility`. Use the link target as the root of independently declared CSS variants. Other generated helpers and React4j's supporting targets remain internal. The external consumer check maintains and verifies the complete public-target inventory. Custom packaging supplies compatible React/ReactDOM scripts separately from the Closure bundle and runtime Closure defines before a development bundle loads.
+
+These are symbolic macros: ordinary private dependencies and files pass through their typed attributes. Bazel checks `select()` condition visibility against the macro definition packages. Conditions forwarded into CSS linking need access from `@react4j//css:__pkg__`; conditions used by browser-specific targets need `@react4j//tools/browser:__pkg__`. A condition shared by both stages can grant both packages without becoming public:
+
+```starlark
+config_setting(
+    name = "optimized",
+    values = {"compilation_mode": "opt"},
+    visibility = [
+        "@react4j//css:__pkg__",
+        "@react4j//tools/browser:__pkg__",
+    ],
+)
+```
 
 ## Configure your IDE
 

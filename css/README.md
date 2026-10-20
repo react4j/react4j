@@ -352,7 +352,7 @@ Asset declarations follow the same stateless class, nested naming and effective-
 Declare files explicitly beside their asset sources:
 
 ```starlark
-load("@react4j//css:defs.bzl", "web_assets")
+load("@react4j//:defs.bzl", "web_assets")
 
 web_assets(
     name = "media",
@@ -436,10 +436,10 @@ React4j emits uncompressed files. Downstream applications choose which retained 
 
 Apply `@react4j//:css_processor` to the native J2CL target that owns the definitions and add `@react4j//:css` to its dependencies. Browser clients configure their own compiler checks through J2CL; no separate Java library is required. See [Project Setup](../docs/project_setup.md#configure-bazel) for toolchain and JSpecify checking configuration.
 
-Use [css_js_binary and css_bundle](defs.bzl) to link JavaScript and collect its styles. The browser application and test macros already use this integration:
+Use [css_js_binary and css_bundle](../defs.bzl) to link JavaScript and collect its styles. The browser application and test macros already use this integration:
 
 ```starlark
-load("@react4j//css:defs.bzl", "css_bundle", "css_js_binary", "web_bundle")
+load("@react4j//:defs.bzl", "css_bundle", "css_js_binary", "web_bundle")
 
 css_js_binary(
     name = "application_bundle",

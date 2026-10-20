@@ -1,5 +1,6 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
 load("//css:defs.bzl", "css_bundle", "css_js_binary", "web_bundle")
+load(":link_config.bzl", "link_config")
 
 package(default_visibility = [
     "//css/bundler/src/test/java/react4j/css/bundler:__pkg__",
@@ -122,4 +123,18 @@ css_bundle(
     globals = ["react4j.css.integration.CssAssetStyles$Additional"],
     root = ":asset_optimized",
     source_map = "asset_alternate.css.map",
+)
+
+link_config(
+    name = "asset_optimized_config",
+    testonly = True,
+    root = ":asset_optimized",
+    visibility = ["//css/bundler/src/test/java/react4j/css/bundler:__pkg__"],
+)
+
+link_config(
+    name = "asset_development_config",
+    testonly = True,
+    root = ":asset_development",
+    visibility = ["//css/bundler/src/test/java/react4j/css/bundler:__pkg__"],
 )
