@@ -6,20 +6,13 @@ package(default_visibility = [
     "//examples/heart-rate-monitor/src/test/js/react4j/hrm:__pkg__",
 ])
 
-filegroup(
-    name = "browser_tests_sources",
+j2cl_library(
+    name = "browser_tests",
     testonly = True,
     srcs = [
         "HeartRateBrowserTest.java",
         "HeartRateBrowserTest.native.js",
     ],
-    visibility = ["//:__pkg__"],
-)
-
-j2cl_library(
-    name = "browser_tests",
-    testonly = True,
-    srcs = [":browser_tests_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     javacopts = JAVACOPTS,
     plugins = ["@sting//third_party/java:nullaway_plugin"],

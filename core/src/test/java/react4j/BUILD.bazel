@@ -7,8 +7,8 @@ package(default_visibility = [
     "//tools/verification/src/test/js/react4j/verification:__pkg__",
 ])
 
-filegroup(
-    name = "runtime_coverage_sources",
+j2cl_library(
+    name = "runtime_coverage",
     testonly = True,
     srcs = [
         "ContextsTest.java",
@@ -17,13 +17,6 @@ filegroup(
         "RuntimeBrowserTest.native.js",
         "RuntimeCoverageExample.java",
     ],
-    visibility = ["//:__pkg__"],
-)
-
-j2cl_library(
-    name = "runtime_coverage",
-    testonly = True,
-    srcs = [":runtime_coverage_sources"],
     deps = [
         "//:core",
         "//examples/testing/src/main/java/react4j/webtesting:browser",

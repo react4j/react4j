@@ -5,17 +5,10 @@ package(default_visibility = [
     "//css/examples/save-button/src/test/js/react4j/css/example:__pkg__",
 ])
 
-filegroup(
-    name = "browser_tests_sources",
-    testonly = True,
-    srcs = ["CssBrowserTest.java"],
-    visibility = ["//:__pkg__"],
-)
-
 j2cl_library(
     name = "browser_tests",
     testonly = True,
-    srcs = [":browser_tests_sources"],
+    srcs = ["CssBrowserTest.java"],
     deps = [
         "//css/examples/save-button/src/main/java/react4j/css/example:browser",
         "//examples/testing/src/main/java/react4j/webtesting:browser",

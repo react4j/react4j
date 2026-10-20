@@ -3,20 +3,14 @@ load("//examples:checks.bzl", "JAVACOPTS")
 
 package(default_visibility = ["//:__subpackages__"])
 
-filegroup(
-    name = "promise_sources",
+j2cl_library(
+    name = "promise",
     srcs = [
         "AcceptCallback.java",
         "OnFulfilledCallback.java",
         "Promise.java",
         "package-info.java",
     ],
-    visibility = ["//:__pkg__"],
-)
-
-j2cl_library(
-    name = "promise",
-    srcs = [":promise_sources"],
     experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
     javacopts = JAVACOPTS,
     plugins = ["@sting//third_party/java:nullaway_plugin"],
