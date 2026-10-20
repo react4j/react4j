@@ -1,11 +1,11 @@
 # Task map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementation-review
-- Current frontier: implementation review
+- Status: reviewed
+- Current frontier: closeout; repeat full gate running before publication
 - Plan checkpoint: automatic; user explicitly authorized implementation, no human checkpoint, planning review passed.
 - Planning reviewer: browser_controls_planning; 1/3 rounds consumed, final confirmation unused; Findings: none. Complete scope, controls/defaults, optional HTML/config, assembly/cache boundaries, Rose delivery contracts and blocked full-Rose gate checked.
-- Implementation reviewer: browser_controls_review; round 1/5 found one P2 reserved-token validation regression in the BUNDLE fast path. Confirmed and fixed with escape-aware candidate detection plus Closure validation; round 2 pending, final confirmation unused. Full prior scope was reviewed; no other findings.
+- Implementation reviewer: browser_controls_review; 2/5 rounds consumed, final confirmation unused. Round 1 found one P2 reserved-token validation regression; fixed in 47f1c7c68. Round 2: Findings: none. Original repro, new regressions and 10,000 mixed escaped-token candidates verified; complete prior scope remained covered. No waived findings. Repeat full gate remains running, with prior full gate and focused fix suites passing.
 
 | Task | Status | Blocked by |
 | --- | --- | --- |
@@ -27,3 +27,5 @@ Primary implements. Independent review, PR publication and exact tree deletion a
 Candidate classification (all accepted requirements pass qualification and replacement tests): runtime/optimization independence, defaults, typed define parity and downstream HTML → docs/specs/browser-applications.md; independent map publication and preserved internal maps → docs/specs/css-source-maps.md; Rose compression choice and local graph boundary → Rose docs/specs/client-application-delivery.md. Public attributes, artifact names and delivery commands → user READMEs/project_setup and code. Module-scoped parsing, CLI protocol and file layout are reversible implementation choices, below the ADR threshold. Timings and delivery sequence → this plan/PR evidence. Existing shared dependency duplication is a migration bug recorded in Rose draft PR6342, not a new deferred design question. No new glossary terms or essential use case.
 
 Canonical changes are committed with implementation: Root docs/specs/browser-applications.md and docs/specs/css-source-maps.md, plus Rose docs/specs/client-application-delivery.md and ADR0043. Both repositories passed validate_doc_links.py.
+
+Final domain sweep: the review fix preserves the existing token-validation requirement; it adds no durable contract or architectural choice. Existing promoted classifications remain valid, both validators pass, and no additional artifact is needed.
