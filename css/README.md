@@ -418,6 +418,12 @@ browser_application(
 )
 ```
 
+Set `runtime_mode = "development"` or `"production"` independently of `compilation_level = "BUNDLE"` or `"ADVANCED"`. For example, a diagnostic build can combine development React with ADVANCED optimization. Omitted settings use development React/BUNDLE normally and production React/ADVANCED under `-c opt`.
+
+`defs` accepts Closure `--define=name=value` flags. Explicit values override the selected framework defaults in both compiled code and BUNDLE runtime configuration; quote string values. `include_source_maps = False` withholds generated JS/CSS maps and removes their final map comments from the delivered files. Internal maps remain available for linking and asset finalization. Map publication defaults to `True` in every mode.
+
+Omit `html` when downstream tooling owns launch documents. An HTML-free BUNDLE application includes `config.js`; load it before `app.js`, alongside the supplied `react.js` and `react-dom.js`. With an HTML template, `@@DEFINES@@` expands to the same effective configuration.
+
 The target's default output is the application directory. Its build-only `application.manifest.json` inventories every delivered file with its logical source, accessor, URL, SHA-256 digest, size, MIME type and retention reason, plus pruned candidates. The manifest stays outside the application directory. Expose it to a downstream Bazel action through its output group:
 
 ```starlark
@@ -428,7 +434,7 @@ filegroup(
 )
 ```
 
-Downstream rules can take `:application` as a directory input and `:application_manifest` as a file input. The manifest's `assets` entries enumerate the delivered files: each `url` is a path relative to the directory, with `sha256`, `size` and `mediaType` describing its bytes. Multiple logical assets can share one URL. The `pruned` list records declared assets excluded by linking.
+Downstream rules can take `:application` as a directory input and `:application_manifest` as a file input. They can also load `BrowserApplicationInfo` from `@react4j//:defs.bzl` and read its `directory` and `manifest` fields directly. The manifest's `assets` entries enumerate the delivered files: each `url` is a path relative to the directory, with `sha256`, `size` and `mediaType` describing its bytes. Multiple logical assets can share one URL. The `pruned` list records declared assets excluded by linking.
 
 React4j emits uncompressed files. Downstream applications choose which retained files to compress, how to serve them and which URLs to precache or fetch on demand. Apply those policies after linking to avoid processing discarded candidates. See the [asset contract](../docs/specs/web-assets.md) for the delivery guarantees.
 

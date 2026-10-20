@@ -249,6 +249,7 @@ test_suite(
         "//examples/heart-rate-monitor/src/test/js/react4j/hrm:browser_tests",
         "//examples/todomvc/src/test/js/react4j/todomvc:browser_tests",
         "//examples/webspeechdemo/src/test/js/react4j/webspeechdemo:browser_tests",
+        "//tools/verification/src/test/java/react4j/verification:application_tests",
     ],
 )
 
@@ -280,7 +281,6 @@ test_suite(
         "//tools/browser:tests",
         "//tools/release:tests",
         "//tools/site:tests",
-        "//tools/verification/src/test/java/react4j/verification:application_tests",
         "//tools/verification/src/test/java/react4j/verification:browser_coverage_tests",
         "//tools/verification/src/test/java/react4j/verification:coverage_tests",
         "//tools/verification/src/test/java/react4j/verification:instrumenter_tests",

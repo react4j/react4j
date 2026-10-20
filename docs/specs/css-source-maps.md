@@ -10,6 +10,8 @@ Preserve source origins and content for CSS bundles and JavaScript values exposi
 2. CSS source maps include complete authored source content, including shared CSS files.
 3. JavaScript source maps preserve origins in generated CSS/asset-binding Java after final URL replacement.
 4. JavaScript source maps include complete generated CSS/asset-binding source content.
+5. Browser source-map publication is independent of JavaScript optimization and React runtime selection.
+6. Withholding generated browser source maps omits those files and their final references from delivered JavaScript/CSS without disabling the internal maps needed for linking and URL finalization.
 
 ## Boundaries
 

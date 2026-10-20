@@ -16,4 +16,5 @@ window['applicationSettings'] = {
   'number': numericValue,
   'debug': goog.DEBUG,
   'environment': react4j.environment,
+  'viewNames': react4j.enable_component_names,
 };

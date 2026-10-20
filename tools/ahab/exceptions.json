@@ -102,6 +102,13 @@
       "reason": "Pinned Chromium and ChromeDriver communicate over loopback during the JVM browser test; build actions remain sandboxed without network access",
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",
+      "target": "//tools/verification/src/test/java/react4j/verification:application_tests",
+      "requirement": "requires-network"
+    },
+    {
+      "reason": "Pinned Chromium and ChromeDriver communicate over loopback during the JVM browser test; build actions remain sandboxed without network access",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
       "target": "//tools/verification/src/test/java/react4j/verification:browser_coverage_tests",
       "requirement": "requires-network"
     },

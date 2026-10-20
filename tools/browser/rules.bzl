@@ -116,10 +116,10 @@ def _compiler_defines(test = False, runtime_mode = ""):
 
 def _mode_value(runtime_mode, production, development):
     if runtime_mode:
-        return production if runtime_mode == "production" else development
+        return production if "production" == runtime_mode else development
     return select({_PRODUCTION: production, "//conditions:default": development})
 
-def _preview_impl(ctx):
+def _application_impl(ctx):
     bundle = ctx.attr.bundle[WebBundleInfo]
     directory = ctx.actions.declare_directory(ctx.label.name)
     manifest = ctx.actions.declare_file(ctx.label.name + ".manifest.json")
@@ -157,7 +157,7 @@ def _preview_impl(ctx):
     args.add_all(ctx.attr.defines, before_each = "--define")
     if ctx.file.html:
         args.add("--html", ctx.file.html)
-    elif ctx.attr.compilation_level == "BUNDLE":
+    elif "BUNDLE" == ctx.attr.compilation_level:
         args.add("--configuration", "config.js")
     ctx.actions.run(
         executable = ctx.executable._packager,
@@ -168,7 +168,7 @@ def _preview_impl(ctx):
     )
     return [DefaultInfo(files = depset([directory]), runfiles = ctx.runfiles([directory])), BrowserApplicationInfo(directory = directory, manifest = manifest), OutputGroupInfo(manifest = depset([manifest]))]
 
-_preview = rule(implementation = _preview_impl, attrs = {
+_application = rule(implementation = _application_impl, attrs = {
     "assets": attr.label_keyed_string_dict(allow_files = True),
     "bundle": attr.label(mandatory = True, providers = [WebBundleInfo]),
     "compilation_level": attr.string(mandatory = True, values = ["BUNDLE", "ADVANCED"]),
@@ -200,7 +200,7 @@ def _browser_application_impl(name, visibility, entry_point, deps, html, assets,
         visibility = visibility,
     )
     web_bundle(name = name + "_web", testonly = testonly, root = name + "_bundle", styles = styles)
-    _preview(name = name, testonly = testonly, html = html, bundle = name + "_web", defines = defines, compilation_level = level, include_source_maps = include_source_maps, react = _asset("react", runtime_mode), dom = _asset("react_dom", runtime_mode), assets = assets, visibility = visibility)
+    _application(name = name, testonly = testonly, html = html, bundle = name + "_web", defines = defines, compilation_level = level, include_source_maps = include_source_maps, react = _asset("react", runtime_mode), dom = _asset("react_dom", runtime_mode), assets = assets, visibility = visibility)
 
 browser_application = macro(
     implementation = _browser_application_impl,

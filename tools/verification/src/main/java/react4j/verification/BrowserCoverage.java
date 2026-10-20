@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import org.jspecify.annotations.NullMarked;
 
@@ -30,20 +31,34 @@ final class BrowserCoverage {
     private BrowserCoverage() {}
 
     static JsonObject run(Path metadata, Map<String, String> assets, String completed, String result) throws Exception {
+        var bytes = new TreeMap<String, byte[]>();
+        assets.forEach((path, contents) -> bytes.put(path, contents.getBytes(StandardCharsets.UTF_8)));
+        return runBytes(metadata, bytes, completed, result);
+    }
+
+    static JsonObject runBytes(Path metadata, Map<String, byte[]> assets, String completed, String result)
+            throws Exception {
         var server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0);
         server.createContext("/", exchange -> {
             try (exchange) {
                 String path = exchange.getRequestURI().getPath();
-                String content = assets.get(path);
-                if (!"GET".equals(exchange.getRequestMethod()) || null == content) {
+                byte[] bytes = assets.get(path);
+                if (!"GET".equals(exchange.getRequestMethod()) || null == bytes) {
                     exchange.sendResponseHeaders(404, -1);
                     return;
                 }
-                byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
                 exchange.getResponseHeaders()
                         .set(
                                 "Content-Type",
-                                path.endsWith(".js") ? "text/javascript; charset=utf-8" : "text/html; charset=utf-8");
+                                switch (path.substring(path.lastIndexOf('.') + 1)) {
+                                    case "js" -> "text/javascript; charset=utf-8";
+                                    case "css" -> "text/css; charset=utf-8";
+                                    case "map" -> "application/json";
+                                    case "svg" -> "image/svg+xml";
+                                    case "png" -> "image/png";
+                                    case "ttf" -> "font/ttf";
+                                    default -> "text/html; charset=utf-8";
+                                });
                 exchange.sendResponseHeaders(200, bytes.length);
                 exchange.getResponseBody().write(bytes);
             }
