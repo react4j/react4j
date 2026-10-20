@@ -33,7 +33,10 @@ public_targets='
 //third_party:zemeckis_core-j2cl
 '
 # Include exported sources and generated outputs; generated files belong to their generating API target.
-(cd "$root" && bazel query 'visible(@rules_java//java:defs.bzl, //...:all-targets)' --output=xml) > "$scratch/public.xml"
+owned_targets="$(git -C "$root" ls-files --cached --others --exclude-standard -- '*BUILD.bazel' |
+  sed -e 's@/BUILD.bazel$@:all-targets@' -e 's@^BUILD.bazel$@:all-targets@' -e 's@^@//@' |
+  tr '\n' ' ')"
+(cd "$root" && bazel query "visible(@rules_java//java:defs.bzl, set($owned_targets))" --output=xml) > "$scratch/public.xml"
 sed -nE \
   -e 's/^[[:space:]]*<generated-file generating-rule="([^"]+)".*/\1/p' \
   -e 's/^[[:space:]]*<(rule|source-file) .* name="([^"]+)".*/\2/p' \

@@ -13,18 +13,18 @@ alias(
 
 alias(
     name = "arez_processor_jar",
-    actual = "@arez//tools/release:processor_jar",
+    actual = "@arez//:processor_runtime",
 )
 
 alias(
     name = "arez_processor_plugin",
-    actual = "@arez//:arez_processor_plugin",
+    actual = "@arez//:processor",
     visibility = ["//visibility:public"],
 )
 
 alias(
     name = "arez_processor_runtime",
-    actual = "@arez//:processor",
+    actual = "@arez//:processor_runtime",
 )
 
 alias(
