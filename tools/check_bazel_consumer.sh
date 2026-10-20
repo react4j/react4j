@@ -28,6 +28,7 @@ public_targets='
 //third_party:jspecify-j2cl
 //third_party:nullaway_plugin
 //third_party:org_jetbrains_annotations-j2cl
+//third_party:react_runtime_assets
 //third_party:sting_core-j2cl
 //third_party:sting_processor_plugin
 //third_party:zemeckis_core-j2cl
@@ -243,7 +244,7 @@ test -s "$scratch/example-applications"
 test -s "$scratch/browser-tests"
 printf '%s\n' '//src/test/js/isolated:browser' >> "$scratch/browser-tests"
 bazel --output_base="$scratch/bazel" build --target_pattern_file="$scratch/example-applications"
-bazel --output_base="$scratch/bazel" build //src/main/java/isolated:views //:application //:application_manifest //:contract //exported:main_targets @react4j//:core @react4j//:dom
+bazel --output_base="$scratch/bazel" build //src/main/java/isolated:views //:application //:application_manifest //:contract //exported:main_targets @react4j//:core @react4j//:dom @react4j//third_party:react_runtime_assets
 bazel --output_base="$scratch/bazel" build -c opt //:application //:application_manifest //:contract //exported:main_targets
 # The pinned launcher gives its WebDriver service only one second to start.
 for mode in fastbuild opt; do
