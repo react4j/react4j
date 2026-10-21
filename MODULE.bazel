@@ -105,20 +105,21 @@ archive_override(
     urls = ["https://github.com/google/j2cl/archive/3995891275f54114e9dbfd5a8ceff97bf10030aa.tar.gz"],
 )
 
-single_version_override(
+archive_override(
     module_name = "rules_closure",
+    integrity = "sha256-a+8E2hTyPhwYAPs2SM7Gc2T/iVtDXFiowXrU9JpS+Ew=",
     patch_strip = 1,
     patches = [
         "//third_party/bazel/patches:rules_closure_bazel_9_missing_loads.patch",
         "//third_party/bazel/patches:rules_closure_bound_link_memory.patch",
         "//third_party/bazel/patches:rules_closure_custom_env_test_typings.patch",
-        "//third_party/bazel/patches:rules_closure_use_protobuf_java_proto_library.patch",
         "//third_party/bazel/patches:rules_closure_web_test_runtime_defines.patch",
         "//third_party/bazel/patches:rules_closure_test_execution_requirements.patch",
         "//third_party/bazel/patches:rules_closure_compiler_factory.patch",
         "//third_party/bazel/patches:rules_closure_symbolic_test_names.patch",
     ],
-    version = "0.17.0",
+    strip_prefix = "rules_closure-5324b6eb9b37dc08bbe5996d67e042a9e4fd57eb",
+    urls = ["https://github.com/bazelbuild/rules_closure/archive/5324b6eb9b37dc08bbe5996d67e042a9e4fd57eb.tar.gz"],
 )
 
 single_version_override(

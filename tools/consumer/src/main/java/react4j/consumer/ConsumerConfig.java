@@ -39,6 +39,13 @@ public final class ConsumerConfig {
                 source.resolve("maven_install.json"),
                 output.resolve("maven_install.json"),
                 StandardCopyOption.REPLACE_EXISTING);
+        try (var files = Files.list(patches)) {
+            for (final var file : files.filter(path -> path.toString().endsWith(".patch")).toList()) {
+                if (!Files.isRegularFile(source.resolve("third_party/bazel/patches").resolve(file.getFileName()))) {
+                    Files.delete(file);
+                }
+            }
+        }
         try (var files = Files.list(source.resolve("third_party/bazel/patches"))) {
             for (final var file : files.filter(path -> path.toString().endsWith(".patch"))
                     .sorted()
