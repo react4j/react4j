@@ -17,7 +17,7 @@ git_override(
 bazel_dep(name = "arez")
 git_override(
     module_name = "arez",
-    commit = "4c0d95e308ecd36656023c57d73e2807615d60cb",
+    commit = "6f4eff1cbf16e952995d8051fc16458904812d93",
     remote = "https://github.com/arez/arez.git",
 )
 
