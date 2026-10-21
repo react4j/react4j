@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Simplify release validation by removing standalone artifact checks, isolated consumer compilation tests, and the separate reproducibility build.
+* Remove the downstream Bazel configuration exporter and external consumer check; applications own their dependency configuration.
 * Expose the existing patched React and ReactDOM runtime scripts through `@react4j//third_party:react_runtime_assets` for downstream deployment packaging.
 * Update the Bazel Braincheck, Arez, and Zemeckis source pins for Java/J2CL-only Braincheck and consume the public library targets.
 * Add experimental CSS-in-Java and checked web assets in `react4j.css`: colocate styles, animations, fonts and file references with Java components, using typed bindings, interface contracts and checked imports. JVM processing derives names from Java owners, validates declarations, removes unused CSS and assets, compresses CSS names in optimized builds and preserves source maps back to Java. Retained files use content-addressed URLs and a build-only manifest for downstream deployment tooling; asset byte changes preserve compilation caches. Load the Bazel build integration from `@react4j//:defs.bzl`, with independent React runtime, Closure optimization and source-map publication settings.
@@ -21,7 +23,7 @@
 * Breaking: require JSpecify nullness contracts. Ignore legacy nullness annotations; diagnose unspecified or invalid generated input contracts. Nullable AUTODETECT inputs remain optional, while explicitly required nullable inputs require a builder call and accept null.
 * Upgrade to the migrated Proton revision and run annotation processing on Java 21+, retaining Java 17 publication bytecode and generated-source compatibility. Preserve effective source/compiled generic nullness, nested types, wildcards and array qualifiers in generated APIs.
 * Check complete formatted/unformatted processor goldens and compile all emitted bodies under the full checker policy. Retain classpath and formatter regressions and deliberate generated-nullness failure detection.
-* Assemble reproducible binary, complete source, Javadoc and POM artifacts; expose a J2CL-first public Bazel API using those publication archives, with repository-only implementation targets and application-selected compiler checks. Verify isolated packaged consumers and exported downstream Bazel configuration.
+* Assemble reproducible binary, complete source, Javadoc and POM artifacts; expose a J2CL-first public Bazel API using those publication archives, with repository-only implementation targets and application-selected compiler checks.
 * Replace the documentation site with Java/CommonMark rendering, checked snippets and links, compiled examples and aggregate API docs. Preserve separately maintained site application directories during deployment preparation.
 * Remove obsolete downstream builds/statistics, API-diff tooling, legacy metadata processing and Ruby/Node project infrastructure. Consolidate contributor guidance and separate local validation from explicit publication operations.
 

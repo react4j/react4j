@@ -27,11 +27,9 @@ paths=(
   tools/site/src/test/java
   tools/browser/src/main/java
   tools/browser/src/test/java
-  tools/consumer/src/main/java
   tools/verification/src/main/java
   tools/verification/src/test/java
   tools/release/src/main/java
-  tools/release/consumer/src/main/java
   tools/release/src/test/java
   examples/testing/src/main/java
   tools/testing/src/main/java

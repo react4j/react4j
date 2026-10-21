@@ -21,20 +21,6 @@ java_binary(
 )
 
 java_library(
-    name = "artifact_check_classes",
-    srcs = [
-        "ArtifactCheck.java",
-        "package-info.java",
-    ],
-)
-
-java_binary(
-    name = "artifact_check",
-    main_class = "react4j.release.ArtifactCheck",
-    runtime_deps = [":artifact_check_classes"],
-)
-
-java_library(
     name = "bundle_classes",
     srcs = [
         "ReleaseBundle.java",

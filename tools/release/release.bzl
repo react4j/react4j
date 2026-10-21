@@ -243,11 +243,3 @@ release_version_file = rule(
         "version": attr.label(default = Label("//tools/release:version")),
     },
 )
-
-def _release_source_inputs_impl(ctx):
-    return [DefaultInfo(files = depset(_direct_java_source_jars(ctx.attr.java_targets)))]
-
-release_source_inputs = rule(
-    implementation = _release_source_inputs_impl,
-    attrs = {"java_targets": attr.label_list(providers = [JavaInfo])},
-)

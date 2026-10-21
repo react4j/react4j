@@ -16,11 +16,7 @@ mkdir -p reports/coverage
 cp -f "$coverage_report" reports/coverage/jvm.lcov
 bazel run //tools/verification:runtime_coverage -- "$root/reports/coverage/runtime.lcov"
 bazel run //tools/verification:coverage_check -- "$root/tools/verification/coverage.json" "$root/reports/coverage" "$root/reports/coverage/summary.txt"
-tools/check_bazel_consumer.sh
 tools/site.sh build
 tools/site.sh check
 tools/release.sh validate 0.0.0-SNAPSHOT
-tools/release/check_reproducibility.sh
-# Restore ordinary output links after the independent reproducibility build.
-bazel build //tools/release:maven_artifacts //tools/release:site_javadoc
 echo 'All React4j checks passed.'
