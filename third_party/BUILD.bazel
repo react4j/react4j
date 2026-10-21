@@ -81,7 +81,7 @@ alias(
 
 alias(
     name = "error_prone_core",
-    actual = "@sting//third_party/java:error_prone_core",
+    actual = "@sting//third_party:error_prone_core",
 )
 
 alias(
@@ -136,12 +136,12 @@ alias(
 
 alias(
     name = "nullaway",
-    actual = "@sting//third_party/java:nullaway",
+    actual = "@sting//third_party:nullaway",
 )
 
 alias(
     name = "nullaway_plugin",
-    actual = "@sting//third_party/java:nullaway_plugin",
+    actual = "@sting//third_party:nullaway_plugin",
     visibility = ["//visibility:public"],
 )
 
@@ -198,24 +198,24 @@ alias(
 
 alias(
     name = "sting_core-j2cl",
-    actual = "//third_party/java:sting_core-j2cl",
+    actual = "@sting//:core-j2cl",
     visibility = ["//visibility:public"],
 )
 
 alias(
     name = "sting_processor_jar",
-    actual = "@sting//tools/release:processor_jar",
+    actual = "@sting//:processor_runtime",
 )
 
 alias(
     name = "sting_processor_plugin",
-    actual = "@sting//:sting_processor_plugin",
+    actual = "@sting//:processor",
     visibility = ["//visibility:public"],
 )
 
 alias(
     name = "sting_processor_runtime",
-    actual = "@sting//:processor",
+    actual = "@sting//:processor_runtime",
 )
 
 alias(

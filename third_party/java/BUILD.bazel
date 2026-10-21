@@ -18,11 +18,6 @@ _java_library(
 
 strict_checker_options(name = "strict_checker_options")
 
-j2cl_import(
-    name = "sting_core-j2cl",
-    jar = "//third_party:sting_core",
-)
-
 # Browser annotations are bytecode-only imports; they do not produce JavaScript modules.
 j2cl_import(
     name = "javaemul_internal_annotations-j2cl",

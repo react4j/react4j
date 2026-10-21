@@ -17,7 +17,7 @@ git_override(
 bazel_dep(name = "arez")
 git_override(
     module_name = "arez",
-    commit = "bac86f65b445609b2067e565464035a1ad045447",
+    commit = "4c0d95e308ecd36656023c57d73e2807615d60cb",
     remote = "https://github.com/arez/arez.git",
 )
 
@@ -31,7 +31,7 @@ git_override(
 bazel_dep(name = "sting")
 git_override(
     module_name = "sting",
-    commit = "affa9a0f05f6bec61f7b4d80fc7b3ed5002c9481",
+    commit = "139365d8c6e8a463979c1774096c59eeee310e0d",
     remote = "https://github.com/sting-ioc/sting.git",
 )
 
