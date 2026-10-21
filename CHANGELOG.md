@@ -2,8 +2,8 @@
 
 ### Unreleased
 
-* Consume Braincheck through its public Bazel library labels and update its source pin.
-
+* Expose the existing patched React and ReactDOM runtime scripts through `@react4j//third_party:react_runtime_assets` for downstream deployment packaging.
+* Update the Bazel Braincheck, Arez, and Zemeckis source pins for Java/J2CL-only Braincheck and consume the public library targets.
 * Add experimental CSS-in-Java and checked web assets in `react4j.css`: colocate styles, animations, fonts and file references with Java components, using typed bindings, interface contracts and checked imports. JVM processing derives names from Java owners, validates declarations, removes unused CSS and assets, compresses CSS names in optimized builds and preserves source maps back to Java. Retained files use content-addressed URLs and a build-only manifest for downstream deployment tooling; asset byte changes preserve compilation caches. Load the Bazel build integration from `@react4j//:defs.bzl`, with independent React runtime, Closure optimization and source-map publication settings.
 * Restore Delete-button hover visibility in all three TodoMVC examples.
 * Restore grey, struck-through labels for completed tasks in all three TodoMVC examples.
