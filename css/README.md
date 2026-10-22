@@ -440,7 +440,7 @@ React4j emits uncompressed files. Downstream applications choose which retained 
 
 ## Build integration
 
-Apply `@react4j//:css_processor` to the native J2CL target that owns the definitions and add `@react4j//:css` to its dependencies. Browser clients configure their own compiler checks through J2CL; no separate Java library is required. See [Project Setup](../docs/project_setup.md#configure-bazel) for toolchain and JSpecify checking configuration.
+Apply `@react4j//:css_processor` to the native J2CL target that owns the definitions and add `@react4j//:css` to its dependencies. Browser clients configure their own compiler checks through J2CL; no separate Java library is required.
 
 Use [css_js_binary and css_bundle](../defs.bzl) to link JavaScript and collect its styles. The browser application and test macros already use this integration:
 

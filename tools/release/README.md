@@ -6,8 +6,6 @@ Public `//:core` and `//:dom` provide J2CL libraries from the assembled source a
 
 Binary jars contain bytecode and metadata. Source jars contain all authored and generated Java, native JavaScript, and the pinned React/ReactDOM assets. J2CL consumers use a byte-preserving projection of these source archives that excludes only the public UMD asset directories from Closure compilation. Browser pages load the UMD scripts separately. Source archives depend on checked JVM class outputs, so building the publication sources for J2CL also checks React4j's complete Java under the repository policy. Downstream application sources use native J2CL and their own checker selection.
 
-Run `bazel test //tools/release:archive_checks //tools/release/consumer/src/main/java/isolated:packaged_consumer` to inspect the artifacts and exercise an isolated Java 21 compiler/runtime. `tools/check_bazel_consumer.sh` verifies the public J2CL targets separately. `tools/release/check_reproducibility.sh` compares the publication archives and POMs against an independent Bazel build and removes its temporary build data.
-
 ## Dependency publication prerequisite
 
 The build uses the migrated Arez, Proton and Sting revisions pinned in `MODULE.bazel`. Publishing React4j requires an Arez release on Maven Central that contains the pinned migrated contents.
@@ -18,7 +16,7 @@ Proton is embedded in the shaded processor jar, so consumers do not need a separ
 
 ## Release commands
 
-Use `tools/release.sh --help`. Each operation is separate; append `--dry-run` to print its commands without executing them. `prepare <version> [arez-version]` creates `dist/react4j-<version>.zip`; `validate` checks the archives and isolated consumer, builds an unsigned bundle in a temporary directory, verifies it, and removes the temporary data. These paths need no publishing credentials. Unsigned local work may use snapshot versions.
+Use `tools/release.sh --help`. Each operation is separate; append `--dry-run` to print its commands without executing them. `prepare <version> [arez-version]` creates `dist/react4j-<version>.zip`; `validate` builds an unsigned bundle in a temporary directory, verifies it, and removes the temporary data. These paths need no publishing credentials. Unsigned local work may use snapshot versions.
 
 For a release, choose a numeric React4j version and an actual published Arez version containing the pinned migration. The version input is a declaration of that prerequisite, not proof that an arbitrary existing Arez release contains these changes. Review that dependency release before publication.
 

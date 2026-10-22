@@ -12,11 +12,6 @@ alias(
 )
 
 alias(
-    name = "arez_processor_jar",
-    actual = "@arez//:processor_runtime",
-)
-
-alias(
     name = "arez_processor_plugin",
     actual = "@arez//:processor",
     visibility = ["//visibility:public"],
@@ -211,11 +206,6 @@ alias(
     name = "sting_core-j2cl",
     actual = "@sting//:core-j2cl",
     visibility = ["//visibility:public"],
-)
-
-alias(
-    name = "sting_processor_jar",
-    actual = "@sting//:processor_runtime",
 )
 
 alias(

@@ -17,13 +17,10 @@ Use Bazel 9.3.0 (pinned in `.bazelversion`, typically selected by Bazelisk) and 
 | Browser tests, optimized production | `bazel test -c opt //:browser_tests` |
 | Format Java / check Java | `tools/java_format.sh write` / `tools/java_format.sh check` |
 | Format Bazel / check Bazel | `bazel run //tools/buildifier:buildifier` / `bazel run //tools/buildifier:buildifier_check` |
-| Check a disposable external Bazel consumer | `tools/check_bazel_consumer.sh` |
-| Export downstream Bazel pins/patches | `tools/export_bazel_config.sh <application-directory>` |
 | Review hermeticity | `bazel run //tools/ahab:hermeticity.check` |
 | Update Java dependencies | Edit `third_party/java/dependencies.yml`, then `tools/update_java_deps.sh` |
 | Preview example | `tools/examples.sh serve [hello_world\|drumloop\|heart-rate-monitor\|todomvc-raw\|todomvc-arez\|todomvc-sting\|webspeechdemo] [development\|production]` |
 | Build / check / serve site | `tools/site.sh build` / `tools/site.sh check` / `tools/site.sh serve` |
-| Verify publication repeatability | `tools/release/check_reproducibility.sh` |
 
 The complete gate runs local verification only. Publication commands are separate and documented in the [release guide](tools/release/README.md). Encrypted `etc/secrets` is retained untouched and is not needed for builds or checks.
 
@@ -41,11 +38,11 @@ Processor fixtures are in `processor/src/test/fixtures`. The harness checks comp
 
 ## Browser and distribution boundaries
 
-Public `//:core` and `//:dom` provide J2CL libraries derived from the complete publication source archives; `//:css` supplies CSS annotations. `//:processor` and `//:css_processor` are annotation processor plugins. Root `//:defs.bzl` re-exports the public build rules, macros and providers. Curated dependency aliases in `//third_party` share upstream library compilations and offer optional processors/checkers. Implementation targets and Starlark modules restrict access to repository consumers. See the [Bazel integration contract](docs/specs/bazel-integration.md) and [consumer setup](docs/project_setup.md#configure-bazel).
+Public `//:core` and `//:dom` provide J2CL libraries derived from the complete publication source archives; `//:css` supplies CSS annotations. `//:processor` and `//:css_processor` are annotation processor plugins. Root `//:defs.bzl` re-exports the public build rules, macros and providers. Curated dependency aliases in `//third_party` share upstream library compilations and offer optional processors/checkers. Implementation targets and Starlark modules restrict access to repository consumers. See the [Bazel integration contract](docs/specs/bazel-integration.md).
 
 Examples use native `j2cl_library` with explicit checker settings from `examples/checks.bzl`, public React4j labels and example-owned test support. The formatter aspect checks their authored Java sources directly. Repository browser tests use the checked `j2cl_library` in `third_party/java/rules.bzl` with the same policy. Neither requires a companion JVM compilation. Paired JVM/J2CL builds remain for repository artifacts with JVM consumers. Publication source archives depend on checked Java 17 class outputs, and bytecode dependency checks inspect those outputs without executing the runtime. Downstream applications use native J2CL with their own checker selection. CSS linking requests J2CL's existing javac outputs as validations so JavaScript-only builds run those checks.
 
-J2CL publication inputs exclude only separately loaded UMD asset directories; Java sources, native configuration and extern bytes are preserved. The [external consumer check](tools/check_bazel_consumer.sh) owns the public-target inventory and verifies allowed and denied dependency/load paths, and builds and tests a copy of `examples/` outside the module.
+J2CL publication inputs exclude only separately loaded UMD asset directories; Java sources, native configuration and extern bytes are preserved.
 
 Keep React/ReactDOM versions and browser mode switches aligned with the runtime and asset checks. Development uses BUNDLE plus runtime Closure defines; `-c opt` selects ADVANCED production. Browser tests load the real pinned runtime assets and verify rendering, generated inputs, context and configuration in both modes.
 

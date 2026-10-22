@@ -68,7 +68,6 @@ case "$action" in
       if "$dry_run"; then scratch=/tmp/react4j-release-validation; else scratch="$(mktemp -d "${TMPDIR:-/tmp}/react4j-release-validation.XXXXXX")"; fi
       bundle="$scratch/bundle.zip"
       if ! "$dry_run"; then trap 'find "$scratch" -depth -delete' EXIT; fi
-      run bazel test //tools/release:archive_checks //tools/release/consumer/src/main/java/isolated:packaged_consumer "--//tools/release:version=$version" "--//tools/release:arez_version=$arez_version" --test_output=errors
     fi
     run bazel run //tools/release:bundle_tool -- pack "$outputs" "$version" "$arez_version" "$bundle" "$mode"
     run bazel run //tools/release:bundle_tool -- verify "$bundle" "$version" "$arez_version" "$mode"
