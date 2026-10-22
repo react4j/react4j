@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Use the upstream rules_closure protobuf-rule migration and remove the redundant local patch.
 * Simplify release validation by removing standalone artifact checks, isolated consumer compilation tests, and the separate reproducibility build.
 * Remove the downstream Bazel configuration exporter and external consumer check; applications own their dependency configuration.
 * Expose the existing patched React and ReactDOM runtime scripts through `@react4j//third_party:react_runtime_assets` for downstream deployment packaging.

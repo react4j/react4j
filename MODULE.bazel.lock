@@ -160,8 +160,6 @@
     "https://bcr.bazel.build/modules/rules_apple/4.1.0/source.json": "8ee81e1708756f81b343a5eb2b2f0b953f1d25c4ab3d4a68dc02754872e80715",
     "https://bcr.bazel.build/modules/rules_cc/0.2.25/MODULE.bazel": "4a3d4f3606d3b3190be495dbc497acca552807d1d5540661ef0d1658472882e3",
     "https://bcr.bazel.build/modules/rules_cc/0.2.25/source.json": "8df28a9a97b878fe45f0a4f4adf019869dda51a60ee2f6e15a0c79656a25058d",
-    "https://bcr.bazel.build/modules/rules_closure/0.17.0/MODULE.bazel": "df7478716e92834ed1d9ec96197571ade9c8d5ba7322248ac806c699fd809b79",
-    "https://bcr.bazel.build/modules/rules_closure/0.17.0/source.json": "7077d80144aeca562cbaa89679dabc76f5547c56b77fc54e284cab514e905aa7",
     "https://bcr.bazel.build/modules/rules_foreign_cc/0.9.0/MODULE.bazel": "c9e8c682bf75b0e7c704166d79b599f93b72cfca5ad7477df596947891feeef6",
     "https://bcr.bazel.build/modules/rules_fuzzing/0.5.2/MODULE.bazel": "40c97d1144356f52905566c55811f13b299453a14ac7769dfba2ac38192337a8",
     "https://bcr.bazel.build/modules/rules_go/0.41.0/MODULE.bazel": "55861d8e8bb0e62cbd2896f60ff303f62ffcb0eddb74ecb0e5c0cbe36fc292c8",
