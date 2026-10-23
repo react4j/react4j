@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: implementing
-- Current frontier: T06
+- Current frontier: T07
 - Planning reviewer: utility_planning_review (1/3 rounds; passed; final confirmation unused)
 - Plan checkpoint: automatic
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -24,8 +24,8 @@
 | T03 | [Compile explicit files and dependency catalogues](T03-file-catalogues.md) | complete | T02 |
 | T04 | [Activate checked globals with correct precedence](T04-global-inputs.md) | complete | T03 |
 | T05 | [Retain and rename property support](T05-property-support.md) | complete | T04 |
-| T06 | [Retain animation and font variable dependencies](T06-animation-font-support.md) | in_progress | T05 |
-| T07 | [Preserve advanced selector and container behavior](T07-selectors-containers.md) | pending | T06 |
+| T06 | [Retain animation and font variable dependencies](T06-animation-font-support.md) | complete | T05 |
+| T07 | [Preserve advanced selector and container behavior](T07-selectors-containers.md) | in_progress | T06 |
 | T08 | [Verify complete applications and document delivery](T08-application-delivery.md) | pending | T07 |
 
 ## Sequencing notes

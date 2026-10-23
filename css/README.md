@@ -129,6 +129,8 @@ Ordinary utility declarations must require a managed class on every selector-lis
 
 Library properties, registrations, variable reads and property names in conditions share one scoped identity. Live utilities keep their required definitions and aliases; unused initialization and registrations can be removed. Assignments on a selected class remain part of that utility, including assignments that activate an imported provider. Browser variable evaluation is preserved, including alternative scopes, fallback values and cycles. Existing `@CssCustomProperty` getters can expose a library property, including one defined only by a registration, without making utility classes present.
 
+Static utility variables may carry owned or imported animation and font names, including aliases, fallbacks and definitions in different scopes. These names are renamed at their original occurrences; `var()` remains for the browser to evaluate. Font families must be complete literals in one value. A carrier used both as a managed name and as other data, such as visible text or a style-query comparison, fails compilation. `externalAnimations` and `externalFonts` preserve explicit browser-owned names; external definitions remain available while their library is active.
+
 List deliberately external variables in `externalProperties`, using names without `--`. Their spelling remains literal and they can be set through ordinary external CSS or `CssProps.customProperty("--name", value)`. An external property cannot also be selected as an owned import. Independent providers can reuse authored property names without sharing their values.
 
 ### File inputs
@@ -454,11 +456,11 @@ abstract static class Styles {
 }
 ```
 
-Declare `@font-face` at the outer level of `@Css` or `@GlobalCss`. Family names belong to their definition and are scoped and compressed with other CSS names. Multiple weights and styles share one family; retained family use keeps all its faces. Unused faces and their files are removed. Font-family matching uses Unicode case folding, without Unicode or quoted-whitespace normalization.
+Declare `@font-face` at the outer level of `@Css`. Checked global and utility inputs also allow faces inside supported conditional or layer groups. Family names belong to their definition and are scoped and compressed with other CSS names. Multiple weights and styles share one family; retained family use keeps all its faces. Unused faces and their files are removed. Font-family matching uses Unicode case folding, without Unicode or quoted-whitespace normalization.
 
 Share a family through a selected import, for example `@CssImport(value = Fonts.class, font = "righteous", name = "heading")`, then use `font-family: heading, cursive`. The provider owns the name and faces; the importing style keeps that provider only while its family usage survives. [Drumloop's shared family](../examples/drumloop/src/main/java/react4j/drumloop/views/Fonts.java) serves four components this way. Family imports can also pass through separately compiled definitions and aliases.
 
-`font-family` lists, common `font` shorthand, `var()` fallbacks and ordinary face descriptors are parsed as CSS. Ambiguous dynamic shorthands that mix unresolved runtime values with managed family names are rejected; use a separate `font-family` declaration with a checked fallback. Managed family names hidden inside custom-property values are unsupported. Validation checks definitions across selectors and conditional rules; variables supplying only weight, size or line-height remain supported.
+`font-family` lists, common `font` shorthand, `var()` fallbacks and ordinary face descriptors are parsed as CSS. Ambiguous dynamic shorthands that mix unresolved runtime values with managed family names are rejected; use a separate `font-family` declaration with a checked fallback. Component and global definitions reject managed family names hidden inside custom-property values; utility libraries support the finite static carriers described above. Validation checks definitions across selectors and conditional rules; variables supplying only weight, size or line-height remain supported.
 
 Checked URLs also work in `image-set()` strings and preserve query/fragment suffixes, such as `url("asset:media.icon#mark")`. External HTTP(S), protocol-relative, data and blob URLs remain external; `url(#id)` remains a same-document reference. Other local file URLs must use a checked asset import. Asset imports alone do not retain every file.
 

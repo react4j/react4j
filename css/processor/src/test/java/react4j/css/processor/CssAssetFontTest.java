@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import org.testng.annotations.Test;
+import react4j.css.internal.CssFontValues;
+import react4j.css.internal.CssResource;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
@@ -57,6 +59,33 @@ public final class CssAssetFontTest {
                 List.of("data:image/svg+xml;base64,AAAA", "//example.com/a.svg", "blob:https://example.com/id")) {
             assertTrue(
                     component("background:url('" + url + "');").output().css().contains(url));
+        }
+    }
+
+    @Test
+    public void globalFontDefinitionsAndDynamicUsesTraverseModernGroups() {
+        for (var wrapper :
+                List.of("@layer support", "@media screen", "@supports (display:grid)", "@container (width>1px)")) {
+            String css = wrapper + "{@font-face{font-family:Heading;src:url('https://example.test/font.woff2');}"
+                    + "body{font-family:Heading;}div{font-family:var(--runtime);}}";
+            var result = CssCompiler.global(
+                    css,
+                    "jcss-demo-Fonts",
+                    new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
+                    offset -> new SourceMap.Location("Fonts.java", css, 0, offset),
+                    Map.of(),
+                    Map.of(),
+                    Map.of(),
+                    new CssCompiler.Resources(Map.of(), Map.of()));
+            assertEquals(result.fonts(), Map.of("heading", "jcss-demo-Fonts--font-heading"));
+            assertTrue(result.output().css().contains("font-family:jcss-demo-Fonts--font-heading"));
+            assertEquals(
+                    CssFontValues.uses(
+                                    result.output().css(),
+                                    List.of(new CssResource.SymbolId(
+                                            "demo.Fonts", CssResource.SymbolKind.FONT, "heading")))
+                            .size(),
+                    1);
         }
     }
 

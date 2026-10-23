@@ -11,8 +11,6 @@ import com.helger.css.decl.ECSSExpressionOperator;
 import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.parser.CSSParseHelper;
-import com.helger.css.reader.CSSReader;
-import com.helger.css.reader.CSSReaderSettings;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -93,25 +91,20 @@ public final class CssFontValues {
         }
         var uses = new ArrayList<CssResource.FontUse>();
         var syntax = new CssSyntax(css, 0);
-        CSSVisitor.visitCSS(
-                Objects.requireNonNull(CSSReader.readFromStringReader(css, new CSSReaderSettings().setTabSize(1))),
-                new DefaultCSSVisitor() {
-                    @Override
-                    public void onDeclaration(CSSDeclaration declaration) {
-                        if (read(declaration).dynamic()) {
-                            var location = Objects.requireNonNull(declaration.getSourceLocation());
-                            uses.add(new CssResource.FontUse(
-                                    syntax.offset(
-                                            location.getFirstTokenBeginLineNumber(),
-                                            location.getFirstTokenBeginColumnNumber()),
-                                    syntax.offset(
-                                                    location.getLastTokenEndLineNumber(),
-                                                    location.getLastTokenEndColumnNumber())
-                                            + 1,
-                                    fonts));
-                        }
-                    }
-                });
+        CSSVisitor.visitCSS(syntax.parse(CssSyntax.Mode.PROCESSED), new DefaultCSSVisitor() {
+            @Override
+            public void onDeclaration(CSSDeclaration declaration) {
+                if (read(declaration).dynamic()) {
+                    var location = Objects.requireNonNull(declaration.getSourceLocation());
+                    uses.add(new CssResource.FontUse(
+                            syntax.offset(
+                                    location.getFirstTokenBeginLineNumber(), location.getFirstTokenBeginColumnNumber()),
+                            syntax.offset(location.getLastTokenEndLineNumber(), location.getLastTokenEndColumnNumber())
+                                    + 1,
+                            fonts));
+                }
+            }
+        });
         return List.copyOf(uses);
     }
 

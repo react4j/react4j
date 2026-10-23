@@ -82,12 +82,21 @@ public final class CssBrowserTest {
                                 "Hashed URL: " + suffix);
                     }
                     check(!_optimized == hasAsset(entries, "card/unused.svg"), "Unused asset pruning");
-                    return Browser.fetchText(root + assetUrl(entries, "card/prepared.svg"))
-                            .then(text -> {
-                                check(Browser.string(text).contains("fill=\"#04c\""), "Preprocessed SVG");
-                                return packagedRoute(root, "index.html", entries, expected);
+                    return Browser.fetchText(root + "css/assets.css")
+                            .then(value -> {
+                                String css = Browser.string(value);
+                                check(!_optimized == css.contains("opacity:.13"), "Unused utility animation");
+                                check(
+                                        (_optimized ? 1 : 2) == css.split("@font-face", -1).length - 1,
+                                        "Unused utility font face");
+                                return null;
                             })
-                            .then(value -> packagedRoute(root, "nested/page.html", entries, expected));
+                            .then(ignored -> Browser.fetchText(root + assetUrl(entries, "card/prepared.svg"))
+                                    .then(text -> {
+                                        check(Browser.string(text).contains("fill=\"#04c\""), "Preprocessed SVG");
+                                        return packagedRoute(root, "index.html", entries, expected);
+                                    })
+                                    .then(value -> packagedRoute(root, "nested/page.html", entries, expected)));
                 });
     }
 
@@ -123,6 +132,11 @@ public final class CssBrowserTest {
                                         "CSS background asset");
                                 var family =
                                         Browser.computed(card, "font-family").split(",")[0];
+                                check(!"heading".equals(family), "Owned utility font name");
+                                check(
+                                        !"none".equals(Browser.computed(card, "animation-name")),
+                                        "Utility variable animation");
+                                equal("100s", Browser.computed(card, "animation-duration"));
                                 return Browser.loadFonts(page, "16px " + family);
                             })
                             .then(fonts -> {

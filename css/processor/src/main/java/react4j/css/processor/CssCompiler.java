@@ -4,7 +4,6 @@ import com.google.gson.JsonParser;
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.AbstractHasTopLevelRules;
 import com.helger.css.decl.CSSDeclaration;
-import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSFontFaceRule;
 import com.helger.css.decl.CSSKeyframesRule;
@@ -27,7 +26,6 @@ import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CSSSupportsRule;
 import com.helger.css.decl.CSSUnknownRule;
 import com.helger.css.decl.CascadingStyleSheet;
-import com.helger.css.decl.ECSSExpressionOperator;
 import com.helger.css.decl.ECSSSelectorCombinator;
 import com.helger.css.parser.CSSParseHelper;
 import com.helger.css.writer.CSSWriterSettings;
@@ -43,6 +41,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
+import react4j.css.internal.CssAnimationValues;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
@@ -52,8 +51,6 @@ import react4j.css.internal.SourceMap;
 
 /** In-process CSS parsing, ownership checks and static output. */
 final class CssCompiler {
-    private static final String NUMBER = "[+-]?(?:[0-9]*\\.[0-9]+|[0-9]+)(?:[eE][+-]?[0-9]+)?";
-    private static final Set<String> CSS_WIDE = Set.of("initial", "inherit", "unset", "revert", "revert-layer");
     private final CssSyntax syntax;
     private final String root;
     private final Exports exports;
@@ -102,12 +99,25 @@ final class CssCompiler {
             IntFunction<SourceMap.Location> locations,
             Set<String> managed,
             Set<String> externalProperties,
+            Set<String> externalAnimations,
+            Set<String> externalFonts,
+            Map<String, Import> imports,
             Map<String, CssProperties.Import> properties,
             Map<String, CssIds.Import> ids,
             Resources resources) {
         var compiler = new CssCompiler(css, 0, root, exports, locations, Map.of());
         var sheet = compiler.syntax.parse(CssSyntax.Mode.UTILITY);
         UtilitySelectors.check(sheet, compiler.syntax, managed);
+        var names = UtilityNames.analyze(
+                css,
+                sheet,
+                compiler.syntax,
+                root,
+                externalAnimations,
+                externalFonts,
+                exports.animations(),
+                imports,
+                resources.fonts());
         compiler.properties(sheet, properties, externalProperties, true);
         compiler.ids(sheet, ids, true);
         var output = new SourceMap.Writer();
@@ -132,7 +142,21 @@ final class CssCompiler {
                     }
                     return "asset:" + asset + suffix;
                 })));
+        edits.addAll(names.edits());
         edits.sort(Comparator.comparingInt(SourceMap.Edit::start));
+        var nameTokens = new ArrayList<CssTokens.Token>();
+        for (var token : names.tokens()) {
+            int shift = edits.stream()
+                    .filter(edit -> edit.end() <= token.start())
+                    .mapToInt(edit -> edit.value().length() - (edit.end() - edit.start()))
+                    .sum();
+            nameTokens.add(new CssTokens.Token(
+                    token.kind(),
+                    token.start() + shift,
+                    token.start() + shift + token.name().length(),
+                    token.name(),
+                    token.name()));
+        }
         var rewritten = edits.isEmpty()
                 ? output
                 : SourceMap.replace(
@@ -141,12 +165,14 @@ final class CssCompiler {
                         edits);
         return new Result(
                 rewritten,
-                Set.of(),
+                names.imports(),
                 Map.copyOf(compiler.properties),
                 Set.copyOf(compiler.usedProperties),
                 compiler.ids,
-                Map.of(),
-                Map.of());
+                names.animations(),
+                names.fonts(),
+                nameTokens,
+                names.dynamicFonts());
     }
 
     record Result(
@@ -156,7 +182,9 @@ final class CssCompiler {
             Set<String> propertyImports,
             Map<String, String> ids,
             Map<String, String> animations,
-            Map<String, String> fonts) {}
+            Map<String, String> fonts,
+            List<CssTokens.Token> names,
+            List<Boolean> dynamicFonts) {}
 
     private final Map<String, String> properties = new LinkedHashMap<>();
     private Map<String, String> fonts = Map.of();
@@ -227,7 +255,9 @@ final class CssCompiler {
                 Set.copyOf(usedProperties),
                 ids,
                 Map.copyOf(animations),
-                fonts);
+                fonts,
+                List.of(),
+                List.of());
     }
 
     static Result component(
@@ -258,7 +288,7 @@ final class CssCompiler {
                 }
                 if ("none".equalsIgnoreCase(name)
                         || "default".equalsIgnoreCase(name)
-                        || CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))) {
+                        || CssAnimationValues.CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))) {
                     throw compiler.syntax.invalid("Reserved keyframe name: " + name, frames);
                 }
                 if (null != compiler.keyframes.putIfAbsent(name, frames)) {
@@ -406,7 +436,7 @@ final class CssCompiler {
                 || (Kind.KEYFRAMES == kind
                         && ("none".equalsIgnoreCase(name)
                                 || "default".equalsIgnoreCase(name)
-                                || CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))))) {
+                                || CssAnimationValues.CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))))) {
             throw new IllegalArgumentException("Invalid imported CSS name: " + name);
         }
     }
@@ -549,93 +579,21 @@ final class CssCompiler {
         if (!animationBinding(declaration)) {
             return;
         }
-        boolean shorthand = "animation".equalsIgnoreCase(declaration.getProperty());
-        var members = declaration.getExpression().getAllMembers();
-        if (1 == members.size()
-                && members.get(0) instanceof CSSExpressionMemberTermSimple simple
-                && CSS_WIDE.contains(simple.getValue().toLowerCase(Locale.ROOT))) {
-            return;
-        }
-        var used = new HashSet<String>();
-        boolean named = false;
-        for (var member : members) {
-            if (ECSSExpressionOperator.COMMA == member) {
-                used.clear();
-                named = false;
-                continue;
-            }
-            if (shorthand && member instanceof CSSExpressionMemberFunction function) {
-                if (Set.of("steps", "cubic-bezier", "linear")
-                                .contains(function.getFunctionName().toLowerCase(Locale.ROOT))
-                        && used.add("timing")) {
-                    continue;
+        CssAnimationValues.read(declaration, syntax, CssAnimationValues.Mode.COMPONENT, use -> {
+            String name = use.name();
+            if (imports.containsKey(name)) {
+                var binding = imports.get(name);
+                if (Kind.KEYFRAMES != binding.kind()) {
+                    throw syntax.invalid("Animation name must reference imported @Keyframes: " + name, use.term());
                 }
-                throw syntax.invalid(
-                        "Unsupported animation shorthand function; use animation-name and separate longhands for"
-                                + " dynamic values",
-                        declaration);
+                usedImports.add(name);
+                use.term().setValue(animationName(name));
+            } else if (keyframes.containsKey(name)) {
+                use.term().setValue(animationName(name));
+            } else {
+                throw syntax.invalid("Unknown local animation name: " + name, use.term());
             }
-            if (!(member instanceof CSSExpressionMemberTermSimple simple)) {
-                throw syntax.invalid("Animation names must be static identifiers", declaration);
-            }
-            String name = simple.getValue();
-            checkAnimationName(name, simple);
-            String lower = name.toLowerCase(Locale.ROOT);
-            if (CSS_WIDE.contains(lower)) {
-                throw syntax.invalid("CSS-wide animation keywords must stand alone", simple);
-            }
-            if (shorthand) {
-                String category =
-                        switch (lower) {
-                            case "ease", "linear", "ease-in", "ease-out", "ease-in-out", "step-start", "step-end" ->
-                                "timing";
-                            case "infinite" -> "iteration";
-                            case "normal", "reverse", "alternate", "alternate-reverse" -> "direction";
-                            case "none", "forwards", "backwards", "both" -> "fill";
-                            case "running", "paused" -> "play";
-                            default -> "";
-                        };
-                if (!category.isEmpty() && used.add(category)) {
-                    continue;
-                }
-                if (lower.matches(NUMBER + "(?:ms|s)")) {
-                    if (used.add("duration")) {
-                        if (Double.parseDouble(lower.substring(
-                                        0, lower.endsWith("ms") ? lower.length() - 2 : lower.length() - 1))
-                                < 0) {
-                            throw syntax.invalid("Animation duration must not be negative", simple);
-                        }
-                    } else if (!used.add("delay")) {
-                        throw syntax.invalid("Animation shorthand accepts at most two times", simple);
-                    }
-                    continue;
-                }
-                if (lower.matches(NUMBER)) {
-                    if (!used.add("iteration") || Double.parseDouble(lower) < 0) {
-                        throw syntax.invalid("Invalid animation iteration count", simple);
-                    }
-                    continue;
-                }
-            }
-            if (named) {
-                throw syntax.invalid("Each animation accepts one name", simple);
-            }
-            if (!"none".equals(lower)) {
-                if (imports.containsKey(name)) {
-                    var binding = imports.get(name);
-                    if (Kind.KEYFRAMES != binding.kind()) {
-                        throw syntax.invalid("Animation name must reference imported @Keyframes: " + name, simple);
-                    }
-                    usedImports.add(name);
-                    simple.setValue(animationName(name));
-                } else if (keyframes.containsKey(name)) {
-                    simple.setValue(animationName(name));
-                } else {
-                    throw syntax.invalid("Unknown local animation name: " + name, simple);
-                }
-            }
-            named = true;
-        }
+        });
     }
 
     private Scope selector(CSSSelector selector, Scope parent, boolean nested) {

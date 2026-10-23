@@ -342,12 +342,14 @@ public final class CssTokens {
 
             @Override
             public void onBeginKeyframesRule(CSSKeyframesRule rule) {
-                String header = "@keyframes " + rule.getAnimationName();
-                int offset = start(rule);
-                if (!css.startsWith(header, offset)) {
-                    throw new IllegalArgumentException("Generated keyframes header differs from its parsed location");
-                }
-                token(SymbolKind.ANIMATION, offset + "@keyframes ".length(), rule.getAnimationName());
+                var location = Objects.requireNonNull(rule.getSourceLocation());
+                int last =
+                        syntax.offset(location.getLastTokenEndLineNumber(), location.getLastTokenEndColumnNumber()) + 1;
+                var header = CssLexical.tokens(css, start(rule), last).stream()
+                        .filter(token -> !token.value().isBlank())
+                        .toList();
+                var identifier = header.get(1);
+                token(SymbolKind.ANIMATION, identifier.start(), identifier.value());
             }
         });
         return new Parsed(

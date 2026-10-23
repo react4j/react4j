@@ -40,6 +40,35 @@ public final class CssPrunerTest {
         assertEquals(new CssPruner(frames, Set.of(), Set.of()).animations(), Set.of("spin"));
     }
 
+    @Test
+    public void utilityExternalFramesAndFacesRemainLiteralWhileManagedDefinitionsCanDisappear() {
+        var writer = new SourceMap.Writer()
+                .append("@keyframes owned{to{opacity:.4;}}@keyframes host{to{opacity:.6;}}"
+                        + "@font-face{font-family:owned;src:url('https://example.test/owned.woff2');}"
+                        + "@font-face{font-family:host;src:url('https://example.test/host.woff2');}");
+        var resource = new Resource(
+                new CssResource(
+                        "Utilities",
+                        CssResource.Kind.UTILITY,
+                        List.of(),
+                        List.of(),
+                        "",
+                        List.of(),
+                        List.of(
+                                new CssResource.Symbol(CssResource.SymbolKind.ANIMATION, "owned", "owned", false),
+                                new CssResource.Symbol(CssResource.SymbolKind.FONT, "owned", "owned", false)),
+                        List.of(),
+                        List.of()),
+                writer.css(),
+                JsonParser.parseString(writer.map("Utilities.css")).getAsJsonObject());
+        var pruner = new CssPruner(resource, Set.of(), Set.of());
+        assertEquals(pruner.animations(), Set.of("owned"));
+        String output = pruner.prune(Set.of(), Set.of(), Set.of()).css();
+        assertTrue(output.contains("@keyframes host"), output);
+        assertTrue(output.contains("font-family:host"), output);
+        assertFalse(output.contains("owned"), output);
+    }
+
     private static Resource resource(SourceMap.Writer writer) {
         return new Resource(
                 new CssResource(

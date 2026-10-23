@@ -1,6 +1,6 @@
 # T07 — Preserve advanced selector and container behavior
 
-- Status: pending
+- Status: in_progress
 - Blocked by: T06
 - Spec coverage: R5 (containers/markers), R6 (external hooks/containers), R9 (selectors/conditions), R11 (safe pruning); AC3 (containers), AC4, AC5
 

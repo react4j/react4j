@@ -4,6 +4,7 @@ import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSExpression;
 import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
+import com.helger.css.decl.CSSFontFaceRule;
 import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.ECSSExpressionOperator;
 import com.helger.css.decl.ICSSExpressionMember;
@@ -35,28 +36,39 @@ final class CssFonts {
     static Set<String> names(String css, Kind kind) {
         String prefix = Kind.COMPONENT == kind ? ".root {\n" : Kind.KEYFRAMES == kind ? "@keyframes shared {\n" : "";
         var syntax = new CssSyntax(prefix + css + (prefix.isEmpty() ? "" : "\n}"), prefix.length());
-        var sheet = Kind.KEYFRAMES == kind ? syntax.parseKeyframes() : syntax.parse(Kind.COMPONENT == kind);
+        var sheet = Kind.KEYFRAMES == kind
+                ? syntax.parseKeyframes()
+                : syntax.parse(
+                        Kind.UTILITY == kind
+                                ? CssSyntax.Mode.UTILITY
+                                : Kind.COMPONENT == kind ? CssSyntax.Mode.COMPONENT : CssSyntax.Mode.GLOBAL);
         var names = new TreeSet<String>();
-        for (var face : sheet.getAllFontFaceRules()) {
-            names.add(CssFontValues.face(face));
-        }
+        CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
+            @Override
+            public void onBeginFontFaceRule(CSSFontFaceRule face) {
+                names.add(CssFontValues.face(face));
+            }
+        });
         return Set.copyOf(names);
     }
 
     static Map<String, String> rewrite(
             CascadingStyleSheet sheet, CssSyntax syntax, String root, Map<String, Import> imports) {
         var names = new LinkedHashMap<String, String>();
-        for (var face : sheet.getAllFontFaceRules()) {
-            try {
-                String name = CssFontValues.face(face);
-                if (imports.containsKey(name)) {
-                    throw new IllegalArgumentException("Owned font conflicts with imported family: " + name);
+        CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
+            @Override
+            public void onBeginFontFaceRule(CSSFontFaceRule face) {
+                try {
+                    String name = CssFontValues.face(face);
+                    if (imports.containsKey(name)) {
+                        throw new IllegalArgumentException("Owned font conflicts with imported family: " + name);
+                    }
+                    names.put(name, root + "--font-" + Names.encode(name));
+                } catch (IllegalArgumentException e) {
+                    throw syntax.invalid(String.valueOf(e.getMessage()), face);
                 }
-                names.put(name, root + "--font-" + Names.encode(name));
-            } catch (IllegalArgumentException e) {
-                throw syntax.invalid(String.valueOf(e.getMessage()), face);
             }
-        }
+        });
         var managed = new HashSet<>(names.keySet());
         managed.addAll(imports.keySet());
         var variables = new LinkedHashMap<String, List<CSSExpression>>();
@@ -139,7 +151,7 @@ final class CssFonts {
 
     // Substitute into the complete declaration: a variable can supply a weight, size, line-height or family.
     // Keep every scoped definition and break dependency cycles without mutating the emitted syntax tree.
-    private static void expand(
+    static void expand(
             List<ICSSExpressionMember> remaining,
             List<ICSSExpressionMember> prefix,
             Map<String, List<CSSExpression>> variables,
@@ -163,10 +175,10 @@ final class CssFonts {
             if ("var".equalsIgnoreCase(CSSParseHelper.unescapeURL(function.getFunctionName()))
                     && !arguments.isEmpty()
                     && arguments.get(0) instanceof CSSExpressionMemberTermSimple first
-                    && !visiting.contains(first.getValue())) {
+                    && !visiting.contains(CSSParseHelper.unescapeURL(first.getValue()))) {
                 var path = new HashSet<>(visiting);
-                path.add(first.getValue());
-                var definitions = variables.getOrDefault(first.getValue(), List.of());
+                path.add(CSSParseHelper.unescapeURL(first.getValue()));
+                var definitions = variables.getOrDefault(CSSParseHelper.unescapeURL(first.getValue()), List.of());
                 for (var definition : definitions) {
                     expand(
                             definition.getAllMembers(),

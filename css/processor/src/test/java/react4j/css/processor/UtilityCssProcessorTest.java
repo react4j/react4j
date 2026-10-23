@@ -2,6 +2,7 @@ package react4j.css.processor;
 
 import static org.testng.Assert.*;
 
+import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -462,6 +463,179 @@ public final class UtilityCssProcessorTest {
         assertFalse(imported.success());
         assertTrue(
                 imported.diagnostics().contains("External custom property cannot be imported"), imported.diagnostics());
+    }
+
+    @Test
+    public void staticAnimationAndFontCarriersKeepOriginalVariablesAndTypedOccurrences() throws Exception {
+        String css = "@layer support{ @keyframes spin {to{opacity:.8;}}@font-face{font-family:'Display"
+            + " Font';src:url('asset:media.font');}}:root{--motion:spin 2s linear"
+            + " infinite;--alias:var(--motion);--family:'Display"
+            + " Font';--font:var(--family);--weight:700;}.animated{animation:var(--alias);} .scoped{--motion:spin 4s"
+            + " ease;}.heading{font:var(--weight) 16px/1.5 var(--font),serif;}.literal{content:'Display"
+            + " Font';}@property --registered{syntax:'*';inherits:true;initial-value:spin;}"
+            + ".registered{animation-name:var(--registered);}";
+        var result = CssProcessorTest.compile(Map.of(
+                "Utilities.java",
+                library(css)
+                        .replace(
+                                "@UtilityCssLibrary",
+                                "@CssImport(name=\"media\",value=Media.class) @UtilityCssLibrary"),
+                "Media.java",
+                IMPORTS + "@Assets abstract class Media{@Asset(\"font.woff2\") abstract String font();}"));
+        assertTrue(result.success(), result.diagnostics());
+        String output = text(result, "classes/demo/Utilities.css");
+        for (var expected : List.of(
+                "--motion:jcss-demo-Utilities--keyframes-spin 2s linear infinite",
+                "--motion:jcss-demo-Utilities--keyframes-spin 4s ease",
+                "--alias:var(--jcss-demo-Utilities--motion)",
+                "--family:'jcss-demo-Utilities--font-display_0020_font'",
+                "content:'Display Font'",
+                "font:var(--jcss-demo-Utilities--weight) 16px/1.5 var(--jcss-demo-Utilities--font),serif",
+                "initial-value:jcss-demo-Utilities--keyframes-spin",
+                "asset:demo/font.woff2")) {
+            assertTrue(output.contains(expected), output);
+        }
+        var map = JsonParser.parseString(text(result, "classes/demo/Utilities.css.map"))
+                .getAsJsonObject();
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(map.toString());
+        int name = output.indexOf("--motion:jcss-demo-Utilities--keyframes-spin") + "--motion:".length();
+        var origin = consumer.getMappingForLine(1, name + 1);
+        assertNotNull(origin);
+        assertTrue(origin.getOriginalFile().endsWith("Utilities.java"));
+        assertTrue(map.getAsJsonArray("sourcesContent").get(0).getAsString().contains("--motion:spin 2s"));
+        var metadata = JsonParser.parseString(text(result, "classes/demo/Utilities.css.json"))
+                .getAsJsonObject();
+        assertEquals(metadata.getAsJsonArray("fontUses").size(), 0, output);
+        assertTrue(metadata.getAsJsonArray("occurrences").asList().stream()
+                .anyMatch(item -> item.getAsJsonObject().toString().contains("ANIMATION")));
+    }
+
+    @Test
+    public void managedNamesCannotAlsoServeAsTextOrShorthandData() throws Exception {
+        for (var body : List.of(
+                ":root{--family:'Inter';}.a{font-family:var(--family);content:var(--family);}",
+                ":root{--family:'Inter';}.a{font-family:var(--family);}@container"
+                        + " style(--family:'Inter'){.a{color:red;}}",
+                ":root{--family:'Inter';--alias:var(--family);}.a{font-family:var(--family);content:var(--alias);}",
+                ":root{--part:Inter;}.a{font-family:var(--part),serif;}.b{font:var(--part) 16px serif;}")) {
+            var invalid = CssProcessorTest.compile(Map.of(
+                    "Utilities.java",
+                    library("@font-face{font-family:Inter;src:url('https://example.test/inter.woff2');}" + body)));
+            assertFalse(invalid.success(), body);
+            assertTrue(invalid.diagnostics().contains("Ambiguous managed name"), invalid.diagnostics());
+            assertTrue(invalid.diagnostics().contains("Utilities.java"), invalid.diagnostics());
+        }
+        var ambiguous = CssProcessorTest.compile(Map.of(
+                "Utilities.java", library("@keyframes linear{to{opacity:1;}}.a{animation:var(--runtime) linear;}")));
+        assertFalse(ambiguous.success());
+        assertTrue(ambiguous.diagnostics().contains("Ambiguous animation keyword"), ambiguous.diagnostics());
+        var keyword = CssProcessorTest.compile(Map.of(
+                "Utilities.java",
+                library("@keyframes linear{to{opacity:1;}}.a{animation:linear 1s linear;}"
+                        + " .b{animation-name:linear;}")));
+        assertTrue(keyword.success(), keyword.diagnostics());
+        assertTrue(text(keyword, "classes/demo/Utilities.css")
+                .contains("animation:linear 1s jcss-demo-Utilities--keyframes-linear"));
+    }
+
+    @Test
+    public void animationImportsAndExplicitExternalNamesKeepTheirBoundaries() throws Exception {
+        String source = library(
+                        "@keyframes"
+                            + " host{to{opacity:1;}}@font-face{font-family:Host;src:url('https://example.test/host.woff2');}:root{--motion:shared"
+                            + " 1s;--family:Host;}.a{animation:var(--motion);font-family:var(--family);}.b{animation-name:host;}")
+                .replace(
+                        "@UtilityCssLibrary(",
+                        "@CssImport(value=Shared.class,name=\"shared\")"
+                                + " @UtilityCssLibrary(externalAnimations={\"host\"},externalFonts={\"Host\"},value=");
+        var imported = CssProcessorTest.compile(Map.of(
+                "Utilities.java",
+                source,
+                "Shared.java",
+                IMPORTS + "@Keyframes(\"\"\"\n to{opacity:.5;}\n\"\"\") class Shared{}"));
+        assertTrue(imported.success(), imported.diagnostics());
+        String output = text(imported, "classes/demo/Utilities.css");
+        assertTrue(output.contains("--motion:jcss-demo-Shared--keyframes 1s"), output);
+        assertTrue(output.contains("animation-name:host"), output);
+        assertTrue(output.contains("font-family:Host"), output);
+        for (var annotation : List.of(
+                "externalAnimations={\"missing\"}",
+                "externalFonts={\"missing\"}",
+                "externalFonts={\"Host\",\"HOST\"}",
+                "externalAnimations={\"host\",\"host\"}")) {
+            var invalid = CssProcessorTest.compile(Map.of(
+                    "Utilities.java",
+                    library(".a{animation-name:host;font-family:Host;}")
+                            .replace("@UtilityCssLibrary(", "@UtilityCssLibrary(" + annotation + ",value=")));
+            assertFalse(invalid.success(), annotation);
+        }
+    }
+
+    @Test
+    public void utilityFontsAndRuntimeAnimationGettersResolveToTheirDefiningOwner() throws Exception {
+        var result = CssProcessorTest.compile(
+                Map.of(
+                        "Utilities.java",
+                        library(
+                                        "@layer support{@keyframes"
+                                            + " spin{to{opacity:.2;}}@font-face{font-family:Inter;src:url('https://example.test/font.woff2');}}.a{color:red;}")
+                                .replace(
+                                        "class Utilities {}",
+                                        "abstract class Utilities{ static Utilities of(){return"
+                                            + " Styled_Utilities.get();} @CssAnimation(name=\"spin\") abstract String"
+                                            + " animation();}"),
+                        "Other.java",
+                        IMPORTS
+                                + "@CssImport(value=Utilities.class,font=\"Inter\",name=\"body\")"
+                                + " @UtilityCssLibrary(\"\"\"\n"
+                                + ":root{--family:body;}.a{font-family:var(--family),serif;}\n"
+                                + "\"\"\") class Other{}"),
+                "demo.Utilities");
+        assertTrue(result.success(), result.diagnostics());
+        assertEquals(result.values().get("demo.Utilities.animation"), "jcss-demo-Utilities--keyframes-spin");
+        assertTrue(text(result, "classes/demo/Other.css").contains("--family:jcss-demo-Utilities--font-inter"));
+    }
+
+    @Test
+    public void registeredNameCarriersKeepTheirLiteralTypesAndAnalyzeFallbacks() throws Exception {
+        var result = CssProcessorTest.compile(
+                Map.of(
+                        "Utilities.java",
+                        library(
+                                "@keyframes spin{to{opacity:1;}}@font-face{font-family:'Display"
+                                    + " Font';src:url('https://example.test/font.woff2');}@property"
+                                    + " --font{syntax:'<string>';inherits:true;initial-value:'Display Font';}"
+                                    + ":root{--motion:'spin';}.a{font-family:var(--unknown,var(--font));animation-name:var(--motion,'spin');}")));
+        assertTrue(result.success(), result.diagnostics());
+        String output = text(result, "classes/demo/Utilities.css");
+        assertTrue(output.contains("initial-value:'jcss-demo-Utilities--font-display_0020_font'"), output);
+        assertTrue(output.contains("--motion:'jcss-demo-Utilities--keyframes-spin'"), output);
+        assertTrue(output.contains("@keyframes jcss-demo-Utilities--keyframes-spin"), output);
+        assertTrue(output.contains("var(--jcss-demo-Utilities--motion,'jcss-demo-Utilities--keyframes-spin')"), output);
+    }
+
+    @Test
+    public void independentDataVariablesDoNotEnumerateEveryScopeCombination() throws Exception {
+        var css = new StringBuilder();
+        for (int scope = 0; scope < 12; scope++) {
+            css.append(".scope").append(scope).append('{');
+            for (int property = 0; property < 12; property++) {
+                css.append("--p")
+                        .append(property)
+                        .append(":'data")
+                        .append(scope)
+                        .append("';");
+            }
+            css.append('}');
+        }
+        css.append(".data{content:");
+        for (int property = 0; property < 12; property++) {
+            css.append("var(--p").append(property).append(") ");
+        }
+        css.append(";}");
+        var result = CssProcessorTest.compile(Map.of("Utilities.java", library(css.toString())));
+        assertTrue(result.success(), result.diagnostics());
     }
 
     @Test

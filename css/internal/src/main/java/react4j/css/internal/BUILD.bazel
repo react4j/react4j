@@ -4,6 +4,7 @@ java_library(
     name = "internal",
     srcs = [
         "AssetResource.java",
+        "CssAnimationValues.java",
         "CssCatalogue.java",
         "CssConditions.java",
         "CssExpressions.java",

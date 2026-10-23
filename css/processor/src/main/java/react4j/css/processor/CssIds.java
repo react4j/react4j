@@ -52,7 +52,12 @@ final class CssIds {
     static Set<String> names(String css, Kind kind, Set<String> bindings) {
         String prefix = Kind.COMPONENT == kind ? ".root {\n" : Kind.KEYFRAMES == kind ? "@keyframes shared {\n" : "";
         var syntax = new CssSyntax(prefix + css + (prefix.isEmpty() ? "" : "\n}"), prefix.length());
-        var sheet = Kind.KEYFRAMES == kind ? syntax.parseKeyframes() : syntax.parse(Kind.COMPONENT == kind);
+        var sheet = Kind.KEYFRAMES == kind
+                ? syntax.parseKeyframes()
+                : syntax.parse(
+                        Kind.UTILITY == kind
+                                ? CssSyntax.Mode.UTILITY
+                                : Kind.COMPONENT == kind ? CssSyntax.Mode.COMPONENT : CssSyntax.Mode.GLOBAL);
         var names = new LinkedHashMap<String, String>();
         bindings.forEach(name -> names.put(name, name));
         return rewrite(sheet, syntax, names, false).keySet();

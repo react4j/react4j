@@ -168,7 +168,14 @@ public final class CssProcessor extends AbstractStandardProcessor {
             return;
         }
         var definitions = definitions(owner, kind, descriptor, compiled, imports);
-        var resolved = CssSymbols.resolve(compiled.output(), definitions);
+        var tokens = new ArrayList<>(CssTokens.read(compiled.output().css()));
+        if (Kind.UTILITY == kind) {
+            tokens.removeIf(token ->
+                    CssResource.SymbolKind.ANIMATION == token.kind() || CssResource.SymbolKind.FONT == token.kind());
+            tokens.addAll(compiled.names());
+            tokens.sort(Comparator.comparingInt(CssTokens.Token::start));
+        }
+        var resolved = CssSymbols.resolve(compiled.output(), definitions, tokens);
         var result = new CssCompiler.Result(
                 resolved.output(),
                 compiled.imports(),
@@ -176,7 +183,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 compiled.propertyImports(),
                 readable(compiled.ids(), CssResource.SymbolKind.ID, definitions),
                 readable(compiled.animations(), CssResource.SymbolKind.ANIMATION, definitions),
-                readable(compiled.fonts(), CssResource.SymbolKind.FONT, definitions));
+                readable(compiled.fonts(), CssResource.SymbolKind.FONT, definitions),
+                compiled.names(),
+                compiled.dynamicFonts());
         for (var name : imports.properties().keySet().stream().sorted().toList()) {
             if (!result.propertyImports().contains(name)) {
                 throw new IllegalArgumentException("Unused custom property import: " + name);
@@ -263,7 +272,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 bound,
                 symbols(owner, kind, descriptor, result, imports, definitions),
                 resolved.occurrences(),
-                CssFontValues.uses(
+                fontUses(
+                        kind,
+                        compiled.dynamicFonts(),
                         resolved.output().css(),
                         definitions.values().stream()
                                 .map(CssSymbols.Definition::symbol)
@@ -287,6 +298,24 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 stream.write(entry.getValue().getBytes(StandardCharsets.UTF_8));
             }
         }
+    }
+
+    private static List<CssResource.FontUse> fontUses(
+            Kind kind, List<Boolean> dynamic, String css, List<CssResource.SymbolId> fonts) {
+        var uses = CssFontValues.uses(css, fonts);
+        if (Kind.UTILITY != kind || uses.isEmpty()) {
+            return uses;
+        }
+        if (uses.size() != dynamic.size()) {
+            throw new IllegalArgumentException("Font dependency analysis differs from emitted declarations");
+        }
+        var retained = new ArrayList<CssResource.FontUse>();
+        for (int i = 0; i < uses.size(); i++) {
+            if (dynamic.get(i)) {
+                retained.add(uses.get(i));
+            }
+        }
+        return List.copyOf(retained);
     }
 
     private static Map<String, String> readable(
@@ -671,6 +700,23 @@ public final class CssProcessor extends AbstractStandardProcessor {
         return Set.copyOf(external);
     }
 
+    private Set<String> utilityExternalNames(TypeElement owner, String field, boolean font) {
+        var mirror = Objects.requireNonNull(annotation(owner, "react4j.css.UtilityCssLibrary"));
+        var names = new LinkedHashSet<String>();
+        for (var item : (List<?>) value(mirror, field).getValue()) {
+            String name = (String) ((AnnotationValue) item).getValue();
+            if (font) {
+                name = CssFontValues.canonical(name);
+            } else if (name.isEmpty() || name.codePoints().anyMatch(Character::isISOControl)) {
+                throw new IllegalArgumentException("Invalid external animation: " + name);
+            }
+            if (!names.add(name)) {
+                throw new IllegalArgumentException("Duplicate " + field + " name: " + name);
+            }
+        }
+        return Set.copyOf(names);
+    }
+
     private TypeElement importTarget(AnnotationMirror mirror) {
         Object target = value(mirror, "value").getValue();
         if (!(target instanceof TypeMirror type)
@@ -781,6 +827,10 @@ public final class CssProcessor extends AbstractStandardProcessor {
             throw new IllegalArgumentException("Cyclic font import without an owner: " + key);
         }
         Kind kind = sourceKind(owner);
+        if (Kind.UTILITY == kind
+                && utilityExternalNames(owner, "externalFonts", true).contains(name)) {
+            throw new IllegalArgumentException("External font cannot be imported as an owned symbol: " + name);
+        }
         if (CssFonts.names(sourceValue(owner, kind), kind).contains(name)) {
             visiting.remove(key);
             return new CssFonts.Import(ownerName, name, stable(owner, CssResource.SymbolKind.FONT, name));
@@ -1299,6 +1349,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         input.locations(),
                         utilityClasses(owner).keySet(),
                         utilityExternalProperties(owner),
+                        utilityExternalNames(owner, "externalAnimations", false),
+                        utilityExternalNames(owner, "externalFonts", true),
+                        imports.named(),
                         imports.properties(),
                         imports.ids(),
                         new CssCompiler.Resources(imports.assets(), imports.fonts()));
