@@ -17,6 +17,7 @@ Consume a finite [Utility CSS library](../glossary/README.md#utility-css-library
 9. Conditions and supporting definitions participate in the same checked name resolution, dependency discovery and source mapping as ordinary style rules. Unrecognized or unsafe unsupported syntax produces a diagnostic rather than silently losing rules.
 10. Finite static variable definitions and aliases may carry managed animation and font names. Resolution retains their dependencies and rewrites their name occurrences without inlining browser variable evaluation. Analyze all potentially applicable definitions rather than predicting the browser cascade. Preserve literal value types. Ambiguous rewrites that would alter another semantic use, including visible text or a style-query comparison, are rejected.
 11. Declared source files and compiled library catalogues remain available across separately compiled dependencies. Consumers need no duplicate handwritten class export inventory.
+12. Case-sensitive class-token membership selectors share their managed class identity. Class-string comparisons that cannot preserve matching under added markers and renaming are rejected.
 
 ## Architectural basis
 

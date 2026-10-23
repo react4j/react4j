@@ -82,6 +82,32 @@ public final class BrowserExample {
                                         .data("utility-reset", "true")
                                         .className(UtilityOnly.get().style()),
                                 "Explicit reset"),
+                        DOM.div(
+                                new HtmlProps()
+                                        .id("utility-container")
+                                        .className(UtilityOnly.get().panel()),
+                                DOM.div(
+                                        new HtmlProps().data("external-container", "true"),
+                                        DOM.span(
+                                                new HtmlProps()
+                                                        .className(UtilityOnly.get()
+                                                                .peer()),
+                                                "Peer"),
+                                        DOM.span(
+                                                new HtmlProps()
+                                                        .id("utility-query")
+                                                        .className(UtilityOnly.get()
+                                                                .query()),
+                                                "Container query"))),
+                        DOM.div(
+                                new HtmlProps()
+                                        .id("utility-container-second")
+                                        .className(UtilitySecond.get().panel()),
+                                DOM.span(
+                                        new HtmlProps()
+                                                .id("utility-query-second")
+                                                .className(UtilitySecond.get().query()),
+                                        "Other container")),
                         DOM.button(
                                 new BtnProps()
                                         .id("modifier-only")
@@ -197,8 +223,20 @@ public final class BrowserExample {
                 @layer second { .tone {color:rgb(30, 60, 90);} }
                 .tone {padding-left:var(--gutter);margin-right:var(--host-gap,4px);margin-top:var(--cycle-a,2px);}
                 .tone[data-utility-scope=compact] {--base-gap:9px;}
+                :root {--density:compact;}
+                .panel {container:card/inline-size;width:200px;}
+                .query {display:block;color:rgb(90, 100, 110);opacity:1;}
+                [class~="member"] {border-bottom:4px solid black;}
+                .marker .query {letter-spacing:2px;}
+                .peer~.query {word-spacing:3px;}
+                .dead-container {container:unused-card/inline-size;width:777px;}
+                @container card (width>100px) {.query {color:rgb(10, 120, 30);}}
+                @container unused-card (width>0px) {.query {outline-offset:7px;}}
+                @container host (width>150px) {.query {margin-bottom:19px;}}
+                @supports (display:block) {@container card style(--density:compact) {@starting-style {.query {opacity:0;}}}}
                 """,
-            externalProperties = {"host-gap"})
+            externalProperties = {"host-gap"},
+            externalContainers = {"host"})
     abstract static class UtilityLibraryA {
         static UtilityLibraryA get() {
             return BrowserExample_Styled_UtilityLibraryA.get();
@@ -215,6 +253,9 @@ public final class BrowserExample {
         @layer first { .tone {color:rgb(100, 110, 120);} }
         @layer second { .tone {color:rgb(130, 140, 150);} }
         .tone {padding-right:var(--gutter);}
+        .panel {container:card/inline-size;width:180px;}
+        .query {color:rgb(1, 3, 5);}
+        @container card (width>100px) {.query {color:rgb(40, 50, 60);}}
         """)
     static final class UtilityLibraryB {}
 
@@ -226,6 +267,15 @@ public final class BrowserExample {
 
         @UtilityCss("tone")
         abstract String style();
+
+        @UtilityCss("panel marker")
+        abstract String panel();
+
+        @UtilityCss("query member")
+        abstract String query();
+
+        @UtilityCss("peer")
+        abstract String peer();
     }
 
     @UtilityStyles(UtilityLibraryA.class)
@@ -249,6 +299,12 @@ public final class BrowserExample {
 
         @UtilityCss("tone")
         abstract String style();
+
+        @UtilityCss("panel")
+        abstract String panel();
+
+        @UtilityCss("query")
+        abstract String query();
     }
 
     @UtilityCssLibrary("""
@@ -268,6 +324,7 @@ public final class BrowserExample {
     @GlobalCss("""
         :root {--gutter:13px!important;}
         [data-utility-reset] {margin-left:23px;}
+        [data-external-container] {container:host/inline-size;width:200px;}
         [data-utility-important] {color:rgb(180, 20, 30)!important;}
         """)
     static final class UtilityReset {}

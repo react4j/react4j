@@ -12,6 +12,7 @@ import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.jspecify.annotations.NullMarked;
 import org.testng.annotations.Test;
 
@@ -402,7 +403,8 @@ public final class UtilityCssProcessorTest {
     @Test
     public void registrationsConditionsAndExternalPropertiesUseConsistentIdentities() throws Exception {
         String css = "@property --registered{syntax:\"<length>\";inherits:true;initial-value:17px;}:root{--base:7px;}"
-                + " @container --panel style(--density:--literal) and style(--other:var(--state,--fallback)){"
+                + " .panel{container-name:--panel;} @container --panel style(--density:--literal) and"
+                + " style(--other:var(--state,--fallback)){"
                 + ".x{padding:var(--base,);margin-left:var(--host-gap,5px);}}";
         String declaration = library(css)
                 .replace("@UtilityCssLibrary(", "@UtilityCssLibrary(externalProperties={\"host-gap\"},value=")
@@ -420,7 +422,7 @@ public final class UtilityCssProcessorTest {
                 "var(--jcss-demo-Utilities--state,--fallback)",
                 "var(--jcss-demo-Utilities--base,)",
                 "var(--host-gap,5px)",
-                "@container --panel")) {
+                "@container jcss-demo-Utilities--container-_002d__002d_panel")) {
             assertTrue(output.contains(expected), output);
         }
         var metadata = JsonParser.parseString(text(result, "classes/demo/Utilities.css.json"))
@@ -636,6 +638,95 @@ public final class UtilityCssProcessorTest {
         css.append(";}");
         var result = CssProcessorTest.compile(Map.of("Utilities.java", library(css.toString())));
         assertTrue(result.success(), result.diagnostics());
+    }
+
+    @Test
+    public void selectorReferencesAndTokenMembershipShareCheckedClassIdentities() throws Exception {
+        var source = library(".group:hover .child,.peer:checked~.child{color:red;}"
+                        + ".hover\\\\:ready:has(>:where(.child,.group)){opacity:.8;}"
+                        + ".child:is(.state,.other):not(.external)[aria-label='literal child']{color:blue;}"
+                        + "[class~='token'] [data-state=open]{display:flex;}")
+                .replace("@UtilityCssLibrary(", "@UtilityCssLibrary(externalClasses={\"external\"},value=");
+        var result = CssProcessorTest.compile(
+                Map.of(
+                        "Utilities.java",
+                        source,
+                        "Button.java",
+                        styles("", "@UtilityCss(\"peer group hover:ready token child\") abstract String style();")),
+                "demo.Button");
+        assertTrue(result.success(), result.diagnostics());
+        String output = text(result, "classes/demo/Utilities.css");
+        assertTrue(output.contains("[class~='jcss-demo-Utilities--class-token']"), output);
+        assertTrue(output.contains(".jcss-demo-Utilities--class-hover_003a_ready:has"), output);
+        assertTrue(output.contains(":not(.external)[aria-label='literal child']"), output);
+        assertTrue(Objects.requireNonNull(result.values().get("demo.Button.style"))
+                .startsWith("jcss-demo-Utilities--class-peer jcss-demo-Utilities--class-group"));
+        for (var selector : List.of(
+                ".a[class='a']",
+                ".a[class^='a']",
+                ".a[class$='a']",
+                ".a:not([class*='a'])",
+                ".a[class|='a']",
+                ".a[class~='a' i]",
+                ".a[ns|class~='a']")) {
+            var invalid = CssProcessorTest.compile(Map.of("Utilities.java", library(selector + "{color:red;}")));
+            assertFalse(invalid.success(), selector);
+            assertTrue(invalid.diagnostics().contains("token membership"), invalid.diagnostics());
+        }
+    }
+
+    @Test
+    public void suppliedUtilityCssRejectsCheckedSelectorMacros() throws Exception {
+        var invalid = CssProcessorTest.compile(Map.of("Utilities.java", library(".a:css(peer){color:red;}")));
+        assertFalse(invalid.success());
+        assertTrue(invalid.diagnostics().contains("Checked :css references"), invalid.diagnostics());
+    }
+
+    @Test
+    public void namedContainersBindDeclarationsQueriesAndExplicitAncestors() throws Exception {
+        String css = ".panel{container:card/inline-size;container-name:card other;}"
+                + " :root{--density:compact;}@supports(display:grid){@container card"
+                + " style(--density:compact){@starting-style{.child{opacity:0;}}}}@container not"
+                + " (width>1px){.child{opacity:.3;}}@container host (width>1px){.child{color:red;}}";
+        var result = CssProcessorTest.compile(Map.of(
+                "Utilities.java",
+                library(css)
+                        .replace("@UtilityCssLibrary(", "@UtilityCssLibrary(externalContainers={\"host\"},value=")));
+        assertTrue(result.success(), result.diagnostics());
+        String output = text(result, "classes/demo/Utilities.css");
+        for (var expected : List.of(
+                "container:jcss-demo-Utilities--container-card/inline-size",
+                "container-name:jcss-demo-Utilities--container-card jcss-demo-Utilities--container-other",
+                "@container jcss-demo-Utilities--container-card style(--jcss-demo-Utilities--density:compact)",
+                "@container not (width>1px)",
+                "@container host (width>1px)",
+                "@starting-style")) {
+            assertTrue(output.contains(expected), output);
+        }
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(text(result, "classes/demo/Utilities.css.map"));
+        int generated = output.indexOf("@container jcss-demo-Utilities--container-card") + "@container ".length();
+        var origin = consumer.getMappingForLine(1, generated + 1);
+        assertNotNull(origin);
+        assertEquals(origin.getColumnPosition(), css.indexOf("@container card") + "@container ".length() + 1);
+        assertTrue(origin.getOriginalFile().endsWith("Utilities.java"));
+        for (var invalidCss : List.of(
+                ".x{container-name:var(--name);}",
+                ".x{container:var(--name)/size;}",
+                "@container missing (width>1px){.x{color:red;}}")) {
+            var invalid = CssProcessorTest.compile(Map.of("Utilities.java", library(invalidCss)));
+            assertFalse(invalid.success(), invalidCss);
+            assertTrue(invalid.diagnostics().contains("container name"), invalid.diagnostics());
+        }
+        for (var names : List.of("\"missing\"", "\"host\",\"host\"", "\"and\"")) {
+            var invalid = CssProcessorTest.compile(Map.of(
+                    "Utilities.java",
+                    library(css)
+                            .replace(
+                                    "@UtilityCssLibrary(",
+                                    "@UtilityCssLibrary(externalContainers={" + names + "},value=")));
+            assertFalse(invalid.success(), names);
+        }
     }
 
     @Test

@@ -1,6 +1,6 @@
 # T08 — Verify complete applications and document delivery
 
-- Status: pending
+- Status: in_progress
 - Blocked by: T07
 - Spec coverage: R1–R13 (cross-cutting); AC1–AC8
 

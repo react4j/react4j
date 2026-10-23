@@ -199,7 +199,13 @@ final class Bundle {
                 .filter(d -> retained.contains(d.metadata().owner())
                         && Kind.GLOBAL != d.metadata().kind())
                 .forEach(ordered::add);
-        var renamer = null == link ? null : new CssRenamer(link.names());
+        var renamer = null == link
+                ? null
+                : new CssRenamer(
+                        link.names(),
+                        catalogue.resources().values().stream()
+                                .map(Resource::metadata)
+                                .toList());
         if (null != renamer) {
             ordered = new ArrayList<>(ordered.stream().map(renamer::rename).toList());
         }

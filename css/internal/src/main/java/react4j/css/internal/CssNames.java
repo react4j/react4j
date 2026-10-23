@@ -42,7 +42,10 @@ public record CssNames(Policy policy, List<Entry> entries) {
             "both",
             "running",
             "paused",
-            "auto");
+            "auto",
+            "and",
+            "or",
+            "not");
 
     public record Policy(boolean compressed, String prefix) {
         public Policy {
@@ -219,7 +222,9 @@ public record CssNames(Policy policy, List<Entry> entries) {
                     compiled = (SymbolKind.PROPERTY == symbol.kind() ? "--" : "") + policy.prefix() + shortName(next++);
                 } while (reserved.contains(compiled)
                         || insensitive.contains(CssTokens.asciiLower(compiled))
-                        || (SymbolKind.ANIMATION == symbol.kind() || SymbolKind.FONT == symbol.kind())
+                        || (SymbolKind.ANIMATION == symbol.kind()
+                                        || SymbolKind.FONT == symbol.kind()
+                                        || SymbolKind.CONTAINER == symbol.kind())
                                 && RESERVED.contains(compiled.toLowerCase(Locale.ROOT)));
                 reserved.add(compiled);
                 if (SymbolKind.FONT == symbol.kind()) {
@@ -229,7 +234,11 @@ public record CssNames(Policy policy, List<Entry> entries) {
             entries.add(new Entry(id, symbol.value(), compiled, symbol.stable(), getters.getOrDefault(id, List.of())));
         }
         var table = new CssNames(policy, entries);
-        var checker = new CssRenamer(table);
+        var checker = new CssRenamer(
+                table,
+                catalogue.resources().values().stream()
+                        .map(CssCatalogue.Resource::metadata)
+                        .toList());
         parsed.forEach((owner, references) -> checker.checkNames(references, owner));
         return table;
     }

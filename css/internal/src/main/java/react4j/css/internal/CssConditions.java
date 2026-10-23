@@ -5,7 +5,9 @@ import com.helger.css.parser.ParserCSS30Constants;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 /** Source ranges and identifier references in modern conditional rule headers. */
 public final class CssConditions {
@@ -59,9 +61,11 @@ public final class CssConditions {
             }
             count++;
             var context = contexts.peek();
-            if (ParserCSS30Constants.IDENT == token.kind()) {
+            if (ParserCSS30Constants.IDENT == token.kind() || ParserCSS30Constants.DASHED_IDENT == token.kind()) {
                 String name = token.name();
-                boolean container = initial && "@container".equalsIgnoreCase(rule.getDeclaration());
+                boolean container = initial
+                        && "@container".equalsIgnoreCase(rule.getDeclaration())
+                        && !Set.of("not", "and", "or").contains(name.toLowerCase(Locale.ROOT));
                 boolean property = !container
                         && name.startsWith("--")
                         && null != context

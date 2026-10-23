@@ -205,6 +205,27 @@ public final class CssBrowserTest {
         });
     }
 
+    public void testNamedUtilityContainersAndSelectorMembership() {
+        equal("rgb(10, 120, 30)", css("utility-query", "color"));
+        equal("rgb(40, 50, 60)", css("utility-query-second", "color"));
+        equal("4px", css("utility-query", "border-bottom-width"));
+        equal("2px", css("utility-query", "letter-spacing"));
+        equal("3px", css("utility-query", "word-spacing"));
+        equal("19px", css("utility-query", "margin-bottom"));
+        equal("1", css("utility-query", "opacity"));
+        check(
+                !css("utility-container", "container-name").equals(css("utility-container-second", "container-name")),
+                "Independent container owners");
+        check(
+                !_optimized == _style.getTextContent().contains("777px"),
+                "A query does not retain its container utility");
+        check(_style.getTextContent().contains("@starting-style"), "Retained starting-style group");
+        Browser.cssText(node("utility-container"), "width:80px");
+        equal("rgb(90, 100, 110)", css("utility-query", "color"));
+        equal("rgb(40, 50, 60)", css("utility-query-second", "color"));
+        equal("19px", css("utility-query", "margin-bottom"));
+    }
+
     public void testClassNamingPolicy() {
         var root = node("success").getClassName().split(" ")[0];
         var control = symbol("control");
@@ -486,7 +507,9 @@ public final class CssBrowserTest {
             "utility",
             "utility-hybrid",
             "utility-second",
-            "utility-important"
+            "utility-important",
+            "utility-query",
+            "utility-query-second"
         };
         var result = new String[ids.length];
         for (int i = 0; i < ids.length; i++) {

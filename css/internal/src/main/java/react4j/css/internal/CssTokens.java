@@ -186,6 +186,31 @@ public final class CssTokens {
                         if (null != reference) {
                             attributes.add(reference);
                         }
+                        String className = CssSelectors.classToken(attribute);
+                        if (null != className) {
+                            var location = Objects.requireNonNull(attribute.getSourceLocation());
+                            int last = syntax.offset(
+                                            location.getLastTokenEndLineNumber(),
+                                            location.getLastTokenEndColumnNumber())
+                                    + 1;
+                            boolean value = false;
+                            for (var part : CssLexical.tokens(css, start(attribute), last)) {
+                                if (value && !part.value().isBlank()) {
+                                    String raw = part.value();
+                                    int first = part.start();
+                                    if (raw.startsWith("'") || raw.startsWith("\"")) {
+                                        first++;
+                                        raw = raw.substring(1, raw.length() - 1);
+                                    }
+                                    tokens.add(
+                                            new Token(SymbolKind.CLASS, first, first + raw.length(), raw, className));
+                                    break;
+                                }
+                                if ("~=".equals(part.value())) {
+                                    value = true;
+                                }
+                            }
+                        }
                     } else if (member instanceof CSSSelectorMemberNot function) {
                         function.getAllSelectors().forEach(this::selector);
                     } else if (member instanceof CSSSelectorMemberPseudoIs function) {
@@ -300,6 +325,9 @@ public final class CssTokens {
                     int end = start(last) + last.getValue().length();
                     tokens.add(new Token(SymbolKind.FONT, first, end, css.substring(first, end), family.name()));
                 }
+                for (var container : CssContainers.read(declaration).names()) {
+                    token(SymbolKind.CONTAINER, start(container), container.getValue());
+                }
                 expression(declaration.getExpression());
             }
 
@@ -334,9 +362,10 @@ public final class CssTokens {
             @Override
             public void onUnknownRule(CSSUnknownRule rule) {
                 for (var reference : CssConditions.read(css, rule).references()) {
-                    if (reference.property()) {
-                        token(SymbolKind.PROPERTY, reference.start(), reference.value());
-                    }
+                    token(
+                            reference.property() ? SymbolKind.PROPERTY : SymbolKind.CONTAINER,
+                            reference.start(),
+                            reference.value());
                 }
             }
 

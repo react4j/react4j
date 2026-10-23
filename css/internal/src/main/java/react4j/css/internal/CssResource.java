@@ -35,7 +35,8 @@ public record CssResource(
         ID,
         ANIMATION,
         PROPERTY,
-        FONT
+        FONT,
+        CONTAINER
     }
 
     public record SymbolId(String owner, SymbolKind kind, String name) {
@@ -297,7 +298,7 @@ public record CssResource(
 
     public String json() {
         var json = new JsonObject();
-        json.addProperty("version", 9);
+        json.addProperty("version", 10);
         json.addProperty("owner", owner);
         json.addProperty("kind", kind.name());
         var entries = new JsonArray();
@@ -334,7 +335,7 @@ public record CssResource(
     public static CssResource read(String source, String expectedOwner) {
         try {
             var json = JsonParser.parseString(source).getAsJsonObject();
-            if (!json.has("version") || !"9".equals(json.get("version").toString())) {
+            if (!json.has("version") || !"10".equals(json.get("version").toString())) {
                 throw new IllegalArgumentException("Unsupported CSS metadata version");
             }
             String owner = string(json, "owner");

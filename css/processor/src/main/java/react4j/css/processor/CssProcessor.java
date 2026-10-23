@@ -39,6 +39,7 @@ import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.ElementsUtil;
 import react4j.css.internal.AssetResource;
+import react4j.css.internal.CssContainers;
 import react4j.css.internal.CssFontValues;
 import react4j.css.internal.CssInput;
 import react4j.css.internal.CssResource;
@@ -184,6 +185,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 readable(compiled.ids(), CssResource.SymbolKind.ID, definitions),
                 readable(compiled.animations(), CssResource.SymbolKind.ANIMATION, definitions),
                 readable(compiled.fonts(), CssResource.SymbolKind.FONT, definitions),
+                readable(compiled.containers(), CssResource.SymbolKind.CONTAINER, definitions),
                 compiled.names(),
                 compiled.dynamicFonts());
         for (var name : imports.properties().keySet().stream().sorted().toList()) {
@@ -419,6 +421,13 @@ public final class CssProcessor extends AbstractStandardProcessor {
                             null == imported ? value : imported.cssName(),
                             null == imported ? List.of() : List.of(imported.owner())));
         });
+        result.containers()
+                .forEach((name, value) -> definitions.put(
+                        new CssSymbols.Key(CssResource.SymbolKind.CONTAINER, value),
+                        new CssSymbols.Definition(
+                                new CssResource.SymbolId(ownerName, CssResource.SymbolKind.CONTAINER, name),
+                                value,
+                                List.of())));
         imports.named().forEach((alias, imported) -> {
             boolean animation = Kind.KEYFRAMES == imported.kind();
             var symbolKind = animation ? CssResource.SymbolKind.ANIMATION : CssResource.SymbolKind.CLASS;
@@ -707,6 +716,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
             String name = (String) ((AnnotationValue) item).getValue();
             if (font) {
                 name = CssFontValues.canonical(name);
+            } else if ("externalContainers".equals(field)) {
+                CssContainers.checkName(name);
             } else if (name.isEmpty() || name.codePoints().anyMatch(Character::isISOControl)) {
                 throw new IllegalArgumentException("Invalid external animation: " + name);
             }
@@ -1316,6 +1327,12 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         CssResource.SymbolKind.FONT, name, value, stable(owner, CssResource.SymbolKind.FONT, name)));
             }
         });
+        result.containers()
+                .forEach((name, value) -> symbols.add(new CssResource.Symbol(
+                        CssResource.SymbolKind.CONTAINER,
+                        name,
+                        value,
+                        stable(owner, CssResource.SymbolKind.CONTAINER, name))));
         return symbols.stream()
                 .sorted(Comparator.comparing(CssResource.Symbol::kind).thenComparing(CssResource.Symbol::name))
                 .toList();
@@ -1351,6 +1368,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         utilityExternalProperties(owner),
                         utilityExternalNames(owner, "externalAnimations", false),
                         utilityExternalNames(owner, "externalFonts", true),
+                        utilityExternalNames(owner, "externalContainers", false),
                         imports.named(),
                         imports.properties(),
                         imports.ids(),

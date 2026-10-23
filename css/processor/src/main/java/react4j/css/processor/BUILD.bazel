@@ -17,6 +17,7 @@ java_library(
         "CssSymbols.java",
         "Names.java",
         "TextBlock.java",
+        "UtilityContainers.java",
         "UtilityNames.java",
         "UtilitySelectors.java",
         "package-info.java",

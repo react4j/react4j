@@ -101,6 +101,7 @@ final class CssCompiler {
             Set<String> externalProperties,
             Set<String> externalAnimations,
             Set<String> externalFonts,
+            Set<String> externalContainers,
             Map<String, Import> imports,
             Map<String, CssProperties.Import> properties,
             Map<String, CssIds.Import> ids,
@@ -108,6 +109,7 @@ final class CssCompiler {
         var compiler = new CssCompiler(css, 0, root, exports, locations, Map.of());
         var sheet = compiler.syntax.parse(CssSyntax.Mode.UTILITY);
         UtilitySelectors.check(sheet, compiler.syntax, managed);
+        var containers = UtilityContainers.names(css, sheet, compiler.syntax, root, externalContainers);
         var names = UtilityNames.analyze(
                 css,
                 sheet,
@@ -128,7 +130,9 @@ final class CssCompiler {
         for (var token : CssTokens.read(css)) {
             String replacement = CssResource.SymbolKind.PROPERTY == token.kind()
                     ? compiler.properties.get(token.name().substring(2))
-                    : CssResource.SymbolKind.ID == token.kind() ? compiler.ids.get(token.name()) : null;
+                    : CssResource.SymbolKind.ID == token.kind()
+                            ? compiler.ids.get(token.name())
+                            : CssResource.SymbolKind.CONTAINER == token.kind() ? containers.get(token.name()) : null;
             if (null != replacement && !replacement.equals(token.value())) {
                 edits.add(new SourceMap.Edit(token.start(), token.end(), replacement));
             }
@@ -171,6 +175,7 @@ final class CssCompiler {
                 compiler.ids,
                 names.animations(),
                 names.fonts(),
+                containers,
                 nameTokens,
                 names.dynamicFonts());
     }
@@ -183,6 +188,7 @@ final class CssCompiler {
             Map<String, String> ids,
             Map<String, String> animations,
             Map<String, String> fonts,
+            Map<String, String> containers,
             List<CssTokens.Token> names,
             List<Boolean> dynamicFonts) {}
 
@@ -256,6 +262,7 @@ final class CssCompiler {
                 ids,
                 Map.copyOf(animations),
                 fonts,
+                Map.of(),
                 List.of(),
                 List.of());
     }

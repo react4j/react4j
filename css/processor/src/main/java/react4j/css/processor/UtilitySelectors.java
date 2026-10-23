@@ -1,5 +1,8 @@
 package react4j.css.processor;
 
+import com.helger.css.decl.CSSSelector;
+import com.helger.css.decl.CSSSelectorAttribute;
+import com.helger.css.decl.CSSSelectorMemberFunctionLike;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.visit.CSSVisitor;
@@ -15,8 +18,29 @@ final class UtilitySelectors {
 
     static void check(CascadingStyleSheet sheet, CssSyntax syntax, Set<String> managed) {
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
+            private void selector(CSSSelector selector) {
+                CssSelectors.visit(selector, member -> {
+                    if (member instanceof CSSSelectorAttribute attribute
+                            && "class".equalsIgnoreCase(CSSParseHelper.unescapeURL(attribute.getAttrName()))
+                            && null != attribute.getAttrValue()
+                            && null == CssSelectors.classToken(attribute)) {
+                        throw syntax.invalid(
+                                "Utility class attribute selectors require case-sensitive token membership (~=);"
+                                        + " whole-string, order and substring comparisons are unsafe",
+                                attribute);
+                    }
+                    if (member instanceof CSSSelectorMemberFunctionLike function
+                            && ":css(".equalsIgnoreCase(function.getFunctionName())) {
+                        throw syntax.invalid(
+                                "Checked :css references belong in local or global CSS, not supplied utility CSS",
+                                function);
+                    }
+                });
+            }
+
             @Override
             public void onBeginStyleRule(CSSStyleRule rule) {
+                rule.getAllSelectors().forEach(this::selector);
                 if (rule.getAllDeclarations().stream()
                         .allMatch(declaration -> CSSParseHelper.unescapeURL(declaration.getProperty())
                                 .startsWith("--"))) {

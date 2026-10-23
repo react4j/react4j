@@ -9,6 +9,8 @@ import com.helger.css.decl.CSSKeyframesRule;
 import com.helger.css.decl.CSSLayerRule;
 import com.helger.css.decl.CSSPropertyRule;
 import com.helger.css.decl.CSSSelector;
+import com.helger.css.decl.CSSSelectorAttribute;
+import com.helger.css.decl.CSSSelectorMemberPseudoHas;
 import com.helger.css.decl.CSSSelectorMemberPseudoIs;
 import com.helger.css.decl.CSSSelectorMemberPseudoWhere;
 import com.helger.css.decl.CSSSelectorSimpleMember;
@@ -212,6 +214,14 @@ final class CssPruner {
                 if (known.contains(name) && !present.contains(name)) {
                     return false;
                 }
+            } else if (member instanceof CSSSelectorAttribute attribute && null != CssSelectors.classToken(attribute)) {
+                String name = "." + CssSelectors.classToken(attribute);
+                if (known.contains(name) && !present.contains(name)) {
+                    return false;
+                }
+            } else if (member instanceof CSSSelectorMemberPseudoHas function
+                    && function.getAllSelectors().stream().noneMatch(this::possible)) {
+                return false;
             } else if (member instanceof CSSSelector nested && !possible(nested)) {
                 return false;
             } else if (member instanceof CSSSelectorMemberPseudoIs function

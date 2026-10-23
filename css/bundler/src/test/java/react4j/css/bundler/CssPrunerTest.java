@@ -90,6 +90,34 @@ public final class CssPrunerTest {
     }
 
     @Test
+    public void markerMembershipAndRelationalRequirementsDoNotInventClassPresence() {
+        var known = Set.of(".root", ".marker", ".peer", ".dead");
+        for (var selector : List.of(".marker .root", ".peer~.root", ".root[class~='dead']", ".root:has(.dead,.peer)")) {
+            assertEquals(
+                    prune(resource(new SourceMap.Writer().append(selector + "{color:red;}")), known, Set.of(".root"))
+                            .css(),
+                    "",
+                    selector);
+        }
+        for (var selector : List.of(
+                ".root:not([class~='dead'])",
+                ".root:has(:not(.dead))",
+                ".root:is([class~='dead'],.root)",
+                ".root[data-label='dead']")) {
+            String css = selector + "{color:red;}";
+            assertEquals(
+                    prune(resource(new SourceMap.Writer().append(css)), known, Set.of(".root"))
+                            .css(),
+                    css);
+        }
+        String css = ".marker:hover .root,.peer:checked~.root{color:red;}";
+        assertEquals(
+                prune(resource(new SourceMap.Writer().append(css)), known, Set.of(".marker", ".root"))
+                        .css(),
+                ".marker:hover .root{color:red;}");
+    }
+
+    @Test
     public void removesImpossibleSelectorsAndPreservesUncertainFunctionsAndSpecificity() {
         var known = Set.of(".root", ".dead", ".peer", "#absent");
         for (var selector : List.of(

@@ -123,6 +123,10 @@ Views call these accessors just like ordinary component accessors. Each returns 
 
 The processor infers the class inventory from selectors, including referenced group or peer markers. Library classes have their own defining owner. `externalClasses` lists literal hooks that remain outside managed getter lists; append those hooks as ordinary strings in Java. A consumer's `@CssStable` controls its local markers, while the utility library controls its own names.
 
+Case-sensitive class-token selectors such as `[class~="active"]` share the checked class identity and are rewritten consistently. Supplied utility inputs reject whole-class-string, substring, order-sensitive, case-insensitive and namespaced class comparisons. Ordinary data and ARIA selectors keep their values.
+
+Static `container-name` declarations and the name field of `container` define library-owned containers. Named `@container` queries use those identities, including through layers, media/supports and starting-style groups. List browser-owned ancestor names in `externalContainers`; an unknown ancestor name fails compilation. Querying a container does not retain the class that would create it. Dynamic container-name fields are unsupported.
+
 Combine `@Css` with `@UtilityStyles` to add local declarations. A utility accessor can also have local rules, and it needs no dummy local selector. Ordinary local-only accessors retain their selector checks. Interfaces, effective annotation inheritance, helpers, factories, typed support accessors and peer-root imports follow the rules above. `@UtilityCss` metadata is replaced or removed by an overriding declaration's annotations.
 
 Ordinary utility declarations must require a managed class on every selector-list or `:is`/`:where`/`:has` branch. Negation alone supplies no guard. Support definitions and custom-property initialization may be global. Supply page resets and element defaults separately with `@GlobalCss`, and select them explicitly through a bundle root or an import on the consuming style. Selecting a utility library alone does not activate a reset.
