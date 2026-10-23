@@ -58,6 +58,25 @@ public final class CssLivenessIntegrationTest {
     }
 
     @Test
+    public void utilityListsActivateTheProviderAndCompressEveryTokenInDeclaredOrder() throws Exception {
+        String css = input("optimized");
+        String js = input("javascript");
+        var values = List.of(
+                compiled("LivenessEntry$Utilities", "CLASS", "gap-2"),
+                compiled("LivenessEntry$Utilities", "CLASS", "flex"),
+                compiled("LivenessEntry$Utilities", "CLASS", "text-red"),
+                compiled("LivenessEntry$UtilityBindings", "CLASS", ""),
+                compiled("LivenessEntry$UtilityBindings", "CLASS", "active"));
+        assertTrue(js.contains("\"" + String.join(" ", values) + "\""), js);
+        for (var value : values.subList(0, 3)) {
+            assertTrue(css.matches("(?s).*\\." + value + "\\s*\\{.*"), css);
+        }
+        assertFalse(css.contains("outline-width:37px"), css);
+        assertTrue(input("development").contains("outline-width:37px"));
+        assertFalse(js.contains("$react4j$css$"), js);
+    }
+
+    @Test
     public void realLinksHandleSeparatelyCompiledInterfaceAndFacadeBindings() throws Exception {
         String optimized = input("optimized");
         String development = input("development");

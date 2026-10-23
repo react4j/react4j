@@ -26,7 +26,8 @@ public record CssResource(
     public enum Kind {
         COMPONENT,
         GLOBAL,
-        KEYFRAMES
+        KEYFRAMES,
+        UTILITY
     }
 
     public enum SymbolKind {
@@ -77,7 +78,6 @@ public record CssResource(
             if (symbols.isEmpty()
                     || symbols.stream().anyMatch(symbol -> kind != symbol.kind())
                     || (SymbolKind.CLASS != kind && 1 != symbols.size())
-                    || symbols.size() > 2
                     || new HashSet<>(symbols).size() != symbols.size()) {
                 throw new IllegalArgumentException("Invalid CSS binding composition: " + method);
             }
@@ -297,7 +297,7 @@ public record CssResource(
 
     public String json() {
         var json = new JsonObject();
-        json.addProperty("version", 8);
+        json.addProperty("version", 9);
         json.addProperty("owner", owner);
         json.addProperty("kind", kind.name());
         var entries = new JsonArray();
@@ -334,7 +334,7 @@ public record CssResource(
     public static CssResource read(String source, String expectedOwner) {
         try {
             var json = JsonParser.parseString(source).getAsJsonObject();
-            if (!json.has("version") || !"8".equals(json.get("version").toString())) {
+            if (!json.has("version") || !"9".equals(json.get("version").toString())) {
                 throw new IllegalArgumentException("Unsupported CSS metadata version");
             }
             String owner = string(json, "owner");

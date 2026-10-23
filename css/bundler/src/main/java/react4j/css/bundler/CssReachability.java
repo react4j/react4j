@@ -31,6 +31,11 @@ final class CssReachability {
         var known = new HashSet<String>();
         var present = new HashSet<String>();
         for (var resource : resources.values()) {
+            for (var symbol : resource.metadata().symbols()) {
+                if (CssResource.SymbolKind.CLASS == symbol.kind() || CssResource.SymbolKind.ID == symbol.kind()) {
+                    known.add((CssResource.SymbolKind.CLASS == symbol.kind() ? "." : "#") + symbol.value());
+                }
+            }
             for (var binding : resource.metadata().bindings()) {
                 if (CssResource.SymbolKind.CLASS == binding.kind() || CssResource.SymbolKind.ID == binding.kind()) {
                     String prefix = CssResource.SymbolKind.CLASS == binding.kind() ? "." : "#";

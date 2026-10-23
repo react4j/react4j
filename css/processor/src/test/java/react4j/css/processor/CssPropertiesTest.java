@@ -109,7 +109,7 @@ public final class CssPropertiesTest {
             String body = "--x: red; color: v\\61 r(--y);";
             String css = Kind.COMPONENT == kind
                     ? body
-                    : Kind.GLOBAL == kind ? "body { " + body + " }" : "to { " + body + " }";
+                    : (Kind.GLOBAL == kind || Kind.UTILITY == kind) ? "body { " + body + " }" : "to { " + body + " }";
             assertEquals(CssProperties.names(css, kind), Set.of("x", "y"));
         }
         String css = "@keyframes pulse {to {--x: red; color: var(--y);}} @supports ((--z: red) and (color: var(--w))) {"

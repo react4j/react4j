@@ -80,7 +80,20 @@ final class CssCompiler {
 
     record Resources(Map<String, String> assets, Map<String, CssFonts.Import> fonts) {}
 
-    record Exports(List<String> modifiers, Set<String> ids, Set<String> animations) {}
+    record Exports(List<String> modifiers, Set<String> ids, Set<String> animations, Set<String> utilityModifiers) {
+        Exports(List<String> modifiers, Set<String> ids, Set<String> animations) {
+            this(modifiers, ids, animations, Set.of());
+        }
+    }
+
+    static Result utility(String css, IntFunction<SourceMap.Location> locations) {
+        new CssSyntax(css, 0).parse(CssSyntax.Mode.UTILITY);
+        var output = new SourceMap.Writer();
+        for (int i = 0; i < css.length(); i++) {
+            output.append(css.substring(i, i + 1), locations.apply(i));
+        }
+        return new Result(output, Set.of(), Map.of(), Set.of(), Map.of(), Map.of(), Map.of());
+    }
 
     record Result(
             SourceMap.Writer output,
@@ -191,7 +204,9 @@ final class CssCompiler {
         }
         compiler.style(sheet.getAllStyleRules().get(0), new Scope("." + root, true), true);
         for (var name : exports.modifiers()) {
-            if (!"style".equals(name) && !compiler.found.contains(name)) {
+            if (!"style".equals(name)
+                    && !compiler.found.contains(name)
+                    && !exports.utilityModifiers().contains(name)) {
                 throw new CssSyntax.InvalidCss("Accessor " + name + "() has no matching local selector", 0);
             }
         }

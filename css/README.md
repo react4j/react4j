@@ -93,6 +93,38 @@ Interfaces can also declare `@CssId`, `@CssAnimation` and `@CssCustomProperty` a
 
 Symbol annotations follow the effective method declaration, using the same method collection as React4j. An inherited method needs no redeclaration. An override uses its own annotations and defaults; a plain override drops inherited symbol metadata, and an annotated override may change the symbol kind or name. Sibling declarations use the selected declaration without an additional annotation-conflict rule. Generated symbol accessors must be abstract. Unannotated concrete/default overrides are ordinary helpers; re-abstraction needs its own symbol annotation for typed symbols. Resource interfaces with only helpers need no Java binding.
 
+## Utility libraries
+
+Supply precompiled, flattened CSS through `@UtilityCssLibrary`, then select one library with `@UtilityStyles`:
+
+```java
+@UtilityCssLibrary("""
+    .flex { display: flex; }
+    .p-2 { padding: .5rem; }
+    .text-red { color: red; }
+    """)
+class Utilities {}
+
+@UtilityStyles(Utilities.class)
+abstract class ButtonStyles {
+    static ButtonStyles get() {
+        return Styled_ButtonStyles.get();
+    }
+
+    @UtilityCss("flex p-2")
+    abstract String style();
+
+    @UtilityCss("text-red")
+    abstract String warning();
+}
+```
+
+Views call these accessors just like ordinary component accessors. Each returns the listed utility classes in order followed by its local root and, for a modifier, its local modifier marker. `warning()` does not include the utilities from `style()`; compose getters in Java when needed. Lists must be nonempty, contain distinct managed classes and match the supplied stylesheet. No conflict merging is performed.
+
+The processor infers the class inventory from selectors, including referenced group or peer markers. Library classes have their own defining owner. `externalClasses` lists literal hooks that remain outside managed getter lists; append those hooks as ordinary strings in Java. A consumer's `@CssStable` controls its local markers, while the utility library controls its own names.
+
+Combine `@Css` with `@UtilityStyles` to add local declarations. A utility accessor can also have local rules, and it needs no dummy local selector. Ordinary local-only accessors retain their selector checks. Interfaces, effective annotation inheritance, helpers, factories, typed support accessors and peer-root imports follow the rules above. `@UtilityCss` metadata is replaced or removed by an overriding declaration's annotations.
+
 ## Supported CSS
 
 Component styles support root declarations and nested selectors beginning with `&`, including attributes and same-element `:is`, `:not` and `:where`. Import another component to target its root in a checked descendant or sibling selector. `@media` and `@supports` blocks require explicit nested selectors. Apply one component's root to each styled element. When modifiers conflict, stylesheet order determines precedence, regardless of class-token order.

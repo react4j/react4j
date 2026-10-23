@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Add checked utility class accessors with `UtilityCssLibrary`, `UtilityStyles` and method-level `UtilityCss`. Support hybrid component styles, interface contracts, defining-owner names, ordered class lists and optimized removal of unselected classes.
+
 * Preserve valid empty CSS variable fallbacks and parsed container/starting-style bodies during CSS name discovery and pruning. Permit standard important declarations in explicit global/shared inputs while retaining the prohibition in component and utility definitions.
 * Simplify release validation by removing standalone artifact checks, isolated consumer compilation tests, and the separate reproducibility build.
 * Remove the downstream Bazel configuration exporter and external consumer check; applications own their dependency configuration.

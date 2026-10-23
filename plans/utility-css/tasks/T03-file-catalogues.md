@@ -1,6 +1,6 @@
 # T03 — Compile explicit files and dependency catalogues
 
-- Status: pending
+- Status: in_progress
 - Blocked by: T02
 - Spec coverage: R1, R2 (dependency validation), R12 (files/packaging); AC1, AC7 (file origins)
 

@@ -14,6 +14,9 @@ java_library(
         "CssStable.java",
         "GlobalCss.java",
         "Keyframes.java",
+        "UtilityCss.java",
+        "UtilityCssLibrary.java",
+        "UtilityStyles.java",
         "package-info.java",
     ],
     visibility = [

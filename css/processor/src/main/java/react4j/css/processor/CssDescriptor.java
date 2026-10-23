@@ -28,6 +28,10 @@ record CssDescriptor(
                 accessors.stream()
                         .filter(a -> CssAccessor.Kind.ANIMATION == a.kind())
                         .map(CssAccessor::name)
+                        .collect(Collectors.toSet()),
+                accessors.stream()
+                        .filter(a -> !a.utilities().isEmpty())
+                        .map(CssAccessor::name)
                         .collect(Collectors.toSet()));
     }
 
