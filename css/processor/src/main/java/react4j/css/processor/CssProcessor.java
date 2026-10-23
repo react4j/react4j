@@ -37,7 +37,9 @@ import javax.tools.StandardLocation;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.ElementsUtil;
+import react4j.css.internal.AssetResource;
 import react4j.css.internal.CssFontValues;
+import react4j.css.internal.CssInput;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
@@ -67,6 +69,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
     private static final String CSS_ANNOTATION = "react4j.css.Css";
     private final Map<String, Set<String>> propertyNames = new HashMap<>();
     private final Map<String, Map<String, String>> utilityInventories = new HashMap<>();
+    private final Map<String, FileInput> fileInputs = new HashMap<>();
 
     @Override
     protected String getOptionPrefix() {
@@ -610,17 +613,24 @@ public final class CssProcessor extends AbstractStandardProcessor {
 
     private Map<String, String> inferUtilityClasses(TypeElement owner) {
         var library = Objects.requireNonNull(annotation(owner, "react4j.css.UtilityCssLibrary"));
-        var css = (String) value(library, "value").getValue();
-        new CssSyntax(css, 0).parse(CssSyntax.Mode.UTILITY);
+        var form = sourceForm(owner, Kind.UTILITY);
+        List<String> names;
+        if (form.file().isEmpty()) {
+            new CssSyntax(form.css(), 0).parse(CssSyntax.Mode.UTILITY);
+            names = CssTokens.read(form.css()).stream()
+                    .filter(token -> CssResource.SymbolKind.CLASS == token.kind())
+                    .map(CssTokens.Token::name)
+                    .distinct()
+                    .toList();
+        } else {
+            names = fileInput(owner, form.file()).classes();
+        }
         var classes = new LinkedHashMap<String, String>();
-        for (var token : CssTokens.read(css)) {
-            if (CssResource.SymbolKind.CLASS == token.kind()) {
-                if (token.name().isEmpty() || token.name().chars().anyMatch(Character::isWhitespace)) {
-                    throw new CssSyntax.InvalidCss(
-                            "Utility class names must be nonempty class-list tokens", token.start());
-                }
-                classes.put(token.name(), Names.root(binaryName(owner)) + "--class-" + Names.encode(token.name()));
+        for (var name : names) {
+            if (name.isEmpty() || name.chars().anyMatch(Character::isWhitespace)) {
+                throw new IllegalArgumentException("Utility class names must be nonempty class-list tokens");
             }
+            classes.put(name, Names.root(binaryName(owner)) + "--class-" + Names.encode(name));
         }
         var external = new LinkedHashSet<String>();
         for (var entry : (List<?>) value(library, "externalClasses").getValue()) {
@@ -659,13 +669,10 @@ public final class CssProcessor extends AbstractStandardProcessor {
         if (!visiting.add(key)) {
             throw new IllegalArgumentException("Cyclic custom property import without an owner: " + key);
         }
-        var css = annotation(owner, annotationName(sourceKind(owner)));
-        assert null != css;
         if (!propertyNames
                 .computeIfAbsent(
                         binaryName(owner),
-                        ignored ->
-                                CssProperties.names((String) value(css, "value").getValue(), sourceKind(owner)))
+                        ignored -> CssProperties.names(sourceValue(owner, sourceKind(owner)), sourceKind(owner)))
                 .contains(name)) {
             throw new IllegalArgumentException("Unknown custom property " + name + " in " + binaryName(owner));
         }
@@ -708,10 +715,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
             }
         }
         Kind kind = sourceKind(owner);
-        var css = annotation(owner, annotationName(kind));
-        assert null != css;
-        boolean occurs = CssIds.names((String) value(css, "value").getValue(), kind, Set.of(name))
-                .contains(name);
+        boolean occurs =
+                CssIds.names(sourceValue(owner, kind), kind, Set.of(name)).contains(name);
         for (var mirror : importMirrors(owner)) {
             var id = (String) value(mirror, "id").getValue();
             var alias = (String) value(mirror, "name").getValue();
@@ -744,9 +749,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
             throw new IllegalArgumentException("Cyclic font import without an owner: " + key);
         }
         Kind kind = sourceKind(owner);
-        var annotation = annotation(owner, annotationName(kind));
-        assert null != annotation;
-        if (CssFonts.names((String) value(annotation, "value").getValue(), kind).contains(name)) {
+        if (CssFonts.names(sourceValue(owner, kind), kind).contains(name)) {
             visiting.remove(key);
             return new CssFonts.Import(ownerName, name, stable(owner, CssResource.SymbolKind.FONT, name));
         }
@@ -1251,15 +1254,148 @@ public final class CssProcessor extends AbstractStandardProcessor {
                     imports.ids(),
                     new CssCompiler.Resources(imports.assets(), imports.fonts()));
         }
+        var input = input(owner, kind);
+        try {
+            if (Kind.UTILITY == kind) {
+                return CssCompiler.utility(input.css(), input.locations());
+            }
+            if (Kind.KEYFRAMES == kind) {
+                return CssCompiler.keyframes(
+                        input.css(),
+                        Names.root(binaryName(owner)),
+                        exports(descriptor),
+                        input.locations(),
+                        imports.properties(),
+                        imports.ids(),
+                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
+            }
+            if (Kind.GLOBAL == kind) {
+                return CssCompiler.global(
+                        input.css(),
+                        Names.root(binaryName(owner)),
+                        exports(descriptor),
+                        input.locations(),
+                        imports.named(),
+                        imports.properties(),
+                        imports.ids(),
+                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
+            }
+            assert null != descriptor;
+            return CssCompiler.component(
+                    input.css(),
+                    descriptor.rootClassName(),
+                    exports(descriptor),
+                    input.locations(),
+                    imports.named(),
+                    imports.properties(),
+                    imports.ids(),
+                    new CssCompiler.Resources(imports.assets(), imports.fonts()));
+        } catch (CssSyntax.InvalidCss e) {
+            var origin =
+                    input.locations().apply(Math.max(0, Math.min(input.css().length(), e.offset())));
+            String location = input.diagnosticPath() + ":" + (origin.line() + 1) + ":" + (origin.column() + 1);
+            processingEnv
+                    .getMessager()
+                    .printMessage(
+                            Diagnostic.Kind.ERROR,
+                            location + ": " + e.getMessage(),
+                            owner,
+                            input.annotation(),
+                            input.value());
+            return null;
+        }
+    }
+
+    private record SourceForm(String css, String file) {}
+
+    private SourceForm sourceForm(TypeElement owner, Kind kind) {
+        var mirror = Objects.requireNonNull(annotation(owner, annotationName(kind)));
+        var css = (String) value(mirror, "value").getValue();
+        if (Kind.GLOBAL != kind && Kind.UTILITY != kind) {
+            return new SourceForm(css, "");
+        }
+        var file = (String) value(mirror, "file").getValue();
+        boolean inline = mirror.getElementValues().keySet().stream()
+                .anyMatch(key -> key.getSimpleName().contentEquals("value"));
+        boolean fromFile = mirror.getElementValues().keySet().stream()
+                .anyMatch(key -> key.getSimpleName().contentEquals("file"));
+        if (inline == fromFile || fromFile && file.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "CSS definitions require exactly one literal text block or nonempty file");
+        }
+        if (fromFile) {
+            AssetResource.validatePath(file);
+        }
+        return new SourceForm(css, file);
+    }
+
+    private record FileInput(String path, String css, List<String> classes) {}
+
+    private FileInput fileInput(TypeElement owner, String file) {
+        String path = AssetResource.resolve(binaryName(owner), file);
+        return fileInputs.computeIfAbsent(path, ignored -> {
+            try {
+                String resource = CssInput.path(path);
+                String css;
+                String catalogue;
+                try (var input = processingEnv
+                        .getFiler()
+                        .getResource(StandardLocation.CLASS_PATH, "", resource)
+                        .openInputStream()) {
+                    css = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+                }
+                try (var input = processingEnv
+                        .getFiler()
+                        .getResource(StandardLocation.CLASS_PATH, "", resource + ".classes.json")
+                        .openInputStream()) {
+                    catalogue = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+                }
+                return new FileInput(path, css, CssInput.classes(path, css, catalogue));
+            } catch (IOException e) {
+                throw new IllegalArgumentException(
+                        "Missing declared CSS input or catalogue: " + path + ": " + e.getMessage(), e);
+            }
+        });
+    }
+
+    private String sourceValue(TypeElement owner, Kind kind) {
+        var form = sourceForm(owner, kind);
+        return form.file().isEmpty()
+                ? form.css()
+                : CssInput.normalize(fileInput(owner, form.file()).css());
+    }
+
+    private record Input(
+            String css,
+            IntFunction<SourceMap.Location> locations,
+            String diagnosticPath,
+            AnnotationMirror annotation,
+            AnnotationValue value) {}
+
+    private Input input(TypeElement owner, Kind kind) throws IOException {
+        var form = sourceForm(owner, kind);
+        var mirror = Objects.requireNonNull(annotation(owner, annotationName(kind)));
+        if (!form.file().isEmpty()) {
+            var file = fileInput(owner, form.file());
+            String css = CssInput.normalize(file.css());
+            int[] lines = new int[css.length() + 1];
+            int[] columns = new int[lines.length];
+            for (int i = 0; i < css.length(); i++) {
+                boolean newline = '\n' == css.charAt(i);
+                lines[i + 1] = lines[i] + (newline ? 1 : 0);
+                columns[i + 1] = newline ? 0 : columns[i] + 1;
+            }
+            return new Input(
+                    css,
+                    offset -> new SourceMap.Location(file.path(), file.css(), lines[offset], columns[offset]),
+                    file.path(),
+                    mirror,
+                    value(mirror, "file"));
+        }
         var trees = Trees.instance(processingEnv);
-        var annotation = owner.getAnnotationMirrors().stream()
-                .filter(a -> annotationName(kind).equals(a.getAnnotationType().toString()))
-                .findFirst()
-                .orElseThrow();
-        var value = value(annotation, "value");
-        var path = trees.getPath(owner);
-        var unit = path.getCompilationUnit();
-        var literal = trees.getTree(owner, annotation, value);
+        var value = value(mirror, "value");
+        var unit = trees.getPath(owner).getCompilationUnit();
+        var literal = trees.getTree(owner, mirror, value);
         if (!(literal instanceof LiteralTree text) || !(text.getValue() instanceof String css)) {
             throw new IllegalArgumentException("@" + annotationName(kind).substring("react4j.css.".length())
                     + " requires a literal Java text block; constants and concatenation are unsupported");
@@ -1268,66 +1404,26 @@ public final class CssProcessor extends AbstractStandardProcessor {
         var start = (int) trees.getSourcePositions().getStartPosition(unit, literal);
         var end = (int) trees.getSourcePositions().getEndPosition(unit, literal);
         var block = TextBlock.decode(source.substring(start, end), start, css);
-        String sourceName = processingEnv
+        String packageName = processingEnv
                 .getElementUtils()
                 .getPackageOf(owner)
                 .getQualifiedName()
                 .toString()
                 .replace('.', '/');
-        sourceName = (sourceName.isEmpty() ? "" : sourceName + "/")
+        String mappedSource = (packageName.isEmpty() ? "" : packageName + "/")
                 + Path.of(unit.getSourceFile().getName()).getFileName();
-        final String mappedSource = sourceName;
-        try {
-            IntFunction<SourceMap.Location> locations = offset -> {
-                int original = block.offsets()[Math.min(offset, block.value().length())];
-                long line = unit.getLineMap().getLineNumber(original);
-                return new SourceMap.Location(mappedSource, source, (int) line - 1, (int)
-                        (original - unit.getLineMap().getStartPosition(line)));
-            };
-            if (Kind.UTILITY == kind) {
-                return CssCompiler.utility(block.value(), locations);
-            }
-            if (Kind.KEYFRAMES == kind) {
-                return CssCompiler.keyframes(
-                        block.value(),
-                        Names.root(binaryName(owner)),
-                        exports(descriptor),
-                        locations,
-                        imports.properties(),
-                        imports.ids(),
-                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
-            }
-            if (Kind.GLOBAL == kind) {
-                return CssCompiler.global(
-                        block.value(),
-                        Names.root(binaryName(owner)),
-                        exports(descriptor),
-                        locations,
-                        imports.named(),
-                        imports.properties(),
-                        imports.ids(),
-                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
-            }
-            assert null != descriptor;
-            return CssCompiler.component(
-                    block.value(),
-                    descriptor.rootClassName(),
-                    exports(descriptor),
-                    locations,
-                    imports.named(),
-                    imports.properties(),
-                    imports.ids(),
-                    new CssCompiler.Resources(imports.assets(), imports.fonts()));
-        } catch (CssSyntax.InvalidCss e) {
-            int offset = block.offsets()[Math.max(0, Math.min(block.value().length(), e.offset()))];
-            String location =
-                    unit.getSourceFile().getName() + ":" + unit.getLineMap().getLineNumber(offset) + ":"
-                            + unit.getLineMap().getColumnNumber(offset);
-            processingEnv
-                    .getMessager()
-                    .printMessage(Diagnostic.Kind.ERROR, location + ": " + e.getMessage(), owner, annotation, value);
-            return null;
-        }
+        return new Input(
+                block.value(),
+                offset -> {
+                    int original =
+                            block.offsets()[Math.min(offset, block.value().length())];
+                    long line = unit.getLineMap().getLineNumber(original);
+                    return new SourceMap.Location(mappedSource, source, (int) line - 1, (int)
+                            (original - unit.getLineMap().getStartPosition(line)));
+                },
+                unit.getSourceFile().getName(),
+                mirror,
+                value);
     }
 
     private boolean isType(TypeMirror type, String name) {

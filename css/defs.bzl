@@ -3,8 +3,11 @@
 load("@j2cl//build_defs/internal_do_not_use:provider.bzl", "J2clInfo")
 load("@rules_closure//closure:defs.bzl", "CLOSURE_JS_TOOLCHAIN_ATTRS", "ClosureJsBinaryInfo", "closure_js_binary", "create_closure_js_library")
 load("//tools/web-assets:defs.bzl", "ASSET_TOOL_ATTRIBUTES", "prepare_file")
+load(":inputs.bzl", _css_sources = "css_sources")
 
 visibility(["//..."])
+
+css_sources = _css_sources
 
 _WebAssetsInfo = provider("Declared logical asset paths and their byte-independent catalogue.", fields = ["files", "manifest", "prepared"])
 

@@ -125,6 +125,33 @@ The processor infers the class inventory from selectors, including referenced gr
 
 Combine `@Css` with `@UtilityStyles` to add local declarations. A utility accessor can also have local rules, and it needs no dummy local selector. Ordinary local-only accessors retain their selector checks. Interfaces, effective annotation inheritance, helpers, factories, typed support accessors and peer-root imports follow the rules above. `@UtilityCss` metadata is replaced or removed by an overriding declaration's annotations.
 
+### File inputs
+
+`@UtilityCssLibrary(file = "utilities.css")` and `@GlobalCss(file = "defaults.css")` select one package-relative file instead of an inline block. Declare exactly one source form. Paths must be canonical and relative, without traversal, backslashes, query strings or fragments.
+
+Declare files beside their package sources with the public `css_sources` rule:
+
+```starlark
+load("@react4j//:defs.bzl", "css_sources")
+
+css_sources(
+    name = "style_inputs",
+    srcs = ["utilities.css", "defaults.css"],
+)
+```
+
+Add `:style_inputs` to a native J2CL library's dependencies and `:style_inputs_java` to the paired JVM library's dependencies. The rule infers the Java package from `src/main/java`, `src/test/java`, `src/main/css` or `src/test/css`. Every source is explicit; consumers inherit its resource jar through ordinary dependencies. It includes the source bytes and an automatically derived class catalogue available when provider header jars omit generated CSS resources. Authored CSS paths and contents remain in source maps.
+
+For standalone javac, package the same inputs with the processor jar's JVM tool, then add the resulting jar to the provider and consumer compilation classpaths:
+
+```sh
+java -cp css-processor.jar react4j.css.processor.CssInputJar \
+  style-inputs.jar demo/utilities.css path/to/utilities.css \
+  demo/defaults.css path/to/defaults.css
+```
+
+Each pair specifies the logical package-relative source path and the actual file. Keep this input jar alongside the provider artifact for downstream compilation. Java processing does not invoke a utility generator.
+
 ## Supported CSS
 
 Component styles support root declarations and nested selectors beginning with `&`, including attributes and same-element `:is`, `:not` and `:where`. Import another component to target its root in a checked descendant or sibling selector. `@media` and `@supports` blocks require explicit nested selectors. Apply one component's root to each styled element. When modifiers conflict, stylesheet order determines precedence, regardless of class-token order.

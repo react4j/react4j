@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: implementing
-- Current frontier: T03
+- Current frontier: T04
 - Planning reviewer: utility_planning_review (1/3 rounds; passed; final confirmation unused)
 - Plan checkpoint: automatic
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -21,8 +21,8 @@
 | --- | --- | --- | --- |
 | T01 | [Parse and trace modern supplied CSS](T01-modern-syntax.md) | complete | None |
 | T02 | [Bind inline utility styles through Java and linking](T02-inline-bindings.md) | complete | T01 |
-| T03 | [Compile explicit files and dependency catalogues](T03-file-catalogues.md) | in_progress | T02 |
-| T04 | [Activate checked globals with correct precedence](T04-global-inputs.md) | pending | T03 |
+| T03 | [Compile explicit files and dependency catalogues](T03-file-catalogues.md) | complete | T02 |
+| T04 | [Activate checked globals with correct precedence](T04-global-inputs.md) | in_progress | T03 |
 | T05 | [Retain and rename property support](T05-property-support.md) | pending | T04 |
 | T06 | [Retain animation and font variable dependencies](T06-animation-font-support.md) | pending | T05 |
 | T07 | [Preserve advanced selector and container behavior](T07-selectors-containers.md) | pending | T06 |

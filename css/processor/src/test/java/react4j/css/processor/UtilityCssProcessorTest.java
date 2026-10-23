@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -238,6 +239,79 @@ public final class UtilityCssProcessorTest {
                     List.of("-classpath", classpath));
             assertFalse(invalid.success());
             assertTrue(invalid.diagnostics().contains("Unknown managed utility class: missing"), invalid.diagnostics());
+        } finally {
+            CssProcessorTest.delete(directory);
+        }
+    }
+
+    private static Path inputs(Path directory, String logical, String css) throws Exception {
+        var source = directory.resolve("source.css");
+        var jar = directory.resolve("inputs.jar");
+        Files.writeString(source, css);
+        String classpath = Boolean.getBoolean("css.processor.implementation")
+                ? System.getProperty("java.class.path")
+                : CssProcessorTest.processorJar().toString();
+        var process = new ProcessBuilder(
+                        Path.of(System.getProperty("java.home"), "bin", "java").toString(),
+                        "-classpath",
+                        classpath,
+                        "react4j.css.processor.CssInputJar",
+                        jar.toString(),
+                        logical,
+                        source.toString())
+                .redirectErrorStream(true)
+                .start();
+        var output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        assertEquals(process.waitFor(), 0, output);
+        return jar;
+    }
+
+    @Test
+    public void explicitFilesSupplyUtilityCataloguesAndGlobalOrigins() throws Exception {
+        var directory = Files.createTempDirectory("css-file-input-");
+        String css = "/* 😀 */\r.flex { display:flex; }\r.p-2 { padding:8px; }\r";
+        try {
+            var jar = inputs(directory, "demo/nested-dir/utilities.css", css);
+            var options = List.of("-classpath", jar + File.pathSeparator + CssProcessorTest.applicationClasspath());
+            var result = CssProcessorTest.compile(
+                    Map.of(
+                            "Utilities.java",
+                            IMPORTS + "@UtilityCssLibrary(file=\"nested-dir/utilities.css\") class Utilities {}",
+                            "Defaults.java",
+                            IMPORTS + "@GlobalCss(file=\"nested-dir/utilities.css\") class Defaults {}",
+                            "Button.java",
+                            styles("", "@UtilityCss(\"flex p-2\") abstract String style();")),
+                    options,
+                    "demo.Button");
+            assertTrue(result.success(), result.diagnostics());
+            assertEquals(
+                    result.values().get("demo.Button.style"),
+                    "jcss-demo-Utilities--class-flex jcss-demo-Utilities--class-p_002d_2 jcss-demo-Button");
+            for (var owner : List.of("Utilities", "Defaults")) {
+                var map = JsonParser.parseString(text(result, "classes/demo/" + owner + ".css.map"))
+                        .getAsJsonObject();
+                assertEquals(map.getAsJsonArray("sources").get(0).getAsString(), "demo/nested-dir/utilities.css");
+                assertEquals(map.getAsJsonArray("sourcesContent").get(0).getAsString(), css);
+            }
+            for (var kind : List.of("UtilityCssLibrary", "GlobalCss")) {
+                for (var form : List.of(
+                        "",
+                        "(file=\"\")",
+                        "(file=\"../unsafe.css\")",
+                        "(file=\"/absolute.css\")",
+                        "(file=\"nested-dir//utilities.css\")",
+                        "(file=\"missing.css\")",
+                        "(value=\"\"\"\n.flex{}\n\"\"\",file=\"nested-dir/utilities.css\")")) {
+                    var invalid = CssProcessorTest.compile(
+                            Map.of("Utilities.java", IMPORTS + "@" + kind + form + " class Utilities {}"), options);
+                    assertFalse(invalid.success(), kind + form);
+                    assertTrue(
+                            invalid.diagnostics().contains("exactly one")
+                                    || invalid.diagnostics().contains("path")
+                                    || invalid.diagnostics().contains("Missing declared CSS input"),
+                            invalid.diagnostics());
+                }
+            }
         } finally {
             CssProcessorTest.delete(directory);
         }

@@ -160,6 +160,7 @@ test_suite(
         ":asset_font_tests",
         ":compiler_tests",
         ":ids_tests",
+        ":input_jar_tests",
         ":names_tests",
         ":peer_compiler_tests",
         ":properties_tests",
@@ -197,4 +198,11 @@ java_testng(
         "//third_party:gson",
         "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
     ],
+)
+
+java_testng(
+    name = "input_jar_tests",
+    srcs = ["CssInputJarTest.java"],
+    test_class = "react4j.css.processor.CssInputJarTest",
+    deps = ["//css/processor/src/main/java/react4j/css/processor"],
 )

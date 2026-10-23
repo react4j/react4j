@@ -62,9 +62,9 @@ public final class CssLivenessIntegrationTest {
         String css = input("optimized");
         String js = input("javascript");
         var values = List.of(
-                compiled("LivenessEntry$Utilities", "CLASS", "gap-2"),
-                compiled("LivenessEntry$Utilities", "CLASS", "flex"),
-                compiled("LivenessEntry$Utilities", "CLASS", "text-red"),
+                compiled("UtilityLibrary", "CLASS", "gap-2"),
+                compiled("UtilityLibrary", "CLASS", "flex"),
+                compiled("UtilityLibrary", "CLASS", "text-red"),
                 compiled("LivenessEntry$UtilityBindings", "CLASS", ""),
                 compiled("LivenessEntry$UtilityBindings", "CLASS", "active"));
         assertTrue(js.contains("\"" + String.join(" ", values) + "\""), js);

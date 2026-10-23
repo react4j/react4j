@@ -1,7 +1,8 @@
 load("@rules_closure//closure:defs.bzl", "closure_js_library")
-load("//css:defs.bzl", "css_bundle")
+load("//css:defs.bzl", "css_bundle", "css_sources")
 load("//third_party/java:rules.bzl", "java_testng")
 load("//tools/browser:java.bzl", "java_j2cl_library")
+load(":headers.bzl", "headers")
 
 package(default_visibility = [
     "//:__pkg__",
@@ -133,6 +134,7 @@ css_bundle(
 java_testng(
     name = "integration_tests",
     srcs = [
+        "CssInputIntegrationTest.java",
         "CssIntegrationTest.java",
         "CssLivenessIntegrationTest.java",
         "package-info.java",
@@ -144,12 +146,17 @@ java_testng(
         "SharedDefaults.java",
         "SharedPulse.java",
         "SymbolStyles.java",
+        "defaults.css",
+        "utilities.css",
         ":fixture.css",
         ":fixture.css.map",
         ":fixture_bindings.js",
         ":liveness_entry.js",
         ":selected.css",
         ":selected.css.map",
+        ":utility_dependency.js",
+        ":utility_headers",
+        ":utility_inputs_java",
         "//css/integration-tests/src/test/js/react4j/css/integration:alias.css",
         "//css/integration-tests/src/test/js/react4j/css/integration:development.css",
         "//css/integration-tests/src/test/js/react4j/css/integration:optimized.css",
@@ -157,8 +164,14 @@ java_testng(
         "//css/integration-tests/src/test/js/react4j/css/integration:optimized.css-live.json",
         "//css/integration-tests/src/test/js/react4j/css/integration:optimized.js",
         "//css/integration-tests/src/test/js/react4j/css/integration:optimized.js.map",
+        "//css/processor:processor_jar",
     ],
     jvm_flags = [
+        "-Dcss.input.headers=$(rootpath :utility_headers)",
+        "-Dcss.input.jar=$(rootpath :utility_inputs_java)",
+        "-Dcss.input.tree=$(rootpath :utility_dependency.js)",
+        "-Dcss.input.source=$(rootpath utilities.css)",
+        "-Dcss.input.processor=$(rootpath //css/processor:processor_jar)",
         "-Dcss.liveness.binding_tree=$(rootpath :liveness_entry.js)",
         "-Dcss.liveness.source=$(rootpath LivenessEntry.java)",
         "-Dcss.liveness.development=$(rootpath //css/integration-tests/src/test/js/react4j/css/integration:development.css)",
@@ -180,6 +193,7 @@ java_testng(
     test_classes = [
         "react4j.css.integration.CssIntegrationTest",
         "react4j.css.integration.CssLivenessIntegrationTest",
+        "react4j.css.integration.CssInputIntegrationTest",
     ],
     deps = [
         ":fixture_bindings_java",
@@ -191,6 +205,41 @@ java_testng(
     ],
 )
 
+css_sources(
+    name = "utility_inputs",
+    testonly = True,
+    srcs = [
+        "defaults.css",
+        "utilities.css",
+    ],
+)
+
+java_j2cl_library(
+    name = "utility_dependency",
+    testonly = True,
+    srcs = [
+        "FileDefaults.java",
+        "UtilityLibrary.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        ":utility_inputs_java",
+        "//css/core",
+    ],
+    plugins = ["//:css_processor"],
+    deps = [
+        ":utility_inputs",
+        "//:css",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+headers(
+    name = "utility_headers",
+    testonly = True,
+    dep = ":utility_dependency_java",
+)
+
 java_j2cl_library(
     name = "liveness_entry",
     testonly = True,
@@ -199,6 +248,7 @@ java_j2cl_library(
         "package-info.java",
     ],
     java_deps = [
+        ":utility_dependency_java",
         ":fixture_bindings_java",
         ":fixture_contracts_java",
         "//css/core",
@@ -208,6 +258,7 @@ java_j2cl_library(
     deps = [
         ":fixture_bindings",
         ":fixture_contracts",
+        ":utility_dependency",
         "//:css",
         "//third_party:jsinterop_annotations-j2cl",
         "//third_party:jspecify-j2cl",

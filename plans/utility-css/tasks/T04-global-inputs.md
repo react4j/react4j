@@ -1,6 +1,6 @@
 # T04 — Activate checked globals with correct precedence
 
-- Status: pending
+- Status: in_progress
 - Blocked by: T03
 - Spec coverage: R6 (cross-owner imports), R7, R8, R9 (global permissions); AC3 (boundary/reset), AC4 (precedence)
 

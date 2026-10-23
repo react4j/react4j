@@ -8,6 +8,7 @@ java_library(
         "CssConditions.java",
         "CssExpressions.java",
         "CssFontValues.java",
+        "CssInput.java",
         "CssLexical.java",
         "CssLink.java",
         "CssNames.java",

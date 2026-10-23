@@ -3,9 +3,9 @@ package react4j.css.integration;
 import jsinterop.annotations.JsMethod;
 import react4j.css.Css;
 import react4j.css.CssId;
+import react4j.css.CssImport;
 import react4j.css.GlobalCss;
 import react4j.css.UtilityCss;
-import react4j.css.UtilityCssLibrary;
 import react4j.css.UtilityStyles;
 
 public final class LivenessEntry {
@@ -30,15 +30,8 @@ public final class LivenessEntry {
         }
     }
 
-    @UtilityCssLibrary("""
-        .flex { display:flex; }
-        .gap-2 { gap:8px; }
-        .text-red { color:rgb(201, 21, 41); }
-        .never-selected { outline-width:37px; }
-        """)
-    static class Utilities {}
-
-    @UtilityStyles(Utilities.class)
+    @UtilityStyles(UtilityLibrary.class)
+    @CssImport(FileDefaults.class)
     abstract static class UtilityBindings implements UtilityStylesContract {
         abstract String style();
     }
