@@ -1,11 +1,11 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementation-review
-- Current frontier: follow-up implementation review
+- Status: closing
+- Current frontier: final cleanup and closeout commit
 - Planning reviewer: utility_planning_review (1/3 rounds; passed; final confirmation unused)
 - Plan checkpoint: automatic
-- Implementation reviewer: utility_implementation_review (2/5 rounds consumed; all findings fixed; follow-up pending; final confirmation unused)
+- Implementation reviewer: utility_implementation_review (3/5 rounds; passed; all findings fixed; final confirmation unused)
 - Scope source: confirmed utility CSS interview in this chat.
 - Execution authority: "Use structured-delivery-workflow and proceed"; full delivery authorized after interview confirmation, with no human plan checkpoint.
 - Active plan tree: plans/utility-css. This exact path is the only plan-edit/commit/deletion target for this invocation.
@@ -59,3 +59,7 @@
 - Implementation attempt 2: the same independent read-only reviewer is checking 58869334c..5d48c6006, both prior findings/dispositions, affected surfaces, updated canonical knowledge and fresh full-gate evidence. Attempt completed with one P2 follow-up: managed transition targets in static variable definitions still bypassed direct/fallback rewriting. Both original findings are fixed. The follow-up is accepted for an authored diagnostic at the shared property seam, with literal external target names preserved. 2 normal attempts consumed; 3 normal attempts remain; final confirmation unused.
 
 - Attempt 2 fix: shared property analysis follows static transition target definitions, aliases and cycles. Managed target values in those definitions fail at their authored locations before any ordinary-data rewrite; direct/fallback targets remain supported. External target values enter name reservations and remain literal. Component/global/utility tests and token/map paths share the same analysis. Focused internal, property and utility processor targets passed. Fresh tools/check.sh passed on 2026-10-23: all 50 normal, 15 optimized browser and 23 instrumented JVM targets, all 612 packaged processor methods, unchanged coverage thresholds, site checks and local unsigned packaging. Documentation links and specification-only/diff audit passed. No scope or significant-decision changes.
+
+- Implementation attempt 3: utility_implementation_review returned "Findings: none" at 6c84656e1. Checked the prior reproduction, aliases, cycles, registration initial values, external targets, direct/fallback rewriting, shared component/global/utility paths, token reservations, tests and documentation. Packaged-compiler probes passed. The reviewer inspected the primary-run full gate (50 normal, 15 optimized browser and 23 instrumented JVM targets), rather than independently rerunning it. No reviewer edits. 3 normal attempts consumed; 2 normal attempts remain; final confirmation unused.
+
+- Final closeout audit: every T01–T08 task is complete, task-local checks and the final full gate passed, and implementation review passed. Existing promoted contracts cover all accepted conclusions; the review fixes add no new architectural decision or deferred question. Reader boundaries for transition carriers and constrained registrations are documented. Domain-link validation, specification-only/diff audit, inbound-plan-reference audit and secrets diff passed. Plan checkpoint 32e4576f8 and implementation/fix commits through 6c84656e1 exist locally. Only this exact plan tree and task-created temporary logs remain for removal; no push, publication, release or Rose migration.
