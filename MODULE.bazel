@@ -35,12 +35,11 @@ git_override(
     remote = "https://github.com/sting-ioc/sting.git",
 )
 
-bazel_dep(name = "rules_java", version = "9.9.0")
-single_version_override(
+bazel_dep(name = "rules_java")
+git_override(
     module_name = "rules_java",
-    patch_strip = 1,
-    patches = ["//third_party/bazel/patches:rules_java_exclude_build_data.patch"],
-    version = "9.9.0",
+    commit = "8f847aa0ea2221ede4625696551d62c42627cb3d",
+    remote = "https://github.com/bazelbuild/rules_java.git",
 )
 
 bazel_dep(name = "buildifier_prebuilt", version = "10.0.1", dev_dependency = True)
