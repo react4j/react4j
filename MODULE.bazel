@@ -35,7 +35,7 @@ git_override(
     remote = "https://github.com/sting-ioc/sting.git",
 )
 
-bazel_dep(name = "rules_java")
+bazel_dep(name = "rules_java", version = "9.9.0")
 git_override(
     module_name = "rules_java",
     commit = "8f847aa0ea2221ede4625696551d62c42627cb3d",
