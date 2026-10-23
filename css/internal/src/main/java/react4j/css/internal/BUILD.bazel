@@ -5,8 +5,10 @@ java_library(
     srcs = [
         "AssetResource.java",
         "CssCatalogue.java",
+        "CssConditions.java",
         "CssExpressions.java",
         "CssFontValues.java",
+        "CssLexical.java",
         "CssLink.java",
         "CssNames.java",
         "CssRenamer.java",
@@ -33,6 +35,6 @@ java_library(
     ],
     deps = [
         "//third_party:gson",
-        "//third_party/java:ph_css",
+        "//third_party:ph_css",
     ],
 )

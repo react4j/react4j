@@ -162,6 +162,11 @@ alias(
 )
 
 alias(
+    name = "ph_css",
+    actual = "//third_party/css-parser:parser",
+)
+
+alias(
     name = "proton_qa",
     actual = "@proton//:qa",
 )

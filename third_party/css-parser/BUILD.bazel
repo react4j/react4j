@@ -1,0 +1,6 @@
+load(":parser.bzl", "css_parser")
+
+css_parser(
+    name = "parser",
+    visibility = ["//third_party:__pkg__"],
+)

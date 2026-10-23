@@ -4,7 +4,15 @@
 
 ### CSS symbol
 
-A managed class, ID, animation, custom-property or font-family name owned by a CSS definition. One checked accessor value can contain several CSS symbols, such as a component root and modifier.
+A managed class, ID, animation, custom-property, font-family or container name owned by a CSS definition. One checked accessor value can contain several CSS symbols, such as a component root and modifier.
+
+### Utility CSS library
+
+A finite stylesheet definition supplying managed classes and other [CSS symbol](#css-symbol) definitions to checked Java style declarations.
+
+### Utility style
+
+A Java style definition selecting class lists from one [Utility CSS library](#utility-css-library), while owning its own component identity markers.
 
 ### Stable CSS symbol
 

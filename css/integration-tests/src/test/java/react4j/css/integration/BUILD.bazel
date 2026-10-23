@@ -187,7 +187,7 @@ java_testng(
         ":fixture_dependency_java",
         "//third_party:closure_compiler_unshaded",
         "//third_party:gson",
-        "//third_party/java:ph_css",
+        "//third_party:ph_css",
     ],
 )
 

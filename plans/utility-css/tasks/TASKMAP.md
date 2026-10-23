@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: planned
-- Current frontier: T01
+- Status: implementing
+- Current frontier: T02
 - Planning reviewer: utility_planning_review (1/3 rounds; passed; final confirmation unused)
 - Plan checkpoint: automatic
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -19,8 +19,8 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Parse and trace modern supplied CSS](T01-modern-syntax.md) | pending | None |
-| T02 | [Bind inline utility styles through Java and linking](T02-inline-bindings.md) | pending | T01 |
+| T01 | [Parse and trace modern supplied CSS](T01-modern-syntax.md) | complete | None |
+| T02 | [Bind inline utility styles through Java and linking](T02-inline-bindings.md) | in_progress | T01 |
 | T03 | [Compile explicit files and dependency catalogues](T03-file-catalogues.md) | pending | T02 |
 | T04 | [Activate checked globals with correct precedence](T04-global-inputs.md) | pending | T03 |
 | T05 | [Retain and rename property support](T05-property-support.md) | pending | T04 |
@@ -44,5 +44,5 @@
 
 ## Promoted knowledge
 
-- Pending T01: classify accepted obligations into utility-input, bindings, names, liveness and source-map specifications; update glossary for utility/container ownership and record finite-provider ADR rationale. Read relevant history and audit specification-only diff.
+- T01 promotion: [utility input](../../../docs/specs/utility-css.md), [bindings](../../../docs/specs/css-bindings.md), [names](../../../docs/specs/css-names.md), [liveness](../../../docs/specs/css-liveness.md), [source maps](../../../docs/specs/css-source-maps.md), [glossary](../../../docs/glossary/README.md) and [finite-provider ADR](../../../docs/adr/0004-consume-finite-utility-libraries.md). Classification/history and specification-only audit recorded in T01; documentation link validation passed.
 - Reader commands and API examples remain in css/README.md; changelog owns release-facing behavior. Task T08 verifies these owners before closeout.

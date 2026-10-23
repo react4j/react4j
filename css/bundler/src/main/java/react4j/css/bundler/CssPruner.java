@@ -5,23 +5,26 @@ import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.AbstractHasTopLevelRules;
 import com.helger.css.decl.CSSFontFaceRule;
 import com.helger.css.decl.CSSKeyframesRule;
+import com.helger.css.decl.CSSLayerRule;
+import com.helger.css.decl.CSSPropertyRule;
 import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorMemberPseudoIs;
 import com.helger.css.decl.CSSSelectorMemberPseudoWhere;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
+import com.helger.css.decl.CSSUnknownRule;
 import com.helger.css.decl.CascadingStyleSheet;
-import com.helger.css.reader.CSSReader;
-import com.helger.css.reader.CSSReaderSettings;
-import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
+import com.helger.css.decl.visit.CSSVisitor;
+import com.helger.css.decl.visit.DefaultCSSVisitor;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import react4j.css.internal.CssCatalogue.Resource;
 import react4j.css.internal.CssFontValues;
+import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
 /** Proves impossible selectors and copies surviving bytes with their original mappings. */
@@ -37,9 +40,7 @@ final class CssPruner {
         this.resource = resource;
         this.known = known;
         this.present = present;
-        sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
-                resource.css(),
-                new CSSReaderSettings().setTabSize(1).setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+        sheet = new CssSyntax(resource.css(), 0).parse(CssSyntax.Mode.PROCESSED);
         lines.add(0);
         for (int i = 0; i < resource.css().length(); i++) {
             if ('\n' == resource.css().charAt(i)) {
@@ -49,9 +50,14 @@ final class CssPruner {
     }
 
     Set<String> animations() {
-        return sheet.getAllKeyframesRules().stream()
-                .map(CSSKeyframesRule::getAnimationName)
-                .collect(Collectors.toSet());
+        var names = new HashSet<String>();
+        CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
+            @Override
+            public void onBeginKeyframesRule(CSSKeyframesRule frames) {
+                names.add(frames.getAnimationName());
+            }
+        });
+        return Set.copyOf(names);
     }
 
     Resource prune(Set<String> animations, Set<String> fonts) {
@@ -99,8 +105,16 @@ final class CssPruner {
                     remove(face);
                     continue;
                 }
+            } else if (rule instanceof CSSUnknownRule conditional) {
+                var parsed = Objects.requireNonNull(conditional.getParsedRules());
+                if (!rules(parsed.getAllRules(), animations, fonts)) {
+                    remove(conditional);
+                    continue;
+                }
+            } else if (rule instanceof CSSPropertyRule) {
+                // Registration retention is refined with property liveness; never discard it as an empty group.
             } else if (rule instanceof AbstractHasTopLevelRules nested) {
-                if (!rules(nested.getAllRules(), animations, fonts)) {
+                if (!rules(nested.getAllRules(), animations, fonts) && !(rule instanceof CSSLayerRule)) {
                     remove((ICSSSourceLocationAware) rule);
                     continue;
                 }

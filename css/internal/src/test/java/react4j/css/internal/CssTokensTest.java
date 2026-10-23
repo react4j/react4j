@@ -10,6 +10,23 @@ import react4j.css.internal.CssResource.SymbolKind;
 
 public final class CssTokensTest {
     @Test
+    public void conditionalPropertyNamesRemainDistinctFromContainerNamesAndLiteralValues() {
+        String css = "@container --panel style(--mode:--literal) and style(--other:var(--source,--fallback))"
+                + " and style((--enabled) or (--state:foo(--data))){.x{color:red;}}";
+        assertEquals(
+                values(CssTokens.read(css), SymbolKind.PROPERTY),
+                Set.of("--mode", "--other", "--source", "--enabled", "--state"));
+        assertEquals(values(CssTokens.read(css), SymbolKind.CLASS), Set.of("x"));
+        for (var wrapper : List.of("@container panel (width>10px){%s}", "@starting-style{%s}")) {
+            String source = wrapper.formatted(".x{background:url('asset:media.icon');}");
+            var edits = CssUrls.edits(source, value -> "asset:media.icon".equals(value) ? "/icon.svg" : value);
+            assertEquals(edits.size(), 1);
+            assertEquals(source.substring(edits.get(0).start(), edits.get(0).end()), "url('asset:media.icon')");
+            assertTrue(edits.get(0).value().contains("/icon.svg"));
+        }
+    }
+
+    @Test
     public void escapedGrammarNamesStillExposeActualSymbolReferences() {
         String css = "body{anima\\74 ion-name:c;anima\\74 ion:d 1s;color:v\\61 r(--e);--\\66 :red;\\2d \\2d g:blue;}";
         var tokens = CssTokens.read(css);

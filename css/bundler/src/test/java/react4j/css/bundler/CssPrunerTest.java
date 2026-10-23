@@ -13,6 +13,33 @@ import react4j.css.internal.CssResource;
 import react4j.css.internal.SourceMap;
 
 public final class CssPrunerTest {
+    @Test
+    public void modernConditionsPruneTheirParsedBodiesWithoutDroppingLayerOrderOrRegistrations() {
+        for (var wrapper : List.of(
+                "@container panel (width>10px){%s}",
+                "@starting-style{%s}",
+                "@supports (display:grid){@container style(--density:compact){@starting-style{%s}}}")) {
+            String css = wrapper.formatted(".dead{opacity:0;}.root{opacity:1;}");
+            var actual = prune(resource(new SourceMap.Writer().append(css)), Set.of(".dead", ".root"), Set.of(".root"));
+            assertEquals(actual.css(), wrapper.formatted(".root{opacity:1;}"));
+            assertEquals(
+                    prune(
+                                    resource(new SourceMap.Writer().append(wrapper.formatted(".dead{opacity:0;}"))),
+                                    Set.of(".dead"),
+                                    Set.of())
+                            .css(),
+                    "");
+        }
+        String support = "@layer first,second;@property --x{syntax:\"*\";inherits:false;}";
+        assertEquals(
+                prune(resource(new SourceMap.Writer().append(support)), Set.of(), Set.of())
+                        .css(),
+                support);
+        var frames = resource(new SourceMap.Writer()
+                .append("@layer utilities{@container panel (width>10px){@keyframes spin{to{opacity:0;}}}}"));
+        assertEquals(new CssPruner(frames, Set.of(), Set.of()).animations(), Set.of("spin"));
+    }
+
     private static Resource resource(SourceMap.Writer writer) {
         return new Resource(
                 new CssResource(

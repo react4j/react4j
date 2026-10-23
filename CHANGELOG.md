@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Preserve valid empty CSS variable fallbacks and parsed container/starting-style bodies during CSS name discovery and pruning. Permit standard important declarations in explicit global/shared inputs while retaining the prohibition in component and utility definitions.
 * Simplify release validation by removing standalone artifact checks, isolated consumer compilation tests, and the separate reproducibility build.
 * Remove the downstream Bazel configuration exporter and external consumer check; applications own their dependency configuration.
 * Expose the existing patched React and ReactDOM runtime scripts through `@react4j//third_party:react_runtime_assets` for downstream deployment packaging.

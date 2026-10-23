@@ -6,6 +6,7 @@ import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSExpressionMemberTermURI;
 import com.helger.css.decl.CSSKeyframesRule;
+import com.helger.css.decl.CSSPropertyRule;
 import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorAttribute;
 import com.helger.css.decl.CSSSelectorMemberFunctionLike;
@@ -18,14 +19,13 @@ import com.helger.css.decl.CSSSelectorMemberPseudoWhere;
 import com.helger.css.decl.CSSSelectorMemberSlotted;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSSupportsRule;
+import com.helger.css.decl.CSSUnknownRule;
 import com.helger.css.decl.ECSSAttributeCase;
 import com.helger.css.decl.ECSSAttributeOperator;
 import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.parser.CSSParseHelper;
-import com.helger.css.reader.CSSReader;
-import com.helger.css.reader.CSSReaderSettings;
-import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
+import com.helger.css.parser.ParserCSS30Constants;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -155,8 +155,7 @@ public final class CssTokens {
         var attributes = new ArrayList<Attribute>();
         var tokens = new ArrayList<Token>();
         var syntax = new CssSyntax(css, 0);
-        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
-                css, new CSSReaderSettings().setTabSize(1).setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+        var sheet = syntax.parse(CssSyntax.Mode.PROCESSED);
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
             private int start(ICSSSourceLocationAware node) {
                 var location = Objects.requireNonNull(node.getSourceLocation());
@@ -302,6 +301,31 @@ public final class CssTokens {
             @Override
             public void onBeginSupportsRule(CSSSupportsRule rule) {
                 CssExpressions.supports(rule.getAllSupportConditionMembers(), this::onDeclaration);
+            }
+
+            @Override
+            public void onBeginPropertyRule(CSSPropertyRule rule) {
+                var location = Objects.requireNonNull(rule.getSourceLocation());
+                int end =
+                        syntax.offset(location.getLastTokenEndLineNumber(), location.getLastTokenEndColumnNumber()) + 1;
+                for (var identifier : CssLexical.tokens(css, start(rule), end)) {
+                    if ((ParserCSS30Constants.IDENT == identifier.kind()
+                                    || ParserCSS30Constants.DASHED_IDENT == identifier.kind())
+                            && identifier.name().startsWith("--")) {
+                        token(SymbolKind.PROPERTY, identifier.start(), identifier.value());
+                        return;
+                    }
+                }
+                throw syntax.invalid("Property registration requires an identifier", rule);
+            }
+
+            @Override
+            public void onUnknownRule(CSSUnknownRule rule) {
+                for (var reference : CssConditions.read(css, rule).references()) {
+                    if (reference.property()) {
+                        token(SymbolKind.PROPERTY, reference.start(), reference.value());
+                    }
+                }
             }
 
             @Override

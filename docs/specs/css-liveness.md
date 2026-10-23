@@ -15,6 +15,8 @@ Reduce generated CSS for a [Complete link](../glossary/README.md#complete-link) 
 7. A [Liveness report](../glossary/README.md#liveness-report) can serve multiple [CSS variant](../glossary/README.md#css-variant) bundles. Each variant applies its own explicit global roots and shared CSS without changing the JavaScript link's liveness evidence.
 8. A Liveness report must match the actual linked JavaScript, style definitions, compression policy and [CSS name table](../glossary/README.md#css-name-table). Missing, malformed or mismatched evidence fails the build before a bundle is emitted; it must not be interpreted as an empty live set or as an unlinked library.
 9. Generated names used by a Complete link originate from checked accessors compiled within that link. Constructing or hardcoding generated names outside those accessors is unsupported for pruning.
+10. A live [Utility style](../glossary/README.md#utility-style) accessor activates its required library and establishes possible presence for its declared managed classes and local identity markers. The library's entire managed class inventory participates in absence proofs, including classes never exposed by a Java accessor. External class names are not proven absent through managed accessor analysis.
+11. Retained utility rules keep the property registrations, static variable chains, animations, fonts and files they require. Dependencies used only by removed rules may disappear. A container query reference alone neither establishes the presence of its ancestor container nor retains a utility that would establish it.
 
 ## Architectural basis
 

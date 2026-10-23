@@ -541,7 +541,6 @@ public final class CssResourceProcessorTest {
             });
         }
         for (var css : List.of(
-                "body { color: red !important; }",
                 "@keyframes pulse { to { opacity:0; } }",
                 "@import 'external.css';",
                 "@font-face { font-family: font; src: url(font.woff); }",

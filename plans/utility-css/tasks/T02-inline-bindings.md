@@ -1,6 +1,6 @@
 # T02 — Bind inline utility styles through Java and linking
 
-- Status: pending
+- Status: in_progress
 - Blocked by: T01
 - Spec coverage: R2, R3, R4, R5 (class ownership), R6 (class exclusions), R7, R11 (basic), AC1 (inline), AC2
 

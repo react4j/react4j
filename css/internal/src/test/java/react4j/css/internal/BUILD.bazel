@@ -38,6 +38,6 @@ java_testng(
         "//css/internal/src/main/java/react4j/css/internal",
         "//third_party:closure_compiler_unshaded",
         "//third_party:gson",
-        "//third_party/java:ph_css",
+        "//third_party:ph_css",
     ],
 )

@@ -234,19 +234,22 @@ public final class BundleTest {
     }
 
     @Test
-    public void sharedRulesCannotOverrideTheLayerContract() throws Exception {
+    public void sharedInputsAcceptExplicitGlobalLayersAndImportantButRejectUnsupportedRules() throws Exception {
         Path shared = dir().resolve("bad.css");
-        for (var css : List.of(
-                "button { color: red !important; }",
-                "@import 'missing.css';",
-                "@layer components { body { color: red; } }",
-                "button { color red; }")) {
+        for (var css :
+                List.of("@import 'missing.css';", "@scope (.root) { body { color: red; } }", "button { color red; }")) {
             Files.writeString(shared, css);
             var error = expectThrows(
                     IllegalArgumentException.class,
                     () -> Bundle.assemble(List.of(), List.of(shared), List.of(), "app.css"));
             assertTrue(String.valueOf(error.getMessage()).startsWith(shared.toString()), error.getMessage());
         }
+        String globals = "@layer defaults { button { color:red!important; } }";
+        Files.writeString(shared, globals);
+        assertEquals(
+                Bundle.assemble(List.of(), List.of(shared), List.of(), "app.css")
+                        .css(),
+                "@layer shared,components;\n@layer shared{\n" + globals + "\n}\n");
     }
 
     @Test
