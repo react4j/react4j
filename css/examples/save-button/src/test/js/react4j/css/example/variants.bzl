@@ -27,8 +27,8 @@ def naming_variant(name, defs):
         ],
     )
     for style_name, output, globals in [
-        ("styles", "styles", ["react4j.css.example.BrowserExample$Theme", "react4j.css.example.BrowserExample$Defaults"]),
-        ("alternate_styles", "alternate", ["react4j.css.example.BrowserExample$AlternateTheme", "react4j.css.example.BrowserExample$Defaults"]),
+        ("styles", "styles", ["react4j.css.example.BrowserExample$Theme", "react4j.css.example.BrowserExample$Defaults", "react4j.css.example.BrowserExample$UtilityReset"]),
+        ("alternate_styles", "alternate", ["react4j.css.example.BrowserExample$AlternateTheme", "react4j.css.example.BrowserExample$Defaults", "react4j.css.example.BrowserExample$UtilityReset"]),
         ("component_styles", "component", []),
     ]:
         css_bundle(

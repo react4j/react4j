@@ -4,11 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.HexFormat;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -201,7 +203,7 @@ final class Bundle {
         if (null != renamer) {
             ordered = new ArrayList<>(ordered.stream().map(renamer::rename).toList());
         }
-        var writer = new StringBuilder("@layer shared,components;\n");
+        var writer = new StringBuilder("@layer shared,utilities,components;\n");
         var sections = new JsonArray();
         int line = 1;
         boolean sharedOpen = false;
@@ -255,9 +257,34 @@ final class Bundle {
             writer.append("}\n");
             line++;
         }
+        boolean utilitiesOpen = false;
+        for (var definition : ordered) {
+            if (Kind.UTILITY != definition.metadata().kind() || definition.css().isEmpty()) {
+                continue;
+            }
+            if (!utilitiesOpen) {
+                writer.append("@layer utilities{\n");
+                line++;
+                utilitiesOpen = true;
+            }
+            String identity = "lib"
+                    + HexFormat.of().formatHex(definition.metadata().owner().getBytes(StandardCharsets.UTF_8));
+            writer.append("@layer ").append(identity).append("{\n");
+            line++;
+            sections.add(section(line, definition.map()));
+            writer.append(definition.css()).append('\n');
+            line += (int) definition.css().chars().filter(c -> '\n' == c).count() + 1;
+            writer.append("}\n");
+            line++;
+        }
+        if (utilitiesOpen) {
+            writer.append("}\n");
+            line++;
+        }
         boolean componentsOpen = false;
         for (var definition : ordered) {
-            if (Kind.GLOBAL == definition.metadata().kind()) {
+            if (Kind.GLOBAL == definition.metadata().kind()
+                    || Kind.UTILITY == definition.metadata().kind()) {
                 continue;
             }
             String css = definition.css();

@@ -1,6 +1,6 @@
 # T05 — Retain and rename property support
 
-- Status: pending
+- Status: in_progress
 - Blocked by: T04
 - Spec coverage: R5 (properties), R6 (external properties), R9 (registration/conditions), R11 (property dependencies); AC3 (properties), AC6 (property chain)
 

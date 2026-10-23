@@ -1,5 +1,6 @@
 package react4j.css.processor;
 
+import com.google.gson.JsonParser;
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.AbstractHasTopLevelRules;
 import com.helger.css.decl.CSSDeclaration;
@@ -7,8 +8,10 @@ import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSFontFaceRule;
 import com.helger.css.decl.CSSKeyframesRule;
+import com.helger.css.decl.CSSLayerRule;
 import com.helger.css.decl.CSSMediaRule;
 import com.helger.css.decl.CSSNestedDeclarations;
+import com.helger.css.decl.CSSPropertyRule;
 import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorAttribute;
 import com.helger.css.decl.CSSSelectorMemberFunctionLike;
@@ -22,10 +25,13 @@ import com.helger.css.decl.CSSSelectorMemberSlotted;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CSSSupportsRule;
+import com.helger.css.decl.CSSUnknownRule;
 import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.ECSSExpressionOperator;
 import com.helger.css.decl.ECSSSelectorCombinator;
 import com.helger.css.writer.CSSWriterSettings;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -36,8 +42,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
+import react4j.css.internal.CssResource;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
+import react4j.css.internal.CssTokens;
 import react4j.css.internal.CssUrls;
 import react4j.css.internal.SourceMap;
 
@@ -86,13 +94,57 @@ final class CssCompiler {
         }
     }
 
-    static Result utility(String css, IntFunction<SourceMap.Location> locations) {
-        new CssSyntax(css, 0).parse(CssSyntax.Mode.UTILITY);
+    static Result utility(
+            String css,
+            String root,
+            Exports exports,
+            IntFunction<SourceMap.Location> locations,
+            Set<String> managed,
+            Map<String, CssProperties.Import> properties,
+            Map<String, CssIds.Import> ids,
+            Resources resources) {
+        var compiler = new CssCompiler(css, 0, root, exports, locations, Map.of());
+        var sheet = compiler.syntax.parse(CssSyntax.Mode.UTILITY);
+        UtilitySelectors.check(sheet, compiler.syntax, managed);
+        compiler.properties(sheet, properties);
+        compiler.ids(sheet, ids, true);
         var output = new SourceMap.Writer();
         for (int i = 0; i < css.length(); i++) {
             output.append(css.substring(i, i + 1), locations.apply(i));
         }
-        return new Result(output, Set.of(), Map.of(), Set.of(), Map.of(), Map.of(), Map.of());
+        var edits = new ArrayList<SourceMap.Edit>();
+        for (var token : CssTokens.read(css)) {
+            String replacement = CssResource.SymbolKind.PROPERTY == token.kind()
+                    ? compiler.properties.get(token.name().substring(2))
+                    : CssResource.SymbolKind.ID == token.kind() ? compiler.ids.get(token.name()) : null;
+            if (null != replacement && !replacement.equals(token.value())) {
+                edits.add(new SourceMap.Edit(token.start(), token.end(), replacement));
+            }
+        }
+        edits.addAll(CssUrls.edits(
+                css,
+                value -> CssUrls.checked(value, (name, suffix) -> {
+                    String asset = resources.assets().get(name);
+                    if (null == asset) {
+                        throw new IllegalArgumentException("Unknown CSS asset import or accessor: " + name);
+                    }
+                    return "asset:" + asset + suffix;
+                })));
+        edits.sort(Comparator.comparingInt(SourceMap.Edit::start));
+        var rewritten = edits.isEmpty()
+                ? output
+                : SourceMap.replace(
+                        css,
+                        JsonParser.parseString(output.map("intermediate.css")).getAsJsonObject(),
+                        edits);
+        return new Result(
+                rewritten,
+                Set.of(),
+                Map.copyOf(compiler.properties),
+                Set.copyOf(compiler.usedProperties),
+                compiler.ids,
+                Map.of(),
+                Map.of());
     }
 
     record Result(
@@ -277,6 +329,31 @@ final class CssCompiler {
             globalConditional(media);
         } else if (rule instanceof CSSSupportsRule supports) {
             globalConditional(supports);
+        } else if (rule instanceof CSSLayerRule layer) {
+            boolean block = layer.hasRules() || !layer.hasSelectors();
+            output.append(
+                    "@layer" + (layer.hasSelectors() ? " " + String.join(",", layer.getAllSelectors()) : "")
+                            + (block ? "{" : ";"),
+                    location(layer));
+            if (block) {
+                for (var child : layer.getAllRules()) {
+                    globalRule((ICSSSourceLocationAware) child);
+                }
+                output.append("}");
+            }
+        } else if (rule instanceof CSSPropertyRule property) {
+            output.append(property.getAsCSSString(compact, 0), location(property));
+        } else if (rule instanceof CSSUnknownRule conditional) {
+            output.append(
+                    conditional.getDeclaration()
+                            + (null == conditional.getParameterList() ? "" : " " + conditional.getParameterList())
+                            + "{",
+                    location(conditional));
+            for (var child :
+                    Objects.requireNonNull(conditional.getParsedRules()).getAllRules()) {
+                globalRule((ICSSSourceLocationAware) child);
+            }
+            output.append("}");
         } else {
             throw syntax.invalid("Unsupported global rule", rule);
         }

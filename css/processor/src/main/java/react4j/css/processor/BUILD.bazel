@@ -17,6 +17,7 @@ java_library(
         "CssSymbols.java",
         "Names.java",
         "TextBlock.java",
+        "UtilitySelectors.java",
         "package-info.java",
     ],
     resource_strip_prefix = "css/processor/src/main/resources",

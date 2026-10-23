@@ -651,6 +651,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 || !(processingEnv.getTypeUtils().asElement(type) instanceof TypeElement element)
                 || ElementKind.CLASS != element.getKind()
                 || (null == annotation(element, CSS_ANNOTATION)
+                        && null == annotation(element, "react4j.css.UtilityCssLibrary")
                         && null == annotation(element, "react4j.css.UtilityStyles")
                         && null == annotation(element, "react4j.css.GlobalCss")
                         && null == annotation(element, "react4j.css.Keyframes")
@@ -827,6 +828,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 if (null != properties.putIfAbsent(local, new CssProperties.Import(name, binding))) {
                     throw new IllegalArgumentException("Duplicate imported custom property: " + local);
                 }
+            } else if (Kind.UTILITY == targetKind) {
+                throw new IllegalArgumentException(
+                        "Utility libraries require @UtilityStyles or a checked symbol import");
             } else if (Kind.KEYFRAMES == kind) {
                 throw new IllegalArgumentException(
                         "@CssImport is only supported on stylesheet definitions unless importing a property or ID");
@@ -1257,7 +1261,15 @@ public final class CssProcessor extends AbstractStandardProcessor {
         var input = input(owner, kind);
         try {
             if (Kind.UTILITY == kind) {
-                return CssCompiler.utility(input.css(), input.locations());
+                return CssCompiler.utility(
+                        input.css(),
+                        Names.root(binaryName(owner)),
+                        exports(descriptor),
+                        input.locations(),
+                        utilityClasses(owner).keySet(),
+                        imports.properties(),
+                        imports.ids(),
+                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
             }
             if (Kind.KEYFRAMES == kind) {
                 return CssCompiler.keyframes(

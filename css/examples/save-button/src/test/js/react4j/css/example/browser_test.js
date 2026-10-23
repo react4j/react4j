@@ -12,6 +12,7 @@ testSuite({
   setUp() { test = new Test('production' === Mode.environment, variant); return test.setUp(); },
   tearDown() { test.tearDown(); },
   testPackagedAssetsAtAnApplicationMountAndNestedRoute() { return test.testPackagedAssetsAtAnApplicationMountAndNestedRoute(); },
+  testUtilitiesKeepLibraryOrderAndExplicitGlobalPrecedence() { return test.testUtilitiesKeepLibraryOrderAndExplicitGlobalPrecedence(); },
   testClassNamingPolicy() { return test.testClassNamingPolicy(); },
   testGeneratedBindingsAreSingletons() { return test.testGeneratedBindingsAreSingletons(); },
   testInliningKeepsModifierAndRootWhileDeadValuesLoseTheirCss() { return test.testInliningKeepsModifierAndRootWhileDeadValuesLoseTheirCss(); },

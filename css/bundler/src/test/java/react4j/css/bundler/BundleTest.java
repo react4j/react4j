@@ -168,7 +168,7 @@ public final class BundleTest {
                 result.css(), new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
         var layers = sheet.getAllLayerRules();
         assertEquals(layers.size(), 3);
-        assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "components"));
+        assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "utilities", "components"));
         assertEquals(layers.get(1).getAllSelectors(), List.of("shared"));
         assertEquals(layers.get(1).getRuleCount(), 1);
         assertEquals(layers.get(2).getAllSelectors(), List.of("components"));
@@ -223,7 +223,7 @@ public final class BundleTest {
         for (var result : List.of(
                 Bundle.assemble(List.of(), List.of(), List.of(), "empty.css"),
                 Bundle.assemble(List.of(empty), List.of(shared), List.of(), "empty.css"))) {
-            assertEquals(result.css(), "@layer shared,components;\n");
+            assertEquals(result.css(), "@layer shared,utilities,components;\n");
             assertEquals(
                     JsonParser.parseString(result.map())
                             .getAsJsonObject()
@@ -249,7 +249,7 @@ public final class BundleTest {
         assertEquals(
                 Bundle.assemble(List.of(), List.of(shared), List.of(), "app.css")
                         .css(),
-                "@layer shared,components;\n@layer shared{\n" + globals + "\n}\n");
+                "@layer shared,utilities,components;\n@layer shared{\n" + globals + "\n}\n");
     }
 
     @Test
@@ -444,7 +444,8 @@ public final class BundleTest {
         resource(input, "Pulse", CssResource.Kind.KEYFRAMES, "@keyframes pulse{to{opacity:1;}}", "Defaults");
         resource(input, "Defaults", CssResource.Kind.GLOBAL, "body{--accent:red;}");
         assertEquals(
-                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(), "@layer shared,components;\n");
+                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(),
+                "@layer shared,utilities,components;\n");
         Files.writeString(
                 input.resolve("Pulse.css.json"),
                 metadata("Pulse", CssResource.Kind.KEYFRAMES, List.of("Defaults"), List.of(), true)
@@ -498,7 +499,8 @@ public final class BundleTest {
         Files.delete(input.resolve("demo/B.css.map"));
         Files.delete(input.resolve("demo/B.css.json"));
         assertEquals(
-                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(), "@layer shared,components;\n");
+                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(),
+                "@layer shared,utilities,components;\n");
     }
 
     @Test
@@ -536,7 +538,8 @@ public final class BundleTest {
         Path legacy = dir().resolve("legacy.css");
         Files.writeString(legacy, "body{color:black;}");
         assertEquals(
-                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(), "@layer shared,components;\n");
+                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(),
+                "@layer shared,utilities,components;\n");
         var result =
                 Bundle.assemble(List.of(input), List.of(legacy), List.of("Theme", "Base", "Theme", "Empty"), "app.css");
         var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
@@ -557,7 +560,7 @@ public final class BundleTest {
         assertEquals(
                 Bundle.assemble(List.of(input), List.of(), List.of("Empty"), "app.css")
                         .css(),
-                "@layer shared,components;\n");
+                "@layer shared,utilities,components;\n");
         for (var owner : List.of("Missing", "../Base")) {
             var error = expectThrows(
                     IllegalArgumentException.class,

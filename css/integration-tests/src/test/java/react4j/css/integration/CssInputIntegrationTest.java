@@ -87,6 +87,10 @@ public final class CssInputIntegrationTest {
             assertEquals(
                     map.getAsJsonArray("sources").get(0).getAsString(),
                     root + ("UtilityLibrary".equals(owner) ? "utilities.css" : "defaults.css"));
+            if ("FileDefaults".equals(owner)) {
+                assertTrue(
+                        Files.readString(fragment).contains("--jcss-react4j-css-integration-UtilityLibrary--gap:11px"));
+            }
             if ("UtilityLibrary".equals(owner)) {
                 assertEquals(map.getAsJsonArray("sourcesContent").get(0).getAsString(), source);
                 var consumer = new SourceMapConsumerV3();

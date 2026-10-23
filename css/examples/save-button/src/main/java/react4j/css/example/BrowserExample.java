@@ -10,6 +10,9 @@ import react4j.css.CssImport;
 import react4j.css.CssStable;
 import react4j.css.GlobalCss;
 import react4j.css.Keyframes;
+import react4j.css.UtilityCss;
+import react4j.css.UtilityCssLibrary;
+import react4j.css.UtilityStyles;
 import react4j.dom.DOM;
 import react4j.dom.ReactDOM;
 import react4j.dom.proptypes.html.BtnProps;
@@ -40,6 +43,33 @@ public final class BrowserExample {
         var custom = new CssProps().customProperty(buttonStates.successProperty(), success);
         ReactDOM.render(
                 DOM.div(
+                        DOM.span(
+                                new HtmlProps()
+                                        .id("utility")
+                                        .className(UtilityOnly.get().style()),
+                                "Utility"),
+                        DOM.span(
+                                new HtmlProps()
+                                        .id("utility-hybrid")
+                                        .className(UtilityHybrid.get().style()),
+                                "Hybrid"),
+                        DOM.span(
+                                new HtmlProps()
+                                        .id("utility-second")
+                                        .className(UtilitySecond.get().style()),
+                                "Second library"),
+                        DOM.span(
+                                new HtmlProps()
+                                        .id("utility-important")
+                                        .data("utility-important", "true")
+                                        .className(UtilityHybrid.get().style()),
+                                "Important global"),
+                        DOM.div(
+                                new HtmlProps()
+                                        .id("utility-reset")
+                                        .data("utility-reset", "true")
+                                        .className(UtilityOnly.get().style()),
+                                "Explicit reset"),
                         DOM.button(
                                 new BtnProps()
                                         .id("modifier-only")
@@ -145,6 +175,63 @@ public final class BrowserExample {
                                 "Direct global")),
                 container);
     }
+
+    @UtilityCssLibrary("""
+        :root { --gutter:6px; }
+        @layer first,second;
+        @layer first { .tone {color:rgb(70, 80, 90);} }
+        @layer second { .tone {color:rgb(30, 60, 90);} }
+        .tone {padding-left:var(--gutter);}
+        """)
+    static final class UtilityLibraryA {}
+
+    @UtilityCssLibrary("""
+        @layer second,first;
+        @layer first { .tone {color:rgb(100, 110, 120);} }
+        @layer second { .tone {color:rgb(130, 140, 150);} }
+        """)
+    static final class UtilityLibraryB {}
+
+    @UtilityStyles(UtilityLibraryA.class)
+    abstract static class UtilityOnly {
+        static UtilityOnly get() {
+            return BrowserExample_Styled_UtilityOnly.get();
+        }
+
+        @UtilityCss("tone")
+        abstract String style();
+    }
+
+    @UtilityStyles(UtilityLibraryA.class)
+    @Css("""
+        color:rgb(11, 22, 33);
+        """)
+    abstract static class UtilityHybrid {
+        static UtilityHybrid get() {
+            return BrowserExample_Styled_UtilityHybrid.get();
+        }
+
+        @UtilityCss("tone")
+        abstract String style();
+    }
+
+    @UtilityStyles(UtilityLibraryB.class)
+    abstract static class UtilitySecond {
+        static UtilitySecond get() {
+            return BrowserExample_Styled_UtilitySecond.get();
+        }
+
+        @UtilityCss("tone")
+        abstract String style();
+    }
+
+    @CssImport(value = UtilityLibraryA.class, property = "gutter")
+    @GlobalCss("""
+        :root {--gutter:13px!important;}
+        [data-utility-reset] {margin-left:23px;}
+        [data-utility-important] {color:rgb(180, 20, 30)!important;}
+        """)
+    static final class UtilityReset {}
 
     interface StateStyle<T> {
         String style();

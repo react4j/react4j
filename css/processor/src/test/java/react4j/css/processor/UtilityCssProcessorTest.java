@@ -317,6 +317,87 @@ public final class UtilityCssProcessorTest {
         }
     }
 
+    private static String library(String css) {
+        return IMPORTS + "@UtilityCssLibrary(\"\"\"\n" + css + "\n\"\"\") class Utilities {}";
+    }
+
+    @Test
+    public void everyOrdinarySelectorBranchRequiresAPositiveManagedClass() throws Exception {
+        for (var selector : List.of(
+                ".x",
+                ".group .child",
+                ":is(.x,.y)",
+                ":where(.x,.y)",
+                ".x:not(.y)",
+                ":has(.x,.y)",
+                ".x:is(button,.y)",
+                ":is(:where(.x,.y),.z)")) {
+            var result = CssProcessorTest.compile(Map.of("Utilities.java", library(selector + " { color:red; }")));
+            assertTrue(result.success(), result.diagnostics());
+        }
+        for (var selector : List.of(
+                "button",
+                "*",
+                ":not(.x)",
+                ".x,button",
+                ":is(.x,button)",
+                ":where(.x,button)",
+                ":has(.x,button)",
+                ":is(:not(.x),.y)")) {
+            var result = CssProcessorTest.compile(Map.of("Utilities.java", library(selector + " { color:red; }")));
+            assertFalse(result.success(), selector);
+            assertTrue(result.diagnostics().contains("managed class on every selector branch"), result.diagnostics());
+        }
+        var support = CssProcessorTest.compile(Map.of(
+                "Utilities.java",
+                library(":root,:host,*::before {--space:7px;} @property --angle{syntax:\"*\";inherits:false;}"
+                        + " .x{padding:var(--space);}")));
+        assertTrue(support.success(), support.diagnostics());
+    }
+
+    @Test
+    public void globalsKeepModernConditionalAndEmptyAnonymousLayerBodies() throws Exception {
+        for (var css : List.of(
+                "@layer {}",
+                "@layer defaults; @layer defaults { [hidden]{display:none!important;} }",
+                "@supports (display:grid){@container (width>10px){@starting-style{button{opacity:.2;}}}}")) {
+            var result = CssProcessorTest.compile(
+                    Map.of("Reset.java", IMPORTS + "@GlobalCss(\"\"\"\n" + css + "\n\"\"\") class Reset {}"));
+            assertTrue(result.success(), result.diagnostics());
+            assertTrue(text(result, "classes/demo/Reset.css")
+                    .contains(
+                            css.startsWith("@layer {}")
+                                    ? "@layer{}"
+                                    : css.startsWith("@layer defaults") ? "!important" : "@starting-style"));
+        }
+    }
+
+    @Test
+    public void checkedGlobalsShareLibraryPropertyIdentityAndUtilityUrlsUseCheckedAssets() throws Exception {
+        var result = CssProcessorTest.compile(Map.of(
+                "Utilities.java",
+                library(":root{--space:7px;} .x{padding:var(--space);}"),
+                "Reset.java",
+                IMPORTS
+                        + "@CssImport(value=Utilities.class,property=\"space\") @GlobalCss(\"\"\"\n"
+                        + ":root{--space:9px!important;}\n"
+                        + "\"\"\") class Reset {}"));
+        assertTrue(result.success(), result.diagnostics());
+        assertTrue(text(result, "classes/demo/Reset.css").contains("--jcss-demo-Utilities--space:9px"));
+        assertTrue(text(result, "classes/demo/Utilities.css").contains("var(--jcss-demo-Utilities--space)"));
+        var assets = CssProcessorTest.compile(Map.of(
+                "Utilities.java",
+                library(".image { background:url('asset:media.icon'); color:var(--accent); } :root{--accent:red;}")
+                        .replace(
+                                "@UtilityCssLibrary",
+                                "@CssImport(name=\"media\",value=Media.class) @UtilityCssLibrary"),
+                "Media.java",
+                IMPORTS + "@Assets abstract class Media { @Asset(\"icon.svg\") abstract String icon(); }"));
+        assertTrue(assets.success(), assets.diagnostics());
+        assertTrue(text(assets, "classes/demo/Utilities.css").contains("asset:demo/icon.svg"));
+        assertTrue(text(assets, "classes/demo/Utilities.css").contains("var(--jcss-demo-Utilities--accent)"));
+    }
+
     @Test
     public void providerKindsAndLiteralSourcesAreChecked() throws Exception {
         var wrong = CssProcessorTest.compile(Map.of(

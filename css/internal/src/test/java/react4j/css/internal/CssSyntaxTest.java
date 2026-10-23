@@ -133,6 +133,16 @@ public final class CssSyntaxTest {
     }
 
     @Test
+    public void emptyAnonymousLayersKeepTheirIdentityWhenParsedAndRendered() {
+        for (var source : List.of("@layer{}", "@layer outer{@layer{}}", "@media screen{@layer {}}")) {
+            var sheet = new CssSyntax(source, 0).parse(CssSyntax.Mode.GLOBAL);
+            String rendered = new CSSWriter(new CSSWriterSettings(true)).getCSSAsString(sheet);
+            assertTrue(rendered.contains("@layer {}"), rendered);
+            new CssSyntax(rendered, 0).parse(CssSyntax.Mode.GLOBAL);
+        }
+    }
+
+    @Test
     public void modesKeepImportantAndNativeNestingBoundariesExplicit() {
         String important = ".x{display:none!important;}";
         new CssSyntax(important, 0).parse(CssSyntax.Mode.GLOBAL);

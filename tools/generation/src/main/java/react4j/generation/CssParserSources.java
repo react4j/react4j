@@ -33,6 +33,9 @@ public final class CssParserSources {
                     case "com/helger/css/parser/ParserCSS30.java" -> repair(source);
                     case "com/helger/css/parser/ParserCSS30TokenManager.java" -> propertyComments(source);
                     case "com/helger/css/decl/CSSUnknownRule.java" -> structuredRule(source);
+                    case "com/helger/css/decl/CSSLayerRule.java" ->
+                        replaceOnce(
+                                source, "if (nRuleCount == 0)", "if (nRuleCount == 0 && m_aSelectors.isNotEmpty ())");
                     case "com/helger/css/handler/CSSNodeToDomainObject.java" -> conditionalChildren(source);
                     case "com/helger/css/decl/visit/CSSVisitor.java" ->
                         replaceOnce(source, "    aVisitor.onUnknownRule (aUnknownRule);", """
@@ -165,6 +168,10 @@ public final class CssParserSources {
             throw new IllegalArgumentException("Pinned ph-css layer production changed");
         }
         String layer = source.substring(first, last);
+        layer = replaceOnce(
+                layer,
+                "public void layerBody() throws ParseException {",
+                "public void layerBody() throws ParseException {\n    if (getToken(1).kind == RBRACE) return;");
         layer = replaceOnce(
                 layer,
                 "      case PROPERTY_SYM:{",

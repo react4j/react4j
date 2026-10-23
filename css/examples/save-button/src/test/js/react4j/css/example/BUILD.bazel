@@ -28,6 +28,7 @@ css_bundle(
     globals = [
         "react4j.css.example.BrowserExample$Theme",
         "react4j.css.example.BrowserExample$Defaults",
+        "react4j.css.example.BrowserExample$UtilityReset",
     ],
     root = ":browser_tests_bin",
     shared = ["//css/examples/save-button/src/main/css:shared.css"],
@@ -41,6 +42,7 @@ css_bundle(
     globals = [
         "react4j.css.example.BrowserExample$AlternateTheme",
         "react4j.css.example.BrowserExample$Defaults",
+        "react4j.css.example.BrowserExample$UtilityReset",
     ],
     root = ":browser_tests_bin",
     shared = ["//css/examples/save-button/src/main/css:shared.css"],

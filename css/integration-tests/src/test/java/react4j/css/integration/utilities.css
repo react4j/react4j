@@ -1,5 +1,6 @@
 /* A finite supplied catalogue, independent of the Java consumer. */
 .flex { display:flex; }
-.gap-2 { gap:8px; }
+.gap-2 { gap:var(--gap); }
 .text-red { color:rgb(201, 21, 41); }
 .never-selected { outline-width:37px; }
+:root { --gap:8px; }

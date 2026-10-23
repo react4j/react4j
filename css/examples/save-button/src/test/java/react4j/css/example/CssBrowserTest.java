@@ -166,6 +166,21 @@ public final class CssBrowserTest {
         throw new AssertionError("Missing retained asset: " + suffix);
     }
 
+    public BrowserPromise testUtilitiesKeepLibraryOrderAndExplicitGlobalPrecedence() {
+        equal("rgb(30, 60, 90)", css("utility", "color"));
+        equal("rgb(11, 22, 33)", css("utility-hybrid", "color"));
+        equal("rgb(100, 110, 120)", css("utility-second", "color"));
+        equal("rgb(180, 20, 30)", css("utility-important", "color"));
+        equal("23px", css("utility-reset", "margin-left"));
+        equal("13px", css("utility", "padding-left"));
+        return stylesheet("component").thenDo(() -> {
+            equal("rgb(11, 22, 33)", css("utility-important", "color"));
+            equal("0px", css("utility-reset", "margin-left"));
+            equal("6px", css("utility", "padding-left"));
+            equal("rgb(100, 110, 120)", css("utility-second", "color"));
+        });
+    }
+
     public void testClassNamingPolicy() {
         var root = node("success").getClassName().split(" ")[0];
         var control = symbol("control");
@@ -408,7 +423,7 @@ public final class CssBrowserTest {
             var owner = match[1].split("--")[0];
             groups.computeIfAbsent(owner, key -> new ArrayList<>()).add(text);
         }
-        check((_optimized ? 4 : 5) == groups.size(), "Component group count");
+        check((_optimized ? 5 : 6) == groups.size(), "Component group count");
         while (0 < Browser.childRules(layer).length) {
             layer.deleteRule(0);
         }
@@ -435,7 +450,20 @@ public final class CssBrowserTest {
     }
 
     private String[] snapshot() {
-        var ids = new String[] {"base", "success", "cancel", "custom", "disabled", "conflict", "nested", "status"};
+        var ids = new String[] {
+            "base",
+            "success",
+            "cancel",
+            "custom",
+            "disabled",
+            "conflict",
+            "nested",
+            "status",
+            "utility",
+            "utility-hybrid",
+            "utility-second",
+            "utility-important"
+        };
         var result = new String[ids.length];
         for (int i = 0; i < ids.length; i++) {
             result[i] = String.join(
