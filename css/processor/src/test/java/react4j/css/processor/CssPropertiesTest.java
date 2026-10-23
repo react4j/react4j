@@ -35,6 +35,16 @@ public final class CssPropertiesTest {
     }
 
     @Test
+    public void staticTransitionTargetsFailBeforeRenamingSharedData() {
+        var error = expectThrows(
+                CssSyntax.InvalidCss.class,
+                () -> component(
+                        "--targets:--angle;transition:var(--targets) 1s;list-style-type:var(--targets);", Map.of()));
+        assertTrue(String.valueOf(error.getMessage())
+                .contains("Managed transition targets in static variable definitions"));
+    }
+
+    @Test
     public void declarationsNestedFallbacksAndRuntimeOnlySymbolsShareOwnership() {
         String css = "--accent: red; color: VAR(--accent,var(--fallback,blue)); left: calc(var(--left) * 1px); content:"
                 + " '--accent';";

@@ -12,14 +12,25 @@ public final class CssTokensTest {
     @Test
     public void transitionTargetsAndVariableFallbacksExposePropertyOccurrences() {
         String css = ".x{transition-property:opacity,--a,--\\62 ;transition:--c .4s steps(2) .1s,color 1s;"
-                + "transition:var(--target,var(--other,--d)) 1s var(--time,2s);content:'--ignored';}";
+                + "transition:var(--target,var(--other,--d)) 1s var(--time,2s);content:'--ignored';}"
+                + ":root{--targets:var(--alias);--alias:--carried;}.y{transition-property:var(--targets);}";
         var tokens = CssTokens.read(css);
         assertEquals(
                 tokens.stream()
                         .filter(token -> SymbolKind.PROPERTY == token.kind())
                         .map(CssTokens.Token::name)
                         .collect(Collectors.toSet()),
-                Set.of("--a", "--b", "--c", "--target", "--other", "--d", "--time"));
+                Set.of(
+                        "--a",
+                        "--b",
+                        "--c",
+                        "--target",
+                        "--other",
+                        "--d",
+                        "--time",
+                        "--targets",
+                        "--alias",
+                        "--carried"));
         for (var token : tokens) {
             assertEquals(css.substring(token.start(), token.end()), token.value());
         }

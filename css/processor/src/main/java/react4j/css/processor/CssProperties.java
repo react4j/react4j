@@ -15,6 +15,7 @@ import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.parser.CSSParseHelper;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import react4j.css.internal.CssExpressions;
 import react4j.css.internal.CssPropertyValues;
@@ -56,18 +57,25 @@ final class CssProperties {
     static Set<String> rewrite(
             CascadingStyleSheet sheet, CssSyntax syntax, UnaryOperator<String> resolve, boolean modern) {
         var names = new LinkedHashSet<String>();
-        CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
-            private String property(String token, ICSSSourceLocationAware declaration) {
-                String name = (modern ? CSSParseHelper.unescapeURL(token) : token).substring(2);
-                try {
-                    checkName(name);
-                } catch (IllegalArgumentException e) {
-                    throw syntax.invalid(String.valueOf(e.getMessage()), declaration);
-                }
-                names.add(name);
-                return resolve.apply(name);
+        BiFunction<String, ICSSSourceLocationAware, String> property = (token, declaration) -> {
+            String name = (modern ? CSSParseHelper.unescapeURL(token) : token).substring(2);
+            try {
+                checkName(name);
+            } catch (IllegalArgumentException e) {
+                throw syntax.invalid(String.valueOf(e.getMessage()), declaration);
             }
-
+            names.add(name);
+            return resolve.apply(name);
+        };
+        for (var target : CssPropertyValues.carriedNames(sheet)) {
+            if (!CSSParseHelper.unescapeURL(target.getValue()).equals(property.apply(target.getValue(), target))) {
+                throw syntax.invalid(
+                        "Managed transition targets in static variable definitions are unsupported; list targets"
+                                + " directly in transition declarations or their var() fallbacks",
+                        target);
+            }
+        }
+        CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
             private void expression(CSSExpression expression, ICSSSourceLocationAware declaration) {
                 CssExpressions.visit(expression, member -> {
                     if (member instanceof CSSExpressionMemberFunction function) {
@@ -86,7 +94,7 @@ final class CssProperties {
                                         "var() requires an unquoted custom property name and optional fallback",
                                         declaration);
                             }
-                            first.setValue(property(first.getValue(), declaration));
+                            first.setValue(property.apply(first.getValue(), declaration));
                         }
                     }
                 });
@@ -96,17 +104,17 @@ final class CssProperties {
             public void onDeclaration(CSSDeclaration declaration) {
                 if ((modern ? CSSParseHelper.unescapeURL(declaration.getProperty()) : declaration.getProperty())
                         .startsWith("--")) {
-                    declaration.setProperty(property(declaration.getProperty(), declaration));
+                    declaration.setProperty(property.apply(declaration.getProperty(), declaration));
                 }
                 for (var target : CssPropertyValues.names(declaration)) {
-                    target.setValue(property(target.getValue(), declaration));
+                    target.setValue(property.apply(target.getValue(), declaration));
                 }
                 expression(declaration.getExpression(), declaration);
             }
 
             @Override
             public void onBeginPropertyRule(CSSPropertyRule rule) {
-                property(rule.getIdentifier(), rule);
+                var unused = property.apply(rule.getIdentifier(), rule);
                 for (var descriptor : rule.getAllDeclarations()) {
                     expression(descriptor.getExpression(), descriptor);
                 }
@@ -122,7 +130,7 @@ final class CssProperties {
                         parameters.replace(
                                 reference.start() - header.parameterStart(),
                                 reference.end() - header.parameterStart(),
-                                property(reference.value(), rule));
+                                property.apply(reference.value(), rule));
                     }
                 }
                 String text = parameters.toString().strip();

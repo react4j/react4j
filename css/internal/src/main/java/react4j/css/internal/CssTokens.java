@@ -384,6 +384,14 @@ public final class CssTokens {
                 token(SymbolKind.ANIMATION, identifier.start(), identifier.value());
             }
         });
+        for (var target : CssPropertyValues.carriedNames(sheet)) {
+            var location = Objects.requireNonNull(target.getSourceLocation());
+            int first =
+                    syntax.offset(location.getFirstTokenBeginLineNumber(), location.getFirstTokenBeginColumnNumber());
+            String value = target.getValue();
+            tokens.add(new Token(
+                    SymbolKind.PROPERTY, first, first + value.length(), value, name(SymbolKind.PROPERTY, value)));
+        }
         return new Parsed(
                 tokens.stream()
                         .distinct()

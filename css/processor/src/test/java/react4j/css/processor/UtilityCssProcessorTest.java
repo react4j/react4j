@@ -685,6 +685,36 @@ public final class UtilityCssProcessorTest {
     }
 
     @Test
+    public void staticManagedTransitionTargetListsFailWithoutRewritingOtherData() throws Exception {
+        for (String property : List.of("transition", "transition-property")) {
+            for (String definitions : List.of(
+                    ":root{--targets:--angle;}",
+                    ":root{--targets:var(--alias);--alias:var(--missing,--angle);}",
+                    ":root{--targets:var(--alias);--alias:var(--targets,--angle);}")) {
+                String css = "@property --angle{syntax:'<angle>';inherits:false;initial-value:0deg;}" + definitions
+                        + ".a{--angle:90deg;rotate:var(--angle);" + property + ":var(--targets)"
+                        + ("transition".equals(property) ? " 1s" : "") + ";list-style-type:var(--targets);}";
+                for (String annotation : List.of("UtilityCssLibrary", "GlobalCss")) {
+                    var result = CssProcessorTest.compile(
+                            Map.of("Utilities.java", library(css).replace("UtilityCssLibrary", annotation)));
+                    assertFalse(result.success(), css);
+                    assertTrue(
+                            result.diagnostics().contains("Managed transition targets in static variable definitions"),
+                            result.diagnostics());
+                    int target = css.indexOf("--angle", css.indexOf(definitions)) + 1;
+                    assertTrue(result.diagnostics().contains("Utilities.java:4:" + target + ":"), result.diagnostics());
+                }
+            }
+        }
+        var external = CssProcessorTest.compile(Map.of(
+                "Utilities.java",
+                library(":root{--targets:var(--alias);--alias:--host;}.a{transition:var(--targets) 1s;}")
+                        .replace("@UtilityCssLibrary(", "@UtilityCssLibrary(externalProperties={\"host\"},value=")));
+        assertTrue(external.success(), external.diagnostics());
+        assertTrue(text(external, "classes/demo/Utilities.css").contains("--alias:--host"));
+    }
+
+    @Test
     public void independentDataVariablesDoNotEnumerateEveryScopeCombination() throws Exception {
         var css = new StringBuilder();
         for (int scope = 0; scope < 12; scope++) {

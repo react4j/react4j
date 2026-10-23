@@ -5,7 +5,7 @@
 - Current frontier: follow-up implementation review
 - Planning reviewer: utility_planning_review (1/3 rounds; passed; final confirmation unused)
 - Plan checkpoint: automatic
-- Implementation reviewer: utility_implementation_review (1/5 rounds consumed; both findings fixed; follow-up pending; final confirmation unused)
+- Implementation reviewer: utility_implementation_review (2/5 rounds consumed; all findings fixed; follow-up pending; final confirmation unused)
 - Scope source: confirmed utility CSS interview in this chat.
 - Execution authority: "Use structured-delivery-workflow and proceed"; full delivery authorized after interview confirmation, with no human plan checkpoint.
 - Active plan tree: plans/utility-css. This exact path is the only plan-edit/commit/deletion target for this invocation.
@@ -55,3 +55,7 @@
 - T08 final promotion audit: the utility-input, binding, name, liveness and map specifications, glossary and finite-provider ADR remain the canonical owners for every accepted durable conclusion. T08 adds reader examples, implementation fixes and evidence only; no new durable decision or deferred question is introduced.
 
 - Attempt 1 dispositions: transition targets now use one shared property-value grammar for ownership, rewriting and occurrence metadata, including fallbacks and imported/external boundaries. Unsafe registered name-carrier literal constraints are diagnosed through definitions/aliases while universal/type-only registrations remain supported. Both original reproductions have retained regression coverage; no requirement or significant decision was weakened. The utility-input specification records registration validity; reader docs/changelog describe the boundary and transition support. Follow-up review pending.
+
+- Implementation attempt 2: the same independent read-only reviewer is checking 58869334c..5d48c6006, both prior findings/dispositions, affected surfaces, updated canonical knowledge and fresh full-gate evidence. Attempt completed with one P2 follow-up: managed transition targets in static variable definitions still bypassed direct/fallback rewriting. Both original findings are fixed. The follow-up is accepted for an authored diagnostic at the shared property seam, with literal external target names preserved. 2 normal attempts consumed; 3 normal attempts remain; final confirmation unused.
+
+- Attempt 2 fix: shared property analysis follows static transition target definitions, aliases and cycles. Managed target values in those definitions fail at their authored locations before any ordinary-data rewrite; direct/fallback targets remain supported. External target values enter name reservations and remain literal. Component/global/utility tests and token/map paths share the same analysis. Focused internal, property and utility processor targets passed. Fresh tools/check.sh passed on 2026-10-23: all 50 normal, 15 optimized browser and 23 instrumented JVM targets, all 612 packaged processor methods, unchanged coverage thresholds, site checks and local unsigned packaging. Documentation links and specification-only/diff audit passed. No scope or significant-decision changes.
