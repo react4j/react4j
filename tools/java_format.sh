@@ -48,6 +48,8 @@ paths=(
   examples/todomvc/sting/src/main/java
   examples/todomvc/src/main/java
   examples/todomvc/src/test/java
+  examples/utility-css/src/main/java
+  examples/utility-css/src/test/java
   examples/webspeechdemo/src/main/java
   examples/webspeechdemo/src/test/java
   doc-examples/src/main/java

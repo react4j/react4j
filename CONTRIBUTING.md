@@ -19,7 +19,7 @@ Use Bazel 9.3.0 (pinned in `.bazelversion`, typically selected by Bazelisk) and 
 | Format Bazel / check Bazel | `bazel run //tools/buildifier:buildifier` / `bazel run //tools/buildifier:buildifier_check` |
 | Review hermeticity | `bazel run //tools/ahab:hermeticity.check` |
 | Update Java dependencies | Edit `third_party/java/dependencies.yml`, then `tools/update_java_deps.sh` |
-| Preview example | `tools/examples.sh serve [hello_world\|drumloop\|heart-rate-monitor\|todomvc-raw\|todomvc-arez\|todomvc-sting\|webspeechdemo] [development\|production]` |
+| Preview example | `tools/examples.sh serve [hello_world\|drumloop\|heart-rate-monitor\|todomvc-raw\|todomvc-arez\|todomvc-sting\|utility-css\|webspeechdemo] [development\|production]` |
 | Build / check / serve site | `tools/site.sh build` / `tools/site.sh check` / `tools/site.sh serve` |
 
 The complete gate runs local verification only. Publication commands are separate and documented in the [release guide](tools/release/README.md). Encrypted `etc/secrets` is retained untouched and is not needed for builds or checks.

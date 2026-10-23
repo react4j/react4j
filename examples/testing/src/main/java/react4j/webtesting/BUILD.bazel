@@ -9,6 +9,7 @@ package(default_visibility = [
     "//examples/drumloop/src/test/java/react4j/drumloop:__pkg__",
     "//examples/heart-rate-monitor/src/test/java/react4j/hrm:__pkg__",
     "//examples/todomvc/src/test/java/react4j/todomvc:__pkg__",
+    "//examples/utility-css/src/test/java/react4j/utilitydemo:__pkg__",
     "//examples/webspeechdemo/src/test/java/react4j/webspeechdemo:__pkg__",
 ])
 

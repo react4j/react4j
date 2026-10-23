@@ -95,6 +95,9 @@ Symbol annotations follow the effective method declaration, using the same metho
 
 ## Utility libraries
 
+For a runnable introduction, see the [utility CSS example](../examples/utility-css/README.md).
+It combines a file-backed library, responsive utilities, explicit global defaults and a local component override in a stateful view.
+
 Supply precompiled, flattened CSS through `@UtilityCssLibrary`, then select one library with `@UtilityStyles`:
 
 ```java
