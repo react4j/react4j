@@ -6,14 +6,12 @@ import com.helger.css.decl.CSSExpression;
 import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSExpressionMemberTermURI;
+import com.helger.css.decl.CSSPropertyRule;
 import com.helger.css.decl.CSSSupportsRule;
 import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.parser.CSSParseHelper;
-import com.helger.css.reader.CSSReader;
-import com.helger.css.reader.CSSReaderSettings;
-import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
 import com.helger.css.writer.CSSWriterSettings;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -74,6 +72,13 @@ public final class CssUrls {
             }
 
             @Override
+            public void onBeginPropertyRule(CSSPropertyRule rule) {
+                for (var descriptor : rule.getAllDeclarations()) {
+                    expression(descriptor.getExpression());
+                }
+            }
+
+            @Override
             public void onBeginSupportsRule(CSSSupportsRule rule) {
                 CssExpressions.supports(rule.getAllSupportConditionMembers(), this::onDeclaration);
             }
@@ -88,8 +93,7 @@ public final class CssUrls {
 
     public static List<SourceMap.Edit> edits(String css, UnaryOperator<String> resolve) {
         var syntax = new CssSyntax(css, 0);
-        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
-                css, new CSSReaderSettings().setTabSize(1).setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+        var sheet = syntax.parse(CssSyntax.Mode.PROCESSED);
         var edits = new ArrayList<SourceMap.Edit>();
         visit(sheet, reference -> {
             String value = resolve.apply(reference.value());

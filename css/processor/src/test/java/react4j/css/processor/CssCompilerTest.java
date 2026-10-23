@@ -924,7 +924,6 @@ public final class CssCompilerTest {
                 "@import 'other.css';",
                 "@keyframes pulse { to {opacity:0;} }",
                 "@font-face {font-family:test;}",
-                "body {color: red !important;}",
                 "body {animation-name: missing;}",
                 "body {animation-name: var(--name);}",
                 "@media screen { body {animation: pulse 1s var(--timing);} }")) {
@@ -940,5 +939,26 @@ public final class CssCompilerTest {
                             Map.of(),
                             new CssCompiler.Resources(Map.of(), Map.of())));
         }
+    }
+
+    @Test
+    public void explicitGlobalImportantDeclarationsKeepTheirStandardMeaning() {
+        String source = "[hidden]{display:none!important;}";
+        var result = CssCompiler.global(
+                source,
+                "jcss-demo-Global",
+                new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
+                offset -> new SourceMap.Location("Defaults.java", source, 0, offset),
+                Map.of(),
+                Map.of(),
+                Map.of(),
+                new CssCompiler.Resources(Map.of(), Map.of()));
+        var declaration = parse(result.output().css())
+                .getAllStyleRules()
+                .get(0)
+                .getAllDeclarations()
+                .get(0);
+        assertTrue(declaration.isImportant());
+        assertEquals(value(declaration), "none");
     }
 }

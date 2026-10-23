@@ -21,21 +21,39 @@ public final class CssRenamerTest {
             boolean modifierStable = 0 != (stable & 2);
             String root = rootStable ? "a" : "source-root";
             String modifier = modifierStable ? "b" : "source-modifier";
-            var renamer = new CssRenamer(new CssNames(
-                    new CssNames.Policy(true, ""),
-                    List.of(
-                            new CssNames.Entry(
-                                    new SymbolId("Button", SymbolKind.CLASS, "success"),
-                                    modifier,
-                                    "b",
-                                    modifierStable,
-                                    List.of("Button#success")),
-                            new CssNames.Entry(
-                                    new SymbolId("Button", SymbolKind.CLASS, ""),
-                                    root,
-                                    "a",
-                                    rootStable,
-                                    List.of("Button#style", "Button#success")))));
+            var renamer = new CssRenamer(
+                    new CssNames(
+                            new CssNames.Policy(true, ""),
+                            List.of(
+                                    new CssNames.Entry(
+                                            new SymbolId("Button", SymbolKind.CLASS, "success"),
+                                            modifier,
+                                            "b",
+                                            modifierStable,
+                                            List.of("Button#success")),
+                                    new CssNames.Entry(
+                                            new SymbolId("Button", SymbolKind.CLASS, ""),
+                                            root,
+                                            "a",
+                                            rootStable,
+                                            List.of("Button#style", "Button#success")))),
+                    List.of(new CssResource(
+                            "Button",
+                            CssResource.Kind.COMPONENT,
+                            List.of(),
+                            List.of(),
+                            "Styled_Button",
+                            List.of(new CssResource.Binding(
+                                    "success",
+                                    SymbolKind.CLASS,
+                                    root + " " + modifier,
+                                    List.of(),
+                                    List.of(
+                                            new SymbolId("Button", SymbolKind.CLASS, ""),
+                                            new SymbolId("Button", SymbolKind.CLASS, "success")))),
+                            List.of(),
+                            List.of(),
+                            List.of())));
             for (String selector : List.of(
                     "[class='a b']", "[class|='a b']", "[class*='a b']", "[CLASS*='A B' i]", "[class*='\\61  b']")) {
                 if (rootStable && modifierStable) {
@@ -60,27 +78,63 @@ public final class CssRenamerTest {
                 renamer.checkShared(selector + "{}", "variant.css");
             }
         }
-        var unrelated = new CssRenamer(new CssNames(
-                new CssNames.Policy(true, ""),
-                List.of(
-                        new CssNames.Entry(
-                                new SymbolId("Button", SymbolKind.CLASS, ""),
-                                "source-root",
-                                "a",
-                                false,
-                                List.of("Button#style")),
-                        new CssNames.Entry(
-                                new SymbolId("Button", SymbolKind.CLASS, "success"),
-                                "source-modifier",
-                                "b",
-                                false,
-                                List.of("Button#success")))));
+        var unrelated = new CssRenamer(
+                new CssNames(
+                        new CssNames.Policy(true, ""),
+                        List.of(
+                                new CssNames.Entry(
+                                        new SymbolId("Button", SymbolKind.CLASS, ""),
+                                        "source-root",
+                                        "a",
+                                        false,
+                                        List.of("Button#style")),
+                                new CssNames.Entry(
+                                        new SymbolId("Button", SymbolKind.CLASS, "success"),
+                                        "source-modifier",
+                                        "b",
+                                        false,
+                                        List.of("Button#success")))),
+                List.of());
         unrelated.checkShared("[class*='a b']{}", "variant.css");
     }
 
     @Test
-    public void escapedRawGrammarCannotHideLateAnimationPropertyOrFragmentCollisions() {
-        for (var kind : List.of(SymbolKind.ANIMATION, SymbolKind.PROPERTY, SymbolKind.ID)) {
+    public void multiUtilityAttributeChecksUseDeclaredOrderAcrossDifferentOwners() {
+        var first = new SymbolId("Library", SymbolKind.CLASS, "zeta");
+        var second = new SymbolId("Library", SymbolKind.CLASS, "alpha");
+        var root = new SymbolId("Button", SymbolKind.CLASS, "");
+        var modifier = new SymbolId("Button", SymbolKind.CLASS, "active");
+        var table = new CssNames(
+                new CssNames.Policy(true, ""),
+                List.of(
+                        new CssNames.Entry(root, "button-root", "r", false, List.of("Button#active")),
+                        new CssNames.Entry(modifier, "button-active", "m", false, List.of("Button#active")),
+                        new CssNames.Entry(second, "library-alpha", "a", false, List.of("Button#active")),
+                        new CssNames.Entry(first, "library-zeta", "z", false, List.of("Button#active"))));
+        var binding = new CssResource.Binding(
+                "active",
+                SymbolKind.CLASS,
+                "library-zeta library-alpha button-root button-active",
+                List.of(),
+                List.of(first, second, root, modifier));
+        var metadata = new CssResource(
+                "Button",
+                CssResource.Kind.COMPONENT,
+                List.of(),
+                List.of(),
+                "Styled_Button",
+                List.of(binding),
+                List.of(),
+                List.of(),
+                List.of());
+        var renamer = new CssRenamer(table, List.of(metadata));
+        expectThrows(IllegalArgumentException.class, () -> renamer.checkShared("[class*='z a r m']{}", "variant.css"));
+        renamer.checkShared("[class*='r m a z']{}", "variant.css");
+    }
+
+    @Test
+    public void escapedRawGrammarCannotHideLateTypedNameCollisions() {
+        for (var kind : List.of(SymbolKind.ANIMATION, SymbolKind.PROPERTY, SymbolKind.ID, SymbolKind.CONTAINER)) {
             String compiled = SymbolKind.PROPERTY == kind ? "--a" : "a";
             var table = new CssNames(
                     new CssNames.Policy(true, ""),
@@ -94,45 +148,55 @@ public final class CssRenamerTest {
                     switch (kind) {
                         case ANIMATION -> "body{anima\\74 ion-name:a;}";
                         case PROPERTY -> "@supports (color:v\\61 r(--a)){body{color:red;}}";
+                        case CONTAINER -> "@container \\61  (width>1px){body{color:red;}}";
                         default -> "body{filter:u\\72 l('#a');}";
                     };
-            expectThrows(IllegalArgumentException.class, () -> new CssRenamer(table).checkShared(css, "variant.css"));
+            expectThrows(
+                    IllegalArgumentException.class,
+                    () -> new CssRenamer(table, List.of()).checkShared(css, "variant.css"));
         }
     }
 
     @Test
     public void rawAttributeComparisonsCannotAcquireCompressedNames() {
         for (var kind : List.of(SymbolKind.CLASS, SymbolKind.ID)) {
-            var renamer = new CssRenamer(new CssNames(
-                    new CssNames.Policy(true, ""),
-                    List.of(new CssNames.Entry(new SymbolId("Owner", kind, "name"), "source", "a", false, List.of()))));
+            var renamer = new CssRenamer(
+                    new CssNames(
+                            new CssNames.Policy(true, ""),
+                            List.of(new CssNames.Entry(
+                                    new SymbolId("Owner", kind, "name"), "source", "a", false, List.of()))),
+                    List.of());
             String attribute = SymbolKind.CLASS == kind ? "class" : "id";
             for (String operator : List.of("=", "~=", "|=", "^=", "$=", "*=")) {
                 for (String value : List.of("'a'", "'A' i", "'\\61 '")) {
                     String css = "[" + attribute + operator + value + "]{color:red;}";
                     var error =
                             expectThrows(IllegalArgumentException.class, () -> renamer.checkShared(css, "variant.css"));
-                    assertTrue(String.valueOf(error.getMessage())
-                            .contains("variant.css: raw CSS attribute selector conflicts"));
+                    assertTrue(String.valueOf(error.getMessage()).contains("variant.css: raw CSS"));
+                    assertTrue(String.valueOf(error.getMessage()).contains("compressed"));
                 }
             }
             renamer.checkShared("[" + attribute + "='A']{color:red;}", "variant.css");
             renamer.checkShared("[" + attribute + "]{color:red;}", "variant.css");
         }
-        var id = new CssRenamer(new CssNames(
-                new CssNames.Policy(true, ""),
-                List.of(new CssNames.Entry(
-                        new SymbolId("Owner", SymbolKind.ID, "control"), "source", "a", false, List.of()))));
+        var id = new CssRenamer(
+                new CssNames(
+                        new CssNames.Policy(true, ""),
+                        List.of(new CssNames.Entry(
+                                new SymbolId("Owner", SymbolKind.ID, "control"), "source", "a", false, List.of()))),
+                List.of());
         for (String selector :
                 List.of("[href='#a']", "[src='#a']", "[for=a]", "[headers='other a']", "[aria-controls='other a']")) {
             expectThrows(
                     IllegalArgumentException.class, () -> id.checkShared(selector + "{color:red;}", "variant.css"));
         }
         id.checkShared("[href='icon.svg#a']{color:red;}", "variant.css");
-        var prefixed = new CssRenamer(new CssNames(
-                new CssNames.Policy(true, "app-"),
-                List.of(new CssNames.Entry(
-                        new SymbolId("Owner", SymbolKind.CLASS, ""), "original", "app-a", false, List.of()))));
+        var prefixed = new CssRenamer(
+                new CssNames(
+                        new CssNames.Policy(true, "app-"),
+                        List.of(new CssNames.Entry(
+                                new SymbolId("Owner", SymbolKind.CLASS, ""), "original", "app-a", false, List.of()))),
+                List.of());
         for (String selector : List.of("[class^=app]", "[class$=a]", "[class*=pp]", "[class|=app]", "[class^=APP i]")) {
             expectThrows(
                     IllegalArgumentException.class,
@@ -140,10 +204,16 @@ public final class CssRenamerTest {
         }
         prefixed.checkShared("[class*=a]{color:red;}", "variant.css");
         prefixed.checkShared("[data-name=app-a]{color:red;}", "variant.css");
-        new CssRenamer(new CssNames(
-                        new CssNames.Policy(true, ""),
-                        List.of(new CssNames.Entry(
-                                new SymbolId("Owner", SymbolKind.CLASS, ""), "original", "a", false, List.of()))))
+        new CssRenamer(
+                        new CssNames(
+                                new CssNames.Policy(true, ""),
+                                List.of(new CssNames.Entry(
+                                        new SymbolId("Owner", SymbolKind.CLASS, ""),
+                                        "original",
+                                        "a",
+                                        false,
+                                        List.of()))),
+                        List.of())
                 .checkShared("[class*=a]{color:red;}", "variant.css");
     }
 
@@ -191,7 +261,7 @@ public final class CssRenamerTest {
                                 "bc",
                                 false,
                                 List.of())));
-        var result = new CssRenamer(table).rename(resource);
+        var result = new CssRenamer(table, List.of()).rename(resource);
         assertEquals(
                 result.css(),
                 "/* 😀 */\n.a:is(.bc,:not(.a))[data-text='readable']{content:'readable modifier';&.bc{color:red;}}\n");
@@ -222,16 +292,18 @@ public final class CssRenamerTest {
                 result.map().getAsJsonArray("sourcesContent").get(0).getAsString(),
                 "authored selector and declaration");
         assertSame(
-                new CssRenamer(new CssNames(
-                                new CssNames.Policy(false, ""),
-                                table.entries().stream()
-                                        .map(entry -> new CssNames.Entry(
-                                                entry.symbol(),
-                                                entry.readable(),
-                                                entry.readable(),
-                                                entry.stable(),
-                                                entry.getters()))
-                                        .toList()))
+                new CssRenamer(
+                                new CssNames(
+                                        new CssNames.Policy(false, ""),
+                                        table.entries().stream()
+                                                .map(entry -> new CssNames.Entry(
+                                                        entry.symbol(),
+                                                        entry.readable(),
+                                                        entry.readable(),
+                                                        entry.stable(),
+                                                        entry.getters()))
+                                                .toList()),
+                                List.of())
                         .rename(resource),
                 resource);
     }
@@ -299,7 +371,7 @@ public final class CssRenamerTest {
                 metadata,
                 css,
                 JsonParser.parseString(writer.map("Consumer.css")).getAsJsonObject());
-        var renamer = new CssRenamer(new CssNames(new CssNames.Policy(true, ""), entries));
+        var renamer = new CssRenamer(new CssNames(new CssNames.Policy(true, ""), entries), List.of());
         assertEquals(
                 renamer.rename(resource).css(),
                 "#a{--b:var(--shared);filter:url(#shared);animation:c"
@@ -337,7 +409,8 @@ public final class CssRenamerTest {
         renamer.checkShared("#shared{--shared:red;}", "shared.css");
         expectThrows(
                 IllegalArgumentException.class,
-                () -> new CssRenamer(new CssNames(new CssNames.Policy(true, ""), List.of())).rename(resource));
+                () -> new CssRenamer(new CssNames(new CssNames.Policy(true, ""), List.of()), List.of())
+                        .rename(resource));
         var corrupt = new CssCatalogue.Resource(metadata, css.replace("#shared", "#broken"), resource.map());
         expectThrows(IllegalArgumentException.class, () -> renamer.rename(corrupt));
     }

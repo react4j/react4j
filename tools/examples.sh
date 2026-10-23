@@ -12,6 +12,7 @@ case "$example" in
   todomvc-raw) target=//examples/todomvc/raw:raw; output=examples/todomvc/raw/raw ;;
   todomvc-arez) target=//examples/todomvc/arez:arez; output=examples/todomvc/arez/arez ;;
   todomvc-sting) target=//examples/todomvc/sting:sting; output=examples/todomvc/sting/sting ;;
+  utility-css) target=//examples/utility-css; output=examples/utility-css/utility-css ;;
   webspeechdemo) target=//examples/webspeechdemo:webspeechdemo; output=examples/webspeechdemo/webspeechdemo ;;
   *) echo "Unknown example: $example" >&2; exit 2 ;;
 esac
@@ -29,6 +30,6 @@ case "$command" in
     fi
     echo "$directory/index.html"
     ;;
-  --help|-h) echo "Usage: tools/examples.sh <build|serve> [hello_world|drumloop|heart-rate-monitor|todomvc-raw|todomvc-arez|todomvc-sting|webspeechdemo] [development|production]" ;;
+  --help|-h) echo "Usage: tools/examples.sh <build|serve> [hello_world|drumloop|heart-rate-monitor|todomvc-raw|todomvc-arez|todomvc-sting|utility-css|webspeechdemo] [development|production]" ;;
   *) echo "Unknown command: $command" >&2; exit 2 ;;
 esac

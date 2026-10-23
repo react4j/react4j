@@ -18,11 +18,11 @@ final class CssSymbols {
 
     record Result(SourceMap.Writer output, List<CssResource.Occurrence> occurrences) {}
 
-    static Result resolve(SourceMap.Writer input, Map<Key, Definition> definitions) {
+    static Result resolve(SourceMap.Writer input, Map<Key, Definition> definitions, List<CssTokens.Token> tokens) {
         var edits = new ArrayList<SourceMap.Edit>();
         var occurrences = new ArrayList<CssResource.Occurrence>();
         int shift = 0;
-        for (var token : CssTokens.read(input.css())) {
+        for (var token : tokens) {
             var definition = definitions.get(new Key(token.kind(), token.value()));
             if (null != definition) {
                 if (!token.value().equals(definition.readable())) {

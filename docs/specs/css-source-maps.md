@@ -6,7 +6,7 @@ Preserve source origins and content for CSS bundles and JavaScript values exposi
 
 ## Requirements
 
-1. Source maps for generated CSS resolve retained selectors and declarations to their authored Java locations after bundling, pruning, name replacement and final asset URL replacement, including changes in line and UTF-16 column positions.
+1. Source maps for generated CSS resolve retained selectors and declarations to their authored Java text-block or declared CSS-file locations after bundling, pruning, name replacement and final asset URL replacement, including changes in line and UTF-16 column positions.
 2. CSS source maps include complete authored source content, including shared CSS files.
 3. JavaScript source maps preserve origins in generated CSS/asset-binding Java after final URL replacement.
 4. JavaScript source maps include complete generated CSS/asset-binding source content.

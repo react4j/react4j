@@ -541,12 +541,9 @@ public final class CssResourceProcessorTest {
             });
         }
         for (var css : List.of(
-                "body { color: red !important; }",
                 "@keyframes pulse { to { opacity:0; } }",
                 "@import 'external.css';",
                 "@font-face { font-family: font; src: url(font.woff); }",
-                "@layer x { body {} }",
-                "@container (width > 1px) { body {} }",
                 "body { animation-name: unknown; }",
                 "body { animation: var(--animation); }",
                 "body { @media screen { color: red; } }",

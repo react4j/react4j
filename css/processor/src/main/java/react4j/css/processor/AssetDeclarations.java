@@ -58,7 +58,8 @@ final class AssetDeclarations {
                                 "react4j.css.CssId",
                                 "react4j.css.CssAnimation",
                                 "react4j.css.CssCustomProperty",
-                                "react4j.css.CssStable")
+                                "react4j.css.CssStable",
+                                "react4j.css.UtilityCss")
                         .contains(type)) {
                     throw new IllegalArgumentException(
                             "@Assets accessors must use only @Asset: " + method.getSimpleName());

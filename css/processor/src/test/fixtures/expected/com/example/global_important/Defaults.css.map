@@ -1,0 +1,1 @@
+{"version":3,"file":"Defaults.css","sources":["com/example/global_important/Defaults.java"],"sourcesContent":["package com.example.global_important;\n\nimport react4j.css.GlobalCss;\n\n@GlobalCss(\"\"\"\n    body { color: red !important; }\n    \"\"\")\nfinal class Defaults {}\n"],"names":[],"mappings":"AAKI,I,CAAO,qB,C"}

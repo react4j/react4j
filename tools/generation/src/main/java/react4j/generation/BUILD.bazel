@@ -3,6 +3,13 @@ load("//third_party/java:rules.bzl", "java_binary")
 package(default_visibility = ["//tools/generation:__pkg__"])
 
 java_binary(
+    name = "css_parser_sources",
+    srcs = ["CssParserSources.java"],
+    main_class = "react4j.generation.CssParserSources",
+    visibility = ["//third_party/css-parser:__pkg__"],
+)
+
+java_binary(
     name = "dom_generator",
     srcs = ["DomGenerator.java"],
     main_class = "react4j.generation.DomGenerator",

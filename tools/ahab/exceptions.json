@@ -78,6 +78,13 @@
       "requirement": "requires-network"
     },
     {
+      "reason": "The test runner and WebDriver require loopback connections; filesystem sandboxing remains enabled",
+      "kind": "execution_requirement",
+      "mnemonic": "TestRunner",
+      "target": "//examples/utility-css/src/test/js/react4j/utilitydemo:browser_tests",
+      "requirement": "requires-network"
+    },
+    {
       "reason": "The CSS integration browser test uses the existing WebDriver loopback runner; filesystem sandboxing remains enabled",
       "kind": "execution_requirement",
       "mnemonic": "TestRunner",

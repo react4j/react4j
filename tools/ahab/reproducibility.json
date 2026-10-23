@@ -67,6 +67,16 @@
       "spec": {
         "reproducibility": "always"
       }
+    },
+    "//css/processor/src/main/java/react4j/css/processor/css_inputs": {
+      "spec": {
+        "reproducibility": "always"
+      }
+    },
+    "//tools/generation/src/main/java/react4j/generation/css_parser_sources": {
+      "spec": {
+        "reproducibility": "always"
+      }
     }
   }
 }

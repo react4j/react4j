@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -18,6 +19,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -36,15 +38,22 @@ import javax.tools.StandardLocation;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.ElementsUtil;
+import react4j.css.internal.AssetResource;
+import react4j.css.internal.CssContainers;
 import react4j.css.internal.CssFontValues;
+import react4j.css.internal.CssInput;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
+import react4j.css.internal.CssTokens;
 import react4j.css.internal.SourceMap;
 
 /** Validates component CSS in the JVM, then emits static bindings and CSS resources. */
 @SupportedAnnotationTypes({
     "react4j.css.Css",
+    "react4j.css.UtilityCssLibrary",
+    "react4j.css.UtilityStyles",
+    "react4j.css.UtilityCss",
     "react4j.css.Assets",
     "react4j.css.Asset",
     "react4j.css.Keyframes",
@@ -61,6 +70,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
 
     private static final String CSS_ANNOTATION = "react4j.css.Css";
     private final Map<String, Set<String>> propertyNames = new HashMap<>();
+    private final Map<String, Map<String, String>> utilityInventories = new HashMap<>();
+    private final Map<String, FileInput> fileInputs = new HashMap<>();
 
     @Override
     protected String getOptionPrefix() {
@@ -87,6 +98,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                             && owner.getAnnotationMirrors().stream()
                                     .noneMatch(mirror -> List.of(
                                                     CSS_ANNOTATION,
+                                                    "react4j.css.UtilityCssLibrary",
+                                                    "react4j.css.UtilityStyles",
                                                     "react4j.css.Assets",
                                                     "react4j.css.GlobalCss",
                                                     "react4j.css.Keyframes",
@@ -111,7 +124,15 @@ public final class CssProcessor extends AbstractStandardProcessor {
 
     private void process(TypeElement owner) throws IOException {
         if (null != annotation(owner, "react4j.css.Assets")) {
-            for (var name : List.of("Css", "GlobalCss", "Keyframes", "CssStable", "CssImport", "CssImports")) {
+            for (var name : List.of(
+                    "Css",
+                    "GlobalCss",
+                    "Keyframes",
+                    "CssStable",
+                    "CssImport",
+                    "CssImports",
+                    "UtilityStyles",
+                    "UtilityCssLibrary")) {
                 if (null != annotation(owner, "react4j.css." + name)) {
                     throw new IllegalArgumentException("@Assets cannot be combined with @" + name);
                 }
@@ -142,12 +163,20 @@ public final class CssProcessor extends AbstractStandardProcessor {
             descriptor = resourceDescriptor(owner);
         }
         var imports = imports(owner, kind);
+        var utilities = utilitySelection(owner);
         var compiled = compileCss(owner, kind, descriptor, imports);
         if (null == compiled) {
             return;
         }
         var definitions = definitions(owner, kind, descriptor, compiled, imports);
-        var resolved = CssSymbols.resolve(compiled.output(), definitions);
+        var tokens = new ArrayList<>(CssTokens.read(compiled.output().css()));
+        if (Kind.UTILITY == kind) {
+            tokens.removeIf(token ->
+                    CssResource.SymbolKind.ANIMATION == token.kind() || CssResource.SymbolKind.FONT == token.kind());
+            tokens.addAll(compiled.names());
+            tokens.sort(Comparator.comparingInt(CssTokens.Token::start));
+        }
+        var resolved = CssSymbols.resolve(compiled.output(), definitions, tokens);
         var result = new CssCompiler.Result(
                 resolved.output(),
                 compiled.imports(),
@@ -155,7 +184,10 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 compiled.propertyImports(),
                 readable(compiled.ids(), CssResource.SymbolKind.ID, definitions),
                 readable(compiled.animations(), CssResource.SymbolKind.ANIMATION, definitions),
-                readable(compiled.fonts(), CssResource.SymbolKind.FONT, definitions));
+                readable(compiled.fonts(), CssResource.SymbolKind.FONT, definitions),
+                readable(compiled.containers(), CssResource.SymbolKind.CONTAINER, definitions),
+                compiled.names(),
+                compiled.dynamicFonts());
         for (var name : imports.properties().keySet().stream().sorted().toList()) {
             if (!result.propertyImports().contains(name)) {
                 throw new IllegalArgumentException("Unused custom property import: " + name);
@@ -179,7 +211,23 @@ public final class CssProcessor extends AbstractStandardProcessor {
         var bound = new ArrayList<CssResource.Binding>();
         if (null != descriptor) {
             validateStableImports(owner, descriptor, imports);
-            var values = bindings(descriptor, result, imports);
+            var values = new LinkedHashMap<>(bindings(descriptor, result, imports));
+            for (var accessor : descriptor.accessors()) {
+                if (!accessor.utilities().isEmpty()) {
+                    assert null != utilities;
+                    String method = accessor.method().getSimpleName().toString();
+                    var classes = new ArrayList<String>();
+                    for (var name : accessor.utilities()) {
+                        String utility = utilities.classes().get(name);
+                        if (null == utility) {
+                            throw new IllegalArgumentException("Unknown managed utility class: " + name);
+                        }
+                        classes.add(utility);
+                    }
+                    classes.add(values.get(method));
+                    values.put(method, String.join(" ", classes));
+                }
+            }
             var generated = CssGenerator.buildType(processingEnv, descriptor, values);
             emitTypeSpec(descriptor.packageName(), generated.type());
             implementation = generated.implementation();
@@ -189,14 +237,19 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         method,
                         CssResource.SymbolKind.valueOf(accessor.kind().name()),
                         Objects.requireNonNull(values.get(method)),
-                        bindingProviders(accessor, imports),
-                        composition(owner, accessor, imports)));
+                        accessor.utilities().isEmpty()
+                                ? bindingProviders(accessor, imports)
+                                : List.of(Objects.requireNonNull(utilities).owner()),
+                        composition(owner, accessor, imports, utilities)));
             }
         }
         String ownerName = binaryName(owner);
         String resource = CssResource.path(ownerName);
         String file = resource.substring(resource.lastIndexOf('/') + 1);
         var dependencies = new LinkedHashSet<>(imports.globals());
+        if (null != utilities) {
+            dependencies.add(utilities.owner());
+        }
         imports.named().entrySet().stream()
                 .filter(entry -> result.imports().contains(entry.getKey()))
                 .map(entry -> entry.getValue().owner())
@@ -219,9 +272,11 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 imports.globals(),
                 implementation,
                 bound,
-                symbols(owner, kind, descriptor, result, imports),
+                symbols(owner, kind, descriptor, result, imports, definitions),
                 resolved.occurrences(),
-                CssFontValues.uses(
+                fontUses(
+                        kind,
+                        compiled.dynamicFonts(),
                         resolved.output().css(),
                         definitions.values().stream()
                                 .map(CssSymbols.Definition::symbol)
@@ -247,6 +302,24 @@ public final class CssProcessor extends AbstractStandardProcessor {
         }
     }
 
+    private static List<CssResource.FontUse> fontUses(
+            Kind kind, List<Boolean> dynamic, String css, List<CssResource.SymbolId> fonts) {
+        var uses = CssFontValues.uses(css, fonts);
+        if (Kind.UTILITY != kind || uses.isEmpty()) {
+            return uses;
+        }
+        if (uses.size() != dynamic.size()) {
+            throw new IllegalArgumentException("Font dependency analysis differs from emitted declarations");
+        }
+        var retained = new ArrayList<CssResource.FontUse>();
+        for (int i = 0; i < uses.size(); i++) {
+            if (dynamic.get(i)) {
+                retained.add(uses.get(i));
+            }
+        }
+        return List.copyOf(retained);
+    }
+
     private static Map<String, String> readable(
             Map<String, String> values,
             CssResource.SymbolKind kind,
@@ -268,6 +341,19 @@ public final class CssProcessor extends AbstractStandardProcessor {
         String ownerName = binaryName(owner);
         String root = Names.root(ownerName);
         var definitions = new LinkedHashMap<CssSymbols.Key, CssSymbols.Definition>();
+        if (Kind.UTILITY == kind) {
+            var classes = utilityClasses(owner);
+            for (var token : CssTokens.read(result.output().css())) {
+                if (CssResource.SymbolKind.CLASS == token.kind() && classes.containsKey(token.name())) {
+                    definitions.put(
+                            new CssSymbols.Key(token.kind(), token.value()),
+                            new CssSymbols.Definition(
+                                    new CssResource.SymbolId(ownerName, token.kind(), token.name()),
+                                    classes.get(token.name()),
+                                    List.of()));
+                }
+            }
+        }
         if (Kind.COMPONENT == kind) {
             definitions.put(
                     new CssSymbols.Key(CssResource.SymbolKind.CLASS, root),
@@ -335,6 +421,13 @@ public final class CssProcessor extends AbstractStandardProcessor {
                             null == imported ? value : imported.cssName(),
                             null == imported ? List.of() : List.of(imported.owner())));
         });
+        result.containers()
+                .forEach((name, value) -> definitions.put(
+                        new CssSymbols.Key(CssResource.SymbolKind.CONTAINER, value),
+                        new CssSymbols.Definition(
+                                new CssResource.SymbolId(ownerName, CssResource.SymbolKind.CONTAINER, name),
+                                value,
+                                List.of())));
         imports.named().forEach((alias, imported) -> {
             boolean animation = Kind.KEYFRAMES == imported.kind();
             var symbolKind = animation ? CssResource.SymbolKind.ANIMATION : CssResource.SymbolKind.CLASS;
@@ -371,13 +464,23 @@ public final class CssProcessor extends AbstractStandardProcessor {
         };
     }
 
-    private List<CssResource.SymbolId> composition(TypeElement owner, CssAccessor accessor, Imports imports) {
+    private List<CssResource.SymbolId> composition(
+            TypeElement owner, CssAccessor accessor, Imports imports, @Nullable Utilities utilities) {
         var kind = CssResource.SymbolKind.valueOf(accessor.kind().name());
         String name = accessor.name();
         String provider = binaryName(owner);
         if (CssResource.SymbolKind.CLASS == kind) {
             var root = new CssResource.SymbolId(provider, kind, "");
-            return "style".equals(name) ? List.of(root) : List.of(root, new CssResource.SymbolId(provider, kind, name));
+            var symbols = new ArrayList<CssResource.SymbolId>();
+            for (var utility : accessor.utilities()) {
+                symbols.add(new CssResource.SymbolId(
+                        Objects.requireNonNull(utilities).owner(), kind, utility));
+            }
+            symbols.add(root);
+            if (!"style".equals(name)) {
+                symbols.add(new CssResource.SymbolId(provider, kind, name));
+            }
+            return List.copyOf(symbols);
         }
         if (CssResource.SymbolKind.PROPERTY == kind && imports.properties().containsKey(name)) {
             var binding = imports.properties().get(name).binding();
@@ -414,6 +517,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
             case COMPONENT -> CSS_ANNOTATION;
             case GLOBAL -> "react4j.css.GlobalCss";
             case KEYFRAMES -> "react4j.css.Keyframes";
+            case UTILITY -> "react4j.css.UtilityCssLibrary";
         };
     }
 
@@ -424,9 +528,13 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 kinds.add(kind);
             }
         }
+        if (null != annotation(owner, "react4j.css.UtilityStyles") && !kinds.contains(Kind.COMPONENT)) {
+            kinds.add(Kind.COMPONENT);
+        }
         if (1 != kinds.size()) {
             throw new IllegalArgumentException(
-                    "Declare exactly one of @Css, @GlobalCss or @Keyframes on a CSS definition");
+                    "Declare exactly one CSS definition kind: @Css/@UtilityStyles, @GlobalCss, @Keyframes or"
+                            + " @UtilityCssLibrary");
         }
         return kinds.get(0);
     }
@@ -517,12 +625,117 @@ public final class CssProcessor extends AbstractStandardProcessor {
         return selected;
     }
 
+    private record Utilities(String owner, Map<String, String> classes) {}
+
+    private @Nullable Utilities utilitySelection(TypeElement owner) {
+        var selected = annotation(owner, "react4j.css.UtilityStyles");
+        if (null == selected) {
+            return null;
+        }
+        Object target = value(selected, "value").getValue();
+        if (!(target instanceof TypeMirror type)
+                || !(processingEnv.getTypeUtils().asElement(type) instanceof TypeElement provider)
+                || ElementKind.CLASS != provider.getKind()
+                || null == annotation(provider, "react4j.css.UtilityCssLibrary")
+                || Kind.UTILITY != sourceKind(provider)) {
+            throw new IllegalArgumentException("@UtilityStyles must reference a @UtilityCssLibrary class");
+        }
+        if (null != Trees.instance(processingEnv).getPath(provider)) {
+            validateResourceType(provider);
+        }
+        return new Utilities(binaryName(provider), utilityClasses(provider));
+    }
+
+    private Map<String, String> utilityClasses(TypeElement owner) {
+        return utilityInventories.computeIfAbsent(binaryName(owner), ignored -> inferUtilityClasses(owner));
+    }
+
+    private Map<String, String> inferUtilityClasses(TypeElement owner) {
+        var library = Objects.requireNonNull(annotation(owner, "react4j.css.UtilityCssLibrary"));
+        var form = sourceForm(owner, Kind.UTILITY);
+        List<String> names;
+        if (form.file().isEmpty()) {
+            new CssSyntax(form.css(), 0).parse(CssSyntax.Mode.UTILITY);
+            names = CssTokens.read(form.css()).stream()
+                    .filter(token -> CssResource.SymbolKind.CLASS == token.kind())
+                    .map(CssTokens.Token::name)
+                    .distinct()
+                    .toList();
+        } else {
+            names = fileInput(owner, form.file()).classes();
+        }
+        var classes = new LinkedHashMap<String, String>();
+        for (var name : names) {
+            if (name.isEmpty() || name.chars().anyMatch(Character::isWhitespace)) {
+                throw new IllegalArgumentException("Utility class names must be nonempty class-list tokens");
+            }
+            classes.put(name, Names.root(binaryName(owner)) + "--class-" + Names.encode(name));
+        }
+        var external = new LinkedHashSet<String>();
+        for (var entry : (List<?>) value(library, "externalClasses").getValue()) {
+            var name = (String) ((AnnotationValue) entry).getValue();
+            if (!external.add(name)) {
+                throw new IllegalArgumentException("Duplicate external class: " + name);
+            }
+            if (null == classes.remove(name)) {
+                throw new IllegalArgumentException("Unknown external class: " + name);
+            }
+        }
+        return Map.copyOf(classes);
+    }
+
+    private Set<String> utilityExternalProperties(TypeElement owner) {
+        var mirror = Objects.requireNonNull(annotation(owner, "react4j.css.UtilityCssLibrary"));
+        var declared = (List<?>) value(mirror, "externalProperties").getValue();
+        if (declared.isEmpty()) {
+            return Set.of();
+        }
+        var candidates = CssTokens.read(sourceValue(owner, Kind.UTILITY)).stream()
+                .filter(token -> CssResource.SymbolKind.PROPERTY == token.kind()
+                        && token.name().startsWith("--"))
+                .map(token -> token.name().substring(2))
+                .collect(Collectors.toSet());
+        var external = new LinkedHashSet<String>();
+        for (var item : declared) {
+            var name = (String) ((AnnotationValue) item).getValue();
+            CssProperties.checkName(name);
+            if (!external.add(name)) {
+                throw new IllegalArgumentException("Duplicate external custom property: " + name);
+            }
+            if (!candidates.contains(name)) {
+                throw new IllegalArgumentException("Unknown external custom property: " + name);
+            }
+        }
+        return Set.copyOf(external);
+    }
+
+    private Set<String> utilityExternalNames(TypeElement owner, String field, boolean font) {
+        var mirror = Objects.requireNonNull(annotation(owner, "react4j.css.UtilityCssLibrary"));
+        var names = new LinkedHashSet<String>();
+        for (var item : (List<?>) value(mirror, field).getValue()) {
+            String name = (String) ((AnnotationValue) item).getValue();
+            if (font) {
+                name = CssFontValues.canonical(name);
+            } else if ("externalContainers".equals(field)) {
+                CssContainers.checkName(name);
+            } else if (name.isEmpty() || name.codePoints().anyMatch(Character::isISOControl)) {
+                throw new IllegalArgumentException("Invalid external animation: " + name);
+            }
+            if (!names.add(name)) {
+                throw new IllegalArgumentException("Duplicate " + field + " name: " + name);
+            }
+        }
+        return Set.copyOf(names);
+    }
+
     private TypeElement importTarget(AnnotationMirror mirror) {
         Object target = value(mirror, "value").getValue();
         if (!(target instanceof TypeMirror type)
                 || !(processingEnv.getTypeUtils().asElement(type) instanceof TypeElement element)
                 || ElementKind.CLASS != element.getKind()
                 || (null == annotation(element, CSS_ANNOTATION)
+                        && null == annotation(element, "react4j.css.UtilityCssLibrary")
+                        && null == annotation(element, "react4j.css.UtilityStyles")
                         && null == annotation(element, "react4j.css.GlobalCss")
                         && null == annotation(element, "react4j.css.Keyframes")
                         && null == annotation(element, "react4j.css.Assets"))) {
@@ -536,17 +749,19 @@ public final class CssProcessor extends AbstractStandardProcessor {
     }
 
     private CssProperties.Binding resolveProperty(TypeElement owner, String name, Set<String> visiting) {
+        if (Kind.UTILITY == sourceKind(owner)
+                && utilityExternalProperties(owner).contains(name)) {
+            throw new IllegalArgumentException(
+                    "External custom property cannot be imported as an owned symbol: " + name);
+        }
         String key = binaryName(owner) + "#" + name;
         if (!visiting.add(key)) {
             throw new IllegalArgumentException("Cyclic custom property import without an owner: " + key);
         }
-        var css = annotation(owner, annotationName(sourceKind(owner)));
-        assert null != css;
         if (!propertyNames
                 .computeIfAbsent(
                         binaryName(owner),
-                        ignored ->
-                                CssProperties.names((String) value(css, "value").getValue(), sourceKind(owner)))
+                        ignored -> CssProperties.names(sourceValue(owner, sourceKind(owner)), sourceKind(owner)))
                 .contains(name)) {
             throw new IllegalArgumentException("Unknown custom property " + name + " in " + binaryName(owner));
         }
@@ -589,10 +804,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
             }
         }
         Kind kind = sourceKind(owner);
-        var css = annotation(owner, annotationName(kind));
-        assert null != css;
-        boolean occurs = CssIds.names((String) value(css, "value").getValue(), kind, Set.of(name))
-                .contains(name);
+        boolean occurs =
+                CssIds.names(sourceValue(owner, kind), kind, Set.of(name)).contains(name);
         for (var mirror : importMirrors(owner)) {
             var id = (String) value(mirror, "id").getValue();
             var alias = (String) value(mirror, "name").getValue();
@@ -625,9 +838,11 @@ public final class CssProcessor extends AbstractStandardProcessor {
             throw new IllegalArgumentException("Cyclic font import without an owner: " + key);
         }
         Kind kind = sourceKind(owner);
-        var annotation = annotation(owner, annotationName(kind));
-        assert null != annotation;
-        if (CssFonts.names((String) value(annotation, "value").getValue(), kind).contains(name)) {
+        if (Kind.UTILITY == kind
+                && utilityExternalNames(owner, "externalFonts", true).contains(name)) {
+            throw new IllegalArgumentException("External font cannot be imported as an owned symbol: " + name);
+        }
+        if (CssFonts.names(sourceValue(owner, kind), kind).contains(name)) {
             visiting.remove(key);
             return new CssFonts.Import(ownerName, name, stable(owner, CssResource.SymbolKind.FONT, name));
         }
@@ -705,6 +920,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 if (null != properties.putIfAbsent(local, new CssProperties.Import(name, binding))) {
                     throw new IllegalArgumentException("Duplicate imported custom property: " + local);
                 }
+            } else if (Kind.UTILITY == targetKind) {
+                throw new IllegalArgumentException(
+                        "Utility libraries require @UtilityStyles or a checked symbol import");
             } else if (Kind.KEYFRAMES == kind) {
                 throw new IllegalArgumentException(
                         "@CssImport is only supported on stylesheet definitions unless importing a property or ID");
@@ -787,6 +1005,10 @@ public final class CssProcessor extends AbstractStandardProcessor {
             if (null != annotation(inherited.declaration(), "react4j.css.Asset")) {
                 throw new IllegalArgumentException("@Asset methods require an @Assets definition");
             }
+            if (null != annotation(inherited.declaration(), "react4j.css.UtilityCss")
+                    && null == annotation(owner, "react4j.css.UtilityStyles")) {
+                throw new IllegalArgumentException("@UtilityCss accessors require @UtilityStyles");
+            }
             if (!method.getModifiers().contains(Modifier.ABSTRACT)) {
                 if (null != symbolAnnotation(inherited.declaration())
                         || null != annotation(inherited.declaration(), "react4j.css.CssStable")) {
@@ -821,7 +1043,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
 
     private @Nullable AnnotationMirror symbolAnnotation(Element member) {
         AnnotationMirror found = null;
-        for (var name : List.of("CssId", "CssAnimation", "CssCustomProperty")) {
+        for (var name : List.of("CssId", "CssAnimation", "CssCustomProperty", "UtilityCss")) {
             var annotation = annotation(member, "react4j.css." + name);
             if (null != annotation) {
                 if (null != found) {
@@ -840,6 +1062,23 @@ public final class CssProcessor extends AbstractStandardProcessor {
         for (var inherited : methods) {
             var method = inherited.element();
             var annotation = symbolAnnotation(inherited.declaration());
+            if (null != annotation
+                    && "react4j.css.UtilityCss"
+                            .equals(annotation.getAnnotationType().toString())) {
+                var value = (String) value(annotation, "value").getValue();
+                var utilities = Arrays.stream(value.split("[\\t\\n\\r\\f ]+"))
+                        .filter(token -> !token.isEmpty())
+                        .toList();
+                if (utilities.isEmpty()) {
+                    throw new IllegalArgumentException("@UtilityCss requires a nonempty class list");
+                }
+                if (new LinkedHashSet<>(utilities).size() != utilities.size()) {
+                    throw new IllegalArgumentException("@UtilityCss classes must be distinct");
+                }
+                accessors.add(new CssAccessor(
+                        method, CssAccessor.Kind.CLASS, method.getSimpleName().toString(), utilities));
+                continue;
+            }
             var kind = null == annotation
                     ? CssAccessor.Kind.CLASS
                     : switch (annotation.getAnnotationType().toString()) {
@@ -895,6 +1134,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
         var inheritedMethods = CssMethods.collect(processingEnv, owner);
         for (var inherited : inheritedMethods) {
             var method = inherited.element();
+            if (null != annotation(inherited.declaration(), "react4j.css.UtilityCss")) {
+                throw new IllegalArgumentException("@UtilityCss accessors require @UtilityStyles");
+            }
             if (null != annotation(inherited.declaration(), "react4j.css.Asset")) {
                 throw new IllegalArgumentException("@Asset methods require an @Assets definition");
             }
@@ -980,12 +1222,16 @@ public final class CssProcessor extends AbstractStandardProcessor {
             var symbolKind = null == annotation
                     ? CssResource.SymbolKind.CLASS
                     : switch (annotation.getAnnotationType().toString()) {
+                        case "react4j.css.UtilityCss" -> CssResource.SymbolKind.CLASS;
                         case "react4j.css.CssId" -> CssResource.SymbolKind.ID;
                         case "react4j.css.CssAnimation" -> CssResource.SymbolKind.ANIMATION;
                         default -> CssResource.SymbolKind.PROPERTY;
                     };
-            String symbolName =
-                    null == annotation ? declaration.getSimpleName().toString() : symbolName(declaration, annotation);
+            String symbolName = null == annotation
+                            || "react4j.css.UtilityCss"
+                                    .equals(annotation.getAnnotationType().toString())
+                    ? declaration.getSimpleName().toString()
+                    : symbolName(declaration, annotation);
             if (CssResource.SymbolKind.CLASS == symbolKind && "style".equals(symbolName)
                     || CssResource.SymbolKind.ANIMATION == symbolKind && Kind.KEYFRAMES == sourceKind(owner)) {
                 symbolName = "";
@@ -1025,8 +1271,19 @@ public final class CssProcessor extends AbstractStandardProcessor {
             Kind kind,
             @Nullable CssDescriptor descriptor,
             CssCompiler.Result result,
-            Imports imports) {
+            Imports imports,
+            Map<CssSymbols.Key, CssSymbols.Definition> definitions) {
         var symbols = new ArrayList<CssResource.Symbol>();
+        if (Kind.UTILITY == kind) {
+            definitions.values().stream()
+                    .filter(d -> CssResource.SymbolKind.CLASS == d.symbol().kind())
+                    .distinct()
+                    .forEach(d -> symbols.add(new CssResource.Symbol(
+                            d.symbol().kind(),
+                            d.symbol().name(),
+                            d.readable(),
+                            stable(owner, d.symbol().kind(), d.symbol().name()))));
+        }
         if (Kind.COMPONENT == kind) {
             String root = Names.root(binaryName(owner));
             symbols.add(new CssResource.Symbol(
@@ -1070,6 +1327,12 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         CssResource.SymbolKind.FONT, name, value, stable(owner, CssResource.SymbolKind.FONT, name)));
             }
         });
+        result.containers()
+                .forEach((name, value) -> symbols.add(new CssResource.Symbol(
+                        CssResource.SymbolKind.CONTAINER,
+                        name,
+                        value,
+                        stable(owner, CssResource.SymbolKind.CONTAINER, name))));
         return symbols.stream()
                 .sorted(Comparator.comparing(CssResource.Symbol::kind).thenComparing(CssResource.Symbol::name))
                 .toList();
@@ -1081,15 +1344,173 @@ public final class CssProcessor extends AbstractStandardProcessor {
 
     private CssCompiler.@Nullable Result compileCss(
             TypeElement owner, Kind kind, @Nullable CssDescriptor descriptor, Imports imports) throws IOException {
+        if (Kind.COMPONENT == kind && null == annotation(owner, CSS_ANNOTATION)) {
+            assert null != descriptor;
+            return CssCompiler.component(
+                    "",
+                    descriptor.rootClassName(),
+                    exports(descriptor),
+                    offset -> new SourceMap.Location(binaryName(owner), "", 0, 0),
+                    imports.named(),
+                    imports.properties(),
+                    imports.ids(),
+                    new CssCompiler.Resources(imports.assets(), imports.fonts()));
+        }
+        var input = input(owner, kind);
+        try {
+            if (Kind.UTILITY == kind) {
+                return CssCompiler.utility(
+                        input.css(),
+                        Names.root(binaryName(owner)),
+                        exports(descriptor),
+                        input.locations(),
+                        utilityClasses(owner).keySet(),
+                        utilityExternalProperties(owner),
+                        utilityExternalNames(owner, "externalAnimations", false),
+                        utilityExternalNames(owner, "externalFonts", true),
+                        utilityExternalNames(owner, "externalContainers", false),
+                        imports.named(),
+                        imports.properties(),
+                        imports.ids(),
+                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
+            }
+            if (Kind.KEYFRAMES == kind) {
+                return CssCompiler.keyframes(
+                        input.css(),
+                        Names.root(binaryName(owner)),
+                        exports(descriptor),
+                        input.locations(),
+                        imports.properties(),
+                        imports.ids(),
+                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
+            }
+            if (Kind.GLOBAL == kind) {
+                return CssCompiler.global(
+                        input.css(),
+                        Names.root(binaryName(owner)),
+                        exports(descriptor),
+                        input.locations(),
+                        imports.named(),
+                        imports.properties(),
+                        imports.ids(),
+                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
+            }
+            assert null != descriptor;
+            return CssCompiler.component(
+                    input.css(),
+                    descriptor.rootClassName(),
+                    exports(descriptor),
+                    input.locations(),
+                    imports.named(),
+                    imports.properties(),
+                    imports.ids(),
+                    new CssCompiler.Resources(imports.assets(), imports.fonts()));
+        } catch (CssSyntax.InvalidCss e) {
+            var origin =
+                    input.locations().apply(Math.max(0, Math.min(input.css().length(), e.offset())));
+            String location = input.diagnosticPath() + ":" + (origin.line() + 1) + ":" + (origin.column() + 1);
+            processingEnv
+                    .getMessager()
+                    .printMessage(
+                            Diagnostic.Kind.ERROR,
+                            location + ": " + e.getMessage(),
+                            owner,
+                            input.annotation(),
+                            input.value());
+            return null;
+        }
+    }
+
+    private record SourceForm(String css, String file) {}
+
+    private SourceForm sourceForm(TypeElement owner, Kind kind) {
+        var mirror = Objects.requireNonNull(annotation(owner, annotationName(kind)));
+        var css = (String) value(mirror, "value").getValue();
+        if (Kind.GLOBAL != kind && Kind.UTILITY != kind) {
+            return new SourceForm(css, "");
+        }
+        var file = (String) value(mirror, "file").getValue();
+        boolean inline = mirror.getElementValues().keySet().stream()
+                .anyMatch(key -> key.getSimpleName().contentEquals("value"));
+        boolean fromFile = mirror.getElementValues().keySet().stream()
+                .anyMatch(key -> key.getSimpleName().contentEquals("file"));
+        if (inline == fromFile || fromFile && file.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "CSS definitions require exactly one literal text block or nonempty file");
+        }
+        if (fromFile) {
+            AssetResource.validatePath(file);
+        }
+        return new SourceForm(css, file);
+    }
+
+    private record FileInput(String path, String css, List<String> classes) {}
+
+    private FileInput fileInput(TypeElement owner, String file) {
+        String path = AssetResource.resolve(binaryName(owner), file);
+        return fileInputs.computeIfAbsent(path, ignored -> {
+            try {
+                String resource = CssInput.path(path);
+                String css;
+                String catalogue;
+                try (var input = processingEnv
+                        .getFiler()
+                        .getResource(StandardLocation.CLASS_PATH, "", resource)
+                        .openInputStream()) {
+                    css = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+                }
+                try (var input = processingEnv
+                        .getFiler()
+                        .getResource(StandardLocation.CLASS_PATH, "", resource + ".classes.json")
+                        .openInputStream()) {
+                    catalogue = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+                }
+                return new FileInput(path, css, CssInput.classes(path, css, catalogue));
+            } catch (IOException e) {
+                throw new IllegalArgumentException(
+                        "Missing declared CSS input or catalogue: " + path + ": " + e.getMessage(), e);
+            }
+        });
+    }
+
+    private String sourceValue(TypeElement owner, Kind kind) {
+        var form = sourceForm(owner, kind);
+        return form.file().isEmpty()
+                ? form.css()
+                : CssInput.normalize(fileInput(owner, form.file()).css());
+    }
+
+    private record Input(
+            String css,
+            IntFunction<SourceMap.Location> locations,
+            String diagnosticPath,
+            AnnotationMirror annotation,
+            AnnotationValue value) {}
+
+    private Input input(TypeElement owner, Kind kind) throws IOException {
+        var form = sourceForm(owner, kind);
+        var mirror = Objects.requireNonNull(annotation(owner, annotationName(kind)));
+        if (!form.file().isEmpty()) {
+            var file = fileInput(owner, form.file());
+            String css = CssInput.normalize(file.css());
+            int[] lines = new int[css.length() + 1];
+            int[] columns = new int[lines.length];
+            for (int i = 0; i < css.length(); i++) {
+                boolean newline = '\n' == css.charAt(i);
+                lines[i + 1] = lines[i] + (newline ? 1 : 0);
+                columns[i + 1] = newline ? 0 : columns[i] + 1;
+            }
+            return new Input(
+                    css,
+                    offset -> new SourceMap.Location(file.path(), file.css(), lines[offset], columns[offset]),
+                    file.path(),
+                    mirror,
+                    value(mirror, "file"));
+        }
         var trees = Trees.instance(processingEnv);
-        var annotation = owner.getAnnotationMirrors().stream()
-                .filter(a -> annotationName(kind).equals(a.getAnnotationType().toString()))
-                .findFirst()
-                .orElseThrow();
-        var value = value(annotation, "value");
-        var path = trees.getPath(owner);
-        var unit = path.getCompilationUnit();
-        var literal = trees.getTree(owner, annotation, value);
+        var value = value(mirror, "value");
+        var unit = trees.getPath(owner).getCompilationUnit();
+        var literal = trees.getTree(owner, mirror, value);
         if (!(literal instanceof LiteralTree text) || !(text.getValue() instanceof String css)) {
             throw new IllegalArgumentException("@" + annotationName(kind).substring("react4j.css.".length())
                     + " requires a literal Java text block; constants and concatenation are unsupported");
@@ -1098,63 +1519,26 @@ public final class CssProcessor extends AbstractStandardProcessor {
         var start = (int) trees.getSourcePositions().getStartPosition(unit, literal);
         var end = (int) trees.getSourcePositions().getEndPosition(unit, literal);
         var block = TextBlock.decode(source.substring(start, end), start, css);
-        String sourceName = processingEnv
+        String packageName = processingEnv
                 .getElementUtils()
                 .getPackageOf(owner)
                 .getQualifiedName()
                 .toString()
                 .replace('.', '/');
-        sourceName = (sourceName.isEmpty() ? "" : sourceName + "/")
+        String mappedSource = (packageName.isEmpty() ? "" : packageName + "/")
                 + Path.of(unit.getSourceFile().getName()).getFileName();
-        final String mappedSource = sourceName;
-        try {
-            IntFunction<SourceMap.Location> locations = offset -> {
-                int original = block.offsets()[Math.min(offset, block.value().length())];
-                long line = unit.getLineMap().getLineNumber(original);
-                return new SourceMap.Location(mappedSource, source, (int) line - 1, (int)
-                        (original - unit.getLineMap().getStartPosition(line)));
-            };
-            if (Kind.KEYFRAMES == kind) {
-                return CssCompiler.keyframes(
-                        block.value(),
-                        Names.root(binaryName(owner)),
-                        exports(descriptor),
-                        locations,
-                        imports.properties(),
-                        imports.ids(),
-                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
-            }
-            if (Kind.GLOBAL == kind) {
-                return CssCompiler.global(
-                        block.value(),
-                        Names.root(binaryName(owner)),
-                        exports(descriptor),
-                        locations,
-                        imports.named(),
-                        imports.properties(),
-                        imports.ids(),
-                        new CssCompiler.Resources(imports.assets(), imports.fonts()));
-            }
-            assert null != descriptor;
-            return CssCompiler.component(
-                    block.value(),
-                    descriptor.rootClassName(),
-                    exports(descriptor),
-                    locations,
-                    imports.named(),
-                    imports.properties(),
-                    imports.ids(),
-                    new CssCompiler.Resources(imports.assets(), imports.fonts()));
-        } catch (CssSyntax.InvalidCss e) {
-            int offset = block.offsets()[Math.max(0, Math.min(block.value().length(), e.offset()))];
-            String location =
-                    unit.getSourceFile().getName() + ":" + unit.getLineMap().getLineNumber(offset) + ":"
-                            + unit.getLineMap().getColumnNumber(offset);
-            processingEnv
-                    .getMessager()
-                    .printMessage(Diagnostic.Kind.ERROR, location + ": " + e.getMessage(), owner, annotation, value);
-            return null;
-        }
+        return new Input(
+                block.value(),
+                offset -> {
+                    int original =
+                            block.offsets()[Math.min(offset, block.value().length())];
+                    long line = unit.getLineMap().getLineNumber(original);
+                    return new SourceMap.Location(mappedSource, source, (int) line - 1, (int)
+                            (original - unit.getLineMap().getStartPosition(line)));
+                },
+                unit.getSourceFile().getName(),
+                mirror,
+                value);
     }
 
     private boolean isType(TypeMirror type, String name) {

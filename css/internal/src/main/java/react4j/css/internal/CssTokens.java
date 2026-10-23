@@ -2,10 +2,12 @@ package react4j.css.internal;
 
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.CSSDeclaration;
+import com.helger.css.decl.CSSExpression;
 import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSExpressionMemberTermURI;
 import com.helger.css.decl.CSSKeyframesRule;
+import com.helger.css.decl.CSSPropertyRule;
 import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorAttribute;
 import com.helger.css.decl.CSSSelectorMemberFunctionLike;
@@ -18,14 +20,13 @@ import com.helger.css.decl.CSSSelectorMemberPseudoWhere;
 import com.helger.css.decl.CSSSelectorMemberSlotted;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSSupportsRule;
+import com.helger.css.decl.CSSUnknownRule;
 import com.helger.css.decl.ECSSAttributeCase;
 import com.helger.css.decl.ECSSAttributeOperator;
 import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.parser.CSSParseHelper;
-import com.helger.css.reader.CSSReader;
-import com.helger.css.reader.CSSReaderSettings;
-import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
+import com.helger.css.parser.ParserCSS30Constants;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -155,8 +156,7 @@ public final class CssTokens {
         var attributes = new ArrayList<Attribute>();
         var tokens = new ArrayList<Token>();
         var syntax = new CssSyntax(css, 0);
-        var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
-                css, new CSSReaderSettings().setTabSize(1).setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+        var sheet = syntax.parse(CssSyntax.Mode.PROCESSED);
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
             private int start(ICSSSourceLocationAware node) {
                 var location = Objects.requireNonNull(node.getSourceLocation());
@@ -185,6 +185,31 @@ public final class CssTokens {
                         var reference = attribute(attribute);
                         if (null != reference) {
                             attributes.add(reference);
+                        }
+                        String className = CssSelectors.classToken(attribute);
+                        if (null != className) {
+                            var location = Objects.requireNonNull(attribute.getSourceLocation());
+                            int last = syntax.offset(
+                                            location.getLastTokenEndLineNumber(),
+                                            location.getLastTokenEndColumnNumber())
+                                    + 1;
+                            boolean value = false;
+                            for (var part : CssLexical.tokens(css, start(attribute), last)) {
+                                if (value && !part.value().isBlank()) {
+                                    String raw = part.value();
+                                    int first = part.start();
+                                    if (raw.startsWith("'") || raw.startsWith("\"")) {
+                                        first++;
+                                        raw = raw.substring(1, raw.length() - 1);
+                                    }
+                                    tokens.add(
+                                            new Token(SymbolKind.CLASS, first, first + raw.length(), raw, className));
+                                    break;
+                                }
+                                if ("~=".equals(part.value())) {
+                                    value = true;
+                                }
+                            }
                         }
                     } else if (member instanceof CSSSelectorMemberNot function) {
                         function.getAllSelectors().forEach(this::selector);
@@ -238,29 +263,8 @@ public final class CssTokens {
                 tokens.add(new Token(SymbolKind.ID, first, last, raw, fragmentName(uri)));
             }
 
-            @Override
-            public void onDeclaration(CSSDeclaration declaration) {
-                String property = CSSParseHelper.unescapeURL(declaration.getProperty());
-                if (property.startsWith("--")) {
-                    token(SymbolKind.PROPERTY, start(declaration), declaration.getProperty());
-                }
-                boolean animation =
-                        "animation".equalsIgnoreCase(property) || "animation-name".equalsIgnoreCase(property);
-                if (animation) {
-                    for (var member : declaration.getExpression().getAllMembers()) {
-                        if (member instanceof CSSExpressionMemberTermSimple simple) {
-                            token(SymbolKind.ANIMATION, start(simple), simple.getValue());
-                        }
-                    }
-                }
-                for (var family : CssFontValues.read(declaration).families()) {
-                    var terms = family.terms();
-                    int first = start(terms.get(0));
-                    var last = terms.get(terms.size() - 1);
-                    int end = start(last) + last.getValue().length();
-                    tokens.add(new Token(SymbolKind.FONT, first, end, css.substring(first, end), family.name()));
-                }
-                CssExpressions.visit(declaration.getExpression(), member -> {
+            private void expression(CSSExpression tree) {
+                CssExpressions.visit(tree, member -> {
                     if (member instanceof CSSExpressionMemberFunction function
                             && "var".equalsIgnoreCase(CSSParseHelper.unescapeURL(function.getFunctionName()))) {
                         var expression = function.getExpression();
@@ -300,20 +304,94 @@ public final class CssTokens {
             }
 
             @Override
+            public void onDeclaration(CSSDeclaration declaration) {
+                String property = CSSParseHelper.unescapeURL(declaration.getProperty());
+                if (property.startsWith("--")) {
+                    token(SymbolKind.PROPERTY, start(declaration), declaration.getProperty());
+                }
+                for (var target : CssPropertyValues.names(declaration)) {
+                    token(SymbolKind.PROPERTY, start(target), target.getValue());
+                }
+                boolean animation =
+                        "animation".equalsIgnoreCase(property) || "animation-name".equalsIgnoreCase(property);
+                if (animation) {
+                    for (var member : declaration.getExpression().getAllMembers()) {
+                        if (member instanceof CSSExpressionMemberTermSimple simple) {
+                            token(SymbolKind.ANIMATION, start(simple), simple.getValue());
+                        }
+                    }
+                }
+                for (var family : CssFontValues.read(declaration).families()) {
+                    var terms = family.terms();
+                    int first = start(terms.get(0));
+                    var last = terms.get(terms.size() - 1);
+                    int end = start(last) + last.getValue().length();
+                    tokens.add(new Token(SymbolKind.FONT, first, end, css.substring(first, end), family.name()));
+                }
+                for (var container : CssContainers.read(declaration).names()) {
+                    token(SymbolKind.CONTAINER, start(container), container.getValue());
+                }
+                expression(declaration.getExpression());
+            }
+
+            @Override
             public void onBeginSupportsRule(CSSSupportsRule rule) {
                 CssExpressions.supports(rule.getAllSupportConditionMembers(), this::onDeclaration);
             }
 
             @Override
-            public void onBeginKeyframesRule(CSSKeyframesRule rule) {
-                String header = "@keyframes " + rule.getAnimationName();
-                int offset = start(rule);
-                if (!css.startsWith(header, offset)) {
-                    throw new IllegalArgumentException("Generated keyframes header differs from its parsed location");
+            public void onBeginPropertyRule(CSSPropertyRule rule) {
+                var location = Objects.requireNonNull(rule.getSourceLocation());
+                int end =
+                        syntax.offset(location.getLastTokenEndLineNumber(), location.getLastTokenEndColumnNumber()) + 1;
+                boolean found = false;
+                for (var identifier : CssLexical.tokens(css, start(rule), end)) {
+                    if ((ParserCSS30Constants.IDENT == identifier.kind()
+                                    || ParserCSS30Constants.DASHED_IDENT == identifier.kind())
+                            && identifier.name().startsWith("--")) {
+                        token(SymbolKind.PROPERTY, identifier.start(), identifier.value());
+                        found = true;
+                        break;
+                    }
                 }
-                token(SymbolKind.ANIMATION, offset + "@keyframes ".length(), rule.getAnimationName());
+                if (!found) {
+                    throw syntax.invalid("Property registration requires an identifier", rule);
+                }
+                for (var descriptor : rule.getAllDeclarations()) {
+                    expression(descriptor.getExpression());
+                }
+            }
+
+            @Override
+            public void onUnknownRule(CSSUnknownRule rule) {
+                for (var reference : CssConditions.read(css, rule).references()) {
+                    token(
+                            reference.property() ? SymbolKind.PROPERTY : SymbolKind.CONTAINER,
+                            reference.start(),
+                            reference.value());
+                }
+            }
+
+            @Override
+            public void onBeginKeyframesRule(CSSKeyframesRule rule) {
+                var location = Objects.requireNonNull(rule.getSourceLocation());
+                int last =
+                        syntax.offset(location.getLastTokenEndLineNumber(), location.getLastTokenEndColumnNumber()) + 1;
+                var header = CssLexical.tokens(css, start(rule), last).stream()
+                        .filter(token -> !token.value().isBlank())
+                        .toList();
+                var identifier = header.get(1);
+                token(SymbolKind.ANIMATION, identifier.start(), identifier.value());
             }
         });
+        for (var target : CssPropertyValues.carriedNames(sheet)) {
+            var location = Objects.requireNonNull(target.getSourceLocation());
+            int first =
+                    syntax.offset(location.getFirstTokenBeginLineNumber(), location.getFirstTokenBeginColumnNumber());
+            String value = target.getValue();
+            tokens.add(new Token(
+                    SymbolKind.PROPERTY, first, first + value.length(), value, name(SymbolKind.PROPERTY, value)));
+        }
         return new Parsed(
                 tokens.stream()
                         .distinct()

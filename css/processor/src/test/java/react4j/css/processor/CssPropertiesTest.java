@@ -35,6 +35,16 @@ public final class CssPropertiesTest {
     }
 
     @Test
+    public void staticTransitionTargetsFailBeforeRenamingSharedData() {
+        var error = expectThrows(
+                CssSyntax.InvalidCss.class,
+                () -> component(
+                        "--targets:--angle;transition:var(--targets) 1s;list-style-type:var(--targets);", Map.of()));
+        assertTrue(String.valueOf(error.getMessage())
+                .contains("Managed transition targets in static variable definitions"));
+    }
+
+    @Test
     public void declarationsNestedFallbacksAndRuntimeOnlySymbolsShareOwnership() {
         String css = "--accent: red; color: VAR(--accent,var(--fallback,blue)); left: calc(var(--left) * 1px); content:"
                 + " '--accent';";
@@ -109,7 +119,7 @@ public final class CssPropertiesTest {
             String body = "--x: red; color: v\\61 r(--y);";
             String css = Kind.COMPONENT == kind
                     ? body
-                    : Kind.GLOBAL == kind ? "body { " + body + " }" : "to { " + body + " }";
+                    : (Kind.GLOBAL == kind || Kind.UTILITY == kind) ? "body { " + body + " }" : "to { " + body + " }";
             assertEquals(CssProperties.names(css, kind), Set.of("x", "y"));
         }
         String css = "@keyframes pulse {to {--x: red; color: var(--y);}} @supports ((--z: red) and (color: var(--w))) {"

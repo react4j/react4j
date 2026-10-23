@@ -10,21 +10,43 @@ package(default_visibility = [
 ])
 
 java_j2cl_library(
+    name = "utility_dependency",
+    srcs = [
+        "UtilityLibraryB.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        "//css/core",
+        "//css/examples/save-button/src/main/css/react4j/css/example:utility_inputs_java",
+    ],
+    plugins = ["//:css_processor"],
+    deps = [
+        "//:css",
+        "//css/examples/save-button/src/main/css/react4j/css/example:utility_inputs",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
     name = "browser",
     srcs = [
         "BrowserExample.java",
         "package-info.java",
     ],
     java_deps = [
+        ":utility_dependency_java",
+        "//css/examples/save-button/src/main/css/react4j/css/example:utility_inputs_java",
         "//css/core",
         "//:_core_java",
         "//:_dom_java",
     ],
     plugins = ["//:css_processor"],
     deps = [
+        ":utility_dependency",
         "//:core",
         "//:css",
         "//:dom",
+        "//css/examples/save-button/src/main/css/react4j/css/example:utility_inputs",
         "//third_party:jsinterop_annotations-j2cl",
         "//third_party:jspecify-j2cl",
     ],
@@ -34,12 +56,14 @@ java_j2cl_library(
     name = "assets",
     srcs = ["AssetsExample.java"],
     java_deps = [
+        ":browser_java",
         "//css/core",
         "//:_core_java",
         "//:_dom_java",
     ],
     plugins = ["//:css_processor"],
     deps = [
+        ":browser",
         "//:core",
         "//:css",
         "//:dom",

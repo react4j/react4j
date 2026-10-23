@@ -10,17 +10,34 @@ import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.parsing.parser.Parser;
+import com.google.javascript.jscomp.parsing.parser.TokenType;
+import com.google.javascript.jscomp.parsing.parser.trees.BlockTree;
+import com.google.javascript.jscomp.parsing.parser.trees.CallExpressionTree;
+import com.google.javascript.jscomp.parsing.parser.trees.ExpressionStatementTree;
+import com.google.javascript.jscomp.parsing.parser.trees.FunctionDeclarationTree;
+import com.google.javascript.jscomp.parsing.parser.trees.LiteralExpressionTree;
+import com.google.javascript.jscomp.parsing.parser.trees.MemberExpressionTree;
+import com.google.javascript.jscomp.parsing.parser.trees.ParenExpressionTree;
+import com.google.javascript.jscomp.parsing.parser.trees.ParseTree;
+import com.google.javascript.jscomp.parsing.parser.trees.ProgramTree;
+import com.google.javascript.jscomp.parsing.parser.trees.ReturnStatementTree;
+import com.google.javascript.jscomp.parsing.parser.trees.UnaryExpressionTree;
+import com.google.javascript.jscomp.parsing.parser.util.ErrorReporter;
+import com.google.javascript.jscomp.parsing.parser.util.SourcePosition;
 import com.google.javascript.rhino.Node;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.jspecify.annotations.Nullable;
@@ -31,13 +48,14 @@ import react4j.css.linker.BindingSourceMap;
 
 final class AssetJavaScript {
     private static final String TOKEN_PREFIX = "react4j-asset:";
-    private static final Pattern ASSET_TOKEN = assetToken();
+    private static final Pattern ASSET_TOKEN = assetToken(TOKEN_PREFIX);
+    private static final Pattern READABLE_ASSET = assetToken("asset:");
 
     private AssetJavaScript() {}
 
-    private static Pattern assetToken() {
+    private static Pattern assetToken(String prefix) {
         var expression = new StringBuilder();
-        for (char value : TOKEN_PREFIX.toCharArray()) {
+        for (char value : prefix.toCharArray()) {
             if (!expression.isEmpty()) {
                 expression.append("(?:\\\\(?:\\r\\n|[\\r\\n\\u2028\\u2029]))*+");
             }
@@ -96,7 +114,7 @@ final class AssetJavaScript {
             throw new IllegalArgumentException("Invalid linked JavaScript: " + compiler.getErrors());
         }
         var names = new HashSet<String>();
-        var literals = new ArrayList<Node>();
+        var literals = new ArrayList<Literal>();
         var origins = new SourceMapConsumerV3();
         try {
             origins.parse(map.toString());
@@ -115,18 +133,50 @@ final class AssetJavaScript {
             public void visit(NodeTraversal traversal, Node node, @Nullable Node parent) {
                 if (node.isName()) {
                     names.add(node.getString());
-                } else if (node.isStringLit() && urls.containsKey(node.getString())) {
+                }
+            }
+        });
+        // Node columns saturate at 4095. The parser's public trees retain exact token ranges.
+        var program = Objects.requireNonNull(new Parser(
+                        new Parser.Config(),
+                        new ErrorReporter() {
+                            @Override
+                            protected void reportError(SourcePosition position, String message) {
+                                throw new IllegalArgumentException("Invalid linked JavaScript: " + message);
+                            }
+
+                            @Override
+                            protected void reportWarning(SourcePosition position, String message) {}
+                        },
+                        new com.google.javascript.jscomp.parsing.parser.SourceFile("app.js", javascript))
+                .parseProgram());
+        var decoded = new HashMap<String, String>();
+        visit(program, null, (tree, parent) -> {
+            if (tree instanceof LiteralExpressionTree expression && TokenType.STRING == expression.literalToken.type) {
+                String raw = expression.literalToken.asLiteral().value;
+                if (!ASSET_TOKEN.matcher(raw).find()
+                        && !READABLE_ASSET.matcher(raw).find()) {
+                    return;
+                }
+                String value = decoded.computeIfAbsent(raw, literal -> {
+                    var parsed = Objects.requireNonNull(
+                            compiler.parse(SourceFile.fromCode("literal.js", "(" + literal + ");")));
+                    var statement = Objects.requireNonNull(parsed.getFirstChild());
+                    return Objects.requireNonNull(statement.getFirstChild()).getString();
+                });
+                if (urls.containsKey(value)) {
                     boolean binding = link.optimized();
-                    if (!binding && null != parent && parent.isReturn()) {
-                        var origin = origins.getMappingForLine(parent.getLineno(), parent.getCharno() + 1);
-                        binding = null != origin && node.getString().equals(methods.get(origin.getIdentifier()));
+                    if (!binding && parent instanceof ReturnStatementTree) {
+                        var start = parent.location.start;
+                        var origin = origins.getMappingForLine(start.line + 1, start.column + 1);
+                        binding = null != origin && value.equals(methods.get(origin.getIdentifier()));
                     }
                     if (binding) {
-                        literals.add(node);
-                        seen.add(node.getString());
+                        literals.add(new Literal(tree.location.start.offset, tree.location.end.offset, value));
+                        seen.add(value);
                     }
-                } else if (node.isStringLit() && node.getString().startsWith("react4j-asset:")) {
-                    unknown.add(node.getString());
+                } else if (value.startsWith(TOKEN_PREFIX)) {
+                    unknown.add(value);
                 }
             }
         });
@@ -142,15 +192,17 @@ final class AssetJavaScript {
         }
         var edits = new ArrayList<SourceMap.Edit>();
         if (!literals.isEmpty()) {
-            var scope = captureScope(script, literals);
-            int prologue = scope.isScript() ? 0 : scope.getSourceOffset() + 1;
-            for (var node = scope.getFirstChild(); null != node; node = node.getNext()) {
-                var expression = node.getFirstChild();
-                if (!node.isExprResult() || null == expression || !expression.isStringLit()) {
-                    prologue = node.getSourceOffset();
+            var scope = captureScope(program, literals);
+            int prologue = scope instanceof ProgramTree ? 0 : scope.location.start.offset + 1;
+            var statements = scope instanceof ProgramTree global ? global.sourceElements : scope.asBlock().statements;
+            for (var statement : statements) {
+                if (!(statement instanceof ExpressionStatementTree expression)
+                        || !(expression.expression instanceof LiteralExpressionTree literal)
+                        || TokenType.STRING != literal.literalToken.type) {
+                    prologue = statement.location.start.offset;
                     break;
                 }
-                prologue = node.getSourceOffset() + node.getLength();
+                prologue = statement.location.end.offset;
             }
             edits.add(new SourceMap.Edit(
                     prologue,
@@ -158,9 +210,8 @@ final class AssetJavaScript {
                     (0 == prologue ? "" : ";\n") + "var " + base
                             + "=new globalThis.URL('.',globalThis.document.currentScript.src).href;\n"));
             for (var literal : literals) {
-                int start = literal.getSourceOffset();
-                String url = Objects.requireNonNull(urls.get(literal.getString()));
-                edits.add(new SourceMap.Edit(start, start + literal.getLength(), "(" + base + "+" + quote(url) + ")"));
+                String url = Objects.requireNonNull(urls.get(literal.value()));
+                edits.add(new SourceMap.Edit(literal.start(), literal.end(), "(" + base + "+" + quote(url) + ")"));
             }
         }
         if (appendMap) {
@@ -175,11 +226,43 @@ final class AssetJavaScript {
         return result;
     }
 
-    private static Node captureScope(Node script, List<Node> literals) {
-        Node statement = null;
-        for (var node = script.getFirstChild(); null != node; node = node.getNext()) {
-            if (node.isExprResult()
-                    && Objects.requireNonNull(node.getFirstChild()).isStringLit()) {
+    private record Literal(int start, int end, String value) {}
+
+    private static void visit(
+            ParseTree tree, @Nullable ParseTree parent, BiConsumer<ParseTree, @Nullable ParseTree> visitor) {
+        visitor.accept(tree, parent);
+        // The pinned parser model exposes child trees through public fields, without a visitor API.
+        for (var field : tree.getClass().getFields()) {
+            try {
+                var value = field.get(tree);
+                if (value instanceof ParseTree child) {
+                    visit(child, tree instanceof ParenExpressionTree ? parent : tree, visitor);
+                } else if (value instanceof Iterable<?> children) {
+                    for (var item : children) {
+                        if (item instanceof ParseTree child) {
+                            visit(child, tree instanceof ParenExpressionTree ? parent : tree, visitor);
+                        }
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException("Inaccessible JavaScript parse-tree field", e);
+            }
+        }
+    }
+
+    private static ParseTree unparenthesized(ParseTree tree) {
+        while (tree instanceof ParenExpressionTree parentheses) {
+            tree = parentheses.expression;
+        }
+        return tree;
+    }
+
+    private static ParseTree captureScope(ProgramTree script, List<Literal> literals) {
+        ParseTree statement = null;
+        for (var node : script.sourceElements) {
+            if (node instanceof ExpressionStatementTree expression
+                    && expression.expression instanceof LiteralExpressionTree literal
+                    && TokenType.STRING == literal.literalToken.type) {
                 continue;
             }
             if (null != statement) {
@@ -187,31 +270,28 @@ final class AssetJavaScript {
             }
             statement = node;
         }
-        if (null == statement || !statement.isExprResult()) {
+        if (!(statement instanceof ExpressionStatementTree expression)) {
             return script;
         }
-        var call = Objects.requireNonNull(statement.getFirstChild());
-        while (call.isNot() || call.isVoid()) {
-            call = Objects.requireNonNull(call.getFirstChild());
+        var call = unparenthesized(expression.expression);
+        while (call instanceof UnaryExpressionTree unary
+                && ("!".equals(unary.operator.toString()) || "void".equals(unary.operator.toString()))) {
+            call = unparenthesized(unary.operand);
         }
-        if (!call.isCall()) {
+        if (!(call instanceof CallExpressionTree invocation)) {
             return script;
         }
-        var function = Objects.requireNonNull(call.getFirstChild());
-        if (function.isGetProp() && ("call".equals(function.getString()) || "apply".equals(function.getString()))) {
-            function = Objects.requireNonNull(function.getFirstChild());
+        var function = unparenthesized(invocation.operand);
+        if (function instanceof MemberExpressionTree member
+                && ("call".equals(member.memberName.getValue()) || "apply".equals(member.memberName.getValue()))) {
+            function = unparenthesized(member.operand);
         }
-        if (!function.isFunction()
-                || !Objects.requireNonNull(function.getLastChild()).isBlock()) {
+        if (!(function instanceof FunctionDeclarationTree declaration)
+                || !(declaration.functionBody instanceof BlockTree body)) {
             return script;
         }
-        var body = Objects.requireNonNull(function.getLastChild());
         for (var literal : literals) {
-            var parent = literal.getParent();
-            while (null != parent && parent != body) {
-                parent = parent.getParent();
-            }
-            if (null == parent) {
+            if (literal.start() < body.location.start.offset || literal.end() > body.location.end.offset) {
                 return script;
             }
         }

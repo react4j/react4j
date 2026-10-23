@@ -1,14 +1,16 @@
 package react4j.css.processor;
 
+import com.google.gson.JsonParser;
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.AbstractHasTopLevelRules;
 import com.helger.css.decl.CSSDeclaration;
-import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSFontFaceRule;
 import com.helger.css.decl.CSSKeyframesRule;
+import com.helger.css.decl.CSSLayerRule;
 import com.helger.css.decl.CSSMediaRule;
 import com.helger.css.decl.CSSNestedDeclarations;
+import com.helger.css.decl.CSSPropertyRule;
 import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorAttribute;
 import com.helger.css.decl.CSSSelectorMemberFunctionLike;
@@ -22,10 +24,13 @@ import com.helger.css.decl.CSSSelectorMemberSlotted;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.decl.CSSSupportsRule;
+import com.helger.css.decl.CSSUnknownRule;
 import com.helger.css.decl.CascadingStyleSheet;
-import com.helger.css.decl.ECSSExpressionOperator;
 import com.helger.css.decl.ECSSSelectorCombinator;
+import com.helger.css.parser.CSSParseHelper;
 import com.helger.css.writer.CSSWriterSettings;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -36,15 +41,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
+import react4j.css.internal.CssAnimationValues;
+import react4j.css.internal.CssResource;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
+import react4j.css.internal.CssTokens;
 import react4j.css.internal.CssUrls;
 import react4j.css.internal.SourceMap;
 
 /** In-process CSS parsing, ownership checks and static output. */
 final class CssCompiler {
-    private static final String NUMBER = "[+-]?(?:[0-9]*\\.[0-9]+|[0-9]+)(?:[eE][+-]?[0-9]+)?";
-    private static final Set<String> CSS_WIDE = Set.of("initial", "inherit", "unset", "revert", "revert-layer");
     private final CssSyntax syntax;
     private final String root;
     private final Exports exports;
@@ -80,7 +86,99 @@ final class CssCompiler {
 
     record Resources(Map<String, String> assets, Map<String, CssFonts.Import> fonts) {}
 
-    record Exports(List<String> modifiers, Set<String> ids, Set<String> animations) {}
+    record Exports(List<String> modifiers, Set<String> ids, Set<String> animations, Set<String> utilityModifiers) {
+        Exports(List<String> modifiers, Set<String> ids, Set<String> animations) {
+            this(modifiers, ids, animations, Set.of());
+        }
+    }
+
+    static Result utility(
+            String css,
+            String root,
+            Exports exports,
+            IntFunction<SourceMap.Location> locations,
+            Set<String> managed,
+            Set<String> externalProperties,
+            Set<String> externalAnimations,
+            Set<String> externalFonts,
+            Set<String> externalContainers,
+            Map<String, Import> imports,
+            Map<String, CssProperties.Import> properties,
+            Map<String, CssIds.Import> ids,
+            Resources resources) {
+        var compiler = new CssCompiler(css, 0, root, exports, locations, Map.of());
+        var sheet = compiler.syntax.parse(CssSyntax.Mode.UTILITY);
+        UtilitySelectors.check(sheet, compiler.syntax, managed);
+        var containers = UtilityContainers.names(css, sheet, compiler.syntax, root, externalContainers);
+        var names = UtilityNames.analyze(
+                css,
+                sheet,
+                compiler.syntax,
+                root,
+                externalAnimations,
+                externalFonts,
+                exports.animations(),
+                imports,
+                resources.fonts());
+        compiler.properties(sheet, properties, externalProperties, true);
+        compiler.ids(sheet, ids, true);
+        var output = new SourceMap.Writer();
+        for (int i = 0; i < css.length(); i++) {
+            output.append(css.substring(i, i + 1), locations.apply(i));
+        }
+        var edits = new ArrayList<SourceMap.Edit>();
+        for (var token : CssTokens.read(css)) {
+            String replacement = CssResource.SymbolKind.PROPERTY == token.kind()
+                    ? compiler.properties.get(token.name().substring(2))
+                    : CssResource.SymbolKind.ID == token.kind()
+                            ? compiler.ids.get(token.name())
+                            : CssResource.SymbolKind.CONTAINER == token.kind() ? containers.get(token.name()) : null;
+            if (null != replacement && !replacement.equals(token.value())) {
+                edits.add(new SourceMap.Edit(token.start(), token.end(), replacement));
+            }
+        }
+        edits.addAll(CssUrls.edits(
+                css,
+                value -> CssUrls.checked(value, (name, suffix) -> {
+                    String asset = resources.assets().get(name);
+                    if (null == asset) {
+                        throw new IllegalArgumentException("Unknown CSS asset import or accessor: " + name);
+                    }
+                    return "asset:" + asset + suffix;
+                })));
+        edits.addAll(names.edits());
+        edits.sort(Comparator.comparingInt(SourceMap.Edit::start));
+        var nameTokens = new ArrayList<CssTokens.Token>();
+        for (var token : names.tokens()) {
+            int shift = edits.stream()
+                    .filter(edit -> edit.end() <= token.start())
+                    .mapToInt(edit -> edit.value().length() - (edit.end() - edit.start()))
+                    .sum();
+            nameTokens.add(new CssTokens.Token(
+                    token.kind(),
+                    token.start() + shift,
+                    token.start() + shift + token.name().length(),
+                    token.name(),
+                    token.name()));
+        }
+        var rewritten = edits.isEmpty()
+                ? output
+                : SourceMap.replace(
+                        css,
+                        JsonParser.parseString(output.map("intermediate.css")).getAsJsonObject(),
+                        edits);
+        return new Result(
+                rewritten,
+                names.imports(),
+                Map.copyOf(compiler.properties),
+                Set.copyOf(compiler.usedProperties),
+                compiler.ids,
+                names.animations(),
+                names.fonts(),
+                containers,
+                nameTokens,
+                names.dynamicFonts());
+    }
 
     record Result(
             SourceMap.Writer output,
@@ -89,7 +187,10 @@ final class CssCompiler {
             Set<String> propertyImports,
             Map<String, String> ids,
             Map<String, String> animations,
-            Map<String, String> fonts) {}
+            Map<String, String> fonts,
+            Map<String, String> containers,
+            List<CssTokens.Token> names,
+            List<Boolean> dynamicFonts) {}
 
     private final Map<String, String> properties = new LinkedHashMap<>();
     private Map<String, String> fonts = Map.of();
@@ -117,14 +218,32 @@ final class CssCompiler {
     private final Set<String> usedProperties = new LinkedHashSet<>();
 
     private void properties(CascadingStyleSheet sheet, Map<String, CssProperties.Import> imported) {
-        CssProperties.rewrite(sheet, syntax, name -> {
-            if (imported.containsKey(name)) {
-                usedProperties.add(name);
-            }
-            String resolved = "--" + root + "--" + Names.encode(name);
-            properties.put(name, resolved);
-            return resolved;
-        });
+        properties(sheet, imported, Set.of(), false);
+    }
+
+    private void properties(
+            CascadingStyleSheet sheet,
+            Map<String, CssProperties.Import> imported,
+            Set<String> external,
+            boolean modern) {
+        if (external.stream().anyMatch(imported::containsKey)) {
+            throw new IllegalArgumentException("An external custom property cannot also be imported");
+        }
+        CssProperties.rewrite(
+                sheet,
+                syntax,
+                name -> {
+                    if (external.contains(name)) {
+                        return "--" + name;
+                    }
+                    if (imported.containsKey(name)) {
+                        usedProperties.add(name);
+                    }
+                    String resolved = "--" + root + "--" + Names.encode(name);
+                    properties.put(name, resolved);
+                    return resolved;
+                },
+                modern);
     }
 
     private void ids(CascadingStyleSheet sheet, Map<String, CssIds.Import> imported, boolean global) {
@@ -142,7 +261,10 @@ final class CssCompiler {
                 Set.copyOf(usedProperties),
                 ids,
                 Map.copyOf(animations),
-                fonts);
+                fonts,
+                Map.of(),
+                List.of(),
+                List.of());
     }
 
     static Result component(
@@ -173,7 +295,7 @@ final class CssCompiler {
                 }
                 if ("none".equalsIgnoreCase(name)
                         || "default".equalsIgnoreCase(name)
-                        || CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))) {
+                        || CssAnimationValues.CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))) {
                     throw compiler.syntax.invalid("Reserved keyframe name: " + name, frames);
                 }
                 if (null != compiler.keyframes.putIfAbsent(name, frames)) {
@@ -191,7 +313,9 @@ final class CssCompiler {
         }
         compiler.style(sheet.getAllStyleRules().get(0), new Scope("." + root, true), true);
         for (var name : exports.modifiers()) {
-            if (!"style".equals(name) && !compiler.found.contains(name)) {
+            if (!"style".equals(name)
+                    && !compiler.found.contains(name)
+                    && !exports.utilityModifiers().contains(name)) {
                 throw new CssSyntax.InvalidCss("Accessor " + name + "() has no matching local selector", 0);
             }
         }
@@ -229,7 +353,7 @@ final class CssCompiler {
             Resources resources) {
         var compiler = new CssCompiler(css, 0, root, exports, locations, imports);
         var sheet = compiler.syntax.parse(false);
-        compiler.properties(sheet, properties);
+        compiler.properties(sheet, properties, Set.of(), true);
         compiler.ids(sheet, importedIds, true);
         compiler.resources(sheet, resources);
         exports.animations().forEach(compiler::exportAnimation);
@@ -262,6 +386,37 @@ final class CssCompiler {
             globalConditional(media);
         } else if (rule instanceof CSSSupportsRule supports) {
             globalConditional(supports);
+        } else if (rule instanceof CSSLayerRule layer) {
+            boolean block = layer.hasRules() || !layer.hasSelectors();
+            output.append(
+                    "@layer" + (layer.hasSelectors() ? " " + String.join(",", layer.getAllSelectors()) : "")
+                            + (block ? "{" : ";"),
+                    location(layer));
+            if (block) {
+                for (var child : layer.getAllRules()) {
+                    globalRule((ICSSSourceLocationAware) child);
+                }
+                output.append("}");
+            }
+        } else if (rule instanceof CSSPropertyRule property) {
+            String name = CSSParseHelper.unescapeURL(property.getIdentifier()).substring(2);
+            output.append(
+                    "@property " + properties.getOrDefault(name, property.getIdentifier()) + "{", location(property));
+            for (var descriptor : property.getAllDeclarations()) {
+                output.append(descriptor.getAsCSSString(compact, 0) + ";", location(descriptor));
+            }
+            output.append("}");
+        } else if (rule instanceof CSSUnknownRule conditional) {
+            output.append(
+                    conditional.getDeclaration()
+                            + (null == conditional.getParameterList() ? "" : " " + conditional.getParameterList())
+                            + "{",
+                    location(conditional));
+            for (var child :
+                    Objects.requireNonNull(conditional.getParsedRules()).getAllRules()) {
+                globalRule((ICSSSourceLocationAware) child);
+            }
+            output.append("}");
         } else {
             throw syntax.invalid("Unsupported global rule", rule);
         }
@@ -288,7 +443,7 @@ final class CssCompiler {
                 || (Kind.KEYFRAMES == kind
                         && ("none".equalsIgnoreCase(name)
                                 || "default".equalsIgnoreCase(name)
-                                || CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))))) {
+                                || CssAnimationValues.CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))))) {
             throw new IllegalArgumentException("Invalid imported CSS name: " + name);
         }
     }
@@ -431,93 +586,21 @@ final class CssCompiler {
         if (!animationBinding(declaration)) {
             return;
         }
-        boolean shorthand = "animation".equalsIgnoreCase(declaration.getProperty());
-        var members = declaration.getExpression().getAllMembers();
-        if (1 == members.size()
-                && members.get(0) instanceof CSSExpressionMemberTermSimple simple
-                && CSS_WIDE.contains(simple.getValue().toLowerCase(Locale.ROOT))) {
-            return;
-        }
-        var used = new HashSet<String>();
-        boolean named = false;
-        for (var member : members) {
-            if (ECSSExpressionOperator.COMMA == member) {
-                used.clear();
-                named = false;
-                continue;
-            }
-            if (shorthand && member instanceof CSSExpressionMemberFunction function) {
-                if (Set.of("steps", "cubic-bezier", "linear")
-                                .contains(function.getFunctionName().toLowerCase(Locale.ROOT))
-                        && used.add("timing")) {
-                    continue;
+        CssAnimationValues.read(declaration, syntax, CssAnimationValues.Mode.COMPONENT, use -> {
+            String name = use.name();
+            if (imports.containsKey(name)) {
+                var binding = imports.get(name);
+                if (Kind.KEYFRAMES != binding.kind()) {
+                    throw syntax.invalid("Animation name must reference imported @Keyframes: " + name, use.term());
                 }
-                throw syntax.invalid(
-                        "Unsupported animation shorthand function; use animation-name and separate longhands for"
-                                + " dynamic values",
-                        declaration);
+                usedImports.add(name);
+                use.term().setValue(animationName(name));
+            } else if (keyframes.containsKey(name)) {
+                use.term().setValue(animationName(name));
+            } else {
+                throw syntax.invalid("Unknown local animation name: " + name, use.term());
             }
-            if (!(member instanceof CSSExpressionMemberTermSimple simple)) {
-                throw syntax.invalid("Animation names must be static identifiers", declaration);
-            }
-            String name = simple.getValue();
-            checkAnimationName(name, simple);
-            String lower = name.toLowerCase(Locale.ROOT);
-            if (CSS_WIDE.contains(lower)) {
-                throw syntax.invalid("CSS-wide animation keywords must stand alone", simple);
-            }
-            if (shorthand) {
-                String category =
-                        switch (lower) {
-                            case "ease", "linear", "ease-in", "ease-out", "ease-in-out", "step-start", "step-end" ->
-                                "timing";
-                            case "infinite" -> "iteration";
-                            case "normal", "reverse", "alternate", "alternate-reverse" -> "direction";
-                            case "none", "forwards", "backwards", "both" -> "fill";
-                            case "running", "paused" -> "play";
-                            default -> "";
-                        };
-                if (!category.isEmpty() && used.add(category)) {
-                    continue;
-                }
-                if (lower.matches(NUMBER + "(?:ms|s)")) {
-                    if (used.add("duration")) {
-                        if (Double.parseDouble(lower.substring(
-                                        0, lower.endsWith("ms") ? lower.length() - 2 : lower.length() - 1))
-                                < 0) {
-                            throw syntax.invalid("Animation duration must not be negative", simple);
-                        }
-                    } else if (!used.add("delay")) {
-                        throw syntax.invalid("Animation shorthand accepts at most two times", simple);
-                    }
-                    continue;
-                }
-                if (lower.matches(NUMBER)) {
-                    if (!used.add("iteration") || Double.parseDouble(lower) < 0) {
-                        throw syntax.invalid("Invalid animation iteration count", simple);
-                    }
-                    continue;
-                }
-            }
-            if (named) {
-                throw syntax.invalid("Each animation accepts one name", simple);
-            }
-            if (!"none".equals(lower)) {
-                if (imports.containsKey(name)) {
-                    var binding = imports.get(name);
-                    if (Kind.KEYFRAMES != binding.kind()) {
-                        throw syntax.invalid("Animation name must reference imported @Keyframes: " + name, simple);
-                    }
-                    usedImports.add(name);
-                    simple.setValue(animationName(name));
-                } else if (keyframes.containsKey(name)) {
-                    simple.setValue(animationName(name));
-                } else {
-                    throw syntax.invalid("Unknown local animation name: " + name, simple);
-                }
-            }
-            named = true;
-        }
+        });
     }
 
     private Scope selector(CSSSelector selector, Scope parent, boolean nested) {

@@ -38,11 +38,11 @@ public final class CssNamesTest {
                 70L);
         assertFalse(table.entries().stream().anyMatch(entry -> "app-a".equalsIgnoreCase(entry.compiled())));
         assertTrue(table.entries().stream().anyMatch(entry -> "app-i".equals(entry.compiled())));
-        new CssRenamer(table).checkShared("body{font-family:'app-ı';}", "turkish-family.css");
+        new CssRenamer(table, List.of()).checkShared("body{font-family:'app-ı';}", "turkish-family.css");
         var first = table.entries().get(0);
         expectThrows(
                 IllegalArgumentException.class,
-                () -> new CssRenamer(table)
+                () -> new CssRenamer(table, List.of())
                         .checkShared(
                                 "body{font-family:'" + first.compiled().toUpperCase(Locale.ROOT) + "';}",
                                 "variant.css"));
@@ -172,7 +172,8 @@ public final class CssNamesTest {
                 new Symbol(SymbolKind.PROPERTY, "accent", "--shared", false),
                 new Symbol(SymbolKind.ANIMATION, "pulse", "pulse", false),
                 new Symbol(SymbolKind.PROPERTY, "runtime", "--runtime", false),
-                new Symbol(SymbolKind.FONT, "heading", "local-heading", false));
+                new Symbol(SymbolKind.FONT, "heading", "local-heading", false),
+                new Symbol(SymbolKind.CONTAINER, "panel", "local-panel", false));
         var local = new CssResource(
                 "Local",
                 CssResource.Kind.COMPONENT,

@@ -2,6 +2,7 @@ package react4j.css.example;
 
 import jsinterop.annotations.JsMethod;
 import org.jspecify.annotations.Nullable;
+import react4j.ReactNode;
 import react4j.css.Css;
 import react4j.css.CssAnimation;
 import react4j.css.CssCustomProperty;
@@ -10,6 +11,9 @@ import react4j.css.CssImport;
 import react4j.css.CssStable;
 import react4j.css.GlobalCss;
 import react4j.css.Keyframes;
+import react4j.css.UtilityCss;
+import react4j.css.UtilityCssLibrary;
+import react4j.css.UtilityStyles;
 import react4j.dom.DOM;
 import react4j.dom.ReactDOM;
 import react4j.dom.proptypes.html.BtnProps;
@@ -27,124 +31,292 @@ public final class BrowserExample {
     }
 
     @JsMethod
+    public static String utilityBaseProperty() {
+        return UtilityLibraryA.get().base();
+    }
+
+    @JsMethod
+    public static String utilityTurnProperty() {
+        return UtilityLibraryA.get().turn();
+    }
+
+    @JsMethod
+    public static String propertyOnlyName() {
+        return PropertyOnlyLibrary.get().size();
+    }
+
+    @JsMethod
     public static String successProperty() {
         return SaveButton.get().successProperty();
     }
 
     @JsMethod
     public static void render(Object container, @Nullable String success, @Nullable String shared) {
+        ReactDOM.render(content(success, shared), container);
+    }
+
+    static ReactNode content(@Nullable String success, @Nullable String shared) {
         var button = SaveButton.get();
         var status = Status.get();
+        UtilityFragments utilities = UtilityOnly.get();
         StateStyle<String> buttonStates = button;
         StateStyle<String> statusStates = status;
         var custom = new CssProps().customProperty(buttonStates.successProperty(), success);
-        ReactDOM.render(
+        return DOM.div(
+                DOM.span(
+                        new HtmlProps()
+                                .id("utility")
+                                .className(UtilityOnly.get().style())
+                                .style(new CssProps().customProperty("--host-gap", "15px")),
+                        "Utility"),
+                DOM.span(
+                        new HtmlProps()
+                                .id("utility-hybrid")
+                                .className(UtilityHybrid.get().style()),
+                        "Hybrid"),
+                DOM.span(
+                        new HtmlProps()
+                                .id("utility-second")
+                                .className(UtilitySecond.get().style()),
+                        "Second library"),
+                DOM.span(
+                        new HtmlProps()
+                                .id("utility-important")
+                                .data("utility-important", "true")
+                                .className(UtilityHybrid.get().style()),
+                        "Important global"),
                 DOM.div(
+                        new HtmlProps()
+                                .id("utility-reset")
+                                .data("utility-scope", "compact")
+                                .data("utility-reset", "true")
+                                .className(UtilityOnly.get().style()),
+                        "Explicit reset"),
+                DOM.div(
+                        new HtmlProps()
+                                .id("utility-container")
+                                .className(UtilityOnly.get().panel()),
+                        DOM.div(
+                                new HtmlProps()
+                                        .data("external-container", "true")
+                                        .className("host-hook"),
+                                DOM.span(
+                                        new HtmlProps()
+                                                .className(UtilityOnly.get().peer()),
+                                        "Peer"),
+                                DOM.span(
+                                        new HtmlProps().id("utility-query").className(utilities.queryForRender()),
+                                        "Container query"))),
+                DOM.div(
+                        new HtmlProps()
+                                .id("utility-container-second")
+                                .className(UtilitySecond.get().panel()),
+                        DOM.span(
+                                new HtmlProps()
+                                        .id("utility-query-second")
+                                        .className(UtilitySecond.get().query()),
+                                "Other container")),
+                DOM.button(
+                        new BtnProps()
+                                .id("modifier-only")
+                                .className(ModifierOnly.get().activeForRender()),
+                        "Modifier through an interface helper"),
+                DOM.button(
+                        new BtnProps()
+                                .id(Defaults.get().base())
+                                .data("shared", shared)
+                                .className(button.style()),
+                        "Save"),
+                DOM.button(new BtnProps().id("success").className(buttonStates.success()), "Saved"),
+                DOM.button(new BtnProps().id("cancel").className(button.cancel()), "Cancel"),
+                DOM.button(
+                        new BtnProps()
+                                .id("custom")
+                                .className(buttonStates.success())
+                                .style(custom),
+                        "Custom"),
+                DOM.button(
+                        new BtnProps().id("disabled").className(button.style()).disabled(), "Disabled"),
+                DOM.button(new BtnProps().id("conflict").className(button.success(), button.cancel()), "Conflict"),
+                DOM.div(
+                        new HtmlProps().id("parent").className(button.cancel()),
                         DOM.button(
                                 new BtnProps()
-                                        .id("modifier-only")
-                                        .className(ModifierOnly.get().activeForRender()),
-                                "Modifier through an interface helper"),
-                        DOM.button(
-                                new BtnProps()
-                                        .id(Defaults.get().base())
+                                        .id("nested")
                                         .data("shared", shared)
                                         .className(button.style()),
-                                "Save"),
-                        DOM.button(new BtnProps().id("success").className(buttonStates.success()), "Saved"),
-                        DOM.button(new BtnProps().id("cancel").className(button.cancel()), "Cancel"),
-                        DOM.button(
-                                new BtnProps()
-                                        .id("custom")
-                                        .className(buttonStates.success())
-                                        .style(custom),
-                                "Custom"),
-                        DOM.button(
-                                new BtnProps()
-                                        .id("disabled")
-                                        .className(button.style())
-                                        .disabled(),
-                                "Disabled"),
-                        DOM.button(
-                                new BtnProps().id("conflict").className(button.success(), button.cancel()), "Conflict"),
-                        DOM.div(
-                                new HtmlProps().id("parent").className(button.cancel()),
-                                DOM.button(
-                                        new BtnProps()
-                                                .id("nested")
-                                                .data("shared", shared)
-                                                .className(button.style()),
-                                        "Nested"),
-                                DOM.span(new HtmlProps().id("status").className(statusStates.success()), "Status")),
-                        DOM.button(new BtnProps().id("busy-button").className(buttonStates.forBusy(true)), "Saving"),
-                        DOM.span(
-                                new HtmlProps().id("busy-status").className(statusStates.forBusy(true)),
-                                "Saving status"),
-                        DOM.button(new BtnProps().id("peer-button").className(button.style()), "Focus to show status"),
-                        DOM.span(
-                                new HtmlProps()
-                                        .id("peer-label")
-                                        .data("peer", "true")
-                                        .className(status.style()),
-                                "Ready"),
-                        DOM.span(
-                                new HtmlProps().id(EqualNames.get().id()).data("symbol", "equal-names"),
-                                "Stable ID sharing an animation's readable name"),
-                        DOM.span(
-                                new HtmlProps()
-                                        .id("property-aliases")
-                                        .data("symbol", "property-aliases")
-                                        .className(CollisionStyles.get().first()),
-                                "Distinct canonical properties"),
-                        DOM.span(
-                                new HtmlProps().id(ImportedIds.get().zLive()).data("symbol", "shared-import"),
-                                "Checked shared ID"),
-                        DOM.button(
-                                new BtnProps()
-                                        .id(button.controlId())
-                                        .data("symbol", "control")
-                                        .className(button.style()),
-                                "Checked ID"),
-                        DOM.div(new HtmlProps()
-                                .dangerouslySetInnerHTML(
-                                        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"0\" height=\"0\"><filter"
-                                                + " id=\""
-                                                + button.filterId()
-                                                + "\"><feGaussianBlur stdDeviation=\"0.25\"/></filter></svg>")),
-                        DOM.span(
-                                new HtmlProps()
-                                        .id("direct-animation")
-                                        .className(status.style())
-                                        .style(new CssProps()
-                                                .animationName(DirectPulse.get().name())
-                                                .animationDuration("1s")),
-                                "Direct animation"),
-                        DOM.span(
-                                new HtmlProps()
-                                        .id("local-animation")
-                                        .className(button.style())
-                                        .style(new CssProps()
-                                                .animationName(button.localAnimation())
-                                                .animationDuration("1s")),
-                                "Local animation"),
-                        DOM.span(
-                                new HtmlProps()
-                                        .id("accessor-animation")
-                                        .className(status.style())
-                                        .style(new CssProps()
-                                                .animationName(status.externalAnimation())
-                                                .animationDuration("1s")),
-                                "Imported animation"),
-                        DOM.span(
-                                new HtmlProps()
-                                        .id(DirectGlobals.get().id())
-                                        .data("symbol", "global")
-                                        .style(new CssProps()
-                                                .customProperty(
-                                                        DirectGlobals.get().spacing(), "9px")),
-                                "Direct global")),
-                container);
+                                "Nested"),
+                        DOM.span(new HtmlProps().id("status").className(statusStates.success()), "Status")),
+                DOM.button(new BtnProps().id("busy-button").className(buttonStates.forBusy(true)), "Saving"),
+                DOM.span(new HtmlProps().id("busy-status").className(statusStates.forBusy(true)), "Saving status"),
+                DOM.button(new BtnProps().id("peer-button").className(button.style()), "Focus to show status"),
+                DOM.span(new HtmlProps().id("peer-label").data("peer", "true").className(status.style()), "Ready"),
+                DOM.span(
+                        new HtmlProps().id(EqualNames.get().id()).data("symbol", "equal-names"),
+                        "Stable ID sharing an animation's readable name"),
+                DOM.span(
+                        new HtmlProps()
+                                .id("property-aliases")
+                                .data("symbol", "property-aliases")
+                                .className(CollisionStyles.get().first()),
+                        "Distinct canonical properties"),
+                DOM.span(
+                        new HtmlProps().id(ImportedIds.get().zLive()).data("symbol", "shared-import"),
+                        "Checked shared ID"),
+                DOM.button(
+                        new BtnProps()
+                                .id(button.controlId())
+                                .data("symbol", "control")
+                                .className(button.style()),
+                        "Checked ID"),
+                DOM.div(new HtmlProps()
+                        .dangerouslySetInnerHTML(
+                                "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"0\" height=\"0\"><filter"
+                                        + " id=\""
+                                        + button.filterId()
+                                        + "\"><feGaussianBlur stdDeviation=\"0.25\"/></filter></svg>")),
+                DOM.span(
+                        new HtmlProps()
+                                .id("direct-animation")
+                                .className(status.style())
+                                .style(new CssProps()
+                                        .animationName(DirectPulse.get().name())
+                                        .animationDuration("1s")),
+                        "Direct animation"),
+                DOM.span(
+                        new HtmlProps()
+                                .id("local-animation")
+                                .className(button.style())
+                                .style(new CssProps()
+                                        .animationName(button.localAnimation())
+                                        .animationDuration("1s")),
+                        "Local animation"),
+                DOM.span(
+                        new HtmlProps()
+                                .id("accessor-animation")
+                                .className(status.style())
+                                .style(new CssProps()
+                                        .animationName(status.externalAnimation())
+                                        .animationDuration("1s")),
+                        "Imported animation"),
+                DOM.span(
+                        new HtmlProps()
+                                .id(DirectGlobals.get().id())
+                                .data("symbol", "global")
+                                .style(new CssProps()
+                                        .customProperty(DirectGlobals.get().spacing(), "9px")),
+                        "Direct global"));
     }
+
+    @UtilityCssLibrary(
+            value = """
+                @property --base-gap {syntax:"<length>";inherits:true;initial-value:6px;}
+                @property --turn {syntax:"<angle>";inherits:false;initial-value:0deg;}
+                @property --transition-only {syntax:"<angle>";inherits:false;initial-value:3deg;}
+                :root { --base-gap:6px; --alias-gap:var(--base-gap); --gutter:var(--alias-gap); --dead-gap:97px; --cycle-a:var(--cycle-b); --cycle-b:var(--cycle-a); }
+                @layer first,second;
+                @layer first { .tone {color:rgb(70, 80, 90);} }
+                @layer second { .tone {color:rgb(30, 60, 90);} }
+                .tone {padding-left:var(--gutter);margin-right:var(--host-gap,4px);margin-top:var(--cycle-a,2px);}
+                .tone[data-utility-scope=compact] {--base-gap:9px;}
+                :root {--density:compact;}
+                .panel {container:card/inline-size;width:200px;}
+                .query {display:block;color:rgb(90, 100, 110);opacity:1;rotate:var(--turn);transition:--turn 100s linear,--host-gap 100s linear,--transition-only 100s linear;}
+                [class~="member"] {border-bottom:4px solid black;}
+                .marker .query {letter-spacing:2px;}
+                .host-hook .query {font-weight:600;}
+                .peer~.query {word-spacing:3px;}
+                .dead-container {container:unused-card/inline-size;width:777px;}
+                @container card (width>100px) {.query {color:rgb(10, 120, 30);}}
+                @container unused-card (width>0px) {.query {outline-offset:7px;}}
+                @container host (width>150px) {.query {margin-bottom:19px;}}
+                @supports (display:block) {@container card style(--density:compact) {@starting-style {.query {opacity:0;}}}}
+                """,
+            externalClasses = {"host-hook"},
+            externalProperties = {"host-gap"},
+            externalContainers = {"host"})
+    abstract static class UtilityLibraryA {
+        static UtilityLibraryA get() {
+            return BrowserExample_Styled_UtilityLibraryA.get();
+        }
+
+        @CssCustomProperty(name = "base-gap")
+        abstract String base();
+
+        @CssCustomProperty(name = "turn")
+        abstract String turn();
+    }
+
+    interface UtilityFragments {
+        @UtilityCss("query member")
+        String query();
+
+        default String queryForRender() {
+            return query();
+        }
+    }
+
+    @UtilityStyles(UtilityLibraryA.class)
+    abstract static class UtilityOnly implements UtilityFragments {
+        static UtilityOnly get() {
+            return BrowserExample_Styled_UtilityOnly.get();
+        }
+
+        @UtilityCss("tone")
+        abstract String style();
+
+        @UtilityCss("panel marker")
+        abstract String panel();
+
+        @UtilityCss("peer")
+        abstract String peer();
+    }
+
+    @UtilityStyles(UtilityLibraryA.class)
+    @Css("""
+        color:rgb(11, 22, 33);
+        """)
+    abstract static class UtilityHybrid {
+        static UtilityHybrid get() {
+            return BrowserExample_Styled_UtilityHybrid.get();
+        }
+
+        @UtilityCss("tone")
+        abstract String style();
+    }
+
+    @UtilityStyles(UtilityLibraryB.class)
+    abstract static class UtilitySecond {
+        static UtilitySecond get() {
+            return BrowserExample_Styled_UtilitySecond.get();
+        }
+
+        @UtilityCss("tone")
+        abstract String style();
+
+        @UtilityCss("panel")
+        abstract String panel();
+
+        @UtilityCss("query")
+        abstract String query();
+    }
+
+    @UtilityCssLibrary("""
+        @property --size {syntax:"<length>";inherits:false;initial-value:17px;}
+        .never-selected {padding-top:89px;}
+        """)
+    abstract static class PropertyOnlyLibrary {
+        static PropertyOnlyLibrary get() {
+            return BrowserExample_Styled_PropertyOnlyLibrary.get();
+        }
+
+        @CssCustomProperty
+        abstract String size();
+    }
+
+    @CssImport(value = UtilityLibraryA.class, property = "gutter")
+    @GlobalCss(file = "utility-defaults.css")
+    static final class UtilityReset {}
 
     interface StateStyle<T> {
         String style();

@@ -82,12 +82,21 @@ public final class CssBrowserTest {
                                 "Hashed URL: " + suffix);
                     }
                     check(!_optimized == hasAsset(entries, "card/unused.svg"), "Unused asset pruning");
-                    return Browser.fetchText(root + assetUrl(entries, "card/prepared.svg"))
-                            .then(text -> {
-                                check(Browser.string(text).contains("fill=\"#04c\""), "Preprocessed SVG");
-                                return packagedRoute(root, "index.html", entries, expected);
+                    return Browser.fetchText(root + "css/assets.css")
+                            .then(value -> {
+                                String css = Browser.string(value);
+                                check(!_optimized == css.contains("opacity:.13"), "Unused utility animation");
+                                check(
+                                        (_optimized ? 1 : 2) == css.split("@font-face", -1).length - 1,
+                                        "Unused utility font face");
+                                return null;
                             })
-                            .then(value -> packagedRoute(root, "nested/page.html", entries, expected));
+                            .then(ignored -> Browser.fetchText(root + assetUrl(entries, "card/prepared.svg"))
+                                    .then(text -> {
+                                        check(Browser.string(text).contains("fill=\"#04c\""), "Preprocessed SVG");
+                                        return packagedRoute(root, "index.html", entries, expected);
+                                    })
+                                    .then(value -> packagedRoute(root, "nested/page.html", entries, expected)));
                 });
     }
 
@@ -116,6 +125,13 @@ public final class CssBrowserTest {
                         });
                     }
                     return chain.then(v -> {
+                                var query = Browser.query(page, "#utility-query");
+                                equal("rgb(10, 120, 30)", Browser.computed(query, "color"));
+                                equal("19px", Browser.computed(query, "margin-bottom"));
+                                equal("4px", Browser.computed(query, "border-bottom-width"));
+                                equal(
+                                        "rgb(100, 110, 120)",
+                                        Browser.computed(Browser.query(page, "#utility-second"), "color"));
                                 var card = Browser.query(page, "#card");
                                 check(
                                         Browser.computed(card, "background-image")
@@ -123,6 +139,11 @@ public final class CssBrowserTest {
                                         "CSS background asset");
                                 var family =
                                         Browser.computed(card, "font-family").split(",")[0];
+                                check(!"heading".equals(family), "Owned utility font name");
+                                check(
+                                        !"none".equals(Browser.computed(card, "animation-name")),
+                                        "Utility variable animation");
+                                equal("100s", Browser.computed(card, "animation-duration"));
                                 return Browser.loadFonts(page, "16px " + family);
                             })
                             .then(fonts -> {
@@ -164,6 +185,91 @@ public final class CssBrowserTest {
             }
         }
         throw new AssertionError("Missing retained asset: " + suffix);
+    }
+
+    public BrowserPromise testUtilitiesKeepLibraryOrderAndExplicitGlobalPrecedence() {
+        equal("rgb(30, 60, 90)", css("utility", "color"));
+        equal("rgb(11, 22, 33)", css("utility-hybrid", "color"));
+        equal("rgb(100, 110, 120)", css("utility-second", "color"));
+        equal("rgb(180, 20, 30)", css("utility-important", "color"));
+        equal("23px", css("utility-reset", "margin-left"));
+        equal("13px", css("utility", "padding-left"));
+        equal("21px", css("utility-second", "padding-right"));
+        equal("15px", css("utility", "margin-right"));
+        equal("2px", css("utility", "margin-top"));
+        equal("17px", Browser.computed(node("utility"), BrowserExample.propertyOnlyName()));
+        check(!_optimized == _style.getTextContent().contains("97px"), "Unused utility property");
+        check(
+                !_optimized == _style.getTextContent().contains("89px"),
+                "Property accessor does not invent class presence");
+        return stylesheet("component").thenDo(() -> {
+            equal("rgb(11, 22, 33)", css("utility-important", "color"));
+            equal("0px", css("utility-reset", "margin-left"));
+            equal("6px", css("utility", "padding-left"));
+            equal("6px", css("utility-reset", "padding-left"));
+            equal("9px", Browser.computed(node("utility-reset"), BrowserExample.utilityBaseProperty()));
+            equal("rgb(100, 110, 120)", css("utility-second", "color"));
+        });
+    }
+
+    public void testNamedUtilityContainersAndSelectorMembership() {
+        equal("rgb(10, 120, 30)", css("utility-query", "color"));
+        equal("rgb(40, 50, 60)", css("utility-query-second", "color"));
+        equal("4px", css("utility-query", "border-bottom-width"));
+        equal("0px", css("utility-query", "padding-left"));
+        equal("2px", css("utility-query", "letter-spacing"));
+        equal("600", css("utility-query", "font-weight"));
+        equal("3px", css("utility-query", "word-spacing"));
+        equal("19px", css("utility-query", "margin-bottom"));
+        equal("1", css("utility-query", "opacity"));
+        check(
+                !css("utility-container", "container-name").equals(css("utility-container-second", "container-name")),
+                "Independent container owners");
+        check(
+                !_optimized == _style.getTextContent().contains("777px"),
+                "A query does not retain its container utility");
+        check(_style.getTextContent().contains("@starting-style"), "Retained starting-style group");
+        Browser.cssText(node("utility-container"), "width:80px");
+        equal("rgb(90, 100, 110)", css("utility-query", "color"));
+        equal("rgb(40, 50, 60)", css("utility-query-second", "color"));
+        equal("19px", css("utility-query", "margin-bottom"));
+    }
+
+    public BrowserPromise testUtilityCustomPropertyTransitionsKeepTheirTargets() {
+        String property = BrowserExample.utilityTurnProperty();
+        String[] targets = css("utility-query", "transition-property").split(", ");
+        equal(property, targets[0]);
+        equal("--host-gap", targets[1]);
+        check(_style.getTextContent().contains("initial-value:3deg"), "A transition target retains its registration");
+        equal("0deg", css("utility-query", "rotate"));
+        Browser.cssText(node("utility-query"), property + ":90deg");
+        var transitions = Browser.animations(node("utility-query"));
+        check(1 == transitions.length, "One custom-property transition");
+        var transition = transitions[0];
+        transition.pause();
+        return transition.getReady().thenDo(() -> {
+            transition.setCurrentTime(50000);
+            double angle = Double.parseDouble(css("utility-query", "rotate").replace("deg", ""));
+            check(44 < angle && 46 > angle, "Registered property interpolates through the renamed transition target");
+        });
+    }
+
+    public BrowserPromise testUtilityMapsKeepFileInputsAndJavaSources() {
+        return Browser.fetchText(
+                        "/css/examples/save-button/src/test/js/react4j/css/example/" + _variant + "styles.css.map")
+                .then(value -> {
+                    String map = Browser.string(value);
+                    for (var source : new String[] {
+                        "react4j/css/example/utility-b.css",
+                        "react4j/css/example/utility-defaults.css",
+                        "BrowserExample.java"
+                    }) {
+                        check(map.contains(source), "Authored source: " + source);
+                    }
+                    check(map.contains("width:180px"), "Original utility file content");
+                    check(map.contains("13px!important"), "Original global file content");
+                    return null;
+                });
     }
 
     public void testClassNamingPolicy() {
@@ -408,7 +514,7 @@ public final class CssBrowserTest {
             var owner = match[1].split("--")[0];
             groups.computeIfAbsent(owner, key -> new ArrayList<>()).add(text);
         }
-        check((_optimized ? 4 : 5) == groups.size(), "Component group count");
+        check((_optimized ? 5 : 6) == groups.size(), "Component group count");
         while (0 < Browser.childRules(layer).length) {
             layer.deleteRule(0);
         }
@@ -435,7 +541,22 @@ public final class CssBrowserTest {
     }
 
     private String[] snapshot() {
-        var ids = new String[] {"base", "success", "cancel", "custom", "disabled", "conflict", "nested", "status"};
+        var ids = new String[] {
+            "base",
+            "success",
+            "cancel",
+            "custom",
+            "disabled",
+            "conflict",
+            "nested",
+            "status",
+            "utility",
+            "utility-hybrid",
+            "utility-second",
+            "utility-important",
+            "utility-query",
+            "utility-query-second"
+        };
         var result = new String[ids.length];
         for (int i = 0; i < ids.length; i++) {
             result[i] = String.join(

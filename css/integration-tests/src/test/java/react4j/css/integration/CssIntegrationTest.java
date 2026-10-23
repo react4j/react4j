@@ -40,7 +40,7 @@ public final class CssIntegrationTest {
         assertEquals(sheet.getRuleCount(), 3);
         var layers = sheet.getAllLayerRules();
         assertEquals(layers.size(), 3);
-        assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "components"));
+        assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "utilities", "components"));
         assertEquals(layers.get(0).getRuleCount(), 0);
         assertEquals(layers.get(1).getAllSelectors(), List.of("shared"));
         assertEquals(layers.get(1).getRuleCount(), 2);

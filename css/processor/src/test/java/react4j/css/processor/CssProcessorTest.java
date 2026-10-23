@@ -73,7 +73,7 @@ public final class CssProcessorTest {
             new Object[] {"input", List.of("com/example/properties/Owner.java")},
             new Object[] {"bad_input", List.of("com/example/missing_property/Button.java")},
             new Object[] {"input", List.of("com/example/global/Defaults.java", "com/example/global/Theme.java")},
-            new Object[] {"bad_input", List.of("com/example/global_important/Defaults.java")},
+            new Object[] {"input", List.of("com/example/global_important/Defaults.java")},
             new Object[] {"bad_input", List.of("com/example/import_wrong_kind/Button.java")},
             new Object[] {"bad_input", List.of("com/example/bad_accessor/Button.java")},
             new Object[] {"bad_input", List.of("com/example/bare_conditional/Button.java")},

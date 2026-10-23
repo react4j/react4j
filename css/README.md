@@ -93,11 +93,89 @@ Interfaces can also declare `@CssId`, `@CssAnimation` and `@CssCustomProperty` a
 
 Symbol annotations follow the effective method declaration, using the same method collection as React4j. An inherited method needs no redeclaration. An override uses its own annotations and defaults; a plain override drops inherited symbol metadata, and an annotated override may change the symbol kind or name. Sibling declarations use the selected declaration without an additional annotation-conflict rule. Generated symbol accessors must be abstract. Unannotated concrete/default overrides are ordinary helpers; re-abstraction needs its own symbol annotation for typed symbols. Resource interfaces with only helpers need no Java binding.
 
+## Utility libraries
+
+For a runnable introduction, see the [utility CSS example](../examples/utility-css/README.md).
+It combines a file-backed library, responsive utilities, explicit global defaults and a local component override in a stateful view.
+
+Supply precompiled, flattened CSS through `@UtilityCssLibrary`, then select one library with `@UtilityStyles`:
+
+```java
+@UtilityCssLibrary("""
+    .flex { display: flex; }
+    .p-2 { padding: .5rem; }
+    .text-red { color: red; }
+    """)
+class Utilities {}
+
+@UtilityStyles(Utilities.class)
+abstract class ButtonStyles {
+    static ButtonStyles get() {
+        return Styled_ButtonStyles.get();
+    }
+
+    @UtilityCss("flex p-2")
+    abstract String style();
+
+    @UtilityCss("text-red")
+    abstract String warning();
+}
+```
+
+Views call these accessors just like ordinary component accessors. Each returns the listed utility classes in order followed by its local root and, for a modifier, its local modifier marker. `warning()` does not include the utilities from `style()`; compose getters in Java when needed. Lists must be nonempty, contain distinct managed classes and match the supplied stylesheet. No conflict merging is performed.
+
+The processor infers the class inventory from selectors, including referenced group or peer markers. Library classes have their own defining owner. `externalClasses` lists literal hooks that remain outside managed getter lists; append those hooks as ordinary strings in Java. A consumer's `@CssStable` controls its local markers, while the utility library controls its own names.
+
+Flat utility inputs support media/supports conditions, layers, property registrations, keyframes, font faces, container queries and starting-style blocks, including nested groups. Empty `var()` fallbacks preserve their meaning. Native selector nesting and utility-generation directives must be compiled away before consumption.
+
+Case-sensitive class-token selectors such as `[class~="active"]` share the checked class identity and are rewritten consistently. Supplied utility inputs reject whole-class-string, substring, order-sensitive, case-insensitive and namespaced class comparisons. Ordinary data and ARIA selectors keep their values.
+
+Static `container-name` declarations and the name field of `container` define library-owned containers. Named `@container` queries use those identities, including through layers, media/supports and starting-style groups. List browser-owned ancestor names in `externalContainers`; an unknown ancestor name fails compilation. Querying a container does not retain the class that would create it. Dynamic container-name fields are unsupported.
+
+Combine `@Css` with `@UtilityStyles` to add local declarations. A utility accessor can also have local rules, and it needs no dummy local selector. Ordinary local-only accessors retain their selector checks. Interfaces, effective annotation inheritance, helpers, factories, typed support accessors and peer-root imports follow the rules above. `@UtilityCss` metadata is replaced or removed by an overriding declaration's annotations.
+
+Ordinary utility declarations must require a managed class on every selector-list or `:is`/`:where`/`:has` branch. Negation alone supplies no guard. Support definitions and custom-property initialization may be global. Supply page resets and element defaults separately with `@GlobalCss`, and select them explicitly through a bundle root or an import on the consuming style. Selecting a utility library alone does not activate a reset.
+
+Library properties, registrations, variable reads, transition targets and property names in conditions share one scoped identity. Managed transition target names must appear directly in a transition declaration or its `var()` fallback; static variable definitions containing managed target names are rejected. Explicit external targets may remain in static variable definitions. Live utilities keep their required definitions and aliases; unused initialization and registrations can be removed. Assignments on a selected class remain part of that utility, including assignments that activate an imported provider. Browser variable evaluation is preserved, including alternative scopes, fallback values and cycles. Existing `@CssCustomProperty` getters can expose a library property, including one defined only by a registration, without making utility classes present.
+
+Static utility variables may carry owned or imported animation and font names, including aliases, fallbacks and definitions in different scopes. These names are renamed at their original occurrences; `var()` remains for the browser to evaluate. Font families must be complete literals in one value. A carrier used both as a managed name and as other data, such as visible text or a style-query comparison, fails compilation. A registration that constrains a managed animation or font name with a literal syntax keyword is also rejected; use a universal or type-only syntax such as `"*"`, `"<custom-ident>"` or `"<string>"`. `externalAnimations` and `externalFonts` preserve explicit browser-owned names; external definitions remain available while their library is active.
+
+List deliberately external variables in `externalProperties`, using names without `--`. Their spelling remains literal and they can be set through ordinary external CSS or `CssProps.customProperty("--name", value)`. An external property cannot also be selected as an owned import. Independent providers can reuse authored property names without sharing their values.
+
+### File inputs
+
+`@UtilityCssLibrary(file = "utilities.css")` and `@GlobalCss(file = "defaults.css")` select one package-relative file instead of an inline block. Declare exactly one source form. Paths must be canonical and relative, without traversal, backslashes, query strings or fragments.
+
+Declare files beside their package sources with the public `css_sources` rule:
+
+```starlark
+load("@react4j//:defs.bzl", "css_sources")
+
+css_sources(
+    name = "style_inputs",
+    srcs = ["utilities.css", "defaults.css"],
+)
+```
+
+Add `:style_inputs` to a native J2CL library's dependencies and `:style_inputs_java` to the paired JVM library's dependencies. The rule infers the Java package from `src/main/java`, `src/test/java`, `src/main/css` or `src/test/css`. Every source is explicit; consumers inherit its resource jar through ordinary dependencies. It includes the source bytes and an automatically derived class catalogue available when provider header jars omit generated CSS resources. Authored CSS paths and contents remain in source maps.
+
+For standalone javac, package the same inputs with the processor jar's JVM tool, then add the resulting jar to the provider and consumer compilation classpaths:
+
+```sh
+java -cp css-processor.jar react4j.css.processor.CssInputJar \
+  style-inputs.jar demo/utilities.css path/to/utilities.css \
+  demo/defaults.css path/to/defaults.css
+```
+
+Each pair specifies the logical package-relative source path and the actual file. Keep this input jar alongside the provider artifact for downstream compilation. Java processing does not invoke a utility generator.
+
+The [browser example](examples/save-button/src/main/java/react4j/css/example/BrowserExample.java) combines inline utilities with a [file-backed provider](examples/save-button/src/main/java/react4j/css/example/UtilityLibraryB.java) compiled as a separate dependency and an explicit [global file](examples/save-button/src/main/css/react4j/css/example/utility-defaults.css). Its inherited utility interface uses the same ordinary Java helper pattern as component styles. The [packaged asset example](examples/save-button/src/main/java/react4j/css/example/AssetsExample.java) exercises utility font/animation aliases and finalized font files.
+
 ## Supported CSS
 
 Component styles support root declarations and nested selectors beginning with `&`, including attributes and same-element `:is`, `:not` and `:where`. Import another component to target its root in a checked descendant or sibling selector. `@media` and `@supports` blocks require explicit nested selectors. Apply one component's root to each styled element. When modifiers conflict, stylesheet order determines precedence, regardless of class-token order.
 
-Raw descendant and sibling targets, global escapes, escaped selector or property identifiers, `:has`, `@container` and other at-rules are unsupported, except for outer-level keyframes and font faces described below. CSS must be a literal Java text block. Validation checks syntax and selector/accessor agreement; it does not check property semantics or transform CSS for browser compatibility.
+In component CSS, raw descendant and sibling targets, global escapes, escaped selector or property identifiers, `:has`, `@container` and other at-rules are unsupported, except for outer-level keyframes and font faces described below. Component CSS must be a literal Java text block. Validation checks syntax and selector/accessor agreement; it does not check property semantics or transform CSS for browser compatibility.
 
 ### Peer components
 
@@ -199,11 +277,11 @@ Use `@GlobalCss` for page defaults and rules that target elements outside a comp
 final class ApplicationDefaults {}
 ```
 
-Selectors retain their authored names except for checked component references and bound IDs. Global styles support style rules, nesting, `@media` and `@supports`. Conditional blocks require explicit selectors even inside a style rule, for example `body { @media screen { & { color: red; } } }`. Import shared animations and component roots with `@CssImport`; global selectors may use `:css(alias)` to reference those roots. Outer-level `@font-face` rules declare owned fonts as described below. Inline keyframe definitions and other at-rules are unsupported; font faces cannot be nested in selectors or conditional rules.
+Selectors retain their authored names except for checked component references and bound IDs. Global styles support style rules, nesting, media/supports conditions, layers, property registrations, container queries and starting-style blocks. Conditional blocks require explicit selectors even inside a style rule, for example `body { @media screen { & { color: red; } } }`. Import shared animations and component roots with `@CssImport`; global selectors may use `:css(alias)` to reference those roots. Outer-level `@font-face` rules declare owned fonts as described below. Inline keyframe definitions and unrecognized at-rules are unsupported; font faces cannot be nested in selectors.
 
 Select application globals through the bundle's `globals` attribute below. Add `@CssImport(ApplicationDefaults.class)` to a component or another global definition that requires those defaults. Global imports work across separately compiled libraries; duplicate imports, self-inclusion, names on global imports and incompatible types are errors. The bundler rejects cycles among global inclusion edges.
 
-Keyframe and global declaration classes may be concrete or abstract, public or package-access. Extending another class, type parameters and sealed classes are unsupported. Nested declarations must be static with accessible enclosing types. They must not declare fields, explicit constructors or initializers. Concrete and static helpers are allowed. Abstract methods must be annotated symbol accessors as described below. Definitions with accessors must be abstract and generate lazy Java bindings; definitions without accessors produce resources only.
+Keyframe, global and utility-library declaration classes may be concrete or abstract, public or package-access. Extending another class, type parameters and sealed classes are unsupported. Nested declarations must be static with accessible enclosing types. They must not declare fields, explicit constructors or initializers. Concrete and static helpers are allowed. Abstract methods must be annotated symbol accessors as described below. Definitions with accessors must be abstract and generate lazy Java bindings; definitions without accessors produce resources only.
 
 ### CSS names in Java
 
@@ -389,11 +467,11 @@ abstract static class Styles {
 }
 ```
 
-Declare `@font-face` at the outer level of `@Css` or `@GlobalCss`. Family names belong to their definition and are scoped and compressed with other CSS names. Multiple weights and styles share one family; retained family use keeps all its faces. Unused faces and their files are removed. Font-family matching uses Unicode case folding, without Unicode or quoted-whitespace normalization.
+Declare `@font-face` at the outer level of `@Css`. Checked global and utility inputs also allow faces inside supported conditional or layer groups. Family names belong to their definition and are scoped and compressed with other CSS names. Multiple weights and styles share one family; retained family use keeps all its faces. Unused faces and their files are removed. Font-family matching uses Unicode case folding, without Unicode or quoted-whitespace normalization.
 
 Share a family through a selected import, for example `@CssImport(value = Fonts.class, font = "righteous", name = "heading")`, then use `font-family: heading, cursive`. The provider owns the name and faces; the importing style keeps that provider only while its family usage survives. [Drumloop's shared family](../examples/drumloop/src/main/java/react4j/drumloop/views/Fonts.java) serves four components this way. Family imports can also pass through separately compiled definitions and aliases.
 
-`font-family` lists, common `font` shorthand, `var()` fallbacks and ordinary face descriptors are parsed as CSS. Ambiguous dynamic shorthands that mix unresolved runtime values with managed family names are rejected; use a separate `font-family` declaration with a checked fallback. Managed family names hidden inside custom-property values are unsupported. Validation checks definitions across selectors and conditional rules; variables supplying only weight, size or line-height remain supported.
+`font-family` lists, common `font` shorthand, `var()` fallbacks and ordinary face descriptors are parsed as CSS. Ambiguous dynamic shorthands that mix unresolved runtime values with managed family names are rejected; use a separate `font-family` declaration with a checked fallback. Component and global definitions reject managed family names hidden inside custom-property values; utility libraries support the finite static carriers described above. Validation checks definitions across selectors and conditional rules; variables supplying only weight, size or line-height remain supported.
 
 Checked URLs also work in `image-set()` strings and preserve query/fragment suffixes, such as `url("asset:media.icon#mark")`. External HTTP(S), protocol-relative, data and blob URLs remain external; `url(#id)` remains a same-document reference. Other local file URLs must use a checked asset import. Asset imports alone do not retain every file.
 
@@ -472,7 +550,7 @@ web_bundle(
 
 Deploy the finalized JavaScript as `app.js` and its map as `app.js.map` at the application root, alongside the retained asset tree and CSS destinations from `web_bundle`; raw linked outputs contain intermediate asset references. `browser_application` performs this finalization and assembles the complete tree automatically. Load the generated CSS and serve its source map alongside it. Maps include the original Java and shared CSS source content. The [browser test build](examples/save-button/src/test/js/react4j/css/example/BUILD.bazel) shows several CSS variants sharing one JavaScript link.
 
-Global roots use binary Java names; nested classes use `$`, such as `com.biz.ui.Main$Defaults`. Shared CSS files emit first in declared order, followed by globals. Globals emit dependency-first where dependencies are acyclic. Explicit global inclusions always precede their importer, including through property cycles. Declared roots establish the first visits, followed by other required definitions. Each definition emits once: listing a dependency again as a later root does not move it. Components are visited in Java owner order. The `shared` and `components` cascade layers give component styles precedence over shared files and globals. All inputs reject `!important`, which would reverse that precedence.
+Global roots use binary Java names; nested classes use `$`, such as `com.biz.ui.Main$Defaults`. Shared CSS files emit first in declared order, followed by globals. Globals emit dependency-first where dependencies are acyclic. Explicit global inclusions always precede their importer, including through property cycles. Declared roots establish the first visits, followed by other required definitions. Each definition emits once: listing a dependency again as a later root does not move it. Components are visited in Java owner order. The outer cascade order is `shared`, `utilities`, `components`, so ordinary component declarations take precedence over utility and global declarations. Each utility library has a private enclosing layer that preserves its own internal layer order. Checked and raw global inputs permit standard `!important` declarations; component and utility definitions reject them. Important global declarations can therefore override ordinary component declarations explicitly.
 
 With `ADVANCED` compilation, CSS follows accessor values that survive JavaScript optimization, including through inlined helpers and interface calls. Unused owners, impossible selectors and resources required only by removed rules are dropped. A modifier value keeps its root class live. Any live checked accessor activates its author's unconditional global inclusions; retained declarations also keep their animation and property providers, including intermediate overrides. Complex selectors remain whenever their removal could change matching or specificity. Generated class, ID, animation and custom-property names are compressed by default, and source maps retain authored locations after pruning and renaming.
 

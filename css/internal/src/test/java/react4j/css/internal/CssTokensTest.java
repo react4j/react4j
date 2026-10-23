@@ -10,6 +10,59 @@ import react4j.css.internal.CssResource.SymbolKind;
 
 public final class CssTokensTest {
     @Test
+    public void transitionTargetsAndVariableFallbacksExposePropertyOccurrences() {
+        String css = ".x{transition-property:opacity,--a,--\\62 ;transition:--c .4s steps(2) .1s,color 1s;"
+                + "transition:var(--target,var(--other,--d)) 1s var(--time,2s);content:'--ignored';}"
+                + ":root{--targets:var(--alias);--alias:--carried;}.y{transition-property:var(--targets);}";
+        var tokens = CssTokens.read(css);
+        assertEquals(
+                tokens.stream()
+                        .filter(token -> SymbolKind.PROPERTY == token.kind())
+                        .map(CssTokens.Token::name)
+                        .collect(Collectors.toSet()),
+                Set.of(
+                        "--a",
+                        "--b",
+                        "--c",
+                        "--target",
+                        "--other",
+                        "--d",
+                        "--time",
+                        "--targets",
+                        "--alias",
+                        "--carried"));
+        for (var token : tokens) {
+            assertEquals(css.substring(token.start(), token.end()), token.value());
+        }
+    }
+
+    @Test
+    public void registeredInitialValuesExposeCheckedAssetUrlsAtTheirAuthoredSpans() {
+        String css = "@property --image{syntax:\"*\";inherits:false;initial-value:url('asset:media.icon');}";
+        var edits = CssUrls.edits(css, value -> "asset:media.icon".equals(value) ? "/icon.svg" : value);
+        assertEquals(edits.size(), 1);
+        assertEquals(css.substring(edits.get(0).start(), edits.get(0).end()), "url('asset:media.icon')");
+        assertTrue(edits.get(0).value().contains("/icon.svg"));
+    }
+
+    @Test
+    public void conditionalPropertyNamesRemainDistinctFromContainerNamesAndLiteralValues() {
+        String css = "@container --panel style(--mode:--literal) and style(--other:var(--source,--fallback))"
+                + " and style((--enabled) or (--state:foo(--data))){.x{color:red;}}";
+        assertEquals(
+                values(CssTokens.read(css), SymbolKind.PROPERTY),
+                Set.of("--mode", "--other", "--source", "--enabled", "--state"));
+        assertEquals(values(CssTokens.read(css), SymbolKind.CLASS), Set.of("x"));
+        for (var wrapper : List.of("@container panel (width>10px){%s}", "@starting-style{%s}")) {
+            String source = wrapper.formatted(".x{background:url('asset:media.icon');}");
+            var edits = CssUrls.edits(source, value -> "asset:media.icon".equals(value) ? "/icon.svg" : value);
+            assertEquals(edits.size(), 1);
+            assertEquals(source.substring(edits.get(0).start(), edits.get(0).end()), "url('asset:media.icon')");
+            assertTrue(edits.get(0).value().contains("/icon.svg"));
+        }
+    }
+
+    @Test
     public void escapedGrammarNamesStillExposeActualSymbolReferences() {
         String css = "body{anima\\74 ion-name:c;anima\\74 ion:d 1s;color:v\\61 r(--e);--\\66 :red;\\2d \\2d g:blue;}";
         var tokens = CssTokens.read(css);

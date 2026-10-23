@@ -3,25 +3,34 @@ package react4j.css.bundler;
 import com.google.gson.JsonParser;
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.AbstractHasTopLevelRules;
+import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSFontFaceRule;
 import com.helger.css.decl.CSSKeyframesRule;
+import com.helger.css.decl.CSSLayerRule;
+import com.helger.css.decl.CSSPropertyRule;
 import com.helger.css.decl.CSSSelector;
+import com.helger.css.decl.CSSSelectorAttribute;
+import com.helger.css.decl.CSSSelectorMemberPseudoHas;
 import com.helger.css.decl.CSSSelectorMemberPseudoIs;
 import com.helger.css.decl.CSSSelectorMemberPseudoWhere;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSStyleRule;
+import com.helger.css.decl.CSSUnknownRule;
 import com.helger.css.decl.CascadingStyleSheet;
-import com.helger.css.reader.CSSReader;
-import com.helger.css.reader.CSSReaderSettings;
-import com.helger.css.reader.errorhandler.ThrowingCSSParseErrorHandler;
+import com.helger.css.decl.visit.CSSVisitor;
+import com.helger.css.decl.visit.DefaultCSSVisitor;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
+import react4j.css.internal.CssAnimationValues;
 import react4j.css.internal.CssCatalogue.Resource;
 import react4j.css.internal.CssFontValues;
+import react4j.css.internal.CssResource;
+import react4j.css.internal.CssSelectors;
+import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
 /** Proves impossible selectors and copies surviving bytes with their original mappings. */
@@ -29,6 +38,10 @@ final class CssPruner {
     private final Resource resource;
     private final Set<String> known;
     private final Set<String> present;
+    private final Set<String> managedAnimations = new HashSet<>();
+    private final Set<String> managedFonts = new HashSet<>();
+    private final Set<String> managedProperties = new HashSet<>();
+    private final Set<String> managedClasses = new HashSet<>();
     private final CascadingStyleSheet sheet;
     private final List<Integer> lines = new ArrayList<>();
     private final List<SourceMap.Span> removed = new ArrayList<>();
@@ -37,9 +50,27 @@ final class CssPruner {
         this.resource = resource;
         this.known = known;
         this.present = present;
-        sheet = Objects.requireNonNull(CSSReader.readFromStringReader(
-                resource.css(),
-                new CSSReaderSettings().setTabSize(1).setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
+        known.stream()
+                .filter(name -> name.startsWith("."))
+                .map(name -> name.substring(1))
+                .forEach(managedClasses::add);
+        for (var symbol : resource.metadata().symbols()) {
+            if (CssResource.SymbolKind.ANIMATION == symbol.kind()) {
+                managedAnimations.add(symbol.value());
+            }
+            if (CssResource.SymbolKind.FONT == symbol.kind()) {
+                managedFonts.add(CssFontValues.canonical(symbol.value()));
+            }
+            if (CssResource.SymbolKind.PROPERTY == symbol.kind()) {
+                managedProperties.add(symbol.value());
+            }
+        }
+        for (var occurrence : resource.metadata().occurrences()) {
+            if (CssResource.SymbolKind.PROPERTY == occurrence.symbol().kind()) {
+                managedProperties.add(resource.css().substring(occurrence.start(), occurrence.end()));
+            }
+        }
+        sheet = new CssSyntax(resource.css(), 0).parse(CssSyntax.Mode.PROCESSED);
         lines.add(0);
         for (int i = 0; i < resource.css().length(); i++) {
             if ('\n' == resource.css().charAt(i)) {
@@ -49,14 +80,22 @@ final class CssPruner {
     }
 
     Set<String> animations() {
-        return sheet.getAllKeyframesRules().stream()
-                .map(CSSKeyframesRule::getAnimationName)
-                .collect(Collectors.toSet());
+        var names = new HashSet<String>();
+        CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
+            @Override
+            public void onBeginKeyframesRule(CSSKeyframesRule frames) {
+                if (CssResource.Kind.UTILITY != resource.metadata().kind()
+                        || managedAnimations.contains(CssAnimationValues.name(frames.getAnimationName()))) {
+                    names.add(CssAnimationValues.name(frames.getAnimationName()));
+                }
+            }
+        });
+        return Set.copyOf(names);
     }
 
-    Resource prune(Set<String> animations, Set<String> fonts) {
+    Resource prune(Set<String> animations, Set<String> fonts, Set<String> properties) {
         removed.clear();
-        rules(sheet.getAllRules(), animations, fonts);
+        rules(sheet.getAllRules(), animations, fonts, properties);
         var spans = new ArrayList<SourceMap.Span>();
         int offset = 0;
         for (var span : removed.stream()
@@ -76,7 +115,7 @@ final class CssPruner {
                         .getAsJsonObject());
     }
 
-    private boolean rules(List<?> rules, Set<String> animations, Set<String> fonts) {
+    private boolean rules(List<?> rules, Set<String> animations, Set<String> fonts, Set<String> properties) {
         boolean retained = false;
         for (var rule : rules) {
             if (rule instanceof CSSStyleRule style) {
@@ -88,24 +127,63 @@ final class CssPruner {
                     }
                     selectors(style.getAllSelectors());
                 }
-                rules(style.getAllRules(), animations, fonts);
+                if (CssResource.Kind.UTILITY == resource.metadata().kind()
+                        && style.getAllSelectors().stream()
+                                .noneMatch(selector ->
+                                        possible(selector) && CssSelectors.requiresClass(selector, managedClasses))
+                        && !declarations(style.getAllDeclarations(), properties)
+                        && !style.hasRules()) {
+                    remove(style);
+                    continue;
+                }
+                rules(style.getAllRules(), animations, fonts, properties);
             } else if (rule instanceof CSSKeyframesRule frames) {
-                if (!animations.contains(frames.getAnimationName())) {
+                if ((CssResource.Kind.UTILITY != resource.metadata().kind()
+                                || managedAnimations.contains(CssAnimationValues.name(frames.getAnimationName())))
+                        && !animations.contains(CssAnimationValues.name(frames.getAnimationName()))) {
                     remove(frames);
                     continue;
                 }
             } else if (rule instanceof CSSFontFaceRule face) {
-                if (!fonts.contains(CssFontValues.face(face))) {
+                if ((CssResource.Kind.UTILITY != resource.metadata().kind()
+                                || managedFonts.contains(CssFontValues.face(face)))
+                        && !fonts.contains(CssFontValues.face(face))) {
                     remove(face);
                     continue;
                 }
+            } else if (rule instanceof CSSUnknownRule conditional) {
+                var parsed = Objects.requireNonNull(conditional.getParsedRules());
+                if (!rules(parsed.getAllRules(), animations, fonts, properties)) {
+                    remove(conditional);
+                    continue;
+                }
+            } else if (rule instanceof CSSPropertyRule registration) {
+                if (CssResource.Kind.UTILITY == resource.metadata().kind()
+                        && managedProperties.contains(registration.getIdentifier())
+                        && !properties.contains(registration.getIdentifier())) {
+                    remove(registration);
+                    continue;
+                }
             } else if (rule instanceof AbstractHasTopLevelRules nested) {
-                if (!rules(nested.getAllRules(), animations, fonts)) {
+                if (!rules(nested.getAllRules(), animations, fonts, properties) && !(rule instanceof CSSLayerRule)) {
                     remove((ICSSSourceLocationAware) rule);
                     continue;
                 }
             }
             retained = true;
+        }
+        return retained;
+    }
+
+    private boolean declarations(List<CSSDeclaration> declarations, Set<String> properties) {
+        boolean retained = false;
+        for (var declaration : declarations) {
+            if (managedProperties.contains(declaration.getProperty())
+                    && !properties.contains(declaration.getProperty())) {
+                remove(declaration);
+            } else {
+                retained = true;
+            }
         }
         return retained;
     }
@@ -136,6 +214,14 @@ final class CssPruner {
                 if (known.contains(name) && !present.contains(name)) {
                     return false;
                 }
+            } else if (member instanceof CSSSelectorAttribute attribute && null != CssSelectors.classToken(attribute)) {
+                String name = "." + CssSelectors.classToken(attribute);
+                if (known.contains(name) && !present.contains(name)) {
+                    return false;
+                }
+            } else if (member instanceof CSSSelectorMemberPseudoHas function
+                    && function.getAllSelectors().stream().noneMatch(this::possible)) {
+                return false;
             } else if (member instanceof CSSSelector nested && !possible(nested)) {
                 return false;
             } else if (member instanceof CSSSelectorMemberPseudoIs function

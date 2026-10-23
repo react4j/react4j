@@ -4,13 +4,20 @@ java_library(
     name = "internal",
     srcs = [
         "AssetResource.java",
+        "CssAnimationValues.java",
         "CssCatalogue.java",
+        "CssConditions.java",
+        "CssContainers.java",
         "CssExpressions.java",
         "CssFontValues.java",
+        "CssInput.java",
+        "CssLexical.java",
         "CssLink.java",
         "CssNames.java",
+        "CssPropertyValues.java",
         "CssRenamer.java",
         "CssResource.java",
+        "CssSelectors.java",
         "CssSyntax.java",
         "CssTokens.java",
         "CssUrls.java",
@@ -33,6 +40,6 @@ java_library(
     ],
     deps = [
         "//third_party:gson",
-        "//third_party/java:ph_css",
+        "//third_party:ph_css",
     ],
 )

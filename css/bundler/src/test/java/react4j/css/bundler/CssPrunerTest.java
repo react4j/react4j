@@ -13,6 +13,62 @@ import react4j.css.internal.CssResource;
 import react4j.css.internal.SourceMap;
 
 public final class CssPrunerTest {
+    @Test
+    public void modernConditionsPruneTheirParsedBodiesWithoutDroppingLayerOrderOrRegistrations() {
+        for (var wrapper : List.of(
+                "@container panel (width>10px){%s}",
+                "@starting-style{%s}",
+                "@supports (display:grid){@container style(--density:compact){@starting-style{%s}}}")) {
+            String css = wrapper.formatted(".dead{opacity:0;}.root{opacity:1;}");
+            var actual = prune(resource(new SourceMap.Writer().append(css)), Set.of(".dead", ".root"), Set.of(".root"));
+            assertEquals(actual.css(), wrapper.formatted(".root{opacity:1;}"));
+            assertEquals(
+                    prune(
+                                    resource(new SourceMap.Writer().append(wrapper.formatted(".dead{opacity:0;}"))),
+                                    Set.of(".dead"),
+                                    Set.of())
+                            .css(),
+                    "");
+        }
+        String support = "@layer first,second;@property --x{syntax:\"*\";inherits:false;}";
+        assertEquals(
+                prune(resource(new SourceMap.Writer().append(support)), Set.of(), Set.of())
+                        .css(),
+                support);
+        var frames = resource(new SourceMap.Writer()
+                .append("@layer utilities{@container panel (width>10px){@keyframes spin{to{opacity:0;}}}}"));
+        assertEquals(new CssPruner(frames, Set.of(), Set.of()).animations(), Set.of("spin"));
+    }
+
+    @Test
+    public void utilityExternalFramesAndFacesRemainLiteralWhileManagedDefinitionsCanDisappear() {
+        var writer = new SourceMap.Writer()
+                .append("@keyframes owned{to{opacity:.4;}}@keyframes host{to{opacity:.6;}}"
+                        + "@font-face{font-family:owned;src:url('https://example.test/owned.woff2');}"
+                        + "@font-face{font-family:host;src:url('https://example.test/host.woff2');}");
+        var resource = new Resource(
+                new CssResource(
+                        "Utilities",
+                        CssResource.Kind.UTILITY,
+                        List.of(),
+                        List.of(),
+                        "",
+                        List.of(),
+                        List.of(
+                                new CssResource.Symbol(CssResource.SymbolKind.ANIMATION, "owned", "owned", false),
+                                new CssResource.Symbol(CssResource.SymbolKind.FONT, "owned", "owned", false)),
+                        List.of(),
+                        List.of()),
+                writer.css(),
+                JsonParser.parseString(writer.map("Utilities.css")).getAsJsonObject());
+        var pruner = new CssPruner(resource, Set.of(), Set.of());
+        assertEquals(pruner.animations(), Set.of("owned"));
+        String output = pruner.prune(Set.of(), Set.of(), Set.of()).css();
+        assertTrue(output.contains("@keyframes host"), output);
+        assertTrue(output.contains("font-family:host"), output);
+        assertFalse(output.contains("owned"), output);
+    }
+
     private static Resource resource(SourceMap.Writer writer) {
         return new Resource(
                 new CssResource(
@@ -30,7 +86,35 @@ public final class CssPrunerTest {
     }
 
     private static Resource prune(Resource resource, Set<String> known, Set<String> present) {
-        return new CssPruner(resource, known, present).prune(Set.of(), Set.of());
+        return new CssPruner(resource, known, present).prune(Set.of(), Set.of(), Set.of());
+    }
+
+    @Test
+    public void markerMembershipAndRelationalRequirementsDoNotInventClassPresence() {
+        var known = Set.of(".root", ".marker", ".peer", ".dead");
+        for (var selector : List.of(".marker .root", ".peer~.root", ".root[class~='dead']", ".root:has(.dead,.peer)")) {
+            assertEquals(
+                    prune(resource(new SourceMap.Writer().append(selector + "{color:red;}")), known, Set.of(".root"))
+                            .css(),
+                    "",
+                    selector);
+        }
+        for (var selector : List.of(
+                ".root:not([class~='dead'])",
+                ".root:has(:not(.dead))",
+                ".root:is([class~='dead'],.root)",
+                ".root[data-label='dead']")) {
+            String css = selector + "{color:red;}";
+            assertEquals(
+                    prune(resource(new SourceMap.Writer().append(css)), known, Set.of(".root"))
+                            .css(),
+                    css);
+        }
+        String css = ".marker:hover .root,.peer:checked~.root{color:red;}";
+        assertEquals(
+                prune(resource(new SourceMap.Writer().append(css)), known, Set.of(".marker", ".root"))
+                        .css(),
+                ".marker:hover .root{color:red;}");
     }
 
     @Test

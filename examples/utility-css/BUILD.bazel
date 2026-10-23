@@ -1,0 +1,25 @@
+load("@react4j//:defs.bzl", "browser_application", "css_bundle")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//:__subpackages__"])
+
+closure_js_library(
+    name = "entry",
+    srcs = ["//examples/utility-css/src/main/java/react4j/utilitydemo:Main.entry.js"],
+    deps = ["//examples/utility-css/src/main/java/react4j/utilitydemo"],
+)
+
+css_bundle(
+    name = "styles",
+    css = "index.css",
+    root = ":utility-css_bundle",
+    source_map = "index.css.map",
+)
+
+browser_application(
+    name = "utility-css",
+    entry_point = "react4j.utilitydemo.MainEntry",
+    html = "public/index.html",
+    styles = {":styles": "css/index.css"},
+    deps = [":entry"],
+)

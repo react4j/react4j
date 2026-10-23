@@ -2,10 +2,8 @@ package react4j.css.internal;
 
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import react4j.css.internal.CssCatalogue.Resource;
 import react4j.css.internal.CssResource.SymbolId;
@@ -19,7 +17,7 @@ public final class CssRenamer {
 
     private record AttributeValue(SymbolKind kind, String readable, String compiled, String origin) {}
 
-    public CssRenamer(CssNames table) {
+    public CssRenamer(CssNames table, List<CssResource> resources) {
         names = table.entries().stream().collect(Collectors.toMap(CssNames.Entry::symbol, entry -> entry));
         compressed = table.entries().stream()
                 .filter(entry -> !entry.readable().equals(entry.compiled()))
@@ -31,26 +29,28 @@ public final class CssRenamer {
                         entry.readable(),
                         entry.compiled(),
                         entry.symbol().id())));
-        var getters = new TreeMap<String, List<CssNames.Entry>>();
-        for (var entry : table.entries()) {
-            if (SymbolKind.CLASS == entry.symbol().kind()) {
-                for (var getter : entry.getters()) {
-                    getters.computeIfAbsent(getter, ignored -> new ArrayList<>())
-                            .add(entry);
+        for (var resource : resources) {
+            for (var binding : resource.bindings()) {
+                if (SymbolKind.CLASS == binding.kind() && binding.symbols().size() > 1) {
+                    String compiled = binding.symbols().stream()
+                            .map(id -> {
+                                var entry = names.get(id);
+                                if (null == entry) {
+                                    throw new IllegalArgumentException("Unknown class binding symbol: " + id.id());
+                                }
+                                return entry.compiled();
+                            })
+                            .collect(Collectors.joining(" "));
+                    if (!binding.value().equals(compiled)) {
+                        attributeValues.add(new AttributeValue(
+                                SymbolKind.CLASS,
+                                binding.value(),
+                                compiled,
+                                resource.owner() + "#" + binding.method()));
+                    }
                 }
             }
         }
-        getters.forEach((getter, entries) -> {
-            if (entries.size() > 1) {
-                // Generated modifier getters return the root followed by the modifier.
-                entries.sort(Comparator.comparing(entry -> entry.symbol().name()));
-                String readable = entries.stream().map(CssNames.Entry::readable).collect(Collectors.joining(" "));
-                String compiled = entries.stream().map(CssNames.Entry::compiled).collect(Collectors.joining(" "));
-                if (!readable.equals(compiled)) {
-                    attributeValues.add(new AttributeValue(SymbolKind.CLASS, readable, compiled, getter));
-                }
-            }
-        });
     }
 
     public Resource rename(Resource resource) {

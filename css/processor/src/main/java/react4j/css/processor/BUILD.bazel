@@ -1,4 +1,4 @@
-load("//third_party/java:rules.bzl", "java_library")
+load("//third_party/java:rules.bzl", "java_binary", "java_library")
 
 java_library(
     name = "processor",
@@ -10,12 +10,16 @@ java_library(
         "CssFonts.java",
         "CssGenerator.java",
         "CssIds.java",
+        "CssInputJar.java",
         "CssMethods.java",
         "CssProcessor.java",
         "CssProperties.java",
         "CssSymbols.java",
         "Names.java",
         "TextBlock.java",
+        "UtilityContainers.java",
+        "UtilityNames.java",
+        "UtilitySelectors.java",
         "package-info.java",
     ],
     resource_strip_prefix = "css/processor/src/main/resources",
@@ -28,8 +32,15 @@ java_library(
     deps = [
         "//css/internal/src/main/java/react4j/css/internal",
         "//third_party:gson",
+        "//third_party:ph_css",
         "//third_party:proton_core",
         "//third_party/java:javapoet",
-        "//third_party/java:ph_css",
     ],
+)
+
+java_binary(
+    name = "css_inputs",
+    main_class = "react4j.css.processor.CssInputJar",
+    visibility = ["//css:__pkg__"],
+    runtime_deps = [":processor"],
 )

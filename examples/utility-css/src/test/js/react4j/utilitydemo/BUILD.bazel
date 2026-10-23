@@ -1,0 +1,14 @@
+load("@react4j//:defs.bzl", "browser_test")
+
+package(default_visibility = ["//:__pkg__"])
+
+browser_test(
+    name = "browser_tests",
+    srcs = ["browser_test.js"],
+    data = ["//examples/utility-css"],
+    entry_point = "react4j.utilitydemo.BrowserTest",
+    deps = [
+        "//examples/utility-css/src/test/java/react4j/utilitydemo:browser_tests",
+        "@react4j//third_party:closure_testcase",
+    ],
+)

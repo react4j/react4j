@@ -2,7 +2,11 @@ package react4j.css.internal;
 
 import com.helger.css.CSSSourceLocation;
 import com.helger.css.ICSSSourceLocationAware;
+import com.helger.css.decl.CSSStyleRule;
+import com.helger.css.decl.CSSUnknownRule;
 import com.helger.css.decl.CascadingStyleSheet;
+import com.helger.css.decl.visit.CSSVisitor;
+import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.handler.CSSHandler;
 import com.helger.css.handler.ECSSNodeType;
 import com.helger.css.parser.CSSCharStream;
@@ -19,6 +23,14 @@ import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
 public final class CssSyntax {
+    public enum Mode {
+        COMPONENT,
+        GLOBAL,
+        UTILITY,
+        KEYFRAMES,
+        PROCESSED
+    }
+
     public static final class InvalidCss extends IllegalArgumentException {
         private final int offset;
 
@@ -41,14 +53,16 @@ public final class CssSyntax {
     }
 
     public CascadingStyleSheet parse(boolean component) {
-        return parse(component, false);
+        return parse(component ? Mode.COMPONENT : Mode.GLOBAL);
     }
 
     public CascadingStyleSheet parseKeyframes() {
-        return parse(false, true);
+        return parse(Mode.KEYFRAMES);
     }
 
-    private CascadingStyleSheet parse(boolean component, boolean framesOnly) {
+    public CascadingStyleSheet parse(Mode mode) {
+        boolean component = Mode.COMPONENT == mode;
+        boolean framesOnly = Mode.KEYFRAMES == mode;
         var stream = new CSSCharStream(new StringReader(source));
         stream.setTabSize(1);
         var handler = new ThrowingCSSParseErrorHandler() {
@@ -56,6 +70,12 @@ public final class CssSyntax {
             public void onCSSUnexpectedRule(Token token, String rule, String message) {
                 // Check placement in the syntax tree so diagnostics identify the keyframes header.
                 if ("@keyframes".equals(rule) || "@font-face".equals(rule)) {
+                    return;
+                }
+                if (modern(mode) && ("@container".equalsIgnoreCase(rule) || "@starting-style".equalsIgnoreCase(rule))) {
+                    return;
+                }
+                if (modern(mode) && "@property".equalsIgnoreCase(rule)) {
                     return;
                 }
                 throw new InvalidCss(
@@ -103,8 +123,8 @@ public final class CssSyntax {
         if (framesOnly && (1 != tree.jjtGetNumChildren() || !ECSSNodeType.KEYFRAMESRULE.isNode(tree.jjtGetChild(0)))) {
             throw new InvalidCss("@Keyframes requires a single animation frame body", 0);
         }
-        checkSyntaxTree(tree, component || framesOnly, 0);
-        return CSSHandler.readCascadingStyleSheetFromNode(
+        checkSyntaxTree(tree, mode, 0, false);
+        var sheet = CSSHandler.readCascadingStyleSheetFromNode(
                 new ICSSInterpretErrorHandler() {
                     @Override
                     public void onCSSInterpretationWarning(String message) {
@@ -118,6 +138,31 @@ public final class CssSyntax {
                 },
                 true,
                 tree);
+        CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
+            @Override
+            public void onUnknownRule(CSSUnknownRule rule) {
+                if (null == rule.getParsedRules()) {
+                    var header = CssConditions.read(source, rule);
+                    var body = new StringBuilder(source);
+                    for (int i = 0; i < body.length(); i++) {
+                        if ((i < header.bodyStart() || i >= header.bodyEnd())
+                                && '\n' != body.charAt(i)
+                                && '\r' != body.charAt(i)) {
+                            body.setCharAt(i, ' ');
+                        }
+                    }
+                    rule.setParsedRules(new CssSyntax(body.toString(), prefix).parse(mode));
+                }
+            }
+
+            @Override
+            public void onBeginStyleRule(CSSStyleRule rule) {
+                if (Mode.UTILITY == mode && rule.hasRules()) {
+                    throw invalid("Utility CSS must be flattened before compilation", rule);
+                }
+            }
+        });
+        return sheet;
     }
 
     // ph-css omits keyframes in style rules during model conversion. Lift parsed nodes without losing token locations.
@@ -160,11 +205,18 @@ public final class CssSyntax {
         child.jjtSetParent(parent);
     }
 
-    private void checkSyntaxTree(CSSNode node, boolean component, int depth) {
-        if (ECSSNodeType.IMPORTANT.isNode(node)) {
+    private static boolean modern(Mode mode) {
+        return Mode.GLOBAL == mode || Mode.UTILITY == mode || Mode.PROCESSED == mode;
+    }
+
+    private void checkSyntaxTree(CSSNode node, Mode mode, int depth, boolean inStyle) {
+        boolean component = Mode.COMPONENT == mode || Mode.KEYFRAMES == mode;
+        if (ECSSNodeType.IMPORTANT.isNode(node) && (component || Mode.UTILITY == mode)) {
             throw invalid("!important declarations defeat shared/component precedence", node.getSourceLocation());
         }
-        if ((ECSSNodeType.KEYFRAMESRULE.isNode(node) || ECSSNodeType.FONTFACERULE.isNode(node)) && 1 != depth) {
+        boolean frames = ECSSNodeType.KEYFRAMESRULE.isNode(node);
+        if ((frames || ECSSNodeType.FONTFACERULE.isNode(node))
+                && (inStyle || component && 1 != depth || frames && Mode.GLOBAL == mode)) {
             throw invalid(
                     ECSSNodeType.KEYFRAMESRULE.isNode(node)
                             ? "Keyframes must be declared at the component's outer level"
@@ -177,7 +229,13 @@ public final class CssSyntax {
                     && ECSSNodeType.STYLERULE != type
                     && ECSSNodeType.MEDIARULE != type
                     && ECSSNodeType.SUPPORTSRULE != type
-                    && !(component && ECSSNodeType.KEYFRAMESRULE == type)
+                    && !((component || Mode.UTILITY == mode || Mode.PROCESSED == mode)
+                            && ECSSNodeType.KEYFRAMESRULE == type)
+                    && !(modern(mode) && (ECSSNodeType.LAYERRULE == type || ECSSNodeType.PROPERTYRULE == type))
+                    && !(modern(mode)
+                            && ECSSNodeType.UNKNOWNRULE == type
+                            && ("@container".equalsIgnoreCase(node.getText())
+                                    || "@starting-style".equalsIgnoreCase(node.getText())))
                     && ECSSNodeType.FONTFACERULE != type) {
                 throw invalid(
                         (component ? "Unsupported component rule: " : "Unsupported shared rule: ") + type.name(),
@@ -185,8 +243,12 @@ public final class CssSyntax {
             }
         }
         for (var child : node) {
-            checkSyntaxTree(child, component, depth + 1);
+            checkSyntaxTree(child, mode, depth + 1, inStyle || ECSSNodeType.STYLERULE.isNode(node));
         }
+    }
+
+    public CssConditions.Header condition(CSSUnknownRule rule) {
+        return CssConditions.read(source, rule);
     }
 
     public InvalidCss invalid(String message, ICSSSourceLocationAware node) {

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 import org.jspecify.annotations.Nullable;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -26,6 +27,7 @@ import react4j.css.internal.CssCatalogue;
 import react4j.css.internal.CssLink;
 import react4j.css.internal.CssNames;
 import react4j.css.internal.CssResource;
+import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
 public final class BundleTest {
@@ -152,6 +154,84 @@ public final class BundleTest {
     }
 
     @Test
+    public void utilityLibrariesKeepPrivateLayerOrdersAndMappedOffsetsBeforeComponents() throws Exception {
+        var resources = new TreeMap<String, CssCatalogue.Resource>();
+        for (var entry : Map.of(
+                        "demo.A",
+                        "@layer first,second;\n@layer first{.a-tone{color:red;}}\n@layer second{.a-tone{color:blue;}}",
+                        "demo.B",
+                        "@layer second,first;\n@layer first{.b-tone{color:green;}}",
+                        "demo.Empty",
+                        "")
+                .entrySet()) {
+            var mapped = new SourceMap.Writer();
+            int sourceLine = 0;
+            int sourceColumn = 0;
+            for (int offset = 0; offset < entry.getValue().length(); offset++) {
+                char character = entry.getValue().charAt(offset);
+                mapped.append(
+                        String.valueOf(character),
+                        new SourceMap.Location(entry.getKey() + ".css", entry.getValue(), sourceLine, sourceColumn));
+                if ('\n' == character) {
+                    sourceLine++;
+                    sourceColumn = 0;
+                } else {
+                    sourceColumn++;
+                }
+            }
+            resources.put(
+                    entry.getKey(),
+                    new CssCatalogue.Resource(
+                            metadata(entry.getKey(), CssResource.Kind.UTILITY, List.of(), List.of(), false),
+                            entry.getValue(),
+                            JsonParser.parseString(mapped.map(entry.getKey() + ".css"))
+                                    .getAsJsonObject()));
+        }
+        String css = ".root{color:black;}";
+        var mapped = new SourceMap.Writer().append(css, new SourceMap.Location("Consumer.java", css, 0, 0));
+        resources.put(
+                "demo.Consumer",
+                new CssCatalogue.Resource(
+                        metadata(
+                                "demo.Consumer",
+                                CssResource.Kind.COMPONENT,
+                                List.of("demo.A", "demo.B", "demo.Empty"),
+                                List.of(),
+                                true),
+                        css,
+                        JsonParser.parseString(mapped.map("Consumer.css")).getAsJsonObject()));
+        var result = Bundle.assemble(
+                new CssCatalogue(resources, "1".repeat(64), Map.of()), List.of(), List.of(), "app.css", null, Set.of());
+        var layers =
+                new CssSyntax(result.css(), 0).parse(CssSyntax.Mode.PROCESSED).getAllLayerRules();
+        assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "utilities", "components"));
+        assertEquals(layers.get(1).getAllSelectors(), List.of("utilities"));
+        var libraries = layers.get(1).getAllLayerRules();
+        assertEquals(libraries.size(), 2);
+        assertNotEquals(libraries.get(0).getAllSelectors(), libraries.get(1).getAllSelectors());
+        assertEquals(libraries.get(0).getAllLayerRules().get(0).getAllSelectors(), List.of("first", "second"));
+        assertEquals(libraries.get(1).getAllLayerRules().get(0).getAllSelectors(), List.of("second", "first"));
+        assertEquals(layers.get(2).getAllSelectors(), List.of("components"));
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(result.map());
+        for (var pair : Map.of(".a-tone", "demo.A.css", ".b-tone", "demo.B.css", ".root", "Consumer.java")
+                .entrySet()) {
+            int at = result.css().indexOf(pair.getKey());
+            int line = (int) result.css()
+                            .substring(0, at)
+                            .chars()
+                            .filter(c -> '\n' == c)
+                            .count()
+                    + 1;
+            int column = at - result.css().lastIndexOf('\n', at - 1);
+            var origin = Objects.requireNonNull(consumer.getMappingForLine(line, column));
+            assertEquals(origin.getOriginalFile(), pair.getValue());
+            assertEquals(origin.getLineNumber(), ".root".equals(pair.getKey()) ? 1 : 2);
+            assertEquals(origin.getColumnPosition(), ".root".equals(pair.getKey()) ? 1 : 14);
+        }
+    }
+
+    @Test
     public void assemblyDeduplicatesTreesSortsOwnersAndComposesReadableMaps() throws Exception {
         Path one = tree("one");
         Path two = tree("two");
@@ -168,7 +248,7 @@ public final class BundleTest {
                 result.css(), new CSSReaderSettings().setCustomErrorHandler(new ThrowingCSSParseErrorHandler())));
         var layers = sheet.getAllLayerRules();
         assertEquals(layers.size(), 3);
-        assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "components"));
+        assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "utilities", "components"));
         assertEquals(layers.get(1).getAllSelectors(), List.of("shared"));
         assertEquals(layers.get(1).getRuleCount(), 1);
         assertEquals(layers.get(2).getAllSelectors(), List.of("components"));
@@ -223,7 +303,7 @@ public final class BundleTest {
         for (var result : List.of(
                 Bundle.assemble(List.of(), List.of(), List.of(), "empty.css"),
                 Bundle.assemble(List.of(empty), List.of(shared), List.of(), "empty.css"))) {
-            assertEquals(result.css(), "@layer shared,components;\n");
+            assertEquals(result.css(), "@layer shared,utilities,components;\n");
             assertEquals(
                     JsonParser.parseString(result.map())
                             .getAsJsonObject()
@@ -234,19 +314,22 @@ public final class BundleTest {
     }
 
     @Test
-    public void sharedRulesCannotOverrideTheLayerContract() throws Exception {
+    public void sharedInputsAcceptExplicitGlobalLayersAndImportantButRejectUnsupportedRules() throws Exception {
         Path shared = dir().resolve("bad.css");
-        for (var css : List.of(
-                "button { color: red !important; }",
-                "@import 'missing.css';",
-                "@layer components { body { color: red; } }",
-                "button { color red; }")) {
+        for (var css :
+                List.of("@import 'missing.css';", "@scope (.root) { body { color: red; } }", "button { color red; }")) {
             Files.writeString(shared, css);
             var error = expectThrows(
                     IllegalArgumentException.class,
                     () -> Bundle.assemble(List.of(), List.of(shared), List.of(), "app.css"));
             assertTrue(String.valueOf(error.getMessage()).startsWith(shared.toString()), error.getMessage());
         }
+        String globals = "@layer defaults { button { color:red!important; } }";
+        Files.writeString(shared, globals);
+        assertEquals(
+                Bundle.assemble(List.of(), List.of(shared), List.of(), "app.css")
+                        .css(),
+                "@layer shared,utilities,components;\n@layer shared{\n" + globals + "\n}\n");
     }
 
     @Test
@@ -441,7 +524,8 @@ public final class BundleTest {
         resource(input, "Pulse", CssResource.Kind.KEYFRAMES, "@keyframes pulse{to{opacity:1;}}", "Defaults");
         resource(input, "Defaults", CssResource.Kind.GLOBAL, "body{--accent:red;}");
         assertEquals(
-                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(), "@layer shared,components;\n");
+                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(),
+                "@layer shared,utilities,components;\n");
         Files.writeString(
                 input.resolve("Pulse.css.json"),
                 metadata("Pulse", CssResource.Kind.KEYFRAMES, List.of("Defaults"), List.of(), true)
@@ -495,7 +579,8 @@ public final class BundleTest {
         Files.delete(input.resolve("demo/B.css.map"));
         Files.delete(input.resolve("demo/B.css.json"));
         assertEquals(
-                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(), "@layer shared,components;\n");
+                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(),
+                "@layer shared,utilities,components;\n");
     }
 
     @Test
@@ -533,7 +618,8 @@ public final class BundleTest {
         Path legacy = dir().resolve("legacy.css");
         Files.writeString(legacy, "body{color:black;}");
         assertEquals(
-                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(), "@layer shared,components;\n");
+                Bundle.assemble(List.of(input), List.of(), List.of(), "app.css").css(),
+                "@layer shared,utilities,components;\n");
         var result =
                 Bundle.assemble(List.of(input), List.of(legacy), List.of("Theme", "Base", "Theme", "Empty"), "app.css");
         var sheet = Objects.requireNonNull(CSSReader.readFromStringReader(result.css(), new CSSReaderSettings()));
@@ -554,7 +640,7 @@ public final class BundleTest {
         assertEquals(
                 Bundle.assemble(List.of(input), List.of(), List.of("Empty"), "app.css")
                         .css(),
-                "@layer shared,components;\n");
+                "@layer shared,utilities,components;\n");
         for (var owner : List.of("Missing", "../Base")) {
             var error = expectThrows(
                     IllegalArgumentException.class,
