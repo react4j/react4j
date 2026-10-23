@@ -10,6 +10,22 @@ import react4j.css.internal.CssResource.SymbolKind;
 
 public final class CssTokensTest {
     @Test
+    public void transitionTargetsAndVariableFallbacksExposePropertyOccurrences() {
+        String css = ".x{transition-property:opacity,--a,--\\62 ;transition:--c .4s steps(2) .1s,color 1s;"
+                + "transition:var(--target,var(--other,--d)) 1s var(--time,2s);content:'--ignored';}";
+        var tokens = CssTokens.read(css);
+        assertEquals(
+                tokens.stream()
+                        .filter(token -> SymbolKind.PROPERTY == token.kind())
+                        .map(CssTokens.Token::name)
+                        .collect(Collectors.toSet()),
+                Set.of("--a", "--b", "--c", "--target", "--other", "--d", "--time"));
+        for (var token : tokens) {
+            assertEquals(css.substring(token.start(), token.end()), token.value());
+        }
+    }
+
+    @Test
     public void registeredInitialValuesExposeCheckedAssetUrlsAtTheirAuthoredSpans() {
         String css = "@property --image{syntax:\"*\";inherits:false;initial-value:url('asset:media.icon');}";
         var edits = CssUrls.edits(css, value -> "asset:media.icon".equals(value) ? "/icon.svg" : value);

@@ -309,6 +309,9 @@ public final class CssTokens {
                 if (property.startsWith("--")) {
                     token(SymbolKind.PROPERTY, start(declaration), declaration.getProperty());
                 }
+                for (var target : CssPropertyValues.names(declaration)) {
+                    token(SymbolKind.PROPERTY, start(target), target.getValue());
+                }
                 boolean animation =
                         "animation".equalsIgnoreCase(property) || "animation-name".equalsIgnoreCase(property);
                 if (animation) {

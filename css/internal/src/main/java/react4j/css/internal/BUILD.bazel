@@ -14,6 +14,7 @@ java_library(
         "CssLexical.java",
         "CssLink.java",
         "CssNames.java",
+        "CssPropertyValues.java",
         "CssRenamer.java",
         "CssResource.java",
         "CssSelectors.java",

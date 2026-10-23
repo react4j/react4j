@@ -235,6 +235,25 @@ public final class CssBrowserTest {
         equal("19px", css("utility-query", "margin-bottom"));
     }
 
+    public BrowserPromise testUtilityCustomPropertyTransitionsKeepTheirTargets() {
+        String property = BrowserExample.utilityTurnProperty();
+        String[] targets = css("utility-query", "transition-property").split(", ");
+        equal(property, targets[0]);
+        equal("--host-gap", targets[1]);
+        check(_style.getTextContent().contains("initial-value:3deg"), "A transition target retains its registration");
+        equal("0deg", css("utility-query", "rotate"));
+        Browser.cssText(node("utility-query"), property + ":90deg");
+        var transitions = Browser.animations(node("utility-query"));
+        check(1 == transitions.length, "One custom-property transition");
+        var transition = transitions[0];
+        transition.pause();
+        return transition.getReady().thenDo(() -> {
+            transition.setCurrentTime(50000);
+            double angle = Double.parseDouble(css("utility-query", "rotate").replace("deg", ""));
+            check(44 < angle && 46 > angle, "Registered property interpolates through the renamed transition target");
+        });
+    }
+
     public BrowserPromise testUtilityMapsKeepFileInputsAndJavaSources() {
         return Browser.fetchText(
                         "/css/examples/save-button/src/test/js/react4j/css/example/" + _variant + "styles.css.map")

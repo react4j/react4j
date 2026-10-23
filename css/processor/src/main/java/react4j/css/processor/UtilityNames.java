@@ -13,6 +13,7 @@ import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.parser.CSSParseHelper;
+import com.helger.css.parser.ParserCSS30Constants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -111,6 +112,7 @@ final class UtilityNames {
             }
         }
         names.analyze(sheet);
+        names.registrations(sheet);
         for (var name : externalAnimations) {
             if (!names.seenAnimations.contains(name)) {
                 throw new IllegalArgumentException("Unknown external animation: " + name);
@@ -256,6 +258,74 @@ final class UtilityNames {
                 }
             } else if (member instanceof CSSExpressionMemberTermSimple term) {
                 meaning(term, "data");
+            }
+        });
+    }
+
+    private void carrierMeanings(String property, Set<String> visiting, Set<String> result) {
+        if (!visiting.add(property)) {
+            return;
+        }
+        for (var definition : variables.getOrDefault(property, List.of())) {
+            CssExpressions.visit(definition, member -> {
+                if (member instanceof CSSExpressionMemberTermSimple term) {
+                    String meaning = meanings.get(term);
+                    if (null != meaning && !"data".equals(meaning)) {
+                        result.add(meaning);
+                    }
+                } else if (member instanceof CSSExpressionMemberFunction function
+                        && "var".equalsIgnoreCase(CSSParseHelper.unescapeURL(function.getFunctionName()))
+                        && null != function.getExpression()
+                        && 0 < function.getExpression().getMemberCount()
+                        && function.getExpression().getMemberAtIndex(0)
+                                instanceof CSSExpressionMemberTermSimple first) {
+                    carrierMeanings(CSSParseHelper.unescapeURL(first.getValue()), visiting, result);
+                }
+            });
+        }
+    }
+
+    private void registrations(CascadingStyleSheet sheet) {
+        CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
+            @Override
+            public void onBeginPropertyRule(CSSPropertyRule rule) {
+                var carriers = new HashSet<String>();
+                carrierMeanings(CSSParseHelper.unescapeURL(rule.getIdentifier()), new HashSet<>(), carriers);
+                if (carriers.isEmpty()) {
+                    return;
+                }
+                for (var descriptor : rule.getAllDeclarations()) {
+                    if (!"syntax".equalsIgnoreCase(descriptor.getDescriptor())) {
+                        continue;
+                    }
+                    var expression = descriptor.getExpression();
+                    if (1 != expression.getMemberCount()
+                            || !(expression.getMemberAtIndex(0) instanceof CSSExpressionMemberTermSimple term)) {
+                        continue;
+                    }
+                    String grammar = CSSParseHelper.extractStringValue(term.getValue());
+                    if (null == grammar) {
+                        continue;
+                    }
+                    grammar = CSSParseHelper.unescapeURL(grammar);
+                    boolean type = false;
+                    for (var token : CssLexical.tokens(grammar, 0, grammar.length())) {
+                        if ("<".equals(token.value())) {
+                            type = true;
+                        } else if (">".equals(token.value())) {
+                            type = false;
+                        } else if (!type
+                                && (ParserCSS30Constants.IDENT == token.kind()
+                                        || ParserCSS30Constants.DASHED_IDENT == token.kind())
+                                && (carriers.contains("animation:" + token.name())
+                                        || carriers.contains("font:" + CssFontValues.canonical(token.name())))) {
+                            throw syntax.invalid(
+                                    "A registered name carrier cannot constrain a managed name with a literal syntax"
+                                            + " keyword; use a universal or type-only syntax",
+                                    descriptor);
+                        }
+                    }
+                }
             }
         });
     }

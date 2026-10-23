@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import react4j.css.internal.CssExpressions;
+import react4j.css.internal.CssPropertyValues;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
 
@@ -96,6 +97,9 @@ final class CssProperties {
                 if ((modern ? CSSParseHelper.unescapeURL(declaration.getProperty()) : declaration.getProperty())
                         .startsWith("--")) {
                     declaration.setProperty(property(declaration.getProperty(), declaration));
+                }
+                for (var target : CssPropertyValues.names(declaration)) {
+                    target.setValue(property(target.getValue(), declaration));
                 }
                 expression(declaration.getExpression(), declaration);
             }

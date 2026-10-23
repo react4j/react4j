@@ -2,10 +2,10 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: implementation-review
-- Current frontier: independent implementation review
+- Current frontier: follow-up implementation review
 - Planning reviewer: utility_planning_review (1/3 rounds; passed; final confirmation unused)
 - Plan checkpoint: automatic
-- Implementation reviewer: pending (0/5 rounds; final confirmation unused)
+- Implementation reviewer: utility_implementation_review (1/5 rounds consumed; both findings fixed; follow-up pending; final confirmation unused)
 - Scope source: confirmed utility CSS interview in this chat.
 - Execution authority: "Use structured-delivery-workflow and proceed"; full delivery authorized after interview confirmation, with no human plan checkpoint.
 - Active plan tree: plans/utility-css. This exact path is the only plan-edit/commit/deletion target for this invocation.
@@ -14,6 +14,7 @@
 
 - Gate: tools/check.sh
 - Evidence: tools/check.sh passed on 2026-10-23 after T08 fixes: 50/50 normal test targets, 15/15 optimized browser targets, 23/23 instrumented JVM targets; coverage thresholds, formatting, hermeticity, public artifacts, site build/check and unsigned local package validation (12 artifacts, 60 entries). Domain links and final specification-only/diff audits passed.
+- Review-fix validation: tools/check.sh passed on 2026-10-23 after both fixes, including 50 normal targets, 15 optimized browser targets, 23 instrumented JVM targets, unchanged coverage thresholds, site checks and local unsigned packaging. All 611 packaged processor methods passed. New browser coverage proves real property-transition interpolation across naming variants; processor coverage verifies original map locations and unsafe-registration diagnostics. Documentation links and specification-only/diff audits passed.
 
 ## Tasks
 
@@ -40,7 +41,7 @@
 
 - Planning attempt 1: utility_planning_review returned "Findings: none." Checked the complete spec/task tree, external exclusions, repository policies, parser/traversal, bindings, header boundaries, naming/liveness, cascade, maps/assets and full-gate wiring. Residual implementation risks are owned by T01 and T03. Budget 3 attempts plus one final confirmation; 1 consumed; final confirmation unused.
 - Automatic checkpoint basis: confirmed interview scope, subsequent explicit instruction to proceed through structured delivery, no human review pause requested, and passing independent planning review.
-- Implementation review: not started. Budget 5 attempts plus one final confirmation. Use a fresh reviewer independent of implementation.
+- Implementation attempt 1: utility_implementation_review inspected the complete delivery at 58869334c and verified the full gate. Two P2 findings: custom-property transition targets were omitted from shared naming/occurrence discovery (R5/R9), and literal-constrained registrations could be invalidated by animation/font name-carrier rewrites (R9/R10). Both accepted for fixes at the shared property-reference and utility name-proof seams. No scope or significant decision changes. Budget 5 attempts plus one final confirmation; 1 consumed, 4 normal attempts remain; final confirmation unused.
 
 ## Promoted knowledge
 
@@ -52,3 +53,5 @@
 - All implementation tasks and the full gate are complete. Review the whole delivery against SPEC.md and promoted contracts with a fresh independent read-only reviewer, record each attempt and disposition, and pass only on Findings: none.
 - After review passes, follow workflow closeout: check promotion/inbound references, remove this entire exact active plan tree, validate removal and commit. No push, publication, release or Rose migration is authorized.
 - T08 final promotion audit: the utility-input, binding, name, liveness and map specifications, glossary and finite-provider ADR remain the canonical owners for every accepted durable conclusion. T08 adds reader examples, implementation fixes and evidence only; no new durable decision or deferred question is introduced.
+
+- Attempt 1 dispositions: transition targets now use one shared property-value grammar for ownership, rewriting and occurrence metadata, including fallbacks and imported/external boundaries. Unsafe registered name-carrier literal constraints are diagnosed through definitions/aliases while universal/type-only registrations remain supported. Both original reproductions have retained regression coverage; no requirement or significant decision was weakened. The utility-input specification records registration validity; reader docs/changelog describe the boundary and transition support. Follow-up review pending.

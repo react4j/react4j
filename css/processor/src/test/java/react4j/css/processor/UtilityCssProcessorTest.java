@@ -618,6 +618,73 @@ public final class UtilityCssProcessorTest {
     }
 
     @Test
+    public void registeredNameCarriersRejectLiteralConstraintsButKeepTypeGrammars() throws Exception {
+        for (String grammar :
+                List.of("*", "<custom-ident>", "<custom-ident>+", "<custom-ident>#", "<custom-ident> | none")) {
+            var result = CssProcessorTest.compile(Map.of(
+                    "Utilities.java",
+                    library("@keyframes spin{to{opacity:1;}}@property --motion{syntax:'" + grammar
+                            + "';inherits:false;initial-value:spin;}.a{animation-name:var(--motion);}")));
+            assertTrue(result.success(), result.diagnostics());
+            assertTrue(text(result, "classes/demo/Utilities.css")
+                    .contains("initial-value:jcss-demo-Utilities--keyframes-spin"));
+        }
+        for (String css : List.of(
+                "@keyframes spin{to{opacity:1;}}@property"
+                    + " --motion{syntax:'spin';inherits:false;initial-value:spin;}.a{animation-name:var(--motion);}",
+                "@keyframes spin{to{opacity:1;}}@supports(display:block){@property --motion{syntax:'spin |"
+                    + " none';inherits:false;initial-value:none;}}:root{--motion:var(--source);--source:spin;}.a{animation-name:var(--motion);}",
+                "@font-face{font-family:Inter;src:url('https://example.test/font.woff2');}@property"
+                        + " --font{syntax:'Inter';inherits:false;initial-value:Inter;}.a{font-family:var(--font);}")) {
+            var result = CssProcessorTest.compile(Map.of("Utilities.java", library(css)));
+            assertFalse(result.success(), css);
+            assertTrue(result.diagnostics().contains("literal syntax keyword"), result.diagnostics());
+            assertTrue(
+                    result.diagnostics().contains("Utilities.java:4:" + (css.indexOf("syntax:") + 1) + ":"),
+                    result.diagnostics());
+        }
+    }
+
+    @Test
+    public void transitionTargetsUseOwnedImportedAndExternalPropertyNames() throws Exception {
+        String source = library("@property"
+            + " --angle{syntax:'<angle>';inherits:false;initial-value:0deg;}.a{--angle:0deg;transition-property:--angle,--host,--shared;transition:var(--targets,--angle)"
+            + " 1s, --host 2s;}.a:hover{--angle:90deg;}")
+                .replace(
+                        "@UtilityCssLibrary(",
+                        "@CssImport(value=Shared.class,property=\"gap\",name=\"shared\")"
+                                + " @UtilityCssLibrary(externalProperties={\"host\"},value=");
+        var result = CssProcessorTest.compile(Map.of(
+                "Utilities.java",
+                source,
+                "Shared.java",
+                IMPORTS + "@GlobalCss(\"\"\"\n:root{--gap:12px;}\n\"\"\") class Shared{}"));
+        assertTrue(result.success(), result.diagnostics());
+        String output = text(result, "classes/demo/Utilities.css");
+        assertTrue(
+                output.contains("transition-property:--jcss-demo-Utilities--angle,--host,--jcss-demo-Shared--gap"),
+                output);
+        assertTrue(
+                output.contains("var(--jcss-demo-Utilities--targets,--jcss-demo-Utilities--angle) 1s, --host 2s"),
+                output);
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(text(result, "classes/demo/Utilities.css.map"));
+        int at = output.indexOf("transition-property:") + "transition-property:".length();
+        int line = (int) output.substring(0, at).chars().filter(c -> '\n' == c).count() + 1;
+        int column = at - output.lastIndexOf('\n', at - 1);
+        var origin = Objects.requireNonNull(consumer.getMappingForLine(line, column));
+        int original = source.indexOf("transition-property:") + "transition-property:".length();
+        assertEquals(
+                origin.getLineNumber(),
+                (int) source.substring(0, original)
+                                .chars()
+                                .filter(c -> '\n' == c)
+                                .count()
+                        + 1);
+        assertEquals(origin.getColumnPosition(), original - source.lastIndexOf('\n', original - 1));
+    }
+
+    @Test
     public void independentDataVariablesDoNotEnumerateEveryScopeCombination() throws Exception {
         var css = new StringBuilder();
         for (int scope = 0; scope < 12; scope++) {

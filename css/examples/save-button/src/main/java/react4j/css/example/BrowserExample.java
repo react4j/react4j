@@ -36,6 +36,11 @@ public final class BrowserExample {
     }
 
     @JsMethod
+    public static String utilityTurnProperty() {
+        return UtilityLibraryA.get().turn();
+    }
+
+    @JsMethod
     public static String propertyOnlyName() {
         return PropertyOnlyLibrary.get().size();
     }
@@ -206,6 +211,8 @@ public final class BrowserExample {
     @UtilityCssLibrary(
             value = """
                 @property --base-gap {syntax:"<length>";inherits:true;initial-value:6px;}
+                @property --turn {syntax:"<angle>";inherits:false;initial-value:0deg;}
+                @property --transition-only {syntax:"<angle>";inherits:false;initial-value:3deg;}
                 :root { --base-gap:6px; --alias-gap:var(--base-gap); --gutter:var(--alias-gap); --dead-gap:97px; --cycle-a:var(--cycle-b); --cycle-b:var(--cycle-a); }
                 @layer first,second;
                 @layer first { .tone {color:rgb(70, 80, 90);} }
@@ -214,7 +221,7 @@ public final class BrowserExample {
                 .tone[data-utility-scope=compact] {--base-gap:9px;}
                 :root {--density:compact;}
                 .panel {container:card/inline-size;width:200px;}
-                .query {display:block;color:rgb(90, 100, 110);opacity:1;}
+                .query {display:block;color:rgb(90, 100, 110);opacity:1;rotate:var(--turn);transition:--turn 100s linear,--host-gap 100s linear,--transition-only 100s linear;}
                 [class~="member"] {border-bottom:4px solid black;}
                 .marker .query {letter-spacing:2px;}
                 .host-hook .query {font-weight:600;}
@@ -235,6 +242,9 @@ public final class BrowserExample {
 
         @CssCustomProperty(name = "base-gap")
         abstract String base();
+
+        @CssCustomProperty(name = "turn")
+        abstract String turn();
     }
 
     interface UtilityFragments {
