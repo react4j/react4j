@@ -1,6 +1,5 @@
 exports_files(
     [
-        "rules_cc_allowlist_macos_sdk_root.patch",
         "rules_closure_bazel_9_missing_loads.patch",
         "rules_closure_bound_link_memory.patch",
         "rules_closure_compiler_factory.patch",

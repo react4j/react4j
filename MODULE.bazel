@@ -58,12 +58,8 @@ bazel_dep(name = "rules_webtesting", version = "0.4.1")
 bazel_dep(name = "jsinterop_base", version = "1.2.0")
 bazel_dep(name = "rules_jvm_external", version = "7.1")
 bazel_dep(name = "rules_cc", version = "0.2.25")
-single_version_override(
-    module_name = "rules_cc",
-    patch_strip = 1,
-    patches = ["//third_party/bazel/patches:rules_cc_allowlist_macos_sdk_root.patch"],
-    version = "0.2.25",
-)
+bazel_dep(name = "rules_python", version = "1.8.0")
+bazel_dep(name = "protobuf", version = "33.4")
 
 # Own the shared browser compiler/tool dependencies rather than inheriting a
 # transitive module's partial Maven lock.

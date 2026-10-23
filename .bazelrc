@@ -3,6 +3,11 @@ common --java_runtime_version=remotejdk_21
 common --tool_java_language_version=25
 common --tool_java_runtime_version=remotejdk_25
 
+common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common --repo_env=BAZEL_NO_APPLE_CPP_TOOLCHAIN=1
+
+build --@protobuf//bazel/toolchains:prefer_prebuilt_protoc=true
+
 build --strategy=PalantirJavaFormat=worker,local
 build --worker_max_instances=PalantirJavaFormat=1
 build --sandbox_default_allow_network=false
