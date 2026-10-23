@@ -3,21 +3,21 @@ module(name = "react4j")
 bazel_dep(name = "braincheck")
 git_override(
     module_name = "braincheck",
-    commit = "18adeceecb966be6fa6bc8165f8047330c34749d",
+    commit = "7a37804412039affbe2d6adf28416b9d5f0a3a62",
     remote = "https://github.com/realityforge/braincheck.git",
 )
 
 bazel_dep(name = "zemeckis")
 git_override(
     module_name = "zemeckis",
-    commit = "b21b7b05d72d900e96bfdd1fb8780a4edc65cc35",
+    commit = "02d3a7aa4af987fc4e0d5ca3ed4213bcffb31f0f",
     remote = "https://github.com/realityforge/zemeckis.git",
 )
 
 bazel_dep(name = "arez")
 git_override(
     module_name = "arez",
-    commit = "6f4eff1cbf16e952995d8051fc16458904812d93",
+    commit = "9d5f1b3a622cfec2b32afb2ffc9d5604c365a9ee",
     remote = "https://github.com/arez/arez.git",
 )
 
@@ -31,16 +31,15 @@ git_override(
 bazel_dep(name = "sting")
 git_override(
     module_name = "sting",
-    commit = "139365d8c6e8a463979c1774096c59eeee310e0d",
+    commit = "1d7bcfe67d52175d9e0d935fe4e181c2f4ad8ce8",
     remote = "https://github.com/sting-ioc/sting.git",
 )
 
 bazel_dep(name = "rules_java", version = "9.9.0")
-single_version_override(
+git_override(
     module_name = "rules_java",
-    patch_strip = 1,
-    patches = ["//third_party/bazel/patches:rules_java_exclude_build_data.patch"],
-    version = "9.9.0",
+    commit = "8f847aa0ea2221ede4625696551d62c42627cb3d",
+    remote = "https://github.com/bazelbuild/rules_java.git",
 )
 
 bazel_dep(name = "buildifier_prebuilt", version = "10.0.1", dev_dependency = True)
@@ -59,12 +58,8 @@ bazel_dep(name = "rules_webtesting", version = "0.4.1")
 bazel_dep(name = "jsinterop_base", version = "1.2.0")
 bazel_dep(name = "rules_jvm_external", version = "7.1")
 bazel_dep(name = "rules_cc", version = "0.2.25")
-single_version_override(
-    module_name = "rules_cc",
-    patch_strip = 1,
-    patches = ["//third_party/bazel/patches:rules_cc_allowlist_macos_sdk_root.patch"],
-    version = "0.2.25",
-)
+bazel_dep(name = "rules_python", version = "1.8.0")
+bazel_dep(name = "protobuf", version = "33.4")
 
 # Own the shared browser compiler/tool dependencies rather than inheriting a
 # transitive module's partial Maven lock.
@@ -88,37 +83,26 @@ use_repo(browser_maven, "maven")
 
 archive_override(
     module_name = "j2cl",
-    integrity = "sha256-XEgoQZDNjT51rfGuc4rpVYamAYsQi+q44JT1W86AiD4=",
-    patch_strip = 1,
-    patches = [
-        "//third_party/bazel/patches:j2cl_configure_class_output.patch",
-        "//third_party/bazel/patches:j2cl_preserve_css_resources.patch",
-        "//third_party/bazel/patches:j2cl_forward_test_defs.patch",
-        "//third_party/bazel/patches:j2cl_configurable_test_compilation.patch",
-        "//third_party/bazel/patches:j2cl_pin_java_runtime_21.patch",
-        "//third_party/bazel/patches:j2cl_suppress_ast_processing_warning.patch",
-        "//third_party/bazel/patches:j2cl_remove_invalid_wasm_annotation_from_jsunit_helper.patch",
-        "//third_party/bazel/patches:j2cl_hermetic_test_generation.patch",
-        "//third_party/bazel/patches:j2cl_use_canonical_maven_coordinate.patch",
-    ],
-    strip_prefix = "j2cl-3995891275f54114e9dbfd5a8ceff97bf10030aa",
-    urls = ["https://github.com/google/j2cl/archive/3995891275f54114e9dbfd5a8ceff97bf10030aa.tar.gz"],
+    integrity = "sha256-jtx4qV2UC+xvgoDeV+6/TBNCs/GRPzeW07TTrIqm+pg=",
+    strip_prefix = "j2cl-260ec1abd929947c032714672d4124e47ff2aec2",
+    urls = ["https://github.com/realityforge/j2cl/archive/260ec1abd929947c032714672d4124e47ff2aec2.tar.gz"],
 )
 
-single_version_override(
+archive_override(
     module_name = "rules_closure",
+    integrity = "sha256-a+8E2hTyPhwYAPs2SM7Gc2T/iVtDXFiowXrU9JpS+Ew=",
     patch_strip = 1,
     patches = [
         "//third_party/bazel/patches:rules_closure_bazel_9_missing_loads.patch",
         "//third_party/bazel/patches:rules_closure_bound_link_memory.patch",
         "//third_party/bazel/patches:rules_closure_custom_env_test_typings.patch",
-        "//third_party/bazel/patches:rules_closure_use_protobuf_java_proto_library.patch",
         "//third_party/bazel/patches:rules_closure_web_test_runtime_defines.patch",
         "//third_party/bazel/patches:rules_closure_test_execution_requirements.patch",
         "//third_party/bazel/patches:rules_closure_compiler_factory.patch",
         "//third_party/bazel/patches:rules_closure_symbolic_test_names.patch",
     ],
-    version = "0.17.0",
+    strip_prefix = "rules_closure-5324b6eb9b37dc08bbe5996d67e042a9e4fd57eb",
+    urls = ["https://github.com/bazelbuild/rules_closure/archive/5324b6eb9b37dc08bbe5996d67e042a9e4fd57eb.tar.gz"],
 )
 
 single_version_override(
