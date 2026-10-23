@@ -1,6 +1,6 @@
 load("@j2cl//build_defs:rules.bzl", _j2cl_library = "j2cl_library")
 load("@rules_java//java:defs.bzl", _java_binary = "java_binary", _java_library = "java_library", _java_plugin = "java_plugin", _java_test = "java_test")
-load("//examples:checks.bzl", "BASE_JAVACOPTS", "JAVACOPTS")
+load("//examples:checks.bzl", "BASE_JAVACOPTS", "JAVACOPTS", "JVM_JAVACOPTS")
 
 visibility(["//..."])
 
@@ -18,7 +18,8 @@ _JSPECIFY_J2CL = Label("//third_party:jspecify-j2cl")
 _NULLAWAY = Label("//third_party:nullaway_plugin")
 
 def _compile_policy(srcs, javacopts, deps, plugins, j2cl = False):
-    options = ([] if j2cl else ["--release", "17"]) + (JAVACOPTS if srcs else BASE_JAVACOPTS)
+    checks = JAVACOPTS if j2cl else JVM_JAVACOPTS
+    options = ([] if j2cl else ["--release", "17"]) + (checks if srcs else BASE_JAVACOPTS)
     if srcs:
         jspecify = _JSPECIFY_J2CL if j2cl else _JSPECIFY
         if jspecify not in [value if type(value) == "Label" else native.package_relative_label(value) for value in deps]:
@@ -77,7 +78,7 @@ def java_testng(name, srcs, test_classes = [], test_class = None, test_methods =
 
 def _checker_options_impl(ctx):
     output = ctx.actions.declare_file(ctx.label.name + ".txt")
-    ctx.actions.write(output, "\n".join(["--release", "17"] + JAVACOPTS) + "\n")
+    ctx.actions.write(output, "\n".join(["--release", "17"] + JVM_JAVACOPTS) + "\n")
     return [DefaultInfo(files = depset([output]))]
 
 strict_checker_options = rule(implementation = _checker_options_impl)

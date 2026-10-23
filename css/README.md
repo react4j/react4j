@@ -520,6 +520,8 @@ React4j emits uncompressed files. Downstream applications choose which retained 
 
 Apply `@react4j//:css_processor` to the native J2CL target that owns the definitions and add `@react4j//:css` to its dependencies. Browser clients configure their own compiler checks through J2CL; no separate Java library is required.
 
+CSS and browser builds request the existing javac outputs of transitive J2CL libraries as Bazel validations. For strict javac linting, include `--add-reads=java.base=ALL-UNNAMED` in the native J2CL target's `javacopts`: J2CL's emulated `java.base` refers to annotation types on the compilation classpath. The repository's [example checker settings](../examples/checks.bzl) include this option.
+
 Use [css_js_binary and css_bundle](../defs.bzl) to link JavaScript and collect its styles. The browser application and test macros already use this integration:
 
 ```starlark

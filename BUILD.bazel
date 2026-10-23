@@ -276,6 +276,7 @@ test_suite(
         ":jvm_tests",
         "//css/integration-tests/src/test/java/react4j/css/integration:asset_tests",
         "//css/integration-tests/src/test/java/react4j/css/integration:integration_tests",
+        "//css/integration-tests/src/test/java/react4j/css/integration:validation_tests",
         "//css/processor/src/test/java/react4j/css/processor:processor_tests",
         "//third_party/java:verify_config_sha256",
         "//tools/browser:tests",

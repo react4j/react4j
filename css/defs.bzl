@@ -45,7 +45,7 @@ web_assets = rule(
     attrs = dict(CLOSURE_JS_TOOLCHAIN_ATTRS, **dict(ASSET_TOOL_ATTRIBUTES, srcs = attr.label_list(allow_files = True, mandatory = True))),
 )
 
-_CssInfo = provider("Transitive J2CL resources and byte-independent asset catalogues.", fields = ["trees", "asset_manifests", "asset_files", "prepared"])
+_CssInfo = provider("Transitive J2CL resources, compiler validations and byte-independent asset catalogues.", fields = ["trees", "validations", "asset_manifests", "asset_files", "prepared"])
 
 def _collect_impl(target, ctx):
     transitive = []
@@ -53,6 +53,7 @@ def _collect_impl(target, ctx):
     files = []
     own = []
     prepared = []
+    validations = []
     if _WebAssetsInfo in target:
         own = [target[_WebAssetsInfo].manifest]
         files = [depset(target[_WebAssetsInfo].files.values())]
@@ -61,6 +62,7 @@ def _collect_impl(target, ctx):
         for dep in getattr(ctx.rule.attr, attribute, []):
             if _CssInfo in dep:
                 transitive.append(dep[_CssInfo].trees)
+                validations.append(dep[_CssInfo].validations)
                 manifests.append(dep[_CssInfo].asset_manifests)
                 files.append(dep[_CssInfo].asset_files)
                 prepared.append(dep[_CssInfo].prepared)
@@ -69,8 +71,8 @@ def _collect_impl(target, ctx):
     trees = [file for file in target[DefaultInfo].files.to_list() if file.is_directory and file.basename.endswith(".js")]
 
     # JS linking can otherwise skip J2CL's full javac action and its configured checks.
-    validations = target[JavaInfo].runtime_output_jars if JavaInfo in target else []
-    return [_CssInfo(trees = depset(trees, transitive = transitive), asset_manifests = depset(own, transitive = manifests), asset_files = depset(transitive = files), prepared = depset(transitive = prepared)), OutputGroupInfo(_validation = depset(validations))]
+    own_validations = target[JavaInfo].runtime_output_jars if JavaInfo in target else []
+    return [_CssInfo(trees = depset(trees, transitive = transitive), validations = depset(own_validations, transitive = validations), asset_manifests = depset(own, transitive = manifests), asset_files = depset(transitive = files), prepared = depset(transitive = prepared))]
 
 _collect = aspect(implementation = _collect_impl, attr_aspects = ["deps", "exports", "srcs"])
 
@@ -93,7 +95,7 @@ def _configuration_impl(ctx):
         arguments = [args],
         mnemonic = "CssCatalogue",
     )
-    return [DefaultInfo(files = depset([ctx.outputs.json]))]
+    return [DefaultInfo(files = depset([ctx.outputs.json])), OutputGroupInfo(_validation = depset(transitive = [dep[_CssInfo].validations for dep in ctx.attr.deps]))]
 
 _configuration = rule(
     implementation = _configuration_impl,
@@ -176,7 +178,7 @@ def _bundle_impl(ctx):
     )
     return [
         DefaultInfo(files = depset([ctx.outputs.css, ctx.outputs.source_map])),
-        OutputGroupInfo(css = depset([ctx.outputs.css]), source_map = depset([ctx.outputs.source_map])),
+        OutputGroupInfo(css = depset([ctx.outputs.css]), source_map = depset([ctx.outputs.source_map]), _validation = ctx.attr.root[_CssInfo].validations),
         _CssBundleInfo(css = ctx.outputs.css, source_map = ctx.outputs.source_map, root = ctx.attr.root[ClosureJsBinaryInfo].bin.owner if ClosureJsBinaryInfo in ctx.attr.root else ctx.attr.root.label),
     ]
 
@@ -237,7 +239,7 @@ def _web_bundle_impl(ctx):
         arguments = [args],
         mnemonic = "WebBundle",
     )
-    return [DefaultInfo(files = depset([directory])), WebBundleInfo(directory = directory, manifest = ctx.outputs.manifest, javascript = ctx.outputs.javascript, source_map = ctx.outputs.source_map, styles = styles), OutputGroupInfo(manifest = depset([ctx.outputs.manifest]), javascript = depset([ctx.outputs.javascript]), source_map = depset([ctx.outputs.source_map]))]
+    return [DefaultInfo(files = depset([directory])), WebBundleInfo(directory = directory, manifest = ctx.outputs.manifest, javascript = ctx.outputs.javascript, source_map = ctx.outputs.source_map, styles = styles), OutputGroupInfo(manifest = depset([ctx.outputs.manifest]), javascript = depset([ctx.outputs.javascript]), source_map = depset([ctx.outputs.source_map]), _validation = resources.validations)]
 
 web_bundle = rule(
     implementation = _web_bundle_impl,

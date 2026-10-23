@@ -3,6 +3,7 @@ load("//css:defs.bzl", "css_bundle", "css_sources")
 load("//third_party/java:rules.bzl", "java_testng")
 load("//tools/browser:java.bzl", "java_j2cl_library")
 load(":headers.bzl", "headers")
+load(":validations.bzl", "validation_test")
 
 package(default_visibility = [
     "//:__pkg__",
@@ -318,4 +319,42 @@ filegroup(
     testonly = True,
     srcs = [":asset_bindings.js"],
     visibility = ["//css/bundler/src/test/java/react4j/css/bundler:__pkg__"],
+)
+
+validation_test(
+    name = "library_validations_test",
+    libraries = [
+        ":fixture_contracts",
+        ":fixture_dependency",
+        ":fixture_bindings",
+        ":peer_bindings",
+    ],
+    root = ":fixture_styles",
+)
+
+validation_test(
+    name = "linked_validations_test",
+    libraries = [
+        ":fixture_contracts",
+        ":fixture_dependency",
+        ":fixture_bindings",
+        ":utility_dependency",
+        ":liveness_entry",
+    ],
+    root = "//css/integration-tests/src/test/js/react4j/css/integration:optimized_styles",
+)
+
+validation_test(
+    name = "web_validations_test",
+    libraries = [":asset_bindings"],
+    root = "//css/integration-tests/src/test/js/react4j/css/integration:asset_optimized_web",
+)
+
+test_suite(
+    name = "validation_tests",
+    tests = [
+        ":library_validations_test",
+        ":linked_validations_test",
+        ":web_validations_test",
+    ],
 )
