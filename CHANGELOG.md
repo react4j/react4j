@@ -2,6 +2,9 @@
 
 ### Unreleased
 
+* Pin the consolidated J2CL compiler and matching Braincheck, Zemeckis, Arez and Sting revisions; remove the local J2CL patches.
+* Use J2CL's public JavaInfo provider to preserve compiler validation during CSS linking.
+* Preserve final-round visitor generation so types created by other annotation processors remain visible, accepting the compiler warnings.
 * Use the upstream rules_closure protobuf-rule migration and remove the redundant local patch.
 * Simplify release validation by removing standalone artifact checks, isolated consumer compilation tests, and the separate reproducibility build.
 * Remove the downstream Bazel configuration exporter and external consumer check; applications own their dependency configuration.

@@ -1,7 +1,7 @@
 """Bazel rules for CSS-in-Java."""
 
-load("@j2cl//build_defs/internal_do_not_use:provider.bzl", "J2clInfo")
 load("@rules_closure//closure:defs.bzl", "CLOSURE_JS_TOOLCHAIN_ATTRS", "ClosureJsBinaryInfo", "closure_js_binary", "create_closure_js_library")
+load("@rules_java//java:defs.bzl", "JavaInfo")
 load("//tools/web-assets:defs.bzl", "ASSET_TOOL_ATTRIBUTES", "prepare_file")
 
 visibility(["//..."])
@@ -66,7 +66,7 @@ def _collect_impl(target, ctx):
     trees = [file for file in target[DefaultInfo].files.to_list() if file.is_directory and file.basename.endswith(".js")]
 
     # JS linking can otherwise skip J2CL's full javac action and its configured checks.
-    validations = target[J2clInfo]._private_.java_info.runtime_output_jars if J2clInfo in target else []
+    validations = target[JavaInfo].runtime_output_jars if JavaInfo in target else []
     return [_CssInfo(trees = depset(trees, transitive = transitive), asset_manifests = depset(own, transitive = manifests), asset_files = depset(transitive = files), prepared = depset(transitive = prepared)), OutputGroupInfo(_validation = depset(validations))]
 
 _collect = aspect(implementation = _collect_impl, attr_aspects = ["deps", "exports", "srcs"])

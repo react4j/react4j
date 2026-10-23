@@ -3,21 +3,21 @@ module(name = "react4j")
 bazel_dep(name = "braincheck")
 git_override(
     module_name = "braincheck",
-    commit = "18adeceecb966be6fa6bc8165f8047330c34749d",
+    commit = "7a37804412039affbe2d6adf28416b9d5f0a3a62",
     remote = "https://github.com/realityforge/braincheck.git",
 )
 
 bazel_dep(name = "zemeckis")
 git_override(
     module_name = "zemeckis",
-    commit = "b21b7b05d72d900e96bfdd1fb8780a4edc65cc35",
+    commit = "02d3a7aa4af987fc4e0d5ca3ed4213bcffb31f0f",
     remote = "https://github.com/realityforge/zemeckis.git",
 )
 
 bazel_dep(name = "arez")
 git_override(
     module_name = "arez",
-    commit = "6f4eff1cbf16e952995d8051fc16458904812d93",
+    commit = "9d5f1b3a622cfec2b32afb2ffc9d5604c365a9ee",
     remote = "https://github.com/arez/arez.git",
 )
 
@@ -31,7 +31,7 @@ git_override(
 bazel_dep(name = "sting")
 git_override(
     module_name = "sting",
-    commit = "139365d8c6e8a463979c1774096c59eeee310e0d",
+    commit = "1d7bcfe67d52175d9e0d935fe4e181c2f4ad8ce8",
     remote = "https://github.com/sting-ioc/sting.git",
 )
 
@@ -88,21 +88,9 @@ use_repo(browser_maven, "maven")
 
 archive_override(
     module_name = "j2cl",
-    integrity = "sha256-XEgoQZDNjT51rfGuc4rpVYamAYsQi+q44JT1W86AiD4=",
-    patch_strip = 1,
-    patches = [
-        "//third_party/bazel/patches:j2cl_configure_class_output.patch",
-        "//third_party/bazel/patches:j2cl_preserve_css_resources.patch",
-        "//third_party/bazel/patches:j2cl_forward_test_defs.patch",
-        "//third_party/bazel/patches:j2cl_configurable_test_compilation.patch",
-        "//third_party/bazel/patches:j2cl_pin_java_runtime_21.patch",
-        "//third_party/bazel/patches:j2cl_suppress_ast_processing_warning.patch",
-        "//third_party/bazel/patches:j2cl_remove_invalid_wasm_annotation_from_jsunit_helper.patch",
-        "//third_party/bazel/patches:j2cl_hermetic_test_generation.patch",
-        "//third_party/bazel/patches:j2cl_use_canonical_maven_coordinate.patch",
-    ],
-    strip_prefix = "j2cl-3995891275f54114e9dbfd5a8ceff97bf10030aa",
-    urls = ["https://github.com/google/j2cl/archive/3995891275f54114e9dbfd5a8ceff97bf10030aa.tar.gz"],
+    integrity = "sha256-jtx4qV2UC+xvgoDeV+6/TBNCs/GRPzeW07TTrIqm+pg=",
+    strip_prefix = "j2cl-260ec1abd929947c032714672d4124e47ff2aec2",
+    urls = ["https://github.com/realityforge/j2cl/archive/260ec1abd929947c032714672d4124e47ff2aec2.tar.gz"],
 )
 
 archive_override(

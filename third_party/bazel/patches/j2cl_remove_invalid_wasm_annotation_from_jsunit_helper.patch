@@ -1,9 +1,0 @@
-diff -urN orig/junit/generator/java/com/google/j2cl/junit/runtime/JsUnitHelpers.java new/junit/generator/java/com/google/j2cl/junit/runtime/JsUnitHelpers.java
---- orig/junit/generator/java/com/google/j2cl/junit/runtime/JsUnitHelpers.java	2026-04-09 15:25:43
-+++ new/junit/generator/java/com/google/j2cl/junit/runtime/JsUnitHelpers.java	2026-07-07 10:00:00
-@@ -35,5 +35,4 @@
- 
-   @JsAsync
--  @Wasm("nop") // Cannot be used in WASM.
-   public static IThenable<?> withTimeout(Object thenable, double timeout) {
-     if (thenable == null) {
