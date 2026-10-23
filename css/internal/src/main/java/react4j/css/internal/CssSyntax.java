@@ -247,6 +247,10 @@ public final class CssSyntax {
         }
     }
 
+    public CssConditions.Header condition(CSSUnknownRule rule) {
+        return CssConditions.read(source, rule);
+    }
+
     public InvalidCss invalid(String message, ICSSSourceLocationAware node) {
         return invalid(message, node.getSourceLocation());
     }

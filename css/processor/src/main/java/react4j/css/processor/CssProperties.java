@@ -1,10 +1,13 @@
 package react4j.css.processor;
 
+import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSExpression;
 import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
+import com.helger.css.decl.CSSPropertyRule;
 import com.helger.css.decl.CSSSupportsRule;
+import com.helger.css.decl.CSSUnknownRule;
 import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.ECSSExpressionOperator;
 import com.helger.css.decl.visit.CSSVisitor;
@@ -42,14 +45,19 @@ final class CssProperties {
         var sheet = Kind.KEYFRAMES == kind
                 ? syntax.parseKeyframes()
                 : Kind.UTILITY == kind ? syntax.parse(CssSyntax.Mode.UTILITY) : syntax.parse(Kind.COMPONENT == kind);
-        return rewrite(sheet, syntax, name -> "--" + name);
+        return rewrite(sheet, syntax, name -> "--" + name, Kind.UTILITY == kind || Kind.GLOBAL == kind);
     }
 
     static Set<String> rewrite(CascadingStyleSheet sheet, CssSyntax syntax, UnaryOperator<String> resolve) {
+        return rewrite(sheet, syntax, resolve, false);
+    }
+
+    static Set<String> rewrite(
+            CascadingStyleSheet sheet, CssSyntax syntax, UnaryOperator<String> resolve, boolean modern) {
         var names = new LinkedHashSet<String>();
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
-            private String property(String token, CSSDeclaration declaration) {
-                String name = token.substring(2);
+            private String property(String token, ICSSSourceLocationAware declaration) {
+                String name = (modern ? CSSParseHelper.unescapeURL(token) : token).substring(2);
                 try {
                     checkName(name);
                 } catch (IllegalArgumentException e) {
@@ -59,7 +67,7 @@ final class CssProperties {
                 return resolve.apply(name);
             }
 
-            private void expression(CSSExpression expression, CSSDeclaration declaration) {
+            private void expression(CSSExpression expression, ICSSSourceLocationAware declaration) {
                 CssExpressions.visit(expression, member -> {
                     if (member instanceof CSSExpressionMemberFunction function) {
                         var nested = function.getExpression();
@@ -70,7 +78,8 @@ final class CssProperties {
                             var arguments = nested.getAllMembers();
                             if (arguments.isEmpty()
                                     || !(arguments.get(0) instanceof CSSExpressionMemberTermSimple first)
-                                    || !first.getValue().startsWith("--")
+                                    || !(modern ? CSSParseHelper.unescapeURL(first.getValue()) : first.getValue())
+                                            .startsWith("--")
                                     || (arguments.size() > 1 && ECSSExpressionOperator.COMMA != arguments.get(1))) {
                                 throw syntax.invalid(
                                         "var() requires an unquoted custom property name and optional fallback",
@@ -84,10 +93,36 @@ final class CssProperties {
 
             @Override
             public void onDeclaration(CSSDeclaration declaration) {
-                if (declaration.getProperty().startsWith("--")) {
+                if ((modern ? CSSParseHelper.unescapeURL(declaration.getProperty()) : declaration.getProperty())
+                        .startsWith("--")) {
                     declaration.setProperty(property(declaration.getProperty(), declaration));
                 }
                 expression(declaration.getExpression(), declaration);
+            }
+
+            @Override
+            public void onBeginPropertyRule(CSSPropertyRule rule) {
+                property(rule.getIdentifier(), rule);
+                for (var descriptor : rule.getAllDeclarations()) {
+                    expression(descriptor.getExpression(), descriptor);
+                }
+            }
+
+            @Override
+            public void onUnknownRule(CSSUnknownRule rule) {
+                var header = syntax.condition(rule);
+                var parameters = new StringBuilder(header.parameters());
+                for (int i = header.references().size() - 1; i >= 0; i--) {
+                    var reference = header.references().get(i);
+                    if (reference.property()) {
+                        parameters.replace(
+                                reference.start() - header.parameterStart(),
+                                reference.end() - header.parameterStart(),
+                                property(reference.value(), rule));
+                    }
+                }
+                String text = parameters.toString().strip();
+                rule.setParameterList(text.isEmpty() ? null : text);
             }
 
             @Override

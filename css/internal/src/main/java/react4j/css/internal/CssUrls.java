@@ -6,6 +6,7 @@ import com.helger.css.decl.CSSExpression;
 import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSExpressionMemberTermURI;
+import com.helger.css.decl.CSSPropertyRule;
 import com.helger.css.decl.CSSSupportsRule;
 import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.visit.CSSVisitor;
@@ -68,6 +69,13 @@ public final class CssUrls {
             @Override
             public void onDeclaration(CSSDeclaration declaration) {
                 expression(declaration.getExpression());
+            }
+
+            @Override
+            public void onBeginPropertyRule(CSSPropertyRule rule) {
+                for (var descriptor : rule.getAllDeclarations()) {
+                    expression(descriptor.getExpression());
+                }
             }
 
             @Override

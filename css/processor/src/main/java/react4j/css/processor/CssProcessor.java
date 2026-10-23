@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -645,6 +646,31 @@ public final class CssProcessor extends AbstractStandardProcessor {
         return Map.copyOf(classes);
     }
 
+    private Set<String> utilityExternalProperties(TypeElement owner) {
+        var mirror = Objects.requireNonNull(annotation(owner, "react4j.css.UtilityCssLibrary"));
+        var declared = (List<?>) value(mirror, "externalProperties").getValue();
+        if (declared.isEmpty()) {
+            return Set.of();
+        }
+        var candidates = CssTokens.read(sourceValue(owner, Kind.UTILITY)).stream()
+                .filter(token -> CssResource.SymbolKind.PROPERTY == token.kind()
+                        && token.name().startsWith("--"))
+                .map(token -> token.name().substring(2))
+                .collect(Collectors.toSet());
+        var external = new LinkedHashSet<String>();
+        for (var item : declared) {
+            var name = (String) ((AnnotationValue) item).getValue();
+            CssProperties.checkName(name);
+            if (!external.add(name)) {
+                throw new IllegalArgumentException("Duplicate external custom property: " + name);
+            }
+            if (!candidates.contains(name)) {
+                throw new IllegalArgumentException("Unknown external custom property: " + name);
+            }
+        }
+        return Set.copyOf(external);
+    }
+
     private TypeElement importTarget(AnnotationMirror mirror) {
         Object target = value(mirror, "value").getValue();
         if (!(target instanceof TypeMirror type)
@@ -666,6 +692,11 @@ public final class CssProcessor extends AbstractStandardProcessor {
     }
 
     private CssProperties.Binding resolveProperty(TypeElement owner, String name, Set<String> visiting) {
+        if (Kind.UTILITY == sourceKind(owner)
+                && utilityExternalProperties(owner).contains(name)) {
+            throw new IllegalArgumentException(
+                    "External custom property cannot be imported as an owned symbol: " + name);
+        }
         String key = binaryName(owner) + "#" + name;
         if (!visiting.add(key)) {
             throw new IllegalArgumentException("Cyclic custom property import without an owner: " + key);
@@ -1267,6 +1298,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         exports(descriptor),
                         input.locations(),
                         utilityClasses(owner).keySet(),
+                        utilityExternalProperties(owner),
                         imports.properties(),
                         imports.ids(),
                         new CssCompiler.Resources(imports.assets(), imports.fonts()));

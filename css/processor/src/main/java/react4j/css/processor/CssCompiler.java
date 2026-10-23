@@ -29,6 +29,7 @@ import com.helger.css.decl.CSSUnknownRule;
 import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.ECSSExpressionOperator;
 import com.helger.css.decl.ECSSSelectorCombinator;
+import com.helger.css.parser.CSSParseHelper;
 import com.helger.css.writer.CSSWriterSettings;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -100,13 +101,14 @@ final class CssCompiler {
             Exports exports,
             IntFunction<SourceMap.Location> locations,
             Set<String> managed,
+            Set<String> externalProperties,
             Map<String, CssProperties.Import> properties,
             Map<String, CssIds.Import> ids,
             Resources resources) {
         var compiler = new CssCompiler(css, 0, root, exports, locations, Map.of());
         var sheet = compiler.syntax.parse(CssSyntax.Mode.UTILITY);
         UtilitySelectors.check(sheet, compiler.syntax, managed);
-        compiler.properties(sheet, properties);
+        compiler.properties(sheet, properties, externalProperties, true);
         compiler.ids(sheet, ids, true);
         var output = new SourceMap.Writer();
         for (int i = 0; i < css.length(); i++) {
@@ -182,14 +184,32 @@ final class CssCompiler {
     private final Set<String> usedProperties = new LinkedHashSet<>();
 
     private void properties(CascadingStyleSheet sheet, Map<String, CssProperties.Import> imported) {
-        CssProperties.rewrite(sheet, syntax, name -> {
-            if (imported.containsKey(name)) {
-                usedProperties.add(name);
-            }
-            String resolved = "--" + root + "--" + Names.encode(name);
-            properties.put(name, resolved);
-            return resolved;
-        });
+        properties(sheet, imported, Set.of(), false);
+    }
+
+    private void properties(
+            CascadingStyleSheet sheet,
+            Map<String, CssProperties.Import> imported,
+            Set<String> external,
+            boolean modern) {
+        if (external.stream().anyMatch(imported::containsKey)) {
+            throw new IllegalArgumentException("An external custom property cannot also be imported");
+        }
+        CssProperties.rewrite(
+                sheet,
+                syntax,
+                name -> {
+                    if (external.contains(name)) {
+                        return "--" + name;
+                    }
+                    if (imported.containsKey(name)) {
+                        usedProperties.add(name);
+                    }
+                    String resolved = "--" + root + "--" + Names.encode(name);
+                    properties.put(name, resolved);
+                    return resolved;
+                },
+                modern);
     }
 
     private void ids(CascadingStyleSheet sheet, Map<String, CssIds.Import> imported, boolean global) {
@@ -296,7 +316,7 @@ final class CssCompiler {
             Resources resources) {
         var compiler = new CssCompiler(css, 0, root, exports, locations, imports);
         var sheet = compiler.syntax.parse(false);
-        compiler.properties(sheet, properties);
+        compiler.properties(sheet, properties, Set.of(), true);
         compiler.ids(sheet, importedIds, true);
         compiler.resources(sheet, resources);
         exports.animations().forEach(compiler::exportAnimation);
@@ -342,7 +362,13 @@ final class CssCompiler {
                 output.append("}");
             }
         } else if (rule instanceof CSSPropertyRule property) {
-            output.append(property.getAsCSSString(compact, 0), location(property));
+            String name = CSSParseHelper.unescapeURL(property.getIdentifier()).substring(2);
+            output.append(
+                    "@property " + properties.getOrDefault(name, property.getIdentifier()) + "{", location(property));
+            for (var descriptor : property.getAllDeclarations()) {
+                output.append(descriptor.getAsCSSString(compact, 0) + ";", location(descriptor));
+            }
+            output.append("}");
         } else if (rule instanceof CSSUnknownRule conditional) {
             output.append(
                     conditional.getDeclaration()

@@ -2,6 +2,7 @@ package react4j.css.internal;
 
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.CSSDeclaration;
+import com.helger.css.decl.CSSExpression;
 import com.helger.css.decl.CSSExpressionMemberFunction;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSExpressionMemberTermURI;
@@ -237,29 +238,8 @@ public final class CssTokens {
                 tokens.add(new Token(SymbolKind.ID, first, last, raw, fragmentName(uri)));
             }
 
-            @Override
-            public void onDeclaration(CSSDeclaration declaration) {
-                String property = CSSParseHelper.unescapeURL(declaration.getProperty());
-                if (property.startsWith("--")) {
-                    token(SymbolKind.PROPERTY, start(declaration), declaration.getProperty());
-                }
-                boolean animation =
-                        "animation".equalsIgnoreCase(property) || "animation-name".equalsIgnoreCase(property);
-                if (animation) {
-                    for (var member : declaration.getExpression().getAllMembers()) {
-                        if (member instanceof CSSExpressionMemberTermSimple simple) {
-                            token(SymbolKind.ANIMATION, start(simple), simple.getValue());
-                        }
-                    }
-                }
-                for (var family : CssFontValues.read(declaration).families()) {
-                    var terms = family.terms();
-                    int first = start(terms.get(0));
-                    var last = terms.get(terms.size() - 1);
-                    int end = start(last) + last.getValue().length();
-                    tokens.add(new Token(SymbolKind.FONT, first, end, css.substring(first, end), family.name()));
-                }
-                CssExpressions.visit(declaration.getExpression(), member -> {
+            private void expression(CSSExpression tree) {
+                CssExpressions.visit(tree, member -> {
                     if (member instanceof CSSExpressionMemberFunction function
                             && "var".equalsIgnoreCase(CSSParseHelper.unescapeURL(function.getFunctionName()))) {
                         var expression = function.getExpression();
@@ -299,6 +279,31 @@ public final class CssTokens {
             }
 
             @Override
+            public void onDeclaration(CSSDeclaration declaration) {
+                String property = CSSParseHelper.unescapeURL(declaration.getProperty());
+                if (property.startsWith("--")) {
+                    token(SymbolKind.PROPERTY, start(declaration), declaration.getProperty());
+                }
+                boolean animation =
+                        "animation".equalsIgnoreCase(property) || "animation-name".equalsIgnoreCase(property);
+                if (animation) {
+                    for (var member : declaration.getExpression().getAllMembers()) {
+                        if (member instanceof CSSExpressionMemberTermSimple simple) {
+                            token(SymbolKind.ANIMATION, start(simple), simple.getValue());
+                        }
+                    }
+                }
+                for (var family : CssFontValues.read(declaration).families()) {
+                    var terms = family.terms();
+                    int first = start(terms.get(0));
+                    var last = terms.get(terms.size() - 1);
+                    int end = start(last) + last.getValue().length();
+                    tokens.add(new Token(SymbolKind.FONT, first, end, css.substring(first, end), family.name()));
+                }
+                expression(declaration.getExpression());
+            }
+
+            @Override
             public void onBeginSupportsRule(CSSSupportsRule rule) {
                 CssExpressions.supports(rule.getAllSupportConditionMembers(), this::onDeclaration);
             }
@@ -308,15 +313,22 @@ public final class CssTokens {
                 var location = Objects.requireNonNull(rule.getSourceLocation());
                 int end =
                         syntax.offset(location.getLastTokenEndLineNumber(), location.getLastTokenEndColumnNumber()) + 1;
+                boolean found = false;
                 for (var identifier : CssLexical.tokens(css, start(rule), end)) {
                     if ((ParserCSS30Constants.IDENT == identifier.kind()
                                     || ParserCSS30Constants.DASHED_IDENT == identifier.kind())
                             && identifier.name().startsWith("--")) {
                         token(SymbolKind.PROPERTY, identifier.start(), identifier.value());
-                        return;
+                        found = true;
+                        break;
                     }
                 }
-                throw syntax.invalid("Property registration requires an identifier", rule);
+                if (!found) {
+                    throw syntax.invalid("Property registration requires an identifier", rule);
+                }
+                for (var descriptor : rule.getAllDeclarations()) {
+                    expression(descriptor.getExpression());
+                }
             }
 
             @Override

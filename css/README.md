@@ -127,6 +127,10 @@ Combine `@Css` with `@UtilityStyles` to add local declarations. A utility access
 
 Ordinary utility declarations must require a managed class on every selector-list or `:is`/`:where`/`:has` branch. Negation alone supplies no guard. Support definitions and custom-property initialization may be global. Supply page resets and element defaults separately with `@GlobalCss`, and select them explicitly through a bundle root or an import on the consuming style. Selecting a utility library alone does not activate a reset.
 
+Library properties, registrations, variable reads and property names in conditions share one scoped identity. Live utilities keep their required definitions and aliases; unused initialization and registrations can be removed. Assignments on a selected class remain part of that utility, including assignments that activate an imported provider. Browser variable evaluation is preserved, including alternative scopes, fallback values and cycles. Existing `@CssCustomProperty` getters can expose a library property, including one defined only by a registration, without making utility classes present.
+
+List deliberately external variables in `externalProperties`, using names without `--`. Their spelling remains literal and they can be set through ordinary external CSS or `CssProps.customProperty("--name", value)`. An external property cannot also be selected as an owned import. Independent providers can reuse authored property names without sharing their values.
+
 ### File inputs
 
 `@UtilityCssLibrary(file = "utilities.css")` and `@GlobalCss(file = "defaults.css")` select one package-relative file instead of an inline block. Declare exactly one source form. Paths must be canonical and relative, without traversal, backslashes, query strings or fragments.
@@ -264,7 +268,7 @@ Selectors retain their authored names except for checked component references an
 
 Select application globals through the bundle's `globals` attribute below. Add `@CssImport(ApplicationDefaults.class)` to a component or another global definition that requires those defaults. Global imports work across separately compiled libraries; duplicate imports, self-inclusion, names on global imports and incompatible types are errors. The bundler rejects cycles among global inclusion edges.
 
-Keyframe and global declaration classes may be concrete or abstract, public or package-access. Extending another class, type parameters and sealed classes are unsupported. Nested declarations must be static with accessible enclosing types. They must not declare fields, explicit constructors or initializers. Concrete and static helpers are allowed. Abstract methods must be annotated symbol accessors as described below. Definitions with accessors must be abstract and generate lazy Java bindings; definitions without accessors produce resources only.
+Keyframe, global and utility-library declaration classes may be concrete or abstract, public or package-access. Extending another class, type parameters and sealed classes are unsupported. Nested declarations must be static with accessible enclosing types. They must not declare fields, explicit constructors or initializers. Concrete and static helpers are allowed. Abstract methods must be annotated symbol accessors as described below. Definitions with accessors must be abstract and generate lazy Java bindings; definitions without accessors produce resources only.
 
 ### CSS names in Java
 

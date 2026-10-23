@@ -10,6 +10,15 @@ import react4j.css.internal.CssResource.SymbolKind;
 
 public final class CssTokensTest {
     @Test
+    public void registeredInitialValuesExposeCheckedAssetUrlsAtTheirAuthoredSpans() {
+        String css = "@property --image{syntax:\"*\";inherits:false;initial-value:url('asset:media.icon');}";
+        var edits = CssUrls.edits(css, value -> "asset:media.icon".equals(value) ? "/icon.svg" : value);
+        assertEquals(edits.size(), 1);
+        assertEquals(css.substring(edits.get(0).start(), edits.get(0).end()), "url('asset:media.icon')");
+        assertTrue(edits.get(0).value().contains("/icon.svg"));
+    }
+
+    @Test
     public void conditionalPropertyNamesRemainDistinctFromContainerNamesAndLiteralValues() {
         String css = "@container --panel style(--mode:--literal) and style(--other:var(--source,--fallback))"
                 + " and style((--enabled) or (--state:foo(--data))){.x{color:red;}}";

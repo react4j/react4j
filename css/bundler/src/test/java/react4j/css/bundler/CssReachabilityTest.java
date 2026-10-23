@@ -65,6 +65,82 @@ public final class CssReachabilityTest {
     }
 
     @Test
+    public void aSelectedVariableOnlyUtilityKeepsItsAssignmentAndImportedProvider() {
+        var provider = global("Defaults", ":root{--theme:blue;} body{color:var(--theme);}");
+        var utility = resource(
+                "Utility",
+                Kind.UTILITY,
+                ".override{--theme:red;}",
+                List.of(binding("style", SymbolKind.CLASS, "override")),
+                List.of(),
+                Map.of("--theme", List.of("Defaults")));
+        var metadata = utility.metadata();
+        utility = new Resource(
+                new CssResource(
+                        metadata.owner(),
+                        metadata.kind(),
+                        metadata.dependencies(),
+                        metadata.includes(),
+                        metadata.implementation(),
+                        metadata.bindings(),
+                        metadata.symbols().stream()
+                                .filter(symbol -> SymbolKind.PROPERTY != symbol.kind())
+                                .toList(),
+                        metadata.occurrences().stream()
+                                .map(use -> SymbolKind.PROPERTY == use.symbol().kind()
+                                        ? new CssResource.Occurrence(
+                                                new CssResource.SymbolId("Defaults", SymbolKind.PROPERTY, "--theme"),
+                                                use.start(),
+                                                use.end(),
+                                                use.requires())
+                                        : use)
+                                .toList(),
+                        metadata.fontUses()),
+                utility.css(),
+                utility.map());
+        var catalogue = catalogue(provider, utility);
+        var link = CssLink.create(catalogue, "test", true);
+        var retained = CssReachability.prune(catalogue, link, Set.of("Utility#style"), List.of());
+        assertTrue(Objects.requireNonNull(retained.get("Utility")).css().contains("--theme:red"));
+        assertTrue(retained.containsKey("Defaults"));
+    }
+
+    @Test
+    public void utilityPropertiesFollowAliasesFallbacksCyclesAndPropertyOnlyGetters() {
+        var utility = resource(
+                "Utility",
+                Kind.UTILITY,
+                "@property --base{syntax:\"<length>\";inherits:true;initial-value:3px;}@property"
+                    + " --registered{syntax:\"<length>\";inherits:true;initial-value:13px;}"
+                    + ":root{--base:7px;--alias:var(--base);--dead:19px;--cycle-a:var(--cycle-b);--cycle-b:var(--cycle-a);}"
+                    + ".live{padding:var(--missing,var(--alias));margin-left:var(--cycle-a,2px);}"
+                    + ".dead{width:var(--dead);}",
+                List.of(
+                        binding("style", SymbolKind.CLASS, "live"),
+                        binding("dead", SymbolKind.CLASS, "dead"),
+                        binding("only", SymbolKind.PROPERTY, "--registered")),
+                List.of(),
+                Map.of());
+        var catalogue = catalogue(utility);
+        var link = CssLink.create(catalogue, "test", true);
+        var selected = CssReachability.prune(catalogue, link, Set.of("Utility#style"), List.of())
+                .get("Utility");
+        assert null != selected;
+        assertTrue(selected.css().contains("@property --base"), selected.css());
+        assertTrue(selected.css().contains("--alias:var(--base)"), selected.css());
+        assertTrue(selected.css().contains("--cycle-a:var(--cycle-b)"), selected.css());
+        assertTrue(selected.css().contains("--cycle-b:var(--cycle-a)"), selected.css());
+        assertFalse(selected.css().contains("--dead"), selected.css());
+        assertFalse(selected.css().contains("--registered"), selected.css());
+        var propertyOnly = CssReachability.prune(catalogue, link, Set.of("Utility#only"), List.of())
+                .get("Utility");
+        assert null != propertyOnly;
+        assertTrue(propertyOnly.css().contains("@property --registered"), propertyOnly.css());
+        assertFalse(propertyOnly.css().contains(".live"), propertyOnly.css());
+        assertFalse(propertyOnly.css().contains("--base"), propertyOnly.css());
+    }
+
+    @Test
     public void survivingStaticAndDynamicFontUsageRetainsAllWeightsOnlyFromSelectedFamilies() {
         var heading = new CssResource.SymbolId("Fonts", SymbolKind.FONT, "heading");
         var unused = new CssResource.SymbolId("Fonts", SymbolKind.FONT, "unused");

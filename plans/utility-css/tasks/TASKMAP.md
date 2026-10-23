@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: implementing
-- Current frontier: T05
+- Current frontier: T06
 - Planning reviewer: utility_planning_review (1/3 rounds; passed; final confirmation unused)
 - Plan checkpoint: automatic
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -23,8 +23,8 @@
 | T02 | [Bind inline utility styles through Java and linking](T02-inline-bindings.md) | complete | T01 |
 | T03 | [Compile explicit files and dependency catalogues](T03-file-catalogues.md) | complete | T02 |
 | T04 | [Activate checked globals with correct precedence](T04-global-inputs.md) | complete | T03 |
-| T05 | [Retain and rename property support](T05-property-support.md) | in_progress | T04 |
-| T06 | [Retain animation and font variable dependencies](T06-animation-font-support.md) | pending | T05 |
+| T05 | [Retain and rename property support](T05-property-support.md) | complete | T04 |
+| T06 | [Retain animation and font variable dependencies](T06-animation-font-support.md) | in_progress | T05 |
 | T07 | [Preserve advanced selector and container behavior](T07-selectors-containers.md) | pending | T06 |
 | T08 | [Verify complete applications and document delivery](T08-application-delivery.md) | pending | T07 |
 
@@ -40,7 +40,7 @@
 
 - Planning attempt 1: utility_planning_review returned "Findings: none." Checked the complete spec/task tree, external exclusions, repository policies, parser/traversal, bindings, header boundaries, naming/liveness, cascade, maps/assets and full-gate wiring. Residual implementation risks are owned by T01 and T03. Budget 3 attempts plus one final confirmation; 1 consumed; final confirmation unused.
 - Automatic checkpoint basis: confirmed interview scope, subsequent explicit instruction to proceed through structured delivery, no human review pause requested, and passing independent planning review.
-- Implementation: not started. Budget 5 attempts plus one final confirmation. Use a fresh reviewer independent of implementation.
+- Implementation review: not started. Budget 5 attempts plus one final confirmation. Use a fresh reviewer independent of implementation.
 
 ## Promoted knowledge
 

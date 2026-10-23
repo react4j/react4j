@@ -30,6 +30,16 @@ public final class BrowserExample {
     }
 
     @JsMethod
+    public static String utilityBaseProperty() {
+        return UtilityLibraryA.get().base();
+    }
+
+    @JsMethod
+    public static String propertyOnlyName() {
+        return PropertyOnlyLibrary.get().size();
+    }
+
+    @JsMethod
     public static String successProperty() {
         return SaveButton.get().successProperty();
     }
@@ -46,7 +56,8 @@ public final class BrowserExample {
                         DOM.span(
                                 new HtmlProps()
                                         .id("utility")
-                                        .className(UtilityOnly.get().style()),
+                                        .className(UtilityOnly.get().style())
+                                        .style(new CssProps().customProperty("--host-gap", "15px")),
                                 "Utility"),
                         DOM.span(
                                 new HtmlProps()
@@ -67,6 +78,7 @@ public final class BrowserExample {
                         DOM.div(
                                 new HtmlProps()
                                         .id("utility-reset")
+                                        .data("utility-scope", "compact")
                                         .data("utility-reset", "true")
                                         .className(UtilityOnly.get().style()),
                                 "Explicit reset"),
@@ -176,19 +188,33 @@ public final class BrowserExample {
                 container);
     }
 
-    @UtilityCssLibrary("""
-        :root { --gutter:6px; }
-        @layer first,second;
-        @layer first { .tone {color:rgb(70, 80, 90);} }
-        @layer second { .tone {color:rgb(30, 60, 90);} }
-        .tone {padding-left:var(--gutter);}
-        """)
-    static final class UtilityLibraryA {}
+    @UtilityCssLibrary(
+            value = """
+                @property --base-gap {syntax:"<length>";inherits:true;initial-value:6px;}
+                :root { --base-gap:6px; --alias-gap:var(--base-gap); --gutter:var(--alias-gap); --dead-gap:97px; --cycle-a:var(--cycle-b); --cycle-b:var(--cycle-a); }
+                @layer first,second;
+                @layer first { .tone {color:rgb(70, 80, 90);} }
+                @layer second { .tone {color:rgb(30, 60, 90);} }
+                .tone {padding-left:var(--gutter);margin-right:var(--host-gap,4px);margin-top:var(--cycle-a,2px);}
+                .tone[data-utility-scope=compact] {--base-gap:9px;}
+                """,
+            externalProperties = {"host-gap"})
+    abstract static class UtilityLibraryA {
+        static UtilityLibraryA get() {
+            return BrowserExample_Styled_UtilityLibraryA.get();
+        }
+
+        @CssCustomProperty(name = "base-gap")
+        abstract String base();
+    }
 
     @UtilityCssLibrary("""
+        :root {--gutter:21px;}
+        @property --gutter {syntax:"<length>";inherits:true;initial-value:21px;}
         @layer second,first;
         @layer first { .tone {color:rgb(100, 110, 120);} }
         @layer second { .tone {color:rgb(130, 140, 150);} }
+        .tone {padding-right:var(--gutter);}
         """)
     static final class UtilityLibraryB {}
 
@@ -223,6 +249,19 @@ public final class BrowserExample {
 
         @UtilityCss("tone")
         abstract String style();
+    }
+
+    @UtilityCssLibrary("""
+        @property --size {syntax:"<length>";inherits:false;initial-value:17px;}
+        .never-selected {padding-top:89px;}
+        """)
+    abstract static class PropertyOnlyLibrary {
+        static PropertyOnlyLibrary get() {
+            return BrowserExample_Styled_PropertyOnlyLibrary.get();
+        }
+
+        @CssCustomProperty
+        abstract String size();
     }
 
     @CssImport(value = UtilityLibraryA.class, property = "gutter")

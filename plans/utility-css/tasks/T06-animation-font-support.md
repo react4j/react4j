@@ -1,6 +1,6 @@
 # T06 — Retain animation and font variable dependencies
 
-- Status: pending
+- Status: in_progress
 - Blocked by: T05
 - Spec coverage: R5 (animations/fonts), R6 (imports/assets), R10, R11 (support), R12 (assets); AC6
 

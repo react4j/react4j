@@ -21,6 +21,7 @@ final class CssReachability {
     private final Map<String, String> animationOwners = new HashMap<>();
     private final Set<String> animations = new HashSet<>();
     private final Set<String> fonts = new HashSet<>();
+    private final Set<String> properties = new HashSet<>();
     private final Set<String> active = new HashSet<>();
     private final Set<String> queued = new HashSet<>();
     private final ArrayDeque<String> pending = new ArrayDeque<>();
@@ -71,6 +72,8 @@ final class CssReachability {
                 value.binding().requires().forEach(graph::activate);
                 if (CssResource.SymbolKind.ANIMATION == value.binding().kind()) {
                     value.binding().symbols().forEach(graph::animation);
+                } else if (CssResource.SymbolKind.PROPERTY == value.binding().kind()) {
+                    value.binding().symbols().forEach(graph::property);
                 }
             }
         }
@@ -79,12 +82,16 @@ final class CssReachability {
             graph.queued.remove(owner);
             var resource = Objects.requireNonNull(graph.resources.get(owner));
             resource.metadata().includes().forEach(graph::activate);
-            var selected = Objects.requireNonNull(graph.pruners.get(owner)).prune(graph.animations, graph.fonts);
+            var selected = Objects.requireNonNull(graph.pruners.get(owner))
+                    .prune(graph.animations, graph.fonts, graph.properties);
             graph.retained.put(owner, selected);
             for (var occurrence : selected.metadata().occurrences()) {
                 occurrence.requires().forEach(graph::activate);
                 if (CssResource.SymbolKind.ANIMATION == occurrence.symbol().kind()) {
                     graph.animation(occurrence.symbol());
+                } else if (CssResource.SymbolKind.PROPERTY
+                        == occurrence.symbol().kind()) {
+                    graph.property(occurrence.symbol());
                 } else if (CssResource.SymbolKind.FONT == occurrence.symbol().kind()) {
                     graph.font(occurrence.symbol());
                 }
@@ -108,6 +115,19 @@ final class CssReachability {
     private void enqueue(String owner) {
         if (queued.add(owner)) {
             pending.add(owner);
+        }
+    }
+
+    private void property(CssResource.SymbolId id) {
+        var resource = Objects.requireNonNull(resources.get(id.owner()), id.owner());
+        var symbol = resource.metadata().symbols().stream()
+                .filter(candidate ->
+                        candidate.kind() == id.kind() && candidate.name().equals(id.name()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Missing canonical CSS property: " + id.id()));
+        activate(id.owner());
+        if (properties.add(symbol.value())) {
+            active.forEach(this::enqueue);
         }
     }
 

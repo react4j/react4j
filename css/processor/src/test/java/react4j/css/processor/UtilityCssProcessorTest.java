@@ -399,6 +399,72 @@ public final class UtilityCssProcessorTest {
     }
 
     @Test
+    public void registrationsConditionsAndExternalPropertiesUseConsistentIdentities() throws Exception {
+        String css = "@property --registered{syntax:\"<length>\";inherits:true;initial-value:17px;}:root{--base:7px;}"
+                + " @container --panel style(--density:--literal) and style(--other:var(--state,--fallback)){"
+                + ".x{padding:var(--base,);margin-left:var(--host-gap,5px);}}";
+        String declaration = library(css)
+                .replace("@UtilityCssLibrary(", "@UtilityCssLibrary(externalProperties={\"host-gap\"},value=")
+                .replace(
+                        "class Utilities {}",
+                        "abstract class Utilities { static Utilities of(){return Styled_Utilities.get();}"
+                                + " @CssCustomProperty abstract String registered(); }");
+        var result = CssProcessorTest.compile(Map.of("Utilities.java", declaration), "demo.Utilities");
+        assertTrue(result.success(), result.diagnostics());
+        assertEquals(result.values().get("demo.Utilities.registered"), "--jcss-demo-Utilities--registered");
+        String output = text(result, "classes/demo/Utilities.css");
+        for (var expected : List.of(
+                "@property --jcss-demo-Utilities--registered",
+                "style(--jcss-demo-Utilities--density:--literal)",
+                "var(--jcss-demo-Utilities--state,--fallback)",
+                "var(--jcss-demo-Utilities--base,)",
+                "var(--host-gap,5px)",
+                "@container --panel")) {
+            assertTrue(output.contains(expected), output);
+        }
+        var metadata = JsonParser.parseString(text(result, "classes/demo/Utilities.css.json"))
+                .getAsJsonObject();
+        assertFalse(metadata.getAsJsonArray("symbols").asList().stream()
+                .anyMatch(item ->
+                        "host-gap".equals(item.getAsJsonObject().get("name").getAsString())));
+        for (var cssKind : List.of("GlobalCss", "UtilityCssLibrary")) {
+            var global = CssProcessorTest.compile(Map.of(
+                    "Utilities.java",
+                    declaration.replace("UtilityCssLibrary(externalProperties={\"host-gap\"},value=", cssKind + "(")));
+            assertTrue(global.success(), global.diagnostics());
+        }
+    }
+
+    @Test
+    public void externalPropertyDeclarationsAreCheckedAndCannotBecomeOwnedImports() throws Exception {
+        for (var names : List.of("\"missing\"", "\"--host\"", "\"host\",\"host\"")) {
+            var invalid = CssProcessorTest.compile(Map.of(
+                    "Utilities.java",
+                    library(".x{color:var(--host);}")
+                            .replace(
+                                    "@UtilityCssLibrary(",
+                                    "@UtilityCssLibrary(externalProperties={" + names + "},value=")));
+            assertFalse(invalid.success(), names);
+            assertTrue(
+                    invalid.diagnostics().contains("custom property")
+                            || invalid.diagnostics().contains("Custom property"),
+                    invalid.diagnostics());
+        }
+        var imported = CssProcessorTest.compile(Map.of(
+                "Utilities.java",
+                library(".x{color:var(--host);}")
+                        .replace("@UtilityCssLibrary(", "@UtilityCssLibrary(externalProperties={\"host\"},value="),
+                "Reset.java",
+                IMPORTS
+                        + "@CssImport(value=Utilities.class,property=\"host\") @GlobalCss(\"\"\"\n"
+                        + ":root{--host:red;}\n"
+                        + "\"\"\") class Reset {}"));
+        assertFalse(imported.success());
+        assertTrue(
+                imported.diagnostics().contains("External custom property cannot be imported"), imported.diagnostics());
+    }
+
+    @Test
     public void providerKindsAndLiteralSourcesAreChecked() throws Exception {
         var wrong = CssProcessorTest.compile(Map.of(
                 "Utilities.java",

@@ -13,7 +13,8 @@ public final class CssConditions {
 
     public record Reference(boolean property, int start, int end, String value, String name) {}
 
-    public record Header(int bodyStart, int bodyEnd, List<Reference> references) {}
+    public record Header(
+            int parameterStart, String parameters, int bodyStart, int bodyEnd, List<Reference> references) {}
 
     private static final class Context {
         final boolean style;
@@ -46,7 +47,12 @@ public final class CssConditions {
                 if ("@container".equalsIgnoreCase(rule.getDeclaration()) && 0 == count) {
                     throw syntax.invalid("@container requires a condition or name", rule);
                 }
-                return new Header(token.start() + 1, end - 1, List.copyOf(references));
+                return new Header(
+                        first,
+                        source.substring(first, token.start()),
+                        token.start() + 1,
+                        end - 1,
+                        List.copyOf(references));
             }
             if (ParserCSS30Constants.S == token.kind()) {
                 continue;

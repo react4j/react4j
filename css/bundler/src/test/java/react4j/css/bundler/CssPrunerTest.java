@@ -57,7 +57,7 @@ public final class CssPrunerTest {
     }
 
     private static Resource prune(Resource resource, Set<String> known, Set<String> present) {
-        return new CssPruner(resource, known, present).prune(Set.of(), Set.of());
+        return new CssPruner(resource, known, present).prune(Set.of(), Set.of(), Set.of());
     }
 
     @Test

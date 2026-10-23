@@ -10,7 +10,7 @@ Define checked Java declarations and imports for each [CSS symbol](../glossary/R
 2. CSS definitions may inherit accessors and ordinary helpers from Java interfaces, including generic contracts, compatible covariant returns and default helpers. Inherited accessors obey the same signature requirements as declared accessors and honor inherited implementations and common throws restrictions.
 3. Definition and accessor stability annotations have CLASS retention and apply consistently through source and separately compiled declarations. Only supported annotated definition types and abstract accessors may carry `@CssStable`.
 4. `@CssImport` can select one ID using its authored name without `#`, with an optional local alias defaulting to that name. ID, property and font selections are mutually exclusive. Empty or malformed explicit selections, duplicate ID aliases and ownerless alias cycles are errors. ID aliases occupy a separate namespace from component, animation and property aliases.
-5. Component, global and keyframe definitions can consume selected IDs, including through transitive aliases and separately compiled providers. Selectors and same-document fragment references resolve to the canonical symbol. A consuming `@CssId` accessor alone may use the import; an import unused by CSS and accessors is an error.
+5. Component, global, keyframe and utility-library definitions can consume selected IDs, including through transitive aliases and separately compiled providers. Selectors and same-document fragment references resolve to the canonical symbol. A consuming `@CssId` accessor alone may use the import; an import unused by CSS and accessors is an error.
 6. Every ID selector in a global definition must resolve through a local ID accessor or a selected ID import. Unbound selectors are errors. Declaring or importing an ID validates identity without asserting that a matching DOM element exists.
 7. ID fragments in asset URLs retain their authored spelling; URL binding applies only to same-document fragments.
 8. Generated-symbol annotations require an effective abstract accessor. An unannotated concrete or default method remains an ordinary helper.
@@ -23,6 +23,8 @@ Define checked Java declarations and imports for each [CSS symbol](../glossary/R
 15. Utility styles may also declare component CSS. A valid utility list implements its accessor without a matching local selector; local-only accessors and selectors retain their existing validation.
 16. Utility lists and typed-symbol annotations are mutually exclusive on one method. Interface inheritance, effective-declaration selection, helpers and peer roots retain their existing contracts.
 17. [Utility CSS variable references](utility-css.md) may bind finite static animation/font name flows. Other component declarations retain the managed-name restrictions above.
+
+18. Utility-library resource accessors may expose owned properties that occur in declarations, variable references, conditions or registrations. A registration is sufficient even without an ordinary declaration. Explicit external properties retain literal names and cannot simultaneously be selected as owned imports.
 
 ## Related contracts
 

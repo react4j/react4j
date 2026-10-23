@@ -173,10 +173,20 @@ public final class CssBrowserTest {
         equal("rgb(180, 20, 30)", css("utility-important", "color"));
         equal("23px", css("utility-reset", "margin-left"));
         equal("13px", css("utility", "padding-left"));
+        equal("21px", css("utility-second", "padding-right"));
+        equal("15px", css("utility", "margin-right"));
+        equal("2px", css("utility", "margin-top"));
+        equal("17px", Browser.computed(node("utility"), BrowserExample.propertyOnlyName()));
+        check(!_optimized == _style.getTextContent().contains("97px"), "Unused utility property");
+        check(
+                !_optimized == _style.getTextContent().contains("89px"),
+                "Property accessor does not invent class presence");
         return stylesheet("component").thenDo(() -> {
             equal("rgb(11, 22, 33)", css("utility-important", "color"));
             equal("0px", css("utility-reset", "margin-left"));
             equal("6px", css("utility", "padding-left"));
+            equal("6px", css("utility-reset", "padding-left"));
+            equal("9px", Browser.computed(node("utility-reset"), BrowserExample.utilityBaseProperty()));
             equal("rgb(100, 110, 120)", css("utility-second", "color"));
         });
     }
