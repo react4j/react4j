@@ -125,6 +125,13 @@ public final class CssBrowserTest {
                         });
                     }
                     return chain.then(v -> {
+                                var query = Browser.query(page, "#utility-query");
+                                equal("rgb(10, 120, 30)", Browser.computed(query, "color"));
+                                equal("19px", Browser.computed(query, "margin-bottom"));
+                                equal("4px", Browser.computed(query, "border-bottom-width"));
+                                equal(
+                                        "rgb(100, 110, 120)",
+                                        Browser.computed(Browser.query(page, "#utility-second"), "color"));
                                 var card = Browser.query(page, "#card");
                                 check(
                                         Browser.computed(card, "background-image")
@@ -209,7 +216,9 @@ public final class CssBrowserTest {
         equal("rgb(10, 120, 30)", css("utility-query", "color"));
         equal("rgb(40, 50, 60)", css("utility-query-second", "color"));
         equal("4px", css("utility-query", "border-bottom-width"));
+        equal("0px", css("utility-query", "padding-left"));
         equal("2px", css("utility-query", "letter-spacing"));
+        equal("600", css("utility-query", "font-weight"));
         equal("3px", css("utility-query", "word-spacing"));
         equal("19px", css("utility-query", "margin-bottom"));
         equal("1", css("utility-query", "opacity"));
@@ -224,6 +233,24 @@ public final class CssBrowserTest {
         equal("rgb(90, 100, 110)", css("utility-query", "color"));
         equal("rgb(40, 50, 60)", css("utility-query-second", "color"));
         equal("19px", css("utility-query", "margin-bottom"));
+    }
+
+    public BrowserPromise testUtilityMapsKeepFileInputsAndJavaSources() {
+        return Browser.fetchText(
+                        "/css/examples/save-button/src/test/js/react4j/css/example/" + _variant + "styles.css.map")
+                .then(value -> {
+                    String map = Browser.string(value);
+                    for (var source : new String[] {
+                        "react4j/css/example/utility-b.css",
+                        "react4j/css/example/utility-defaults.css",
+                        "BrowserExample.java"
+                    }) {
+                        check(map.contains(source), "Authored source: " + source);
+                    }
+                    check(map.contains("width:180px"), "Original utility file content");
+                    check(map.contains("13px!important"), "Original global file content");
+                    return null;
+                });
     }
 
     public void testClassNamingPolicy() {

@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.testng.annotations.Test;
 import react4j.css.internal.AssetResource;
@@ -371,6 +372,50 @@ public final class AssetBundleTest {
                     JsonParser.parseString(new SourceMap.Writer().map("app.js")).getAsJsonObject();
             var result = AssetJavaScript.rewrite(code, map, link, Map.of(asset.token(), "assets/icon.svg"));
             assertTrue(result.text().startsWith("var $r4jAssetBase="), result.text());
+        }
+    }
+
+    @Test
+    public void finalizationUsesExactRangesBeyondTheCompilerColumnLimit() throws Exception {
+        var link = CssLink.read(Files.readString(input(true, "config")));
+        var asset = link.assets().get(0);
+        for (String wrapper : List.of("%s", "/*" + "x".repeat(4100) + "*/(function(){'use strict';%s})();")) {
+            String first = "\"" + asset.token() + "\"";
+            String second = "\"\\u0072" + asset.token().substring(1) + "\"";
+            String body = "var padding='" + "x".repeat(4100) + "';window.first=" + first
+                    + ";/*'react4j-asset:comment'*/window.pattern=/react4j-asset:pattern/;window.second=" + second
+                    + ";window.tail=1;";
+            String code = wrapper.formatted(body);
+            int start = code.indexOf(first);
+            var map = JsonParser.parseString(new SourceMap.Writer()
+                            .append(code.substring(0, start), new SourceMap.Location("Binding.java", code, 0, 0))
+                            .append(first, new SourceMap.Location("Binding.java", code, 0, start))
+                            .append(
+                                    code.substring(start + first.length()),
+                                    new SourceMap.Location("Binding.java", code, 0, start + first.length()))
+                            .map("app.js"))
+                    .getAsJsonObject();
+            var result = AssetJavaScript.rewrite(code, map, link, Map.of(asset.token(), "assets/icon.svg"));
+            String replacement = "($r4jAssetBase+\"assets/icon.svg\")";
+            assertEquals(result.text().split(Pattern.quote(replacement), -1).length - 1, 2);
+            assertTrue(result.text().contains("/*'react4j-asset:comment'*/window.pattern=/react4j-asset:pattern/;"));
+            assertTrue(result.text().contains("window.tail=1;"));
+            if (wrapper.contains("function")) {
+                assertTrue(result.text().indexOf("'use strict'") < result.text().indexOf("var $r4jAssetBase="));
+            }
+            var consumer = new SourceMapConsumerV3();
+            consumer.parse(result.map().toString());
+            int at = result.text().indexOf(replacement);
+            int line = (int) result.text()
+                            .substring(0, at)
+                            .chars()
+                            .filter(c -> '\n' == c)
+                            .count()
+                    + 1;
+            int column = at - result.text().lastIndexOf('\n', at - 1);
+            var origin = Objects.requireNonNull(consumer.getMappingForLine(line, column));
+            assertEquals(origin.getOriginalFile(), "Binding.java");
+            assertEquals(origin.getColumnPosition(), start + 1);
         }
     }
 

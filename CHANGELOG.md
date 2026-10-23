@@ -2,9 +2,8 @@
 
 ### Unreleased
 
-* Add checked utility class accessors with `UtilityCssLibrary`, `UtilityStyles` and method-level `UtilityCss`. Support hybrid component styles, interface contracts, defining-owner names, ordered class lists and optimized removal of unselected classes.
-
-* Preserve valid empty CSS variable fallbacks and parsed container/starting-style bodies during CSS name discovery and pruning. Permit standard important declarations in explicit global/shared inputs while retaining the prohibition in component and utility definitions.
+* Add checked utility CSS with `UtilityCssLibrary`, `UtilityStyles` and method-level `UtilityCss`. Consume explicit inline/file stylesheets and dependency catalogues without a utility generator. Preserve ordered class lists, hybrid/interface contracts and owner-scoped classes, properties, animations, fonts and containers through optimized removal, name compression, source maps and asset finalization.
+* Support modern flat utility CSS, static animation/font variable chains, safe class-token selectors, container queries, starting styles and empty variable fallbacks. Preserve independent library layer order beneath component CSS. Resets remain explicit global inputs; standard important declarations are permitted in global/shared inputs and rejected in component/utility definitions.
 * Simplify release validation by removing standalone artifact checks, isolated consumer compilation tests, and the separate reproducibility build.
 * Remove the downstream Bazel configuration exporter and external consumer check; applications own their dependency configuration.
 * Expose the existing patched React and ReactDOM runtime scripts through `@react4j//third_party:react_runtime_assets` for downstream deployment packaging.

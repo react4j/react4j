@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 import org.jspecify.annotations.Nullable;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -26,6 +27,7 @@ import react4j.css.internal.CssCatalogue;
 import react4j.css.internal.CssLink;
 import react4j.css.internal.CssNames;
 import react4j.css.internal.CssResource;
+import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
 
 public final class BundleTest {
@@ -149,6 +151,84 @@ public final class BundleTest {
         assertTrue(Bundle.assemble(catalogue, List.of(shared), List.of(), "app.css", readable, Set.of("Button#success"))
                 .css()
                 .contains(".readable-root.readable-modifier{color:red;}"));
+    }
+
+    @Test
+    public void utilityLibrariesKeepPrivateLayerOrdersAndMappedOffsetsBeforeComponents() throws Exception {
+        var resources = new TreeMap<String, CssCatalogue.Resource>();
+        for (var entry : Map.of(
+                        "demo.A",
+                        "@layer first,second;\n@layer first{.a-tone{color:red;}}\n@layer second{.a-tone{color:blue;}}",
+                        "demo.B",
+                        "@layer second,first;\n@layer first{.b-tone{color:green;}}",
+                        "demo.Empty",
+                        "")
+                .entrySet()) {
+            var mapped = new SourceMap.Writer();
+            int sourceLine = 0;
+            int sourceColumn = 0;
+            for (int offset = 0; offset < entry.getValue().length(); offset++) {
+                char character = entry.getValue().charAt(offset);
+                mapped.append(
+                        String.valueOf(character),
+                        new SourceMap.Location(entry.getKey() + ".css", entry.getValue(), sourceLine, sourceColumn));
+                if ('\n' == character) {
+                    sourceLine++;
+                    sourceColumn = 0;
+                } else {
+                    sourceColumn++;
+                }
+            }
+            resources.put(
+                    entry.getKey(),
+                    new CssCatalogue.Resource(
+                            metadata(entry.getKey(), CssResource.Kind.UTILITY, List.of(), List.of(), false),
+                            entry.getValue(),
+                            JsonParser.parseString(mapped.map(entry.getKey() + ".css"))
+                                    .getAsJsonObject()));
+        }
+        String css = ".root{color:black;}";
+        var mapped = new SourceMap.Writer().append(css, new SourceMap.Location("Consumer.java", css, 0, 0));
+        resources.put(
+                "demo.Consumer",
+                new CssCatalogue.Resource(
+                        metadata(
+                                "demo.Consumer",
+                                CssResource.Kind.COMPONENT,
+                                List.of("demo.A", "demo.B", "demo.Empty"),
+                                List.of(),
+                                true),
+                        css,
+                        JsonParser.parseString(mapped.map("Consumer.css")).getAsJsonObject()));
+        var result = Bundle.assemble(
+                new CssCatalogue(resources, "1".repeat(64), Map.of()), List.of(), List.of(), "app.css", null, Set.of());
+        var layers =
+                new CssSyntax(result.css(), 0).parse(CssSyntax.Mode.PROCESSED).getAllLayerRules();
+        assertEquals(layers.get(0).getAllSelectors(), List.of("shared", "utilities", "components"));
+        assertEquals(layers.get(1).getAllSelectors(), List.of("utilities"));
+        var libraries = layers.get(1).getAllLayerRules();
+        assertEquals(libraries.size(), 2);
+        assertNotEquals(libraries.get(0).getAllSelectors(), libraries.get(1).getAllSelectors());
+        assertEquals(libraries.get(0).getAllLayerRules().get(0).getAllSelectors(), List.of("first", "second"));
+        assertEquals(libraries.get(1).getAllLayerRules().get(0).getAllSelectors(), List.of("second", "first"));
+        assertEquals(layers.get(2).getAllSelectors(), List.of("components"));
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(result.map());
+        for (var pair : Map.of(".a-tone", "demo.A.css", ".b-tone", "demo.B.css", ".root", "Consumer.java")
+                .entrySet()) {
+            int at = result.css().indexOf(pair.getKey());
+            int line = (int) result.css()
+                            .substring(0, at)
+                            .chars()
+                            .filter(c -> '\n' == c)
+                            .count()
+                    + 1;
+            int column = at - result.css().lastIndexOf('\n', at - 1);
+            var origin = Objects.requireNonNull(consumer.getMappingForLine(line, column));
+            assertEquals(origin.getOriginalFile(), pair.getValue());
+            assertEquals(origin.getLineNumber(), ".root".equals(pair.getKey()) ? 1 : 2);
+            assertEquals(origin.getColumnPosition(), ".root".equals(pair.getKey()) ? 1 : 14);
+        }
     }
 
     @Test

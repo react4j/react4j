@@ -14,6 +14,7 @@ testSuite({
   testPackagedAssetsAtAnApplicationMountAndNestedRoute() { return test.testPackagedAssetsAtAnApplicationMountAndNestedRoute(); },
   testUtilitiesKeepLibraryOrderAndExplicitGlobalPrecedence() { return test.testUtilitiesKeepLibraryOrderAndExplicitGlobalPrecedence(); },
   testNamedUtilityContainersAndSelectorMembership() { return test.testNamedUtilityContainersAndSelectorMembership(); },
+  testUtilityMapsKeepFileInputsAndJavaSources() { return test.testUtilityMapsKeepFileInputsAndJavaSources(); },
   testClassNamingPolicy() { return test.testClassNamingPolicy(); },
   testGeneratedBindingsAreSingletons() { return test.testGeneratedBindingsAreSingletons(); },
   testInliningKeepsModifierAndRootWhileDeadValuesLoseTheirCss() { return test.testInliningKeepsModifierAndRootWhileDeadValuesLoseTheirCss(); },

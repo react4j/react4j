@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementing
-- Current frontier: T08
+- Status: implementation-review
+- Current frontier: independent implementation review
 - Planning reviewer: utility_planning_review (1/3 rounds; passed; final confirmation unused)
 - Plan checkpoint: automatic
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -13,7 +13,7 @@
 ## Full-scope validation
 
 - Gate: tools/check.sh
-- Evidence: pending
+- Evidence: tools/check.sh passed on 2026-10-23 after T08 fixes: 50/50 normal test targets, 15/15 optimized browser targets, 23/23 instrumented JVM targets; coverage thresholds, formatting, hermeticity, public artifacts, site build/check and unsigned local package validation (12 artifacts, 60 entries). Domain links and final specification-only/diff audits passed.
 
 ## Tasks
 
@@ -26,7 +26,7 @@
 | T05 | [Retain and rename property support](T05-property-support.md) | complete | T04 |
 | T06 | [Retain animation and font variable dependencies](T06-animation-font-support.md) | complete | T05 |
 | T07 | [Preserve advanced selector and container behavior](T07-selectors-containers.md) | complete | T06 |
-| T08 | [Verify complete applications and document delivery](T08-application-delivery.md) | in_progress | T07 |
+| T08 | [Verify complete applications and document delivery](T08-application-delivery.md) | complete | T07 |
 
 ## Sequencing notes
 
@@ -46,3 +46,9 @@
 
 - T01 promotion: [utility input](../../../docs/specs/utility-css.md), [bindings](../../../docs/specs/css-bindings.md), [names](../../../docs/specs/css-names.md), [liveness](../../../docs/specs/css-liveness.md), [source maps](../../../docs/specs/css-source-maps.md), [glossary](../../../docs/glossary/README.md) and [finite-provider ADR](../../../docs/adr/0004-consume-finite-utility-libraries.md). Classification/history and specification-only audit recorded in T01; documentation link validation passed.
 - Reader commands and API examples remain in css/README.md; changelog owns release-facing behavior. Task T08 verifies these owners before closeout.
+
+## Review and closeout obligations
+
+- All implementation tasks and the full gate are complete. Review the whole delivery against SPEC.md and promoted contracts with a fresh independent read-only reviewer, record each attempt and disposition, and pass only on Findings: none.
+- After review passes, follow workflow closeout: check promotion/inbound references, remove this entire exact active plan tree, validate removal and commit. No push, publication, release or Rose migration is authorized.
+- T08 final promotion audit: the utility-input, binding, name, liveness and map specifications, glossary and finite-provider ADR remain the canonical owners for every accepted durable conclusion. T08 adds reader examples, implementation fixes and evidence only; no new durable decision or deferred question is introduced.

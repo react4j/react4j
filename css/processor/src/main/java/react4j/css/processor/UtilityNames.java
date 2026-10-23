@@ -31,7 +31,6 @@ import react4j.css.internal.CssFontValues;
 import react4j.css.internal.CssLexical;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssSyntax;
-import react4j.css.internal.CssTokens;
 import react4j.css.internal.SourceMap;
 
 /** Proves the meaning of original name-bearing terms without changing browser variable evaluation. */
@@ -48,17 +47,19 @@ final class UtilityNames {
     private final Map<String, List<CSSExpression>> variables = new LinkedHashMap<>();
     private final Map<CSSExpressionMemberTermSimple, CSSExpression> parents = new IdentityHashMap<>();
     private final Map<CSSExpressionMemberTermSimple, String> meanings = new IdentityHashMap<>();
-    private final Map<Integer, CssTokens.Token> tokens = new LinkedHashMap<>();
+    private final Map<Integer, Use> tokens = new LinkedHashMap<>();
     private final List<Boolean> dynamicFonts = new ArrayList<>();
     private final Set<String> usedImports = new HashSet<>();
     private final Set<String> seenAnimations = new HashSet<>();
     private final Set<String> seenFonts = new HashSet<>();
 
+    record Use(CssResource.SymbolKind kind, int start, int end, String name) {}
+
     record Result(
             Map<String, String> animations,
             Map<String, String> fonts,
             Set<String> imports,
-            List<CssTokens.Token> tokens,
+            List<Use> tokens,
             List<Boolean> dynamicFonts) {
         List<SourceMap.Edit> edits() {
             return tokens.stream()
@@ -125,7 +126,7 @@ final class UtilityNames {
                 Map.copyOf(names.fonts),
                 Set.copyOf(names.usedImports),
                 names.tokens.values().stream()
-                        .sorted(Comparator.comparingInt(CssTokens.Token::start))
+                        .sorted(Comparator.comparingInt(Use::start))
                         .toList(),
                 List.copyOf(names.dynamicFonts));
     }
@@ -184,7 +185,7 @@ final class UtilityNames {
                         .filter(token -> !token.value().isBlank())
                         .toList();
                 var token = header.get(1);
-                String name = decoded(token.value());
+                String name = CssAnimationValues.name(token.value());
                 seenAnimations.add(name);
                 if (externalAnimations.contains(name)) {
                     return;
@@ -220,19 +221,12 @@ final class UtilityNames {
         }
     }
 
-    private static String decoded(String value) {
-        return CSSParseHelper.unescapeURL(
-                value.startsWith("\"") || value.startsWith("'")
-                        ? Objects.requireNonNull(CSSParseHelper.extractStringValue(value))
-                        : value);
-    }
-
     private void token(CssResource.SymbolKind kind, int first, int last, String replacement) {
         if ('\'' == css.charAt(first) || '"' == css.charAt(first)) {
             first++;
             last--;
         }
-        var token = new CssTokens.Token(kind, first, last, css.substring(first, last), replacement);
+        var token = new Use(kind, first, last, replacement);
         var previous = tokens.putIfAbsent(first, token);
         if (null != previous && !previous.equals(token)) {
             throw new CssSyntax.InvalidCss("Ambiguous managed name in a custom-property value", first);

@@ -644,6 +644,8 @@ public final class UtilityCssProcessorTest {
     public void selectorReferencesAndTokenMembershipShareCheckedClassIdentities() throws Exception {
         var source = library(".group:hover .child,.peer:checked~.child{color:red;}"
                         + ".hover\\\\:ready:has(>:where(.child,.group)){opacity:.8;}"
+                        + ".group-hover\\\\:block:is(:where(.group):hover *){display:block;}"
+                        + ".peer-checked\\\\:block:is(:where(.peer):checked~*){display:block;}"
                         + ".child:is(.state,.other):not(.external)[aria-label='literal child']{color:blue;}"
                         + "[class~='token'] [data-state=open]{display:flex;}")
                 .replace("@UtilityCssLibrary(", "@UtilityCssLibrary(externalClasses={\"external\"},value=");
@@ -652,7 +654,10 @@ public final class UtilityCssProcessorTest {
                         "Utilities.java",
                         source,
                         "Button.java",
-                        styles("", "@UtilityCss(\"peer group hover:ready token child\") abstract String style();")),
+                        styles(
+                                "",
+                                "@UtilityCss(\"peer group hover:ready token child group-hover:block"
+                                        + " peer-checked:block\") abstract String style();")),
                 "demo.Button");
         assertTrue(result.success(), result.diagnostics());
         String output = text(result, "classes/demo/Utilities.css");

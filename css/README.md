@@ -123,6 +123,8 @@ Views call these accessors just like ordinary component accessors. Each returns 
 
 The processor infers the class inventory from selectors, including referenced group or peer markers. Library classes have their own defining owner. `externalClasses` lists literal hooks that remain outside managed getter lists; append those hooks as ordinary strings in Java. A consumer's `@CssStable` controls its local markers, while the utility library controls its own names.
 
+Flat utility inputs support media/supports conditions, layers, property registrations, keyframes, font faces, container queries and starting-style blocks, including nested groups. Empty `var()` fallbacks preserve their meaning. Native selector nesting and utility-generation directives must be compiled away before consumption.
+
 Case-sensitive class-token selectors such as `[class~="active"]` share the checked class identity and are rewritten consistently. Supplied utility inputs reject whole-class-string, substring, order-sensitive, case-insensitive and namespaced class comparisons. Ordinary data and ARIA selectors keep their values.
 
 Static `container-name` declarations and the name field of `container` define library-owned containers. Named `@container` queries use those identities, including through layers, media/supports and starting-style groups. List browser-owned ancestor names in `externalContainers`; an unknown ancestor name fails compilation. Querying a container does not retain the class that would create it. Dynamic container-name fields are unsupported.
@@ -164,11 +166,13 @@ java -cp css-processor.jar react4j.css.processor.CssInputJar \
 
 Each pair specifies the logical package-relative source path and the actual file. Keep this input jar alongside the provider artifact for downstream compilation. Java processing does not invoke a utility generator.
 
+The [browser example](examples/save-button/src/main/java/react4j/css/example/BrowserExample.java) combines inline utilities with a [file-backed provider](examples/save-button/src/main/java/react4j/css/example/UtilityLibraryB.java) compiled as a separate dependency and an explicit [global file](examples/save-button/src/main/css/react4j/css/example/utility-defaults.css). Its inherited utility interface uses the same ordinary Java helper pattern as component styles. The [packaged asset example](examples/save-button/src/main/java/react4j/css/example/AssetsExample.java) exercises utility font/animation aliases and finalized font files.
+
 ## Supported CSS
 
 Component styles support root declarations and nested selectors beginning with `&`, including attributes and same-element `:is`, `:not` and `:where`. Import another component to target its root in a checked descendant or sibling selector. `@media` and `@supports` blocks require explicit nested selectors. Apply one component's root to each styled element. When modifiers conflict, stylesheet order determines precedence, regardless of class-token order.
 
-Raw descendant and sibling targets, global escapes, escaped selector or property identifiers, `:has`, `@container` and other at-rules are unsupported, except for outer-level keyframes and font faces described below. CSS must be a literal Java text block. Validation checks syntax and selector/accessor agreement; it does not check property semantics or transform CSS for browser compatibility.
+In component CSS, raw descendant and sibling targets, global escapes, escaped selector or property identifiers, `:has`, `@container` and other at-rules are unsupported, except for outer-level keyframes and font faces described below. Component CSS must be a literal Java text block. Validation checks syntax and selector/accessor agreement; it does not check property semantics or transform CSS for browser compatibility.
 
 ### Peer components
 

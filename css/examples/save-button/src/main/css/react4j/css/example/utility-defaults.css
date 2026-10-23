@@ -1,0 +1,4 @@
+:root {--gutter:13px!important;}
+[data-utility-reset] {margin-left:23px;}
+[data-external-container] {container:host/inline-size;width:200px;}
+[data-utility-important] {color:rgb(180, 20, 30)!important;}

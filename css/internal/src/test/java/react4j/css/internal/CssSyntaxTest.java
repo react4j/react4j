@@ -16,7 +16,8 @@ import org.testng.annotations.Test;
 public final class CssSyntaxTest {
     @Test
     public void emptyVariableFallbackPreservesTheCommaAndSourceLocations() {
-        String css = ".turn { transform: var(--rotate, ) var(--skew,); }";
+        // Tailwind 4.3.3's optimized Rose output supplied the first fallback; the second covers no space.
+        String css = ".turn { transform: var(--tw-rotate-x, ) var(--skew,); }";
         var sheet = new CssSyntax(css, 0).parse(false);
         var declaration = sheet.getAllStyleRules().get(0).getAllDeclarations().get(0);
         assertEquals(declaration.getExpression().getMemberCount(), 2);
@@ -24,7 +25,7 @@ public final class CssSyntaxTest {
                 CssTokens.read(css).stream()
                         .map(token -> css.substring(token.start(), token.end()))
                         .toList(),
-                List.of("turn", "--rotate", "--skew"));
+                List.of("turn", "--tw-rotate-x", "--skew"));
         expectThrows(
                 CssSyntax.InvalidCss.class,
                 () -> new CssSyntax(".turn { transform: var(--rotate / ); }", 0).parse(false));

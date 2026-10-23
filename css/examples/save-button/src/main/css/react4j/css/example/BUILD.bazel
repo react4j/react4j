@@ -1,0 +1,10 @@
+load("//css:defs.bzl", "css_sources")
+
+css_sources(
+    name = "utility_inputs",
+    srcs = [
+        "utility-b.css",
+        "utility-defaults.css",
+    ],
+    visibility = ["//css/examples/save-button/src/main/java/react4j/css/example:__pkg__"],
+)

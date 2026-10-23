@@ -30,7 +30,8 @@ public final class AssetsExample {
                         DOM.img(new ImgProps()
                                 .id("prepared")
                                 .src(media.prepared())
-                                .alt("Prepared SVG"))),
+                                .alt("Prepared SVG")),
+                        BrowserExample.content("#04c", "true")),
                 container);
     }
 
@@ -75,6 +76,7 @@ public final class AssetsExample {
     static final class UtilityLibrary {}
 
     @CssImport(value = Media.class, name = "media")
+    @CssImport(BrowserExample.UtilityReset.class)
     @UtilityStyles(UtilityLibrary.class)
     @Css("""
         padding: 24px;
