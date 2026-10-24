@@ -117,7 +117,7 @@ public final class JavadocJarBuilder {
         args.add("-quiet");
         args.add("-notimestamp");
         args.add("--release");
-        args.add("17");
+        args.add("21");
         args.add("-Xdoclint:all,-missing");
         args.add("-d");
         args.add(docs.toString());

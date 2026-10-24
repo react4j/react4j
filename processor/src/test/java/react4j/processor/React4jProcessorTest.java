@@ -1355,7 +1355,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     protected List<String> getOptions() {
         final List<String> options = new ArrayList<>(super.getOptions());
         options.add("-Aarez.defer.errors=false");
-        options.addAll(List.of("--release", "17", "-XDaddTypeAnnotationsToSymbol=true", "-sourcepath", ""));
+        options.addAll(List.of("--release", "21", "-XDaddTypeAnnotationsToSymbol=true", "-sourcepath", ""));
         return options;
     }
 

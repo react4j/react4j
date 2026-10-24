@@ -48,7 +48,7 @@ import org.realityforge.proton.StopWatch;
  */
 @SuppressWarnings("Duplicates")
 @SupportedAnnotationTypes(Constants.VIEW_CLASSNAME)
-@SupportedSourceVersion(SourceVersion.RELEASE_17)
+@SupportedSourceVersion(SourceVersion.RELEASE_21)
 public final class React4jProcessor extends AbstractStandardProcessor {
     private static final String SENTINEL_NAME = "<default>";
     private static final Pattern DEFAULT_GETTER_PATTERN = Pattern.compile("^get([A-Z].*)Default$");

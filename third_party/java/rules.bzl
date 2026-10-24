@@ -19,7 +19,7 @@ _NULLAWAY = Label("//third_party:nullaway_plugin")
 
 def _compile_policy(srcs, javacopts, deps, plugins, j2cl = False):
     checks = JAVACOPTS if j2cl else JVM_JAVACOPTS
-    options = ([] if j2cl else ["--release", "17"]) + (checks if srcs else BASE_JAVACOPTS)
+    options = ([] if j2cl else ["--release", "21"]) + (checks if srcs else BASE_JAVACOPTS)
     if srcs:
         jspecify = _JSPECIFY_J2CL if j2cl else _JSPECIFY
         if jspecify not in [value if type(value) == "Label" else native.package_relative_label(value) for value in deps]:
@@ -78,7 +78,7 @@ def java_testng(name, srcs, test_classes = [], test_class = None, test_methods =
 
 def _checker_options_impl(ctx):
     output = ctx.actions.declare_file(ctx.label.name + ".txt")
-    ctx.actions.write(output, "\n".join(["--release", "17"] + JVM_JAVACOPTS) + "\n")
+    ctx.actions.write(output, "\n".join(["--release", "21"] + JVM_JAVACOPTS) + "\n")
     return [DefaultInfo(files = depset([output]))]
 
 strict_checker_options = rule(implementation = _checker_options_impl)

@@ -2,13 +2,13 @@
 title: Project Setup
 ---
 
-React4j applications compile Java to JavaScript with J2CL. Published libraries target Java 17 and generated sources remain Java 17-compatible; run annotation processing on Java 21 or later. The processor shades its compiler dependencies.
+React4j applications compile Java to JavaScript with J2CL. Java 21 is the minimum language level for applications and generated sources. Published libraries target Java 21; run annotation processing on Java 21 or later. The processor shades its compiler dependencies.
 
 Configure the runtime with Closure defines and run runtime tests through J2CL in a browser. JVM system-property configuration is not supported.
 
 Owned nullness contracts use JSpecify `@NullMarked`, `@NullUnmarked`, `@NonNull` and `@Nullable`. Mark application packages and specify nullable values explicitly. Legacy nullness annotations are ignored. Nullable AUTODETECT inputs are optional; an explicitly required nullable input needs a builder call and accepts null. Optional non-null references need a non-null default or a tree-context source.
 
-The Bazel build pins migrated Arez, Proton and Sting revisions. Maven consumption requires a compatible published Arez release containing that migration; existing older releases do not acquire the new contents merely by choosing their version number. The snapshot below is the local build default, not a claim that migrated artifacts have been published to Central. Replace it with the migrated React4j release you intend to use.
+The Bazel build pins migrated Arez, Proton and Sting revisions. Maven consumption requires a compatible published Arez release containing the pinned changes, including Java 21 support; existing older releases do not acquire the new contents merely by choosing their version number. The snapshot below is the local build default, not a claim that migrated artifacts have been published to Central. Replace it with the migrated React4j release you intend to use.
 
 ## Configure Maven
 
@@ -42,7 +42,7 @@ Run Maven on Java 21+. Add the DOM library (which includes the core runtime tran
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.12.1</version>
         <configuration>
-          <release>17</release>
+          <release>21</release>
           <parameters>true</parameters>
           <useIncrementalCompilation>false</useIncrementalCompilation>
           <compilerArgs>

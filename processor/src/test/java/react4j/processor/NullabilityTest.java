@@ -36,7 +36,7 @@ public final class NullabilityTest extends AbstractProcessorTest {
     @Override
     protected List<String> getOptions() {
         return List.of(
-                "--release", "17", "-Xlint:all,-processing", "-XDaddTypeAnnotationsToSymbol=true", "-sourcepath", "");
+                "--release", "21", "-Xlint:all,-processing", "-XDaddTypeAnnotationsToSymbol=true", "-sourcepath", "");
     }
 
     @Test
@@ -104,7 +104,7 @@ public final class NullabilityTest extends AbstractProcessorTest {
 
             @Override
             public SourceVersion getSupportedSourceVersion() {
-                return SourceVersion.RELEASE_17;
+                return SourceVersion.RELEASE_21;
             }
 
             @Override

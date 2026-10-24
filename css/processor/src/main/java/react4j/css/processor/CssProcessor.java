@@ -65,7 +65,7 @@ import react4j.css.internal.SourceMap;
     "react4j.css.CssAnimation",
     "react4j.css.CssStable"
 })
-@SupportedSourceVersion(SourceVersion.RELEASE_17)
+@SupportedSourceVersion(SourceVersion.RELEASE_21)
 public final class CssProcessor extends AbstractStandardProcessor {
 
     private static final String CSS_ANNOTATION = "react4j.css.Css";
