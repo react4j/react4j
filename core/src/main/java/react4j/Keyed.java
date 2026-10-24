@@ -21,8 +21,8 @@ public interface Keyed {
      */
     @Nullable
     static String getKey(@Nullable final Object object) {
-        if (object instanceof Keyed) {
-            return ((Keyed) object).getKey();
+        if (object instanceof Keyed keyed) {
+            return keyed.getKey();
         } else {
             return null;
         }

@@ -293,7 +293,7 @@ public final class CssProcessorTest {
             try (var manager = compiler.getStandardFileManager(diagnostics, null, null)) {
                 var options = new ArrayList<>(List.of(
                         "--release",
-                        "17",
+                        "21",
                         "-Xlint:deprecation,removal",
                         "-classpath",
                         classpath,
@@ -1081,7 +1081,7 @@ public final class CssProcessorTest {
                                             diagnostics,
                                             List.of(
                                                     "--release",
-                                                    "17",
+                                                    "21",
                                                     "-proc:none",
                                                     "-classpath",
                                                     applicationClasspath(),

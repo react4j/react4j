@@ -24,7 +24,7 @@ public final class IntrospectUtil {
      * @param observableInfo the observable.
      * @return the value as a string.
      */
-    @SuppressWarnings({"UnnecessaryUnboxing", "rawtypes"})
+    @SuppressWarnings("UnnecessaryUnboxing")
     @Nullable
     public static Object getValue(final ObservableValueInfo observableInfo) {
         try {
@@ -32,30 +32,20 @@ public final class IntrospectUtil {
                 // Consider unwrapping collections and potentially serializing Arez entities so they are presented
                 // correctly in DevTools
                 final Object value = observableInfo.getValue();
-                if (null == value) {
-                    return null;
-                } else if (value instanceof Enum) {
-                    return ((Enum) value).name();
-                } else if (value instanceof Integer) {
-                    return Js.asAny(((Integer) value).intValue());
-                } else if (value instanceof Boolean) {
-                    return Js.asAny(((Boolean) value).booleanValue());
-                } else if (value instanceof Long) {
-                    return Js.asAny(((Long) value).doubleValue());
-                } else if (value instanceof Float) {
-                    return Js.asAny(((Float) value).doubleValue());
-                } else if (value instanceof Short) {
-                    return Js.asAny(((Short) value).intValue());
-                } else if (value instanceof Byte) {
-                    return Js.asAny(((Byte) value).intValue());
-                } else if (value instanceof Character) {
-                    return value.toString();
-                } else if (value instanceof Stream) {
+                return switch (value) {
+                    case null -> null;
+                    case Enum<?> item -> item.name();
+                    case Integer item -> Js.asAny(item.intValue());
+                    case Boolean item -> Js.asAny(item.booleanValue());
+                    case Long item -> Js.asAny(item.doubleValue());
+                    case Float item -> Js.asAny(item.doubleValue());
+                    case Short item -> Js.asAny(item.intValue());
+                    case Byte item -> Js.asAny(item.intValue());
+                    case Character item -> item.toString();
                     // Streams are new instances every time so render them as strings to avoid infinite loops.
-                    return "<Stream>";
-                } else {
-                    return value;
-                }
+                    case Stream<?> item -> "<Stream>";
+                    default -> value;
+                };
             } else {
                 return "?";
             }

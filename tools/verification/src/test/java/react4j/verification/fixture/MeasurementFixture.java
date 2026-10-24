@@ -4,6 +4,7 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @NullMarked
 @JsType
@@ -97,6 +98,20 @@ public final class MeasurementFixture {
             total += value;
         }
         return total;
+    }
+
+    public static int pattern(@Nullable Object value) {
+        if (!(value instanceof Double)) {
+            return switch (value) {
+                case null -> parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("79");
+                case String text -> text.length();
+                case Integer number -> {
+                    yield parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("83") + number;
+                }
+                default -> parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("89");
+            };
+        }
+        return -2;
     }
 
     public static int ambiguous(boolean first, boolean second) {

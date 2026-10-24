@@ -12,7 +12,6 @@ import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.parser.CSSParseHelper;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -93,9 +92,7 @@ final class CssFonts {
                                 .forEach(name -> names.putIfAbsent(name, root + "--font-" + Names.encode(name)));
                     }
                     // Replace right-to-left because a multiword family collapses to one identifier.
-                    var families = new ArrayList<>(value.families());
-                    Collections.reverse(families);
-                    for (var family : families) {
+                    for (var family : value.families().reversed()) {
                         String name = family.name();
                         if (imports.containsKey(name)) {
                             names.putIfAbsent(name, root + "--font-" + Names.encode(name));

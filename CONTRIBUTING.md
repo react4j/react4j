@@ -4,7 +4,7 @@ Follow the [Code of Conduct](CODE_OF_CONDUCT.md). Describe the problem, resultin
 
 ## Build and checks
 
-Use Bazel 9.3.0 (pinned in `.bazelversion`, typically selected by Bazelisk) and Bash. Bazel downloads the Java toolchains, compiler dependencies, React assets and Chromium. Publication and JVM-test bytecode targets Java 17; J2CL emits Java 21 intermediate bytecode; annotation processing requires Java 21; build tools use the pinned Java 25 toolchain. Dependency maintenance uses a host Java 17+ command.
+Use Bazel 9.3.0 (pinned in `.bazelversion`, typically selected by Bazelisk) and Bash. Bazel downloads the Java toolchains, compiler dependencies, React assets and Chromium. Owned Java sources, publication bytecode and generated sources target Java 21; annotation processing requires Java 21 or later; build tools use the pinned Java 25 toolchain. Dependency maintenance uses a host Java 17+ command.
 
 | Task | Command |
 | --- | --- |
@@ -40,7 +40,7 @@ Processor fixtures are in `processor/src/test/fixtures`. The harness checks comp
 
 Public `//:core` and `//:dom` provide J2CL libraries derived from the complete publication source archives; `//:css` supplies CSS annotations. `//:processor` and `//:css_processor` are annotation processor plugins. Root `//:defs.bzl` re-exports the public build rules, macros and providers. Curated dependency aliases in `//third_party` share upstream library compilations and offer optional processors/checkers. Implementation targets and Starlark modules restrict access to repository consumers. See the [Bazel integration contract](docs/specs/bazel-integration.md).
 
-Examples use native `j2cl_library` with explicit checker settings from `examples/checks.bzl`, public React4j labels and example-owned test support. The formatter aspect checks their authored Java sources directly. Repository browser tests use the checked `j2cl_library` in `third_party/java/rules.bzl` with the same policy. Neither requires a companion JVM compilation. Paired JVM/J2CL builds remain for repository artifacts with JVM consumers. Publication source archives depend on checked Java 17 class outputs, and bytecode dependency checks inspect those outputs without executing the runtime. Downstream applications use native J2CL with their own checker selection. CSS linking requests J2CL's existing javac outputs as validations so JavaScript-only builds run those checks.
+Examples use native `j2cl_library` with explicit checker settings from `examples/checks.bzl`, public React4j labels and example-owned test support. The formatter aspect checks their authored Java sources directly. Repository browser tests use the checked `j2cl_library` in `third_party/java/rules.bzl` with the same policy. Neither requires a companion JVM compilation. Paired JVM/J2CL builds remain for repository artifacts with JVM consumers. Publication source archives depend on checked Java 21 class outputs, and bytecode dependency checks inspect those outputs without executing the runtime. Downstream applications use native J2CL with their own checker selection. CSS linking requests J2CL's existing javac outputs as validations so JavaScript-only builds run those checks.
 
 J2CL publication inputs exclude only separately loaded UMD asset directories; Java sources, native configuration and extern bytes are preserved.
 
