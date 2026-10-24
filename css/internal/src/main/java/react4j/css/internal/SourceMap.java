@@ -210,6 +210,11 @@ public final class SourceMap {
             return this;
         }
 
+        public Writer appendMapped(String text, JsonObject map) {
+            copy(text, mappings(text, map), new Span(0, text.length()), this);
+            return this;
+        }
+
         public String css() {
             return css.toString();
         }

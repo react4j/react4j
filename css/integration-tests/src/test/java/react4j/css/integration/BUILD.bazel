@@ -227,11 +227,13 @@ java_j2cl_library(
         "package-info.java",
     ],
     java_deps = [
+        ":fixture_dependency_java",
         ":utility_inputs_java",
         "//css/core",
     ],
     plugins = ["//:css_processor"],
     deps = [
+        ":fixture_dependency",
         ":utility_inputs",
         "//:css",
         "//third_party:jspecify-j2cl",
@@ -245,6 +247,44 @@ headers(
 )
 
 java_j2cl_library(
+    name = "native_bindings",
+    testonly = True,
+    srcs = [
+        "NativeStyles.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        ":utility_dependency_java",
+        "//css/core",
+    ],
+    plugins = ["//:css_processor"],
+    deps = [
+        ":utility_dependency",
+        "//:css",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
+    name = "other_native_bindings",
+    testonly = True,
+    srcs = [
+        "OtherNativeStyles.java",
+        "package-info.java",
+    ],
+    java_deps = [
+        ":utility_dependency_java",
+        "//css/core",
+    ],
+    plugins = ["//:css_processor"],
+    deps = [
+        ":utility_dependency",
+        "//:css",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+java_j2cl_library(
     name = "liveness_entry",
     testonly = True,
     srcs = [
@@ -252,6 +292,8 @@ java_j2cl_library(
         "package-info.java",
     ],
     java_deps = [
+        ":native_bindings_java",
+        ":other_native_bindings_java",
         ":utility_dependency_java",
         ":fixture_bindings_java",
         ":fixture_contracts_java",
@@ -262,6 +304,8 @@ java_j2cl_library(
     deps = [
         ":fixture_bindings",
         ":fixture_contracts",
+        ":native_bindings",
+        ":other_native_bindings",
         ":utility_dependency",
         "//:css",
         "//third_party:jsinterop_annotations-j2cl",

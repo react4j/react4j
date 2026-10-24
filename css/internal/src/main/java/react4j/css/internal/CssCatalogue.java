@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HexFormat;
 import java.util.List;
@@ -38,7 +39,8 @@ public record CssCatalogue(Map<String, Resource> resources, String digest, Map<S
                     if (name.endsWith(".css")
                             || name.endsWith(".css.map")
                             || name.endsWith(".css.json")
-                            || name.endsWith(".assets.json")) {
+                            || name.endsWith(".assets.json")
+                            || name.endsWith(".css.fragments.json")) {
                         if (null != files.putIfAbsent(name, path)) {
                             throw new IllegalArgumentException("Duplicate CSS resource: " + name);
                         }
@@ -48,12 +50,25 @@ public record CssCatalogue(Map<String, Resource> resources, String digest, Map<S
         }
         var definitions = new TreeMap<String, Resource>();
         var assets = new TreeMap<String, AssetResource>();
+        var fragments = new ArrayList<CssFragments.Located>();
         var hash = sha256();
         for (var entry : files.entrySet()) {
             String name = entry.getKey();
             String content = Files.readString(entry.getValue());
             hash.update(
                     (name.length() + ":" + name + content.length() + ":" + content).getBytes(StandardCharsets.UTF_8));
+            if (name.endsWith(".css.fragments.json")) {
+                String requester = name.substring(0, name.length() - ".css.fragments.json".length())
+                        .replace('/', '.');
+                if (!files.containsKey(CssResource.path(requester))) {
+                    throw new IllegalArgumentException("Utility fragments without requesting CSS metadata: " + name);
+                }
+                for (var fragment : CssFragments.read(content, requester).fragments()) {
+                    fragments.add(
+                            new CssFragments.Located(fragment, entry.getValue().toString()));
+                }
+                continue;
+            }
             if (name.endsWith(".assets.json")) {
                 String owner = name.substring(0, name.length() - ".assets.json".length())
                         .replace('/', '.');
@@ -84,7 +99,8 @@ public record CssCatalogue(Map<String, Resource> resources, String digest, Map<S
                             content.substring(0, content.length() - reference.length()),
                             readMap(mapPath, file)));
         }
-        return new CssCatalogue(definitions, HexFormat.of().formatHex(hash.digest()), assets);
+        return new CssCatalogue(
+                CssFragments.merge(definitions, fragments), HexFormat.of().formatHex(hash.digest()), assets);
     }
 
     static MessageDigest sha256() {

@@ -47,6 +47,8 @@ java_format_check(
         "//css/integration-tests/src/test/java/react4j/css/integration:fixture_bindings_java",
         "//css/integration-tests/src/test/java/react4j/css/integration:liveness_entry_java",
         "//css/integration-tests/src/test/java/react4j/css/integration:utility_dependency_java",
+        "//css/integration-tests/src/test/java/react4j/css/integration:native_bindings_java",
+        "//css/integration-tests/src/test/java/react4j/css/integration:other_native_bindings_java",
         "//css/integration-tests/src/test/java/react4j/css/integration:peer_bindings_java",
         "//css/processor/src/test/java/react4j/css/processor:processor_tests",
         "//css/examples/save-button/src/main/java/react4j/css/example:browser_java",

@@ -90,6 +90,17 @@ public final class UtilityLanguageTest {
         var library = checked(RULES);
         var reread = UtilityLanguage.readChecked(library.json());
         assertEquals(reread.fingerprint(), library.fingerprint());
+        var changed = checked(RULES + "@utility unrelated { outline-width:17px; }");
+        assertEquals(
+                UtilityLanguage.expand(changed, List.of("flex"))
+                        .expansions()
+                        .get(0)
+                        .css(),
+                UtilityLanguage.expand(library, List.of("flex"))
+                        .expansions()
+                        .get(0)
+                        .css());
+        assertNotEquals(changed.fingerprint(), library.fingerprint());
         assertEquals(
                 UtilityLanguage.readPrepared(library.prepared().json()).json(),
                 library.prepared().json());

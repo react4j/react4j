@@ -45,6 +45,7 @@ import react4j.css.internal.AssetResource;
 import react4j.css.internal.CssContainers;
 import react4j.css.internal.CssFontValues;
 import react4j.css.internal.CssFonts;
+import react4j.css.internal.CssFragments;
 import react4j.css.internal.CssIdentity;
 import react4j.css.internal.CssIds;
 import react4j.css.internal.CssInput;
@@ -671,6 +672,22 @@ public final class CssProcessor extends AbstractStandardProcessor {
                         .map(UtilityLanguage.Diagnostic::render)
                         .collect(Collectors.joining("\n")));
             }
+            var fragments = batch.expansions().stream()
+                    .map(expansion -> new CssFragments.Fragment(
+                            expansion.candidate(),
+                            expansion.orderKey(),
+                            expansion.css(),
+                            expansion.sourceMap(),
+                            expansion.metadata()))
+                    .toList();
+            try {
+                writeResource(
+                        owner,
+                        CssResource.path(binaryName(owner)) + ".fragments.json",
+                        new CssFragments(binaryName(owner), fragments).json());
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Cannot publish utility expansion fragments", e);
+            }
             var classes = new LinkedHashMap<String, String>();
             batch.expansions().forEach(expansion -> classes.put(expansion.candidate(), expansion.className()));
             return new Utilities(binaryName(provider), Map.copyOf(classes));
@@ -825,7 +842,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
             TypeElement owner, @Nullable CssDescriptor descriptor, Imports imports, UtilityLanguage.Checked checked)
             throws IOException {
         var support = checked.support();
-        var metadata = support.metadata();
+        var metadata = support.metadata().withFingerprint(checked.fingerprint());
         String implementation = "";
         var bound = new ArrayList<CssResource.Binding>();
         if (null != descriptor) {
@@ -870,7 +887,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
                 bound,
                 metadata.symbols(),
                 metadata.occurrences(),
-                metadata.fontUses());
+                metadata.fontUses(),
+                checked.fingerprint());
         String path = CssResource.path(binaryName(owner));
         String file = path.substring(path.lastIndexOf('/') + 1);
         var map = JsonParser.parseString(support.sourceMap()).getAsJsonObject();

@@ -77,6 +77,36 @@ public final class CssLivenessIntegrationTest {
     }
 
     @Test
+    public void independentNativeContributionsDeduplicateOrderAndPruneWithSurvivingGetters() throws Exception {
+        String optimized = input("optimized");
+        String development = input("development");
+        assertEquals(optimized.split("gap: 34.25rem", -1).length - 1, 1, optimized);
+        assertEquals(development.split("gap: 34.25rem", -1).length - 1, 1, development);
+        assertTrue(development.contains("gap: 249.75rem"), development);
+        assertFalse(optimized.contains("gap: 249.75rem"), optimized);
+        assertFalse(development.contains("gap: 250rem"), development);
+        assertTrue(optimized.indexOf("gap: 34.25rem") < optimized.indexOf("gap: 0.5rem"), optimized);
+        String shared = compiled("NativeUtilityLibrary", "CLASS", "gap-137");
+        assertTrue(optimized.contains("." + shared + " {"), optimized);
+        assertTrue(input("javascript").contains(shared), input("javascript"));
+        String importedAnimation = compiled("SharedPulse", "ANIMATION", "");
+        String ownedAnimation = compiled("NativeUtilityLibrary", "ANIMATION", "native-pulse");
+        assertEquals(optimized.split("@keyframes " + importedAnimation + "\\{", -1).length - 1, 1, optimized);
+        assertEquals(optimized.split("@keyframes " + ownedAnimation + " ", -1).length - 1, 1, optimized);
+        assertTrue(optimized.contains("animation: " + importedAnimation + " 1s, " + ownedAnimation + " 1s"), optimized);
+        assertTrue(optimized.contains("var(" + compiled("SharedDefaults", "PROPERTY", "accent") + ")"), optimized);
+        var map = JsonParser.parseString(input("map")).getAsJsonObject();
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(map.toString());
+        int at = optimized.indexOf("gap: 34.25rem");
+        int line =
+                (int) optimized.substring(0, at).chars().filter(c -> '\n' == c).count() + 1;
+        int column = at - optimized.lastIndexOf('\n', at - 1);
+        var origin = Objects.requireNonNull(consumer.getMappingForLine(line, column));
+        assertTrue(origin.getOriginalFile().endsWith("native.utilities.css"), origin.toString());
+    }
+
+    @Test
     public void realLinksHandleSeparatelyCompiledInterfaceAndFacadeBindings() throws Exception {
         String optimized = input("optimized");
         String development = input("development");

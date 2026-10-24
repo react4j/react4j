@@ -19,7 +19,26 @@ public record CssResource(
         List<Binding> bindings,
         List<Symbol> symbols,
         List<Occurrence> occurrences,
-        List<FontUse> fontUses) {
+        List<FontUse> fontUses,
+        String fingerprint) {
+    public CssResource(
+            String owner,
+            Kind kind,
+            List<String> dependencies,
+            List<String> includes,
+            String implementation,
+            List<Binding> bindings,
+            List<Symbol> symbols,
+            List<Occurrence> occurrences,
+            List<FontUse> fontUses) {
+        this(owner, kind, dependencies, includes, implementation, bindings, symbols, occurrences, fontUses, "");
+    }
+
+    public CssResource withFingerprint(String value) {
+        return new CssResource(
+                owner, kind, dependencies, includes, implementation, bindings, symbols, occurrences, fontUses, value);
+    }
+
     private static final Pattern OWNER = Pattern.compile(
             "\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*(?:\\.\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)*");
 
@@ -189,7 +208,7 @@ public record CssResource(
 
     public CssResource withOccurrences(List<Occurrence> values) {
         return new CssResource(
-                owner, kind, dependencies, includes, implementation, bindings, symbols, values, fontUses);
+                owner, kind, dependencies, includes, implementation, bindings, symbols, values, fontUses, fingerprint);
     }
 
     public CssResource project(List<SourceMap.Span> spans) {
@@ -218,7 +237,8 @@ public record CssResource(
             }
             offset += span.end() - span.start();
         }
-        return new CssResource(owner, kind, dependencies, includes, implementation, bindings, symbols, projected, uses);
+        return new CssResource(
+                owner, kind, dependencies, includes, implementation, bindings, symbols, projected, uses, fingerprint);
     }
 
     private static int integer(JsonObject json, String key) {
@@ -231,6 +251,9 @@ public record CssResource(
 
     public CssResource {
         path(owner);
+        if (!fingerprint.isEmpty() && (Kind.UTILITY != kind || !fingerprint.matches("[0-9a-f]{64}"))) {
+            throw new IllegalArgumentException("Invalid native utility fingerprint");
+        }
         dependencies = List.copyOf(dependencies);
         includes = List.copyOf(includes);
         bindings = List.copyOf(bindings);
@@ -298,7 +321,8 @@ public record CssResource(
 
     public String json() {
         var json = new JsonObject();
-        json.addProperty("version", 10);
+        json.addProperty("version", 11);
+        json.addProperty("fingerprint", fingerprint);
         json.addProperty("owner", owner);
         json.addProperty("kind", kind.name());
         var entries = new JsonArray();
@@ -335,7 +359,7 @@ public record CssResource(
     public static CssResource read(String source, String expectedOwner) {
         try {
             var json = JsonParser.parseString(source).getAsJsonObject();
-            if (!json.has("version") || !"10".equals(json.get("version").toString())) {
+            if (!json.has("version") || !"11".equals(json.get("version").toString())) {
                 throw new IllegalArgumentException("Unsupported CSS metadata version");
             }
             String owner = string(json, "owner");
@@ -375,7 +399,8 @@ public record CssResource(
                             .toList(),
                     json.getAsJsonArray("fontUses").asList().stream()
                             .map(item -> FontUse.read(item.getAsJsonObject()))
-                            .toList());
+                            .toList(),
+                    string(json, "fingerprint"));
         } catch (JsonParseException | IllegalStateException | ClassCastException | NullPointerException e) {
             throw new IllegalArgumentException("Invalid CSS metadata for " + expectedOwner, e);
         }

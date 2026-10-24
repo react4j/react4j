@@ -21,6 +21,11 @@ public final class LivenessEntry {
         return UtilityStylesContract.instance().active();
     }
 
+    @JsMethod
+    public static String nativeClasses() {
+        return NativeStyles.get().active() + " " + OtherNativeStyles.get().active();
+    }
+
     interface UtilityStylesContract {
         @UtilityCss("gap-2 flex text-red")
         String active();

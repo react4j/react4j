@@ -413,7 +413,13 @@ public final class UtilityLanguage {
                 + rank(utility.rule().rank())
                 + spellingKey(candidate);
         return new Expansion(
-                candidate, className, order, fragment.css(), fragment.sourceMap(), trace, fragment.metadata());
+                candidate,
+                className,
+                order,
+                fragment.css(),
+                fragment.sourceMap(),
+                trace,
+                fragment.metadata().withFingerprint(checked.fingerprint()));
     }
 
     private static String spellingKey(String text) {
