@@ -77,6 +77,18 @@ public final class CssParserSources {
     }
 
     private static String propertyComments(String source) {
+        source = replaceOnce(
+                source,
+                "    if (m_aCustomErrorHandler != null)\n"
+                        + "      m_aCustomErrorHandler.onIllegalCharacter (image.charAt (0));",
+                """
+                    if (image.length() == 1 && image.charAt(0) == '<') {
+                      matchedToken.kind = LESS;
+                      break;
+                    }
+                    if (m_aCustomErrorHandler != null)
+                      m_aCustomErrorHandler.onIllegalCharacter (image.charAt (0));
+                """.stripTrailing());
         return replaceOnce(source, "      curChar = input_stream.beginToken();", """
                   curChar = input_stream.beginToken();
                   if (curLexState == IN_PROPERTY_RULE && curChar == '/') {
@@ -142,6 +154,10 @@ public final class CssParserSources {
     }
 
     private static String repair(String source) {
+        source = source.replace(
+                "    throw (Error)jjte000;",
+                "    if (jjte000 instanceof RuntimeException) throw (RuntimeException)jjte000;\n"
+                        + "    throw (Error)jjte000;");
         int first = source.indexOf("public void expr()");
         int last = source.indexOf("// Charset rule", first);
         if (first < 0 || last < first) {

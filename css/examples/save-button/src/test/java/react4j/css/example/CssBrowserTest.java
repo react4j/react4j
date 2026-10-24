@@ -212,6 +212,54 @@ public final class CssBrowserTest {
         });
     }
 
+    public BrowserPromise testNativeContainerStatesAndStartingTransition() {
+        var fixture = Browser.append("div");
+        NativeExample.render(fixture);
+        var frame = Browser.query(fixture, "#native-frame");
+        var query = Browser.query(fixture, "#native-query");
+        var scroller = Browser.query(fixture, "#native-scroll");
+        var child = Browser.query(fixture, "#native-scroll-child");
+        equal("scroll-state", Browser.computed(scroller, "container-type"));
+        check(
+                (child.getBoundingClientRect().getBottom()
+                                - child.getBoundingClientRect().getTop())
+                        > (scroller.getBoundingClientRect().getBottom()
+                                - scroller.getBoundingClientRect().getTop()),
+                "Scrollable overflow exists");
+        equal("rgb(10, 120, 30)", Browser.computed(query, "color"));
+        equal("400", Browser.computed(query, "font-weight"));
+        check(!_style.getTextContent().contains("987px"), "Unrequested native setup is absent");
+        Browser.cssText(frame, "width:80px;" + NativeExample.densityProperty() + ":compact");
+        equal("rgb(90, 100, 110)", Browser.computed(query, "color"));
+        equal("700", Browser.computed(query, "font-weight"));
+        var animations = Browser.animations(Browser.query(fixture, "#native-enter"));
+        check(1 == animations.length, "Starting style creates the explicit opacity transition");
+        var transition = animations[0];
+        transition.pause();
+        return transition
+                .getReady()
+                .then(v -> {
+                    transition.setCurrentTime(50000);
+                    double opacity =
+                            Double.parseDouble(Browser.computed(Browser.query(fixture, "#native-enter"), "opacity"));
+                    check(.49 < opacity && .51 > opacity, "Starting opacity interpolates to its final value");
+                    return Browser.until(
+                            () -> "7px".equals(Browser.computed(child, "letter-spacing")),
+                            2000,
+                            20,
+                            "Scrollable state becomes visible");
+                })
+                .then(v -> {
+                    Browser.cssText(scroller, "height:300px");
+                    return Browser.until(
+                            () -> "normal".equals(Browser.computed(child, "letter-spacing")),
+                            2000,
+                            20,
+                            "Scrollable state updates after layout");
+                })
+                .finallyDo(fixture::remove);
+    }
+
     public void testNamedUtilityContainersAndSelectorMembership() {
         equal("rgb(10, 120, 30)", css("utility-query", "color"));
         equal("rgb(40, 50, 60)", css("utility-query-second", "color"));

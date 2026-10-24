@@ -107,6 +107,19 @@ public final class CssLivenessIntegrationTest {
     }
 
     @Test
+    public void nativeConditionsCompressOwnedNamesWithoutRetainingSetup() throws Exception {
+        String optimized = input("optimized");
+        String container = compiled("NativeUtilityLibrary", "CONTAINER", "card");
+        String property = compiled("NativeUtilityLibrary", "PROPERTY", "density");
+        assertTrue(optimized.contains("@container " + container + " (0px <= inline-size < 30rem)"), optimized);
+        assertTrue(optimized.contains("@container " + container + " style(" + property + ": compact)"), optimized);
+        assertTrue(optimized.contains("@starting-style"), optimized);
+        assertTrue(optimized.contains("font-weight: 650"), optimized);
+        assertFalse(optimized.contains("987px"), optimized);
+        assertFalse(input("development").contains("987px"));
+    }
+
+    @Test
     public void realLinksHandleSeparatelyCompiledInterfaceAndFacadeBindings() throws Exception {
         String optimized = input("optimized");
         String development = input("development");

@@ -9,3 +9,12 @@
   animation: external-pulse 1s, native-pulse 1s;
   color: var(--theme);
 }
+
+@utility container-setup { container: card / inline-size; width: 987px; --density: compact; }
+@utility weight { font-weight: 650; }
+@variant "cq-{v}" (v: arbitrary(<length>)) {
+  @container card (0px <= inline-size < param(v)) {
+    @container card style(--density: compact) { @slot; }
+  }
+}
+@variant starting { @starting-style { @slot; } }

@@ -272,7 +272,7 @@ final class RuleLibrary {
                         throw error("U_PARAMETER", "Media/supports conditions must be static", node.offset());
                     }
                 } else if (head.startsWith("@container ")) {
-                    // Feature and name validation belongs to the condition checker.
+                    RuleConditions.check(head.substring(11).trim(), rule.type(), node.offset());
                 } else if (head.startsWith("@starting-style")) {
                     if (!"@starting-style".equals(head)) {
                         throw error("U_STARTING_STYLE", "@starting-style takes no condition", node.offset());

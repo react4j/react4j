@@ -134,6 +134,19 @@ public final class CssSyntaxTest {
     }
 
     @Test
+    public void containerLessThanComparisonsRemainValidAfterNestedGroups() {
+        for (String condition :
+                List.of("not (width < 20px)", "(24rem <= width < 40rem)", "(width > 0px) and (width < 40rem)")) {
+            String css = "@container " + condition + " {.x{opacity:0;}}";
+            var sheet = new CssSyntax(css, 0).parse(CssSyntax.Mode.UTILITY);
+            String rendered = new CSSWriter(new CSSWriterSettings(true)).getCSSAsString(sheet);
+            assertTrue(rendered.contains(condition), rendered);
+            new CssSyntax(rendered, 0).parse(CssSyntax.Mode.PROCESSED);
+        }
+        expectThrows(CssSyntax.InvalidCss.class, () -> new CssSyntax(".x{color:red<blue;}", 0).parse(false));
+    }
+
+    @Test
     public void emptyAnonymousLayersKeepTheirIdentityWhenParsedAndRendered() {
         for (var source : List.of("@layer{}", "@layer outer{@layer{}}", "@media screen{@layer {}}")) {
             var sheet = new CssSyntax(source, 0).parse(CssSyntax.Mode.GLOBAL);

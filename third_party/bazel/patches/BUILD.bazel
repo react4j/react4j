@@ -11,6 +11,7 @@ exports_files(
         "rules_webtesting_suppress_environment_dump.patch",
         "rules_webtesting_test_execution_requirements.patch",
         "rules_webtesting_use_pure_go_binaries.patch",
+        "rules_webtesting_chrome_145.patch",
         "jsinterop_base_suppress_unusable_by_js_warnings.patch",
     ],
     visibility = ["//:__subpackages__"],

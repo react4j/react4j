@@ -91,7 +91,8 @@ public final class CssSyntax {
 
             @Override
             public void onIllegalCharacter(char character) {
-                throw new InvalidCss("Illegal CSS character", offset(stream.getEndLine(), stream.getEndColumn()));
+                throw new InvalidCss(
+                        "Illegal CSS character: " + character, offset(stream.getEndLine(), stream.getEndColumn()));
             }
         };
         var tokens = new ParserCSS30TokenManager(stream);

@@ -15,7 +15,7 @@ abstract class NativeStyles {
 
     abstract String style();
 
-    @UtilityCss("gap-137 gap-2 pulsing")
+    @UtilityCss("gap-137 gap-2 pulsing cq-[30rem]:starting:weight")
     abstract String active();
 
     @UtilityCss("gap-999")

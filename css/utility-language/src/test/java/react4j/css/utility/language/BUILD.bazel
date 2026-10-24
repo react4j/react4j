@@ -3,10 +3,12 @@ load("//third_party/java:rules.bzl", "java_testng")
 java_testng(
     name = "tests",
     srcs = [
+        "ConditionalVariantsTest.java",
         "UtilityLanguageTest.java",
         "ValueDomainsTest.java",
     ],
     test_classes = [
+        "react4j.css.utility.language.ConditionalVariantsTest",
         "react4j.css.utility.language.UtilityLanguageTest",
         "react4j.css.utility.language.ValueDomainsTest",
     ],

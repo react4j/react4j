@@ -13,6 +13,7 @@ testSuite({
   tearDown() { test.tearDown(); },
   testPackagedAssetsAtAnApplicationMountAndNestedRoute() { return test.testPackagedAssetsAtAnApplicationMountAndNestedRoute(); },
   testUtilitiesKeepLibraryOrderAndExplicitGlobalPrecedence() { return test.testUtilitiesKeepLibraryOrderAndExplicitGlobalPrecedence(); },
+  testNativeContainerStatesAndStartingTransition() { return test.testNativeContainerStatesAndStartingTransition(); },
   testNamedUtilityContainersAndSelectorMembership() { return test.testNamedUtilityContainersAndSelectorMembership(); },
   testUtilityCustomPropertyTransitionsKeepTheirTargets() { return test.testUtilityCustomPropertyTransitionsKeepTheirTargets(); },
   testUtilityMapsKeepFileInputsAndJavaSources() { return test.testUtilityMapsKeepFileInputsAndJavaSources(); },

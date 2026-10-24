@@ -119,6 +119,29 @@ public final class NativeUtilityProcessorTest {
     }
 
     @Test
+    public void conditionalVariantsBindNamesAndRejectMalformedUnusedDefinitions() throws Exception {
+        String rules = RULES + """
+            @utility setup {container:card / inline-size;--density:compact;}
+            @variant "cq-{v}" (v:arbitrary(<length>)) {
+              @container card (0px <= width < param(v)) {
+                @container card style(--density:compact) { @starting-style {@slot;} }
+              }
+            }
+            """;
+        var result = CssProcessorTest.compile(
+                Map.of("Utilities.java", library(rules), "Button.java", styles("cq-[24rem]:flex")), "demo.Button");
+        assertTrue(result.success(), result.diagnostics());
+        String fragments = text(result, "classes/demo/Button.css.fragments.json");
+        assertTrue(fragments.contains("jcss-demo-Utilities--container-card"), fragments);
+        assertTrue(fragments.contains("--jcss-demo-Utilities--density"), fragments);
+        assertTrue(fragments.contains("@starting-style"), fragments);
+        var invalid = CssProcessorTest.compile(
+                Map.of("Utilities.java", library(rules + "@variant bad {@container (width > 3%) {@slot;}}")));
+        assertFalse(invalid.success());
+        assertTrue(invalid.diagnostics().contains("U_CONTAINER_CONDITION"), invalid.diagnostics());
+    }
+
+    @Test
     public void nativeProvidersRetainExistingSymbolAccessorContracts() throws Exception {
         String rules = RULES + "@keyframes pulse { to { opacity:1; } } @utility target { & #target {color:gold;} }";
         String provider = library(rules)

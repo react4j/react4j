@@ -6,6 +6,7 @@ java_library(
         "CompoundValues.java",
         "NumericValues.java",
         "RuleBounds.java",
+        "RuleConditions.java",
         "RuleLibrary.java",
         "RuleSyntax.java",
         "RuleValues.java",
