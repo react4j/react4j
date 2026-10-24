@@ -191,7 +191,10 @@ public final class ConditionalVariantsTest {
                     UtilityLanguage.Failure.class,
                     () -> checked(RULES + "@variant \"bad-{v}\" (v:arbitrary(<length>)) { @container " + head
                             + " { @slot; } }"));
-            assertEquals(failure.diagnostic().code(), "U_CONTAINER_CONDITION", head);
+            assertEquals(
+                    failure.diagnostic().code(),
+                    head.startsWith("param") ? "U_DYNAMIC_NAME" : "U_CONTAINER_CONDITION",
+                    head);
         }
         var failure = expectThrows(
                 UtilityLanguage.Failure.class,

@@ -20,9 +20,10 @@ final class RuleLibrary {
             Pattern.compile("^\\(\\s*(" + IDENTIFIER + ")\\s*:\\s*(.*?)\\s*\\)$", Pattern.DOTALL);
     private static final Pattern SOURCE = Pattern.compile("(tokens|scale|bare|arbitrary)\\(\\s*([^()]+?)\\s*\\)");
 
-    record Tokens(String type, Map<String, String> values, int offset) {
+    record Tokens(String type, Map<String, String> values, Map<String, Integer> offsets, int offset) {
         Tokens {
             values = Collections.unmodifiableMap(new LinkedHashMap<>(values));
+            offsets = Map.copyOf(offsets);
         }
     }
 
@@ -93,6 +94,7 @@ final class RuleLibrary {
                 }
                 var type = RuleValues.type(pieces[1]);
                 var values = new LinkedHashMap<String, String>();
+                var offsets = new LinkedHashMap<String, Integer>();
                 for (var token : node.children()) {
                     var parts = RuleSyntax.split(token.head(), ':');
                     if (token.block()
@@ -100,16 +102,18 @@ final class RuleLibrary {
                             || !parts.get(0).text().matches("[a-zA-Z0-9][a-zA-Z0-9_-]*")) {
                         throw error("U_VALUE_TYPE", "Expected token-key: value;", token.offset());
                     }
+                    var previous = offsets.putIfAbsent(parts.get(0).text(), token.offset());
                     String value = parts.get(1).text();
                     checkValue(type, value, token.offset());
                     if (null != values.putIfAbsent(parts.get(0).text(), value)) {
-                        throw error(
+                        throw new RuleSyntax.Syntax(
                                 "U_AMBIGUOUS_RULE",
                                 "Duplicate token " + parts.get(0).text(),
-                                token.offset());
+                                token.offset(),
+                                List.of(Objects.requireNonNull(previous)));
                     }
                 }
-                if (null != tokens.putIfAbsent(pieces[0], new Tokens(type, values, node.offset()))) {
+                if (null != tokens.putIfAbsent(pieces[0], new Tokens(type, values, offsets, node.offset()))) {
                     throw error("U_AMBIGUOUS_RULE", "Duplicate token group " + pieces[0], node.offset());
                 }
             } else if (head.startsWith("@utility ") || head.startsWith("@variant ")) {
@@ -327,7 +331,11 @@ final class RuleLibrary {
             throw error("U_SELECTOR_GUARD", "Selector requires one positive & in its first compound", offset);
         }
         // Parsing the complete selector catches invalid combinators and function syntax.
-        new CssSyntax(RuleSyntax.guard(text, ".guard") + "{x:0;}", 0).parse(CssSyntax.Mode.UTILITY);
+        try {
+            new CssSyntax(RuleSyntax.guard(text, ".guard") + "{x:0;}", 0).parse(CssSyntax.Mode.UTILITY);
+        } catch (CssSyntax.InvalidCss e) {
+            throw error("U_SELECTOR_GUARD", String.valueOf(e.getMessage()), offset);
+        }
     }
 
     private void disjoint(Rule rule) {
@@ -435,11 +443,15 @@ final class RuleLibrary {
             resolved = new Match(
                     family, resolved.value().toLowerCase(Locale.ROOT).replaceAll("\\s+", ""), resolved.source());
         }
-        RuleBounds.check(family.type(), family.interval(), resolved.value());
+        try {
+            RuleBounds.check(family.type(), family.interval(), resolved.value());
+        } catch (RuleSyntax.Syntax e) {
+            throw error(e.code, String.valueOf(e.getMessage()), family.offset());
+        }
         return resolved;
     }
 
-    private static @Nullable Rule longest(List<Rule> rules, String candidate) {
+    static @Nullable Rule longest(List<Rule> rules, String candidate) {
         Rule result = null;
         for (var rule : rules) {
             if (rule.family()

@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: `implementing`
-- Current frontier: `T07`
+- Current frontier: `T08`
 - Planning reviewer: `implementation_plan_review` (`1/3` rounds; passed; final confirmation `unused`)
 - Plan checkpoint: `automatic` — explicit implementation authority and passing independent planning review; no human pause requested.
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -23,7 +23,7 @@
 | `T04` | [Accept broader typed values and numeric limits](T04-value-domains.md) | `complete` | T01 |
 | `T05` | [Apply container and starting-style variants](T05-conditional-variants.md) | `complete` | T03, T04 |
 | `T06` | [Deliver checked named anchors and scoped popovers](T06-named-anchors.md) | `complete` | T05 |
-| `T07` | [Expose agent authoring feedback and packaged commands](T07-authoring-tools.md) | `pending` | T06 |
+| `T07` | [Expose agent authoring feedback and packaged commands](T07-authoring-tools.md) | `complete` | T06 |
 | `T08` | [Verify and document the complete delivered contract](T08-contract-and-gate.md) | `pending` | T07 |
 
 ## Sequencing notes
@@ -32,6 +32,12 @@
 - Exact active tree: `plans/native-utility-language/`. Resolve it before every plan edit, commit and deletion. The prior design-delivery tree was closed and is not resumed.
 - Workflow owns post-task independent review, PR publication and plan cleanup. The PR is stacked on `codex/react4j-explore-tailwind-language-and`; human merge remains pending.
 - Promotion owners: accepted behavior belongs in utility/binding/naming/liveness/source-map specifications, resolved terms in the glossary, adopted JVM rule compilation rationale in the replacing ADR, and usable author reference/examples beside the tooling. Design-only claims must be reconciled with implementation.
+
+## T08 audit leads
+
+- Verify native provider/individual resource stability annotations across checked snapshots and candidate fragments; existing naming promises apply to the new provider route.
+- Verify non-HTML Unicode whitespace inside a candidate value against HTML token splitting and shared canonical-name validation.
+- Replace the stale removed `Names.java` coverage override with its current owner, and register the language root/instrumentation without reducing thresholds.
 
 ## Review history
 

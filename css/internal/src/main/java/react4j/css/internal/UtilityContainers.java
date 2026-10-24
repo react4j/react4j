@@ -29,7 +29,10 @@ final class UtilityContainers {
             public void onDeclaration(CSSDeclaration declaration) {
                 var value = CssContainers.read(declaration);
                 if (value.dynamic()) {
-                    throw syntax.invalid("Utility container names must be static identifiers", declaration);
+                    throw syntax.invalid(
+                            (allowUnused ? "U_DYNAMIC_NAME: " : "")
+                                    + "Utility container names must be static identifiers",
+                            declaration);
                 }
                 for (var term : value.names()) {
                     String name = CSSParseHelper.unescapeURL(term.getValue());

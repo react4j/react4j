@@ -184,6 +184,33 @@ public final class NativeUtilityProcessorTest {
     }
 
     @Test
+    public void candidateDiagnosticsLocateLiteralsAndConstantExpressionsAndKeepBatchPeers() throws Exception {
+        String button = IMPORTS + """
+            interface Tokens { String PREFIX="hover:"; }
+            @UtilityStyles(Utilities.class) abstract class Button {
+              @UtilityCss("text-[12px] flex") abstract String style();
+              @UtilityCss(Tokens.PREFIX+"text-[3rem] missing") abstract String bad();
+            }
+            """;
+        var result = CssProcessorTest.compile(Map.of("Utilities.java", library(RULES), "Button.java", button));
+        assertFalse(result.success());
+        String errors = result.diagnostics();
+        for (String expected : List.of(
+                "U_VALUE_TYPE",
+                "U_UNKNOWN_UTILITY",
+                "text-[12px]",
+                "hover:text-[3rem]",
+                "locationPrecision: literal",
+                "locationPrecision: expression",
+                "decodedOffset:",
+                "Defined at demo/Utilities.java:")) {
+            assertTrue(errors.contains(expected), errors);
+        }
+        assertFalse(errors.contains("Exception"), errors);
+        assertFalse(result.files().containsKey("classes/demo/Button.css.fragments.json"));
+    }
+
+    @Test
     public void nativeProvidersRetainExistingSymbolAccessorContracts() throws Exception {
         String rules = RULES + "@keyframes pulse { to { opacity:1; } } @utility target { & #target {color:gold;} }";
         String provider = library(rules)

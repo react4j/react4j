@@ -3,19 +3,23 @@ package react4j.css.utility.language;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.HexFormat;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 import react4j.css.internal.CssIdentity;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssSyntax;
@@ -45,8 +49,34 @@ public final class UtilityLanguage {
         }
 
         public String render() {
-            return origin.source() + ":" + (origin.line() + 1) + ":" + (origin.column() + 1) + ": " + code + ": "
-                    + message;
+            var text = new StringBuilder(origin.source() + ":" + (origin.line() + 1) + ":" + (origin.column() + 1)
+                    + ": " + code + ": " + message);
+            if (facts.containsKey("candidate")) {
+                text.append("\n  Candidate: ").append(facts.get("candidate"));
+            }
+            for (var entry : facts.entrySet().stream()
+                    .filter(entry -> Set.of(
+                                    "rule",
+                                    "expectedType",
+                                    "sources",
+                                    "allowedTokens",
+                                    "suggestions",
+                                    "suggestedTemplate",
+                                    "payload")
+                            .contains(entry.getKey()))
+                    .sorted(Map.Entry.comparingByKey())
+                    .toList()) {
+                text.append("\n  ").append(entry.getKey()).append(": ").append(entry.getValue());
+            }
+            for (var definition : related) {
+                text.append("\n  Defined at ")
+                        .append(definition.source())
+                        .append(":")
+                        .append(definition.line() + 1)
+                        .append(":")
+                        .append(definition.column() + 1);
+            }
+            return text.toString();
         }
     }
 
@@ -83,17 +113,31 @@ public final class UtilityLanguage {
         }
     }
 
-    public record Description(String name, String parameterType, List<String> sources, String interval, Origin origin) {
+    public record Description(
+            String name, String parameterType, List<String> sources, String interval, String template, Origin origin) {
         public Description {
             sources = List.copyOf(sources);
+        }
+    }
+
+    public record TokenGroup(String name, String type, Map<String, String> values, Map<String, Origin> origins) {
+        public TokenGroup {
+            values = Collections.unmodifiableMap(new LinkedHashMap<>(values));
+            origins = Map.copyOf(origins);
         }
     }
 
     public record BoundCheck(String interval, String value, String status) {}
 
     public record Trace(
-            String rule, String argument, String resolvedValue, Origin definition, List<BoundCheck> checks) {
+            String rule,
+            String argument,
+            String resolvedValue,
+            Origin definition,
+            List<Origin> related,
+            List<BoundCheck> checks) {
         public Trace {
+            related = List.copyOf(related);
             checks = List.copyOf(checks);
         }
     }
@@ -131,6 +175,26 @@ public final class UtilityLanguage {
 
         public String json() {
             return envelope("prepared", rules.source).toString();
+        }
+
+        public Map<String, String> scales() {
+            return Collections.unmodifiableMap(rules.scales);
+        }
+
+        public List<TokenGroup> tokens() {
+            return rules.tokens.entrySet().stream()
+                    .map(entry -> {
+                        var origins = new LinkedHashMap<String, Origin>();
+                        entry.getValue()
+                                .offsets()
+                                .forEach((key, offset) -> origins.put(key, origin(rules.source, offset)));
+                        return new TokenGroup(
+                                entry.getKey(),
+                                entry.getValue().type(),
+                                entry.getValue().values(),
+                                origins);
+                    })
+                    .toList();
         }
 
         public List<Description> utilities() {
@@ -230,8 +294,13 @@ public final class UtilityLanguage {
     }
 
     public static Prepared readPrepared(String json) {
-        var value = descriptor(json, "prepared");
-        return prepare(readSource(value));
+        try {
+            return prepare(readSource(descriptor(json, "prepared")));
+        } catch (Failure e) {
+            throw e;
+        } catch (RuntimeException e) {
+            throw invalidDescriptor(e);
+        }
     }
 
     public static Checked bind(Prepared prepared, String owner, Bindings bindings) {
@@ -239,8 +308,8 @@ public final class UtilityLanguage {
             throw new IllegalArgumentException("Provider owner is required");
         }
         var rules = prepared.rules;
+        var output = bindingOutput(prepared);
         try {
-            var output = bindingOutput(prepared);
             RuleAnchors.check(output.css(), bindings.context().externalAnchors());
             int boundary = supportCss(prepared).length();
             var result = CssUtilityBinding.compile(
@@ -270,12 +339,24 @@ public final class UtilityLanguage {
             return checked;
         } catch (RuleSyntax.Syntax e) {
             throw failure(rules.source, e.code, String.valueOf(e.getMessage()), e.offset);
+        } catch (CssSyntax.InvalidCss e) {
+            throw mappedFailure(rules.source, output, e);
         } catch (IllegalArgumentException e) {
             throw bindingFailure(rules.source, e);
         }
     }
 
     public static Checked readChecked(String json) {
+        try {
+            return checkedDescriptor(json);
+        } catch (Failure e) {
+            throw e;
+        } catch (RuntimeException e) {
+            throw invalidDescriptor(e);
+        }
+    }
+
+    private static Checked checkedDescriptor(String json) {
         var value = descriptor(json, "checked");
         var classes = new HashSet<String>();
         value.getAsJsonArray("externalClasses").forEach(item -> classes.add(item.getAsString()));
@@ -311,6 +392,8 @@ public final class UtilityLanguage {
                             "U_IMPORTANT", "Important utility modifiers are unsupported", candidate.indexOf('!'));
                 }
                 output.add(expansion(checked, candidate));
+            } catch (Failure e) {
+                problems.add(e.diagnostic());
             } catch (RuleSyntax.Syntax e) {
                 var related = origin(
                         checked.prepared.source(),
@@ -318,8 +401,10 @@ public final class UtilityLanguage {
                 problems.add(new Diagnostic(
                         e.code,
                         String.valueOf(e.getMessage()),
-                        origin(new Source("<candidate>", candidate), 0),
-                        List.of(related),
+                        origin(
+                                new Source("<candidate>", candidate),
+                                Math.max(0, Math.min(e.offset, candidate.length()))),
+                        e.offset > candidate.length() ? List.of(related) : List.of(),
                         Map.of("candidate", candidate, "provider", checked.owner)));
             } catch (CssSyntax.InvalidCss e) {
                 problems.add(new Diagnostic(
@@ -340,22 +425,7 @@ public final class UtilityLanguage {
     }
 
     private static SourceMap.Writer validationOutput(Prepared prepared) {
-        var writer = new SourceMap.Writer();
-        raw(prepared.rules, prepared.rules.support, writer);
-        for (var rule : prepared.rules.utilities) {
-            render(
-                    prepared.rules,
-                    substitute(rule.body(), rule.parameter(), RuleLibrary.sample(rule.type())),
-                    ".probe",
-                    writer);
-        }
-        for (var rule : prepared.rules.variants) {
-            var body = slot(
-                    substitute(rule.body(), rule.parameter(), RuleLibrary.sample(rule.type())),
-                    List.of(new RuleSyntax.Node("x: 0", List.of(), rule.offset(), false)));
-            render(prepared.rules, body, ".probe", writer);
-        }
-        return writer;
+        return prototypes(prepared, false);
     }
 
     private static String probeProperty(Prepared prepared) {
@@ -380,30 +450,48 @@ public final class UtilityLanguage {
     }
 
     private static SourceMap.Writer bindingOutput(Prepared prepared) {
+        return prototypes(prepared, true);
+    }
+
+    private static SourceMap.Writer prototypes(Prepared prepared, boolean binding) {
         var writer = new SourceMap.Writer();
         var rules = prepared.rules;
         raw(rules, rules.support, writer);
         for (boolean variant : List.of(false, true)) {
             for (var rule : variant ? rules.variants : rules.utilities) {
-                var body = browserHoles(prepared, rule, rule.body());
+                var body = binding
+                        ? browserHoles(prepared, rule, rule.body())
+                        : substitute(rule.body(), rule.parameter(), RuleLibrary.sample(rule.type()));
                 probeBody(rules, rule, body, variant, writer);
-                // Named tokens are finite declarations: validate every use, including unused tokens.
                 for (var argument : rule.arguments()) {
                     if ("tokens".equals(argument.kind())) {
-                        for (var value : Objects.requireNonNull(rules.tokens.get(argument.name()))
-                                .values()
-                                .values()) {
+                        var group = Objects.requireNonNull(rules.tokens.get(argument.name()));
+                        for (var token : group.values().entrySet()) {
                             String resolved = "an+b".equals(rule.type())
-                                    ? value.toLowerCase(Locale.ROOT).replaceAll("\\s+", "")
-                                    : value;
+                                    ? token.getValue().toLowerCase(Locale.ROOT).replaceAll("\\s+", "")
+                                    : token.getValue();
+                            var resolvedBody = substitute(rule.body(), rule.parameter(), resolved);
                             probeBody(
-                                    rules, rule, substitute(rule.body(), rule.parameter(), resolved), variant, writer);
+                                    rules,
+                                    rule,
+                                    at(
+                                            resolvedBody,
+                                            Objects.requireNonNull(
+                                                    group.offsets().get(token.getKey()))),
+                                    variant,
+                                    writer);
                         }
                     }
                 }
             }
         }
         return writer;
+    }
+
+    private static List<RuleSyntax.Node> at(List<RuleSyntax.Node> nodes, int offset) {
+        return nodes.stream()
+                .map(node -> new RuleSyntax.Node(node.head(), at(node.children(), offset), offset, node.block()))
+                .toList();
     }
 
     private static List<RuleSyntax.Node> browserHoles(
@@ -452,8 +540,8 @@ public final class UtilityLanguage {
         if (pieces.stream().anyMatch(part -> part.text().isEmpty())) {
             throw RuleLibrary.error("U_CANDIDATE_SYNTAX", "Empty candidate segment", 0);
         }
-        var utility = rules.match(rules.utilities, pieces.get(pieces.size() - 1).text(), false);
-        var body = substitute(utility.rule().body(), utility.rule().parameter(), utility.value());
+        var utility = match(checked, candidate, pieces.get(pieces.size() - 1), false);
+        var body = resolvedBody(checked, candidate, pieces.get(pieces.size() - 1), utility, false);
         var trace = new ArrayList<Trace>();
         trace.add(trace(rules, utility));
         var ranks = new ArrayList<String>();
@@ -461,15 +549,19 @@ public final class UtilityLanguage {
             String piece = pieces.get(i).text();
             if (piece.startsWith("[") && piece.endsWith("]")) {
                 String selector = RuleSyntax.decode(piece.substring(1, piece.length() - 1));
-                RuleLibrary.selector(selector, pieces.get(i).offset());
-                hooks(checked, RuleSyntax.guard(selector, ":root") + " {x:0;}", "");
+                try {
+                    RuleLibrary.selector(selector, pieces.get(i).offset());
+                    hooks(checked, RuleSyntax.guard(selector, ":root") + " {x:0;}", "");
+                } catch (RuleSyntax.Syntax e) {
+                    throw candidateFailure(checked, candidate, pieces.get(i), e, null, true);
+                }
                 body = List.of(
                         new RuleSyntax.Node(selector, body, utility.rule().offset(), true));
                 ranks.add(0, rank(rules.variants.size()) + ":" + spellingKey(selector) + "\u0000");
             } else {
-                var variant = rules.match(rules.variants, piece, true);
-                body = slot(substitute(variant.rule().body(), variant.rule().parameter(), variant.value()), body);
-                trace.add(trace(rules, variant));
+                var variant = match(checked, candidate, pieces.get(i), true);
+                body = slot(resolvedBody(checked, candidate, pieces.get(i), variant, true), body);
+                trace.add(0, trace(rules, variant));
                 ranks.add(0, rank(variant.rule().rank()));
             }
         }
@@ -495,10 +587,16 @@ public final class UtilityLanguage {
             fragment = resolved.project(resolved.boundary(), resolved.css().length());
         } catch (IllegalArgumentException e) {
             var failure = bindingFailure(rules.source, e);
-            throw RuleLibrary.error(
-                    failure.diagnostic().code(),
-                    failure.diagnostic().message(),
-                    utility.rule().offset());
+            throw candidateFailure(
+                    checked,
+                    candidate,
+                    pieces.get(pieces.size() - 1),
+                    RuleLibrary.error(
+                            failure.diagnostic().code(),
+                            failure.diagnostic().message(),
+                            utility.rule().offset()),
+                    utility.rule(),
+                    false);
         }
         String order = rank(pieces.size() - 1)
                 + String.join("", ranks)
@@ -512,6 +610,151 @@ public final class UtilityLanguage {
                 fragment.sourceMap(),
                 trace,
                 fragment.metadata().withFingerprint(checked.fingerprint()));
+    }
+
+    private static List<RuleSyntax.Node> resolvedBody(
+            Checked checked, String candidate, RuleSyntax.Part part, RuleLibrary.Match match, boolean variant) {
+        var body = substitute(match.rule().body(), match.rule().parameter(), match.value());
+        try {
+            conditions(body);
+        } catch (RuleSyntax.Syntax e) {
+            throw candidateFailure(checked, candidate, part, e, match.rule(), variant);
+        }
+        return body;
+    }
+
+    private static void conditions(List<RuleSyntax.Node> nodes) {
+        for (var node : nodes) {
+            if (node.head().startsWith("@container ")) {
+                RuleConditions.check(node.head().substring(11).trim(), "", node.offset());
+            }
+            conditions(node.children());
+        }
+    }
+
+    private static RuleLibrary.Match match(Checked checked, String candidate, RuleSyntax.Part part, boolean variant) {
+        var rules = checked.prepared.rules;
+        var definitions = variant ? rules.variants : rules.utilities;
+        try {
+            return rules.match(definitions, part.text(), variant);
+        } catch (RuleSyntax.Syntax e) {
+            throw candidateFailure(checked, candidate, part, e, RuleLibrary.longest(definitions, part.text()), variant);
+        }
+    }
+
+    private static Failure candidateFailure(
+            Checked checked,
+            String candidate,
+            RuleSyntax.Part part,
+            RuleSyntax.Syntax error,
+            RuleLibrary.@Nullable Rule rule,
+            boolean variant) {
+        var facts = new LinkedHashMap<String, String>();
+        facts.put("candidate", candidate);
+        facts.put("provider", checked.owner);
+        facts.put("requestOffset", String.valueOf(part.offset()));
+        int first = part.offset();
+        int end = Math.min(candidate.length(), first + part.text().length());
+        var related = new ArrayList<Origin>();
+        if (null != rule) {
+            facts.put("rule", rule.name());
+            facts.put("expectedType", "<" + rule.type() + ">");
+            facts.put(
+                    "sources",
+                    rule.arguments().stream()
+                            .map(argument -> argument.kind() + "(" + argument.name() + ")")
+                            .collect(Collectors.joining(" | ")));
+            facts.put("interval", rule.interval());
+            related.add(origin(checked.prepared.source(), rule.offset()));
+            first += rule.prefix().length();
+            String payload = part.text().substring(rule.prefix().length());
+            if (payload.startsWith("[") && payload.endsWith("]")) {
+                first++;
+                end--;
+                payload = RuleSyntax.decode(payload.substring(1, payload.length() - 1));
+            }
+            facts.put("payload", payload);
+            var keys = rule.arguments().stream()
+                    .filter(argument -> "tokens".equals(argument.kind()))
+                    .flatMap(
+                            argument -> Objects.requireNonNull(checked.prepared.rules.tokens.get(argument.name()))
+                                    .values()
+                                    .keySet()
+                                    .stream())
+                    .toList();
+            if (!keys.isEmpty()) {
+                facts.put("allowedTokens", String.join(", ", keys));
+            }
+        } else if (part.text().startsWith("[") && part.text().endsWith("]")) {
+            first++;
+            end--;
+            facts.put(
+                    "payload",
+                    RuleSyntax.decode(part.text().substring(1, part.text().length() - 1)));
+        } else {
+            var definitions = variant ? checked.prepared.rules.variants : checked.prepared.rules.utilities;
+            var suggestions = definitions.stream()
+                    .filter(definition ->
+                            distance(part.text(), definition.family() ? definition.prefix() : definition.name()) <= 2)
+                    .sorted(Comparator.comparingInt(definition ->
+                            distance(part.text(), definition.family() ? definition.prefix() : definition.name())))
+                    .limit(3)
+                    .toList();
+            if (!suggestions.isEmpty()) {
+                facts.put(
+                        "suggestions",
+                        suggestions.stream().map(RuleLibrary.Rule::name).collect(Collectors.joining(", ")));
+                facts.put("suggestedTemplate", template(checked.prepared.rules, suggestions.get(0)));
+            }
+        }
+        facts.put("payloadOffset", String.valueOf(first));
+        facts.put("payloadEnd", String.valueOf(end));
+        var point = origin(new Source("<candidate>", candidate), first);
+        return new Failure(new Diagnostic(
+                error.code,
+                String.valueOf(error.getMessage()),
+                new Origin(point.source(), point.start(), Math.max(point.start(), end), point.line(), point.column()),
+                related,
+                facts));
+    }
+
+    private static int distance(String left, String right) {
+        if (Math.abs(left.length() - right.length()) > 2) {
+            return 3;
+        }
+        int[] previous = new int[right.length() + 1];
+        for (int j = 0; j < previous.length; j++) {
+            previous[j] = j;
+        }
+        for (int i = 1; i <= left.length(); i++) {
+            int[] next = new int[previous.length];
+            next[0] = i;
+            for (int j = 1; j < next.length; j++) {
+                next[j] = Math.min(
+                        Math.min(next[j - 1] + 1, previous[j] + 1),
+                        previous[j - 1] + (left.charAt(i - 1) == right.charAt(j - 1) ? 0 : 1));
+            }
+            previous = next;
+        }
+        return previous[right.length()];
+    }
+
+    private static List<Origin> tokenOrigins(RuleLibrary rules, RuleLibrary.Match match) {
+        if (!match.source().startsWith("token:")) {
+            return List.of();
+        }
+        String[] parts = match.source().split(":");
+        return List.of(origin(
+                rules.source,
+                Objects.requireNonNull(Objects.requireNonNull(rules.tokens.get(parts[1]))
+                        .offsets()
+                        .get(parts[2]))));
+    }
+
+    private static String template(RuleLibrary rules, RuleLibrary.Rule rule) {
+        var writer = new SourceMap.Writer();
+        raw(rules, rule.body(), writer);
+        return writer.css();
     }
 
     private static String spellingKey(String text) {
@@ -530,6 +773,7 @@ public final class UtilityLanguage {
                 match.source(),
                 match.value(),
                 origin(rules.source, match.rule().offset()),
+                tokenOrigins(rules, match),
                 RuleBounds.check(match.rule().type(), match.rule().interval(), match.value()));
     }
 
@@ -592,8 +836,12 @@ public final class UtilityLanguage {
     }
 
     private static void validateTemplates(Prepared prepared) {
-        var css = validationCss(prepared);
-        RuleAnchors.check(css, Set.of());
+        var writer = validationOutput(prepared);
+        try {
+            RuleAnchors.check(writer.css(), Set.of());
+        } catch (CssSyntax.InvalidCss e) {
+            throw mappedFailure(prepared.source(), writer, e);
+        }
     }
 
     private static String probe(RuleLibrary rules, RuleLibrary.Rule rule, boolean variant) {
@@ -635,6 +883,7 @@ public final class UtilityLanguage {
                                 .map(argument -> argument.kind() + "(" + argument.name() + ")")
                                 .toList(),
                         rule.interval(),
+                        template(rules, rule),
                         origin(rules.source, rule.offset())))
                 .toList();
     }
@@ -668,6 +917,29 @@ public final class UtilityLanguage {
                 value.get("sourceMap").getAsString());
     }
 
+    private static Failure mappedFailure(Source source, SourceMap.Writer writer, CssSyntax.InvalidCss error) {
+        var location = SourceMap.location(
+                writer.css(),
+                JsonParser.parseString(writer.map("utility.css")).getAsJsonObject(),
+                Math.min(writer.css().length(), error.offset()));
+        var failure = bindingFailure(source, error);
+        if (null == location) {
+            return failure;
+        }
+        int offset = originalOffset(location);
+        return new Failure(new Diagnostic(
+                failure.diagnostic().code(),
+                failure.diagnostic().message(),
+                new Origin(
+                        location.source(),
+                        offset,
+                        Math.min(offset + 1, location.content().length()),
+                        location.line(),
+                        location.column()),
+                List.of(),
+                Map.of()));
+    }
+
     private static Failure bindingFailure(Source source, IllegalArgumentException error) {
         String message = String.valueOf(error.getMessage());
         String code = message.startsWith("U_") && message.contains(":")
@@ -675,16 +947,76 @@ public final class UtilityLanguage {
                 : message.contains("asset") || message.contains("URL")
                         ? "U_ASSET_REFERENCE"
                         : message.contains("container") ? "U_CONTAINER_NAME" : "U_BINDING";
+        if (message.startsWith(code + ":")) {
+            message = message.substring(code.length() + 1).stripLeading();
+        }
         return failure(source, code, message, 0);
     }
 
     private static JsonObject descriptor(String json, String kind) {
         var value = JsonParser.parseString(json).getAsJsonObject();
-        if (VERSION != value.get("version").getAsInt()
-                || !kind.equals(value.get("kind").getAsString())) {
-            throw new IllegalArgumentException("Unsupported utility language descriptor version or kind");
+        var version = value.get("version");
+        if (null == version
+                || !version.isJsonPrimitive()
+                || !version.getAsJsonPrimitive().isNumber()
+                || 0 != version.getAsBigDecimal().compareTo(BigDecimal.valueOf(VERSION))) {
+            throw new IllegalArgumentException("Unsupported utility language descriptor version");
+        }
+        for (String field : List.of("kind", "source", "text", "sourceMap")) {
+            stringField(value, field);
+        }
+        if (!kind.equals(value.get("kind").getAsString())) {
+            throw new IllegalArgumentException("Unsupported utility language descriptor kind; expected " + kind);
+        }
+        if ("checked".equals(kind)) {
+            stringField(value, "owner");
+            for (String field : List.of("externalClasses", "exportedIds", "exportedAnimations")) {
+                arrayField(value, field);
+            }
+            var bindings = value.get("bindings");
+            if (null == bindings || !bindings.isJsonObject()) {
+                throw new IllegalArgumentException("Missing bindings object");
+            }
+            var context = bindings.getAsJsonObject();
+            for (String field : List.of(
+                    "externalProperties",
+                    "externalAnimations",
+                    "externalFonts",
+                    "externalContainers",
+                    "externalAnchors",
+                    "includes")) {
+                arrayField(context, field);
+            }
+            for (String field : List.of("imports", "properties", "ids", "assets", "fonts")) {
+                if (!context.has(field) || !context.get(field).isJsonObject()) {
+                    throw new IllegalArgumentException("Expected binding object " + field);
+                }
+            }
         }
         return value;
+    }
+
+    private static void stringField(JsonObject value, String field) {
+        if (!value.has(field)
+                || !value.get(field).isJsonPrimitive()
+                || !value.get(field).getAsJsonPrimitive().isString()) {
+            throw new IllegalArgumentException("Expected string field " + field);
+        }
+    }
+
+    private static void arrayField(JsonObject value, String field) {
+        if (!value.has(field)
+                || !value.get(field).isJsonArray()
+                || value.getAsJsonArray(field).asList().stream()
+                        .anyMatch(item -> !item.isJsonPrimitive()
+                                || !item.getAsJsonPrimitive().isString())) {
+            throw new IllegalArgumentException("Expected string array " + field);
+        }
+    }
+
+    private static IllegalArgumentException invalidDescriptor(RuntimeException error) {
+        return new IllegalArgumentException(
+                "Invalid utility language descriptor: " + String.valueOf(error.getMessage()), error);
     }
 
     private static String digest(String value) {
@@ -708,11 +1040,20 @@ public final class UtilityLanguage {
     private static Origin origin(Source source, int offset) {
         var location = location(source, offset);
         return new Origin(
-                source.name(),
-                offset,
-                Math.min(offset + 1, source.text().length()),
+                location.source(),
+                originalOffset(location),
+                Math.min(originalOffset(location) + 1, location.content().length()),
                 location.line(),
                 location.column());
+    }
+
+    private static int originalOffset(SourceMap.Location location) {
+        int start = 0;
+        for (int line = 0; line < location.line() && start < location.content().length(); line++) {
+            int next = location.content().indexOf('\n', start);
+            start = next < 0 ? location.content().length() : next + 1;
+        }
+        return Math.min(location.content().length(), start + location.column());
     }
 
     private static SourceMap.Location location(Source source, int offset) {

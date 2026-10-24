@@ -96,7 +96,12 @@ public final class CssUrls {
         var sheet = syntax.parse(CssSyntax.Mode.PROCESSED);
         var edits = new ArrayList<SourceMap.Edit>();
         visit(sheet, reference -> {
-            String value = resolve.apply(reference.value());
+            String value;
+            try {
+                value = resolve.apply(reference.value());
+            } catch (IllegalArgumentException e) {
+                throw syntax.invalid(String.valueOf(e.getMessage()), reference.node());
+            }
             if (!value.equals(reference.value())) {
                 var location = Objects.requireNonNull(reference.node().getSourceLocation());
                 edits.add(new SourceMap.Edit(

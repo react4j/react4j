@@ -20,11 +20,23 @@ final class RuleConditions {
     static void check(String text, String type, int offset) {
         try {
             var parts = RuleSyntax.components(text);
+            if (!parts.isEmpty()) {
+                var first = RuleSyntax.function(parts.get(0));
+                if (null != first && "param".equals(first.name())) {
+                    throw RuleLibrary.error(
+                            "U_DYNAMIC_NAME", "Container names and whole conditions cannot be parameterized", offset);
+                }
+            }
             if (!parts.isEmpty() && identifier(parts.get(0)) && !"not".equalsIgnoreCase(parts.get(0))) {
                 CssContainers.checkName(parts.get(0));
                 text = text.substring(parts.get(0).length()).trim();
             }
             expression(text, Kind.SIZE, type, false);
+        } catch (RuleSyntax.Syntax e) {
+            if ("U_DYNAMIC_NAME".equals(e.code)) {
+                throw e;
+            }
+            throw RuleLibrary.error("U_CONTAINER_CONDITION", String.valueOf(e.getMessage()), offset);
         } catch (IllegalArgumentException e) {
             throw RuleLibrary.error("U_CONTAINER_CONDITION", String.valueOf(e.getMessage()), offset);
         }

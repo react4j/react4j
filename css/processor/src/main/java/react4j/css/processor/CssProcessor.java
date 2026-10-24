@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.IntFunction;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -182,6 +183,9 @@ public final class CssProcessor extends AbstractStandardProcessor {
             return;
         }
         var utilities = utilitySelection(owner, descriptor);
+        if (null == utilities && null != annotation(owner, "react4j.css.UtilityStyles")) {
+            return;
+        }
         var compiled = compileCss(owner, kind, descriptor, imports);
         if (null == compiled) {
             return;
@@ -645,7 +649,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
 
     private record Utilities(String owner, Map<String, String> classes) {}
 
-    private @Nullable Utilities utilitySelection(TypeElement owner, @Nullable CssDescriptor descriptor) {
+    private @Nullable Utilities utilitySelection(TypeElement owner, @Nullable CssDescriptor descriptor)
+            throws IOException {
         var selected = annotation(owner, "react4j.css.UtilityStyles");
         if (null == selected) {
             return null;
@@ -669,9 +674,21 @@ public final class CssProcessor extends AbstractStandardProcessor {
                     .toList();
             var batch = UtilityLanguage.expand(nativeLibrary(provider), candidates);
             if (!batch.diagnostics().isEmpty()) {
-                throw new IllegalArgumentException(batch.diagnostics().stream()
-                        .map(UtilityLanguage.Diagnostic::render)
-                        .collect(Collectors.joining("\n")));
+                var methods = CssMethods.collect(processingEnv, owner);
+                for (var diagnostic : batch.diagnostics()) {
+                    String candidate = Objects.requireNonNull(diagnostic.facts().get("candidate"));
+                    for (var accessor : descriptor.accessors()) {
+                        if (accessor.utilities().contains(candidate)) {
+                            var declaration = methods.stream()
+                                    .filter(method -> method.element().equals(accessor.method()))
+                                    .findFirst()
+                                    .orElseThrow()
+                                    .declaration();
+                            reportCandidate(declaration, diagnostic);
+                        }
+                    }
+                }
+                return null;
             }
             var fragments = batch.expansions().stream()
                     .map(expansion -> new CssFragments.Fragment(
@@ -825,6 +842,68 @@ public final class CssProcessor extends AbstractStandardProcessor {
             }
             return checked;
         });
+    }
+
+    private void reportCandidate(ExecutableElement declaration, UtilityLanguage.Diagnostic diagnostic)
+            throws IOException {
+        var trees = Trees.instance(processingEnv);
+        var annotation = annotation(declaration, "react4j.css.UtilityCss");
+        var path = trees.getPath(declaration);
+        if (null == annotation || null == path) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, diagnostic.render(), declaration);
+            return;
+        }
+        var value = value(annotation, "value");
+        var expression = trees.getTree(declaration, annotation, value);
+        var unit = path.getCompilationUnit();
+        if (null == expression) {
+            processingEnv
+                    .getMessager()
+                    .printMessage(Diagnostic.Kind.ERROR, diagnostic.render(), declaration, annotation, value);
+            return;
+        }
+        String source = unit.getSourceFile().getCharContent(true).toString();
+        int start = (int) trees.getSourcePositions().getStartPosition(unit, expression);
+        int end = (int) trees.getSourcePositions().getEndPosition(unit, expression);
+        var decoded = (String) value.getValue();
+        var tokens = Pattern.compile("[^ \t\n\r\f]+").matcher(decoded);
+        int at = 0;
+        while (tokens.find()) {
+            if (tokens.group().equals(diagnostic.facts().get("candidate"))) {
+                at = tokens.start();
+                break;
+            }
+        }
+        int decodedStart = at + diagnostic.origin().start();
+        int decodedEnd = at + diagnostic.origin().end();
+        var facts = new LinkedHashMap<>(diagnostic.facts());
+        facts.put("decodedOffset", String.valueOf(decodedStart));
+        facts.put("decodedEnd", String.valueOf(decodedEnd));
+        facts.put("locationPrecision", "expression");
+        if (expression instanceof LiteralTree) {
+            try {
+                var literal = TextBlock.literal(source.substring(start, end), start, decoded);
+                start = literal.offsets()[Math.min(decodedStart, decoded.length())];
+                end = literal.offsets()[Math.min(decodedEnd, decoded.length())];
+                facts.put("locationPrecision", "literal");
+            } catch (IllegalArgumentException e) {
+                // javac may fold a constant concatenation to a literal tree; its expression span is honest.
+            }
+        }
+        int line = (int) unit.getLineMap().getLineNumber(start) - 1;
+        int column = (int) unit.getLineMap().getColumnNumber(start) - 1;
+        var located = new UtilityLanguage.Diagnostic(
+                diagnostic.code(),
+                diagnostic.message(),
+                new UtilityLanguage.Origin(unit.getSourceFile().getName(), start, end, line, column),
+                diagnostic.related(),
+                facts);
+        trees.printMessage(
+                Diagnostic.Kind.ERROR,
+                located.render() + "\n  decodedOffset: " + decodedStart + "; locationPrecision: "
+                        + facts.get("locationPrecision"),
+                expression,
+                unit);
     }
 
     private @Nullable String classpathResource(String path) {

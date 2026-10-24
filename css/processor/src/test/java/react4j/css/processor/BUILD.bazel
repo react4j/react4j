@@ -162,6 +162,7 @@ test_suite(
     name = "unit_tests",
     tests = [
         ":asset_font_tests",
+        ":authoring_tests",
         ":compiler_tests",
         ":ids_tests",
         ":input_jar_tests",
@@ -213,4 +214,15 @@ java_testng(
     srcs = ["CssInputJarTest.java"],
     test_class = "react4j.css.processor.CssInputJarTest",
     deps = ["//css/processor/src/main/java/react4j/css/processor"],
+)
+
+java_testng(
+    name = "authoring_tests",
+    srcs = ["UtilityRulesTest.java"],
+    test_class = "react4j.css.processor.UtilityRulesTest",
+    deps = [
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//css/utility-language/src/main/java/react4j/css/utility/language",
+        "//third_party:gson",
+    ],
 )

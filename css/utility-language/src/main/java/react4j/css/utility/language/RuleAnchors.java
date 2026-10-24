@@ -191,10 +191,14 @@ final class RuleAnchors {
                                 && (!"anchor-size".equals(function.name())
                                         || !SIZES.contains(property) && !MARGINS.contains(property))) {
                             throw syntax.invalid(
-                                    "U_ANCHOR_CONTEXT: " + function.name() + "() cannot be used in " + property,
+                                    "U_VALUE_CONTEXT: " + function.name() + "() cannot be used in " + property,
                                     declaration);
                         }
-                        function(function);
+                        try {
+                            function(function);
+                        } catch (RuleSyntax.Syntax e) {
+                            throw syntax.invalid(e.code + ": " + e.getMessage(), declaration);
+                        }
                     }
                 }
                 if (property.startsWith("--") || "initial-value".equals(property)) {

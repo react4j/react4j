@@ -12,6 +12,7 @@ java_library(
         "CssMethods.java",
         "CssProcessor.java",
         "TextBlock.java",
+        "UtilityRules.java",
         "package-info.java",
     ],
     resource_strip_prefix = "css/processor/src/main/resources",
@@ -35,5 +36,12 @@ java_binary(
     name = "css_inputs",
     main_class = "react4j.css.processor.CssInputJar",
     visibility = ["//css:__pkg__"],
+    runtime_deps = [":processor"],
+)
+
+java_binary(
+    name = "utility_rules",
+    main_class = "react4j.css.processor.UtilityRules",
+    visibility = ["//:__subpackages__"],
     runtime_deps = [":processor"],
 )

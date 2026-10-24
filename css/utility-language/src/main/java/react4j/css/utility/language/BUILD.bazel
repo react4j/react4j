@@ -17,6 +17,7 @@ java_library(
     visibility = [
         "//:__pkg__",
         "//css/processor/src/main/java/react4j/css/processor:__pkg__",
+        "//css/processor/src/test/java/react4j/css/processor:__pkg__",
         "//css/utility-language/src/test/java/react4j/css/utility/language:__pkg__",
     ],
     deps = [

@@ -4,11 +4,13 @@ java_testng(
     name = "tests",
     srcs = [
         "AnchorValuesTest.java",
+        "AuthoringFeedbackTest.java",
         "ConditionalVariantsTest.java",
         "UtilityLanguageTest.java",
         "ValueDomainsTest.java",
     ],
     test_classes = [
+        "react4j.css.utility.language.AuthoringFeedbackTest",
         "react4j.css.utility.language.AnchorValuesTest",
         "react4j.css.utility.language.ConditionalVariantsTest",
         "react4j.css.utility.language.UtilityLanguageTest",
