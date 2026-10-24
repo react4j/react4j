@@ -18,7 +18,7 @@ To run the same application from a repository checkout:
 tools/examples.sh serve native-utilities development
 ```
 
-Open `http://localhost:3000`. Use `production` instead of `development` to try optimized output with compressed CSS names and unused styles removed. The [example source](https://github.com/react4j/react4j/tree/master/examples/native-utilities) contains the application, rule library and browser tests. Build prerequisites are in [project setup](project_setup.md).
+Open `http://127.0.0.1:3000`. Use `production` instead of `development` to try optimized output with compressed CSS names and unused styles removed. The [example source](https://github.com/react4j/react4j/tree/master/examples/native-utilities) contains the application, rule library and browser tests. Build prerequisites are in [project setup](project_setup.md).
 
 ## Select a provider and use its methods
 

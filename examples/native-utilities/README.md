@@ -6,7 +6,7 @@ From the repository root:
 tools/examples.sh serve native-utilities development
 ```
 
-Open [localhost:3000](http://localhost:3000). Resize the container, change the saved
+Open [127.0.0.1:3000](http://127.0.0.1:3000). Resize the container, change the saved
 state, and open both Details popovers. Use `production` instead of `development`
 for optimized JavaScript and CSS with compressed names.
 

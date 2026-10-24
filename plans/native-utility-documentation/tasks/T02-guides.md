@@ -33,3 +33,5 @@ Consumer-first website guidance, a linked agent/rule-author learning path and pr
 - `tools/check.sh`: exit 0, “All React4j checks passed.” Includes formatter/buildifier, both hermeticity modes, compilation/release archives, JVM/browser tests, optimized browser tests, enforced JVM/runtime coverage, site build/check and unsigned release validation. Terminal evidence (trailing whitespace removed): `../full-gate.log`.
 - Added one exact existing-policy loopback exception for the new browser TestRunner after the first hermeticity check identified the omitted registration. Baseline remains zero violations; filesystem sandboxing remains enabled.
 - No compiler behavior or public API changed. Independent implementation review and plan deletion remain post-task workflow gates in TASKMAP.
+
+Preview instructions name `127.0.0.1:3000`, the actual bound/verified endpoint; this machine has a distinct IPv6 localhost service. No shared preview configuration changed.
