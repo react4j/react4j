@@ -1,17 +1,17 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `implementation-review`
-- Current frontier: independent implementation review
+- Status: `reviewed`
+- Current frontier: closeout and implementation PR publication
 - Planning reviewer: `implementation_plan_review` (`1/3` rounds; passed; final confirmation `unused`)
 - Plan checkpoint: `automatic` — explicit implementation authority and passing independent planning review; no human pause requested.
-- Implementation reviewer: `native_implementation_review` (`2/5` rounds; changes required; final confirmation `unused`)
+- Implementation reviewer: `native_implementation_review` (`3/5` rounds; passed; final confirmation `unused`)
 - Authority: explicit user implementation authorization lifting design-only; JVM-only and separate package remain mandatory.
 
 ## Full-scope validation
 
 - Gate: task tests; development/optimized browser scenarios; `tools/check.sh`; domain-link validation; complete diff and package/dependency audit.
-- Evidence: pre-review `165ef456a` passed `tools/check.sh` twice, and round-1 fix `b8959d918` passed its complete rerun (56 main targets, 16 optimized browser targets, 25 JVM coverage targets; publication/Javadocs, format/hermeticity, coverage thresholds, site and unsigned release validation). All thresholds remain unchanged. Round-2 CRLF regression was reproduced, fixed and passes with the inline header/unused-definition cases; the latest complete gate is running. Domain links and specification-only diff/package audits pass; see T08 for scope and browser limitations.
+- Evidence: final `tools/check.sh` passed at reviewed implementation `a886888c2`: all 56 main targets, 16 optimized browser targets and 25 JVM coverage targets; publication/Javadocs, format/buildifier, both hermeticity modes, all unchanged JVM/browser coverage thresholds, site build/check and unsigned release validation (12 artifacts / 60 entries). Language coverage is 2168/2210 lines (98.10%) and 1631/1850 branches (88.16%). Domain links and specification-only diff/package audits pass. Pre-review and earlier fix gates also passed; newly discovered cases were reproduced and corrected before this final run. No check is skipped or pending locally; see T08 for browser limitations.
 
 ## Tasks
 
@@ -42,12 +42,13 @@
 ## Review history
 
 - Planning round 1: `implementation_plan_review` reported `Findings: none`. Checked all eight tasks, accepted scope, task graph/coverage, processor/sidecar/header/catalogue/linker/bundler/name boundaries, distribution/browser/full-gate verification. Residual uncertainties (typed-hole flattening, shared binding extraction, browser semantics) have explicit task-owned checks. No finding dispositions required; two ordinary rounds and one final confirmation remain.
-- Implementation round 1: fresh read-only `native_implementation_review` checked complete scope `54d35cfa9..165ef456a`, all requirements/tasks/promotions and ten focused targets. Three P2 findings verified and fixed below; confirmation pending. Four ordinary rounds plus one final confirmation remain.
+- Implementation round 1: fresh read-only `native_implementation_review` checked complete scope `54d35cfa9..165ef456a`, all requirements/tasks/promotions and ten focused targets. Three P2 findings verified; dispositions below and confirmation in rounds 2/3. Four ordinary rounds plus one final confirmation remained at that point.
 - F1 (inline header origins): publish the decoded input's authoritative map inside the provider's ordinary CSS map; generic collection composes header-derived locations through it. No language dependency enters linker/bundler. A real packaged provider/header-consumer regression collects the outputs, compresses names and asserts exact authored Java file/content/line/UTF-16 column. Generic tests cover unmapped spans, stale input content and invalid coordinates.
 - F2 (source overlap): use the actual bare matcher at zero when checking scale intersections. Unused utility/variant definitions fail in either source order, including common length/percentage types and ranges excluding zero; genuinely disjoint time/percentage spellings remain accepted.
 - F3 (unused anchor tokens): check every token's anchor occurrences, including nested fallbacks, against the complete owned/external universe and attribute failures to that token entry. Owned, external and default-anchor forms pass; unknown references fail through both facade and packaged provider compilation.
-- Related reference correction: remove bare length-percentage from the advertised list, matching the accepted design and implementation. Existing normative contracts already own all three obligations; these are bug fixes and reference corrections, not scope or architectural replanning. Domain-link and specification-diff audits pass. Focused suites pass; full gate is running before closeout and second-round confirmation.
-- Implementation round 2: the same read-only reviewer confirmed F2/F3 and the reference correction, but found an F1 regression in `b8959d918`: file-backed CRLF origins share their authored source identity with normalized decoded input, so generic composition rejects the differing contents. Reproduced with the real packaged input/javac/collection test before fixing. Published input recovery is now restricted to inline sources, where headers lack Java origins; file-backed prepared sidecars already preserve authored maps. The packaged CRLF regression asserts original file/content after collection and passes alongside inline header recovery and unused-definition checks. Three ordinary rounds plus one final confirmation remain; complete gate rerun and reviewer confirmation remain required.
+- Related reference correction: remove bare length-percentage from the advertised list, matching the accepted design and implementation. Existing normative contracts already own all three obligations; these are bug fixes and reference corrections, not scope or architectural replanning. Domain-link/specification-diff audits, focused suites and subsequent complete gate pass.
+- Implementation round 2: the same read-only reviewer confirmed F2/F3 and the reference correction, but found an F1 regression in `b8959d918`: file-backed CRLF origins share their authored source identity with normalized decoded input, so generic composition rejects the differing contents. Reproduced with the real packaged input/javac/collection test before fixing. Published input recovery is now restricted to inline sources, where headers lack Java origins; file-backed prepared sidecars already preserve authored maps. The packaged CRLF regression asserts original file/content after collection and passes alongside inline header recovery and unused-definition checks. Three ordinary rounds plus one final confirmation remained; later full-gate and reviewer confirmation passed.
+- Implementation round 3: `Findings: none`. The same reviewer independently repeated the packaged CRLF probe with separate provider/consumer javac compilations; collection succeeds and preserves full authored CRLF content. Confirmed inline-header recovery remains covered and F2/F3 are unchanged since their round-2 pass. Review passed at `a886888c2`; two ordinary rounds and the final confirmation allowance were not needed. The complete repository gate then passed at the same code snapshot.
 
 ## Promoted knowledge
 
@@ -55,3 +56,8 @@
 - Java selection and hooks: [bindings](../../../docs/specs/css-bindings.md); canonical names/stability/anchors: [names](../../../docs/specs/css-names.md); requested fragment retention: [liveness](../../../docs/specs/css-liveness.md); available origins: [source maps](../../../docs/specs/css-source-maps.md).
 - Resolved terms: [glossary](../../../docs/glossary/README.md). Adopted decisions: [JVM compilation](../../../docs/adr/0005-compile-declarative-utility-rules-on-jvm.md) and [checked expansion publication](../../../docs/adr/0006-publish-checked-utility-expansions.md), replacing ADR 0004.
 - Practical grammar/commands/examples and browser limitations: [author reference](../../../css/utility-language/README.md), replacing the completed design document. Domain-link and specification-only diff audits passed before review. Existing mapping deferrals remain unchanged; no new deferred issue is needed.
+
+## Final knowledge and cleanup gate
+
+- Final domain sweep reuses the accepted classifications. Review introduced implementation bug fixes, generic source-map realization and a reference correction; existing normative owners already state their obligations. No new glossary term, architectural decision, requirement or deliberately deferred question qualifies for another artifact. Canonical links and first uses remain valid; domain-link validator and final whitespace audit pass.
+- All eight tasks, task-level checks, final complete gate and independent review passed. Plan and every implementation/fix state exist in git history. Only exact-tree removal and ready implementation PR publication remain; human merge is not authorized. No unrelated uncommitted work is present.
