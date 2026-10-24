@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: `implementing`
-- Current frontier: `T04`
+- Current frontier: `T05`
 - Planning reviewer: `implementation_plan_review` (`1/3` rounds; passed; final confirmation `unused`)
 - Plan checkpoint: `automatic` — explicit implementation authority and passing independent planning review; no human pause requested.
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -20,7 +20,7 @@
 | `T01` | [Expand checked rules through the isolated JVM facade](T01-language-facade.md) | `complete` | None |
 | `T02` | [Consume native rules through checked Java declarations](T02-java-consumption.md) | `complete` | T01 |
 | `T03` | [Link independently compiled candidate fragments](T03-fragment-delivery.md) | `complete` | T02 |
-| `T04` | [Accept broader typed values and numeric limits](T04-value-domains.md) | `pending` | T01 |
+| `T04` | [Accept broader typed values and numeric limits](T04-value-domains.md) | `complete` | T01 |
 | `T05` | [Apply container and starting-style variants](T05-conditional-variants.md) | `pending` | T03, T04 |
 | `T06` | [Deliver checked named anchors and scoped popovers](T06-named-anchors.md) | `pending` | T05 |
 | `T07` | [Expose agent authoring feedback and packaged commands](T07-authoring-tools.md) | `pending` | T06 |

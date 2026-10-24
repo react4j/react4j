@@ -2,8 +2,14 @@ load("//third_party/java:rules.bzl", "java_testng")
 
 java_testng(
     name = "tests",
-    srcs = ["UtilityLanguageTest.java"],
-    test_class = "react4j.css.utility.language.UtilityLanguageTest",
+    srcs = [
+        "UtilityLanguageTest.java",
+        "ValueDomainsTest.java",
+    ],
+    test_classes = [
+        "react4j.css.utility.language.UtilityLanguageTest",
+        "react4j.css.utility.language.ValueDomainsTest",
+    ],
     visibility = [
         "//:__pkg__",
         "//css:__pkg__",

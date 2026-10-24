@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -77,7 +78,9 @@ final class RuleLibrary {
                 } catch (IllegalArgumentException e) {
                     throw error("U_SOURCE_TYPE", String.valueOf(e.getMessage()), node.offset());
                 }
-                if (scalar.number().signum() <= 0 || null != scales.putIfAbsent(pieces[0], pieces[1])) {
+                if (!Set.of("number", "percentage", "length", "angle", "time").contains(scalar.type())
+                        || scalar.number().signum() <= 0
+                        || null != scales.putIfAbsent(pieces[0], pieces[1])) {
                     throw error(
                             "U_AMBIGUOUS_RULE",
                             "Scale must be positive and declared once: " + pieces[0],
@@ -196,10 +199,10 @@ final class RuleLibrary {
         }
         String sources = match.group(2);
         String interval = "";
-        int within = sources.indexOf(" within ");
-        if (within >= 0) {
-            interval = sources.substring(within + 8).trim();
-            sources = sources.substring(0, within);
+        var within = Pattern.compile("\\s+within\\s+").matcher(sources);
+        if (within.find()) {
+            interval = sources.substring(within.end()).trim();
+            sources = sources.substring(0, within.start());
         }
         var arguments = new ArrayList<Argument>();
         String type = "";
@@ -236,6 +239,20 @@ final class RuleLibrary {
         }
         var rule = new Rule(name, prefix, parameter, arguments, type, interval, node.children(), node.offset(), rank);
         disjoint(rule);
+        try {
+            RuleBounds.validate(rule.type(), rule.interval());
+            for (var argument : rule.arguments()) {
+                if ("tokens".equals(argument.kind())) {
+                    for (var value : Objects.requireNonNull(tokens.get(argument.name()))
+                            .values()
+                            .values()) {
+                        RuleBounds.check(rule.type(), rule.interval(), value);
+                    }
+                }
+            }
+        } catch (RuleSyntax.Syntax e) {
+            throw error(e.code, String.valueOf(e.getMessage()), rule.offset());
+        }
         return rule;
     }
 
@@ -261,9 +278,7 @@ final class RuleLibrary {
                         throw error("U_STARTING_STYLE", "@starting-style takes no condition", node.offset());
                     }
                 } else {
-                    if (!head.equals(substituted)
-                            && (!"an+b".equals(rule.type())
-                                    || !head.contains(":nth-child(param(" + rule.parameter() + "))"))) {
+                    if (!head.equals(substituted) && (!"an+b".equals(rule.type()) || !RuleSyntax.selectorHoles(head))) {
                         throw error(
                                 "U_PARAMETER",
                                 "Selector holes are allowed only in :nth-child for <an+b>",
@@ -412,6 +427,11 @@ final class RuleLibrary {
                     "U_ARGUMENT", "No argument source accepts " + candidate + " for " + family.name(), family.offset());
         }
         checkValue(family.type(), resolved.value(), family.offset());
+        if ("an+b".equals(family.type())) {
+            resolved = new Match(
+                    family, resolved.value().toLowerCase(Locale.ROOT).replaceAll("\\s+", ""), resolved.source());
+        }
+        RuleBounds.check(family.type(), family.interval(), resolved.value());
         return resolved;
     }
 

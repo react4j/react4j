@@ -1,7 +1,10 @@
 package react4j.css.utility.language;
 
+import com.helger.css.parser.CSSParseHelper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import org.jspecify.annotations.Nullable;
 import react4j.css.internal.CssLexical;
 
 /** Balanced CSS components, with offsets into the original UTF-16 source. */
@@ -88,32 +91,114 @@ final class RuleSyntax {
         return result.toString();
     }
 
-    static String substitute(String text, String parameter, String value) {
-        var result = new StringBuilder();
+    record Function(String name, String arguments, int start, int end, int argumentStart) {}
+
+    static List<Function> functions(String text) {
+        var result = new ArrayList<Function>();
+        functions(text, 0, text.length(), result);
+        return List.copyOf(result);
+    }
+
+    private static void functions(String text, int first, int last, List<Function> result) {
         var cursor = new Cursor(text);
-        while (cursor.position < text.length()) {
+        cursor.position = first;
+        while (cursor.position < last) {
             int start = cursor.position;
             char c = text.charAt(start);
-            if ('\'' == c || '"' == c || text.startsWith("/*", start) || '\\' == c) {
+            if ('\"' == c || '\'' == c || text.startsWith("/*", start)) {
                 cursor.component();
-                result.append(text, start, cursor.position);
-            } else if (text.startsWith("param(", start)
-                    && (0 == start || !Character.isJavaIdentifierPart(text.charAt(start - 1)))) {
-                cursor.position += 5;
-                int open = cursor.position;
-                cursor.component();
-                if (!parameter.equals(
-                                text.substring(open + 1, cursor.position - 1).trim())
-                        || parameter.isEmpty()) {
-                    throw new Syntax("U_PARAMETER", "Undefined parameter in " + text, start);
+            } else if (Character.isLetterOrDigit(c) || '_' == c || '-' == c || c >= 128 || '\\' == c) {
+                do {
+                    if ('\\' == text.charAt(cursor.position)) {
+                        cursor.position++;
+                        int digits = 0;
+                        while (cursor.position < last
+                                && digits < 6
+                                && Character.digit(text.charAt(cursor.position), 16) >= 0) {
+                            cursor.position++;
+                            digits++;
+                        }
+                        if (0 == digits && cursor.position < last) {
+                            cursor.position++;
+                        } else if (cursor.position < last && Character.isWhitespace(text.charAt(cursor.position))) {
+                            cursor.position++;
+                        }
+                    } else {
+                        cursor.position++;
+                    }
+                } while (cursor.position < last
+                        && (Character.isLetterOrDigit(text.charAt(cursor.position))
+                                || "_-\\".indexOf(text.charAt(cursor.position)) >= 0
+                                || text.charAt(cursor.position) >= 128));
+                if (cursor.position < last && '(' == text.charAt(cursor.position)) {
+                    int open = cursor.position;
+                    String name = CSSParseHelper.unescapeURL(text.substring(start, open))
+                            .toLowerCase(Locale.ROOT);
+                    cursor.component();
+                    result.add(new Function(
+                            name, text.substring(open + 1, cursor.position - 1), start, cursor.position, open + 1));
+                    functions(text, open + 1, cursor.position - 1, result);
                 }
-                result.append(value);
             } else {
-                result.append(c);
                 cursor.position++;
             }
         }
-        return result.toString();
+    }
+
+    static @Nullable Function function(String raw) {
+        String text = raw.trim();
+        return functions(text).stream()
+                .filter(function -> 0 == function.start() && text.length() == function.end())
+                .findFirst()
+                .orElse(null);
+    }
+
+    static List<String> components(String raw) {
+        String text = clean(raw);
+        var cursor = new Cursor(text);
+        var result = new ArrayList<String>();
+        while (cursor.position < text.length()) {
+            cursor.space();
+            int start = cursor.position;
+            while (cursor.position < text.length() && !Character.isWhitespace(text.charAt(cursor.position))) {
+                char c = text.charAt(cursor.position);
+                if ('[' == c && cursor.position > start) {
+                    break;
+                }
+                cursor.component();
+                if ('[' == c || '(' == c || '\'' == c || '\"' == c) {
+                    break;
+                }
+            }
+            if (start < cursor.position) {
+                result.add(text.substring(start, cursor.position));
+            }
+        }
+        return List.copyOf(result);
+    }
+
+    static boolean selectorHoles(String text) {
+        var functions = functions(text);
+        return functions.stream()
+                .filter(function -> "param".equals(function.name()))
+                .allMatch(hole -> functions.stream()
+                        .anyMatch(parent -> "nth-child".equals(parent.name())
+                                && clean(parent.arguments()).equals(clean(text.substring(hole.start(), hole.end())))));
+    }
+
+    static String substitute(String text, String parameter, String value) {
+        var result = new StringBuilder();
+        int offset = 0;
+        for (var function : functions(text)) {
+            if (function.start() >= offset && "param".equals(function.name())) {
+                if (parameter.isEmpty() || !parameter.equals(clean(function.arguments()))) {
+                    throw new Syntax("U_PARAMETER", "Undefined parameter in " + text, function.start());
+                }
+                result.append(text, offset, function.start()).append(value);
+                offset = function.end();
+            }
+        }
+        return result.append(text.substring(offset)).toString();
     }
 
     static final class Syntax extends IllegalArgumentException {

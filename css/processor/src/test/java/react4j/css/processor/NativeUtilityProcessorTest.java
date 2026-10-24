@@ -11,6 +11,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -76,6 +77,45 @@ public final class NativeUtilityProcessorTest {
         assertEquals(descriptor.get("owner").getAsString(), "demo.Utilities");
         assertFalse(text(result, "classes/demo/Utilities.css").contains("padding"));
         assertTrue(text(result, "classes/demo/Utilities.css.json").contains("accent"));
+    }
+
+    @Test
+    public void broaderTypesReachGeneratedAccessorsAndCheckedExpansionMetadata() throws Exception {
+        String rules = RULES + """
+            @scale duration 1ms;
+            @utility "duration-{v}" (v: scale(duration) | arbitrary(<time>) within [0ms,*]) { transition-duration:param(v); }
+            @utility "shadow-{v}" (v: arbitrary(<box-shadow>)) { box-shadow:param(v); }
+            @utility "cols-{v}" (v: arbitrary(<grid-tracks>)) { grid-template-columns:param(v); }
+            @utility "aspect-{v}" (v: bare(<ratio>)) { aspect-ratio:param(v); }
+            @utility "content-{v}" (v: arbitrary(<string>)) { content:param(v); }
+            """;
+        String candidates =
+                "duration-150 shadow-[0_-1px_5px_1px_rgba(var(--ink),.2)] cols-[200px_minmax(0,1fr)] aspect-16/9"
+                        + " content-['Save_changes']";
+        var result = CssProcessorTest.compile(
+                Map.of("Utilities.java", library(rules), "Button.java", styles(candidates)), "demo.Button");
+        assertTrue(result.success(), result.diagnostics());
+        var fragments = JsonParser.parseString(text(result, "classes/demo/Button.css.fragments.json"))
+                .getAsJsonObject()
+                .getAsJsonArray("fragments")
+                .asList();
+        assertEquals(fragments.size(), 5);
+        String output = fragments.stream()
+                .map(item -> item.getAsJsonObject().get("css").getAsString())
+                .collect(Collectors.joining());
+        for (var expected : List.of(
+                "transition-duration:150ms",
+                "0 -1px 5px 1px rgba(var(--ink),.2)",
+                "200px minmax(0,1fr)",
+                "aspect-ratio:16/9",
+                "'Save changes'")) {
+            assertTrue(output.contains(expected), output);
+        }
+        var invalid = CssProcessorTest.compile(
+                Map.of("Utilities.java", library(rules), "Button.java", styles("duration-[-1ms] shadow-[0_0_-1px]")));
+        assertFalse(invalid.success());
+        assertTrue(invalid.diagnostics().contains("U_VALUE_RANGE"), invalid.diagnostics());
+        assertTrue(invalid.diagnostics().contains("U_VALUE_TYPE"), invalid.diagnostics());
     }
 
     @Test

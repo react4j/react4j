@@ -13,6 +13,7 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import react4j.css.internal.CssIdentity;
@@ -88,7 +89,10 @@ public final class UtilityLanguage {
         }
     }
 
-    public record Trace(String rule, String argument, String resolvedValue, Origin definition, List<String> checks) {
+    public record BoundCheck(String interval, String value, String status) {}
+
+    public record Trace(
+            String rule, String argument, String resolvedValue, Origin definition, List<BoundCheck> checks) {
         public Trace {
             checks = List.copyOf(checks);
         }
@@ -232,7 +236,7 @@ public final class UtilityLanguage {
         }
         var rules = prepared.rules;
         try {
-            var output = validationOutput(prepared);
+            var output = bindingOutput(prepared);
             int boundary = supportCss(prepared).length();
             var result = CssUtilityBinding.compile(
                     output,
@@ -240,7 +244,7 @@ public final class UtilityLanguage {
                     Set.of("probe"),
                     bindings.exportedIds(),
                     bindings.exportedAnimations(),
-                    bindings.context(),
+                    probeContext(prepared, bindings.context()),
                     true,
                     boundary);
             var resolved = CssUtilityBinding.resolve(owner, result, Map.of(), bindings.context());
@@ -349,6 +353,87 @@ public final class UtilityLanguage {
         return writer;
     }
 
+    private static String probeProperty(Prepared prepared) {
+        return "react4j-utility-" + digest(prepared.source().text());
+    }
+
+    private static CssUtilityBinding.Context probeContext(Prepared prepared, CssUtilityBinding.Context context) {
+        var external = new HashSet<>(context.externalProperties());
+        external.add(probeProperty(prepared));
+        return new CssUtilityBinding.Context(
+                external,
+                context.externalAnimations(),
+                context.externalFonts(),
+                context.externalContainers(),
+                context.imports(),
+                context.properties(),
+                context.ids(),
+                context.assets(),
+                context.fonts(),
+                context.includes());
+    }
+
+    private static SourceMap.Writer bindingOutput(Prepared prepared) {
+        var writer = new SourceMap.Writer();
+        var rules = prepared.rules;
+        raw(rules, rules.support, writer);
+        for (boolean variant : List.of(false, true)) {
+            for (var rule : variant ? rules.variants : rules.utilities) {
+                var body = browserHoles(prepared, rule, rule.body());
+                probeBody(rules, rule, body, variant, writer);
+                // Named tokens are finite declarations: validate every use, including unused tokens.
+                for (var argument : rule.arguments()) {
+                    if ("tokens".equals(argument.kind())) {
+                        for (var value : Objects.requireNonNull(rules.tokens.get(argument.name()))
+                                .values()
+                                .values()) {
+                            String resolved = "an+b".equals(rule.type())
+                                    ? value.toLowerCase(Locale.ROOT).replaceAll("\\s+", "")
+                                    : value;
+                            probeBody(
+                                    rules, rule, substitute(rule.body(), rule.parameter(), resolved), variant, writer);
+                        }
+                    }
+                }
+            }
+        }
+        return writer;
+    }
+
+    private static List<RuleSyntax.Node> browserHoles(
+            Prepared prepared, RuleLibrary.Rule rule, List<RuleSyntax.Node> nodes) {
+        var result = new ArrayList<RuleSyntax.Node>();
+        for (var node : nodes) {
+            String value = "an+b".equals(rule.type()) ? "1" : "var(--" + probeProperty(prepared) + ")";
+            if ("string".equals(rule.type())
+                    && RuleSyntax.functions(node.head()).stream()
+                            .anyMatch(function -> "url".equals(function.name())
+                                    && RuleSyntax.functions(function.arguments()).stream()
+                                            .anyMatch(hole -> "param".equals(hole.name())))) {
+                value = "'https://react4j.invalid/utility-probe'";
+            }
+            result.add(new RuleSyntax.Node(
+                    RuleSyntax.substitute(node.head(), rule.parameter(), value),
+                    browserHoles(prepared, rule, node.children()),
+                    node.offset(),
+                    node.block()));
+        }
+        return List.copyOf(result);
+    }
+
+    private static void probeBody(
+            RuleLibrary rules,
+            RuleLibrary.Rule rule,
+            List<RuleSyntax.Node> body,
+            boolean variant,
+            SourceMap.Writer writer) {
+        render(
+                rules,
+                variant ? slot(body, List.of(new RuleSyntax.Node("x: 0", List.of(), rule.offset(), false))) : body,
+                ".probe",
+                writer);
+    }
+
     public static String supportCss(Prepared prepared) {
         var writer = new SourceMap.Writer();
         raw(prepared.rules, prepared.rules.support, writer);
@@ -383,7 +468,7 @@ public final class UtilityLanguage {
             }
         }
         String className = CssIdentity.root(checked.owner) + "--class-" + CssIdentity.encode(candidate);
-        var writer = validationOutput(checked.prepared);
+        var writer = bindingOutput(checked.prepared);
         int boundary = writer.css().length();
         render(rules, body, "." + className, writer);
         hooks(checked, writer.css().substring(boundary), className);
@@ -395,7 +480,7 @@ public final class UtilityLanguage {
                     Set.of("probe", className),
                     checked.bindings.exportedIds(),
                     checked.bindings.exportedAnimations(),
-                    checked.bindings.context(),
+                    probeContext(checked.prepared, checked.bindings.context()),
                     true,
                     boundary);
             var resolved = CssUtilityBinding.resolve(
@@ -438,7 +523,7 @@ public final class UtilityLanguage {
                 match.source(),
                 match.value(),
                 origin(rules.source, match.rule().offset()),
-                List.of());
+                RuleBounds.check(match.rule().type(), match.rule().interval(), match.value()));
     }
 
     private static List<RuleSyntax.Node> substitute(List<RuleSyntax.Node> nodes, String parameter, String value) {

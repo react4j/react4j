@@ -3,6 +3,9 @@ load("//third_party/java:rules.bzl", "java_library")
 java_library(
     name = "language",
     srcs = [
+        "CompoundValues.java",
+        "NumericValues.java",
+        "RuleBounds.java",
         "RuleLibrary.java",
         "RuleSyntax.java",
         "RuleValues.java",
@@ -17,5 +20,6 @@ java_library(
     deps = [
         "//css/internal/src/main/java/react4j/css/internal",
         "//third_party:gson",
+        "//third_party:ph_css",
     ],
 )
