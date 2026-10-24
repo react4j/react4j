@@ -34,7 +34,6 @@ A reviewable design document describes the confirmed language and diagnostics, a
 - `R3`: Define checked named-anchor ownership, external references, instance scoping and compatibility with omitted-name anchor expressions; demonstrate a bounded Rose popover recipe without claiming its bugs are fixed.
 - `R4`: Concentrate language responsibility behind a small tooling interface in a separate proposed source/build package; distinguish source, build, packaging and runtime boundaries and identify necessary integration changes.
 - `R5`: Provide coherent grammar, expansion examples and structured diagnostics that cover accepted behavior and failure cases without creating generic plugins or runtime infrastructure.
-- `R6`: Publish the design-only PR after independent review and proportionate verification, preserving the workflow audit in Git history and removing the active plan tree from the final diff.
 
 ## Acceptance criteria
 
@@ -42,7 +41,11 @@ A reviewable design document describes the confirmed language and diagnostics, a
 - `AC2` (`R2`, `R5`): Container and starting-style definitions show valid composition, checked holes, explicit setup and representative invalid inputs.
 - `AC3` (`R3`, `R5`): Anchor definitions distinguish owned/external identities from properties, explain repeated-instance scope/liveness, and a self-contained illustrative popover example states its browser-verification limits.
 - `AC4` (`R4`): A separate proposed language package has clear responsibilities, caller inputs/results/errors/effects and dependency direction grounded in current packages; no unnecessary plugin interface or separate deployment is introduced.
-- `AC5` (`R6`): Local links, headings, fenced JSON and document consistency checks pass; independent review reports `Findings: none`; final PR diff contains lasting documentation only and is published for human review.
+- `AC5` (`R1`–`R5`): Local links, headings, fenced JSON and document consistency checks pass; the lasting diff changes design documentation only.
+
+## Delivery obligations
+
+After the design task is complete, the workflow owns independent delivered-document review, removal of the temporary plan tree, and publication of a ready-for-review PR. These are closeout gates, not task prerequisites: requiring plan removal before the task can finish would make the review/cleanup sequence circular. Preserve the workflow audit in Git history and do not merge the PR.
 
 ## Significant decisions
 
