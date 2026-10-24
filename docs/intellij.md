@@ -2,7 +2,7 @@
 title: IntelliJ IDEA IDE Setup
 ---
 
-Import the application's build configuration and use the same Java and processor settings as [Project Setup](project_setup.md). Published libraries target Java 17 and generated sources remain Java 17-compatible. Match the application compiler settings to its J2CL build; the JVM running annotation processing must be Java 21 or later. Bazel remains the authoritative verification path for this repository.
+Import the application's build configuration and use the same Java and processor settings as [Project Setup](project_setup.md). Use Java 21 or later for application sources, generated sources and published libraries. Match the application compiler settings to its J2CL build; the JVM running annotation processing must be Java 21 or later. Bazel remains the authoritative verification path for this repository.
 
 ## Configure the Annotation Processors
 

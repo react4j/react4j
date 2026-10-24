@@ -12,6 +12,7 @@ import com.sun.source.tree.IfTree;
 import com.sun.source.tree.LambdaExpressionTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.ReturnTree;
+import com.sun.source.tree.SwitchExpressionTree;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
@@ -155,24 +156,25 @@ final class JavaCoverage {
                                         yield "ASSERT";
                                     }
                                     case ENHANCED_FOR_LOOP -> "FOR";
-                                    case SWITCH_EXPRESSION ->
-                                        throw new IllegalArgumentException(
-                                                "Unsupported owned Java switch expression: " + name);
                                     case CONDITIONAL_EXPRESSION -> "HOOK";
                                     case CONDITIONAL_AND -> "AND";
                                     case CONDITIONAL_OR -> "OR";
                                     case WHILE_LOOP -> "WHILE";
                                     case DO_WHILE_LOOP -> "DO";
                                     case FOR_LOOP -> null == ((ForLoopTree) tree).getCondition() ? "" : "FOR";
-                                    case SWITCH -> "SWITCH";
+                                    case SWITCH, SWITCH_EXPRESSION -> "SWITCH";
                                     default -> "";
                                 };
                         if (!kind.isEmpty()) {
                             int count = 2;
-                            if (tree instanceof SwitchTree selection) {
-                                count = selection.getCases().size();
-                                if (selection.getCases().stream()
-                                        .noneMatch(c -> c.getExpressions().isEmpty())) {
+                            var cases = tree instanceof SwitchTree selection
+                                    ? selection.getCases()
+                                    : tree instanceof SwitchExpressionTree selection ? selection.getCases() : null;
+                            if (null != cases) {
+                                count = cases.size();
+                                if (cases.stream()
+                                        .flatMap(c -> c.getLabels().stream())
+                                        .noneMatch(label -> Tree.Kind.DEFAULT_CASE_LABEL == label.getKind())) {
                                     count++;
                                 }
                             }
@@ -316,6 +318,9 @@ final class JavaCoverage {
                 if (tree instanceof ConditionalExpressionTree conditional) {
                     return scan(conditional.getCondition(), null);
                 }
+                if (tree instanceof SwitchExpressionTree selection) {
+                    return scan(selection.getExpression(), null);
+                }
                 if (tree instanceof BinaryTree binary
                         && (Tree.Kind.CONDITIONAL_AND == tree.getKind()
                                 || Tree.Kind.CONDITIONAL_OR == tree.getKind())) {
@@ -363,9 +368,20 @@ final class JavaCoverage {
 
     @Nullable
     Decision decision(List<Integer> positions, String kind) {
+        // J2CL lowers a switch expression inside a generated function. Its selector tests must not
+        // bind to a Java decision surrounding the expression.
+        Range boundary = null;
+        for (var candidate : decisions) {
+            if (candidate.range().tree() instanceof SwitchExpressionTree
+                    && positions.stream().allMatch(candidate.range()::contains)
+                    && (null == boundary || candidate.range().start() > boundary.start())) {
+                boundary = candidate.range();
+            }
+        }
         Decision selected = null;
         for (var candidate : decisions) {
             if (candidate.kind().equals(kind)
+                    && (null == boundary || boundary.contains(candidate.range().start()))
                     && positions.stream().allMatch(candidate.range()::contains)
                     && (null == selected
                             || candidate.range().end() - candidate.range().start()

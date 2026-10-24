@@ -39,7 +39,7 @@ public final class CssInputIntegrationTest {
                 var command = new ArrayList<>(List.of(
                         Path.of(System.getProperty("java.home"), "bin", "javac").toString(),
                         "--release",
-                        "17",
+                        "21",
                         "-classpath",
                         input("headers")
                                 + File.pathSeparator
@@ -93,7 +93,7 @@ public final class CssInputIntegrationTest {
                                 Path.of(System.getProperty("java.home"), "bin", "javac")
                                         .toString(),
                                 "--release",
-                                "17",
+                                "21",
                                 "-classpath",
                                 input("headers")
                                         + File.pathSeparator

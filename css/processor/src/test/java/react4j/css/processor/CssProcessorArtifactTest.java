@@ -136,7 +136,7 @@ public final class CssProcessorArtifactTest {
             var command = List.of(
                     Path.of(System.getProperty("java.home"), "bin", "javac").toString(),
                     "--release",
-                    "17",
+                    "21",
                     "-classpath",
                     applicationClasspath(),
                     "--processor-path",

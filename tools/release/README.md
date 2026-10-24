@@ -2,17 +2,17 @@
 
 `bazel build //tools/release:maven_artifacts` produces binary, source, Javadoc and POM files for `react4j-core`, `react4j-dom` and `react4j-processor`. `//tools/release:site_javadoc` builds the aggregate API archive.
 
-Public `//:core` and `//:dom` provide J2CL libraries from the assembled source archives; `//:processor` wraps the shaded processor jar as a plugin. JVM jar imports are repository-only. Publication bytecode targets Java 17 and generated sources remain Java 17-compatible; annotation processing requires Java 21. Processor dependencies are shaded into its jar.
+Public `//:core` and `//:dom` provide J2CL libraries from the assembled source archives; `//:processor` wraps the shaded processor jar as a plugin. JVM jar imports are repository-only. Publication bytecode and generated sources target Java 21; annotation processing requires Java 21 or later. Processor dependencies are shaded into its jar.
 
 Binary jars contain bytecode and metadata. Source jars contain all authored and generated Java, native JavaScript, and the pinned React/ReactDOM assets. J2CL consumers use a byte-preserving projection of these source archives that excludes only the public UMD asset directories from Closure compilation. Browser pages load the UMD scripts separately. Source archives depend on checked JVM class outputs, so building the publication sources for J2CL also checks React4j's complete Java under the repository policy. Downstream application sources use native J2CL and their own checker selection.
 
 ## Dependency publication prerequisite
 
-The build uses the migrated Arez, Proton and Sting revisions pinned in `MODULE.bazel`. Publishing React4j requires an Arez release on Maven Central that contains the pinned migrated contents.
+The build uses the migrated Arez, Proton and Sting revisions pinned in `MODULE.bazel`. Publishing React4j requires an Arez release on Maven Central that contains the pinned migrated contents, including Java 21 support.
 
 Both version inputs default to `0.0.0-SNAPSHOT` for local work. Set `--//tools/release:version=<react4j-version>` and `--//tools/release:arez_version=<published-arez-version>` when preparing release artifacts. The second input selects the POM dependency version; it does not change the pinned source dependency. Verify that the selected Arez release contains the pinned migration before uploading anything.
 
-Proton is embedded in the shaded processor jar, so consumers do not need a separate Proton Maven dependency. Consumers using Sting integration must also use a compatible migrated Sting release.
+Proton is embedded in the shaded processor jar, so consumers do not need a separate Proton Maven dependency. Consumers using Sting integration must also use a compatible migrated Sting release with Java 21 support.
 
 ## Release commands
 

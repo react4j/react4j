@@ -68,7 +68,8 @@ public final class RuntimeCoverageTest {
                         + "']})");
         assertTrue(result.get("error").isJsonNull(), result.toString());
         assertEquals(
-                result.getAsJsonArray("values").toString(), "[17,24,42,\"throw\",5,7,\"assert\",5,0,6,\"void throw\"]");
+                result.getAsJsonArray("values").toString(),
+                "[17,24,42,\"throw\",5,7,\"assert\",5,0,6,\"void throw\",79,3,89]");
         var counters = result.getAsJsonObject("counters");
         String report =
                 collector.report(instrumented, counters.getAsJsonArray("lines"), counters.getAsJsonArray("edges"));
@@ -116,6 +117,11 @@ public final class RuntimeCoverageTest {
         assertBranches(observed, source.text, "switch (value)", 3, 2);
         assertBranches(observed, source.text, "for (int value :", 2, 2);
         assertBranches(observed, source.text, "return (first ?", 4, 0);
+        assertBranches(observed, source.text, "if (!(value instanceof Double))", 2, 1);
+        assertBranches(observed, source.text, "return switch (value)", 4, 3);
+        assertCovered(observed, source.text, "case String text", true);
+        assertCovered(
+                observed, source.text, "parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(\"83\")", false);
         assertMethodEnd(observed, source, "completedVoid", true);
         assertMethodEnd(observed, source, "throwingVoid", false);
         assertMethodEnd(observed, source, "deferredVoid", true);

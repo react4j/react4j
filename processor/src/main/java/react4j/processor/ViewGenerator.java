@@ -447,36 +447,22 @@ final class ViewGenerator {
     }
 
     private static String getConverter(final TypeMirror type, final Element element) {
-        switch (type.getKind()) {
-            case BOOLEAN:
-                return "asBoolean";
-            case BYTE:
-                return "asByte";
-            case CHAR:
-                return "asChar";
-            case DOUBLE:
-                return "asDouble";
-            case FLOAT:
-                return "asFloat";
-            case INT:
-                return "asInt";
-            case LONG:
-                return "asLong";
-            case SHORT:
-                return "asShort";
-            case TYPEVAR:
-            case ARRAY:
-                return "cast";
-            case DECLARED:
-                if (((DeclaredType) type).asElement().toString().equals("java.lang.String")) {
-                    return "asString";
-                } else {
-                    return "cast";
-                }
-            default:
+        return switch (type.getKind()) {
+            case BOOLEAN -> "asBoolean";
+            case BYTE -> "asByte";
+            case CHAR -> "asChar";
+            case DOUBLE -> "asDouble";
+            case FLOAT -> "asFloat";
+            case INT -> "asInt";
+            case LONG -> "asLong";
+            case SHORT -> "asShort";
+            case TYPEVAR, ARRAY -> "cast";
+            case DECLARED ->
+                "java.lang.String".equals(((DeclaredType) type).asElement().toString()) ? "asString" : "cast";
+            default ->
                 throw new ProcessorException(
                         "Return type of @Input method is not yet " + "handled. Type: " + type.getKind(), element);
-        }
+        };
     }
 
     private static MethodSpec.Builder buildInputObservableValueRefMethod(final InputDescriptor input) {

@@ -14,5 +14,6 @@ window['runCoverageFixture'] = function() {
   try { Fixture.throwingVoid(true); } catch (e) { values.push('void throw'); }
   Fixture.deferredVoid();
   Fixture.constructorMetadata();
+  values.push(Fixture.pattern(null), Fixture.pattern('abc'), Fixture.pattern(true));
   return values;
 };

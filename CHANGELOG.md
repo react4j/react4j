@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Breaking: require Java 21 for application sources, publication bytecode and generated sources. Use the Java 21 Arez and Sting revisions and align processor declarations, compiler checks and Javadocs with the new baseline.
 * Add public native utility guides, worked recipes and a runnable example demonstrating containers, scoped popovers and entry motion. Run it with `tools/examples.sh serve native-utilities development`.
 * Add a JVM-only native utility rule language with typed families, numeric bounds, container/starting-style variants and checked scoped anchors. Independent Java consumers share checked descriptors and candidate expansions; JVM authoring commands expose structured diagnostics and traces.
 * Add checked utility CSS with `UtilityCssLibrary`, `UtilityStyles` and method-level `UtilityCss`. Consume explicit inline/file stylesheets and dependency catalogues without a utility generator. Preserve ordered class lists, hybrid/interface contracts and owner-scoped classes, properties, animations, fonts and containers through optimized removal, name compression, source maps and asset finalization. Try the runnable example with `tools/examples.sh serve utility-css development`.
@@ -29,7 +30,7 @@
 * Replace project builds, tests, DOM generation, asset preparation, documentation and release tooling with pinned Bazel and Java/Bash tools. Add the shared local/CI gate, buildifier and Ahab checks.
 * Breaking: use J2CL for browser compilation and remove legacy compiler modules, entrypoints and support infrastructure. Keep React/ReactDOM 16.6.0 and verify development and optimized production behavior with pinned Chromium. Configure the runtime with Closure defines; JVM system-property configuration is no longer supported.
 * Breaking: require JSpecify nullness contracts. Ignore legacy nullness annotations; diagnose unspecified or invalid generated input contracts. Nullable AUTODETECT inputs remain optional, while explicitly required nullable inputs require a builder call and accept null.
-* Upgrade to the migrated Proton revision and run annotation processing on Java 21+, retaining Java 17 publication bytecode and generated-source compatibility. Preserve effective source/compiled generic nullness, nested types, wildcards and array qualifiers in generated APIs.
+* Upgrade to the migrated Proton revision and run annotation processing on Java 21+. Preserve effective source/compiled generic nullness, nested types, wildcards and array qualifiers in generated APIs.
 * Check complete formatted/unformatted processor goldens and compile all emitted bodies under the full checker policy. Retain classpath and formatter regressions and deliberate generated-nullness failure detection.
 * Assemble reproducible binary, complete source, Javadoc and POM artifacts; expose a J2CL-first public Bazel API using those publication archives, with repository-only implementation targets and application-selected compiler checks.
 * Replace the documentation site with Java/CommonMark rendering, checked snippets and links, compiled examples and aggregate API docs. Preserve separately maintained site application directories during deployment preparation.
