@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 import org.testng.annotations.Test;
 import react4j.css.internal.CssFontValues;
+import react4j.css.internal.CssFonts;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;

@@ -75,6 +75,62 @@ public final class CssInputIntegrationTest {
     }
 
     @Test
+    public void nativeRulesBindAcrossActualHeadersWithoutACompleteClassInventory() throws Exception {
+        try (var jar = new JarFile(input("headers").toFile())) {
+            assertNotNull(jar.getEntry("react4j/css/integration/NativeUtilityLibrary.class"));
+            assertTrue(jar.stream().noneMatch(entry -> entry.getName().contains(".rules.json")));
+        }
+        var directory = Files.createTempDirectory("native-header-consumer-");
+        try {
+            for (var candidate : List.of("gap-137", "gap-[red]")) {
+                var source = directory.resolve("HeaderCheck.java");
+                Files.writeString(
+                        source,
+                        "package react4j.css.integration; import react4j.css.*;"
+                            + " @UtilityStyles(NativeUtilityLibrary.class) abstract class HeaderCheck { @UtilityCss(\""
+                                + candidate + "\") abstract String style(); }");
+                var process = new ProcessBuilder(
+                                Path.of(System.getProperty("java.home"), "bin", "javac")
+                                        .toString(),
+                                "--release",
+                                "21",
+                                "-classpath",
+                                input("headers")
+                                        + File.pathSeparator
+                                        + input("jar")
+                                        + File.pathSeparator
+                                        + System.getProperty("java.class.path"),
+                                "--processor-path",
+                                input("processor").toString(),
+                                "-Areact4j.css.format_generated_source=false",
+                                "-d",
+                                directory
+                                        .resolve(candidate.startsWith("gap-[") ? "invalid" : "valid")
+                                        .toString(),
+                                source.toString())
+                        .redirectErrorStream(true)
+                        .start();
+                var output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+                int status = process.waitFor();
+                if ("gap-137".equals(candidate)) {
+                    assertEquals(status, 0, output);
+                    assertTrue(Files.isRegularFile(
+                            directory.resolve("valid/react4j/css/integration/Styled_HeaderCheck.class")));
+                } else {
+                    assertNotEquals(status, 0, output);
+                    assertTrue(output.contains("U_VALUE_TYPE"), output);
+                }
+            }
+        } finally {
+            try (var files = Files.walk(directory)) {
+                for (var path : files.sorted(Comparator.reverseOrder()).toList()) {
+                    Files.delete(path);
+                }
+            }
+        }
+    }
+
+    @Test
     public void fullJ2clResourcesMapUtilityAndGlobalRulesToAuthoredCssFiles() throws Exception {
         String root = "react4j/css/integration/";
         String source = Files.readString(input("source"));

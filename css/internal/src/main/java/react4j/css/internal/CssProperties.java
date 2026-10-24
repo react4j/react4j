@@ -1,4 +1,4 @@
-package react4j.css.processor;
+package react4j.css.internal;
 
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.CSSDeclaration;
@@ -17,31 +17,30 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
-import react4j.css.internal.CssExpressions;
-import react4j.css.internal.CssPropertyValues;
 import react4j.css.internal.CssResource.Kind;
-import react4j.css.internal.CssSyntax;
 
 /** Finds and rewrites property symbols in the parsed model, including support conditions. */
-final class CssProperties {
+public final class CssProperties {
     private CssProperties() {}
 
-    record Binding(String owner, String name, Kind kind, boolean stable) {
-        String cssName() {
-            return Kind.GLOBAL == kind && stable ? "--" + name : "--" + Names.root(owner) + "--" + Names.encode(name);
+    public record Binding(String owner, String name, Kind kind, boolean stable) {
+        public String cssName() {
+            return Kind.GLOBAL == kind && stable
+                    ? "--" + name
+                    : "--" + CssIdentity.root(owner) + "--" + CssIdentity.encode(name);
         }
     }
 
-    record Import(String provider, Binding binding) {}
+    public record Import(String provider, Binding binding) {}
 
-    static void checkName(String name) {
-        CssCompiler.checkAlias(name, Kind.COMPONENT);
+    public static void checkName(String name) {
+        CssIdentity.checkAlias(name, Kind.COMPONENT);
         if (name.startsWith("--")) {
             throw new IllegalArgumentException("Custom property names must omit --: " + name);
         }
     }
 
-    static Set<String> names(String css, Kind kind) {
+    public static Set<String> names(String css, Kind kind) {
         String prefix = Kind.COMPONENT == kind ? ".root {\n" : Kind.KEYFRAMES == kind ? "@keyframes shared {\n" : "";
         var syntax = new CssSyntax(prefix + css + (prefix.isEmpty() ? "" : "\n}"), prefix.length());
         var sheet = Kind.KEYFRAMES == kind
@@ -50,11 +49,11 @@ final class CssProperties {
         return rewrite(sheet, syntax, name -> "--" + name, Kind.UTILITY == kind || Kind.GLOBAL == kind);
     }
 
-    static Set<String> rewrite(CascadingStyleSheet sheet, CssSyntax syntax, UnaryOperator<String> resolve) {
+    public static Set<String> rewrite(CascadingStyleSheet sheet, CssSyntax syntax, UnaryOperator<String> resolve) {
         return rewrite(sheet, syntax, resolve, false);
     }
 
-    static Set<String> rewrite(
+    public static Set<String> rewrite(
             CascadingStyleSheet sheet, CssSyntax syntax, UnaryOperator<String> resolve, boolean modern) {
         var names = new LinkedHashSet<String>();
         BiFunction<String, ICSSSourceLocationAware, String> property = (token, declaration) -> {

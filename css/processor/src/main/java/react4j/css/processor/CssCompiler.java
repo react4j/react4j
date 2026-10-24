@@ -1,6 +1,5 @@
 package react4j.css.processor;
 
-import com.google.gson.JsonParser;
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.AbstractHasTopLevelRules;
 import com.helger.css.decl.CSSDeclaration;
@@ -29,8 +28,6 @@ import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.ECSSSelectorCombinator;
 import com.helger.css.parser.CSSParseHelper;
 import com.helger.css.writer.CSSWriterSettings;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -42,11 +39,15 @@ import java.util.Set;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import react4j.css.internal.CssAnimationValues;
-import react4j.css.internal.CssResource;
+import react4j.css.internal.CssFonts;
+import react4j.css.internal.CssIdentity;
+import react4j.css.internal.CssIds;
+import react4j.css.internal.CssProperties;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.CssTokens;
 import react4j.css.internal.CssUrls;
+import react4j.css.internal.CssUtilityBinding;
 import react4j.css.internal.SourceMap;
 
 /** In-process CSS parsing, ownership checks and static output. */
@@ -80,7 +81,7 @@ final class CssCompiler {
 
     record Import(String owner, Kind kind, boolean stable) {
         String cssName() {
-            return Names.root(owner) + (Kind.KEYFRAMES == kind ? "--keyframes" : "");
+            return CssIdentity.root(owner) + (Kind.KEYFRAMES == kind ? "--keyframes" : "");
         }
     }
 
@@ -106,78 +107,38 @@ final class CssCompiler {
             Map<String, CssProperties.Import> properties,
             Map<String, CssIds.Import> ids,
             Resources resources) {
-        var compiler = new CssCompiler(css, 0, root, exports, locations, Map.of());
-        var sheet = compiler.syntax.parse(CssSyntax.Mode.UTILITY);
-        UtilitySelectors.check(sheet, compiler.syntax, managed);
-        var containers = UtilityContainers.names(css, sheet, compiler.syntax, root, externalContainers);
-        var names = UtilityNames.analyze(
-                css,
-                sheet,
-                compiler.syntax,
-                root,
+        var input = new SourceMap.Writer();
+        for (int i = 0; i < css.length(); i++) {
+            input.append(css.substring(i, i + 1), locations.apply(i));
+        }
+        var named = new LinkedHashMap<String, CssUtilityBinding.Import>();
+        imports.forEach((name, value) ->
+                named.put(name, new CssUtilityBinding.Import(value.owner(), value.kind(), value.stable())));
+        var context = new CssUtilityBinding.Context(
+                externalProperties,
                 externalAnimations,
                 externalFonts,
-                exports.animations(),
-                imports,
-                resources.fonts());
-        compiler.properties(sheet, properties, externalProperties, true);
-        compiler.ids(sheet, ids, true);
-        var output = new SourceMap.Writer();
-        for (int i = 0; i < css.length(); i++) {
-            output.append(css.substring(i, i + 1), locations.apply(i));
-        }
-        var edits = new ArrayList<SourceMap.Edit>();
-        for (var token : CssTokens.read(css)) {
-            String replacement = CssResource.SymbolKind.PROPERTY == token.kind()
-                    ? compiler.properties.get(token.name().substring(2))
-                    : CssResource.SymbolKind.ID == token.kind()
-                            ? compiler.ids.get(token.name())
-                            : CssResource.SymbolKind.CONTAINER == token.kind() ? containers.get(token.name()) : null;
-            if (null != replacement && !replacement.equals(token.value())) {
-                edits.add(new SourceMap.Edit(token.start(), token.end(), replacement));
-            }
-        }
-        edits.addAll(CssUrls.edits(
-                css,
-                value -> CssUrls.checked(value, (name, suffix) -> {
-                    String asset = resources.assets().get(name);
-                    if (null == asset) {
-                        throw new IllegalArgumentException("Unknown CSS asset import or accessor: " + name);
-                    }
-                    return "asset:" + asset + suffix;
-                })));
-        edits.addAll(names.edits());
-        edits.sort(Comparator.comparingInt(SourceMap.Edit::start));
-        var nameTokens = new ArrayList<CssTokens.Token>();
-        for (var token : names.tokens()) {
-            int shift = edits.stream()
-                    .filter(edit -> edit.end() <= token.start())
-                    .mapToInt(edit -> edit.value().length() - (edit.end() - edit.start()))
-                    .sum();
-            nameTokens.add(new CssTokens.Token(
-                    token.kind(),
-                    token.start() + shift,
-                    token.start() + shift + token.name().length(),
-                    token.name(),
-                    token.name()));
-        }
-        var rewritten = edits.isEmpty()
-                ? output
-                : SourceMap.replace(
-                        css,
-                        JsonParser.parseString(output.map("intermediate.css")).getAsJsonObject(),
-                        edits);
+                externalContainers,
+                Set.of(),
+                named,
+                properties,
+                ids,
+                resources.assets(),
+                resources.fonts(),
+                List.of());
+        var result =
+                CssUtilityBinding.compile(input, root, managed, exports.ids(), exports.animations(), context, false, 0);
         return new Result(
-                rewritten,
-                names.imports(),
-                Map.copyOf(compiler.properties),
-                Set.copyOf(compiler.usedProperties),
-                compiler.ids,
-                names.animations(),
-                names.fonts(),
-                containers,
-                nameTokens,
-                names.dynamicFonts());
+                result.output(),
+                result.imports(),
+                result.properties(),
+                result.propertyImports(),
+                result.ids(),
+                result.animations(),
+                result.fonts(),
+                result.containers(),
+                result.names(),
+                result.dynamicFonts());
     }
 
     record Result(
@@ -239,7 +200,7 @@ final class CssCompiler {
                     if (imported.containsKey(name)) {
                         usedProperties.add(name);
                     }
-                    String resolved = "--" + root + "--" + Names.encode(name);
+                    String resolved = "--" + root + "--" + CssIdentity.encode(name);
                     properties.put(name, resolved);
                     return resolved;
                 },
@@ -248,8 +209,8 @@ final class CssCompiler {
 
     private void ids(CascadingStyleSheet sheet, Map<String, CssIds.Import> imported, boolean global) {
         var bindings = new LinkedHashMap<String, String>();
-        exports.ids().forEach(name -> bindings.put(name, root + "--id-" + Names.encode(name)));
-        imported.keySet().forEach(name -> bindings.put(name, root + "--id-" + Names.encode(name)));
+        exports.ids().forEach(name -> bindings.put(name, root + "--id-" + CssIdentity.encode(name)));
+        imported.keySet().forEach(name -> bindings.put(name, root + "--id-" + CssIdentity.encode(name)));
         ids = CssIds.rewrite(sheet, syntax, bindings, global);
     }
 
@@ -438,14 +399,7 @@ final class CssCompiler {
     }
 
     static void checkAlias(String name, Kind kind) {
-        if (!name.matches("(?:--|-?(?:[a-zA-Z_]|[^\\x00-\\x7f]))(?:[a-zA-Z0-9_-]|[^\\x00-\\x7f])*")
-                || "--".equals(name)
-                || (Kind.KEYFRAMES == kind
-                        && ("none".equalsIgnoreCase(name)
-                                || "default".equalsIgnoreCase(name)
-                                || CssAnimationValues.CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))))) {
-            throw new IllegalArgumentException("Invalid imported CSS name: " + name);
-        }
+        CssIdentity.checkAlias(name, kind);
     }
 
     private record Scope(String selector, boolean owned) {}
@@ -525,7 +479,7 @@ final class CssCompiler {
     }
 
     private String animationName(String name) {
-        return root + "--keyframes-" + Names.encode(name);
+        return root + "--keyframes-" + CssIdentity.encode(name);
     }
 
     private void exportAnimation(String name) {
@@ -643,7 +597,7 @@ final class CssCompiler {
                         throw syntax.invalid("Local selector ." + name + " has no matching modifier accessor", simple);
                     }
                     found.add(name);
-                    result.append('.').append(root).append("--").append(Names.encode(name));
+                    result.append('.').append(root).append("--").append(CssIdentity.encode(name));
                 } else if (simple.isPseudo()
                         && !Set.of(":global", ":local", ":root", ":scope", ":host", ":css", ":css()")
                                 .contains(value.toLowerCase(Locale.ROOT))) {
@@ -700,7 +654,7 @@ final class CssCompiler {
             throw syntax.invalid("Unknown imported component name: " + alias, function);
         }
         usedImports.add(alias);
-        return "." + root + "--peer-" + Names.encode(alias);
+        return "." + root + "--peer-" + CssIdentity.encode(alias);
     }
 
     private String globalSelector(CSSSelector selector) {

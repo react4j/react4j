@@ -31,6 +31,7 @@ java_j2cl_library(
     name = "browser",
     srcs = [
         "BrowserExample.java",
+        "NativeExample.java",
         "package-info.java",
     ],
     java_deps = [

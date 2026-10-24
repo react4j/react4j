@@ -5,3 +5,6 @@ window['cssClasses'] = () => Entry.classes();
 
 /** @return {string} */
 window['utilityClasses'] = () => Entry.utilityClasses();
+
+/** @return {string} */
+window['nativeClasses'] = () => Entry.nativeClasses();

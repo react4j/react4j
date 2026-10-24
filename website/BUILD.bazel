@@ -40,6 +40,7 @@ react4j_site(
         "//examples/drumloop:production": "drumloop/drumloop",
         "//examples/heart-rate-monitor:development": "heart-rate-monitor_dev",
         "//examples/heart-rate-monitor:production": "heart-rate-monitor",
+        "//examples/native-utilities": "examples/native-utilities",
         "//examples/todomvc/arez:development": "todomvc/arez/todomvc_dev",
         "//examples/todomvc/arez:production": "todomvc/arez/todomvc",
         "//examples/todomvc/raw:development": "todomvc/raw/todomvc_dev",

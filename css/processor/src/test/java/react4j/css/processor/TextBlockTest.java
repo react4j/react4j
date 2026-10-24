@@ -14,6 +14,17 @@ public final class TextBlockTest {
     }
 
     @Test
+    public void ordinaryUtilityLiteralsKeepSpacesEscapesAndClosingOffsets() {
+        var literal = TextBlock.literal("\" a\\tbg-[12px] \"", 10, " a\tbg-[12px] ");
+        assertEquals(literal.value(), " a\tbg-[12px] ");
+        assertEquals(literal.offsets()[0], 11);
+        assertEquals(literal.offsets()[2], 13);
+        assertEquals(literal.offsets()[3], 15);
+        assertEquals(literal.offsets()[literal.value().length()], 25);
+        assertEquals(TextBlock.literal("\"\"", 0, "").offsets(), new int[] {1});
+    }
+
+    @Test
     public void normalizesLineEndingsAndMapsOriginalPositions() {
         mapping("\"\"\"\na\n\"\"\"", "a\n", 14, 15, 16);
         mapping("\"\"\"\ra\r\"\"\"", "a\n", 14, 15, 16);

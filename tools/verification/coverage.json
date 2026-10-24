@@ -8,16 +8,19 @@
       "lines": 95,
       "branches": 85,
       "classes": [
-        { "path": "react4j/css/processor/Names.java", "lines": 95, "branches": 85 },
         { "path": "react4j/css/processor/TextBlock.java", "lines": 95, "branches": 85 },
         { "path": "react4j/css/processor/CssCompiler.java", "lines": 95, "branches": 85 }
       ]
+    },
+    {
+      "path": "css/utility-language/src/main/java", "report": "jvm.lcov", "lines": 95, "branches": 85
     },
     {
       "path": "css/internal/src/main/java", "report": "jvm.lcov",
       "lines": 95,
       "branches": 85,
       "classes": [
+        { "path": "react4j/css/internal/CssIdentity.java", "lines": 95, "branches": 85 },
         { "path": "react4j/css/internal/SourceMap.java", "lines": 95, "branches": 85 },
         { "path": "react4j/css/internal/CssResource.java", "lines": 95, "branches": 85 }
       ]

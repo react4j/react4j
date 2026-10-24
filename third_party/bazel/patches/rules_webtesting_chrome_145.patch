@@ -1,0 +1,102 @@
+--- a/web/versioned/browsers-0.3.4.bzl
++++ b/web/versioned/browsers-0.3.4.bzl
+@@ -75,6 +75,6 @@
+-        sha256 = "8813b9fee041c1033d332a309c02a4d04658999fada4771c5901966b3558bda4",
+-        urls = [
+-            "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/1250580/chromedriver_linux64.zip",
+-        ],
+-        named_files = {
+-            "CHROMEDRIVER": "chromedriver_linux64/chromedriver",
++        sha256 = "7f397fa71614b2d97dcb06a87f3297c91725042803654d6c7fedcd10387a5df8",
++        urls = [
++            "https://storage.googleapis.com/chrome-for-testing-public/145.0.7632.117/linux64/chromedriver-linux64.zip",
++        ],
++        named_files = {
++            "CHROMEDRIVER": "chromedriver-linux64/chromedriver",
+@@ -87,6 +87,6 @@
+-        sha256 = "6144656cbc4f73628adae24581a128d109711c1cecdb88e57fd11e110d7769cd",
+-        urls = [
+-            "https://storage.googleapis.com/chromium-browser-snapshots/Mac/1250665/chromedriver_mac64.zip",
+-        ],
+-        named_files = {
+-            "CHROMEDRIVER": "chromedriver_mac64/chromedriver",
++        sha256 = "fea60867b12a3cc4206ba4c9dea49d9ab6ef271653a450675526cc9afc09f0d4",
++        urls = [
++            "https://storage.googleapis.com/chrome-for-testing-public/145.0.7632.117/mac-x64/chromedriver-mac-x64.zip",
++        ],
++        named_files = {
++            "CHROMEDRIVER": "chromedriver-mac-x64/chromedriver",
+@@ -99,6 +99,6 @@
+-        sha256 = "07ac40a4a5cca634aab0b178b8118760bbcffe46e6e59429a1dd8e4c59f02d3b",
+-        urls = [
+-            "https://storage.googleapis.com/chromium-browser-snapshots/Mac_Arm/1250665/chromedriver_mac64.zip",
+-        ],
+-        named_files = {
+-            "CHROMEDRIVER": "chromedriver_mac64/chromedriver",
++        sha256 = "25d09ebbca90628b480e95e0d1541818f8e7646d0b77fa81c6258fc13c0613d0",
++        urls = [
++            "https://storage.googleapis.com/chrome-for-testing-public/145.0.7632.117/mac-arm64/chromedriver-mac-arm64.zip",
++        ],
++        named_files = {
++            "CHROMEDRIVER": "chromedriver-mac-arm64/chromedriver",
+@@ -111,6 +111,6 @@
+-        sha256 = "1b5f3c68490e9defc97d876ba8fe5a00b723636be6b7d33dbe070a55be5f7126",
+-        urls = [
+-            "https://storage.googleapis.com/chromium-browser-snapshots/Win/1250665/chromedriver_win32.zip",
+-        ],
+-        named_files = {
+-            "CHROMEDRIVER": "chromedriver_win32/chromedriver.exe",
++        sha256 = "3f1fb3a0d777e4d5842b977299c0971a9c4abb17c17c304c2c06ce4d57bd1e84",
++        urls = [
++            "https://storage.googleapis.com/chrome-for-testing-public/145.0.7632.117/win64/chromedriver-win64.zip",
++        ],
++        named_files = {
++            "CHROMEDRIVER": "chromedriver-win64/chromedriver.exe",
+@@ -124 +124 @@
+-        sha256 = "b2dba543e76293d9718462eccea482fde606f16991775a73bdfbfcd32dd6a339",
++        sha256 = "b373fbc7cc71922082febe41fe413e02bb6c4ae31b6b6626ddb2c764289ef15d",
+@@ -127,4 +127,4 @@
+-            "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/1250580/chrome-linux.zip",
+-        ],
+-        named_files = {
+-            "CHROMIUM": "chrome-linux/chrome",
++            "https://storage.googleapis.com/chrome-for-testing-public/145.0.7632.117/linux64/chrome-linux64.zip",
++        ],
++        named_files = {
++            "CHROMIUM": "chrome-linux64/chrome",
+@@ -137 +137 @@
+-        sha256 = "7a951016dbb3716c99a17eea35b4d6ebcd953d40b944a8f02d9a76de1295deda",
++        sha256 = "00e368cc22d78ad4b92f4abb7c5877ee9090500431140a6ad49e880c61632c09",
+@@ -140,4 +140,4 @@
+-            "https://storage.googleapis.com/chromium-browser-snapshots/Mac/1250665/chrome-mac.zip",
+-        ],
+-        named_files = {
+-            "CHROMIUM": "chrome-mac/Chromium.app/Contents/MacOS/Chromium",
++            "https://storage.googleapis.com/chrome-for-testing-public/145.0.7632.117/mac-x64/chrome-mac-x64.zip",
++        ],
++        named_files = {
++            "CHROMIUM": "chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+@@ -150 +150 @@
+-        sha256 = "cf0dcbfdddd0bcdc08891492b21c4b11ed3b27c17922e7ead1f702a22a2e6d28",
++        sha256 = "cced377de50a37287f7f69337bbad5d9f12505bf6b03f7d40a627cc8061f7f59",
+@@ -153,4 +153,4 @@
+-            "https://storage.googleapis.com/chromium-browser-snapshots/Mac_Arm/1250665/chrome-mac.zip",
+-        ],
+-        named_files = {
+-            "CHROMIUM": "chrome-mac/Chromium.app/Contents/MacOS/Chromium",
++            "https://storage.googleapis.com/chrome-for-testing-public/145.0.7632.117/mac-arm64/chrome-mac-arm64.zip",
++        ],
++        named_files = {
++            "CHROMIUM": "chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+@@ -163 +163 @@
+-        sha256 = "35df630d8b3acceb860bcf28c5bcb854d63aab1a3224353e21808f314c1475da",
++        sha256 = "8a5dbab0f694f89285a48f8d93baa6445d11681b8d41aaa4cac1b6d7743198a0",
+@@ -166,4 +166,4 @@
+-            "https://storage.googleapis.com/chromium-browser-snapshots/Win/1250665/chrome-win.zip",
+-        ],
+-        named_files = {
+-            "CHROMIUM": "chrome-win/chrome.exe",
++            "https://storage.googleapis.com/chrome-for-testing-public/145.0.7632.117/win64/chrome-win64.zip",
++        ],
++        named_files = {
++            "CHROMIUM": "chrome-win64/chrome.exe",

@@ -3,6 +3,7 @@ package react4j.css.internal;
 import static org.testng.Assert.*;
 
 import com.google.debugging.sourcemap.SourceMapConsumerV3;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.List;
 import java.util.Objects;
@@ -144,6 +145,92 @@ public final class SourceMapTest {
                             .get(0)
                             .getAsString(),
                     java);
+        }
+    }
+
+    @Test
+    public void independentFragmentsComposeThroughPublishedInputOrigins() throws Exception {
+        String java = "class Rules {\nfirst\n\t😀padding:param(v);\n}";
+        var input = new SourceMap.Writer()
+                .append("first\n", new SourceMap.Location("Rules.java", java, 1, 0))
+                .append("\t😀", new SourceMap.Location("Rules.java", java, 2, 0))
+                .append("padding:param(v);", new SourceMap.Location("Rules.java", java, 2, 3));
+        var published = JsonParser.parseString(new SourceMap.Writer().map("provider.css"))
+                .getAsJsonObject();
+        SourceMap.addInput(
+                published,
+                "decoded.rules",
+                input.css(),
+                JsonParser.parseString(input.map("decoded.rules")).getAsJsonObject());
+        var fragment = new SourceMap.Writer()
+                .append("padding:137px", new SourceMap.Location("decoded.rules", input.css(), 1, 3))
+                .append(";")
+                .append("x", new SourceMap.Location("Other.css", "x", 0, 0));
+        var map = JsonParser.parseString(fragment.map("fragment.css")).getAsJsonObject();
+        var composed = new SourceMap.Writer().appendMapped(fragment.css(), map, published);
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(composed.map("final.css"));
+        var origin = Objects.requireNonNull(consumer.getMappingForLine(1, 1));
+        assertEquals(origin.getOriginalFile(), "Rules.java");
+        assertEquals(origin.getLineNumber(), 3);
+        assertEquals(origin.getColumnPosition(), 4);
+        assertNull(consumer.getMappingForLine(1, 14));
+        assertEquals(Objects.requireNonNull(consumer.getMappingForLine(1, 15)).getOriginalFile(), "Other.css");
+        assertTrue(composed.map("final.css").contains("class Rules"));
+        assertFalse(composed.map("final.css").contains("decoded.rules"));
+        assertEquals(composed.css(), fragment.css());
+        assertEquals(
+                new SourceMap.Writer()
+                        .appendMapped(fragment.css(), map, new JsonObject())
+                        .map("final.css"),
+                fragment.map("final.css"));
+        var unknown = JsonParser.parseString(new SourceMap.Writer().map("unknown.css"))
+                .getAsJsonObject();
+        SourceMap.addInput(
+                unknown,
+                "decoded.rules",
+                input.css(),
+                JsonParser.parseString(new SourceMap.Writer().map("decoded.rules"))
+                        .getAsJsonObject());
+        var unmapped = new SourceMap.Writer().appendMapped(fragment.css(), map, unknown);
+        consumer.parse(unmapped.map("unmapped.css"));
+        assertNull(consumer.getMappingForLine(1, 1));
+    }
+
+    @Test
+    public void inputCompositionRejectsStaleContentAndInvalidIntermediateCoordinates() {
+        String input = "a\nb";
+        var published = JsonParser.parseString(new SourceMap.Writer().map("provider.css"))
+                .getAsJsonObject();
+        SourceMap.addInput(
+                published,
+                "input",
+                input,
+                JsonParser.parseString(new SourceMap.Writer()
+                                .append(input, new SourceMap.Location("Rules.java", input, 0, 0))
+                                .map("input"))
+                        .getAsJsonObject());
+        for (var origin : List.of(
+                new SourceMap.Location("input", input + "stale", 0, 0),
+                new SourceMap.Location("input", input, 2, 0),
+                new SourceMap.Location("input", input, 0, 2),
+                new SourceMap.Location("input", input, 1, 2))) {
+            var fragment = new SourceMap.Writer().append("x", origin);
+            expectThrows(
+                    IllegalArgumentException.class,
+                    () -> new SourceMap.Writer()
+                            .appendMapped(
+                                    fragment.css(),
+                                    JsonParser.parseString(fragment.map("fragment.css"))
+                                            .getAsJsonObject(),
+                                    published));
+        }
+        for (String invalid : List.of("AADA", "AAAD")) {
+            var fragment = new SourceMap.Writer().append("x", new SourceMap.Location("input", input, 0, 0));
+            var map = JsonParser.parseString(fragment.map("fragment.css")).getAsJsonObject();
+            map.addProperty("mappings", invalid);
+            expectThrows(
+                    IllegalArgumentException.class, () -> new SourceMap.Writer().appendMapped("x", map, published));
         }
     }
 

@@ -1,0 +1,5 @@
+test_suite(
+    name = "tests",
+    tests = ["//css/utility-language/src/test/java/react4j/css/utility/language:tests"],
+    visibility = ["//:__subpackages__"],
+)

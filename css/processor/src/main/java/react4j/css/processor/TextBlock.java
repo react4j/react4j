@@ -9,6 +9,14 @@ record TextBlock(String value, int[] offsets) {
     private record Character(char value, int offset) {}
 
     static TextBlock decode(String token, int start, String expected) {
+        return decode(token, start, expected, false);
+    }
+
+    static TextBlock literal(String token, int start, String expected) {
+        return decode(token, start, expected, true);
+    }
+
+    private static TextBlock decode(String token, int start, String expected, boolean ordinary) {
         var unicode = new ArrayList<Character>();
         int slashes = 0;
         boolean fromUnicode = false;
@@ -33,68 +41,75 @@ record TextBlock(String value, int[] offsets) {
             fromUnicode = translated;
         }
         String translated = string(unicode);
-        if (!translated.startsWith("\"\"\"") || !translated.endsWith("\"\"\"")) {
+        boolean textBlock = translated.startsWith("\"\"\"") && translated.endsWith("\"\"\"");
+        if (!textBlock && (!ordinary || !translated.startsWith("\"") || !translated.endsWith("\""))) {
             throw new IllegalArgumentException("CSS definitions require a literal Java text block");
         }
-        int body = 3;
-        while ('\r' != translated.charAt(body) && '\n' != translated.charAt(body)) {
-            body++;
-        }
-        if ('\r' == translated.charAt(body++) && '\n' == translated.charAt(body)) {
-            body++;
-        }
-        var normalized = new ArrayList<Character>();
-        for (int i = body; i < unicode.size() - 3; i++) {
-            var c = unicode.get(i);
-            if ('\r' == c.value()) {
-                normalized.add(new Character('\n', c.offset()));
-                if (i + 1 < unicode.size() - 3 && '\n' == unicode.get(i + 1).value()) {
-                    i++;
+        List<Character> stripped;
+        int closing = unicode.size() - (textBlock ? 3 : 1);
+        if (textBlock) {
+            int body = 3;
+            while ('\r' != translated.charAt(body) && '\n' != translated.charAt(body)) {
+                body++;
+            }
+            if ('\r' == translated.charAt(body++) && '\n' == translated.charAt(body)) {
+                body++;
+            }
+            var normalized = new ArrayList<Character>();
+            for (int i = body; i < unicode.size() - 3; i++) {
+                var c = unicode.get(i);
+                if ('\r' == c.value()) {
+                    normalized.add(new Character('\n', c.offset()));
+                    if (i + 1 < unicode.size() - 3 && '\n' == unicode.get(i + 1).value()) {
+                        i++;
+                    }
+                } else {
+                    normalized.add(c);
                 }
-            } else {
-                normalized.add(c);
             }
-        }
-        var lines = new ArrayList<List<Character>>();
-        int lineStart = 0;
-        for (int i = 0; i < normalized.size(); i++) {
-            if ('\n' == normalized.get(i).value()) {
-                lines.add(normalized.subList(lineStart, i));
-                lineStart = i + 1;
+            var lines = new ArrayList<List<Character>>();
+            int lineStart = 0;
+            for (int i = 0; i < normalized.size(); i++) {
+                if ('\n' == normalized.get(i).value()) {
+                    lines.add(normalized.subList(lineStart, i));
+                    lineStart = i + 1;
+                }
             }
-        }
-        lines.add(normalized.subList(lineStart, normalized.size()));
-        int indent = Integer.MAX_VALUE;
-        for (int i = 0; i < lines.size(); i++) {
-            var line = lines.get(i);
-            int leading = 0;
-            while (leading < line.size()
-                    && java.lang.Character.isWhitespace(line.get(leading).value())) {
-                leading++;
+            lines.add(normalized.subList(lineStart, normalized.size()));
+            int indent = Integer.MAX_VALUE;
+            for (int i = 0; i < lines.size(); i++) {
+                var line = lines.get(i);
+                int leading = 0;
+                while (leading < line.size()
+                        && java.lang.Character.isWhitespace(line.get(leading).value())) {
+                    leading++;
+                }
+                if (leading != line.size() || i == lines.size() - 1) {
+                    indent = Math.min(indent, leading);
+                }
             }
-            if (leading != line.size() || i == lines.size() - 1) {
-                indent = Math.min(indent, leading);
+            stripped = new ArrayList<>();
+            int newlineIndex = 0;
+            for (int i = 0; i < lines.size(); i++) {
+                var line = lines.get(i);
+                int leading = 0;
+                while (leading < Math.min(indent, line.size())
+                        && java.lang.Character.isWhitespace(line.get(leading).value())) {
+                    leading++;
+                }
+                int last = line.size();
+                while (last > leading
+                        && java.lang.Character.isWhitespace(line.get(last - 1).value())) {
+                    last--;
+                }
+                stripped.addAll(line.subList(leading, last));
+                newlineIndex += line.size();
+                if (i != lines.size() - 1) {
+                    stripped.add(normalized.get(newlineIndex++));
+                }
             }
-        }
-        var stripped = new ArrayList<Character>();
-        int newlineIndex = 0;
-        for (int i = 0; i < lines.size(); i++) {
-            var line = lines.get(i);
-            int leading = 0;
-            while (leading < Math.min(indent, line.size())
-                    && java.lang.Character.isWhitespace(line.get(leading).value())) {
-                leading++;
-            }
-            int last = line.size();
-            while (last > leading
-                    && java.lang.Character.isWhitespace(line.get(last - 1).value())) {
-                last--;
-            }
-            stripped.addAll(line.subList(leading, last));
-            newlineIndex += line.size();
-            if (i != lines.size() - 1) {
-                stripped.add(normalized.get(newlineIndex++));
-            }
+        } else {
+            stripped = new ArrayList<>(unicode.subList(1, closing));
         }
         var cooked = new ArrayList<Character>();
         for (int i = 0; i < stripped.size(); i++) {
@@ -140,7 +155,7 @@ record TextBlock(String value, int[] offsets) {
         }
         int[] offsets =
                 Arrays.copyOf(cooked.stream().mapToInt(Character::offset).toArray(), cooked.size() + 1);
-        offsets[cooked.size()] = unicode.get(unicode.size() - 3).offset();
+        offsets[cooked.size()] = unicode.get(closing).offset();
         return new TextBlock(value, offsets);
     }
 

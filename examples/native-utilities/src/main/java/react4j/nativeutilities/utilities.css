@@ -1,0 +1,57 @@
+@utility-rules;
+@scale spacing .25rem;
+@tokens color <color> {
+  ink:#172b29;
+  muted:#46635e;
+  accent:#145c4b;
+  hover:#0e493b;
+  saved:#225b3f;
+  white:#fff;
+  tint:#edf5f0;
+}
+@tokens threshold <length> { wide:34rem; }
+
+@utility page { max-inline-size:64rem; margin-inline:auto; }
+@utility flex { display:flex; }
+@utility flex-col { flex-direction:column; }
+@utility row { flex-direction:row; }
+@utility items-start { align-items:flex-start; }
+@utility justify-between { justify-content:space-between; }
+@utility "gap-{size}" (size:scale(spacing)) { gap:param(size); }
+@utility "p-{size}" (size:scale(spacing)|arbitrary(<length-percentage>)) { padding:param(size); }
+@utility "px-{size}" (size:scale(spacing)) { padding-inline:param(size); }
+@utility "py-{size}" (size:scale(spacing)) { padding-block:param(size); }
+@utility "bg-{tone}" (tone:tokens(color)|arbitrary(<color>)) { background-color:param(tone); }
+@utility "text-{tone}" (tone:tokens(color)) { color:param(tone); }
+
+@utility frame { container:note / inline-size; inline-size:min(100%,48rem); }
+@utility narrow { inline-size:min(100%,20rem); }
+@utility card { border-bottom:1px solid #becfc9; anchor-scope:--details; }
+@utility button { border:1px solid transparent; border-radius:.75rem; cursor:pointer; font-weight:600; }
+@utility trigger { anchor-name:--details; white-space:nowrap; }
+@utility panel {
+  &:popover-open { display:flex; }
+  position:fixed;
+  position-anchor:--details;
+  inset:auto;
+  margin:0;
+  border:1px solid #becfc9;
+  border-radius:.5rem;
+  position-area:block-end span-inline-end;
+  position-try-fallbacks:flip-block,flip-inline,flip-block flip-inline;
+  inline-size:24rem;
+  min-inline-size:0;
+  max-inline-size:calc(100dvw - 2rem);
+  max-block-size:calc(100dvh - 2rem);
+  overflow:auto;
+}
+@utility transition-opacity { transition:opacity 240ms linear; }
+@utility transition-none { transition:none; }
+@utility "opacity-{value}" (value:bare(<number>) within [0,1]) { opacity:param(value); }
+
+@variant hover { @media (hover:hover) { &:hover { @slot; } } }
+@variant "note-min-{size}" (size:tokens(threshold)|arbitrary(<length>)) {
+  @container note (inline-size >= param(size)) { @slot; }
+}
+@variant starting { @starting-style { @slot; } }
+@variant reduce-motion { @media (prefers-reduced-motion:reduce) { @slot; } }

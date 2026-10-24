@@ -1,0 +1,31 @@
+load("//third_party/java:rules.bzl", "java_testng")
+
+java_testng(
+    name = "tests",
+    srcs = [
+        "AnchorValuesTest.java",
+        "AuthoringFeedbackTest.java",
+        "ConditionalVariantsTest.java",
+        "DefinitionValidationTest.java",
+        "UtilityLanguageTest.java",
+        "ValueDomainsTest.java",
+    ],
+    test_classes = [
+        "react4j.css.utility.language.DefinitionValidationTest",
+        "react4j.css.utility.language.AuthoringFeedbackTest",
+        "react4j.css.utility.language.AnchorValuesTest",
+        "react4j.css.utility.language.ConditionalVariantsTest",
+        "react4j.css.utility.language.UtilityLanguageTest",
+        "react4j.css.utility.language.ValueDomainsTest",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css:__pkg__",
+        "//css/utility-language:__pkg__",
+    ],
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//css/utility-language/src/main/java/react4j/css/utility/language",
+        "//third_party:gson",
+    ],
+)

@@ -1,0 +1,23 @@
+@utility-rules;
+@scale spacing .25rem;
+:root { --baseline: 1; }
+@utility "gap-{size}" (size: scale(spacing) | arbitrary(<length-percentage>)) {
+  gap: param(size);
+}
+@keyframes native-pulse { to { opacity: .8; } }
+@utility pulsing {
+  animation: external-pulse 1s, native-pulse 1s;
+  color: var(--theme);
+}
+
+@utility container-setup { container: card / inline-size; width: 987px; --density: compact; }
+@utility weight { font-weight: 650; }
+@variant "cq-{v}" (v: arbitrary(<length>)) {
+  @container card (0px <= inline-size < param(v)) {
+    @container card style(--density: compact) { @slot; }
+  }
+}
+@variant starting { @starting-style { @slot; } }
+
+@utility anchor-setup { anchor-name: --trigger; outline-width: 997px; }
+@utility anchored { position-anchor: --trigger; anchor-scope: --trigger; left: calc(anchor(--trigger left, 0px) + 1px); min-width: anchor-size(--trigger width, 2px); }

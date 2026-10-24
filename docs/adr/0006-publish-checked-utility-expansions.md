@@ -1,0 +1,3 @@
+# Publish checked utility expansions
+
+Publish a checked provider descriptor and separately compiled contributions for requested [Utility candidate](../glossary/README.md#utility-candidate) values, then link their generic CSS and metadata. Infinite families cannot be enumerated in provider CSS; expanding explicit consumer requests supports unseen downstream values without teaching the bundler the language or scanning application source. Provider fingerprints reject incompatible contributions, while shared [CSS symbol](../glossary/README.md#css-symbol) identities preserve naming and liveness across consumers.

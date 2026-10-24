@@ -13,6 +13,9 @@ Preserve source origins and content for CSS bundles and JavaScript values exposi
 5. Browser source-map publication is independent of JavaScript optimization and React runtime selection.
 6. Withholding generated browser source maps omits those files and their final references from delivered JavaScript/CSS without disabling the internal maps needed for linking and URL finalization.
 
+7. Native rule and candidate diagnostics retain available primary and related definition/token origins. Recoverable literal requests have payload spans; constant expressions retain their expression location plus decoded candidate offsets rather than an invented literal span.
+8. Independently expanded candidate fragments preserve authored rule origins through collection, deduplication, name replacement and pruning.
+
 ## Boundaries
 
 [Exact identifier-token attribution](../deferred/css-identifier-token-mapping.md) and [direct JavaScript-to-authored-CSS mapping](../deferred/javascript-authored-css-mapping.md) remain deferred.

@@ -1,4 +1,4 @@
-package react4j.css.processor;
+package react4j.css.internal;
 
 import com.helger.css.ICSSSourceLocationAware;
 import com.helger.css.decl.CSSDeclaration;
@@ -25,14 +25,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import react4j.css.internal.CssAnimationValues;
-import react4j.css.internal.CssConditions;
-import react4j.css.internal.CssExpressions;
-import react4j.css.internal.CssFontValues;
-import react4j.css.internal.CssLexical;
-import react4j.css.internal.CssResource;
-import react4j.css.internal.CssSyntax;
-import react4j.css.internal.SourceMap;
 
 /** Proves the meaning of original name-bearing terms without changing browser variable evaluation. */
 final class UtilityNames {
@@ -41,7 +33,7 @@ final class UtilityNames {
     private final String root;
     private final Set<String> externalAnimations;
     private final Set<String> externalFonts;
-    private final Map<String, CssCompiler.Import> imports;
+    private final Map<String, CssUtilityBinding.Import> imports;
     private final Map<String, CssFonts.Import> fontImports;
     private final Map<String, String> animations = new LinkedHashMap<>();
     private final Map<String, String> fonts = new LinkedHashMap<>();
@@ -75,7 +67,7 @@ final class UtilityNames {
             String root,
             Set<String> externalAnimations,
             Set<String> externalFonts,
-            Map<String, CssCompiler.Import> imports,
+            Map<String, CssUtilityBinding.Import> imports,
             Map<String, CssFonts.Import> fontImports) {
         this.css = css;
         this.syntax = syntax;
@@ -94,8 +86,9 @@ final class UtilityNames {
             Set<String> externalAnimations,
             Set<String> externalFonts,
             Set<String> exports,
-            Map<String, CssCompiler.Import> imports,
-            Map<String, CssFonts.Import> fontImports) {
+            Map<String, CssUtilityBinding.Import> imports,
+            Map<String, CssFonts.Import> fontImports,
+            boolean allowUnused) {
         var names = new UtilityNames(css, syntax, root, externalAnimations, externalFonts, imports, fontImports);
         names.collect(sheet);
         for (var name : exports) {
@@ -104,7 +97,7 @@ final class UtilityNames {
             }
             var imported = imports.get(name);
             if (null != imported && CssResource.Kind.KEYFRAMES == imported.kind()) {
-                names.animations.putIfAbsent(name, root + "--keyframes-" + Names.encode(name));
+                names.animations.putIfAbsent(name, root + "--keyframes-" + CssIdentity.encode(name));
                 names.usedImports.add(name);
             }
             if (!names.animations.containsKey(name)) {
@@ -114,12 +107,12 @@ final class UtilityNames {
         names.analyze(sheet);
         names.registrations(sheet);
         for (var name : externalAnimations) {
-            if (!names.seenAnimations.contains(name)) {
+            if (!allowUnused && !names.seenAnimations.contains(name)) {
                 throw new IllegalArgumentException("Unknown external animation: " + name);
             }
         }
         for (var name : externalFonts) {
-            if (!names.seenFonts.contains(name)) {
+            if (!allowUnused && !names.seenFonts.contains(name)) {
                 throw new IllegalArgumentException("Unknown external font: " + name);
             }
         }
@@ -199,7 +192,7 @@ final class UtilityNames {
                         || CssAnimationValues.CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))) {
                     throw syntax.invalid("Reserved keyframe name: " + name, frames);
                 }
-                String replacement = root + "--keyframes-" + Names.encode(name);
+                String replacement = root + "--keyframes-" + CssIdentity.encode(name);
                 animations.put(name, replacement);
                 token(CssResource.SymbolKind.ANIMATION, token.start(), token.end(), replacement);
             }
@@ -214,7 +207,7 @@ final class UtilityNames {
                 if (fontImports.containsKey(name)) {
                     throw syntax.invalid("Owned font conflicts with imported family: " + name, face);
                 }
-                fonts.put(name, root + "--font-" + Names.encode(name));
+                fonts.put(name, root + "--font-" + CssIdentity.encode(name));
             }
         });
         if (externalAnimations.stream().anyMatch(imports::containsKey)
@@ -366,8 +359,8 @@ final class UtilityNames {
                                 if (value.dynamic()) {
                                     fontImports
                                             .keySet()
-                                            .forEach(name ->
-                                                    fonts.putIfAbsent(name, root + "--font-" + Names.encode(name)));
+                                            .forEach(name -> fonts.putIfAbsent(
+                                                    name, root + "--font-" + CssIdentity.encode(name)));
                                 }
                                 var families = value.families();
                                 if (value.dynamic() && "font".equals(property)) {
@@ -391,7 +384,7 @@ final class UtilityNames {
                                         continue;
                                     }
                                     if (fontImports.containsKey(name)) {
-                                        fonts.putIfAbsent(name, root + "--font-" + Names.encode(name));
+                                        fonts.putIfAbsent(name, root + "--font-" + CssIdentity.encode(name));
                                     }
                                     String replacement = fonts.get(name);
                                     if (null != replacement) {
@@ -462,7 +455,7 @@ final class UtilityNames {
                                     var imported = imports.get(name.name());
                                     if (null != imported && CssResource.Kind.KEYFRAMES == imported.kind()) {
                                         animations.putIfAbsent(
-                                                name.name(), root + "--keyframes-" + Names.encode(name.name()));
+                                                name.name(), root + "--keyframes-" + CssIdentity.encode(name.name()));
                                         usedImports.add(name.name());
                                     }
                                     String replacement = animations.get(name.name());

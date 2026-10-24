@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 /** Source-map v3 emission for generated CSS. Positions use zero-based UTF-16 columns. */
 public final class SourceMap {
     private static final String BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    private static final String INPUT = "x_react4j_input";
 
     private SourceMap() {}
 
@@ -56,6 +57,54 @@ public final class SourceMap {
         }
         copy(css, mappings, new Span(offset, css.length()), writer);
         return writer;
+    }
+
+    /** Looks up an authored anchor while composing an earlier compiler's output. */
+    public static @Nullable Location location(String css, JsonObject map, int offset) {
+        if (offset < 0 || offset > css.length()) {
+            throw new IllegalArgumentException("CSS offset is outside the source");
+        }
+        return location(mappings(css, map), offset);
+    }
+
+    private static @Nullable Location location(List<Mapping> mappings, int offset) {
+        Location result = null;
+        for (var mapping : mappings) {
+            if (mapping.offset() > offset) {
+                break;
+            }
+            result = mapping.location();
+        }
+        return result;
+    }
+
+    /** Publishes an intermediate source's authoritative map for independently produced fragments. */
+    public static void addInput(JsonObject map, String source, String content, JsonObject inputMap) {
+        var input = new JsonObject();
+        input.addProperty("source", source);
+        input.addProperty("content", content);
+        input.add("map", inputMap);
+        map.add(INPUT, input);
+    }
+
+    private static int offset(Location location) {
+        String content = location.content();
+        int offset = 0;
+        if (location.line() < 0 || location.column() < 0) {
+            throw new IllegalArgumentException("Invalid intermediate source-map position");
+        }
+        for (int line = 0; line < location.line(); line++) {
+            int end = content.indexOf('\n', offset);
+            if (end < 0) {
+                throw new IllegalArgumentException("Invalid intermediate source-map line");
+            }
+            offset = end + 1;
+        }
+        int end = content.indexOf('\n', offset);
+        if (location.column() > (end < 0 ? content.length() : end) - offset) {
+            throw new IllegalArgumentException("Invalid intermediate source-map column");
+        }
+        return offset + location.column();
     }
 
     private static List<Mapping> mappings(String css, JsonObject map) {
@@ -192,6 +241,35 @@ public final class SourceMap {
                     column++;
                 }
             }
+            return this;
+        }
+
+        public Writer appendMapped(String text, JsonObject map) {
+            copy(text, mappings(text, map), new Span(0, text.length()), this);
+            return this;
+        }
+
+        /** Composes header-derived origins through the full provider's published input map. */
+        public Writer appendMapped(String text, JsonObject map, JsonObject providerMap) {
+            if (!providerMap.has(INPUT)) {
+                return appendMapped(text, map);
+            }
+            var input = providerMap.getAsJsonObject(INPUT);
+            String source = input.get("source").getAsString();
+            String content = input.get("content").getAsString();
+            var originals = mappings(content, input.getAsJsonObject("map"));
+            var composed = new ArrayList<Mapping>();
+            for (var mapping : mappings(text, map)) {
+                var origin = mapping.location();
+                if (null != origin && source.equals(origin.source())) {
+                    if (!content.equals(origin.content())) {
+                        throw new IllegalArgumentException("Conflicting intermediate source content: " + source);
+                    }
+                    origin = location(originals, offset(origin));
+                }
+                composed.add(new Mapping(mapping.offset(), origin));
+            }
+            copy(text, composed, new Span(0, text.length()), this);
             return this;
         }
 

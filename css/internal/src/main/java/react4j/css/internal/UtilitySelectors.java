@@ -1,4 +1,4 @@
-package react4j.css.processor;
+package react4j.css.internal;
 
 import com.helger.css.decl.CSSSelector;
 import com.helger.css.decl.CSSSelectorAttribute;
@@ -9,8 +9,6 @@ import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.parser.CSSParseHelper;
 import java.util.Set;
-import react4j.css.internal.CssSelectors;
-import react4j.css.internal.CssSyntax;
 
 /** Requires a managed class on every possible branch of an ordinary utility selector. */
 final class UtilitySelectors {

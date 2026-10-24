@@ -2,6 +2,8 @@
 
 Define component styles alongside Java views with `react4j.css.Css`. The annotation processor checks selectors against Java accessors and generates namespaced CSS. Annotation processing, CSS compilation and URL finalization run on the JVM.
 
+Native `@utility-rules` inputs support checked families, typed values, variants, containers, starting styles and named anchors. Start with [using native utilities](../docs/native-utilities.md), then follow the [rule-author guide and reference](../docs/utility-rules.md) or [worked recipes](../docs/utility-recipes.md). Existing finite utility stylesheets remain supported.
+
 ## Authoring
 
 Declare an abstract style class with a literal CSS text block:

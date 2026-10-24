@@ -2,13 +2,13 @@
 
 ## Purpose
 
-Consume a finite [Utility CSS library](../glossary/README.md#utility-css-library) through the existing checked Java style, naming and delivery contracts.
+Consume a [Utility CSS library](../glossary/README.md#utility-css-library) through the existing checked Java style, naming and delivery contracts.
 
 ## Requirements
 
-1. A utility library consumes already compiled, flattened CSS. It does not interpret utility-generation directives or require a generator during application compilation.
+1. A utility library consumes either already compiled, flattened CSS or declarative [native rules](native-utility-language.md). Finite inputs require no utility generator during application compilation.
 2. A utility library or checked global definition supplies exactly one literal Java text block or one explicitly declared, package-relative CSS file. Missing, conflicting and noncanonical source declarations fail during compilation, including unused declarations.
-3. The managed class inventory is inferred from the complete selector tree, including referenced markers without standalone rules. Explicit external classes are excluded from managed ownership.
+3. A finite input derives its managed class inventory from the complete selector tree, including referenced markers without standalone rules. A native input derives its finite class inventory from requested expansions. Explicit external classes are excluded from managed ownership.
 4. Ordinary declarations in a utility library require a managed class guard. Supporting definitions and custom-property initialization may be global; ordinary unguarded element defaults belong in separate global inputs.
 5. Selecting a utility does not implicitly activate page-wide resets or defaults. Applications select their global definitions explicitly.
 6. Ordinary component declarations take precedence over utility declarations. A library's authored cascade order is preserved; independent libraries do not merge internal layer identities.
@@ -21,7 +21,7 @@ Consume a finite [Utility CSS library](../glossary/README.md#utility-css-library
 
 ## Architectural basis
 
-[Consume finite utility libraries](../adr/0004-consume-finite-utility-libraries.md).
+[Compile declarative rules on the JVM](../adr/0005-compile-declarative-utility-rules-on-jvm.md) and [publish checked expansions](../adr/0006-publish-checked-utility-expansions.md).
 
 ## Related contracts
 

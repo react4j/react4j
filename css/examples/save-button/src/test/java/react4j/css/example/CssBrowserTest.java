@@ -212,6 +212,119 @@ public final class CssBrowserTest {
         });
     }
 
+    public BrowserPromise testNativeContainerStatesAndStartingTransition() {
+        var fixture = Browser.append("div");
+        NativeExample.render(fixture);
+        var frame = Browser.query(fixture, "#native-frame");
+        var query = Browser.query(fixture, "#native-query");
+        var scroller = Browser.query(fixture, "#native-scroll");
+        var child = Browser.query(fixture, "#native-scroll-child");
+        equal("scroll-state", Browser.computed(scroller, "container-type"));
+        check(
+                (child.getBoundingClientRect().getBottom()
+                                - child.getBoundingClientRect().getTop())
+                        > (scroller.getBoundingClientRect().getBottom()
+                                - scroller.getBoundingClientRect().getTop()),
+                "Scrollable overflow exists");
+        equal("rgb(10, 120, 30)", Browser.computed(query, "color"));
+        equal("400", Browser.computed(query, "font-weight"));
+        check(!_style.getTextContent().contains("987px"), "Unrequested native setup is absent");
+        Browser.cssText(frame, "width:80px;" + NativeExample.densityProperty() + ":compact");
+        equal("rgb(90, 100, 110)", Browser.computed(query, "color"));
+        equal("700", Browser.computed(query, "font-weight"));
+        var animations = Browser.animations(Browser.query(fixture, "#native-enter"));
+        check(1 == animations.length, "Starting style creates the explicit opacity transition");
+        var transition = animations[0];
+        transition.pause();
+        return transition
+                .getReady()
+                .then(v -> {
+                    transition.setCurrentTime(50000);
+                    double opacity =
+                            Double.parseDouble(Browser.computed(Browser.query(fixture, "#native-enter"), "opacity"));
+                    check(.49 < opacity && .51 > opacity, "Starting opacity interpolates to its final value");
+                    return Browser.until(
+                            () -> "7px".equals(Browser.computed(child, "letter-spacing")),
+                            2000,
+                            20,
+                            "Scrollable state becomes visible");
+                })
+                .then(v -> {
+                    Browser.cssText(scroller, "height:300px");
+                    return Browser.until(
+                            () -> "normal".equals(Browser.computed(child, "letter-spacing")),
+                            2000,
+                            20,
+                            "Scrollable state updates after layout");
+                })
+                .finallyDo(fixture::remove);
+    }
+
+    public BrowserPromise testNativePopoverScopesFlipsAndOversizedContent() {
+        var fixture = Browser.append("div");
+        NativeExample.renderPopovers(fixture);
+        // The panel enters the top layer; a clipped application ancestor remains explicit.
+        Browser.cssText(fixture, "overflow:hidden;height:10px");
+        String[] ids = {"one", "two", "edge", "large"};
+        String[] positions = {"top:40px;left:40px", "top:140px;left:240px", "bottom:8px;right:8px", "top:0;left:16px"};
+        for (int i = 0; i < ids.length; i++) {
+            var trigger = Browser.query(fixture, "#native-trigger-" + ids[i]);
+            var panel = Browser.query(fixture, "#native-panel-" + ids[i]);
+            Browser.cssText(trigger, positions[i]);
+            panel.setAttribute("popover", "manual");
+            trigger.setAttribute("aria-controls", panel.getId());
+            Browser.showPopover(panel);
+        }
+        return Browser.delay(50)
+                .thenDo(() -> {
+                    for (String id : new String[] {"one", "two"}) {
+                        var trigger = Browser.query(fixture, "#native-trigger-" + id);
+                        var panel = Browser.query(fixture, "#native-panel-" + id);
+                        var anchor = trigger.getBoundingClientRect();
+                        var positioned = panel.getBoundingClientRect();
+                        check(
+                                Math.abs(positioned.getTop() - anchor.getBottom()) < 1,
+                                "Panel follows its own trigger: " + id);
+                        check(
+                                Math.abs(positioned.getLeft() - anchor.getLeft()) < 1,
+                                "Inline position follows instance scope: " + id);
+                        check(Math.abs(positioned.getWidth() - anchor.getWidth()) < 1, "Default anchor size: " + id);
+                        equal(Browser.computed(trigger, "anchor-name"), Browser.computed(panel, "position-anchor"));
+                    }
+                    var edge = Browser.query(fixture, "#native-panel-edge").getBoundingClientRect();
+                    var edgeTrigger =
+                            Browser.query(fixture, "#native-trigger-edge").getBoundingClientRect();
+                    check(
+                            edge.getBottom() <= edgeTrigger.getTop() + 1,
+                            "Built-in fallback flips above the bottom edge");
+                    check(
+                            0 <= edge.getLeft() && edge.getRight() <= Browser.viewportWidth(),
+                            "Edge panel stays horizontally visible");
+                    var large = Browser.query(fixture, "#native-panel-large");
+                    var bounds = large.getBoundingClientRect();
+                    check(
+                            bounds.getRight() - bounds.getLeft() <= Browser.viewportWidth() - 31,
+                            "Oversized panel has an explicit inline limit");
+                    check(
+                            bounds.getBottom() - bounds.getTop() <= Browser.viewportHeight() - 31,
+                            "Oversized panel has an explicit block limit");
+                    check(
+                            0 <= bounds.getTop() && bounds.getBottom() <= Browser.viewportHeight() + 1,
+                            "Oversized example stays in the viewport");
+                    equal("auto", Browser.computed(large, "overflow-y"));
+                    check(
+                            Browser.query(large, "div").getBoundingClientRect().getBottom() > bounds.getBottom(),
+                            "Large content scrolls inside its panel");
+                    var panel = Browser.query(fixture, "#native-panel-one");
+                    Browser.hidePopover(panel);
+                    check(!panel.matches(":popover-open"), "Closing remains explicit application behavior");
+                    var trigger = Browser.query(fixture, "#native-trigger-one");
+                    trigger.focus();
+                    check(trigger.matches(":focus"), "Application restores trigger focus");
+                })
+                .finallyDo(fixture::remove);
+    }
+
     public void testNamedUtilityContainersAndSelectorMembership() {
         equal("rgb(10, 120, 30)", css("utility-query", "color"));
         equal("rgb(40, 50, 60)", css("utility-query-second", "color"));

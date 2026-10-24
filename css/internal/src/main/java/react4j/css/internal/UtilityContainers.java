@@ -1,4 +1,4 @@
-package react4j.css.processor;
+package react4j.css.internal;
 
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSUnknownRule;
@@ -10,16 +10,18 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import react4j.css.internal.CssConditions;
-import react4j.css.internal.CssContainers;
-import react4j.css.internal.CssSyntax;
 
 /** Binds library-local container declarations and checks explicitly external ancestor queries. */
 final class UtilityContainers {
     private UtilityContainers() {}
 
     static Map<String, String> names(
-            String css, CascadingStyleSheet sheet, CssSyntax syntax, String root, Set<String> external) {
+            String css,
+            CascadingStyleSheet sheet,
+            CssSyntax syntax,
+            String root,
+            Set<String> external,
+            boolean allowUnused) {
         var names = new LinkedHashMap<String, String>();
         var seen = new HashSet<String>();
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
@@ -27,13 +29,16 @@ final class UtilityContainers {
             public void onDeclaration(CSSDeclaration declaration) {
                 var value = CssContainers.read(declaration);
                 if (value.dynamic()) {
-                    throw syntax.invalid("Utility container names must be static identifiers", declaration);
+                    throw syntax.invalid(
+                            (allowUnused ? "U_DYNAMIC_NAME: " : "")
+                                    + "Utility container names must be static identifiers",
+                            declaration);
                 }
                 for (var term : value.names()) {
                     String name = CSSParseHelper.unescapeURL(term.getValue());
                     seen.add(name);
                     if (!external.contains(name)) {
-                        names.put(name, root + "--container-" + Names.encode(name));
+                        names.put(name, root + "--container-" + CssIdentity.encode(name));
                     }
                 }
             }
@@ -56,7 +61,7 @@ final class UtilityContainers {
             }
         });
         for (var name : external) {
-            if (!seen.contains(name)) {
+            if (!allowUnused && !seen.contains(name)) {
                 throw new IllegalArgumentException("Unknown external container: " + name);
             }
         }

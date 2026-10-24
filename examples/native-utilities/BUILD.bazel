@@ -1,0 +1,25 @@
+load("@react4j//:defs.bzl", "browser_application", "css_bundle")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//:__subpackages__"])
+
+closure_js_library(
+    name = "entry",
+    srcs = ["//examples/native-utilities/src/main/java/react4j/nativeutilities:Main.entry.js"],
+    deps = ["//examples/native-utilities/src/main/java/react4j/nativeutilities"],
+)
+
+css_bundle(
+    name = "styles",
+    css = "index.css",
+    root = ":native-utilities_bundle",
+    source_map = "index.css.map",
+)
+
+browser_application(
+    name = "native-utilities",
+    entry_point = "react4j.nativeutilities.MainEntry",
+    html = "public/index.html",
+    styles = {":styles": "css/index.css"},
+    deps = [":entry"],
+)

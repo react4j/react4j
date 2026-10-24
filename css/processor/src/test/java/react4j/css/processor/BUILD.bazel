@@ -28,6 +28,7 @@ java_testng(
         "CssResourceProcessorTest.java",
         "CssStableProcessorTest.java",
         "CssSymbolProcessorTest.java",
+        "NativeUtilityProcessorTest.java",
         "UtilityCssProcessorTest.java",
     ],
     data = [
@@ -47,9 +48,11 @@ java_testng(
         "react4j.css.processor.CssStableProcessorTest",
         "react4j.css.processor.CssSymbolProcessorTest",
         "react4j.css.processor.UtilityCssProcessorTest",
+        "react4j.css.processor.NativeUtilityProcessorTest",
     ],
     deps = [
         "//css/core",
+        "//css/internal/src/main/java/react4j/css/internal",
         "//third_party:closure_compiler_unshaded",
         "//third_party:gson",
         "//tools/testing/src/main/java/react4j/testing:strict_generated_code",
@@ -68,6 +71,7 @@ java_testng(
         "CssResourceProcessorTest.java",
         "CssStableProcessorTest.java",
         "CssSymbolProcessorTest.java",
+        "NativeUtilityProcessorTest.java",
         "UtilityCssProcessorTest.java",
     ],
     data = [
@@ -85,9 +89,11 @@ java_testng(
         "react4j.css.processor.CssStableProcessorTest",
         "react4j.css.processor.CssSymbolProcessorTest",
         "react4j.css.processor.UtilityCssProcessorTest",
+        "react4j.css.processor.NativeUtilityProcessorTest",
     ],
     deps = [
         "//css/core",
+        "//css/internal/src/main/java/react4j/css/internal",
         "//css/processor/src/main/java/react4j/css/processor",
         "//third_party:closure_compiler_unshaded",
         "//third_party:gson",
@@ -144,7 +150,7 @@ java_testng(
     name = "names_tests",
     srcs = ["NamesTest.java"],
     test_class = "react4j.css.processor.NamesTest",
-    deps = ["//css/processor/src/main/java/react4j/css/processor"],
+    deps = ["//css/internal/src/main/java/react4j/css/internal"],
 )
 
 java_testng(
@@ -158,6 +164,7 @@ test_suite(
     name = "unit_tests",
     tests = [
         ":asset_font_tests",
+        ":authoring_tests",
         ":compiler_tests",
         ":ids_tests",
         ":input_jar_tests",
@@ -183,6 +190,7 @@ java_testng(
     name = "utility_tests",
     srcs = [
         "CssProcessorTest.java",
+        "NativeUtilityProcessorTest.java",
         "UtilityCssProcessorTest.java",
     ],
     data = [
@@ -190,7 +198,10 @@ java_testng(
         "//third_party/java:strict_checker_options",
     ],
     jvm_flags = _PROCESSOR_JVM_FLAGS + ["-Dcss.processor.implementation=true"],
-    test_class = "react4j.css.processor.UtilityCssProcessorTest",
+    test_classes = [
+        "react4j.css.processor.UtilityCssProcessorTest",
+        "react4j.css.processor.NativeUtilityProcessorTest",
+    ],
     deps = [
         "//css/core",
         "//css/processor/src/main/java/react4j/css/processor",
@@ -205,4 +216,15 @@ java_testng(
     srcs = ["CssInputJarTest.java"],
     test_class = "react4j.css.processor.CssInputJarTest",
     deps = ["//css/processor/src/main/java/react4j/css/processor"],
+)
+
+java_testng(
+    name = "authoring_tests",
+    srcs = ["UtilityRulesTest.java"],
+    test_class = "react4j.css.processor.UtilityRulesTest",
+    deps = [
+        "//css/processor/src/main/java/react4j/css/processor",
+        "//css/utility-language/src/main/java/react4j/css/utility/language",
+        "//third_party:gson",
+    ],
 )

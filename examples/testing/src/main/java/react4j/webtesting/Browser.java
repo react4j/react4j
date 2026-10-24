@@ -137,6 +137,18 @@ public final class Browser {
     public static native BrowserPromise delay(int milliseconds);
 
     @JsMethod
+    public static native int viewportWidth();
+
+    @JsMethod
+    public static native int viewportHeight();
+
+    @JsMethod
+    public static native void showPopover(Element element);
+
+    @JsMethod
+    public static native void hidePopover(Element element);
+
+    @JsMethod
     public static native String json(@Nullable Object value);
 
     @JsMethod
@@ -249,6 +261,8 @@ public final class Browser {
 
         public native boolean hasAttribute(String name);
 
+        public native void setAttribute(String name, String value);
+
         public native void remove();
     }
 
@@ -283,6 +297,12 @@ public final class Browser {
 
         @JsProperty
         public native double getWidth();
+
+        @JsProperty
+        public native double getLeft();
+
+        @JsProperty
+        public native double getRight();
 
         @JsProperty
         public native double getTop();

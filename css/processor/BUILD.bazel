@@ -34,6 +34,7 @@ release_jar(
         "org.slf4j=react4j.css.processor.vendor.slf4j",
         "com.google.gson=react4j.css.processor.vendor.gson",
         "react4j.css.internal=react4j.css.processor.internal",
+        "react4j.css.utility.language=react4j.css.processor.language",
     ],
     resource_entries = ["META-INF/LICENSE"],
     resource_files = ["//:LICENSE"],
