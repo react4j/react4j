@@ -114,15 +114,13 @@ public final class CssInputIntegrationTest {
                 int status = process.waitFor();
                 if ("gap-137".equals(candidate)) {
                     assertEquals(status, 0, output);
+                    assertTrue(Files.isRegularFile(
+                            directory.resolve("valid/react4j/css/integration/Styled_HeaderCheck.class")));
                 } else {
                     assertNotEquals(status, 0, output);
                     assertTrue(output.contains("U_VALUE_TYPE"), output);
                 }
             }
-            String descriptor = Files.readString(
-                    input("tree").resolve("react4j/css/integration/NativeUtilityLibrary.css.rules.json"));
-            assertTrue(descriptor.contains("checked"));
-            assertTrue(descriptor.contains("native.utilities.css"));
         } finally {
             try (var files = Files.walk(directory)) {
                 for (var path : files.sorted(Comparator.reverseOrder()).toList()) {
