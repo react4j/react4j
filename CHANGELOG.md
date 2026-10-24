@@ -3,9 +3,7 @@
 ### Unreleased
 
 * Add public native utility guides, worked recipes and a runnable example demonstrating containers, scoped popovers and entry motion. Run it with `tools/examples.sh serve native-utilities development`.
-
 * Add a JVM-only native utility rule language with typed families, numeric bounds, container/starting-style variants and checked scoped anchors. Independent Java consumers share checked descriptors and candidate expansions; JVM authoring commands expose structured diagnostics and traces.
-
 * Add checked utility CSS with `UtilityCssLibrary`, `UtilityStyles` and method-level `UtilityCss`. Consume explicit inline/file stylesheets and dependency catalogues without a utility generator. Preserve ordered class lists, hybrid/interface contracts and owner-scoped classes, properties, animations, fonts and containers through optimized removal, name compression, source maps and asset finalization. Try the runnable example with `tools/examples.sh serve utility-css development`.
 * Support modern flat utility CSS, static animation/font variable chains, custom-property transitions, safe class-token selectors, container queries, starting styles and empty variable fallbacks. Preserve independent library layer order beneath component CSS. Resets remain explicit global inputs; standard important declarations are permitted in global/shared inputs and rejected in component/utility definitions.
 * Pin the consolidated J2CL compiler and matching Braincheck, Zemeckis, Arez and Sting revisions; remove the local J2CL patches.
