@@ -28,4 +28,7 @@ public @interface UtilityCssLibrary {
     String[] externalFonts() default {};
 
     String[] externalContainers() default {};
+
+    /** External anchor names for native rules, with their full -- spelling. */
+    String[] externalAnchors() default {};
 }

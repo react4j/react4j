@@ -142,6 +142,48 @@ public final class NativeUtilityProcessorTest {
     }
 
     @Test
+    public void anchorsOwnTheirNamespaceAndExternalHooksCanFirstAppearDownstream() throws Exception {
+        String rules = RULES + """
+            @utility trigger {anchor-name:--trigger;}
+            @utility panel {position-anchor:--trigger;anchor-scope:--trigger;left:anchor(--trigger left);}
+            @utility "left-{v}" (v:arbitrary(<length-percentage>)) {left:param(v);}
+            """;
+        var result = CssProcessorTest.compile(
+                Map.of(
+                        "Utilities.java",
+                        library(rules).replace("externalClasses=", "externalAnchors={\"--host\"},externalClasses="),
+                        "Button.java",
+                        styles("panel left-[anchor(--host_left)]")),
+                "demo.Button");
+        assertTrue(result.success(), result.diagnostics());
+        String fragments = text(result, "classes/demo/Button.css.fragments.json");
+        assertTrue(fragments.contains("--jcss-demo-Utilities--anchor-trigger"), fragments);
+        assertTrue(fragments.contains("anchor(--host left)"), fragments);
+        assertTrue(text(result, "classes/demo/Utilities.css.json").contains("ANCHOR"));
+        var invalid = CssProcessorTest.compile(
+                Map.of("Utilities.java", library(rules + "@utility bad {anchor-name:var(--future);}")));
+        assertFalse(invalid.success());
+        assertTrue(invalid.diagnostics().contains("U_DYNAMIC_NAME"), invalid.diagnostics());
+    }
+
+    @Test
+    public void finiteUtilitiesRetainTheirExistingRawAnchorBehavior() throws Exception {
+        String provider =
+                IMPORTS + """
+                    @UtilityCssLibrary(value=\
+                    """ + "\"\"\"\n" + """
+                    .anchor {anchor-name:var(--host);}
+                    .panel {position-anchor:var(--host);left:anchor(--host left);}
+                    """ + "\n\"\"\",externalProperties={\"host\"}) public class Utilities {}";
+        var result = CssProcessorTest.compile(
+                Map.of("Utilities.java", provider, "Button.java", styles("anchor panel")), "demo.Button");
+        assertTrue(result.success(), result.diagnostics());
+        String css = text(result, "classes/demo/Utilities.css");
+        assertTrue(css.contains("anchor-name:var(--host)"), css);
+        assertTrue(css.contains("anchor(--host left)"), css);
+    }
+
+    @Test
     public void nativeProvidersRetainExistingSymbolAccessorContracts() throws Exception {
         String rules = RULES + "@keyframes pulse { to { opacity:1; } } @utility target { & #target {color:gold;} }";
         String provider = library(rules)

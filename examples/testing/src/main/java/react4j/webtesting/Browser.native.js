@@ -148,3 +148,12 @@ Browser.appendIn = function(page, tag) {
 };
 /** @param {!Element} element @param {string} text */
 Browser.cssText = function(element, text) { element.style.cssText = text; };
+
+/** @return {number} */
+Browser.viewportWidth = function() { return window.innerWidth; };
+/** @return {number} */
+Browser.viewportHeight = function() { return window.innerHeight; };
+/** @param {!Element} element */
+Browser.showPopover = function(element) { /** @type {!HTMLElement} */ (element).showPopover(); };
+/** @param {!Element} element */
+Browser.hidePopover = function(element) { /** @type {!HTMLElement} */ (element).hidePopover(); };

@@ -18,6 +18,7 @@ public final class ValueDomainsTest {
                 Set.of(),
                 Set.of(),
                 Set.of(),
+                Set.of(),
                 Map.of(),
                 Map.of(),
                 Map.of(),

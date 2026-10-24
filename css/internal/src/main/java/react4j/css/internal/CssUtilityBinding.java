@@ -33,6 +33,7 @@ public final class CssUtilityBinding {
             Set<String> externalAnimations,
             Set<String> externalFonts,
             Set<String> externalContainers,
+            Set<String> externalAnchors,
             Map<String, Import> imports,
             Map<String, CssProperties.Import> properties,
             Map<String, CssIds.Import> ids,
@@ -44,6 +45,7 @@ public final class CssUtilityBinding {
             externalAnimations = sorted(externalAnimations);
             externalFonts = sorted(externalFonts);
             externalContainers = sorted(externalContainers);
+            externalAnchors = sorted(externalAnchors);
             imports = ordered(imports);
             properties = ordered(properties);
             ids = ordered(ids);
@@ -54,7 +56,7 @@ public final class CssUtilityBinding {
 
         public static Context empty() {
             return new Context(
-                    Set.of(), Set.of(), Set.of(), Set.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(),
+                    Set.of(), Set.of(), Set.of(), Set.of(), Set.of(), Map.of(), Map.of(), Map.of(), Map.of(), Map.of(),
                     List.of());
         }
 
@@ -84,6 +86,7 @@ public final class CssUtilityBinding {
             Map<String, String> animations,
             Map<String, String> fonts,
             Map<String, String> containers,
+            Map<String, String> anchors,
             List<CssTokens.Token> names,
             List<Boolean> dynamicFonts,
             int boundary) {}
@@ -111,6 +114,9 @@ public final class CssUtilityBinding {
         var sheet = syntax.parse(CssSyntax.Mode.UTILITY);
         UtilitySelectors.check(sheet, syntax, managed);
         var containers = UtilityContainers.names(css, sheet, syntax, root, context.externalContainers(), nativeRules);
+        var anchors = nativeRules
+                ? UtilityAnchors.names(sheet, syntax, root, context.externalAnchors())
+                : Map.<String, String>of();
         var names = UtilityNames.analyze(
                 css,
                 sheet,
@@ -181,7 +187,9 @@ public final class CssUtilityBinding {
                     ? properties.get(token.name().substring(2))
                     : CssResource.SymbolKind.ID == token.kind()
                             ? ids.get(token.name())
-                            : CssResource.SymbolKind.CONTAINER == token.kind() ? containers.get(token.name()) : null;
+                            : CssResource.SymbolKind.CONTAINER == token.kind()
+                                    ? containers.get(token.name())
+                                    : CssResource.SymbolKind.ANCHOR == token.kind() ? anchors.get(token.name()) : null;
             if (null != replacement && !replacement.equals(token.value())) {
                 edits.add(new SourceMap.Edit(token.start(), token.end(), replacement));
             }
@@ -220,6 +228,7 @@ public final class CssUtilityBinding {
                 names.animations(),
                 names.fonts(),
                 containers,
+                anchors,
                 List.copyOf(nameTokens),
                 names.dynamicFonts(),
                 boundary + delta(edits, boundary));
@@ -322,6 +331,13 @@ public final class CssUtilityBinding {
                         new CssSymbols.Key(CssResource.SymbolKind.CONTAINER, value),
                         new CssSymbols.Definition(
                                 new CssResource.SymbolId(owner, CssResource.SymbolKind.CONTAINER, name),
+                                value,
+                                List.of())));
+        result.anchors()
+                .forEach((name, value) -> definitions.put(
+                        new CssSymbols.Key(CssResource.SymbolKind.ANCHOR, value),
+                        new CssSymbols.Definition(
+                                new CssResource.SymbolId(owner, CssResource.SymbolKind.ANCHOR, name),
                                 value,
                                 List.of())));
         var tokens = new ArrayList<>(CssTokens.read(result.output().css()));

@@ -35,6 +35,7 @@ public final class ConditionalVariantsTest {
                                 Set.of(),
                                 Set.of(),
                                 Set.of("host"),
+                                Set.of(),
                                 Map.of(),
                                 Map.of(),
                                 Map.of(),

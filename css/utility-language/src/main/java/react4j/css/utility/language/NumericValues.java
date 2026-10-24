@@ -84,7 +84,8 @@ final class NumericValues {
         if ("var".equals(function.name())) {
             return Dimension.unknownValue();
         }
-        if ("anchor".equals(function.name()) || "anchor-size".equals(function.name())) {
+        if (RuleAnchors.anchor(function.name())) {
+            RuleAnchors.function(function);
             return Dimension.of("length");
         }
         if (!Set.of("calc", "min", "max", "clamp").contains(function.name())) {

@@ -260,6 +260,71 @@ public final class CssBrowserTest {
                 .finallyDo(fixture::remove);
     }
 
+    public BrowserPromise testNativePopoverScopesFlipsAndOversizedContent() {
+        var fixture = Browser.append("div");
+        NativeExample.renderPopovers(fixture);
+        // The panel enters the top layer; a clipped application ancestor remains explicit.
+        Browser.cssText(fixture, "overflow:hidden;height:10px");
+        String[] ids = {"one", "two", "edge", "large"};
+        String[] positions = {"top:40px;left:40px", "top:140px;left:240px", "bottom:8px;right:8px", "top:0;left:16px"};
+        for (int i = 0; i < ids.length; i++) {
+            var trigger = Browser.query(fixture, "#native-trigger-" + ids[i]);
+            var panel = Browser.query(fixture, "#native-panel-" + ids[i]);
+            Browser.cssText(trigger, positions[i]);
+            panel.setAttribute("popover", "manual");
+            trigger.setAttribute("aria-controls", panel.getId());
+            Browser.showPopover(panel);
+        }
+        return Browser.delay(50)
+                .thenDo(() -> {
+                    for (String id : new String[] {"one", "two"}) {
+                        var trigger = Browser.query(fixture, "#native-trigger-" + id);
+                        var panel = Browser.query(fixture, "#native-panel-" + id);
+                        var anchor = trigger.getBoundingClientRect();
+                        var positioned = panel.getBoundingClientRect();
+                        check(
+                                Math.abs(positioned.getTop() - anchor.getBottom()) < 1,
+                                "Panel follows its own trigger: " + id);
+                        check(
+                                Math.abs(positioned.getLeft() - anchor.getLeft()) < 1,
+                                "Inline position follows instance scope: " + id);
+                        check(Math.abs(positioned.getWidth() - anchor.getWidth()) < 1, "Default anchor size: " + id);
+                        equal(Browser.computed(trigger, "anchor-name"), Browser.computed(panel, "position-anchor"));
+                    }
+                    var edge = Browser.query(fixture, "#native-panel-edge").getBoundingClientRect();
+                    var edgeTrigger =
+                            Browser.query(fixture, "#native-trigger-edge").getBoundingClientRect();
+                    check(
+                            edge.getBottom() <= edgeTrigger.getTop() + 1,
+                            "Built-in fallback flips above the bottom edge");
+                    check(
+                            0 <= edge.getLeft() && edge.getRight() <= Browser.viewportWidth(),
+                            "Edge panel stays horizontally visible");
+                    var large = Browser.query(fixture, "#native-panel-large");
+                    var bounds = large.getBoundingClientRect();
+                    check(
+                            bounds.getRight() - bounds.getLeft() <= Browser.viewportWidth() - 31,
+                            "Oversized panel has an explicit inline limit");
+                    check(
+                            bounds.getBottom() - bounds.getTop() <= Browser.viewportHeight() - 31,
+                            "Oversized panel has an explicit block limit");
+                    check(
+                            0 <= bounds.getTop() && bounds.getBottom() <= Browser.viewportHeight() + 1,
+                            "Oversized example stays in the viewport");
+                    equal("auto", Browser.computed(large, "overflow-y"));
+                    check(
+                            Browser.query(large, "div").getBoundingClientRect().getBottom() > bounds.getBottom(),
+                            "Large content scrolls inside its panel");
+                    var panel = Browser.query(fixture, "#native-panel-one");
+                    Browser.hidePopover(panel);
+                    check(!panel.matches(":popover-open"), "Closing remains explicit application behavior");
+                    var trigger = Browser.query(fixture, "#native-trigger-one");
+                    trigger.focus();
+                    check(trigger.matches(":focus"), "Application restores trigger focus");
+                })
+                .finallyDo(fixture::remove);
+    }
+
     public void testNamedUtilityContainersAndSelectorMembership() {
         equal("rgb(10, 120, 30)", css("utility-query", "color"));
         equal("rgb(40, 50, 60)", css("utility-query-second", "color"));

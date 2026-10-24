@@ -119,6 +119,7 @@ final class CssCompiler {
                 externalAnimations,
                 externalFonts,
                 externalContainers,
+                Set.of(),
                 named,
                 properties,
                 ids,

@@ -42,6 +42,7 @@ import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AbstractStandardProcessor;
 import org.realityforge.proton.ElementsUtil;
 import react4j.css.internal.AssetResource;
+import react4j.css.internal.CssAnchors;
 import react4j.css.internal.CssContainers;
 import react4j.css.internal.CssFontValues;
 import react4j.css.internal.CssFonts;
@@ -792,6 +793,7 @@ public final class CssProcessor extends AbstractStandardProcessor {
                     utilityExternalNames(owner, "externalAnimations", false),
                     utilityExternalNames(owner, "externalFonts", true),
                     utilityExternalNames(owner, "externalContainers", false),
+                    utilityExternalNames(owner, "externalAnchors", false),
                     named,
                     imports.properties(),
                     imports.ids(),
@@ -940,6 +942,8 @@ public final class CssProcessor extends AbstractStandardProcessor {
             String name = (String) ((AnnotationValue) item).getValue();
             if (font) {
                 name = CssFontValues.canonical(name);
+            } else if ("externalAnchors".equals(field)) {
+                CssAnchors.checkName(name);
             } else if ("externalContainers".equals(field)) {
                 CssContainers.checkName(name);
             } else if (name.isEmpty() || name.codePoints().anyMatch(Character::isISOControl)) {

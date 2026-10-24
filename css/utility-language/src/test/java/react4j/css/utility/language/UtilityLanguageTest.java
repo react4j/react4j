@@ -38,6 +38,7 @@ public final class UtilityLanguageTest {
                                 Set.of(),
                                 Set.of(),
                                 Set.of(),
+                                Set.of(),
                                 Map.of(),
                                 Map.of(),
                                 Map.of(),

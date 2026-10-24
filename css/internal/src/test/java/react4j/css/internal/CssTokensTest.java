@@ -10,6 +10,32 @@ import react4j.css.internal.CssResource.SymbolKind;
 
 public final class CssTokensTest {
     @Test
+    public void anchorsKeepTheirOwnNamespaceAndExactEscapedSpans() {
+        String css = ".x{anchor-name:--tr\\69"
+                + " gger,--other;anchor-scope:--trigger,--other;position-anchor:--trigger;--trigger:0;left:calc(an\\63"
+                + " hor(--trigger left,anchor(--other right,0px)) + 1px);width:anchor-size(--trigger"
+                + " width,2px);height:anchor-size();top:anchor(bottom);}";
+        var anchors = CssTokens.read(css).stream()
+                .filter(token -> SymbolKind.ANCHOR == token.kind())
+                .toList();
+        assertEquals(anchors.size(), 8);
+        assertEquals(
+                anchors.stream().map(CssTokens.Token::name).collect(Collectors.toSet()),
+                Set.of("--trigger", "--other"));
+        for (var token : anchors) {
+            assertEquals(css.substring(token.start(), token.end()), token.value());
+        }
+        assertEquals(
+                CssTokens.read(css).stream()
+                        .filter(token -> SymbolKind.PROPERTY == token.kind())
+                        .count(),
+                1);
+        for (String name : List.of("foo", "--", "--has space", "var(--name)", "'--name'", "--a,--b")) {
+            expectThrows(IllegalArgumentException.class, () -> CssAnchors.checkName(name));
+        }
+    }
+
+    @Test
     public void transitionTargetsAndVariableFallbacksExposePropertyOccurrences() {
         String css = ".x{transition-property:opacity,--a,--\\62 ;transition:--c .4s steps(2) .1s,color 1s;"
                 + "transition:var(--target,var(--other,--d)) 1s var(--time,2s);content:'--ignored';}"

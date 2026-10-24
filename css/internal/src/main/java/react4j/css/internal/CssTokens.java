@@ -331,6 +331,12 @@ public final class CssTokens {
                 for (var container : CssContainers.read(declaration).names()) {
                     token(SymbolKind.CONTAINER, start(container), container.getValue());
                 }
+                for (var anchor : CssAnchors.read(declaration).names()) {
+                    token(SymbolKind.ANCHOR, start(anchor), anchor.getValue());
+                }
+                for (var anchor : CssAnchors.references(declaration.getExpression())) {
+                    token(SymbolKind.ANCHOR, start(anchor), anchor.getValue());
+                }
                 expression(declaration.getExpression());
             }
 

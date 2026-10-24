@@ -55,7 +55,8 @@ public record CssResource(
         ANIMATION,
         PROPERTY,
         FONT,
-        CONTAINER
+        CONTAINER,
+        ANCHOR
     }
 
     public record SymbolId(String owner, SymbolKind kind, String name) {

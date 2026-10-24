@@ -216,6 +216,9 @@ final class RuleConditions {
 
     private static void value(String name, String value, String type) {
         String expected = sizeType(name);
+        if (RuleSyntax.functions(value).stream().anyMatch(f -> RuleAnchors.anchor(f.name()))) {
+            throw invalid("Anchor functions require a declaration context");
+        }
         var holes = RuleSyntax.functions(value).stream()
                 .filter(f -> "param".equals(f.name()))
                 .toList();

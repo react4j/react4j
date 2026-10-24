@@ -221,7 +221,11 @@ public final class UtilityLanguage {
                     e.related.stream().map(offset -> origin(source, offset)).toList(),
                     Map.of()));
         } catch (CssSyntax.InvalidCss e) {
-            throw failure(source, "U_SYNTAX", String.valueOf(e.getMessage()), e.offset());
+            String message = String.valueOf(e.getMessage());
+            String code = message.startsWith("U_") && message.contains(":")
+                    ? message.substring(0, message.indexOf(':'))
+                    : "U_SYNTAX";
+            throw failure(source, code, message, e.offset());
         }
     }
 
@@ -237,6 +241,7 @@ public final class UtilityLanguage {
         var rules = prepared.rules;
         try {
             var output = bindingOutput(prepared);
+            RuleAnchors.check(output.css(), bindings.context().externalAnchors());
             int boundary = supportCss(prepared).length();
             var result = CssUtilityBinding.compile(
                     output,
@@ -365,6 +370,7 @@ public final class UtilityLanguage {
                 context.externalAnimations(),
                 context.externalFonts(),
                 context.externalContainers(),
+                context.externalAnchors(),
                 context.imports(),
                 context.properties(),
                 context.ids(),
@@ -474,6 +480,7 @@ public final class UtilityLanguage {
         hooks(checked, writer.css().substring(boundary), className);
         CssUtilityBinding.Bound fragment;
         try {
+            RuleAnchors.check(writer.css(), checked.bindings.context().externalAnchors());
             var compiled = CssUtilityBinding.compile(
                     writer,
                     CssIdentity.root(checked.owner),
@@ -586,7 +593,7 @@ public final class UtilityLanguage {
 
     private static void validateTemplates(Prepared prepared) {
         var css = validationCss(prepared);
-        new CssSyntax(css, 0).parse(CssSyntax.Mode.UTILITY);
+        RuleAnchors.check(css, Set.of());
     }
 
     private static String probe(RuleLibrary rules, RuleLibrary.Rule rule, boolean variant) {

@@ -134,13 +134,14 @@ public final class CssRenamerTest {
 
     @Test
     public void escapedRawGrammarCannotHideLateTypedNameCollisions() {
-        for (var kind : List.of(SymbolKind.ANIMATION, SymbolKind.PROPERTY, SymbolKind.ID, SymbolKind.CONTAINER)) {
-            String compiled = SymbolKind.PROPERTY == kind ? "--a" : "a";
+        for (var kind : List.of(
+                SymbolKind.ANIMATION, SymbolKind.PROPERTY, SymbolKind.ID, SymbolKind.CONTAINER, SymbolKind.ANCHOR)) {
+            String compiled = SymbolKind.PROPERTY == kind || SymbolKind.ANCHOR == kind ? "--a" : "a";
             var table = new CssNames(
                     new CssNames.Policy(true, ""),
                     List.of(new CssNames.Entry(
                             new SymbolId("Owner", kind, "name"),
-                            SymbolKind.PROPERTY == kind ? "--scoped" : "scoped",
+                            SymbolKind.PROPERTY == kind || SymbolKind.ANCHOR == kind ? "--scoped" : "scoped",
                             compiled,
                             false,
                             List.of())));
@@ -149,6 +150,7 @@ public final class CssRenamerTest {
                         case ANIMATION -> "body{anima\\74 ion-name:a;}";
                         case PROPERTY -> "@supports (color:v\\61 r(--a)){body{color:red;}}";
                         case CONTAINER -> "@container \\61  (width>1px){body{color:red;}}";
+                        case ANCHOR -> "body{left:an\\63 hor(--a left);}";
                         default -> "body{filter:u\\72 l('#a');}";
                     };
             expectThrows(

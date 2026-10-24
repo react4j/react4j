@@ -219,7 +219,9 @@ public record CssNames(Policy policy, List<Entry> entries) {
             String compiled = symbol.value();
             if (policy.compressed() && !symbol.stable()) {
                 do {
-                    compiled = (SymbolKind.PROPERTY == symbol.kind() ? "--" : "") + policy.prefix() + shortName(next++);
+                    compiled = (SymbolKind.PROPERTY == symbol.kind() || SymbolKind.ANCHOR == symbol.kind() ? "--" : "")
+                            + policy.prefix()
+                            + shortName(next++);
                 } while (reserved.contains(compiled)
                         || insensitive.contains(CssTokens.asciiLower(compiled))
                         || (SymbolKind.ANIMATION == symbol.kind()

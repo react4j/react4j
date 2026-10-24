@@ -120,6 +120,30 @@ public final class CssLivenessIntegrationTest {
     }
 
     @Test
+    public void anchorReferencesCompressWithoutRetainingTheirSetup() throws Exception {
+        String css = input("optimized");
+        String anchor = compiled("NativeUtilityLibrary", "ANCHOR", "--trigger");
+        assertTrue(anchor.startsWith("--"), anchor);
+        for (String expected : List.of(
+                "position-anchor: " + anchor,
+                "anchor-scope: " + anchor,
+                "anchor(" + anchor + " left",
+                "anchor-size(" + anchor + " width")) {
+            assertTrue(css.contains(expected), css);
+        }
+        assertFalse(css.contains("997px"), css);
+        assertFalse(input("development").contains("997px"));
+        var consumer = new SourceMapConsumerV3();
+        consumer.parse(input("map"));
+        int at = css.indexOf("anchor(" + anchor);
+        int line = (int) css.substring(0, at).chars().filter(c -> '\n' == c).count() + 1;
+        int column = at - css.lastIndexOf('\n', at - 1);
+        assertTrue(Objects.requireNonNull(consumer.getMappingForLine(line, column))
+                .getOriginalFile()
+                .endsWith("native.utilities.css"));
+    }
+
+    @Test
     public void realLinksHandleSeparatelyCompiledInterfaceAndFacadeBindings() throws Exception {
         String optimized = input("optimized");
         String development = input("development");

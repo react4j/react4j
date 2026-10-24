@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: `implementing`
-- Current frontier: `T06`
+- Current frontier: `T07`
 - Planning reviewer: `implementation_plan_review` (`1/3` rounds; passed; final confirmation `unused`)
 - Plan checkpoint: `automatic` — explicit implementation authority and passing independent planning review; no human pause requested.
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -22,7 +22,7 @@
 | `T03` | [Link independently compiled candidate fragments](T03-fragment-delivery.md) | `complete` | T02 |
 | `T04` | [Accept broader typed values and numeric limits](T04-value-domains.md) | `complete` | T01 |
 | `T05` | [Apply container and starting-style variants](T05-conditional-variants.md) | `complete` | T03, T04 |
-| `T06` | [Deliver checked named anchors and scoped popovers](T06-named-anchors.md) | `pending` | T05 |
+| `T06` | [Deliver checked named anchors and scoped popovers](T06-named-anchors.md) | `complete` | T05 |
 | `T07` | [Expose agent authoring feedback and packaged commands](T07-authoring-tools.md) | `pending` | T06 |
 | `T08` | [Verify and document the complete delivered contract](T08-contract-and-gate.md) | `pending` | T07 |
 

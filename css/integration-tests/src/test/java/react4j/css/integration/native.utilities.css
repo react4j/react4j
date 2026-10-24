@@ -18,3 +18,6 @@
   }
 }
 @variant starting { @starting-style { @slot; } }
+
+@utility anchor-setup { anchor-name: --trigger; outline-width: 997px; }
+@utility anchored { position-anchor: --trigger; anchor-scope: --trigger; left: calc(anchor(--trigger left, 0px) + 1px); min-width: anchor-size(--trigger width, 2px); }

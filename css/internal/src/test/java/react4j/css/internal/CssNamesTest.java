@@ -173,7 +173,8 @@ public final class CssNamesTest {
                 new Symbol(SymbolKind.ANIMATION, "pulse", "pulse", false),
                 new Symbol(SymbolKind.PROPERTY, "runtime", "--runtime", false),
                 new Symbol(SymbolKind.FONT, "heading", "local-heading", false),
-                new Symbol(SymbolKind.CONTAINER, "panel", "local-panel", false));
+                new Symbol(SymbolKind.CONTAINER, "panel", "local-panel", false),
+                new Symbol(SymbolKind.ANCHOR, "--trigger", "--local-trigger", false));
         var local = new CssResource(
                 "Local",
                 CssResource.Kind.COMPONENT,
@@ -225,7 +226,12 @@ public final class CssNamesTest {
                 assertEquals(entry.getters(), List.of(entry.symbol().owner() + "#id"));
             } else {
                 assertTrue(entry.compiled()
-                        .startsWith(SymbolKind.PROPERTY == entry.symbol().kind() ? "--app-" : "app-"));
+                        .startsWith(
+                                SymbolKind.PROPERTY == entry.symbol().kind()
+                                                || SymbolKind.ANCHOR
+                                                        == entry.symbol().kind()
+                                        ? "--app-"
+                                        : "app-"));
                 assertNotEquals(entry.compiled(), "app-a");
                 assertTrue(entry.getters().isEmpty());
             }
@@ -356,18 +362,21 @@ public final class CssNamesTest {
 
     @Test
     public void escapedRawAnimationAndVariableContextsReserveTheirActualNames() {
-        for (var kind : List.of(SymbolKind.ANIMATION, SymbolKind.PROPERTY, SymbolKind.ID)) {
+        for (var kind : List.of(SymbolKind.ANIMATION, SymbolKind.PROPERTY, SymbolKind.ID, SymbolKind.ANCHOR)) {
             String css =
                     switch (kind) {
                         case ANIMATION -> "body{anima\\74 ion-name:a;}";
                         case PROPERTY -> "body{color:v\\61 r(--a);}";
+                        case ANCHOR -> "body{left:anchor(--a left);}";
                         default -> "body{filter:u\\72 l('#a');}";
                     };
-            String readable = SymbolKind.PROPERTY == kind ? "--scoped" : "scoped";
+            String readable = SymbolKind.PROPERTY == kind || SymbolKind.ANCHOR == kind ? "--scoped" : "scoped";
             var table = CssNames.create(
                     catalogue(List.of(new Symbol(kind, "name", readable, false)), List.of(), css),
                     new CssNames.Policy(true, ""));
-            assertNotEquals(table.entries().get(0).compiled(), SymbolKind.PROPERTY == kind ? "--a" : "a");
+            assertNotEquals(
+                    table.entries().get(0).compiled(),
+                    SymbolKind.PROPERTY == kind || SymbolKind.ANCHOR == kind ? "--a" : "a");
         }
     }
 

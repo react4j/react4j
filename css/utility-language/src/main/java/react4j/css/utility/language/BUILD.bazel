@@ -5,6 +5,7 @@ java_library(
     srcs = [
         "CompoundValues.java",
         "NumericValues.java",
+        "RuleAnchors.java",
         "RuleBounds.java",
         "RuleConditions.java",
         "RuleLibrary.java",

@@ -11,6 +11,6 @@ abstract class OtherNativeStyles {
 
     abstract String style();
 
-    @UtilityCss("gap-137 pulsing")
+    @UtilityCss("gap-137 pulsing anchored")
     abstract String active();
 }

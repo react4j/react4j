@@ -296,6 +296,10 @@ final class RuleLibrary {
                 if (parts.size() < 2 || !parts.get(0).text().matches("(?:--)?[a-zA-Z_-][a-zA-Z0-9_-]*")) {
                     throw error("U_PARAMETER", "Expected a static property name and value", node.offset());
                 }
+                RuleAnchors.template(
+                        parts.get(0).text().toLowerCase(Locale.ROOT),
+                        head.substring(head.indexOf(':') + 1),
+                        node.offset());
                 if (RuleSyntax.split(head, '!').size() > 1) {
                     throw error("U_IMPORTANT", "Important utility declarations are unsupported", node.offset());
                 }
