@@ -1,6 +1,6 @@
 # T01 — Deliver the expanded language and package design
 
-- Status: `in_progress`
+- Status: `complete`
 - Blocked by: `None`
 - Spec coverage: `R1`–`R5`, `AC1`–`AC5`
 
@@ -10,11 +10,11 @@ A complete reviewable language proposal connecting agent-authored rules, checked
 
 ## Acceptance criteria
 
-- [ ] Scalar/compound domains, compact sources and range constraints have consistent grammar, examples and failures.
-- [ ] Container size/style/scroll-state and starting-style wrappers preserve explicit setup and written nesting order.
-- [ ] Named anchors have explicit ownership and instance scope; the Rose recipe demonstrates wiring, placement and sizing without claiming a bug fix.
-- [ ] Proposed package, dependency direction and complete caller contract are clear and grounded in current build/source layout.
-- [ ] Documentation checks pass and the lasting diff is design-only, ready for the workflow's independent review and closeout gates.
+- [x] Scalar/compound domains, compact sources and range constraints have consistent grammar, examples and failures.
+- [x] Container size/style/scroll-state and starting-style wrappers preserve explicit setup and written nesting order.
+- [x] Named anchors have explicit ownership and instance scope; the Rose recipe demonstrates wiring, placement and sizing without claiming a bug fix.
+- [x] Proposed package, dependency direction and complete caller contract are clear and grounded in current build/source layout.
+- [x] Documentation checks pass and the lasting diff is design-only, ready for the workflow's independent review and closeout gates.
 
 ## Validation
 
@@ -26,4 +26,7 @@ A complete reviewable language proposal connecting agent-authored rules, checked
 
 ## Evidence
 
-- `pending`
+- Domain link validator passed. Explicit design/plan checks passed: 16 local links/fragments, 17 fenced examples with JSON parsed, 15 value types, 16 distinct literal utilities, 27 distinct family definitions, five exact scale calculations and two range rejection cases.
+- Checked all 17 external W3C specification links/fragments; corrected one obsolete scroll-state fragment and verified the replacement.
+- Author reviewed R1–R5, EBNF/source examples, static/dynamic name boundaries, range uncertainty and source/build/packaging separation. The staged lasting change is one design document; no code, build configuration, Rose files or secrets are changed.
+- No compiler/browser tests run: grammar and package are proposals. The document records concrete implementation and browser feasibility checks without claiming they passed.
