@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `planned`
-- Current frontier: `T01`
+- Status: `implementing`
+- Current frontier: `T02`
 - Planning reviewer: `/root/docs_planning_review` (`1/3` rounds; final confirmation unused); Findings: none
 - Plan checkpoint: automatic; accepted interview scope, explicit execution authority, and passing planning review
 - Implementation reviewer: pending (`0/5` rounds; final confirmation unused)
@@ -17,7 +17,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Runnable native teaching app](T01-native-example.md) | pending | None |
+| T01 | [Runnable native teaching app](T01-native-example.md) | complete | None |
 | T02 | [Public learning paths and knowledge audit](T02-guides.md) | pending | T01 |
 
 ## Sequencing notes

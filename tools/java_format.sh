@@ -50,6 +50,8 @@ paths=(
   examples/todomvc/sting/src/main/java
   examples/todomvc/src/main/java
   examples/todomvc/src/test/java
+  examples/native-utilities/src/main/java
+  examples/native-utilities/src/test/java
   examples/utility-css/src/main/java
   examples/utility-css/src/test/java
   examples/webspeechdemo/src/main/java

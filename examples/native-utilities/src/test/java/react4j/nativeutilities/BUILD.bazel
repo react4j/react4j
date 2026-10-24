@@ -1,0 +1,21 @@
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
+load("//examples:checks.bzl", "JAVACOPTS")
+
+package(default_visibility = [
+    "//:__pkg__",
+    "//examples/native-utilities/src/test/js/react4j/nativeutilities:__pkg__",
+])
+
+j2cl_library(
+    name = "browser_tests",
+    testonly = True,
+    srcs = ["NativeUtilityBrowserTest.java"],
+    experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = True,
+    javacopts = JAVACOPTS,
+    plugins = ["@react4j//third_party:nullaway_plugin"],
+    deps = [
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "@react4j//third_party:jsinterop_annotations-j2cl",
+        "@react4j//third_party:jspecify-j2cl",
+    ],
+)
