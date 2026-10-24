@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.testng.annotations.Test;
+import react4j.css.internal.CssFragments;
 import react4j.css.internal.CssUtilityBinding;
 
 public final class UtilityLanguageTest {
@@ -183,6 +184,20 @@ public final class UtilityLanguageTest {
         var css = css(UtilityLanguage.expand(library, List.of("nested")), "nested");
         assertTrue(css.indexOf("color:red") < css.indexOf(" strong"));
         assertTrue(css.indexOf(" strong") < css.indexOf("color:green"));
+    }
+
+    @Test
+    public void nonHtmlUnicodeSpacesRemainPartOfOneCandidateIdentity() {
+        String candidate = "content-['Save\u2003changes']";
+        var library = checked(RULES + "@utility \"content-{v}\" (v:arbitrary(<string>)) {content:param(v);}");
+        var result = UtilityLanguage.expand(library, List.of(candidate));
+        assertEquals(result.diagnostics(), List.of());
+        assertEquals(UtilityLanguage.candidates(candidate), List.of(candidate));
+        assertTrue(result.expansions().get(0).css().contains("Save\u2003changes"));
+        var expansion = result.expansions().get(0);
+        var fragment = new CssFragments.Fragment(
+                candidate, expansion.orderKey(), expansion.css(), expansion.sourceMap(), expansion.metadata());
+        assertEquals(fragment.candidate(), candidate);
     }
 
     @Test

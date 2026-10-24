@@ -38,6 +38,7 @@ java_format_check(
         "//css/processor/src/main/java/react4j/css/processor",
         "//css/processor/src/test/java/react4j/css/processor:compiler_tests",
         "//css/processor/src/test/java/react4j/css/processor:asset_font_tests",
+        "//css/processor/src/test/java/react4j/css/processor:authoring_tests",
         "//css/processor/src/test/java/react4j/css/processor:names_tests",
         "//css/processor/src/test/java/react4j/css/processor:peer_compiler_tests",
         "//css/processor/src/test/java/react4j/css/processor:text_block_tests",

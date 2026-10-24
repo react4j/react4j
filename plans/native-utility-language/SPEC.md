@@ -2,7 +2,7 @@
 
 ## Source
 
-- Scope: [accepted language design](../../docs/design/utility-language.md), including the final confirmed interview and the explicit request to isolate the language in its own package.
+- Scope: [native contract](../../docs/specs/native-utility-language.md) and [author reference](../../css/utility-language/README.md) (accepted design retained at commit `54d35cfa9`), including the final confirmed interview and the explicit request to isolate the language in its own package.
 - Execution authority: the user said, “Yes. Lift the design-only restriction and implement the design using the structured delivery workflow. Keep it JVM-only, isolate the language in its own package, and create an implementation PR for review.” No human plan checkpoint was requested. Do not merge either PR.
 - Repository evidence: finite [utility contract](../../docs/specs/utility-css.md), [bindings](../../docs/specs/css-bindings.md), [names](../../docs/specs/css-names.md), [liveness](../../docs/specs/css-liveness.md), [source maps](../../docs/specs/css-source-maps.md), and current CSS processor/input packaging/catalogue/linker/bundler code and tests.
 - Delivery starts at design commit `54d35cfa9` on `codex/native-utility-language`. Design PR119 remains separate and open. The implementation PR will be stacked on its branch so the code can be reviewed independently. Upstream master has an independent Java baseline update; do not silently include it in this stacked diff.

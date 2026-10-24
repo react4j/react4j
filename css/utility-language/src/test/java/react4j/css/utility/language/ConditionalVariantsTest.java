@@ -76,6 +76,14 @@ public final class ConditionalVariantsTest {
     public Object[][] conditions() {
         return new Object[][] {
             {"(width)", true},
+            {"(1px < width)", true},
+            {"(1px <= width)", true},
+            {"(width >== 1px)", false},
+            {"(width <> 1px)", false},
+            {"(width) and (height) and", false},
+            {"(width:1px:2px)", false},
+            {"(orientation:diagonal)", false},
+            {"(portrait < orientation < landscape)", false},
             {"(min-width:24rem)", true},
             {"(orientation:portrait)", true},
             {"(40rem > inline-size >= 24rem)", true},

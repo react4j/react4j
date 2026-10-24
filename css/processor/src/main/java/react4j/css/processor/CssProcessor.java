@@ -817,12 +817,35 @@ public final class CssProcessor extends AbstractStandardProcessor {
                     imports.assets(),
                     imports.fonts(),
                     imports.globals());
-            var exports = exports(resourceDescriptor(owner));
+            var descriptor = resourceDescriptor(owner);
+            var exports = exports(descriptor);
+            boolean allStable = null != annotation(owner, "react4j.css.CssStable");
+            var stableSymbols = new LinkedHashSet<CssResource.SymbolId>();
+            if (null != descriptor) {
+                validateStableImports(owner, descriptor, imports);
+                for (var accessor : descriptor.accessors()) {
+                    var kind = CssResource.SymbolKind.valueOf(accessor.kind().name());
+                    String name = accessor.name();
+                    boolean imported = CssResource.SymbolKind.PROPERTY == kind
+                                    && imports.properties().containsKey(name)
+                            || CssResource.SymbolKind.ID == kind
+                                    && imports.ids().containsKey(name)
+                            || CssResource.SymbolKind.ANIMATION == kind
+                                    && imports.named().containsKey(name);
+                    if (!allStable && !imported && methodStable(owner, kind, name)) {
+                        stableSymbols.add(new CssResource.SymbolId(binaryName(owner), kind, name));
+                    }
+                }
+            }
             var checked = UtilityLanguage.bind(
                     prepared,
                     binaryName(owner),
                     new UtilityLanguage.Bindings(
-                            utilityExternalClasses(owner), context, exports.ids(), exports.animations()));
+                            utilityExternalClasses(owner),
+                            context,
+                            exports.ids(),
+                            exports.animations(),
+                            new UtilityLanguage.Stability(allStable, stableSymbols)));
             if (null == Trees.instance(processingEnv).getPath(owner)) {
                 String path = CssResource.path(binaryName(owner));
                 String publishedJson = classpathResource(path + ".rules.json");
@@ -927,7 +950,6 @@ public final class CssProcessor extends AbstractStandardProcessor {
         String implementation = "";
         var bound = new ArrayList<CssResource.Binding>();
         if (null != descriptor) {
-            validateStableImports(owner, descriptor, imports);
             var values = new LinkedHashMap<String, String>();
             for (var accessor : descriptor.accessors()) {
                 var kind = CssResource.SymbolKind.valueOf(accessor.kind().name());

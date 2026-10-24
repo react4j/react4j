@@ -93,17 +93,29 @@ public final class UtilityLanguage {
         }
     }
 
+    public record Stability(boolean all, Set<CssResource.SymbolId> symbols) {
+        public Stability {
+            symbols = Set.copyOf(symbols);
+        }
+    }
+
     public record Bindings(
             Set<String> externalClasses,
             CssUtilityBinding.Context context,
             Set<String> exportedIds,
-            Set<String> exportedAnimations) {
+            Set<String> exportedAnimations,
+            Stability stability) {
         public Bindings(Set<String> externalClasses) {
-            this(externalClasses, CssUtilityBinding.Context.empty(), Set.of(), Set.of());
+            this(
+                    externalClasses,
+                    CssUtilityBinding.Context.empty(),
+                    Set.of(),
+                    Set.of(),
+                    new Stability(false, Set.of()));
         }
 
         public Bindings(Set<String> externalClasses, CssUtilityBinding.Context context) {
-            this(externalClasses, context, Set.of(), Set.of());
+            this(externalClasses, context, Set.of(), Set.of(), new Stability(false, Set.of()));
         }
 
         public Bindings {
@@ -250,6 +262,14 @@ public final class UtilityLanguage {
             var classes = new JsonArray();
             bindings.externalClasses().stream().sorted().forEach(classes::add);
             json.add("externalClasses", classes);
+            var stability = new JsonObject();
+            stability.addProperty("all", bindings.stability().all());
+            var symbols = new JsonArray();
+            bindings.stability().symbols().stream()
+                    .sorted(Comparator.comparing(CssResource.SymbolId::id))
+                    .forEach(symbol -> symbols.add(symbol.json()));
+            stability.add("symbols", symbols);
+            json.add("stability", stability);
             return json.toString();
         }
     }
@@ -279,7 +299,7 @@ public final class UtilityLanguage {
             return prepared;
         } catch (RuleSyntax.Syntax e) {
             throw new Failure(new Diagnostic(
-                    e.code,
+                    "U_CANDIDATE_SYNTAX".equals(e.code) ? "U_SYNTAX" : e.code,
                     String.valueOf(e.getMessage()),
                     origin(source, Math.min(e.offset, source.text().length())),
                     e.related.stream().map(offset -> origin(source, offset)).toList(),
@@ -321,7 +341,8 @@ public final class UtilityLanguage {
                     probeContext(prepared, bindings.context()),
                     true,
                     boundary);
-            var resolved = CssUtilityBinding.resolve(owner, result, Map.of(), bindings.context());
+            var resolved = stability(
+                    CssUtilityBinding.resolve(owner, result, Map.of(), bindings.context()), bindings.stability());
             for (var group : rules.tokens.values()) {
                 for (var value : group.values().values()) {
                     CssUtilityBinding.checkValue(value, resolved.metadata(), bindings.context());
@@ -367,7 +388,12 @@ public final class UtilityLanguage {
                         classes,
                         CssUtilityBinding.Context.read(value.get("bindings").toString()),
                         strings(value, "exportedIds"),
-                        strings(value, "exportedAnimations")));
+                        strings(value, "exportedAnimations"),
+                        new Stability(
+                                value.getAsJsonObject("stability").get("all").getAsBoolean(),
+                                value.getAsJsonObject("stability").getAsJsonArray("symbols").asList().stream()
+                                        .map(item -> CssResource.SymbolId.read(item.getAsJsonObject()))
+                                        .collect(Collectors.toSet()))));
     }
 
     public static List<String> candidates(String text) {
@@ -381,7 +407,9 @@ public final class UtilityLanguage {
         var seen = new HashSet<String>();
         for (var candidate : candidates) {
             try {
-                if (candidate.isEmpty() || candidate.matches(".*[ \\t\\n\\r\\f].*") || !seen.add(candidate)) {
+                if (candidate.isEmpty()
+                        || candidate.chars().anyMatch(c -> " \t\n\r\f".indexOf(c) >= 0)
+                        || !seen.add(candidate)) {
                     throw RuleLibrary.error(
                             "U_CANDIDATE_SYNTAX",
                             "Empty, duplicate or whitespace-containing candidate " + candidate,
@@ -582,8 +610,10 @@ public final class UtilityLanguage {
                     probeContext(checked.prepared, checked.bindings.context()),
                     true,
                     boundary);
-            var resolved = CssUtilityBinding.resolve(
-                    checked.owner, compiled, Map.of(candidate, className), checked.bindings.context());
+            var resolved = stability(
+                    CssUtilityBinding.resolve(
+                            checked.owner, compiled, Map.of(candidate, className), checked.bindings.context()),
+                    checked.bindings.stability());
             fragment = resolved.project(resolved.boundary(), resolved.css().length());
         } catch (IllegalArgumentException e) {
             var failure = bindingFailure(rules.source, e);
@@ -755,6 +785,40 @@ public final class UtilityLanguage {
         var writer = new SourceMap.Writer();
         raw(rules, rule.body(), writer);
         return writer.css();
+    }
+
+    private static CssUtilityBinding.Bound stability(CssUtilityBinding.Bound bound, Stability stability) {
+        var resource = bound.metadata();
+        var known = resource.symbols().stream()
+                .map(symbol -> new CssResource.SymbolId(resource.owner(), symbol.kind(), symbol.name()))
+                .collect(Collectors.toSet());
+        if (!known.containsAll(stability.symbols())) {
+            throw new IllegalArgumentException("Unknown or imported stable utility symbol");
+        }
+        var symbols = resource.symbols().stream()
+                .map(symbol -> new CssResource.Symbol(
+                        symbol.kind(),
+                        symbol.name(),
+                        symbol.value(),
+                        symbol.stable()
+                                || stability.all()
+                                || stability
+                                        .symbols()
+                                        .contains(new CssResource.SymbolId(
+                                                resource.owner(), symbol.kind(), symbol.name()))))
+                .toList();
+        var metadata = new CssResource(
+                resource.owner(),
+                resource.kind(),
+                resource.dependencies(),
+                resource.includes(),
+                resource.implementation(),
+                resource.bindings(),
+                symbols,
+                resource.occurrences(),
+                resource.fontUses(),
+                resource.fingerprint());
+        return new CssUtilityBinding.Bound(bound.css(), bound.sourceMap(), metadata, bound.boundary());
     }
 
     private static String spellingKey(String text) {
@@ -970,6 +1034,20 @@ public final class UtilityLanguage {
         }
         if ("checked".equals(kind)) {
             stringField(value, "owner");
+            var stability = value.get("stability");
+            if (null == stability
+                    || !stability.isJsonObject()
+                    || !stability.getAsJsonObject().has("all")
+                    || !stability.getAsJsonObject().get("all").isJsonPrimitive()
+                    || !stability
+                            .getAsJsonObject()
+                            .get("all")
+                            .getAsJsonPrimitive()
+                            .isBoolean()
+                    || !stability.getAsJsonObject().has("symbols")
+                    || !stability.getAsJsonObject().get("symbols").isJsonArray()) {
+                throw new IllegalArgumentException("Expected stability policy");
+            }
             for (String field : List.of("externalClasses", "exportedIds", "exportedAnimations")) {
                 arrayField(value, field);
             }

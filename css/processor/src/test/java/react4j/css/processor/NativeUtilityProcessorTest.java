@@ -91,7 +91,7 @@ public final class NativeUtilityProcessorTest {
             """;
         String candidates =
                 "duration-150 shadow-[0_-1px_5px_1px_rgba(var(--ink),.2)] cols-[200px_minmax(0,1fr)] aspect-16/9"
-                        + " content-['Save_changes']";
+                        + " content-['Save_changes'] content-['Save\u2003changes']";
         var result = CssProcessorTest.compile(
                 Map.of("Utilities.java", library(rules), "Button.java", styles(candidates)), "demo.Button");
         assertTrue(result.success(), result.diagnostics());
@@ -99,7 +99,7 @@ public final class NativeUtilityProcessorTest {
                 .getAsJsonObject()
                 .getAsJsonArray("fragments")
                 .asList();
-        assertEquals(fragments.size(), 5);
+        assertEquals(fragments.size(), 6);
         String output = fragments.stream()
                 .map(item -> item.getAsJsonObject().get("css").getAsString())
                 .collect(Collectors.joining());
@@ -108,7 +108,8 @@ public final class NativeUtilityProcessorTest {
                 "0 -1px 5px 1px rgba(var(--ink),.2)",
                 "200px minmax(0,1fr)",
                 "aspect-ratio:16/9",
-                "'Save changes'")) {
+                "'Save changes'",
+                "'Save\u2003changes'")) {
             assertTrue(output.contains(expected), output);
         }
         var invalid = CssProcessorTest.compile(
@@ -211,6 +212,50 @@ public final class NativeUtilityProcessorTest {
     }
 
     @Test
+    public void nativeProviderStabilityCoversOwnedSymbolsAndDownstreamCandidates() throws Exception {
+        String provider = library(RULES + "@utility trigger {anchor-name:--trigger;}")
+                .replace("public class Utilities {}", "@CssStable public class Utilities {}");
+        var result = CssProcessorTest.compile(
+                Map.of("Utilities.java", provider, "Button.java", styles("p-2")), "demo.Button");
+        assertTrue(result.success(), result.diagnostics());
+        var resource = JsonParser.parseString(text(result, "classes/demo/Utilities.css.json"))
+                .getAsJsonObject();
+        for (var symbol : resource.getAsJsonArray("symbols")) {
+            assertTrue(symbol.getAsJsonObject().get("stable").getAsBoolean(), symbol.toString());
+        }
+        var fragments = JsonParser.parseString(text(result, "classes/demo/Button.css.fragments.json"))
+                .getAsJsonObject();
+        for (var symbol : fragments
+                .getAsJsonArray("fragments")
+                .get(0)
+                .getAsJsonObject()
+                .getAsJsonObject("metadata")
+                .getAsJsonArray("symbols")) {
+            assertTrue(symbol.getAsJsonObject().get("stable").getAsBoolean(), symbol.toString());
+        }
+    }
+
+    @Test
+    public void nativeResourceStabilityKeepsTheSelectedOwnedProperty() throws Exception {
+        String provider = IMPORTS
+                + "@UtilityCssLibrary(\"\"\"\n"
+                + "@utility-rules; @utility props {--a:1;--b:2;}\n"
+                + "\"\"\") abstract class Utilities { @CssStable @CssCustomProperty(name=\"a\") abstract String a();"
+                + " @CssCustomProperty(name=\"b\") abstract String b(); }";
+        var result = CssProcessorTest.compile(Map.of("Utilities.java", provider));
+        assertTrue(result.success(), result.diagnostics());
+        for (var symbol : JsonParser.parseString(text(result, "classes/demo/Utilities.css.json"))
+                .getAsJsonObject()
+                .getAsJsonArray("symbols")) {
+            var item = symbol.getAsJsonObject();
+            assertEquals(
+                    item.get("stable").getAsBoolean(),
+                    "a".equals(item.get("name").getAsString()),
+                    item.toString());
+        }
+    }
+
+    @Test
     public void nativeProvidersRetainExistingSymbolAccessorContracts() throws Exception {
         String rules = RULES + "@keyframes pulse { to { opacity:1; } } @utility target { & #target {color:gold;} }";
         String provider = library(rules)
@@ -264,7 +309,9 @@ public final class NativeUtilityProcessorTest {
 
     @Test
     public void separateAndHeaderConsumersRequestPreviouslyUnseenCandidates() throws Exception {
-        var provider = CssProcessorTest.compile(Map.of("Utilities.java", library(RULES)));
+        var provider = CssProcessorTest.compile(Map.of(
+                "Utilities.java",
+                library(RULES).replace("public class Utilities {}", "@CssStable public class Utilities {}")));
         assertTrue(provider.success(), provider.diagnostics());
         var directory = Files.createTempDirectory("native-utility-provider-");
         try {
@@ -275,6 +322,9 @@ public final class NativeUtilityProcessorTest {
                     List.of("-classpath", classpath),
                     "demo.Button");
             assertTrue(consumer.success(), consumer.diagnostics());
+            var fragments = JsonParser.parseString(text(consumer, "classes/demo/Button.css.fragments.json"))
+                    .getAsJsonObject();
+            assertTrue(fragments.toString().contains("\"stable\":true"), fragments.toString());
             assertTrue(Objects.requireNonNull(consumer.values().get("demo.Button.style"))
                     .contains("class-p_002d_137"));
             Files.delete(directory.resolve("demo/Utilities.css.rules.json"));

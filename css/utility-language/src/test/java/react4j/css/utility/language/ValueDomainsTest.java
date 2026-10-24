@@ -170,6 +170,15 @@ public final class ValueDomainsTest {
                 "auto min-content fit-content(50%)",
                 "var(--tracks)");
         add(cases, "an+b", "", "n+3", "2n-1", "-n+3", "even", "1", "N + 3");
+        add(cases, "number", "opacity", "calc((1 + 2) * 3)", "calc(+2)", "calc(var(--x) * 1)", "calc(2 / var(--x))");
+        add(cases, "box-shadow", "box-shadow", "var(--shadow) 1px", "0 0 calc(1px + 2px) red");
+        add(
+                cases,
+                "image",
+                "background-image",
+                "linear-gradient(in srgb,red,blue)",
+                "radial-gradient(at left top,red,blue)",
+                "image-set('https://example.com/a.png' type('image/png'))");
         return cases.toArray(Object[][]::new);
     }
 
@@ -303,6 +312,46 @@ public final class ValueDomainsTest {
                 "subgrid repeat(auto-fit,[a])",
                 "repeat(2,none)");
         add(cases, "an+b", "", "var(--x)", "2n of .a", "n+-1", "1.5", "n+3);color:red");
+        add(
+                cases,
+                "color",
+                "color",
+                "lab(1,2,3)",
+                "rgb(1 2 3 / 1 / 2)",
+                "hsl(1px 20% 30%)",
+                "rgb(1 2 3 red)",
+                "color()",
+                "color(unknown 1 2 3)");
+        add(
+                cases,
+                "position",
+                "background-position",
+                "left 1px top 2px 3px",
+                "left 1px right 2px",
+                "left var(--x) red");
+        add(
+                cases,
+                "image",
+                "background-image",
+                "linear-gradient(in,red,blue)",
+                "linear-gradient(in unknown,red,blue)",
+                "linear-gradient(in srgb longer hue,red,blue)",
+                "radial-gradient(at sideways,red,blue)",
+                "linear-gradient(red,20%,30%,blue)",
+                "linear-gradient(red 1px 2px 3px,blue)",
+                "image-set('a.png' 1px)",
+                "image-set('a.png' type('a') type('b'))");
+        add(
+                cases,
+                "grid-tracks",
+                "grid-template-columns",
+                "repeat(2)",
+                "repeat(auto-fit,10px) repeat(auto-fill,10px)",
+                "subgrid repeat(2,1fr)",
+                "repeat(2,none)",
+                "minmax(10px)",
+                "unsupported(1px)");
+        add(cases, "length", "left", "calc(1px 2px)", "calc((1px + 2px) +)");
         return cases.toArray(Object[][]::new);
     }
 

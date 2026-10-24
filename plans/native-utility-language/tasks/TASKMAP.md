@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `implementing`
-- Current frontier: `T08`
+- Status: `implementation-review`
+- Current frontier: independent implementation review
 - Planning reviewer: `implementation_plan_review` (`1/3` rounds; passed; final confirmation `unused`)
 - Plan checkpoint: `automatic` — explicit implementation authority and passing independent planning review; no human pause requested.
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -11,7 +11,7 @@
 ## Full-scope validation
 
 - Gate: task tests; development/optimized browser scenarios; `tools/check.sh`; domain-link validation; complete diff and package/dependency audit.
-- Evidence: `pending`
+- Evidence: final `tools/check.sh` passed all stages (56 main targets, 16 optimized browser targets, 25 JVM coverage targets; publication/Javadocs, format/hermeticity, JVM/browser coverage thresholds, site and unsigned release validation). New language coverage is 98.19% lines / 88.05% branches against 95% / 85%. Domain links, shell/JSON syntax, specification-only diff and complete package/dependency audit pass; see T08 for scope and browser limitations.
 
 ## Tasks
 
@@ -24,7 +24,7 @@
 | `T05` | [Apply container and starting-style variants](T05-conditional-variants.md) | `complete` | T03, T04 |
 | `T06` | [Deliver checked named anchors and scoped popovers](T06-named-anchors.md) | `complete` | T05 |
 | `T07` | [Expose agent authoring feedback and packaged commands](T07-authoring-tools.md) | `complete` | T06 |
-| `T08` | [Verify and document the complete delivered contract](T08-contract-and-gate.md) | `pending` | T07 |
+| `T08` | [Verify and document the complete delivered contract](T08-contract-and-gate.md) | `complete` | T07 |
 
 ## Sequencing notes
 
@@ -46,4 +46,7 @@
 
 ## Promoted knowledge
 
-- Pending T08 classification and promotion. Preserve current specifications until delivered behavior justifies their updates; [accepted design](../../../docs/design/utility-language.md) is the current implementation input.
+- Accepted grammar, values, variants and feedback: [native contract](../../../docs/specs/native-utility-language.md); input/cascade/reset obligations remain in [utility CSS](../../../docs/specs/utility-css.md).
+- Java selection and hooks: [bindings](../../../docs/specs/css-bindings.md); canonical names/stability/anchors: [names](../../../docs/specs/css-names.md); requested fragment retention: [liveness](../../../docs/specs/css-liveness.md); available origins: [source maps](../../../docs/specs/css-source-maps.md).
+- Resolved terms: [glossary](../../../docs/glossary/README.md). Adopted decisions: [JVM compilation](../../../docs/adr/0005-compile-declarative-utility-rules-on-jvm.md) and [checked expansion publication](../../../docs/adr/0006-publish-checked-utility-expansions.md), replacing ADR 0004.
+- Practical grammar/commands/examples and browser limitations: [author reference](../../../css/utility-language/README.md), replacing the completed design document. Domain-link and specification-only diff audits passed before review. Existing mapping deferrals remain unchanged; no new deferred issue is needed.

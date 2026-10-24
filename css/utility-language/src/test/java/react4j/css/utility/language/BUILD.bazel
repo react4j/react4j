@@ -6,10 +6,12 @@ java_testng(
         "AnchorValuesTest.java",
         "AuthoringFeedbackTest.java",
         "ConditionalVariantsTest.java",
+        "DefinitionValidationTest.java",
         "UtilityLanguageTest.java",
         "ValueDomainsTest.java",
     ],
     test_classes = [
+        "react4j.css.utility.language.DefinitionValidationTest",
         "react4j.css.utility.language.AuthoringFeedbackTest",
         "react4j.css.utility.language.AnchorValuesTest",
         "react4j.css.utility.language.ConditionalVariantsTest",

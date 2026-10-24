@@ -62,7 +62,11 @@ public record CssResource(
     public record SymbolId(String owner, SymbolKind kind, String name) {
         public SymbolId {
             path(owner);
-            if ((SymbolKind.FONT != kind && name.chars().anyMatch(Character::isWhitespace))
+            if ((SymbolKind.FONT != kind
+                            && name.chars()
+                                    .anyMatch(c -> SymbolKind.CLASS == kind
+                                            ? " \t\n\r\f".indexOf(c) >= 0
+                                            : Character.isWhitespace(c)))
                     || (name.isEmpty() && SymbolKind.CLASS != kind && SymbolKind.ANIMATION != kind)) {
                 throw new IllegalArgumentException("Invalid canonical CSS symbol: " + name);
             }
@@ -132,7 +136,11 @@ public record CssResource(
 
     public record Symbol(SymbolKind kind, String name, String value, boolean stable) {
         public Symbol {
-            if ((SymbolKind.FONT != kind && name.chars().anyMatch(Character::isWhitespace))
+            if ((SymbolKind.FONT != kind
+                            && name.chars()
+                                    .anyMatch(c -> SymbolKind.CLASS == kind
+                                            ? " \t\n\r\f".indexOf(c) >= 0
+                                            : Character.isWhitespace(c)))
                     || value.isBlank()
                     || value.chars().anyMatch(Character::isWhitespace)
                     || (name.isEmpty() && SymbolKind.CLASS != kind && SymbolKind.ANIMATION != kind)) {

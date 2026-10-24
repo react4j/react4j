@@ -4,9 +4,13 @@ import static org.testng.Assert.*;
 
 import com.google.gson.JsonParser;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import org.testng.annotations.Test;
+import react4j.css.internal.CssCatalogue;
+import react4j.css.internal.CssNames;
+import react4j.css.internal.CssUtilityBinding;
 import react4j.css.internal.SourceMap;
 
 public final class AuthoringFeedbackTest {
@@ -128,6 +132,85 @@ public final class AuthoringFeedbackTest {
                 () -> UtilityLanguage.prepare(new UtilityLanguage.Source("tokens.css", duplicate)));
         assertEquals(overlap.diagnostic().origin().start(), duplicate.indexOf("a:2px"));
         assertEquals(overlap.diagnostic().related().get(0).start(), duplicate.indexOf("a:1px"));
+    }
+
+    @Test
+    public void stableNativeSymbolsKeepTheirReadableNamesThroughCompression() {
+        var prepared = UtilityLanguage.prepare(
+                new UtilityLanguage.Source("rules.css", RULES + "@utility setup {--p:1;anchor-name:--trigger;}"));
+        var library = UtilityLanguage.bind(
+                prepared,
+                "demo.Stable",
+                new UtilityLanguage.Bindings(
+                        Set.of(),
+                        CssUtilityBinding.Context.empty(),
+                        Set.of(),
+                        Set.of(),
+                        new UtilityLanguage.Stability(true, Set.of())));
+        var expansion = UtilityLanguage.expand(UtilityLanguage.readChecked(library.json()), List.of("flex"))
+                .expansions()
+                .get(0);
+        var catalogue = new CssCatalogue(
+                Map.of(
+                        library.owner(),
+                        new CssCatalogue.Resource(
+                                expansion.metadata(),
+                                expansion.css(),
+                                JsonParser.parseString(expansion.sourceMap()).getAsJsonObject())),
+                "1".repeat(64),
+                Map.of());
+        var names = CssNames.create(catalogue, new CssNames.Policy(true, "app-"));
+        assertTrue(names.entries().stream()
+                .allMatch(entry -> entry.stable() && entry.readable().equals(entry.compiled())));
+        assertTrue(
+                names.entries().stream().anyMatch(entry -> entry.symbol().name().equals("--trigger")));
+    }
+
+    @Test
+    public void descriptorFieldShapesAndInvalidSnapshotsHaveClearFailures() {
+        var library = checked();
+        for (String field : List.of(
+                "owner",
+                "kind",
+                "source",
+                "text",
+                "sourceMap",
+                "externalClasses",
+                "exportedIds",
+                "exportedAnimations",
+                "bindings",
+                "stability")) {
+            var value = JsonParser.parseString(library.json()).getAsJsonObject();
+            value.remove(field);
+            assertTrue(String.valueOf(expectThrows(
+                                    IllegalArgumentException.class, () -> UtilityLanguage.readChecked(value.toString()))
+                            .getMessage())
+                    .contains("descriptor"));
+        }
+        for (String field : List.of("imports", "properties", "ids", "assets", "fonts")) {
+            var value = JsonParser.parseString(library.json()).getAsJsonObject();
+            value.getAsJsonObject("bindings").addProperty(field, "wrong");
+            assertTrue(String.valueOf(expectThrows(
+                                    IllegalArgumentException.class, () -> UtilityLanguage.readChecked(value.toString()))
+                            .getMessage())
+                    .contains(field));
+        }
+        var wrongKind = JsonParser.parseString(library.json()).getAsJsonObject();
+        wrongKind.addProperty("kind", "prepared");
+        expectThrows(IllegalArgumentException.class, () -> UtilityLanguage.readChecked(wrongKind.toString()));
+        var badSource = JsonParser.parseString(library.prepared().json()).getAsJsonObject();
+        badSource.addProperty("text", "@utility-rules; @utility x;");
+        assertEquals(
+                expectThrows(UtilityLanguage.Failure.class, () -> UtilityLanguage.readPrepared(badSource.toString()))
+                        .diagnostic()
+                        .code(),
+                "U_SYNTAX");
+        var badChecked = JsonParser.parseString(library.json()).getAsJsonObject();
+        badChecked.addProperty("text", "@utility-rules; @utility x;");
+        expectThrows(UtilityLanguage.Failure.class, () -> UtilityLanguage.readChecked(badChecked.toString()));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> UtilityLanguage.bind(library.prepared(), " ", new UtilityLanguage.Bindings(Set.of())));
     }
 
     @Test

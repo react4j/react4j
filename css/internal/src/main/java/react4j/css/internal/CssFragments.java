@@ -16,7 +16,7 @@ public record CssFragments(String requester, List<Fragment> fragments) {
     public record Fragment(String candidate, String orderKey, String css, String sourceMap, CssResource metadata) {
         public Fragment {
             if (candidate.isEmpty()
-                    || candidate.chars().anyMatch(Character::isWhitespace)
+                    || candidate.chars().anyMatch(c -> " \t\n\r\f".indexOf(c) >= 0)
                     || orderKey.isEmpty()
                     || metadata.fingerprint().isEmpty()
                     || !metadata.bindings().isEmpty()
