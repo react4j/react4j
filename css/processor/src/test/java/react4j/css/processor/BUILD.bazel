@@ -28,6 +28,7 @@ java_testng(
         "CssResourceProcessorTest.java",
         "CssStableProcessorTest.java",
         "CssSymbolProcessorTest.java",
+        "NativeUtilityProcessorTest.java",
         "UtilityCssProcessorTest.java",
     ],
     data = [
@@ -47,6 +48,7 @@ java_testng(
         "react4j.css.processor.CssStableProcessorTest",
         "react4j.css.processor.CssSymbolProcessorTest",
         "react4j.css.processor.UtilityCssProcessorTest",
+        "react4j.css.processor.NativeUtilityProcessorTest",
     ],
     deps = [
         "//css/core",
@@ -68,6 +70,7 @@ java_testng(
         "CssResourceProcessorTest.java",
         "CssStableProcessorTest.java",
         "CssSymbolProcessorTest.java",
+        "NativeUtilityProcessorTest.java",
         "UtilityCssProcessorTest.java",
     ],
     data = [
@@ -85,6 +88,7 @@ java_testng(
         "react4j.css.processor.CssStableProcessorTest",
         "react4j.css.processor.CssSymbolProcessorTest",
         "react4j.css.processor.UtilityCssProcessorTest",
+        "react4j.css.processor.NativeUtilityProcessorTest",
     ],
     deps = [
         "//css/core",
@@ -144,7 +148,7 @@ java_testng(
     name = "names_tests",
     srcs = ["NamesTest.java"],
     test_class = "react4j.css.processor.NamesTest",
-    deps = ["//css/processor/src/main/java/react4j/css/processor"],
+    deps = ["//css/internal/src/main/java/react4j/css/internal"],
 )
 
 java_testng(
@@ -183,6 +187,7 @@ java_testng(
     name = "utility_tests",
     srcs = [
         "CssProcessorTest.java",
+        "NativeUtilityProcessorTest.java",
         "UtilityCssProcessorTest.java",
     ],
     data = [
@@ -190,7 +195,10 @@ java_testng(
         "//third_party/java:strict_checker_options",
     ],
     jvm_flags = _PROCESSOR_JVM_FLAGS + ["-Dcss.processor.implementation=true"],
-    test_class = "react4j.css.processor.UtilityCssProcessorTest",
+    test_classes = [
+        "react4j.css.processor.UtilityCssProcessorTest",
+        "react4j.css.processor.NativeUtilityProcessorTest",
+    ],
     deps = [
         "//css/core",
         "//css/processor/src/main/java/react4j/css/processor",

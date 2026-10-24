@@ -1,0 +1,6 @@
+@utility-rules;
+@scale spacing .25rem;
+:root { --baseline: 1; }
+@utility "gap-{size}" (size: scale(spacing) | arbitrary(<length-percentage>)) {
+  gap: param(size);
+}

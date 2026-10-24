@@ -1,6 +1,7 @@
 package react4j.css.internal;
 
 import java.util.Locale;
+import react4j.css.internal.CssResource.Kind;
 
 public final class CssIdentity {
     private CssIdentity() {}
@@ -24,5 +25,16 @@ public final class CssIdentity {
 
     public static String root(String binaryName) {
         return "jcss-" + encode(binaryName);
+    }
+
+    public static void checkAlias(String name, Kind kind) {
+        if (!name.matches("(?:--|-?(?:[a-zA-Z_]|[^\\x00-\\x7f]))(?:[a-zA-Z0-9_-]|[^\\x00-\\x7f])*")
+                || "--".equals(name)
+                || (Kind.KEYFRAMES == kind
+                        && ("none".equalsIgnoreCase(name)
+                                || "default".equalsIgnoreCase(name)
+                                || CssAnimationValues.CSS_WIDE.contains(name.toLowerCase(Locale.ROOT))))) {
+            throw new IllegalArgumentException("Invalid imported CSS name: " + name);
+        }
     }
 }

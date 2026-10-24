@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Set;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import react4j.css.internal.CssIdentity;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;
@@ -570,11 +571,11 @@ public final class CssCompilerTest {
                 .getAllSimpleMembers();
         assertEquals(
                 terms.stream().map(CSSExpressionMemberTermSimple::getValue).toList(),
-                List.of(keyword, "1s", ROOT + "--keyframes-" + Names.encode(keyword)));
+                List.of(keyword, "1s", ROOT + "--keyframes-" + CssIdentity.encode(keyword)));
         var longhand = parse(component(definition + "animation-name: " + keyword + ";", "style"));
         assertEquals(
                 value(longhand.getAllStyleRules().get(0).getAllDeclarations().get(0)),
-                ROOT + "--keyframes-" + Names.encode(keyword));
+                ROOT + "--keyframes-" + CssIdentity.encode(keyword));
     }
 
     @DataProvider
@@ -786,7 +787,7 @@ public final class CssCompilerTest {
             assertEquals(sheet.getAllStyleRules().size(), 1);
             for (var alias : entry.getValue()) {
                 assertTrue(
-                        result.output().css().contains(ROOT + "--keyframes-" + Names.encode(alias)),
+                        result.output().css().contains(ROOT + "--keyframes-" + CssIdentity.encode(alias)),
                         result.output().css());
             }
         }

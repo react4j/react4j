@@ -3,8 +3,10 @@ package react4j.css.utility.language;
 import static org.testng.Assert.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.testng.annotations.Test;
+import react4j.css.internal.CssUtilityBinding;
 
 public final class UtilityLanguageTest {
     private static final String RULES = """
@@ -29,7 +31,19 @@ public final class UtilityLanguageTest {
         return UtilityLanguage.bind(
                 UtilityLanguage.prepare(new UtilityLanguage.Source("rose.utilities.css", text)),
                 "demo.Rose",
-                new UtilityLanguage.Bindings(Set.of("iconStack")));
+                new UtilityLanguage.Bindings(
+                        Set.of("iconStack"),
+                        new CssUtilityBinding.Context(
+                                Set.of("cs5"),
+                                Set.of(),
+                                Set.of(),
+                                Set.of(),
+                                Map.of(),
+                                Map.of(),
+                                Map.of(),
+                                Map.of(),
+                                Map.of(),
+                                List.of())));
     }
 
     @Test

@@ -19,6 +19,7 @@ import react4j.css.internal.CssIdentity;
 import react4j.css.internal.CssResource;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.CssTokens;
+import react4j.css.internal.CssUtilityBinding;
 import react4j.css.internal.SourceMap;
 
 /** Pure JVM rule preparation, checking and stateless expansion. No operation performs I/O. */
@@ -27,7 +28,11 @@ public final class UtilityLanguage {
 
     private UtilityLanguage() {}
 
-    public record Source(String name, String text) {}
+    public record Source(String name, String text, String sourceMap) {
+        public Source(String name, String text) {
+            this(name, text, "");
+        }
+    }
 
     public record Origin(String source, int start, int end, int line, int column) {}
 
@@ -57,9 +62,23 @@ public final class UtilityLanguage {
         }
     }
 
-    public record Bindings(Set<String> externalClasses) {
+    public record Bindings(
+            Set<String> externalClasses,
+            CssUtilityBinding.Context context,
+            Set<String> exportedIds,
+            Set<String> exportedAnimations) {
+        public Bindings(Set<String> externalClasses) {
+            this(externalClasses, CssUtilityBinding.Context.empty(), Set.of(), Set.of());
+        }
+
+        public Bindings(Set<String> externalClasses, CssUtilityBinding.Context context) {
+            this(externalClasses, context, Set.of(), Set.of());
+        }
+
         public Bindings {
             externalClasses = Set.copyOf(externalClasses);
+            exportedIds = Set.copyOf(exportedIds);
+            exportedAnimations = Set.copyOf(exportedAnimations);
         }
     }
 
@@ -76,7 +95,13 @@ public final class UtilityLanguage {
     }
 
     public record Expansion(
-            String candidate, String className, String orderKey, String css, String sourceMap, List<Trace> trace) {
+            String candidate,
+            String className,
+            String orderKey,
+            String css,
+            String sourceMap,
+            List<Trace> trace,
+            CssResource metadata) {
         public Expansion {
             trace = List.copyOf(trace);
         }
@@ -117,11 +142,21 @@ public final class UtilityLanguage {
         private final Prepared prepared;
         private final String owner;
         private final Bindings bindings;
+        private final CssUtilityBinding.Bound support;
 
-        private Checked(Prepared prepared, String owner, Bindings bindings) {
+        private Checked(Prepared prepared, String owner, Bindings bindings, CssUtilityBinding.Bound support) {
             this.prepared = prepared;
             this.owner = owner;
             this.bindings = bindings;
+            this.support = support;
+        }
+
+        public CssUtilityBinding.Bound support() {
+            return support;
+        }
+
+        public Bindings bindings() {
+            return bindings;
         }
 
         public Prepared prepared() {
@@ -133,12 +168,17 @@ public final class UtilityLanguage {
         }
 
         public String fingerprint() {
-            return digest(json());
+            var value = JsonParser.parseString(json()).getAsJsonObject();
+            value.remove("sourceMap");
+            return digest(value.toString());
         }
 
         public String json() {
             var json = envelope("checked", prepared.source());
             json.addProperty("owner", owner);
+            json.add("bindings", JsonParser.parseString(bindings.context().json()));
+            json.add("exportedIds", array(bindings.exportedIds()));
+            json.add("exportedAnimations", array(bindings.exportedAnimations()));
             var classes = new JsonArray();
             bindings.externalClasses().stream().sorted().forEach(classes::add);
             json.add("externalClasses", classes);
@@ -183,27 +223,47 @@ public final class UtilityLanguage {
 
     public static Prepared readPrepared(String json) {
         var value = descriptor(json, "prepared");
-        return prepare(
-                new Source(value.get("source").getAsString(), value.get("text").getAsString()));
+        return prepare(readSource(value));
     }
 
     public static Checked bind(Prepared prepared, String owner, Bindings bindings) {
         if (owner.isBlank()) {
             throw new IllegalArgumentException("Provider owner is required");
         }
-        var checked = new Checked(prepared, owner, bindings);
         var rules = prepared.rules;
         try {
+            var output = validationOutput(prepared);
+            int boundary = supportCss(prepared).length();
+            var result = CssUtilityBinding.compile(
+                    output,
+                    CssIdentity.root(owner),
+                    Set.of("probe"),
+                    bindings.exportedIds(),
+                    bindings.exportedAnimations(),
+                    bindings.context(),
+                    true,
+                    boundary);
+            var resolved = CssUtilityBinding.resolve(owner, result, Map.of(), bindings.context());
+            for (var group : rules.tokens.values()) {
+                for (var value : group.values().values()) {
+                    CssUtilityBinding.checkValue(value, resolved.metadata(), bindings.context());
+                }
+            }
+            var checked = new Checked(prepared, owner, bindings, resolved.project(0, resolved.boundary()));
             for (var rule : rules.utilities) {
+                templateHooks(checked, substitute(rule.body(), rule.parameter(), RuleLibrary.sample(rule.type())));
                 hooks(checked, probe(rules, rule, false), "probe");
             }
             for (var rule : rules.variants) {
+                templateHooks(checked, substitute(rule.body(), rule.parameter(), RuleLibrary.sample(rule.type())));
                 hooks(checked, probe(rules, rule, true), "probe");
             }
+            return checked;
         } catch (RuleSyntax.Syntax e) {
             throw failure(rules.source, e.code, String.valueOf(e.getMessage()), e.offset);
+        } catch (IllegalArgumentException e) {
+            throw bindingFailure(rules.source, e);
         }
-        return checked;
     }
 
     public static Checked readChecked(String json) {
@@ -211,10 +271,13 @@ public final class UtilityLanguage {
         var classes = new HashSet<String>();
         value.getAsJsonArray("externalClasses").forEach(item -> classes.add(item.getAsString()));
         return bind(
-                prepare(new Source(
-                        value.get("source").getAsString(), value.get("text").getAsString())),
+                prepare(readSource(value)),
                 value.get("owner").getAsString(),
-                new Bindings(classes));
+                new Bindings(
+                        classes,
+                        CssUtilityBinding.Context.read(value.get("bindings").toString()),
+                        strings(value, "exportedIds"),
+                        strings(value, "exportedAnimations")));
     }
 
     public static List<String> candidates(String text) {
@@ -264,10 +327,26 @@ public final class UtilityLanguage {
 
     /** All templates, with representative typed holes, for provider-wide CSS binding checks. */
     public static String validationCss(Prepared prepared) {
-        var result = new StringBuilder(supportCss(prepared));
-        prepared.rules.utilities.forEach(rule -> result.append(probe(prepared.rules, rule, false)));
-        prepared.rules.variants.forEach(rule -> result.append(probe(prepared.rules, rule, true)));
-        return result.toString();
+        return validationOutput(prepared).css();
+    }
+
+    private static SourceMap.Writer validationOutput(Prepared prepared) {
+        var writer = new SourceMap.Writer();
+        raw(prepared.rules, prepared.rules.support, writer);
+        for (var rule : prepared.rules.utilities) {
+            render(
+                    prepared.rules,
+                    substitute(rule.body(), rule.parameter(), RuleLibrary.sample(rule.type())),
+                    ".probe",
+                    writer);
+        }
+        for (var rule : prepared.rules.variants) {
+            var body = slot(
+                    substitute(rule.body(), rule.parameter(), RuleLibrary.sample(rule.type())),
+                    List.of(new RuleSyntax.Node("x: 0", List.of(), rule.offset(), false)));
+            render(prepared.rules, body, ".probe", writer);
+        }
+        return writer;
     }
 
     public static String supportCss(Prepared prepared) {
@@ -292,6 +371,7 @@ public final class UtilityLanguage {
             if (piece.startsWith("[") && piece.endsWith("]")) {
                 String selector = RuleSyntax.decode(piece.substring(1, piece.length() - 1));
                 RuleLibrary.selector(selector, pieces.get(i).offset());
+                hooks(checked, RuleSyntax.guard(selector, ":root") + " {x:0;}", "");
                 body = List.of(
                         new RuleSyntax.Node(selector, body, utility.rule().offset(), true));
                 ranks.add(0, rank(rules.variants.size()) + ":" + spellingKey(selector) + "\u0000");
@@ -303,16 +383,37 @@ public final class UtilityLanguage {
             }
         }
         String className = CssIdentity.root(checked.owner) + "--class-" + CssIdentity.encode(candidate);
-        var writer = new SourceMap.Writer();
+        var writer = validationOutput(checked.prepared);
+        int boundary = writer.css().length();
         render(rules, body, "." + className, writer);
-        String css = writer.css();
-        new CssSyntax(css, 0).parse(CssSyntax.Mode.UTILITY);
-        hooks(checked, css, className);
+        hooks(checked, writer.css().substring(boundary), className);
+        CssUtilityBinding.Bound fragment;
+        try {
+            var compiled = CssUtilityBinding.compile(
+                    writer,
+                    CssIdentity.root(checked.owner),
+                    Set.of("probe", className),
+                    checked.bindings.exportedIds(),
+                    checked.bindings.exportedAnimations(),
+                    checked.bindings.context(),
+                    true,
+                    boundary);
+            var resolved = CssUtilityBinding.resolve(
+                    checked.owner, compiled, Map.of(candidate, className), checked.bindings.context());
+            fragment = resolved.project(resolved.boundary(), resolved.css().length());
+        } catch (IllegalArgumentException e) {
+            var failure = bindingFailure(rules.source, e);
+            throw RuleLibrary.error(
+                    failure.diagnostic().code(),
+                    failure.diagnostic().message(),
+                    utility.rule().offset());
+        }
         String order = rank(pieces.size() - 1)
                 + String.join("", ranks)
                 + rank(utility.rule().rank())
                 + spellingKey(candidate);
-        return new Expansion(candidate, className, order, css, writer.map(className + ".css"), trace);
+        return new Expansion(
+                candidate, className, order, fragment.css(), fragment.sourceMap(), trace, fragment.metadata());
     }
 
     private static String spellingKey(String text) {
@@ -407,6 +508,15 @@ public final class UtilityLanguage {
         return writer.css();
     }
 
+    private static void templateHooks(Checked checked, List<RuleSyntax.Node> nodes) {
+        for (var node : nodes) {
+            if (node.block() && !node.head().startsWith("@")) {
+                hooks(checked, RuleSyntax.guard(node.head(), ":root") + " {x:0;}", "");
+            }
+            templateHooks(checked, node.children());
+        }
+    }
+
     private static void hooks(Checked checked, String css, String guard) {
         for (var token : CssTokens.read(css)) {
             if (CssResource.SymbolKind.CLASS == token.kind()) {
@@ -437,7 +547,37 @@ public final class UtilityLanguage {
         json.addProperty("kind", kind);
         json.addProperty("source", source.name());
         json.addProperty("text", source.text());
+        json.addProperty("sourceMap", source.sourceMap());
         return json;
+    }
+
+    private static JsonArray array(Set<String> values) {
+        var array = new JsonArray();
+        values.stream().sorted().forEach(array::add);
+        return array;
+    }
+
+    private static Set<String> strings(JsonObject value, String key) {
+        var values = new HashSet<String>();
+        value.getAsJsonArray(key).forEach(item -> values.add(item.getAsString()));
+        return Set.copyOf(values);
+    }
+
+    private static Source readSource(JsonObject value) {
+        return new Source(
+                value.get("source").getAsString(),
+                value.get("text").getAsString(),
+                value.get("sourceMap").getAsString());
+    }
+
+    private static Failure bindingFailure(Source source, IllegalArgumentException error) {
+        String message = String.valueOf(error.getMessage());
+        String code = message.startsWith("U_") && message.contains(":")
+                ? message.substring(0, message.indexOf(':'))
+                : message.contains("asset") || message.contains("URL")
+                        ? "U_ASSET_REFERENCE"
+                        : message.contains("container") ? "U_CONTAINER_NAME" : "U_BINDING";
+        return failure(source, code, message, 0);
     }
 
     private static JsonObject descriptor(String json, String kind) {
@@ -478,6 +618,13 @@ public final class UtilityLanguage {
     }
 
     private static SourceMap.Location location(Source source, int offset) {
+        if (!source.sourceMap().isEmpty()) {
+            var location = SourceMap.location(
+                    source.text(), JsonParser.parseString(source.sourceMap()).getAsJsonObject(), offset);
+            if (null != location) {
+                return location;
+            }
+        }
         int line = 0;
         int start = 0;
         for (int i = 0; i < offset; i++) {

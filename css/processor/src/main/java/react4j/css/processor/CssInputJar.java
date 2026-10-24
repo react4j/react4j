@@ -8,6 +8,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import react4j.css.internal.CssInput;
 import react4j.css.internal.CssSyntax;
+import react4j.css.internal.SourceMap;
+import react4j.css.utility.language.UtilityLanguage;
 
 /** Packages explicit CSS sources and derived catalogues for javac and J2CL classpaths. */
 public final class CssInputJar {
@@ -25,7 +27,27 @@ public final class CssInputJar {
                 throw new IllegalArgumentException("Duplicate CSS source: " + args[i]);
             }
             try {
-                entries.put(path + ".classes.json", CssInput.catalogue(args[i], css));
+                if (UtilityLanguage.nativeSource(css)) {
+                    String normalized = CssInput.normalize(css);
+                    var writer = new SourceMap.Writer();
+                    int line = 0;
+                    int column = 0;
+                    for (int at = 0; at < normalized.length(); at++) {
+                        writer.append(
+                                normalized.substring(at, at + 1), new SourceMap.Location(args[i], css, line, column));
+                        if ('\n' == normalized.charAt(at)) {
+                            line++;
+                            column = 0;
+                        } else {
+                            column++;
+                        }
+                    }
+                    var prepared = UtilityLanguage.prepare(
+                            new UtilityLanguage.Source(args[i], normalized, writer.map("rules.css")));
+                    entries.put(path + ".rules.json", prepared.json());
+                } else {
+                    entries.put(path + ".classes.json", CssInput.catalogue(args[i], css));
+                }
             } catch (CssSyntax.InvalidCss e) {
                 int offset = Math.min(css.length(), e.offset());
                 int line = (int) css.substring(0, offset)

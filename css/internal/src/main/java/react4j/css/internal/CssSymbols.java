@@ -1,24 +1,22 @@
-package react4j.css.processor;
+package react4j.css.internal;
 
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import react4j.css.internal.CssResource;
-import react4j.css.internal.CssTokens;
-import react4j.css.internal.SourceMap;
 
 /** Resolves per-alias compiler names while preserving each emitted token's canonical identity. */
-final class CssSymbols {
+public final class CssSymbols {
     private CssSymbols() {}
 
-    record Key(CssResource.SymbolKind kind, String value) {}
+    public record Key(CssResource.SymbolKind kind, String value) {}
 
-    record Definition(CssResource.SymbolId symbol, String readable, List<String> requires) {}
+    public record Definition(CssResource.SymbolId symbol, String readable, List<String> requires) {}
 
-    record Result(SourceMap.Writer output, List<CssResource.Occurrence> occurrences) {}
+    public record Result(SourceMap.Writer output, List<CssResource.Occurrence> occurrences) {}
 
-    static Result resolve(SourceMap.Writer input, Map<Key, Definition> definitions, List<CssTokens.Token> tokens) {
+    public static Result resolve(
+            SourceMap.Writer input, Map<Key, Definition> definitions, List<CssTokens.Token> tokens) {
         var edits = new ArrayList<SourceMap.Edit>();
         var occurrences = new ArrayList<CssResource.Occurrence>();
         int shift = 0;

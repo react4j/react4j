@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.lang.model.element.TypeElement;
 import org.realityforge.proton.GeneratorUtil;
+import react4j.css.internal.CssIdentity;
 
 record CssDescriptor(
         TypeElement element,
@@ -40,6 +41,6 @@ record CssDescriptor(
     }
 
     String rootClassName() {
-        return Names.root(binaryName);
+        return CssIdentity.root(binaryName);
     }
 }

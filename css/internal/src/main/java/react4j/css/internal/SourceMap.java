@@ -58,6 +58,21 @@ public final class SourceMap {
         return writer;
     }
 
+    /** Looks up an authored anchor while composing an earlier compiler's output. */
+    public static @Nullable Location location(String css, JsonObject map, int offset) {
+        if (offset < 0 || offset > css.length()) {
+            throw new IllegalArgumentException("CSS offset is outside the source");
+        }
+        Location result = null;
+        for (var mapping : mappings(css, map)) {
+            if (mapping.offset() > offset) {
+                break;
+            }
+            result = mapping.location();
+        }
+        return result;
+    }
+
     private static List<Mapping> mappings(String css, JsonObject map) {
         var lines = new ArrayList<Integer>();
         lines.add(0);

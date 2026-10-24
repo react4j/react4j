@@ -1,4 +1,4 @@
-package react4j.css.processor;
+package react4j.css.internal;
 
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSExpressionMemberFunction;
@@ -28,28 +28,25 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import react4j.css.internal.CssExpressions;
 import react4j.css.internal.CssResource.Kind;
-import react4j.css.internal.CssSyntax;
-import react4j.css.internal.CssTokens;
 
 /** Rewrites explicitly bound ID selectors and same-document fragments. */
-final class CssIds {
+public final class CssIds {
     private CssIds() {}
 
-    record Binding(String owner, String name, Kind kind, boolean stable) {
-        String cssName() {
-            return Kind.GLOBAL == kind && stable ? name : Names.root(owner) + "--id-" + Names.encode(name);
+    public record Binding(String owner, String name, Kind kind, boolean stable) {
+        public String cssName() {
+            return Kind.GLOBAL == kind && stable ? name : CssIdentity.root(owner) + "--id-" + CssIdentity.encode(name);
         }
     }
 
-    record Import(List<String> providers, Binding binding) {
-        Import {
+    public record Import(List<String> providers, Binding binding) {
+        public Import {
             providers = List.copyOf(providers);
         }
     }
 
-    static Set<String> names(String css, Kind kind, Set<String> bindings) {
+    public static Set<String> names(String css, Kind kind, Set<String> bindings) {
         String prefix = Kind.COMPONENT == kind ? ".root {\n" : Kind.KEYFRAMES == kind ? "@keyframes shared {\n" : "";
         var syntax = new CssSyntax(prefix + css + (prefix.isEmpty() ? "" : "\n}"), prefix.length());
         var sheet = Kind.KEYFRAMES == kind
@@ -72,7 +69,7 @@ final class CssIds {
         return result.toString();
     }
 
-    static Map<String, String> rewrite(
+    public static Map<String, String> rewrite(
             CascadingStyleSheet sheet, CssSyntax syntax, Map<String, String> bindings, boolean global) {
         var found = new LinkedHashMap<String, String>();
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {

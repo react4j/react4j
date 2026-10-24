@@ -148,6 +148,7 @@ java_testng(
         "SharedPulse.java",
         "SymbolStyles.java",
         "defaults.css",
+        "native.utilities.css",
         "utilities.css",
         ":fixture.css",
         ":fixture.css.map",
@@ -211,6 +212,7 @@ css_sources(
     testonly = True,
     srcs = [
         "defaults.css",
+        "native.utilities.css",
         "utilities.css",
     ],
 )
@@ -220,6 +222,7 @@ java_j2cl_library(
     testonly = True,
     srcs = [
         "FileDefaults.java",
+        "NativeUtilityLibrary.java",
         "UtilityLibrary.java",
         "package-info.java",
     ],

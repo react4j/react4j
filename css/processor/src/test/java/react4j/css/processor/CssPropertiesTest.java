@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import org.testng.annotations.Test;
+import react4j.css.internal.CssProperties;
 import react4j.css.internal.CssResource.Kind;
 import react4j.css.internal.CssSyntax;
 import react4j.css.internal.SourceMap;

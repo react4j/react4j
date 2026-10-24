@@ -1,4 +1,4 @@
-package react4j.css.processor;
+package react4j.css.internal;
 
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSExpression;
@@ -20,20 +20,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
-import react4j.css.internal.CssFontValues;
 import react4j.css.internal.CssResource.Kind;
-import react4j.css.internal.CssSyntax;
 
-final class CssFonts {
+public final class CssFonts {
     private CssFonts() {}
 
-    record Import(String owner, String name, boolean stable) {
-        String cssName() {
-            return Names.root(owner) + "--font-" + Names.encode(name);
+    public record Import(String owner, String name, boolean stable) {
+        public String cssName() {
+            return CssIdentity.root(owner) + "--font-" + CssIdentity.encode(name);
         }
     }
 
-    static Set<String> names(String css, Kind kind) {
+    public static Set<String> names(String css, Kind kind) {
         String prefix = Kind.COMPONENT == kind ? ".root {\n" : Kind.KEYFRAMES == kind ? "@keyframes shared {\n" : "";
         var syntax = new CssSyntax(prefix + css + (prefix.isEmpty() ? "" : "\n}"), prefix.length());
         var sheet = Kind.KEYFRAMES == kind
@@ -52,7 +50,7 @@ final class CssFonts {
         return Set.copyOf(names);
     }
 
-    static Map<String, String> rewrite(
+    public static Map<String, String> rewrite(
             CascadingStyleSheet sheet, CssSyntax syntax, String root, Map<String, Import> imports) {
         var names = new LinkedHashMap<String, String>();
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
@@ -63,7 +61,7 @@ final class CssFonts {
                     if (imports.containsKey(name)) {
                         throw new IllegalArgumentException("Owned font conflicts with imported family: " + name);
                     }
-                    names.put(name, root + "--font-" + Names.encode(name));
+                    names.put(name, root + "--font-" + CssIdentity.encode(name));
                 } catch (IllegalArgumentException e) {
                     throw syntax.invalid(String.valueOf(e.getMessage()), face);
                 }
@@ -90,7 +88,7 @@ final class CssFonts {
                     var value = CssFontValues.read(declaration);
                     if (value.dynamic()) {
                         imports.keySet()
-                                .forEach(name -> names.putIfAbsent(name, root + "--font-" + Names.encode(name)));
+                                .forEach(name -> names.putIfAbsent(name, root + "--font-" + CssIdentity.encode(name)));
                     }
                     // Replace right-to-left because a multiword family collapses to one identifier.
                     var families = new ArrayList<>(value.families());
@@ -98,7 +96,7 @@ final class CssFonts {
                     for (var family : families) {
                         String name = family.name();
                         if (imports.containsKey(name)) {
-                            names.putIfAbsent(name, root + "--font-" + Names.encode(name));
+                            names.putIfAbsent(name, root + "--font-" + CssIdentity.encode(name));
                         }
                         String resolved = names.get(name);
                         if (null != resolved) {
@@ -151,7 +149,7 @@ final class CssFonts {
 
     // Substitute into the complete declaration: a variable can supply a weight, size, line-height or family.
     // Keep every scoped definition and break dependency cycles without mutating the emitted syntax tree.
-    static void expand(
+    public static void expand(
             List<ICSSExpressionMember> remaining,
             List<ICSSExpressionMember> prefix,
             Map<String, List<CSSExpression>> variables,
