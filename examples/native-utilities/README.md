@@ -22,3 +22,7 @@ Each card contains both its trigger and panel in one anchor scope. Placement,
 flip fallbacks, size limits and the opacity transition are explicit library CSS.
 Reduced-motion preferences remove that transition. Native browser support is
 required; the example is checked in the repository's pinned Chromium.
+
+Start with [using native utilities](../../docs/native-utilities.md), then follow
+the [rule-author reference](../../docs/utility-rules.md) and
+[portable recipes](../../docs/utility-recipes.md).

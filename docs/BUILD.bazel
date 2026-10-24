@@ -5,10 +5,13 @@ filegroup(
         "compared_to_react.md",
         "faq.md",
         "intellij.md",
+        "native-utilities.md",
         "overview.md",
         "project_setup.md",
         "related_projects.md",
         "todomvc.md",
+        "utility-recipes.md",
+        "utility-rules.md",
     ],
     visibility = ["//website:__pkg__"],
 )

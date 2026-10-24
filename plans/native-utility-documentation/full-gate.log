@@ -1,0 +1,388 @@
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+Analyzing: target //tools/buildifier:buildifier_check (0 packages loaded, 0 targets configured)
+INFO: Analyzed target //tools/buildifier:buildifier_check (0 packages loaded, 0 targets configured).
+
+INFO: Found 1 target...
+Target //tools/buildifier:buildifier_check up-to-date:
+  bazel-bin/tools/buildifier/buildifier_check.bash
+INFO: Elapsed time: 0.146s, Critical Path: 0.00s
+INFO: 1 process: 5 action cache hit, 1 internal.
+INFO: Build completed successfully, 1 total action
+INFO: Running command line: bazel-bin/tools/buildifier/buildifier_check.bash
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+Analyzing: target //:java_format_check (0 packages loaded, 0 targets configured)
+Analyzing: target //:java_format_check (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //:java_format_check (0 packages loaded, 0 targets configured).
+INFO: Found 1 target...
+Target //:java_format_check up-to-date:
+  bazel-bin/java_format_check.palantir-java-format
+INFO: Elapsed time: 0.179s, Critical Path: 0.02s
+INFO: 1 process: 664 action cache hit, 1 internal.
+INFO: Build completed successfully, 1 total action
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+Analyzing: target //tools/ahab:hermeticity.check (0 packages loaded, 0 targets configured)
+Analyzing: target //tools/ahab:hermeticity.check (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //tools/ahab:hermeticity.check (0 packages loaded, 0 targets configured).
+INFO: Found 1 target...
+Target //tools/ahab:hermeticity.check up-to-date:
+  bazel-bin/tools/ahab/hermeticity.check.bash
+INFO: Elapsed time: 0.162s, Critical Path: 0.00s
+INFO: 1 process: 6 action cache hit, 1 internal.
+INFO: Build completed successfully, 1 total action
+INFO: Running command line: bazel-bin/tools/ahab/hermeticity.check.bash
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+Analyzing: target //tools/ahab:hermeticity.check (0 packages loaded, 0 targets configured)
+Analyzing: target //tools/ahab:hermeticity.check (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //tools/ahab:hermeticity.check (0 packages loaded, 0 targets configured).
+INFO: Found 1 target...
+Target //tools/ahab:hermeticity.check up-to-date:
+  bazel-bin/tools/ahab/hermeticity.check.bash
+INFO: Elapsed time: 0.116s, Critical Path: 0.00s
+INFO: 1 process: 6 action cache hit, 1 internal.
+INFO: Build completed successfully, 1 total action
+INFO: Running command line: bazel-bin/tools/ahab/hermeticity.check.bash <args omitted>
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+WARNING: Build option --compilation_mode has changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).
+Analyzing: 9 targets (0 packages loaded, 0 targets configured)
+Analyzing: 9 targets (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed 9 targets (0 packages loaded, 1506 targets configured, 8 aspect applications).
+INFO: Found 9 targets...
+INFO: Elapsed time: 0.240s, Critical Path: 0.02s
+INFO: 1 process: 451 action cache hit, 1 internal.
+INFO: Build completed successfully, 1 total action
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+WARNING: Build option --explicit_java_test_deps has changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).
+Analyzing: 57 targets (0 packages loaded, 0 targets configured)
+Analyzing: 57 targets (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed 57 targets (0 packages loaded, 6343 targets configured, 421 aspect applications).
+[2,108 / 2,109] 56 / 57 tests; Testing //css/integration-tests/src/test/java/react4j/css/integration:integration_tests; 1s darwin-sandbox
+[2,108 / 2,109] 56 / 57 tests; Testing //css/integration-tests/src/test/java/react4j/css/integration:integration_tests; 3s darwin-sandbox
+INFO: Found 57 test targets...
+INFO: Elapsed time: 3.778s, Critical Path: 3.44s
+INFO: 2 processes: 2107 action cache hit, 1 internal, 2 darwin-sandbox.
+INFO: Build completed successfully, 2 total actions
+//core/src/test/java/react4j/test:tests                         (cached) PASSED in 1.6s
+//core/src/test/js/react4j:browser_tests                        (cached) PASSED in 10.1s
+//core/src/test/js/react4j:configuration_disabled_tests         (cached) PASSED in 8.8s
+//core/src/test/js/react4j:configuration_enabled_tests          (cached) PASSED in 9.3s
+//core/src/test/js/react4j:configuration_invalid_tests          (cached) PASSED in 8.1s
+//core/src/test/js/react4j:configuration_tests                  (cached) PASSED in 9.1s
+//css/bundler/src/test/java/react4j/css/bundler:asset_tests     (cached) PASSED in 7.7s
+//css/bundler/src/test/java/react4j/css/bundler:packaging_tests (cached) PASSED in 2.0s
+//css/bundler/src/test/java/react4j/css/bundler:tests           (cached) PASSED in 2.7s
+//css/examples/save-button/src/test/js/react4j/css/example:browser_tests (cached) PASSED in 9.7s
+//css/examples/save-button/src/test/js/react4j/css/example:prefixed_browser_tests (cached) PASSED in 9.2s
+//css/examples/save-button/src/test/js/react4j/css/example:uncompressed_browser_tests (cached) PASSED in 10.5s
+//css/integration-tests/src/test/java/react4j/css/integration:asset_tests (cached) PASSED in 1.1s
+//css/integration-tests/src/test/java/react4j/css/integration:library_validations_test (cached) PASSED in 0.6s
+//css/integration-tests/src/test/java/react4j/css/integration:linked_validations_test (cached) PASSED in 0.8s
+//css/integration-tests/src/test/java/react4j/css/integration:web_validations_test (cached) PASSED in 0.3s
+//css/internal/src/test/java/react4j/css/internal:tests         (cached) PASSED in 0.9s
+//css/linker/src/test/java/react4j/css/linker:tests             (cached) PASSED in 7.0s
+//css/processor/src/test/java/react4j/css/processor:asset_font_tests (cached) PASSED in 1.5s
+//css/processor/src/test/java/react4j/css/processor:authoring_tests (cached) PASSED in 1.6s
+//css/processor/src/test/java/react4j/css/processor:compiler_tests (cached) PASSED in 1.9s
+//css/processor/src/test/java/react4j/css/processor:ids_tests   (cached) PASSED in 1.2s
+//css/processor/src/test/java/react4j/css/processor:implementation_tests (cached) PASSED in 39.2s
+//css/processor/src/test/java/react4j/css/processor:input_jar_tests (cached) PASSED in 1.0s
+//css/processor/src/test/java/react4j/css/processor:names_tests (cached) PASSED in 1.3s
+//css/processor/src/test/java/react4j/css/processor:peer_compiler_tests (cached) PASSED in 1.5s
+//css/processor/src/test/java/react4j/css/processor:processor_tests (cached) PASSED in 136.7s
+//css/processor/src/test/java/react4j/css/processor:properties_tests (cached) PASSED in 1.4s
+//css/processor/src/test/java/react4j/css/processor:text_block_tests (cached) PASSED in 0.7s
+//css/utility-language/src/test/java/react4j/css/utility/language:tests (cached) PASSED in 3.4s
+//doc-examples/src/test/js/react4j/examples:browser_tests       (cached) PASSED in 8.7s
+//dom/src/test/java/react4j/dom/test:tests                      (cached) PASSED in 1.6s
+//dom/src/test/js/react4j/dom:browser_tests                     (cached) PASSED in 8.6s
+//examples/drumloop/src/test/js/react4j/drumloop:browser_tests  (cached) PASSED in 10.9s
+//examples/heart-rate-monitor/src/test/js/react4j/hrm:browser_tests (cached) PASSED in 9.1s
+//examples/native-utilities/src/test/js/react4j/nativeutilities:browser_tests (cached) PASSED in 5.2s
+//examples/todomvc/src/test/js/react4j/todomvc:browser_tests    (cached) PASSED in 12.3s
+//examples/utility-css/src/test/js/react4j/utilitydemo:browser_tests (cached) PASSED in 9.8s
+//examples/webspeechdemo/src/test/js/react4j/webspeechdemo:browser_tests (cached) PASSED in 12.1s
+//processor/src/test/java/react4j/processor:checker_negative_control (cached) PASSED in 9.5s
+//processor/src/test/java/react4j/processor:diagnostics         (cached) PASSED in 106.6s
+//processor/src/test/java/react4j/processor:generated_goldens   (cached) PASSED in 236.9s
+//processor/src/test/java/react4j/processor:jspecify_diagnostics (cached) PASSED in 8.4s
+//processor/src/test/java/react4j/processor:jspecify_goldens    (cached) PASSED in 31.5s
+//processor/src/test/java/react4j/processor:nullness_contracts  (cached) PASSED in 4.4s
+//processor/src/test/java/react4j/processor:regressions         (cached) PASSED in 14.0s
+//third_party/java:verify_config_sha256                         (cached) PASSED in 1.0s
+//tools/browser/src/test/java/react4j/browser:tests             (cached) PASSED in 2.7s
+//tools/release/src/test/java/react4j/release:bundle_tests      (cached) PASSED in 16.1s
+//tools/site/src/test/java/react4j/site:all_tests               (cached) PASSED in 2.7s
+//tools/verification/src/test/java/react4j/verification:application_tests (cached) PASSED in 10.4s
+//tools/verification/src/test/java/react4j/verification:browser_coverage_tests (cached) PASSED in 4.2s
+//tools/verification/src/test/java/react4j/verification:coverage_tests (cached) PASSED in 2.0s
+//tools/verification/src/test/java/react4j/verification:instrumenter_tests (cached) PASSED in 6.6s
+//tools/verification/src/test/java/react4j/verification:lcov_report_tests (cached) PASSED in 1.6s
+//tools/verification/src/test/java/react4j/verification:runtime_coverage_tests (cached) PASSED in 16.9s
+//css/integration-tests/src/test/java/react4j/css/integration:integration_tests PASSED in 3.1s
+
+Executed 1 out of 57 tests: 57 tests pass.
+There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+WARNING: Build option --compilation_mode has changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).
+Analyzing: 17 targets (0 packages loaded, 0 targets configured)
+Analyzing: 17 targets (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed 17 targets (0 packages loaded, 5574 targets configured, 365 aspect applications).
+INFO: Found 17 test targets...
+INFO: Elapsed time: 0.609s, Critical Path: 0.09s
+INFO: 1 process: 1552 action cache hit, 1 internal.
+INFO: Build completed successfully, 1 total action
+//core/src/test/js/react4j:browser_tests                        (cached) PASSED in 9.2s
+//core/src/test/js/react4j:configuration_disabled_tests         (cached) PASSED in 9.0s
+//core/src/test/js/react4j:configuration_enabled_tests          (cached) PASSED in 8.9s
+//core/src/test/js/react4j:configuration_invalid_tests          (cached) PASSED in 8.6s
+//core/src/test/js/react4j:configuration_tests                  (cached) PASSED in 8.5s
+//css/examples/save-button/src/test/js/react4j/css/example:browser_tests (cached) PASSED in 7.1s
+//css/examples/save-button/src/test/js/react4j/css/example:prefixed_browser_tests (cached) PASSED in 9.6s
+//css/examples/save-button/src/test/js/react4j/css/example:uncompressed_browser_tests (cached) PASSED in 9.7s
+//doc-examples/src/test/js/react4j/examples:browser_tests       (cached) PASSED in 7.9s
+//dom/src/test/js/react4j/dom:browser_tests                     (cached) PASSED in 8.7s
+//examples/drumloop/src/test/js/react4j/drumloop:browser_tests  (cached) PASSED in 10.3s
+//examples/heart-rate-monitor/src/test/js/react4j/hrm:browser_tests (cached) PASSED in 7.9s
+//examples/native-utilities/src/test/js/react4j/nativeutilities:browser_tests (cached) PASSED in 9.1s
+//examples/todomvc/src/test/js/react4j/todomvc:browser_tests    (cached) PASSED in 10.1s
+//examples/utility-css/src/test/js/react4j/utilitydemo:browser_tests (cached) PASSED in 9.3s
+//examples/webspeechdemo/src/test/js/react4j/webspeechdemo:browser_tests (cached) PASSED in 14.1s
+//tools/verification/src/test/java/react4j/verification:application_tests (cached) PASSED in 11.6s
+
+Executed 0 out of 17 tests: 17 tests pass.
+There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+WARNING: Build options --collect_code_coverage, --compilation_mode, and --instrumentation_filter have changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).
+Analyzing: 25 targets (0 packages loaded, 0 targets configured)
+Analyzing: 25 targets (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed 25 targets (1 packages loaded, 3922 targets configured, 75 aspect applications).
+INFO: LCOV coverage report is located at /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/_coverage/_baseline_report.dat
+ and execpath is bazel-out/_coverage/_baseline_report.dat
+INFO: LCOV coverage report is located at /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/_coverage/_coverage_report.dat
+ and execpath is bazel-out/_coverage/_coverage_report.dat
+INFO: Found 25 test targets...
+INFO: Elapsed time: 0.958s, Critical Path: 0.62s
+INFO: 5 processes: 962 action cache hit, 3 internal, 2 darwin-sandbox.
+INFO: Build completed successfully, 5 total actions
+//core/src/test/java/react4j/test:tests                         (cached) PASSED in 2.2s
+//css/bundler/src/test/java/react4j/css/bundler:asset_tests     (cached) PASSED in 3.6s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/bundler/src/test/java/react4j/css/bundler/asset_tests/coverage.dat
+//css/bundler/src/test/java/react4j/css/bundler:packaging_tests (cached) PASSED in 2.6s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/bundler/src/test/java/react4j/css/bundler/packaging_tests/coverage.dat
+//css/bundler/src/test/java/react4j/css/bundler:tests           (cached) PASSED in 4.1s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/bundler/src/test/java/react4j/css/bundler/tests/coverage.dat
+//css/internal/src/test/java/react4j/css/internal:tests         (cached) PASSED in 4.0s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/internal/src/test/java/react4j/css/internal/tests/coverage.dat
+//css/linker/src/test/java/react4j/css/linker:tests             (cached) PASSED in 7.6s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/linker/src/test/java/react4j/css/linker/tests/coverage.dat
+//css/processor/src/test/java/react4j/css/processor:asset_font_tests (cached) PASSED in 3.1s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/processor/src/test/java/react4j/css/processor/asset_font_tests/coverage.dat
+//css/processor/src/test/java/react4j/css/processor:authoring_tests (cached) PASSED in 3.0s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/processor/src/test/java/react4j/css/processor/authoring_tests/coverage.dat
+//css/processor/src/test/java/react4j/css/processor:compiler_tests (cached) PASSED in 3.4s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/processor/src/test/java/react4j/css/processor/compiler_tests/coverage.dat
+//css/processor/src/test/java/react4j/css/processor:ids_tests   (cached) PASSED in 2.6s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/processor/src/test/java/react4j/css/processor/ids_tests/coverage.dat
+//css/processor/src/test/java/react4j/css/processor:implementation_tests (cached) PASSED in 36.3s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/processor/src/test/java/react4j/css/processor/implementation_tests/coverage.dat
+//css/processor/src/test/java/react4j/css/processor:input_jar_tests (cached) PASSED in 2.4s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/processor/src/test/java/react4j/css/processor/input_jar_tests/coverage.dat
+//css/processor/src/test/java/react4j/css/processor:names_tests (cached) PASSED in 2.7s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/processor/src/test/java/react4j/css/processor/names_tests/coverage.dat
+//css/processor/src/test/java/react4j/css/processor:peer_compiler_tests (cached) PASSED in 3.0s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/processor/src/test/java/react4j/css/processor/peer_compiler_tests/coverage.dat
+//css/processor/src/test/java/react4j/css/processor:properties_tests (cached) PASSED in 2.4s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/processor/src/test/java/react4j/css/processor/properties_tests/coverage.dat
+//css/processor/src/test/java/react4j/css/processor:text_block_tests (cached) PASSED in 1.8s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/processor/src/test/java/react4j/css/processor/text_block_tests/coverage.dat
+//css/utility-language/src/test/java/react4j/css/utility/language:tests (cached) PASSED in 9.2s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/css/utility-language/src/test/java/react4j/css/utility/language/tests/coverage.dat
+//dom/src/test/java/react4j/dom/test:tests                      (cached) PASSED in 2.5s
+//processor/src/test/java/react4j/processor:checker_negative_control (cached) PASSED in 11.2s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/processor/src/test/java/react4j/processor/checker_negative_control/coverage.dat
+//processor/src/test/java/react4j/processor:diagnostics         (cached) PASSED in 68.1s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/processor/src/test/java/react4j/processor/diagnostics/coverage.dat
+//processor/src/test/java/react4j/processor:generated_goldens   (cached) PASSED in 134.4s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/processor/src/test/java/react4j/processor/generated_goldens/coverage.dat
+//processor/src/test/java/react4j/processor:jspecify_diagnostics (cached) PASSED in 9.9s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/processor/src/test/java/react4j/processor/jspecify_diagnostics/coverage.dat
+//processor/src/test/java/react4j/processor:jspecify_goldens    (cached) PASSED in 24.1s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/processor/src/test/java/react4j/processor/jspecify_goldens/coverage.dat
+//processor/src/test/java/react4j/processor:nullness_contracts  (cached) PASSED in 6.7s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/processor/src/test/java/react4j/processor/nullness_contracts/coverage.dat
+//processor/src/test/java/react4j/processor:regressions         (cached) PASSED in 14.8s
+  /Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-dbg/testlogs/processor/src/test/java/react4j/processor/regressions/coverage.dat
+
+Executed 0 out of 25 tests: 25 tests pass.
+There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+WARNING: Build options --collect_code_coverage, --compilation_mode, --explicit_java_test_deps, and 1 more have changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).
+Analyzing: target //tools/verification:runtime_coverage (0 packages loaded, 0 targets configured)
+Analyzing: target //tools/verification:runtime_coverage (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //tools/verification:runtime_coverage (0 packages loaded, 10583 targets configured, 70 aspect applications).
+INFO: Found 1 target...
+Target //tools/verification/src/main/java/react4j/verification:runtime_coverage up-to-date:
+  bazel-bin/tools/verification/src/main/java/react4j/verification/runtime_coverage
+  bazel-bin/tools/verification/src/main/java/react4j/verification/runtime_coverage.jar
+INFO: Elapsed time: 0.423s, Critical Path: 0.03s
+INFO: 1 process: 564 action cache hit, 1 internal.
+INFO: Build completed successfully, 1 total action
+INFO: Running command line: bazel-bin/tools/verification/src/main/java/react4j/verification/runtime_coverage tools/verification/src/test/js/react4j/verification/runtime.js tools/generation/react4j/public/dev/react.js tools/generation/react4j/dom/public/dev/react-dom.js tools/webtesting/chromium.gen.json tools/release/react4j-core-sources.jar tools/release/react4j-dom-sources.jar ./_core_j2cl.js ./_dom_j2cl.js tools/verification/runtime_sources.txt tools/release/react4j-core.jar tools/release/react4j-dom.jar <args omitted>
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+Analyzing: target //tools/verification:coverage_check (0 packages loaded, 0 targets configured)
+Analyzing: target //tools/verification:coverage_check (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //tools/verification:coverage_check (0 packages loaded, 3 targets configured).
+INFO: Found 1 target...
+Target //tools/verification/src/main/java/react4j/verification:coverage_check up-to-date:
+  bazel-bin/tools/verification/src/main/java/react4j/verification/coverage_check
+  bazel-bin/tools/verification/src/main/java/react4j/verification/coverage_check.jar
+INFO: Elapsed time: 0.212s, Critical Path: 0.00s
+INFO: 1 process: 7 action cache hit, 1 internal.
+INFO: Build completed successfully, 1 total action
+INFO: Running command line: bazel-bin/tools/verification/src/main/java/react4j/verification/coverage_check <args omitted>
+core/src/main/java: 43 sources, 246/252 lines, 53/58 branches
+dom/src/main/java: 64 sources, 1745/1784 lines, 14/14 branches
+processor/src/main/java: 22 sources, 2966/3084 lines, 1460/1696 branches
+css/processor/src/main/java: 11 sources, 2180/2249 lines, 1309/1411 branches
+css/processor/src/main/java/react4j/css/processor/TextBlock.java: 1 sources, 117/117 lines, 99/104 branches
+css/processor/src/main/java/react4j/css/processor/CssCompiler.java: 1 sources, 421/431 lines, 258/276 branches
+css/utility-language/src/main/java: 10 sources, 2168/2210 lines, 1631/1850 branches
+css/internal/src/main/java: 34 sources, 3422/3540 lines, 2278/2566 branches
+css/internal/src/main/java/react4j/css/internal/CssIdentity.java: 1 sources, 19/19 lines, 28/28 branches
+css/internal/src/main/java/react4j/css/internal/SourceMap.java: 1 sources, 217/219 lines, 117/124 branches
+css/internal/src/main/java/react4j/css/internal/CssResource.java: 1 sources, 291/293 lines, 177/182 branches
+css/linker/src/main/java: 4 sources, 180/188 lines, 101/108 branches
+css/bundler/src/main/java: 11 sources, 1157/1182 lines, 676/731 branches
+css/bundler/src/main/java/react4j/css/bundler/Bundle.java: 1 sources, 261/265 lines, 158/166 branches
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+WARNING: Build option --compilation_mode has changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).
+Analyzing: target //website:site (0 packages loaded, 0 targets configured)
+Analyzing: target //website:site (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //website:site (0 packages loaded, 3306 targets configured, 455 aspect applications).
+INFO: From Rendering and checking React4j documentation:
+Checked 27157 local file and fragment links; 0 broken
+INFO: Found 1 target...
+Target //website:site up-to-date:
+  bazel-bin/website/site
+INFO: Elapsed time: 1.229s, Critical Path: 0.89s
+INFO: 2 processes: 1254 action cache hit, 1 internal, 1 darwin-sandbox.
+INFO: Build completed successfully, 2 total actions
+/Users/peter/Library/Caches/bazel/_bazel_peter/ba5d60437c2c78ebd8af5b7e9ca91f47/execroot/_main/bazel-out/darwin_arm64-opt/bin/website/site
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+Analyzing: target //website:site (0 packages loaded, 0 targets configured)
+Analyzing: target //website:site (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //website:site (0 packages loaded, 0 targets configured).
+INFO: Found 1 target...
+Target //website:site up-to-date:
+  bazel-bin/website/site
+INFO: Elapsed time: 0.328s, Critical Path: 0.00s
+INFO: 1 process: 1 internal.
+INFO: Build completed successfully, 1 total action
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+WARNING: Build option --compilation_mode has changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).
+Analyzing: target //tools/site:tool (0 packages loaded, 0 targets configured)
+Analyzing: target //tools/site:tool (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //tools/site:tool (0 packages loaded, 2506 targets configured).
+INFO: Found 1 target...
+Target //tools/site/src/main/java/react4j/site:tool up-to-date:
+  bazel-bin/tools/site/src/main/java/react4j/site/tool
+  bazel-bin/tools/site/src/main/java/react4j/site/tool.jar
+INFO: Elapsed time: 0.258s, Critical Path: 0.00s
+INFO: 1 process: 17 action cache hit, 1 internal.
+INFO: Build completed successfully, 1 total action
+INFO: Running command line: bazel-bin/tools/site/src/main/java/react4j/site/tool <args omitted>
+Checked 27157 local file and fragment links; 0 broken
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+Analyzing: target //tools/release:maven_artifacts (0 packages loaded, 0 targets configured)
+Analyzing: target //tools/release:maven_artifacts (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //tools/release:maven_artifacts (0 packages loaded, 310 targets configured).
+INFO: Found 1 target...
+Target //tools/release:maven_artifacts up-to-date:
+  bazel-bin/tools/release/react4j-core.jar
+  bazel-bin/tools/release/react4j-core-javadoc.jar
+  bazel-bin/tools/release/react4j-core.pom
+  bazel-bin/tools/release/react4j-core-sources.jar
+  bazel-bin/tools/release/react4j-dom.jar
+  bazel-bin/tools/release/react4j-dom-javadoc.jar
+  bazel-bin/tools/release/react4j-dom.pom
+  bazel-bin/tools/release/react4j-dom-sources.jar
+  bazel-bin/tools/release/react4j-processor.jar
+  bazel-bin/tools/release/react4j-processor-javadoc.jar
+  bazel-bin/tools/release/react4j-processor.pom
+  bazel-bin/tools/release/react4j-processor-sources.jar
+INFO: Elapsed time: 0.199s, Critical Path: 0.00s
+INFO: 1 process: 172 action cache hit, 1 internal.
+INFO: Build completed successfully, 1 total action
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+Analyzing: target //tools/release:bundle_tool (0 packages loaded, 0 targets configured)
+Analyzing: target //tools/release:bundle_tool (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //tools/release:bundle_tool (0 packages loaded, 3 targets configured).
+INFO: Found 1 target...
+Target //tools/release/src/main/java/react4j/release:bundle_tool up-to-date:
+  bazel-bin/tools/release/src/main/java/react4j/release/bundle_tool
+  bazel-bin/tools/release/src/main/java/react4j/release/bundle_tool.jar
+INFO: Elapsed time: 0.155s, Critical Path: 0.00s
+INFO: 1 process: 7 action cache hit, 1 internal.
+INFO: Build completed successfully, 1 total action
+INFO: Running command line: bazel-bin/tools/release/src/main/java/react4j/release/bundle_tool <args omitted>
+Verified 12 artifacts and 60 unsigned bundle entries
+Computing main repo mapping:
+Loading:
+Loading: 0 packages loaded
+Analyzing: target //tools/release:bundle_tool (0 packages loaded, 0 targets configured)
+Analyzing: target //tools/release:bundle_tool (0 packages loaded, 0 targets configured)
+
+INFO: Analyzed target //tools/release:bundle_tool (0 packages loaded, 0 targets configured).
+INFO: Found 1 target...
+Target //tools/release/src/main/java/react4j/release:bundle_tool up-to-date:
+  bazel-bin/tools/release/src/main/java/react4j/release/bundle_tool
+  bazel-bin/tools/release/src/main/java/react4j/release/bundle_tool.jar
+INFO: Elapsed time: 0.132s, Critical Path: 0.00s
+INFO: 1 process: 1 internal.
+INFO: Build completed successfully, 1 total action
+INFO: Running command line: bazel-bin/tools/release/src/main/java/react4j/release/bundle_tool <args omitted>
+Verified 12 artifacts and 60 unsigned bundle entries
+All React4j checks passed.

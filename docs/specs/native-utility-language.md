@@ -30,6 +30,8 @@ Define declarative rules for a [Utility CSS library](../glossary/README.md#utili
 22. Agent authoring operations and Java compilation share checked behavior and diagnostic codes. Diagnostics expose primary/related origins, available payload spans and decoded offsets, expected sources/types, useful suggestions and browser-dependent checks. Batch failures retain every error and successful peer.
 23. Preparation without provider bindings reports pending ownership checks rather than claiming a checked library. Description includes ordered families/wrappers, token entries, infinite source forms and bounds; expansion includes canonical identities, ordering, emitted CSS and origin traces.
 24. Generic regex/multi-capture rules, apply macros, generic slash modifiers, arbitrary properties/at-rule variants, executable plugins, synthesized group/peer markers, dynamic owned names and named position-try resources are outside this grammar.
+25. Utility names and variant names have separate, case-sensitive namespaces.
+26. Expansion batches reject empty or duplicate Utility candidate requests.
 
 ## Architectural basis
 
@@ -37,4 +39,4 @@ Define declarative rules for a [Utility CSS library](../glossary/README.md#utili
 
 ## Related contracts
 
-[Utility CSS](utility-css.md) owns input, cascade and reset behavior. [Bindings](css-bindings.md), [liveness](css-liveness.md), [names](css-names.md), [source maps](css-source-maps.md) and [checked assets](web-assets.md) retain their obligations. The [author reference](../../css/utility-language/README.md) gives concrete syntax and commands.
+[Utility CSS](utility-css.md) owns input, cascade and reset behavior. [Bindings](css-bindings.md), [liveness](css-liveness.md), [names](css-names.md), [source maps](css-source-maps.md) and [checked assets](web-assets.md) retain their obligations. The [author reference](../utility-rules.md) gives concrete syntax and commands.
