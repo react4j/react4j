@@ -5,13 +5,13 @@
 - Current frontier: independent implementation review
 - Planning reviewer: `implementation_plan_review` (`1/3` rounds; passed; final confirmation `unused`)
 - Plan checkpoint: `automatic` — explicit implementation authority and passing independent planning review; no human pause requested.
-- Implementation reviewer: `native_implementation_review` (`1/5` rounds; changes required; final confirmation `unused`)
+- Implementation reviewer: `native_implementation_review` (`2/5` rounds; changes required; final confirmation `unused`)
 - Authority: explicit user implementation authorization lifting design-only; JVM-only and separate package remain mandatory.
 
 ## Full-scope validation
 
 - Gate: task tests; development/optimized browser scenarios; `tools/check.sh`; domain-link validation; complete diff and package/dependency audit.
-- Evidence: pre-review `165ef456a` passed the final `tools/check.sh` twice (56 main targets, 16 optimized browser targets, 25 JVM coverage targets; publication/Javadocs, format/hermeticity, JVM/browser coverage thresholds, site and unsigned release validation). Language coverage was 98.19% lines / 88.05% branches against 95% / 85%. Review fixes pass focused language/internal suites and two packaged processor methods; their complete gate rerun is in progress. Domain links and specification-only diff/package audits pass; see T08 for scope and browser limitations.
+- Evidence: pre-review `165ef456a` passed `tools/check.sh` twice, and round-1 fix `b8959d918` passed its complete rerun (56 main targets, 16 optimized browser targets, 25 JVM coverage targets; publication/Javadocs, format/hermeticity, coverage thresholds, site and unsigned release validation). All thresholds remain unchanged. Round-2 CRLF regression was reproduced, fixed and passes with the inline header/unused-definition cases; the latest complete gate is running. Domain links and specification-only diff/package audits pass; see T08 for scope and browser limitations.
 
 ## Tasks
 
@@ -47,6 +47,7 @@
 - F2 (source overlap): use the actual bare matcher at zero when checking scale intersections. Unused utility/variant definitions fail in either source order, including common length/percentage types and ranges excluding zero; genuinely disjoint time/percentage spellings remain accepted.
 - F3 (unused anchor tokens): check every token's anchor occurrences, including nested fallbacks, against the complete owned/external universe and attribute failures to that token entry. Owned, external and default-anchor forms pass; unknown references fail through both facade and packaged provider compilation.
 - Related reference correction: remove bare length-percentage from the advertised list, matching the accepted design and implementation. Existing normative contracts already own all three obligations; these are bug fixes and reference corrections, not scope or architectural replanning. Domain-link and specification-diff audits pass. Focused suites pass; full gate is running before closeout and second-round confirmation.
+- Implementation round 2: the same read-only reviewer confirmed F2/F3 and the reference correction, but found an F1 regression in `b8959d918`: file-backed CRLF origins share their authored source identity with normalized decoded input, so generic composition rejects the differing contents. Reproduced with the real packaged input/javac/collection test before fixing. Published input recovery is now restricted to inline sources, where headers lack Java origins; file-backed prepared sidecars already preserve authored maps. The packaged CRLF regression asserts original file/content after collection and passes alongside inline header recovery and unused-definition checks. Three ordinary rounds plus one final confirmation remain; complete gate rerun and reviewer confirmation remain required.
 
 ## Promoted knowledge
 

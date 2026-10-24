@@ -426,7 +426,8 @@ public final class NativeUtilityProcessorTest {
         var directory = Files.createTempDirectory("native-utility-input-");
         try {
             var source = directory.resolve("rules.css");
-            Files.writeString(source, RULES);
+            String authored = RULES.replace("\n", "\r\n");
+            Files.writeString(source, authored);
             var jar = directory.resolve("rules.jar");
             packageInput(source, jar);
             try (var zip = new ZipFile(jar.toFile())) {
@@ -448,6 +449,12 @@ public final class NativeUtilityProcessorTest {
             assertTrue(Objects.requireNonNull(result.values().get("demo.Button.style"))
                     .contains("class-p_002d_250"));
             assertTrue(text(result, "classes/demo/Utilities.css.rules.json").contains("demo/rules.css"));
+            var tree = directory.resolve("classes");
+            writeClasses(result, tree);
+            var resource = Objects.requireNonNull(
+                    CssCatalogue.read(List.of(tree)).resources().get("demo.Utilities"));
+            assertEquals(resource.map().getAsJsonArray("sources").get(0).getAsString(), "demo/rules.css");
+            assertEquals(resource.map().getAsJsonArray("sourcesContent").get(0).getAsString(), authored);
             var changed = directory.resolve("changed.jar");
             try (var original = new ZipFile(jar.toFile());
                     var output = new ZipOutputStream(Files.newOutputStream(changed))) {
