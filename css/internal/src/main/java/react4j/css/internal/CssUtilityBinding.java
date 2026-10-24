@@ -243,10 +243,18 @@ public final class CssUtilityBinding {
                 .filter(symbol -> CssResource.SymbolKind.PROPERTY == symbol.kind())
                 .map(CssResource.Symbol::name)
                 .forEach(properties::add);
+        var anchors = new LinkedHashSet<>(context.externalAnchors());
+        universe.symbols().stream()
+                .filter(symbol -> CssResource.SymbolKind.ANCHOR == symbol.kind())
+                .map(CssResource.Symbol::name)
+                .forEach(anchors::add);
         for (var token : CssTokens.read(css)) {
             if (CssResource.SymbolKind.PROPERTY == token.kind()
                     && !properties.contains(token.name().substring(2))) {
                 throw new IllegalArgumentException("U_EXTERNAL_PROPERTY: Unknown token property " + token.name());
+            }
+            if (CssResource.SymbolKind.ANCHOR == token.kind() && !anchors.contains(token.name())) {
+                throw new IllegalArgumentException("U_ANCHOR_NAME: Unknown token anchor " + token.name());
             }
         }
         CssUrls.edits(

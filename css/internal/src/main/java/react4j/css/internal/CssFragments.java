@@ -150,7 +150,8 @@ public record CssFragments(String requester, List<Fragment> fragments) {
                 int offset = writer.css().length();
                 writer.appendMapped(
                         fragment.css(),
-                        JsonParser.parseString(fragment.sourceMap()).getAsJsonObject());
+                        JsonParser.parseString(fragment.sourceMap()).getAsJsonObject(),
+                        provider.map());
                 dependencies.addAll(fragment.metadata().dependencies());
                 if (!metadata.includes().equals(fragment.metadata().includes())) {
                     throw new IllegalArgumentException(

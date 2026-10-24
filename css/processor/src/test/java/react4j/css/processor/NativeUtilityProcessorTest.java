@@ -2,6 +2,7 @@ package react4j.css.processor;
 
 import static org.testng.Assert.*;
 
+import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.gson.JsonParser;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -17,6 +18,9 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import org.jspecify.annotations.NullMarked;
 import org.testng.annotations.Test;
+import react4j.css.internal.CssCatalogue;
+import react4j.css.internal.CssNames;
+import react4j.css.internal.CssRenamer;
 
 @NullMarked
 public final class NativeUtilityProcessorTest {
@@ -295,6 +299,10 @@ public final class NativeUtilityProcessorTest {
                 Map.of("Utilities.java", library(RULES + "@tokens unused <color> { x:var(--missing); }")));
         assertFalse(unusedToken.success());
         assertTrue(unusedToken.diagnostics().contains("U_EXTERNAL_PROPERTY"), unusedToken.diagnostics());
+        var unusedAnchor = CssProcessorTest.compile(Map.of(
+                "Utilities.java", library(RULES + "@tokens unused <length> { x:anchor-size(--missing width); }")));
+        assertFalse(unusedAnchor.success());
+        assertTrue(unusedAnchor.diagnostics().contains("U_ANCHOR_NAME"), unusedAnchor.diagnostics());
         var candidates = CssProcessorTest.compile(
                 Map.of("Utilities.java", library(RULES), "Button.java", styles("missing text-[12px] [th]:p-2")));
         assertFalse(candidates.success());
@@ -342,6 +350,72 @@ public final class NativeUtilityProcessorTest {
             assertTrue(header.success(), header.diagnostics());
             assertTrue(Objects.requireNonNull(header.values().get("demo.Button.style"))
                     .contains("class-p_002d_138"));
+        } finally {
+            CssProcessorTest.delete(directory);
+        }
+    }
+
+    @Test
+    public void inlineHeaderRequestsRecoverAuthoredOriginsAtCollectionAndCompression() throws Exception {
+        String java = library(RULES);
+        var provider = CssProcessorTest.compile(Map.of("Utilities.java", java));
+        assertTrue(provider.success(), provider.diagnostics());
+        var directory = Files.createTempDirectory("native-header-origins-");
+        try {
+            var authority = directory.resolve("provider");
+            var headers = directory.resolve("headers");
+            var consumerTree = directory.resolve("consumer");
+            writeClasses(provider, authority);
+            writeClasses(provider, headers);
+            try (var files = Files.walk(headers)) {
+                for (var file : files.filter(Files::isRegularFile)
+                        .filter(file -> !file.toString().endsWith(".class"))
+                        .toList()) {
+                    Files.delete(file);
+                }
+            }
+            var consumer = CssProcessorTest.compile(
+                    Map.of("Button.java", styles("p-137")),
+                    List.of("-classpath", headers + File.pathSeparator + CssProcessorTest.applicationClasspath()));
+            assertTrue(consumer.success(), consumer.diagnostics());
+            assertTrue(
+                    text(consumer, "classes/demo/Button.css.fragments.json").contains("demo/Utilities.utilities.css"));
+            writeClasses(consumer, consumerTree);
+            var catalogue = CssCatalogue.read(List.of(authority, consumerTree));
+            var resource = Objects.requireNonNull(catalogue.resources().get("demo.Utilities"));
+            var names = CssNames.create(catalogue, new CssNames.Policy(true, "app-"));
+            var renamed = new CssRenamer(
+                            names,
+                            catalogue.resources().values().stream()
+                                    .map(CssCatalogue.Resource::metadata)
+                                    .toList())
+                    .rename(resource);
+            assertFalse(renamed.css().contains("class-p_002d_137"));
+            var map = renamed.map();
+            assertEquals(map.getAsJsonArray("sources").get(0).getAsString(), "demo/Utilities.java");
+            assertEquals(map.getAsJsonArray("sourcesContent").get(0).getAsString(), java);
+            var mapped = new SourceMapConsumerV3();
+            mapped.parse(map.toString());
+            int at = renamed.css().indexOf("padding:");
+            assertTrue(at >= 0, renamed.css());
+            int line = (int) renamed.css()
+                            .substring(0, at)
+                            .chars()
+                            .filter(c -> '\n' == c)
+                            .count()
+                    + 1;
+            int column = at - renamed.css().lastIndexOf('\n', at - 1);
+            var origin = Objects.requireNonNull(mapped.getMappingForLine(line, column));
+            int authored = java.indexOf("padding:param(size)");
+            assertEquals(origin.getOriginalFile(), "demo/Utilities.java");
+            assertEquals(
+                    origin.getLineNumber(),
+                    (int) java.substring(0, authored)
+                                    .chars()
+                                    .filter(c -> '\n' == c)
+                                    .count()
+                            + 1);
+            assertEquals(origin.getColumnPosition(), authored - java.lastIndexOf('\n', authored - 1));
         } finally {
             CssProcessorTest.delete(directory);
         }

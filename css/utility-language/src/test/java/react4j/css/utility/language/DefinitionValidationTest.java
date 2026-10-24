@@ -42,6 +42,14 @@ public final class DefinitionValidationTest {
             {"@utility \"x-{v}\" (v:arbitrary(<length>)) {param(v):0;}", "U_PARAMETER"},
             {"@utility \"x-{v}\" (v:arbitrary(<an+b>)) {width:param(v);}", "U_PARAMETER"},
             {"@utility \"x-{v}\" (v:arbitrary(<number>)|arbitrary(<number>)) {x:param(v);}", "U_AMBIGUOUS_RULE"},
+            {"@scale s 1px; @utility \"x-{v}\" (v:scale(s)|bare(<length>)) {width:param(v);}", "U_AMBIGUOUS_RULE"},
+            {"@scale s 1px; @utility \"x-{v}\" (v:bare(<length>)|scale(s)) {width:param(v);}", "U_AMBIGUOUS_RULE"},
+            {"@scale s 1%; @utility \"x-{v}\" (v:scale(s)|bare(<length>)) {width:param(v);}", "U_AMBIGUOUS_RULE"},
+            {"@scale s 1px; @variant \"cq-{v}\" (v:scale(s)|bare(<length>)) {@slot;}", "U_AMBIGUOUS_RULE"},
+            {
+                "@scale s 1px; @utility \"x-{v}\" (v:scale(s)|bare(<length>) within [1px,*]) {width:param(v);}",
+                "U_AMBIGUOUS_RULE"
+            },
             {
                 "@tokens a <length> {same:1px;} @tokens b <length> {same:2px;} @utility \"x-{v}\""
                         + " (v:tokens(a)|tokens(b)) {x:param(v);}",
@@ -69,6 +77,24 @@ public final class DefinitionValidationTest {
             {"@utility x {content:'missing;}", "U_SYNTAX"},
             {"\\", "U_SYNTAX"}
         };
+    }
+
+    @Test
+    public void scaleAndDimensionedBareSpellingsRemainDisjoint() {
+        String source = """
+            @utility-rules;
+            @scale duration 1ms;
+            @scale spacing 1px;
+            @utility "duration-{v}" (v:scale(duration)|bare(<time>)) {transition-duration:param(v);}
+            @utility "width-{v}" (v:scale(spacing)|bare(<percentage>)) {width:param(v);}
+            """;
+        var library = UtilityLanguage.bind(
+                UtilityLanguage.prepare(new UtilityLanguage.Source("rules.css", source)),
+                "demo.Rules",
+                new UtilityLanguage.Bindings(Set.of()));
+        var result = UtilityLanguage.expand(library, List.of("duration-0", "duration-2s", "width-0", "width-0%"));
+        assertEquals(result.diagnostics(), List.of());
+        assertEquals(result.expansions().size(), 4);
     }
 
     @Test(dataProvider = "invalidDefinitions")

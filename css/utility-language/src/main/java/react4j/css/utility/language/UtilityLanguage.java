@@ -344,8 +344,16 @@ public final class UtilityLanguage {
             var resolved = stability(
                     CssUtilityBinding.resolve(owner, result, Map.of(), bindings.context()), bindings.stability());
             for (var group : rules.tokens.values()) {
-                for (var value : group.values().values()) {
-                    CssUtilityBinding.checkValue(value, resolved.metadata(), bindings.context());
+                for (var token : group.values().entrySet()) {
+                    try {
+                        CssUtilityBinding.checkValue(token.getValue(), resolved.metadata(), bindings.context());
+                    } catch (IllegalArgumentException e) {
+                        var diagnostic = bindingFailure(rules.source, e).diagnostic();
+                        throw RuleLibrary.error(
+                                diagnostic.code(),
+                                diagnostic.message(),
+                                Objects.requireNonNull(group.offsets().get(token.getKey())));
+                    }
                 }
             }
             var checked = new Checked(prepared, owner, bindings, resolved.project(0, resolved.boundary()));

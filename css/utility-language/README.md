@@ -97,7 +97,7 @@ Supporting definitions are `@keyframes`, `@font-face`, `@property` and `:root` c
 | `<grid-tracks>` | `[200px_minmax(0,1fr)]` | Tracks, line names, repeat and subgrid. |
 | `<an+b>` | `[n+3]` | Static selector input only. |
 
-Bare sources admit integer, number, percentage, length, length-percentage, angle, time and ratio values. Compound values require tokens or brackets. CSS-wide keywords are outside these input types; expose them through literal utilities when needed. An image type does not turn `bg-*` into an inferred image family: use a distinct head such as `bg-image-*`.
+Bare sources admit integer, number, percentage, length, angle, time and ratio values. Compound values require tokens or brackets. CSS-wide keywords are outside these input types; expose them through literal utilities when needed. An image type does not turn `bg-*` into an inferred image family: use a distinct head such as `bg-image-*`.
 
 Color functions include rgb/rgba, hsl/hsla, hwb, lab/lch, oklab/oklch and predefined color spaces through color(). Numeric math supports calc/min/max/clamp with dimensional sums, products and quotients. Gradient direction, shape, interpolation and stops are checked; image-set accepts checked image/string sources, resolution and type descriptors. Grid tracks include minmax, fit-content, line names and checked repeat structure. Unsupported functions fail explicitly.
 
@@ -230,5 +230,7 @@ Diagnostics include available primary and related token/definition origins. Lite
 The pure facade is `react4j.css.utility.language.UtilityLanguage`; its source/build package owns grammar, matching, values, composition and feedback. Java annotation orchestration and shared symbol/delivery infrastructure stay outside it. The existing processor distribution shades the module; it adds no application-facing runtime or Maven artifact.
 
 Explicit native file packaging produces a prepared `.rules.json` sidecar. Provider compilation publishes a checked `.css.rules.json` descriptor plus support CSS and full owned-name identities. Consumers publish `.css.fragments.json` contributions for their explicit requests. Independently compiled consumers can request unseen values; collection deduplicates matching contributions and rejects provider fingerprint/content conflicts. Linker and bundler consume generic CSS metadata without depending on the language package. Development includes requested expansions; optimized output prunes through surviving getters. Unrequested infinite families are never enumerated.
+
+Header-only inline expansions initially map to decoded rule source. Collection composes those locations through the full provider's published input map, restoring authored Java locations before delivery.
 
 The [native contract](../../docs/specs/native-utility-language.md) is the durable behavior owner. There is no Tailwind compatibility promise, generic regex/multi-capture system, apply macro graph, generic slash modifier, arbitrary property/at-rule variant, executable plugin or synthesized group/peer vocabulary. Named position-try definitions/bindings and dynamic owned names are outside this grammar. A literal utility can still express ordinary CSS values and explicit browser behavior.

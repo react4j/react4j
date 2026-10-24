@@ -363,11 +363,7 @@ final class RuleLibrary {
                 }
             }
         }
-        if (scale
-                && bare
-                && rule.arguments().stream()
-                        .anyMatch(a -> "bare".equals(a.kind())
-                                && Set.of("integer", "number", "ratio").contains(a.type()))) {
+        if (scale && bare && rule.arguments().stream().anyMatch(a -> "bare".equals(a.kind()) && accepts(a, "0"))) {
             throw error("U_AMBIGUOUS_RULE", "Scale and bare arguments overlap", rule.offset());
         }
         for (var key : tokenKeys) {

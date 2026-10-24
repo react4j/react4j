@@ -5,13 +5,13 @@
 - Current frontier: independent implementation review
 - Planning reviewer: `implementation_plan_review` (`1/3` rounds; passed; final confirmation `unused`)
 - Plan checkpoint: `automatic` — explicit implementation authority and passing independent planning review; no human pause requested.
-- Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
+- Implementation reviewer: `native_implementation_review` (`1/5` rounds; changes required; final confirmation `unused`)
 - Authority: explicit user implementation authorization lifting design-only; JVM-only and separate package remain mandatory.
 
 ## Full-scope validation
 
 - Gate: task tests; development/optimized browser scenarios; `tools/check.sh`; domain-link validation; complete diff and package/dependency audit.
-- Evidence: final `tools/check.sh` passed all stages (56 main targets, 16 optimized browser targets, 25 JVM coverage targets; publication/Javadocs, format/hermeticity, JVM/browser coverage thresholds, site and unsigned release validation). New language coverage is 98.19% lines / 88.05% branches against 95% / 85%. Domain links, shell/JSON syntax, specification-only diff and complete package/dependency audit pass; see T08 for scope and browser limitations.
+- Evidence: pre-review `165ef456a` passed the final `tools/check.sh` twice (56 main targets, 16 optimized browser targets, 25 JVM coverage targets; publication/Javadocs, format/hermeticity, JVM/browser coverage thresholds, site and unsigned release validation). Language coverage was 98.19% lines / 88.05% branches against 95% / 85%. Review fixes pass focused language/internal suites and two packaged processor methods; their complete gate rerun is in progress. Domain links and specification-only diff/package audits pass; see T08 for scope and browser limitations.
 
 ## Tasks
 
@@ -42,7 +42,11 @@
 ## Review history
 
 - Planning round 1: `implementation_plan_review` reported `Findings: none`. Checked all eight tasks, accepted scope, task graph/coverage, processor/sidecar/header/catalogue/linker/bundler/name boundaries, distribution/browser/full-gate verification. Residual uncertainties (typed-hole flattening, shared binding extraction, browser semantics) have explicit task-owned checks. No finding dispositions required; two ordinary rounds and one final confirmation remain.
-- Implementation: not started; five rounds plus one final confirmation available.
+- Implementation round 1: fresh read-only `native_implementation_review` checked complete scope `54d35cfa9..165ef456a`, all requirements/tasks/promotions and ten focused targets. Three P2 findings verified and fixed below; confirmation pending. Four ordinary rounds plus one final confirmation remain.
+- F1 (inline header origins): publish the decoded input's authoritative map inside the provider's ordinary CSS map; generic collection composes header-derived locations through it. No language dependency enters linker/bundler. A real packaged provider/header-consumer regression collects the outputs, compresses names and asserts exact authored Java file/content/line/UTF-16 column. Generic tests cover unmapped spans, stale input content and invalid coordinates.
+- F2 (source overlap): use the actual bare matcher at zero when checking scale intersections. Unused utility/variant definitions fail in either source order, including common length/percentage types and ranges excluding zero; genuinely disjoint time/percentage spellings remain accepted.
+- F3 (unused anchor tokens): check every token's anchor occurrences, including nested fallbacks, against the complete owned/external universe and attribute failures to that token entry. Owned, external and default-anchor forms pass; unknown references fail through both facade and packaged provider compilation.
+- Related reference correction: remove bare length-percentage from the advertised list, matching the accepted design and implementation. Existing normative contracts already own all three obligations; these are bug fixes and reference corrections, not scope or architectural replanning. Domain-link and specification-diff audits pass. Focused suites pass; full gate is running before closeout and second-round confirmation.
 
 ## Promoted knowledge
 

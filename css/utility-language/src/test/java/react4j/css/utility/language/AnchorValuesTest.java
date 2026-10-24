@@ -108,6 +108,28 @@ public final class AnchorValuesTest {
         };
     }
 
+    @Test
+    public void checksUnusedTokenAnchorNamesAgainstTheProviderAtTheirEntry() {
+        for (String value : List.of(
+                "anchor-size(--missing width)",
+                "calc(anchor-size(--trigger width,anchor-size(--missing height)) + 1px)",
+                "anchor(--missing left)")) {
+            String source = RULES + "@tokens unused <length> { missing:" + value + "; }";
+            var failure = expectThrows(UtilityLanguage.Failure.class, () -> checked(source));
+            assertEquals(failure.diagnostic().code(), "U_ANCHOR_NAME");
+            assertEquals(failure.diagnostic().origin().start(), source.indexOf("missing:"));
+        }
+        var library = checked(RULES + """
+            @tokens unused <length> {
+              owned:anchor-size(--trigger width);
+              external:anchor(--host left);
+              default:anchor-size(width);
+            }
+            """);
+        assertEquals(library.prepared().tokens().get(0).values().size(), 3);
+        assertEquals(UtilityLanguage.expand(library, List.of("panel")).diagnostics(), List.of());
+    }
+
     @Test(dataProvider = "candidates")
     public void checksSelectorsFallbacksAndDeclarationContexts(String candidate, boolean valid) {
         var batch = UtilityLanguage.expand(checked(RULES), List.of(candidate));

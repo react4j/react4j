@@ -996,6 +996,12 @@ public final class CssProcessor extends AbstractStandardProcessor {
         String file = path.substring(path.lastIndexOf('/') + 1);
         var map = JsonParser.parseString(support.sourceMap()).getAsJsonObject();
         map.addProperty("file", file);
+        var source = checked.prepared().source();
+        SourceMap.addInput(
+                map,
+                source.name(),
+                source.text(),
+                JsonParser.parseString(source.sourceMap()).getAsJsonObject());
         writeResource(owner, path, support.css() + SourceMap.reference(file));
         writeResource(owner, path + ".map", map.toString());
         writeResource(owner, path + ".json", metadata.json());
