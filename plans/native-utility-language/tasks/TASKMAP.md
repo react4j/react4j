@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `planned`
-- Current frontier: `T01`
+- Status: `implementing`
+- Current frontier: `T02`
 - Planning reviewer: `implementation_plan_review` (`1/3` rounds; passed; final confirmation `unused`)
 - Plan checkpoint: `automatic` — explicit implementation authority and passing independent planning review; no human pause requested.
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -17,7 +17,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| `T01` | [Expand checked rules through the isolated JVM facade](T01-language-facade.md) | `pending` | None |
+| `T01` | [Expand checked rules through the isolated JVM facade](T01-language-facade.md) | `complete` | None |
 | `T02` | [Consume native rules through checked Java declarations](T02-java-consumption.md) | `pending` | T01 |
 | `T03` | [Link independently compiled candidate fragments](T03-fragment-delivery.md) | `pending` | T02 |
 | `T04` | [Accept broader typed values and numeric limits](T04-value-domains.md) | `pending` | T01 |

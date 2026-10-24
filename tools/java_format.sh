@@ -10,6 +10,8 @@ esac
 cd "$root"
 paths=(
   css/core/src/main/java
+  css/utility-language/src/main/java
+  css/utility-language/src/test/java
   css/internal/src/main/java
   css/internal/src/test/java
   css/bundler/src/main/java

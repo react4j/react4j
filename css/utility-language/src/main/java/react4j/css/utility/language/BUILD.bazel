@@ -1,0 +1,21 @@
+load("//third_party/java:rules.bzl", "java_library")
+
+java_library(
+    name = "language",
+    srcs = [
+        "RuleLibrary.java",
+        "RuleSyntax.java",
+        "RuleValues.java",
+        "UtilityLanguage.java",
+        "package-info.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//css/processor/src/main/java/react4j/css/processor:__pkg__",
+        "//css/utility-language/src/test/java/react4j/css/utility/language:__pkg__",
+    ],
+    deps = [
+        "//css/internal/src/main/java/react4j/css/internal",
+        "//third_party:gson",
+    ],
+)

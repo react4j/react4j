@@ -21,6 +21,8 @@ java_format_check(
     targets = [
         "//css/core/src/main/java/react4j/css",
         "//css/internal/src/main/java/react4j/css/internal",
+        "//css/utility-language/src/main/java/react4j/css/utility/language:language",
+        "//css/utility-language/src/test/java/react4j/css/utility/language:tests",
         "//css/internal/src/test/java/react4j/css/internal:tests",
         "//css/bundler/src/main/java/react4j/css/bundler",
         "//css/bundler/src/main/java/react4j/css/bundler:assets",
@@ -264,6 +266,7 @@ test_suite(
         "//css/linker/src/test/java/react4j/css/linker:tests",
         "//css/processor/src/test/java/react4j/css/processor:implementation_tests",
         "//css/processor/src/test/java/react4j/css/processor:unit_tests",
+        "//css/utility-language:tests",
         "//dom:tests",
         "//processor:all_tests",
     ],

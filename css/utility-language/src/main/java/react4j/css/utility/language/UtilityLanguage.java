@@ -1,0 +1,491 @@
+package react4j.css.utility.language;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.HexFormat;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import react4j.css.internal.CssIdentity;
+import react4j.css.internal.CssResource;
+import react4j.css.internal.CssSyntax;
+import react4j.css.internal.CssTokens;
+import react4j.css.internal.SourceMap;
+
+/** Pure JVM rule preparation, checking and stateless expansion. No operation performs I/O. */
+public final class UtilityLanguage {
+    private static final int VERSION = 1;
+
+    private UtilityLanguage() {}
+
+    public record Source(String name, String text) {}
+
+    public record Origin(String source, int start, int end, int line, int column) {}
+
+    public record Diagnostic(
+            String code, String message, Origin origin, List<Origin> related, Map<String, String> facts) {
+        public Diagnostic {
+            related = List.copyOf(related);
+            facts = Map.copyOf(facts);
+        }
+
+        public String render() {
+            return origin.source() + ":" + (origin.line() + 1) + ":" + (origin.column() + 1) + ": " + code + ": "
+                    + message;
+        }
+    }
+
+    public static final class Failure extends IllegalArgumentException {
+        private final Diagnostic diagnostic;
+
+        private Failure(Diagnostic diagnostic) {
+            super(diagnostic.render());
+            this.diagnostic = diagnostic;
+        }
+
+        public Diagnostic diagnostic() {
+            return diagnostic;
+        }
+    }
+
+    public record Bindings(Set<String> externalClasses) {
+        public Bindings {
+            externalClasses = Set.copyOf(externalClasses);
+        }
+    }
+
+    public record Description(String name, String parameterType, List<String> sources, String interval, Origin origin) {
+        public Description {
+            sources = List.copyOf(sources);
+        }
+    }
+
+    public record Trace(String rule, String argument, String resolvedValue, Origin definition, List<String> checks) {
+        public Trace {
+            checks = List.copyOf(checks);
+        }
+    }
+
+    public record Expansion(
+            String candidate, String className, String orderKey, String css, String sourceMap, List<Trace> trace) {
+        public Expansion {
+            trace = List.copyOf(trace);
+        }
+    }
+
+    public record Batch(List<Expansion> expansions, List<Diagnostic> diagnostics) {
+        public Batch {
+            expansions = List.copyOf(expansions);
+            diagnostics = List.copyOf(diagnostics);
+        }
+    }
+
+    public static final class Prepared {
+        private final RuleLibrary rules;
+
+        private Prepared(RuleLibrary rules) {
+            this.rules = rules;
+        }
+
+        public Source source() {
+            return rules.source;
+        }
+
+        public String json() {
+            return envelope("prepared", rules.source).toString();
+        }
+
+        public List<Description> utilities() {
+            return descriptions(rules, rules.utilities);
+        }
+
+        public List<Description> variants() {
+            return descriptions(rules, rules.variants);
+        }
+    }
+
+    public static final class Checked {
+        private final Prepared prepared;
+        private final String owner;
+        private final Bindings bindings;
+
+        private Checked(Prepared prepared, String owner, Bindings bindings) {
+            this.prepared = prepared;
+            this.owner = owner;
+            this.bindings = bindings;
+        }
+
+        public Prepared prepared() {
+            return prepared;
+        }
+
+        public String owner() {
+            return owner;
+        }
+
+        public String fingerprint() {
+            return digest(json());
+        }
+
+        public String json() {
+            var json = envelope("checked", prepared.source());
+            json.addProperty("owner", owner);
+            var classes = new JsonArray();
+            bindings.externalClasses().stream().sorted().forEach(classes::add);
+            json.add("externalClasses", classes);
+            return json.toString();
+        }
+    }
+
+    public static boolean nativeSource(String text) {
+        int offset = 0;
+        while (offset < text.length()) {
+            if (Character.isWhitespace(text.charAt(offset))) {
+                offset++;
+            } else if (text.startsWith("/*", offset)) {
+                int end = text.indexOf("*/", offset + 2);
+                if (end < 0) {
+                    return false;
+                }
+                offset = end + 2;
+            } else {
+                break;
+            }
+        }
+        return text.substring(offset).matches("(?s)^@utility-rules(?:\\s|/\\*.*?\\*/)*;.*");
+    }
+
+    public static Prepared prepare(Source source) {
+        try {
+            var prepared = new Prepared(new RuleLibrary(source));
+            validateTemplates(prepared);
+            return prepared;
+        } catch (RuleSyntax.Syntax e) {
+            throw new Failure(new Diagnostic(
+                    e.code,
+                    String.valueOf(e.getMessage()),
+                    origin(source, Math.min(e.offset, source.text().length())),
+                    e.related.stream().map(offset -> origin(source, offset)).toList(),
+                    Map.of()));
+        } catch (CssSyntax.InvalidCss e) {
+            throw failure(source, "U_SYNTAX", String.valueOf(e.getMessage()), e.offset());
+        }
+    }
+
+    public static Prepared readPrepared(String json) {
+        var value = descriptor(json, "prepared");
+        return prepare(
+                new Source(value.get("source").getAsString(), value.get("text").getAsString()));
+    }
+
+    public static Checked bind(Prepared prepared, String owner, Bindings bindings) {
+        if (owner.isBlank()) {
+            throw new IllegalArgumentException("Provider owner is required");
+        }
+        var checked = new Checked(prepared, owner, bindings);
+        var rules = prepared.rules;
+        try {
+            for (var rule : rules.utilities) {
+                hooks(checked, probe(rules, rule, false), "probe");
+            }
+            for (var rule : rules.variants) {
+                hooks(checked, probe(rules, rule, true), "probe");
+            }
+        } catch (RuleSyntax.Syntax e) {
+            throw failure(rules.source, e.code, String.valueOf(e.getMessage()), e.offset);
+        }
+        return checked;
+    }
+
+    public static Checked readChecked(String json) {
+        var value = descriptor(json, "checked");
+        var classes = new HashSet<String>();
+        value.getAsJsonArray("externalClasses").forEach(item -> classes.add(item.getAsString()));
+        return bind(
+                prepare(new Source(
+                        value.get("source").getAsString(), value.get("text").getAsString())),
+                value.get("owner").getAsString(),
+                new Bindings(classes));
+    }
+
+    public static List<String> candidates(String text) {
+        var result = List.of(text.split("[ \\t\\n\\r\\f]+", -1));
+        return result.stream().filter(candidate -> !candidate.isEmpty()).toList();
+    }
+
+    public static Batch expand(Checked checked, List<String> candidates) {
+        var output = new ArrayList<Expansion>();
+        var problems = new ArrayList<Diagnostic>();
+        var seen = new HashSet<String>();
+        for (var candidate : candidates) {
+            try {
+                if (candidate.isEmpty() || candidate.matches(".*[ \\t\\n\\r\\f].*") || !seen.add(candidate)) {
+                    throw RuleLibrary.error(
+                            "U_CANDIDATE_SYNTAX",
+                            "Empty, duplicate or whitespace-containing candidate " + candidate,
+                            0);
+                }
+                if (RuleSyntax.split(candidate, '!').size() > 1) {
+                    throw RuleLibrary.error(
+                            "U_IMPORTANT", "Important utility modifiers are unsupported", candidate.indexOf('!'));
+                }
+                output.add(expansion(checked, candidate));
+            } catch (RuleSyntax.Syntax e) {
+                var related = origin(
+                        checked.prepared.source(),
+                        Math.min(e.offset, checked.prepared.source().text().length()));
+                problems.add(new Diagnostic(
+                        e.code,
+                        String.valueOf(e.getMessage()),
+                        origin(new Source("<candidate>", candidate), 0),
+                        List.of(related),
+                        Map.of("candidate", candidate, "provider", checked.owner)));
+            } catch (CssSyntax.InvalidCss e) {
+                problems.add(new Diagnostic(
+                        "U_VALUE_TYPE",
+                        String.valueOf(e.getMessage()),
+                        origin(new Source("<candidate>", candidate), 0),
+                        List.of(),
+                        Map.of("candidate", candidate)));
+            }
+        }
+        output.sort(Comparator.comparing(Expansion::orderKey));
+        return new Batch(output, problems);
+    }
+
+    /** All templates, with representative typed holes, for provider-wide CSS binding checks. */
+    public static String validationCss(Prepared prepared) {
+        var result = new StringBuilder(supportCss(prepared));
+        prepared.rules.utilities.forEach(rule -> result.append(probe(prepared.rules, rule, false)));
+        prepared.rules.variants.forEach(rule -> result.append(probe(prepared.rules, rule, true)));
+        return result.toString();
+    }
+
+    public static String supportCss(Prepared prepared) {
+        var writer = new SourceMap.Writer();
+        raw(prepared.rules, prepared.rules.support, writer);
+        return writer.css();
+    }
+
+    private static Expansion expansion(Checked checked, String candidate) {
+        var rules = checked.prepared.rules;
+        var pieces = RuleSyntax.split(candidate, ':');
+        if (pieces.stream().anyMatch(part -> part.text().isEmpty())) {
+            throw RuleLibrary.error("U_CANDIDATE_SYNTAX", "Empty candidate segment", 0);
+        }
+        var utility = rules.match(rules.utilities, pieces.get(pieces.size() - 1).text(), false);
+        var body = substitute(utility.rule().body(), utility.rule().parameter(), utility.value());
+        var trace = new ArrayList<Trace>();
+        trace.add(trace(rules, utility));
+        var ranks = new ArrayList<String>();
+        for (int i = pieces.size() - 2; i >= 0; i--) {
+            String piece = pieces.get(i).text();
+            if (piece.startsWith("[") && piece.endsWith("]")) {
+                String selector = RuleSyntax.decode(piece.substring(1, piece.length() - 1));
+                RuleLibrary.selector(selector, pieces.get(i).offset());
+                body = List.of(
+                        new RuleSyntax.Node(selector, body, utility.rule().offset(), true));
+                ranks.add(0, rank(rules.variants.size()) + ":" + spellingKey(selector) + "\u0000");
+            } else {
+                var variant = rules.match(rules.variants, piece, true);
+                body = slot(substitute(variant.rule().body(), variant.rule().parameter(), variant.value()), body);
+                trace.add(trace(rules, variant));
+                ranks.add(0, rank(variant.rule().rank()));
+            }
+        }
+        String className = CssIdentity.root(checked.owner) + "--class-" + CssIdentity.encode(candidate);
+        var writer = new SourceMap.Writer();
+        render(rules, body, "." + className, writer);
+        String css = writer.css();
+        new CssSyntax(css, 0).parse(CssSyntax.Mode.UTILITY);
+        hooks(checked, css, className);
+        String order = rank(pieces.size() - 1)
+                + String.join("", ranks)
+                + rank(utility.rule().rank())
+                + spellingKey(candidate);
+        return new Expansion(candidate, className, order, css, writer.map(className + ".css"), trace);
+    }
+
+    private static String spellingKey(String text) {
+        return text.codePoints()
+                .mapToObj(value -> String.format(Locale.ROOT, "%06x", value))
+                .collect(Collectors.joining());
+    }
+
+    private static String rank(int value) {
+        return String.format(Locale.ROOT, "%08x", value);
+    }
+
+    private static Trace trace(RuleLibrary rules, RuleLibrary.Match match) {
+        return new Trace(
+                match.rule().name(),
+                match.source(),
+                match.value(),
+                origin(rules.source, match.rule().offset()),
+                List.of());
+    }
+
+    private static List<RuleSyntax.Node> substitute(List<RuleSyntax.Node> nodes, String parameter, String value) {
+        return nodes.stream()
+                .map(node -> new RuleSyntax.Node(
+                        RuleSyntax.substitute(node.head(), parameter, value),
+                        substitute(node.children(), parameter, value),
+                        node.offset(),
+                        node.block()))
+                .toList();
+    }
+
+    private static List<RuleSyntax.Node> slot(List<RuleSyntax.Node> nodes, List<RuleSyntax.Node> value) {
+        var result = new ArrayList<RuleSyntax.Node>();
+        for (var node : nodes) {
+            if (!node.block() && "@slot".equals(RuleSyntax.clean(node.head()))) {
+                result.addAll(value);
+            } else {
+                result.add(new RuleSyntax.Node(node.head(), slot(node.children(), value), node.offset(), node.block()));
+            }
+        }
+        return List.copyOf(result);
+    }
+
+    private static void render(
+            RuleLibrary rules, List<RuleSyntax.Node> nodes, String selector, SourceMap.Writer writer) {
+        int index = 0;
+        while (index < nodes.size()) {
+            var node = nodes.get(index);
+            var location = location(rules.source, node.offset());
+            if (node.block()) {
+                if (node.head().startsWith("@")) {
+                    writer.append(node.head() + " {\n", location);
+                    render(rules, node.children(), selector, writer);
+                    writer.append("}\n", location);
+                } else {
+                    render(rules, node.children(), RuleSyntax.guard(node.head(), selector), writer);
+                }
+                index++;
+            } else {
+                writer.append(selector + " {\n", location);
+                do {
+                    var declaration = nodes.get(index++);
+                    writer.append(declaration.head() + ";\n", location(rules.source, declaration.offset()));
+                } while (index < nodes.size() && !nodes.get(index).block());
+                writer.append("}\n", location);
+            }
+        }
+    }
+
+    private static void raw(RuleLibrary rules, List<RuleSyntax.Node> nodes, SourceMap.Writer writer) {
+        for (var node : nodes) {
+            writer.append(node.head() + (node.block() ? " {\n" : ";\n"), location(rules.source, node.offset()));
+            if (node.block()) {
+                raw(rules, node.children(), writer);
+                writer.append("}\n", location(rules.source, node.offset()));
+            }
+        }
+    }
+
+    private static void validateTemplates(Prepared prepared) {
+        var css = validationCss(prepared);
+        new CssSyntax(css, 0).parse(CssSyntax.Mode.UTILITY);
+    }
+
+    private static String probe(RuleLibrary rules, RuleLibrary.Rule rule, boolean variant) {
+        var body = substitute(rule.body(), rule.parameter(), RuleLibrary.sample(rule.type()));
+        if (variant) {
+            body = slot(body, List.of(new RuleSyntax.Node("x: 0", List.of(), rule.offset(), false)));
+        }
+        var writer = new SourceMap.Writer();
+        render(rules, body, ".probe", writer);
+        return writer.css();
+    }
+
+    private static void hooks(Checked checked, String css, String guard) {
+        for (var token : CssTokens.read(css)) {
+            if (CssResource.SymbolKind.CLASS == token.kind()) {
+                String name = token.name();
+                if (!guard.equals(name) && !checked.bindings.externalClasses().contains(name)) {
+                    throw RuleLibrary.error("U_EXTERNAL_CLASS", "Declare externalClasses hook " + name, 0);
+                }
+            }
+        }
+    }
+
+    private static List<Description> descriptions(RuleLibrary rules, List<RuleLibrary.Rule> definitions) {
+        return definitions.stream()
+                .map(rule -> new Description(
+                        rule.name(),
+                        rule.type(),
+                        rule.arguments().stream()
+                                .map(argument -> argument.kind() + "(" + argument.name() + ")")
+                                .toList(),
+                        rule.interval(),
+                        origin(rules.source, rule.offset())))
+                .toList();
+    }
+
+    private static JsonObject envelope(String kind, Source source) {
+        var json = new JsonObject();
+        json.addProperty("version", VERSION);
+        json.addProperty("kind", kind);
+        json.addProperty("source", source.name());
+        json.addProperty("text", source.text());
+        return json;
+    }
+
+    private static JsonObject descriptor(String json, String kind) {
+        var value = JsonParser.parseString(json).getAsJsonObject();
+        if (VERSION != value.get("version").getAsInt()
+                || !kind.equals(value.get("kind").getAsString())) {
+            throw new IllegalArgumentException("Unsupported utility language descriptor version or kind");
+        }
+        return value;
+    }
+
+    private static String digest(String value) {
+        try {
+            return HexFormat.of()
+                    .formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    private static Failure failure(Source source, String code, String message, int offset) {
+        return new Failure(new Diagnostic(
+                code,
+                message,
+                origin(source, Math.max(0, Math.min(offset, source.text().length()))),
+                List.of(),
+                Map.of()));
+    }
+
+    private static Origin origin(Source source, int offset) {
+        var location = location(source, offset);
+        return new Origin(
+                source.name(),
+                offset,
+                Math.min(offset + 1, source.text().length()),
+                location.line(),
+                location.column());
+    }
+
+    private static SourceMap.Location location(Source source, int offset) {
+        int line = 0;
+        int start = 0;
+        for (int i = 0; i < offset; i++) {
+            if ('\n' == source.text().charAt(i)) {
+                line++;
+                start = i + 1;
+            }
+        }
+        return new SourceMap.Location(source.name(), source.text(), line, offset - start);
+    }
+}

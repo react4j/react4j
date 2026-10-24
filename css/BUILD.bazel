@@ -17,6 +17,7 @@ test_suite(
         "//css/processor/src/test/java/react4j/css/processor:implementation_tests",
         "//css/processor/src/test/java/react4j/css/processor:processor_tests",
         "//css/processor/src/test/java/react4j/css/processor:unit_tests",
+        "//css/utility-language:tests",
     ],
     visibility = ["//:__pkg__"],
 )
