@@ -4,7 +4,7 @@ Follow the [Code of Conduct](CODE_OF_CONDUCT.md). Describe the problem, resultin
 
 ## Build and checks
 
-Use Bazel 9.3.0 (pinned in `.bazelversion`, typically selected by Bazelisk) and Bash. Bazel downloads the Java toolchains, compiler dependencies, React assets and Chromium. Owned Java sources, publication bytecode and generated sources target Java 21; annotation processing requires Java 21 or later; build tools use the pinned Java 25 toolchain. Dependency maintenance uses a host Java 17+ command.
+Use Bazel 9.3.1 (pinned in `.bazelversion`, typically selected by Bazelisk) and Bash. Bazel downloads the Java toolchains, compiler dependencies, React assets and Chromium. Owned Java sources, publication bytecode and generated sources target Java 21; annotation processing requires Java 21 or later; build tools use the pinned Java 25 toolchain. Dependency maintenance uses a host Java 17+ command.
 
 | Task | Command |
 | --- | --- |

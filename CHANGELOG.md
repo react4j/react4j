@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Upgrade development and CI to Bazel 9.3.1.
 * Breaking: require Java 21 for application sources, publication bytecode and generated sources. Use the Java 21 Arez and Sting revisions and align processor declarations, compiler checks and Javadocs with the new baseline.
 * Add public native utility guides, worked recipes and a runnable example demonstrating containers, scoped popovers and entry motion. Run it with `tools/examples.sh serve native-utilities development`.
 * Add a JVM-only native utility rule language with typed families, numeric bounds, container/starting-style variants and checked scoped anchors. Independent Java consumers share checked descriptors and candidate expansions; JVM authoring commands expose structured diagnostics and traces.

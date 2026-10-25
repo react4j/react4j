@@ -2,7 +2,7 @@
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
-test "$(bazel --version)" = 'bazel 9.3.0'
+test "$(bazel --version)" = 'bazel 9.3.1'
 bazel run //tools/buildifier:buildifier_check
 tools/java_format.sh check
 bazel run //tools/ahab:hermeticity.check
