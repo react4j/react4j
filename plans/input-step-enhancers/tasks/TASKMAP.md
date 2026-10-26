@@ -5,13 +5,13 @@
 - Current frontier: none (all tasks complete)
 - Planning reviewer: `/root/planning_review` (`1/3` rounds; final confirmation unused); Findings: none. Checked complete scope, tasks, compiler and browser evidence. Residual risk: implementation tests for generic/nullness/J2CL interactions.
 - Plan checkpoint: automatic; accepted interview scope, explicit implementation/PR authority, and passing planning review establish the basis to proceed.
-- Implementation reviewer: pending (`0/5` rounds; final confirmation unused)
+- Implementation reviewer: `/root/implementation_review` (`1/5` rounds consumed; final confirmation unused). Round 1 reviewed the complete scope and reported three verified P2 findings; fixes await confirmation.
 - Authority: final interview acceptance, followed by the explicit request to implement and raise a PR. Correction 3A excludes children migration.
 
 ## Full-scope validation
 
 - Gate: `tools/check.sh`
-- Evidence: pinned Bazel 9.3.1 `tools/check.sh` passed on the frozen implementation. Processor coverage: 3331/3464 lines and 1678/1938 branches; all configured thresholds passed. Site and unsigned bundle validation passed (12 artifacts, 60 entries).
+- Evidence: pinned Bazel 9.3.1 `tools/check.sh` passed again after round 1 fixes. Processor coverage: 3419/3549 lines and 1734/1992 branches; all configured thresholds passed. Site and unsigned bundle validation passed (12 artifacts, 60 entries).
 
 ## Tasks
 
@@ -36,3 +36,10 @@
 - D4 is a delivery boundary from the user's correction, retained in this plan and the PR; no children migration or new deferred-issue artifact is authorized.
 - Task ordering, compiler experiments and delivery evidence remain temporary. No new glossary term is required by the existing CSS glossary.
 - Domain link validation passed; the specification-only audit retains only independently verifiable obligations.
+
+## Implementation review history
+
+- Round 1: generic helper variables could shadow generated/referenced types (R2/R4); declaration erasures could escape clash validation (R5); concrete collection helper parameters failed the generated-code checker (R2/R4). All reproduced with real compiler tests before fixes.
+- Disposition: reserve generated and signature type names before forwarding; validate declaration erasures as well as resolved signatures, including inherited setters; extend the existing concrete collection signature suppression to enhancers. Retain legal overload tests and source/precompiled goldens for all continuation types. The signature traversal also checks inaccessible intersection bounds.
+- These fixes preserve the accepted contracts and significant decisions. No canonical requirement or guide change is needed.
+- Validation: `tools/update_goldens.sh jspecify`, all 8 `//processor:all_tests` targets, `tools/check.sh`, domain link validation and `git diff --check` passed. Existing children goldens remain unchanged.

@@ -26,3 +26,4 @@ First-stage helpers are usable directly on the generated builder class with the 
 - `bazel test //processor:all_tests --test_output=errors`: all 8 targets passed.
 - Focused enhancer cases cover generic/name substitution, checked exceptions, reifiable and generic varargs, inherited/nested nullness, legal shared defaults and signature/type conflicts.
 - Shortcut parameter names are normalized because classfile inputs do not reliably retain source parameter names.
+- Review round 1: reserve generated/referenced type names when renaming helper variables and mirror concrete collection signatures under the existing checker policy. Strict source/precompiled goldens cover advancing, staying and terminal helpers.

@@ -1,5 +1,7 @@
 package com.example.enhancer;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -17,6 +19,18 @@ public final class Enhancers
     {
       return panelTypes(Set.of(String.class, Integer.class));
     }
+
+    default <Step1, ReactNode> R named(Step1 first, ReactNode second)
+    {
+      return unitPanels();
+    }
+
+    @SuppressWarnings("NonApiType")
+    default R collections(ArrayList<Class<?>> first, HashSet<Class<?>> second)
+    {
+      second.addAll(first);
+      return panelTypes(second);
+    }
   }
 
   public interface CountBase<R>
@@ -27,6 +41,11 @@ public final class Enhancers
     {
       if (value.intValue() < 0) { throw new Exception("negative"); }
       return count(value.intValue());
+    }
+
+    default <Step2, Builder, AdvancingBuilder> R named(Step2 first, Builder second, AdvancingBuilder third)
+    {
+      return count(1);
     }
   }
 

@@ -25,3 +25,4 @@ Consumers configure enhancer interfaces on method and constructor inputs and inv
 - Pinned Bazel 9.3.1: `tools/update_goldens.sh jspecify` regenerated 12 new goldens; all existing children goldens unchanged.
 - `bazel test //processor:all_tests --test_output=errors`: all 8 targets passed, including 27 enhancer cases and source/precompiled strict goldens.
 - Renamed constructor input coverage exposed an existing name-based lookup bug; declaration-identity lookup fixes that accepted use case.
+- Review round 1: add declaration-erasure checks for result parameters, arrays, result-bounded method variables and inherited setters; legal overloads remain covered. Check every intersection bound for accessibility.

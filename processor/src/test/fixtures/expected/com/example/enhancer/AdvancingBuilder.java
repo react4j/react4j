@@ -30,6 +30,12 @@ public final class AdvancingBuilder {
     return AdvancingBuilder.<T>newBuilder().<T2>number(arg0);
   }
 
+  public static <T extends Number, Step22, Builder2, AdvancingBuilder2> Step2<T> named(
+      final @NonNull Step22 arg0, final @NonNull Builder2 arg1,
+      final @NonNull AdvancingBuilder2 arg2) {
+    return AdvancingBuilder.<T>newBuilder().<Step22, Builder2, AdvancingBuilder2>named(arg0, arg1, arg2);
+  }
+
   public static <T extends Number> Step2<T> one() {
     return AdvancingBuilder.<T>newBuilder().one();
   }

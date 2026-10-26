@@ -9,8 +9,10 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -32,11 +34,14 @@ import org.realityforge.proton.ProcessorException;
 
 final class InputEnhancer {
     private final TypeElement _element;
+    private final ExecutableElement _setter;
     private final List<ExecutableElement> _helpers = new ArrayList<>();
     private boolean _usesDeprecatedTypes;
+    private boolean _usesConcreteCollections;
 
-    private InputEnhancer(final TypeElement element) {
+    private InputEnhancer(final TypeElement element, final ExecutableElement setter) {
         _element = element;
+        _setter = setter;
     }
 
     static void parse(final ProcessingEnvironment env, final ViewDescriptor view, final InputDescriptor input) {
@@ -73,10 +78,6 @@ final class InputEnhancer {
                                 .toString())) {
             throw error(input, "must have exactly one unbounded result type parameter");
         }
-        final var enhancer = new InputEnhancer(element);
-        for (Element owner = element; owner instanceof TypeElement; owner = owner.getEnclosingElement()) {
-            enhancer._usesDeprecatedTypes |= env.getElementUtils().isDeprecated(owner);
-        }
         final var methods = ElementsUtil.getMethods(element, env.getElementUtils(), env.getTypeUtils()).stream()
                 .filter(m -> !m.getModifiers().contains(Modifier.STATIC)
                         && !m.getModifiers().contains(Modifier.PRIVATE))
@@ -88,6 +89,10 @@ final class InputEnhancer {
             throw error(input, "must have exactly one abstract input setter");
         }
         final var setter = abstractMethods.get(0);
+        final var enhancer = new InputEnhancer(element, setter);
+        for (Element owner = element; owner instanceof TypeElement; owner = owner.getEnclosingElement()) {
+            enhancer._usesDeprecatedTypes |= env.getElementUtils().isDeprecated(owner);
+        }
         final var setterType = enhancer.methodType(env.getTypeUtils(), setter);
         if (!setter.getSimpleName().contentEquals(input.getName())
                 || !setterType.getTypeVariables().isEmpty()
@@ -135,7 +140,14 @@ final class InputEnhancer {
             final InputDescriptor input,
             final TypeMirror type,
             final Set<Element> visited) {
-        if (type instanceof DeclaredType declared) {
+        if (type instanceof IntersectionType intersection) {
+            for (final var bound : intersection.getBounds()) {
+                validateAccessibleType(env, view, input, bound, visited);
+            }
+        } else if (type instanceof DeclaredType declared) {
+            _usesConcreteCollections |=
+                    "java.util.ArrayList".equals(declared.asElement().toString())
+                            || "java.util.HashSet".equals(declared.asElement().toString());
             for (Element owner = declared.asElement();
                     owner instanceof TypeElement;
                     owner = owner.getEnclosingElement()) {
@@ -168,10 +180,6 @@ final class InputEnhancer {
             if (null != lower) {
                 validateAccessibleType(env, view, input, lower, visited);
             }
-        } else if (type instanceof IntersectionType intersection) {
-            for (final var bound : intersection.getBounds()) {
-                validateAccessibleType(env, view, input, bound, visited);
-            }
         }
     }
 
@@ -201,6 +209,10 @@ final class InputEnhancer {
         return _usesDeprecatedTypes;
     }
 
+    boolean usesConcreteCollections() {
+        return _usesConcreteCollections;
+    }
+
     List<ExecutableElement> getHelpers() {
         return _helpers;
     }
@@ -221,6 +233,10 @@ final class InputEnhancer {
         generated.put("newBuilder()", "newBuilder");
         generated.put("build()", "build");
         for (final var input : view.getInputs()) {
+            final var enhancer = input.getEnhancer();
+            if (null != enhancer) {
+                generated.put(declarationSignature(env.getTypeUtils(), enhancer._setter), input.getName());
+            }
             if (input.isFromTreeContext()) {
                 generated.put(
                         "$context_" + input.getName() + "(" + env.getTypeUtils().erasure(input.getType()) + ")",
@@ -248,6 +264,7 @@ final class InputEnhancer {
             }
         }
         final var helpers = new LinkedHashMap<String, Helper>();
+        final var erasedHelpers = new HashMap<String, Helper>();
         final var parents = new HashMap<Element, String>();
         for (final var step : builder.getSteps()) {
             for (final var stepMethod : step.getMethods()) {
@@ -265,14 +282,21 @@ final class InputEnhancer {
                         env.getTypeUtils(), (DeclaredType) enhancer._element.asType(), result, parents, input);
                 for (final var method : enhancer._helpers) {
                     final var signature = enhancer.signature(env.getTypeUtils(), method, result);
-                    if (generated.containsKey(signature)) {
+                    final var erasedSignature = declarationSignature(env.getTypeUtils(), method);
+                    final var generatedSignature = generated.containsKey(signature) ? signature : erasedSignature;
+                    if (generated.containsKey(generatedSignature)) {
                         throw error(
                                 input,
-                                "helper '" + signature + "' conflicts with generated builder method '"
-                                        + generated.get(signature) + "'");
+                                "helper '" + generatedSignature + "' conflicts with generated builder method '"
+                                        + generated.get(generatedSignature) + "'");
                     }
-                    final var previous = helpers.putIfAbsent(signature, new Helper(enhancer, method, result));
-                    if (null != previous) {
+                    final var current = new Helper(enhancer, method, result);
+                    final var resolvedPrevious = helpers.putIfAbsent(signature, current);
+                    final var erasedPrevious = erasedHelpers.putIfAbsent(erasedSignature, current);
+                    for (final var previous : Stream.of(resolvedPrevious, erasedPrevious)
+                            .filter(Objects::nonNull)
+                            .distinct()
+                            .toList()) {
                         final var overrides =
                                 env.getElementUtils().overrides(method, previous.method(), enhancer._element);
                         final var overridden = env.getElementUtils()
@@ -284,7 +308,8 @@ final class InputEnhancer {
                                     "helper '" + signature + "' conflicts with another enhancer on the shared builder");
                         }
                         if (overrides) {
-                            helpers.put(signature, new Helper(enhancer, method, result));
+                            helpers.put(signature, current);
+                            erasedHelpers.put(erasedSignature, current);
                         }
                     }
                 }
@@ -335,6 +360,13 @@ final class InputEnhancer {
         return method.getSimpleName()
                 + methodType(types, method).getParameterTypes().stream()
                         .map(t -> erasure(types, t, result))
+                        .collect(Collectors.joining(",", "(", ")"));
+    }
+
+    private static String declarationSignature(final Types types, final ExecutableElement method) {
+        return method.getSimpleName()
+                + method.getParameters().stream()
+                        .map(p -> types.erasure(p.asType()).toString())
                         .collect(Collectors.joining(",", "(", ")"));
     }
 

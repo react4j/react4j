@@ -307,6 +307,11 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
                         + " hidden(List<? super Secret[]> v) { return value(\"x\"); } }";
         assertInvalid(declaration, "@Input(enhancer=Enhancer.class) abstract String value();", "helper signature type");
         assertInvalid(
+                "private interface Secret {} public interface Enhancer<R> { R value(String v); default <T extends"
+                        + " Number & Secret> R hidden(T v) { return value(\"x\"); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value();",
+                "helper signature type");
+        assertInvalid(
                 "private static class Secret extends Exception { private static final long serialVersionUID=1L; }"
                         + " public interface Enhancer<R> { R value(String v); default <T extends Secret> R hidden(T v)"
                         + " throws T { return value(\"x\"); } }",
@@ -406,6 +411,85 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
                 "@Input(enhancer=Enhancer.class) abstract String value(); @Input(enhancer=Other.class) abstract int"
                         + " other();",
                 "conflicts with another enhancer");
+    }
+
+    @Test
+    public void helperVariablesDoNotShadowBuilderTypes() throws Exception {
+        final var declaration = """
+            public interface Enhancer<R> {
+              R value(String v);
+              default <Step1, Step2, Builder, ContextHolder, Case_ComponentBuilder, ReactNode, String, List> R shadow(
+                  Step1 a, Step2 b, Builder c, ContextHolder d, Case_ComponentBuilder e, ReactNode f, String g, List h) {
+                return value("x");
+              }
+              default R referenced(List<? extends String[]> value) { return value("x"); }
+            }
+            """;
+        assertValid(declaration, "@Input(enhancer=Enhancer.class) abstract String value();", "Enhancer<ReactNode>");
+        assertValid(
+                declaration,
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input abstract String z();",
+                "Enhancer<Step2>");
+        assertValid(
+                declaration,
+                "@Input(enhancer=Enhancer.class) abstract @Nullable String value(); @Input abstract @Nullable String"
+                        + " z();",
+                "Enhancer<Step1>");
+    }
+
+    @Test
+    public void declarationErasureConflicts() throws Exception {
+        final var first = "public interface Enhancer<R> { R value(String v); default R converted(R v) { return v; } } ";
+        assertInvalid(
+                first
+                        + "public interface Other<R> { R other(int v); default R converted(Object v) { return"
+                        + " other(1); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input(enhancer=Other.class) abstract int"
+                        + " other();",
+                "conflicts with another enhancer");
+        assertInvalid(
+                "public interface Enhancer<R> { R value(String v); default R other(R v) { return v; } }",
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input abstract Object other();",
+                "conflicts with generated builder method");
+        assertInvalid(
+                "public interface Enhancer<R> { R value(String v); default R converted(R[] v) { return v[0]; } }"
+                    + " public interface Other<R> { R other(int v); default R converted(Object[] v) { return other(1);"
+                    + " } }",
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input(enhancer=Other.class) abstract int"
+                        + " other();",
+                "conflicts with another enhancer");
+        assertInvalid(
+                "public interface Enhancer<R> { R value(String v); default <T extends R> R converted(T v) { return v;"
+                        + " } } public interface Other<R> { R other(int v); default R converted(Object v) { return"
+                        + " other(1); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input(enhancer=Other.class) abstract int"
+                        + " other();",
+                "conflicts with another enhancer");
+        assertInvalid(
+                "public interface Enhancer<R> { R value(String v); default R other(Object v) { return value(\"x\"); }"
+                        + " } public interface Base<R,V> { R other(V v); } public interface Other<R> extends"
+                        + " Base<R,String> {}",
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input(enhancer=Other.class) abstract String"
+                        + " other();",
+                "conflicts with generated builder method");
+        assertValid(
+                first
+                        + "public interface Other<R> { R other(int v); default R converted(String v) { return"
+                        + " other(1); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input(enhancer=Other.class) abstract int"
+                        + " other();",
+                "Enhancer<Step2>");
+    }
+
+    @Test
+    public void concreteCollectionHelperParameters() throws Exception {
+        assertValid("""
+            public interface Enhancer<R> {
+              R value(String v);
+              @SuppressWarnings("NonApiType")
+              default R converted(ArrayList<String> list, HashSet<String> set) { return value(list + ":" + set); }
+            }
+            """, "@Input(enhancer=Enhancer.class) abstract String value();", "ArrayList<String>");
     }
 
     private void assertInvalid(final String declarations, final String inputs, final String expected) throws Exception {

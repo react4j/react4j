@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -44,7 +45,8 @@ final class EnhancerMethod {
             final ViewDescriptor view,
             final InputEnhancer enhancer,
             final ExecutableElement helper,
-            final TypeName result) {
+            final TypeName result,
+            final Set<String> reservedNames) {
         final var signature = new EnhancerMethod(enhancer.getElement(), result);
         final var type = enhancer.methodType(env.getTypeUtils(), helper);
         final var method = MethodSpec.methodBuilder(helper.getSimpleName().toString())
@@ -72,12 +74,20 @@ final class EnhancerMethod {
         final var usedNames = view.getElement().getTypeParameters().stream()
                 .map(p -> p.getSimpleName().toString())
                 .collect(Collectors.toCollection(HashSet::new));
+        usedNames.addAll(reservedNames);
+        final var packageName =
+                env.getElementUtils().getPackageOf(view.getElement()).getQualifiedName();
         for (final var variable : type.getTypeVariables()) {
             final var name = variable.asElement().getSimpleName().toString();
             var candidate = name;
-            for (var suffix = 2; !usedNames.add(candidate); suffix++) {
+            for (var suffix = 2;
+                    usedNames.contains(candidate)
+                            || null != env.getElementUtils().getTypeElement("java.lang." + candidate)
+                            || null != env.getElementUtils().getTypeElement(packageName + "." + candidate);
+                    suffix++) {
                 candidate = name + suffix;
             }
+            usedNames.add(candidate);
             signature._variables.put(variable.asElement(), TypeVariableName.get(candidate));
         }
         for (final var variable : type.getTypeVariables()) {
@@ -129,6 +139,35 @@ final class EnhancerMethod {
                 view.getBuilderClassName(),
                 helper.getSimpleName().toString());
         return method.build();
+    }
+
+    static void reserveTypeNames(final TypeMirror type, final Set<String> names) {
+        reserveTypeNames(type, names, new HashSet<>());
+    }
+
+    private static void reserveTypeNames(final TypeMirror type, final Set<String> names, final Set<Element> visited) {
+        if (type instanceof IntersectionType intersection) {
+            for (final var bound : intersection.getBounds()) {
+                reserveTypeNames(bound, names, visited);
+            }
+        } else if (type instanceof DeclaredType declared) {
+            names.addAll(ClassName.get((TypeElement) declared.asElement()).simpleNames());
+            reserveTypeNames(declared.getEnclosingType(), names, visited);
+            for (final var argument : declared.getTypeArguments()) {
+                reserveTypeNames(argument, names, visited);
+            }
+        } else if (type instanceof ArrayType array) {
+            reserveTypeNames(array.getComponentType(), names, visited);
+        } else if (type instanceof TypeVariable variable && visited.add(variable.asElement())) {
+            reserveTypeNames(variable.getUpperBound(), names, visited);
+        } else if (type instanceof WildcardType wildcard) {
+            if (null != wildcard.getExtendsBound()) {
+                reserveTypeNames(wildcard.getExtendsBound(), names, visited);
+            }
+            if (null != wildcard.getSuperBound()) {
+                reserveTypeNames(wildcard.getSuperBound(), names, visited);
+            }
+        }
     }
 
     private TypeName typeName(final Element declaration, final TypeMirror original, final TypeMirror type) {
