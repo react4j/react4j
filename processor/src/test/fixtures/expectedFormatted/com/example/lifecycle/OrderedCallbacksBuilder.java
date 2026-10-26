@@ -1,4 +1,4 @@
-package com.example.post_mount_or_update;
+package com.example.lifecycle;
 
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
@@ -8,8 +8,8 @@ import react4j.ReactNode;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
-final class PackageAccessPostMountOrUpdateModelBuilder {
-  private PackageAccessPostMountOrUpdateModelBuilder() {}
+final class OrderedCallbacksBuilder {
+  private OrderedCallbacksBuilder() {}
 
   static Step1 newBuilder() {
     return new Builder();
@@ -27,7 +27,7 @@ final class PackageAccessPostMountOrUpdateModelBuilder {
 
   private static class Builder implements Step1 {
     private final ReactElement _element =
-        ReactElement.createViewElement(React4j_PackageAccessPostMountOrUpdateModel.Factory.TYPE);
+        ReactElement.createViewElement(React4j_OrderedCallbacksView.Factory.TYPE);
 
     @Override
     @Contract(pure = true)

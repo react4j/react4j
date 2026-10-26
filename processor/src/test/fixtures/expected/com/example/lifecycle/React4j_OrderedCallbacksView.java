@@ -1,6 +1,5 @@
-package com.example.post_mount_or_update;
+package com.example.lifecycle;
 
-import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
@@ -15,51 +14,86 @@ import react4j.ReactNode;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
 @NullMarked
+@SuppressWarnings("deprecation")
 @SuppressArezWarnings({
     "Arez:UnnecessaryDefault",
     "Arez:UnnecessaryAllowEmpty"
 })
 @ArezComponent(
-    name = "com_example_post_mount_or_update_PostMountAndPostMountOrUpdateModel",
+    name = "com_example_lifecycle_OrderedCallbacksView",
     disposeNotifier = Feature.DISABLE,
     defaultSkipIfDisposed = Feature.ENABLE,
     sting = Feature.DISABLE,
     allowEmpty = true
 )
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_PostMountAndPostMountOrUpdateModel extends PostMountAndPostMountOrUpdateModel {
-  React4j_PostMountAndPostMountOrUpdateModel(
-      final react4j.internal.NativeView $$react4j$$_nativeView) {
+abstract class React4j_OrderedCallbacksView extends OrderedCallbacksView {
+  React4j_OrderedCallbacksView(final react4j.internal.NativeView $$react4j$$_nativeView) {
   }
 
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if ( React.enableViewNames() ) {
-      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "PostMountAndPostMountOrUpdateModel" );
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "OrderedCallbacks" );
     }
     return viewConstructor;
   }
 
   private void $$react4j$$_componentDidMount() {
-    postMountOrUpdate();
-    postMount();
+    first();
+    second();
+    phaseAdded();
+    restored();
+    middle();
+    root();
+    extendedPhase();
+    left();
+    right();
+    childFirst();
+    dormant();
+    nameTrap();
+    localTrap();
+  }
+
+  private void $$react4j$$_componentPreUpdate() {
+    first();
+    second();
+    restored();
+    middle();
+    root();
+    left();
+    extendedPhase();
+    right();
+    childFirst();
+    phaseAdded();
+    dormant();
+    nameTrap();
+    localTrap();
   }
 
   private void $$react4j$$_componentDidUpdate() {
-    postMountOrUpdate();
+    first();
+    second();
+    restored();
+    middle();
+    root();
+    left();
+    extendedPhase();
+    right();
+    childFirst();
+    phaseAdded();
+    dormant();
+    nameTrap();
+    localTrap();
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_PostMountAndPostMountOrUpdateModel) this).dispose();
-  }
-
-  @Nullable ReactNode $$react4j$$_render() {
-    assert Disposable.isNotDisposed( this );
-    return render();
+    ((Arez_React4j_OrderedCallbacksView) this).dispose();
   }
 
   static final class Factory {
@@ -72,13 +106,14 @@ abstract class React4j_PostMountAndPostMountOrUpdateModel extends PostMountAndPo
   private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount,
       OnComponentDidUpdate,
       OnShouldComponentUpdate,
-      OnComponentWillUnmount {
-    private final React4j_PostMountAndPostMountOrUpdateModel view;
+      OnComponentWillUnmount,
+      OnGetSnapshotBeforeUpdate {
+    private final React4j_OrderedCallbacksView view;
 
     @JsConstructor
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
-      view = new Arez_React4j_PostMountAndPostMountOrUpdateModel( this );
+      view = new Arez_React4j_OrderedCallbacksView( this );
     }
 
     @Override
@@ -89,6 +124,14 @@ abstract class React4j_PostMountAndPostMountOrUpdateModel extends PostMountAndPo
     @Override
     public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
       return false;
+    }
+
+    @Override
+    public final @Nullable Object getSnapshotBeforeUpdate(
+        final JsPropertyMap<@Nullable Object> prevInputs,
+        final JsPropertyMap<@Nullable Object> prevState) {
+      view.$$react4j$$_componentPreUpdate();
+      return null;
     }
 
     @Override
@@ -103,7 +146,7 @@ abstract class React4j_PostMountAndPostMountOrUpdateModel extends PostMountAndPo
 
     @Override
     public final @Nullable ReactNode render() {
-      return view.$$react4j$$_render();
+      return null;
     }
   }
 }

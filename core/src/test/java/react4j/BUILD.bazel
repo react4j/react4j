@@ -12,15 +12,21 @@ j2cl_library(
     testonly = True,
     srcs = [
         "ContextsTest.java",
+        "LifecycleBrowserTest.java",
         "ReactConfigTest.java",
         "RuntimeBrowserTest.java",
         "RuntimeBrowserTest.native.js",
         "RuntimeCoverageExample.java",
     ],
+    plugins = [
+        "//:processor",
+        "//third_party:arez_processor_plugin",
+    ],
     deps = [
         "//:core",
         "//examples/testing/src/main/java/react4j/webtesting:browser",
         "//third_party:arez_core-j2cl",
+        "//third_party:braincheck_core-j2cl",
         "//third_party:jsinterop_annotations-j2cl",
         "//third_party:jsinterop_base-j2cl",
         "//third_party:jspecify-j2cl",

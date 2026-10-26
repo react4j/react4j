@@ -5,7 +5,6 @@ import react4j.ReactErrorInfo;
 import react4j.ReactNode;
 import react4j.annotations.OnError;
 import react4j.annotations.PostMount;
-import react4j.annotations.PostMountOrUpdate;
 import react4j.annotations.PostUpdate;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.Render;
@@ -28,13 +27,14 @@ abstract class OverrideLifecycleMethodsComponent
   {
   }
 
+  @PostMount
   @PostUpdate
-  void postUpdate()
+  void afterCommit()
   {
   }
 
-  @PostMountOrUpdate
-  void postMountOrUpdate()
+  @PostUpdate
+  void postUpdate()
   {
   }
 

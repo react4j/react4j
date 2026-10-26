@@ -8,8 +8,8 @@ import react4j.ReactNode;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
-final class NoRenderWithPostMountOrUpdateBuilder {
-  private NoRenderWithPostMountOrUpdateBuilder() {}
+final class NoRenderWithSharedCallbackBuilder {
+  private NoRenderWithSharedCallbackBuilder() {}
 
   static Step1 newBuilder() {
     return new Builder();
@@ -27,7 +27,7 @@ final class NoRenderWithPostMountOrUpdateBuilder {
 
   private static class Builder implements Step1 {
     private final ReactElement _element =
-        ReactElement.createViewElement(React4j_NoRenderWithPostMountOrUpdateView.Factory.TYPE);
+        ReactElement.createViewElement(React4j_NoRenderWithSharedCallbackView.Factory.TYPE);
 
     @Override
     @Contract(pure = true)

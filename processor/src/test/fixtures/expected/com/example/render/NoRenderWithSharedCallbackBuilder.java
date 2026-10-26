@@ -1,4 +1,4 @@
-package com.example.post_mount_or_update;
+package com.example.render;
 
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
@@ -8,8 +8,8 @@ import react4j.ReactNode;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
-final class ProtectedAccessFromBasePostMountOrUpdateModelBuilder {
-  private ProtectedAccessFromBasePostMountOrUpdateModelBuilder() {
+final class NoRenderWithSharedCallbackBuilder {
+  private NoRenderWithSharedCallbackBuilder() {
   }
 
   static Step1 newBuilder() {
@@ -31,7 +31,7 @@ final class ProtectedAccessFromBasePostMountOrUpdateModelBuilder {
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createViewElement( React4j_ProtectedAccessFromBasePostMountOrUpdateModel.Factory.TYPE );
+    private final ReactElement _element = ReactElement.createViewElement( React4j_NoRenderWithSharedCallbackView.Factory.TYPE );
 
     @Override
     @Contract(

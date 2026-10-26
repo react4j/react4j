@@ -2,7 +2,6 @@ filegroup(
     name = "files",
     srcs = [
         "AbstractModel.java",
-        "DuplicateModel.java",
         "ParametersModel.java",
         "PrivateModel.java",
         "PublicModel.java",

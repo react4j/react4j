@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.processing.Processor;
@@ -92,10 +93,6 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
             new Object[] {"com.example.post_mount.BasicPostMountModel"},
             new Object[] {"com.example.post_mount.DeprecatedPostMountModel"},
             new Object[] {"com.example.post_mount.PackageAccessPostMountModel"},
-            new Object[] {"com.example.post_mount_or_update.BasicPostMountOrUpdateModel"},
-            new Object[] {"com.example.post_mount_or_update.PackageAccessPostMountOrUpdateModel"},
-            new Object[] {"com.example.post_mount_or_update.PostMountAndPostMountOrUpdateModel"},
-            new Object[] {"com.example.post_mount_or_update.PostUpdateAndPostMountOrUpdateModel"},
             new Object[] {"com.example.post_render.BasicPostRenderModel"},
             new Object[] {"com.example.post_render.MultiplePostRenderModel"},
             new Object[] {"com.example.post_render.MultipleSortedPostRenderModel"},
@@ -214,7 +211,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
             new Object[] {"com.example.render.BaseRenderComponent"},
             new Object[] {"com.example.render.NoRenderWithConstructorView"},
             new Object[] {"com.example.render.NoRenderWithPostConstructView"},
-            new Object[] {"com.example.render.NoRenderWithPostMountOrUpdateView"},
+            new Object[] {"com.example.render.NoRenderWithSharedCallbackView"},
             new Object[] {"com.example.render.NoRenderWithPostMountView"},
             new Object[] {"com.example.render.NoRenderWithPostRenderView"},
             new Object[] {"com.example.render.NoRenderWithPostUpdateView"},
@@ -366,35 +363,6 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         assertGoldenCompile(
                 Arrays.asList(fixture(input1), fixture(input2)),
                 Arrays.asList(output, "com/example/post_mount/PublicAccessViaInterfacePostMountModelBuilder.java"));
-    }
-
-    @Test
-    public void validProtectedAccessPostMountOrUpdate() throws Exception {
-        final String input1 =
-                "input/" + toFilename("com.example.post_mount_or_update.ProtectedAccessFromBasePostMountOrUpdateModel");
-        final String input2 = "input/"
-                + toFilename("com.example.post_mount_or_update.other.BaseProtectedAccessPostMountOrUpdateModel");
-        final String output =
-                toFilename("com.example.post_mount_or_update.React4j_ProtectedAccessFromBasePostMountOrUpdateModel");
-        assertGoldenCompile(
-                Arrays.asList(fixture(input1), fixture(input2)),
-                Arrays.asList(
-                        output,
-                        "com/example/post_mount_or_update/ProtectedAccessFromBasePostMountOrUpdateModelBuilder.java"));
-    }
-
-    @Test
-    public void validPublicAccessViaInterfacePostMountOrUpdate() throws Exception {
-        final String input1 = "input/"
-                + toFilename("com.example.post_mount_or_update.PublicAccessViaInterfacePostMountOrUpdateModel");
-        final String input2 = "input/" + toFilename("com.example.post_mount_or_update.PostMountOrUpdateInterface");
-        final String output =
-                toFilename("com.example.post_mount_or_update.React4j_PublicAccessViaInterfacePostMountOrUpdateModel");
-        assertGoldenCompile(
-                Arrays.asList(fixture(input1), fixture(input2)),
-                Arrays.asList(
-                        output,
-                        "com/example/post_mount_or_update/PublicAccessViaInterfacePostMountOrUpdateModelBuilder.java"));
     }
 
     @Test
@@ -753,38 +721,11 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
                 "com.example.on_prop_change.ThrowsOnPropChange", "@OnInputChange target must not throw any exceptions"
             },
             new Object[] {"com.example.post_mount.AbstractModel", "@PostMount target must not be abstract"},
-            new Object[] {
-                "com.example.post_mount.DuplicateModel", "@PostMount target duplicates existing method named postMount"
-            },
             new Object[] {"com.example.post_mount.ParametersModel", "@PostMount target must not have any parameters"},
             new Object[] {"com.example.post_mount.PrivateModel", "@PostMount target must not be private"},
             new Object[] {"com.example.post_mount.ReturnsValueModel", "@PostMount target must not return a value"},
             new Object[] {"com.example.post_mount.StaticModel", "@PostMount target must not be static"},
             new Object[] {"com.example.post_mount.ThrowsModel", "@PostMount target must not throw any exceptions"},
-            new Object[] {
-                "com.example.post_mount_or_update.AbstractModel", "@PostMountOrUpdate target must not be abstract"
-            },
-            new Object[] {
-                "com.example.post_mount_or_update.DuplicateModel",
-                "@PostMountOrUpdate target duplicates existing method named postMountOrUpdate"
-            },
-            new Object[] {
-                "com.example.post_mount_or_update.ParametersModel",
-                "@PostMountOrUpdate target must not have any parameters"
-            },
-            new Object[] {
-                "com.example.post_mount_or_update.PrivateModel", "@PostMountOrUpdate target must not be private"
-            },
-            new Object[] {
-                "com.example.post_mount_or_update.ReturnsValueModel",
-                "@PostMountOrUpdate target must not return a value"
-            },
-            new Object[] {"com.example.post_mount_or_update.StaticModel", "@PostMountOrUpdate target must not be static"
-            },
-            new Object[] {
-                "com.example.post_mount_or_update.ThrowsModel",
-                "@PostMountOrUpdate target must not throw any exceptions"
-            },
             new Object[] {"com.example.post_render.AbstractModel", "@PostRender target must not be abstract"},
             new Object[] {"com.example.post_render.ParametersModel", "@PostRender target must not have any parameters"},
             new Object[] {"com.example.post_render.PrivateModel", "@PostRender target must not be private"},
@@ -795,10 +736,6 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
                 "com.example.post_render.TypeParameterModel", "@PostRender target must not have any type parameters"
             },
             new Object[] {"com.example.post_update.AbstractModel", "@PostUpdate target must not be abstract"},
-            new Object[] {
-                "com.example.post_update.DuplicateModel",
-                "@PostUpdate target duplicates existing method named postUpdate"
-            },
             new Object[] {"com.example.post_update.ParametersModel", "@PostUpdate target must not have any parameters"},
             new Object[] {"com.example.post_update.PrivateModel", "@PostUpdate target must not be private"},
             new Object[] {"com.example.post_update.ReturnsValueModel", "@PostUpdate target must not return a value"},
@@ -814,9 +751,6 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
                 "com.example.pre_render.TypeParameterModel", "@PreRender target must not have any type parameters"
             },
             new Object[] {"com.example.pre_update.AbstractModel", "@PreUpdate target must not be abstract"},
-            new Object[] {
-                "com.example.pre_update.DuplicateModel", "@PreUpdate target duplicates existing method named preUpdate"
-            },
             new Object[] {"com.example.pre_update.ParametersModel", "@PreUpdate target must not have any parameters"},
             new Object[] {"com.example.pre_update.PrivateModel", "@PreUpdate target must not be private"},
             new Object[] {"com.example.pre_update.ReturnsValueModel", "@PreUpdate target must not return a value"},
@@ -1084,18 +1018,6 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
                         + " \"React4j:PublicMethod\" )"
             },
             new Object[] {
-                "com.example.post_mount_or_update.ProtectedAccessPostMountOrUpdateModel",
-                "@View target should not declare a protected method. This warning can be suppressed by annotating the"
-                        + " element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings("
-                        + " \"React4j:ProtectedMethod\" )"
-            },
-            new Object[] {
-                "com.example.post_mount_or_update.PublicAccessPostMountOrUpdateModel",
-                "@View target should not declare a public method. This warning can be suppressed by annotating the"
-                        + " element with @SuppressWarnings( \"React4j:PublicMethod\" ) or @SuppressReact4jWarnings("
-                        + " \"React4j:PublicMethod\" )"
-            },
-            new Object[] {
                 "com.example.post_render.ProtectedAccessPostRenderModel",
                 "@View target should not declare a protected method. This warning can be suppressed by annotating the"
                         + " element with @SuppressWarnings( \"React4j:ProtectedMethod\" ) or @SuppressReact4jWarnings("
@@ -1230,10 +1152,6 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
             new Object[] {"com.example.post_mount.Suppressed1PublicAccessPostMountModel"},
             new Object[] {"com.example.post_mount.Suppressed2ProtectedAccessPostMountModel"},
             new Object[] {"com.example.post_mount.Suppressed2PublicAccessPostMountModel"},
-            new Object[] {"com.example.post_mount_or_update.Suppressed1ProtectedAccessPostMountOrUpdateModel"},
-            new Object[] {"com.example.post_mount_or_update.Suppressed1PublicAccessPostMountOrUpdateModel"},
-            new Object[] {"com.example.post_mount_or_update.Suppressed2ProtectedAccessPostMountOrUpdateModel"},
-            new Object[] {"com.example.post_mount_or_update.Suppressed2PublicAccessPostMountOrUpdateModel"},
             new Object[] {"com.example.post_render.Suppressed1ProtectedAccessPostRenderModel"},
             new Object[] {"com.example.post_render.Suppressed1PublicAccessPostRenderModel"},
             new Object[] {"com.example.post_render.Suppressed2ProtectedAccessPostRenderModel"},
@@ -1377,6 +1295,85 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         assertFailedCompile(
                 "com.example.jspecify.UnknownConstructorView",
                 "Unspecified JSpecify nullness in injected constructor parameter");
+    }
+
+    @Test
+    public void orderedLifecycleSourceAndCompiledCallbacks() throws Exception {
+        var base = fixture("input/com/example/lifecycle/CallbackAncestors.java");
+        var view = fixture("input/com/example/lifecycle/OrderedCallbacksView.java");
+        var outputs = List.of(
+                "com/example/lifecycle/React4j_OrderedCallbacksView.java",
+                "com/example/lifecycle/OrderedCallbacksBuilder.java");
+        assertGoldenCompile(List.of(base, view), outputs, List.of());
+        assertLifecycleOrder(List.of(base, view), List.of());
+        var compiled = CompileTestUtil.assertCompilesWithoutWarnings(List.of(base), getOptions(), List.of(), List.of());
+        try {
+            assertGoldenCompile(
+                    List.of(view),
+                    outputs,
+                    buildClasspath(compiled.classOutput().toFile()));
+            assertLifecycleOrder(
+                    List.of(view), buildClasspath(compiled.classOutput().toFile()));
+        } finally {
+            deleteDir(compiled.sourceOutput());
+            deleteDir(compiled.classOutput());
+        }
+    }
+
+    private void assertLifecycleOrder(List<JavaFileObject> inputs, List<File> classpath) throws Exception {
+        var compilation = CompileTestUtil.assertCompilesWithoutWarnings(inputs, getOptions(), processors(), classpath);
+        try {
+            var source = Files.readString(
+                    compilation.sourceOutput().resolve("com/example/lifecycle/React4j_OrderedCallbacksView.java"));
+            assertLifecycleCalls(
+                    source,
+                    "componentDidMount",
+                    List.of(
+                            "first",
+                            "second",
+                            "phaseAdded",
+                            "restored",
+                            "middle",
+                            "root",
+                            "extendedPhase",
+                            "left",
+                            "right",
+                            "childFirst",
+                            "dormant",
+                            "nameTrap",
+                            "localTrap"));
+            var update = List.of(
+                    "first",
+                    "second",
+                    "restored",
+                    "middle",
+                    "root",
+                    "left",
+                    "extendedPhase",
+                    "right",
+                    "childFirst",
+                    "phaseAdded",
+                    "dormant",
+                    "nameTrap",
+                    "localTrap");
+            assertLifecycleCalls(source, "componentPreUpdate", update);
+            assertLifecycleCalls(source, "componentDidUpdate", update);
+        } finally {
+            deleteDir(compilation.sourceOutput());
+            deleteDir(compilation.classOutput());
+        }
+    }
+
+    private void assertLifecycleCalls(String source, String phase, List<String> expected) {
+        var start = source.indexOf("private void $$react4j$$_" + phase + "()");
+        assertTrue(0 <= start, phase);
+        var body = source.substring(start, source.indexOf('}', start));
+        var actual = Pattern.compile("(?m)^\\s*(\\w+)\\(\\);$")
+                .matcher(body)
+                .results()
+                .map(match -> match.group(1))
+                .toList();
+        assertEquals(actual, expected, phase);
     }
 
     @Test

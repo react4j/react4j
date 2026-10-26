@@ -7,8 +7,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
@@ -32,6 +35,7 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import org.jspecify.annotations.Nullable;
@@ -219,10 +223,9 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         determineOnInputChangeMethods(descriptor, methods);
         determineDefaultInputsMethods(descriptor, methods);
         determineDefaultInputsFields(descriptor);
-        determinePreUpdateMethod(typeElement, descriptor, methods);
-        determinePostMountOrUpdateMethod(typeElement, descriptor, methods);
-        determinePostUpdateMethod(typeElement, descriptor, methods);
-        determinePostMountMethod(typeElement, descriptor, methods);
+        descriptor.setPreUpdateMethods(determineLifecycleMethods(typeElement, Constants.PRE_UPDATE_CLASSNAME));
+        descriptor.setPostUpdateMethods(determineLifecycleMethods(typeElement, Constants.POST_UPDATE_CLASSNAME));
+        descriptor.setPostMountMethods(determineLifecycleMethods(typeElement, Constants.POST_MOUNT_CLASSNAME));
         determineOnErrorMethod(typeElement, descriptor, methods);
         determineScheduleRenderMethods(typeElement, descriptor, methods);
         determinePublishMethods(typeElement, descriptor, methods);
@@ -1252,10 +1255,9 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                         typeElement);
             } else if (!descriptor.hasConstructor()
                     && !descriptor.hasPostConstruct()
-                    && null == descriptor.getPostMount()
-                    && null == descriptor.getPostRender()
-                    && null == descriptor.getPreUpdate()
-                    && null == descriptor.getPostUpdate()
+                    && descriptor.getPostMountMethods().isEmpty()
+                    && descriptor.getPreUpdateMethods().isEmpty()
+                    && descriptor.getPostUpdateMethods().isEmpty()
                     && descriptor.getPreRenderDescriptors().isEmpty()
                     && descriptor.getPostRenderDescriptors().isEmpty()
                     && !descriptor.hasPreUpdateOnInputChange()
@@ -1269,47 +1271,61 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private void determinePostMountMethod(
-            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
-        for (final ExecutableElement method : methods) {
-            if (AnnotationsUtil.hasAnnotationOfType(method, Constants.POST_MOUNT_CLASSNAME)) {
-                MemberChecks.mustBeLifecycleHook(
-                        typeElement, Constants.VIEW_CLASSNAME, Constants.POST_MOUNT_CLASSNAME, method);
-                descriptor.setPostMount(method);
+    private List<ExecutableElement> determineLifecycleMethods(
+            final TypeElement typeElement, final String annotationName) {
+        final var declarations = new ArrayList<ExecutableElement>();
+        collectLifecycleDeclarations(typeElement, new HashSet<>(), declarations);
+        final var elements = processingEnv.getElementUtils();
+        final var effectiveMethods = ElementFilter.methodsIn(elements.getAllMembers(typeElement));
+        final var callbacks = new LinkedHashSet<ExecutableElement>();
+        // Registration order belongs to the first annotation; participation belongs to the effective override.
+        for (final var declaration : declarations) {
+            if (AnnotationsUtil.hasAnnotationOfType(declaration, annotationName)) {
+                final var effective = effectiveMethods.stream()
+                        .filter(method -> method.equals(declaration)
+                                || elements.overrides(method, declaration, typeElement)
+                                || implementsLifecycleMethod(typeElement, method, declaration))
+                        // javac may retain an interface method beside its inherited class implementation.
+                        .min(Comparator.comparing(method -> ElementKind.INTERFACE
+                                == Objects.requireNonNull(method.getEnclosingElement())
+                                        .getKind()))
+                        .orElse(declaration);
+                if (AnnotationsUtil.hasAnnotationOfType(effective, annotationName)) {
+                    MemberChecks.mustBeLifecycleHook(typeElement, Constants.VIEW_CLASSNAME, annotationName, effective);
+                    callbacks.add(effective);
+                }
             }
         }
+        return List.copyOf(callbacks);
     }
 
-    private void determinePostMountOrUpdateMethod(
-            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
-        for (final ExecutableElement method : methods) {
-            if (AnnotationsUtil.hasAnnotationOfType(method, Constants.POST_MOUNT_OR_UPDATE_CLASSNAME)) {
-                MemberChecks.mustBeLifecycleHook(
-                        typeElement, Constants.VIEW_CLASSNAME, Constants.POST_MOUNT_OR_UPDATE_CLASSNAME, method);
-                descriptor.setPostRender(method);
-            }
-        }
+    private boolean implementsLifecycleMethod(
+            final TypeElement typeElement, final ExecutableElement method, final ExecutableElement declaration) {
+        final var types = processingEnv.getTypeUtils();
+        final var scope = (DeclaredType) typeElement.asType();
+        return ElementKind.INTERFACE
+                        == Objects.requireNonNull(declaration.getEnclosingElement())
+                                .getKind()
+                && ElementKind.CLASS
+                        == Objects.requireNonNull(method.getEnclosingElement()).getKind()
+                && method.getSimpleName().contentEquals(declaration.getSimpleName())
+                && types.isSubsignature((ExecutableType) types.asMemberOf(scope, method), (ExecutableType)
+                        types.asMemberOf(scope, declaration));
     }
 
-    private void determinePostUpdateMethod(
-            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
-        for (final ExecutableElement method : methods) {
-            if (AnnotationsUtil.hasAnnotationOfType(method, Constants.POST_UPDATE_CLASSNAME)) {
-                MemberChecks.mustBeLifecycleHook(
-                        typeElement, Constants.VIEW_CLASSNAME, Constants.POST_UPDATE_CLASSNAME, method);
-                descriptor.setPostUpdate(method);
+    private void collectLifecycleDeclarations(
+            final TypeElement typeElement, final Set<TypeElement> visited, final List<ExecutableElement> declarations) {
+        if (visited.add(typeElement)) {
+            final var superclass = typeElement.getSuperclass();
+            if (TypeKind.NONE != superclass.getKind()) {
+                collectLifecycleDeclarations(
+                        (TypeElement) ((DeclaredType) superclass).asElement(), visited, declarations);
             }
-        }
-    }
-
-    private void determinePreUpdateMethod(
-            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
-        for (final ExecutableElement method : methods) {
-            if (AnnotationsUtil.hasAnnotationOfType(method, Constants.PRE_UPDATE_CLASSNAME)) {
-                MemberChecks.mustBeLifecycleHook(
-                        typeElement, Constants.VIEW_CLASSNAME, Constants.PRE_UPDATE_CLASSNAME, method);
-                descriptor.setPreUpdate(method);
+            for (final var interfaceType : typeElement.getInterfaces()) {
+                collectLifecycleDeclarations(
+                        (TypeElement) ((DeclaredType) interfaceType).asElement(), visited, declarations);
             }
+            declarations.addAll(ElementFilter.methodsIn(typeElement.getEnclosedElements()));
         }
     }
 

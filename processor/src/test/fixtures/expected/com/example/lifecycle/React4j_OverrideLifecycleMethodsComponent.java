@@ -49,7 +49,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
   }
 
   private void $$react4j$$_componentDidMount() {
-    postMountOrUpdate();
+    afterCommit();
     postMount();
   }
 
@@ -58,7 +58,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
   }
 
   private void $$react4j$$_componentDidUpdate() {
-    postMountOrUpdate();
+    afterCommit();
     postUpdate();
   }
 

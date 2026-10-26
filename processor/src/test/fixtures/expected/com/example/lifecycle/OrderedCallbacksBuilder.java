@@ -1,4 +1,4 @@
-package com.example.post_mount_or_update;
+package com.example.lifecycle;
 
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
@@ -8,29 +8,35 @@ import react4j.ReactNode;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
-final class PublicAccessViaInterfacePostMountOrUpdateModelBuilder {
-  private PublicAccessViaInterfacePostMountOrUpdateModelBuilder() {}
+final class OrderedCallbacksBuilder {
+  private OrderedCallbacksBuilder() {
+  }
 
   static Step1 newBuilder() {
     return new Builder();
   }
 
-  @Contract(pure = true)
+  @Contract(
+      pure = true
+  )
   static ReactNode build() {
     return newBuilder().build();
   }
 
   interface Step1 {
-    @Contract(pure = true)
+    @Contract(
+        pure = true
+    )
     ReactNode build();
   }
 
   private static class Builder implements Step1 {
-    private final ReactElement _element = ReactElement.createViewElement(
-        React4j_PublicAccessViaInterfacePostMountOrUpdateModel.Factory.TYPE);
+    private final ReactElement _element = ReactElement.createViewElement( React4j_OrderedCallbacksView.Factory.TYPE );
 
     @Override
-    @Contract(pure = true)
+    @Contract(
+        pure = true
+    )
     public final ReactNode build() {
       return _element;
     }
