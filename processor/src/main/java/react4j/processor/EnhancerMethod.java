@@ -49,7 +49,8 @@ final class EnhancerMethod {
         final var type = enhancer.methodType(env.getTypeUtils(), helper);
         final var method = MethodSpec.methodBuilder(helper.getSimpleName().toString())
                 .addModifiers(Modifier.STATIC)
-                .returns(result)
+                .returns(Nullability.qualify(
+                        helper, helper.getReturnType(), type.getReturnType(), enhancer.getElement(), result))
                 .varargs(helper.isVarArgs());
         if (view.exportBuilder()) {
             method.addModifiers(Modifier.PUBLIC);
@@ -82,8 +83,12 @@ final class EnhancerMethod {
         for (final var variable : type.getTypeVariables()) {
             final var parameter = (TypeParameterElement) variable.asElement();
             final var upper = variable.getUpperBound();
-            final var bounds =
-                    upper instanceof IntersectionType intersection ? intersection.getBounds() : List.of(upper);
+            var bounds = upper instanceof IntersectionType intersection ? intersection.getBounds() : List.of(upper);
+            if (bounds.size() > parameter.getBounds().size()
+                    && "java.lang.Object"
+                            .equals(env.getTypeUtils().erasure(bounds.get(0)).toString())) {
+                bounds = bounds.subList(1, bounds.size());
+            }
             final var names = new TypeName[bounds.size()];
             for (var i = 0; i < bounds.size(); i++) {
                 names[i] = signature.typeName(parameter, parameter.getBounds().get(i), bounds.get(i));

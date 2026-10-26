@@ -31,6 +31,7 @@ public final class RuntimeBrowserTest {
         RuntimeCoverageExample.stateUpdates();
         var root = Browser.append("div");
         try {
+            InputEnhancerBrowserTest.run(root);
             ContextsTest.run(root);
             var element = RuntimeCoverageExample.element(component());
             check(

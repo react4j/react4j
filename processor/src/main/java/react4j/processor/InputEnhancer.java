@@ -32,11 +32,11 @@ import org.realityforge.proton.ProcessorException;
 
 final class InputEnhancer {
     private final TypeElement _element;
-    private final List<ExecutableElement> _helpers;
+    private final List<ExecutableElement> _helpers = new ArrayList<>();
+    private boolean _usesDeprecatedTypes;
 
-    private InputEnhancer(final TypeElement element, final List<ExecutableElement> helpers) {
+    private InputEnhancer(final TypeElement element) {
         _element = element;
-        _helpers = helpers;
     }
 
     static void parse(final ProcessingEnvironment env, final ViewDescriptor view, final InputDescriptor input) {
@@ -73,7 +73,10 @@ final class InputEnhancer {
                                 .toString())) {
             throw error(input, "must have exactly one unbounded result type parameter");
         }
-        final var enhancer = new InputEnhancer(element, new ArrayList<>());
+        final var enhancer = new InputEnhancer(element);
+        for (Element owner = element; owner instanceof TypeElement; owner = owner.getEnclosingElement()) {
+            enhancer._usesDeprecatedTypes |= env.getElementUtils().isDeprecated(owner);
+        }
         final var methods = ElementsUtil.getMethods(element, env.getElementUtils(), env.getTypeUtils()).stream()
                 .filter(m -> !m.getModifiers().contains(Modifier.STATIC)
                         && !m.getModifiers().contains(Modifier.PRIVATE))
@@ -112,13 +115,13 @@ final class InputEnhancer {
                 final var methodType = enhancer.methodType(env.getTypeUtils(), method);
                 enhancer.validateResult(env, input, method, methodType);
                 for (final var parameter : methodType.getParameterTypes()) {
-                    validateAccessibleType(env, view, input, parameter, new HashSet<>());
+                    enhancer.validateAccessibleType(env, view, input, parameter, new HashSet<>());
                 }
                 for (final var thrown : methodType.getThrownTypes()) {
-                    validateAccessibleType(env, view, input, thrown, new HashSet<>());
+                    enhancer.validateAccessibleType(env, view, input, thrown, new HashSet<>());
                 }
                 for (final var variable : methodType.getTypeVariables()) {
-                    validateAccessibleType(env, view, input, variable, new HashSet<>());
+                    enhancer.validateAccessibleType(env, view, input, variable, new HashSet<>());
                 }
                 enhancer._helpers.add(method);
             }
@@ -126,7 +129,7 @@ final class InputEnhancer {
         input.setEnhancer(enhancer);
     }
 
-    private static void validateAccessibleType(
+    private void validateAccessibleType(
             final ProcessingEnvironment env,
             final ViewDescriptor view,
             final InputDescriptor input,
@@ -136,6 +139,7 @@ final class InputEnhancer {
             for (Element owner = declared.asElement();
                     owner instanceof TypeElement;
                     owner = owner.getEnclosingElement()) {
+                _usesDeprecatedTypes |= env.getElementUtils().isDeprecated(owner);
                 if (owner.getModifiers().contains(Modifier.PRIVATE)
                         || (!owner.getModifiers().contains(Modifier.PUBLIC)
                                 && !env.getElementUtils()
@@ -191,6 +195,10 @@ final class InputEnhancer {
 
     TypeElement getElement() {
         return _element;
+    }
+
+    boolean usesDeprecatedTypes() {
+        return _usesDeprecatedTypes;
     }
 
     List<ExecutableElement> getHelpers() {
@@ -334,7 +342,9 @@ final class InputEnhancer {
         if (type instanceof TypeVariable variable) {
             return variable.asElement().equals(((TypeVariable) resultVariable()).asElement())
                     ? result.replaceAll("<.*>", "")
-                    : erasure(types, variable.getUpperBound(), result);
+                    : variable.getUpperBound() instanceof TypeVariable
+                            ? erasure(types, variable.getUpperBound(), result)
+                            : types.erasure(variable).toString();
         }
         return type instanceof ArrayType array
                 ? erasure(types, array.getComponentType(), result) + "[]"

@@ -361,6 +361,7 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
               default R owners(Outer<@Nullable String>.Inner<Integer> a, Plain.Inner<String> b) { return value("owners"); }
               default R previous(@Nullable R value) { return value("previous"); }
               default <T extends Number & Comparable<T>> R intersection(T value) { return value(value.toString()); }
+              default <T extends Comparable<T> & Runnable> R interfaces(T value) { return value(value.toString()); }
               default <T extends R> R resultBound(T value) { return value("result-bound"); }
             }
             """, "@Input(enhancer=Enhancer.class) abstract String value();", "Plain.Inner<String>");
@@ -371,6 +372,40 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
                 "@Input(enhancer=Enhancer.class) abstract @Nullable String value(); @Input(enhancer=Other.class)"
                         + " abstract @Nullable String other();",
                 "Enhancer<Step1>");
+    }
+
+    @Test
+    public void unmarkedHelperScope() throws Exception {
+        assertValid(
+                "public interface Enhancer<R> { R value(String v); @NullUnmarked default @NonNull R converted(Object"
+                        + " value) { return value(String.valueOf(value)); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value();",
+                "@NullUnmarked");
+    }
+
+    @Test
+    public void deprecatedEnhancer() throws Exception {
+        assertValid(
+                "@Deprecated public interface Enhancer<R> { R value(String v); default R preset() { return"
+                        + " value(\"x\"); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value();",
+                "Enhancer<ReactNode>");
+        assertValid(
+                "@Deprecated public static class Old {} public interface Enhancer<R> { R value(String v); default R"
+                        + " converted(Old value) { return value(\"old\"); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value();",
+                "Enhancer<ReactNode>");
+    }
+
+    @Test
+    public void interfaceIntersectionErasureConflict() throws Exception {
+        assertInvalid(
+                "public interface Enhancer<R> { R value(String v); default <T extends Comparable<T> & Runnable> R"
+                        + " converted(T value) { return value(\"x\"); } } public interface Other<R> { R other(int v);"
+                        + " default R converted(Comparable<?> value) { return other(1); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input(enhancer=Other.class) abstract int"
+                        + " other();",
+                "conflicts with another enhancer");
     }
 
     private void assertInvalid(final String declarations, final String inputs, final String expected) throws Exception {

@@ -87,7 +87,13 @@ final class BuilderGenerator {
                                 || type.asElement().toString().equals("java.util.HashSet")));
         final var suppression = SuppressWarningsUtil.maybeSuppressWarningsAnnotation(
                 concreteCollections ? "NonApiType" : null,
-                descriptor.builderAccessesDeprecatedElements() ? "deprecation" : null);
+                descriptor.builderAccessesDeprecatedElements()
+                                || descriptor.getInputs().stream().anyMatch(input -> {
+                                    final var enhancer = input.getEnhancer();
+                                    return null != enhancer && enhancer.usesDeprecatedTypes();
+                                })
+                        ? "deprecation"
+                        : null);
         if (suppression != null) {
             builder.addAnnotation(suppression);
         }
