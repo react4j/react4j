@@ -27,3 +27,4 @@ First-stage helpers are usable directly on the generated builder class with the 
 - Focused enhancer cases cover generic/name substitution, checked exceptions, reifiable and generic varargs, inherited/nested nullness, legal shared defaults and signature/type conflicts.
 - Shortcut parameter names are normalized because classfile inputs do not reliably retain source parameter names.
 - Review round 1: reserve generated/referenced type names when renaming helper variables and mirror concrete collection signatures under the existing checker policy. Strict source/precompiled goldens cover advancing, staying and terminal helpers.
+- Review round 2: include unused view-variable bounds in name reservation. AtomicInteger-bound source/precompiled goldens and the focused strict-checker regression pass; full gate passed.

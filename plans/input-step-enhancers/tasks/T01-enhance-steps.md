@@ -26,3 +26,4 @@ Consumers configure enhancer interfaces on method and constructor inputs and inv
 - `bazel test //processor:all_tests --test_output=errors`: all 8 targets passed, including 27 enhancer cases and source/precompiled strict goldens.
 - Renamed constructor input coverage exposed an existing name-based lookup bug; declaration-identity lookup fixes that accepted use case.
 - Review round 1: add declaration-erasure checks for result parameters, arrays, result-bounded method variables and inherited setters; legal overloads remain covered. Check every intersection bound for accessibility.
+- Review round 2: retain explicitly overridden ancestor erasures for both setters and default helpers. Real source/precompiled negative compilations verify input-attached diagnostics; full gate passed.

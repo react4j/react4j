@@ -5,13 +5,13 @@
 - Current frontier: none (all tasks complete)
 - Planning reviewer: `/root/planning_review` (`1/3` rounds; final confirmation unused); Findings: none. Checked complete scope, tasks, compiler and browser evidence. Residual risk: implementation tests for generic/nullness/J2CL interactions.
 - Plan checkpoint: automatic; accepted interview scope, explicit implementation/PR authority, and passing planning review establish the basis to proceed.
-- Implementation reviewer: `/root/implementation_review` (`1/5` rounds consumed; final confirmation unused). Round 1 reviewed the complete scope and reported three verified P2 findings; fixes await confirmation.
+- Implementation reviewer: `/root/implementation_review` (`2/5` rounds consumed; final confirmation unused). Round 1 reviewed the complete scope; round 2 confirmed the collection fix and found two residual signature variants. Fixes await confirmation.
 - Authority: final interview acceptance, followed by the explicit request to implement and raise a PR. Correction 3A excludes children migration.
 
 ## Full-scope validation
 
 - Gate: `tools/check.sh`
-- Evidence: pinned Bazel 9.3.1 `tools/check.sh` passed again after round 1 fixes. Processor coverage: 3419/3549 lines and 1734/1992 branches; all configured thresholds passed. Site and unsigned bundle validation passed (12 artifacts, 60 entries).
+- Evidence: pinned Bazel 9.3.1 `tools/check.sh` passed again after round 2 fixes. Processor coverage: 3441/3573 lines and 1751/2012 branches; all configured thresholds passed. Site and unsigned bundle validation passed (12 artifacts, 60 entries).
 
 ## Tasks
 
@@ -43,3 +43,6 @@
 - Disposition: reserve generated and signature type names before forwarding; validate declaration erasures as well as resolved signatures, including inherited setters; extend the existing concrete collection signature suppression to enhancers. Retain legal overload tests and source/precompiled goldens for all continuation types. The signature traversal also checks inaccessible intersection bounds.
 - These fixes preserve the accepted contracts and significant decisions. No canonical requirement or guide change is needed.
 - Validation: `tools/update_goldens.sh jspecify`, all 8 `//processor:all_tests` targets, `tools/check.sh`, domain link validation and `git diff --check` passed. Existing children goldens remain unchanged.
+- Round 2: reserve view type-parameter bounds even when absent from inputs; include overridden ancestor setter erasures. Both personally reproduced before fixing. A focused plain-javac probe confirmed the ancestor-erasure failure also affects default helpers, so the fix covers both peers.
+- Cause and prevention: effective-member resolution discarded declarations whose erasures still participate in javac name-clash checks. Collect every overridden declaration's erasure for setters and helpers; source/precompiled negative tests exercise both. Earlier inheritance cases did not combine explicit payload specialization with a cross-enhancer overload. For name hygiene, java.lang bounds hid the omitted view-bound traversal; an unused external AtomicInteger bound now exercises it.
+- Round 2 validation: focused enhancer tests and regenerated source/precompiled goldens passed. The final full gate passed on frozen code, including all processor suites. One prior coverage launch collided with the Bazel server's IPv6 port; process/socket inspection identified the owner, focused runtime coverage passed on retry, then the complete gate passed without code changes. Domain contracts remain unchanged.

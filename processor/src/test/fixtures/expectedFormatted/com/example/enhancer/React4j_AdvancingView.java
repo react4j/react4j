@@ -5,6 +5,7 @@ import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.processing.Generated;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
@@ -27,7 +28,7 @@ import react4j.internal.ViewConstructorFunction;
     sting = Feature.DISABLE,
     allowEmpty = true)
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_AdvancingView<T extends Number> extends AdvancingView<T> {
+abstract class React4j_AdvancingView<T extends AtomicInteger> extends AdvancingView<T> {
   private final react4j.internal.NativeView $$react4j$$_nativeView;
 
   React4j_AdvancingView(
@@ -106,7 +107,7 @@ abstract class React4j_AdvancingView<T extends Number> extends AdvancingView<T> 
     private Inputs() {}
   }
 
-  private static final class NativeView<T extends Number> extends react4j.internal.NativeView
+  private static final class NativeView<T extends AtomicInteger> extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
     private final React4j_AdvancingView<T> view;
 

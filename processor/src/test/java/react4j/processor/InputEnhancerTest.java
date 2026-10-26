@@ -191,8 +191,14 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
     }
 
     private void assertValid(final String declarations, final String inputs, final String expected) throws Exception {
+        assertValid(declarations, inputs, expected, "");
+    }
+
+    private void assertValid(
+            final String declarations, final String inputs, final String expected, final String typeParameters)
+            throws Exception {
         final var compilation = CompileTestUtil.assertCompilesWithoutWarnings(
-                List.of(source(declarations, inputs)), getOptions(), processors(), List.of());
+                List.of(source(declarations, inputs, typeParameters)), getOptions(), processors(), List.of());
         try {
             StrictGeneratedCode.check(compilation, getOptions());
             final var builder = Files.readString(compilation.sourceOutput().resolve("test/Case_ComponentBuilder.java"));
@@ -492,16 +498,97 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
             """, "@Input(enhancer=Enhancer.class) abstract String value();", "ArrayList<String>");
     }
 
+    @Test
+    public void helperVariablesDoNotShadowUnusedViewBounds() throws Exception {
+        assertValid(
+                "public interface Enhancer<R> { R value(String v); default <AtomicInteger> R shadow(AtomicInteger v) {"
+                        + " return value(\"x\"); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value();",
+                "AtomicInteger2",
+                "<T extends java.util.concurrent.atomic.AtomicInteger>");
+    }
+
+    @Test
+    public void overriddenDeclarationErasuresFromSourceAndCompiledContracts() throws Exception {
+        assertInvalidSourceAndCompiledContracts("""
+            public interface Base<R,V> { R other(V v); }
+            public interface Other<R> extends Base<R,String> { @Override R other(String v); }
+            public interface Enhancer<R> {
+              R value(String v);
+              default R other(Object v) { return value("x"); }
+            }
+            """, "conflicts with generated builder method");
+        assertInvalidSourceAndCompiledContracts("""
+            public interface Base<R,V> { default R converted(V v) { throw new IllegalStateException(); } }
+            public interface Enhancer<R> extends Base<R,String> {
+              R value(String v);
+              @Override default R converted(String v) { return value(v); }
+            }
+            public interface Other<R> {
+              R other(String v);
+              default R converted(Object v) { return other(v.toString()); }
+            }
+            """, "conflicts with another enhancer");
+    }
+
+    private void assertInvalidSourceAndCompiledContracts(final String declarations, final String expected)
+            throws Exception {
+        final var contractText = """
+            package test;
+            @org.jspecify.annotations.NullMarked
+            public final class Contracts {
+              %s
+            }
+            """.formatted(declarations);
+        final var contracts =
+                new SimpleJavaFileObject(URI.create("string:///test/Contracts.java"), JavaFileObject.Kind.SOURCE) {
+                    @Override
+                    public CharSequence getCharContent(final boolean ignoreEncodingErrors) {
+                        return contractText;
+                    }
+                };
+        final var view = source(
+                "",
+                "@Input(enhancer=Contracts.Enhancer.class) abstract String value();"
+                        + " @Input(enhancer=Contracts.Other.class) abstract String other();");
+        final var fromSource = CompileTestUtil.compile(List.of(contracts, view), getOptions(), processors(), List.of());
+        try {
+            assertEnhancerDiagnostic(fromSource, expected);
+        } finally {
+            cleanup(fromSource);
+        }
+        final var compiledContracts =
+                CompileTestUtil.assertCompilesWithoutWarnings(List.of(contracts), getOptions(), List.of(), List.of());
+        try {
+            final var fromCompiled = CompileTestUtil.compile(
+                    List.of(view),
+                    getOptions(),
+                    processors(),
+                    buildClasspath(compiledContracts.classOutput().toFile()));
+            try {
+                assertEnhancerDiagnostic(fromCompiled, expected);
+            } finally {
+                cleanup(fromCompiled);
+            }
+        } finally {
+            cleanup(compiledContracts);
+        }
+    }
+
     private void assertInvalid(final String declarations, final String inputs, final String expected) throws Exception {
         final var compilation =
                 CompileTestUtil.compile(List.of(source(declarations, inputs)), getOptions(), processors(), List.of());
         try {
-            assertFalse(compilation.success());
-            final var messages = CompileTestUtil.asMessage(compilation.diagnostics());
-            assertTrue(messages.contains("@Input enhancer for") && messages.contains(expected), messages);
+            assertEnhancerDiagnostic(compilation, expected);
         } finally {
             cleanup(compilation);
         }
+    }
+
+    private static void assertEnhancerDiagnostic(final Compilation compilation, final String expected) {
+        assertFalse(compilation.success());
+        final var messages = CompileTestUtil.asMessage(compilation.diagnostics());
+        assertTrue(messages.contains("@Input enhancer for") && messages.contains(expected), messages);
     }
 
     private static void cleanup(final Compilation compilation) throws IOException {

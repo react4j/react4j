@@ -7,7 +7,7 @@ import react4j.annotations.View;
 
 @NullMarked
 @View(type=View.Type.STATEFUL, exportBuilder=true)
-abstract class AdvancingView<T extends Number>
+abstract class AdvancingView<T extends java.util.concurrent.atomic.AtomicInteger>
 {
   AdvancingView(@Input(name="count", enhancer=Enhancers.Count.class) int initialCount) {}
 

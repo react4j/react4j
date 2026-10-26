@@ -7,12 +7,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -227,6 +226,29 @@ final class InputEnhancer {
 
     private record Helper(InputEnhancer enhancer, ExecutableElement method, String result) {}
 
+    private Set<String> declarationSignatures(final ProcessingEnvironment env, final ExecutableElement method) {
+        final var signatures = new LinkedHashSet<String>();
+        collectDeclarationSignatures(env, _element, method, signatures);
+        return signatures;
+    }
+
+    // An override retains its ancestors' erasures for javac's name clash rules.
+    private void collectDeclarationSignatures(
+            final ProcessingEnvironment env,
+            final TypeElement type,
+            final ExecutableElement method,
+            final Set<String> signatures) {
+        for (final var member : type.getEnclosedElements()) {
+            if (member instanceof ExecutableElement candidate
+                    && (method.equals(candidate) || env.getElementUtils().overrides(method, candidate, _element))) {
+                signatures.add(declarationSignature(env.getTypeUtils(), candidate));
+            }
+        }
+        for (final var parent : type.getInterfaces()) {
+            collectDeclarationSignatures(env, (TypeElement) ((DeclaredType) parent).asElement(), method, signatures);
+        }
+    }
+
     static void validateBuilder(
             final ProcessingEnvironment env, final ViewDescriptor view, final BuilderDescriptor builder) {
         final var generated = new HashMap<String, String>();
@@ -235,7 +257,9 @@ final class InputEnhancer {
         for (final var input : view.getInputs()) {
             final var enhancer = input.getEnhancer();
             if (null != enhancer) {
-                generated.put(declarationSignature(env.getTypeUtils(), enhancer._setter), input.getName());
+                for (final var signature : enhancer.declarationSignatures(env, enhancer._setter)) {
+                    generated.put(signature, input.getName());
+                }
             }
             if (input.isFromTreeContext()) {
                 generated.put(
@@ -282,21 +306,30 @@ final class InputEnhancer {
                         env.getTypeUtils(), (DeclaredType) enhancer._element.asType(), result, parents, input);
                 for (final var method : enhancer._helpers) {
                     final var signature = enhancer.signature(env.getTypeUtils(), method, result);
-                    final var erasedSignature = declarationSignature(env.getTypeUtils(), method);
-                    final var generatedSignature = generated.containsKey(signature) ? signature : erasedSignature;
-                    if (generated.containsKey(generatedSignature)) {
-                        throw error(
-                                input,
-                                "helper '" + generatedSignature + "' conflicts with generated builder method '"
-                                        + generated.get(generatedSignature) + "'");
+                    final var erasedSignatures = enhancer.declarationSignatures(env, method);
+                    final var signatures = new LinkedHashSet<>(erasedSignatures);
+                    signatures.add(signature);
+                    for (final var generatedSignature : signatures) {
+                        if (generated.containsKey(generatedSignature)) {
+                            throw error(
+                                    input,
+                                    "helper '" + generatedSignature + "' conflicts with generated builder method '"
+                                            + generated.get(generatedSignature) + "'");
+                        }
                     }
                     final var current = new Helper(enhancer, method, result);
+                    final var previousHelpers = new HashSet<Helper>();
                     final var resolvedPrevious = helpers.putIfAbsent(signature, current);
-                    final var erasedPrevious = erasedHelpers.putIfAbsent(erasedSignature, current);
-                    for (final var previous : Stream.of(resolvedPrevious, erasedPrevious)
-                            .filter(Objects::nonNull)
-                            .distinct()
-                            .toList()) {
+                    if (null != resolvedPrevious) {
+                        previousHelpers.add(resolvedPrevious);
+                    }
+                    for (final var erasedSignature : erasedSignatures) {
+                        final var erasedPrevious = erasedHelpers.putIfAbsent(erasedSignature, current);
+                        if (null != erasedPrevious) {
+                            previousHelpers.add(erasedPrevious);
+                        }
+                    }
+                    for (final var previous : previousHelpers) {
                         final var overrides =
                                 env.getElementUtils().overrides(method, previous.method(), enhancer._element);
                         final var overridden = env.getElementUtils()
@@ -309,7 +342,9 @@ final class InputEnhancer {
                         }
                         if (overrides) {
                             helpers.put(signature, current);
-                            erasedHelpers.put(erasedSignature, current);
+                            for (final var erasedSignature : erasedSignatures) {
+                                erasedHelpers.put(erasedSignature, current);
+                            }
                         }
                     }
                 }

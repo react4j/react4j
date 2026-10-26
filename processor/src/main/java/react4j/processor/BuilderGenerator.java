@@ -185,6 +185,7 @@ final class BuilderGenerator {
                 descriptor.getEnhancedClassName())) {
             reservedNames.addAll(type.simpleNames());
         }
+        EnhancerMethod.reserveTypeNames(descriptor.getDeclaredType(), reservedNames);
         for (final var input : descriptor.getInputs()) {
             EnhancerMethod.reserveTypeNames(input.getType(), reservedNames);
             final var enhancer = input.getEnhancer();

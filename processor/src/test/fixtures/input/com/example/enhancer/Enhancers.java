@@ -43,7 +43,7 @@ public final class Enhancers
       return count(value.intValue());
     }
 
-    default <Step2, Builder, AdvancingBuilder> R named(Step2 first, Builder second, AdvancingBuilder third)
+    default <Step2, Builder, AdvancingBuilder, AtomicInteger> R named(Step2 first, Builder second, AdvancingBuilder third, AtomicInteger fourth)
     {
       return count(1);
     }
