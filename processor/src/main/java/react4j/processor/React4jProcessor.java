@@ -224,7 +224,6 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         determineDefaultInputsMethods(descriptor, methods);
         determineDefaultInputsFields(descriptor);
         descriptor.setPreUpdateMethods(determineLifecycleMethods(typeElement, Constants.PRE_UPDATE_CLASSNAME));
-        determinePostMountOrUpdateMethod(typeElement, descriptor, methods);
         descriptor.setPostUpdateMethods(determineLifecycleMethods(typeElement, Constants.POST_UPDATE_CLASSNAME));
         descriptor.setPostMountMethods(determineLifecycleMethods(typeElement, Constants.POST_MOUNT_CLASSNAME));
         determineOnErrorMethod(typeElement, descriptor, methods);
@@ -1257,7 +1256,6 @@ public final class React4jProcessor extends AbstractStandardProcessor {
             } else if (!descriptor.hasConstructor()
                     && !descriptor.hasPostConstruct()
                     && descriptor.getPostMountMethods().isEmpty()
-                    && null == descriptor.getPostRender()
                     && descriptor.getPreUpdateMethods().isEmpty()
                     && descriptor.getPostUpdateMethods().isEmpty()
                     && descriptor.getPreRenderDescriptors().isEmpty()
@@ -1280,12 +1278,14 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         final var elements = processingEnv.getElementUtils();
         final var effectiveMethods = ElementFilter.methodsIn(elements.getAllMembers(typeElement));
         final var callbacks = new LinkedHashSet<ExecutableElement>();
+        // Registration order belongs to the first annotation; participation belongs to the effective override.
         for (final var declaration : declarations) {
             if (AnnotationsUtil.hasAnnotationOfType(declaration, annotationName)) {
                 final var effective = effectiveMethods.stream()
                         .filter(method -> method.equals(declaration)
                                 || elements.overrides(method, declaration, typeElement)
                                 || implementsLifecycleMethod(typeElement, method, declaration))
+                        // javac may retain an interface method beside its inherited class implementation.
                         .min(Comparator.comparing(method -> ElementKind.INTERFACE
                                 == Objects.requireNonNull(method.getEnclosingElement())
                                         .getKind()))
@@ -1326,17 +1326,6 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                         (TypeElement) ((DeclaredType) interfaceType).asElement(), visited, declarations);
             }
             declarations.addAll(ElementFilter.methodsIn(typeElement.getEnclosedElements()));
-        }
-    }
-
-    private void determinePostMountOrUpdateMethod(
-            final TypeElement typeElement, final ViewDescriptor descriptor, final List<ExecutableElement> methods) {
-        for (final ExecutableElement method : methods) {
-            if (AnnotationsUtil.hasAnnotationOfType(method, Constants.POST_MOUNT_OR_UPDATE_CLASSNAME)) {
-                MemberChecks.mustBeLifecycleHook(
-                        typeElement, Constants.VIEW_CLASSNAME, Constants.POST_MOUNT_OR_UPDATE_CLASSNAME, method);
-                descriptor.setPostRender(method);
-            }
         }
     }
 

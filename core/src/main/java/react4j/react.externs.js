@@ -71,8 +71,11 @@ React.Component.prototype.componentWillUnmount = function() {};
 React.Component.prototype.componentDidCatch = function() {};
 
 /**
+ * @param {Object} prevProps
+ * @param {Object} prevState
+ * @return {*}
  */
-React.Component.prototype.getSnapshotBeforeUpdate = function() {};
+React.Component.prototype.getSnapshotBeforeUpdate = function(prevProps, prevState) {};
 
 /**
  * @return {React.Component}

@@ -6,16 +6,21 @@ import java.lang.annotation.Target;
 
 /**
  * Identifies a method that is called after a view is mounted or attached to the DOM.
- * There must only be one method annotated with this annotation in a view.
+ * There may be zero or more methods annotated with this annotation in a view.
  * This method is invoked in the "commit" phase using reacts <code>componentDidMount()</code> lifecycle method.
+ *
+ * <p>The same method may participate in several lifecycle phases by carrying their annotations.
+ * Callbacks run in declaration order, with superclasses before subclasses. Each type's interfaces are
+ * visited before its declarations, in written order with interface ancestors first and shared ancestors
+ * visited once. The first ancestor annotation for each phase reserves its position. Overrides retain
+ * that position but participate only in phases annotated on the overriding declaration; an unannotated
+ * override disables the callback. A newly added phase takes the overriding declaration's position.</p>
  *
  * <p>The method must also conform to the following constraints:</p>
  * <ul>
- * <li>Must not be annotated with any other react4j annotation</li>
  * <li>Must have 0 parameters</li>
  * <li>Must not return a value</li>
  * <li>Must not be private</li>
- * <li>Must not be public</li>
  * <li>Must not be static</li>
  * <li>Must not be abstract</li>
  * <li>Must not throw exceptions</li>

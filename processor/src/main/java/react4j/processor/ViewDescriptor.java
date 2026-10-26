@@ -39,9 +39,6 @@ final class ViewDescriptor {
 
     private List<ExecutableElement> _preUpdateMethods = List.of();
 
-    @Nullable
-    private ExecutableElement _postRender;
-
     private List<ExecutableElement> _postUpdateMethods = List.of();
 
     private List<ExecutableElement> _postMountMethods = List.of();
@@ -413,21 +410,6 @@ final class ViewDescriptor {
         _render = render;
     }
 
-    @Nullable
-    ExecutableElement getPostRender() {
-        return _postRender;
-    }
-
-    void setPostRender(final ExecutableElement postRender) throws ProcessorException {
-        if (null != _postRender) {
-            throw new ProcessorException(
-                    "@PostMountOrUpdate target duplicates existing method named " + _postRender.getSimpleName(),
-                    postRender);
-        } else {
-            _postRender = postRender;
-        }
-    }
-
     List<ExecutableElement> getPostUpdateMethods() {
         return _postUpdateMethods;
     }
@@ -515,7 +497,7 @@ final class ViewDescriptor {
     }
 
     boolean generateComponentDidMountInLiteLifecycle() {
-        return !_postMountMethods.isEmpty() || null != _postRender;
+        return !_postMountMethods.isEmpty();
     }
 
     boolean hasPreUpdateOnInputChange() {
@@ -534,7 +516,7 @@ final class ViewDescriptor {
     }
 
     boolean generateComponentDidUpdateInLiteLifecycle() {
-        return hasPostUpdateOnInputChange() || !_postUpdateMethods.isEmpty() || null != _postRender;
+        return hasPostUpdateOnInputChange() || !_postUpdateMethods.isEmpty();
     }
 
     boolean shouldValidateInputs() {
@@ -551,7 +533,6 @@ final class ViewDescriptor {
             _viewAccessesDeprecatedElements = isDeprecated(_element)
                     || isDeprecated(_constructor)
                     || _preUpdateMethods.stream().anyMatch(this::isDeprecated)
-                    || isDeprecated(_postRender)
                     || _postMountMethods.stream().anyMatch(this::isDeprecated)
                     || _postUpdateMethods.stream().anyMatch(this::isDeprecated)
                     || isDeprecated(_onError)

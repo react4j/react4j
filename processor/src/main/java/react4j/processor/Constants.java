@@ -34,8 +34,6 @@ final class Constants {
 
     static final String POST_MOUNT_CLASSNAME = "react4j.annotations.PostMount";
 
-    static final String POST_MOUNT_OR_UPDATE_CLASSNAME = "react4j.annotations.PostMountOrUpdate";
-
     static final String POST_UPDATE_CLASSNAME = "react4j.annotations.PostUpdate";
 
     static final String PRE_UPDATE_CLASSNAME = "react4j.annotations.PreUpdate";

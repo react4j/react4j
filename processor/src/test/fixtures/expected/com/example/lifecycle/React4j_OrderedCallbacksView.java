@@ -51,6 +51,7 @@ abstract class React4j_OrderedCallbacksView extends OrderedCallbacksView {
     restored();
     middle();
     root();
+    extendedPhase();
     left();
     right();
     childFirst();
@@ -66,6 +67,7 @@ abstract class React4j_OrderedCallbacksView extends OrderedCallbacksView {
     middle();
     root();
     left();
+    extendedPhase();
     right();
     childFirst();
     phaseAdded();
@@ -81,6 +83,7 @@ abstract class React4j_OrderedCallbacksView extends OrderedCallbacksView {
     middle();
     root();
     left();
+    extendedPhase();
     right();
     childFirst();
     phaseAdded();

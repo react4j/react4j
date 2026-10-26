@@ -533,10 +533,6 @@ final class ViewGenerator {
 
     private static MethodSpec.Builder buildComponentDidMount(final ViewDescriptor descriptor) {
         final var method = MethodSpec.methodBuilder(COMPONENT_DID_MOUNT_METHOD).addModifiers(Modifier.PRIVATE);
-        final var postRender = descriptor.getPostRender();
-        if (null != postRender) {
-            method.addStatement("$N()", postRender.getSimpleName().toString());
-        }
         for (final var postMount : descriptor.getPostMountMethods()) {
             method.addStatement("$N()", postMount.getSimpleName().toString());
         }
@@ -678,10 +674,6 @@ final class ViewGenerator {
             buildOnInputChangeInvocations(block, descriptor.getPostUpdateOnInputChangeDescriptors());
             block.endControlFlow();
             method.addCode(block.build());
-        }
-        final var postRender = descriptor.getPostRender();
-        if (null != postRender) {
-            method.addStatement("$N()", postRender.getSimpleName().toString());
         }
         for (final var postUpdate : descriptor.getPostUpdateMethods()) {
             method.addStatement("$N()", postUpdate.getSimpleName().toString());

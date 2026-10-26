@@ -1,6 +1,5 @@
-package com.example.post_mount_or_update;
+package com.example.render;
 
-import arez.Disposable;
 import arez.annotations.ArezComponent;
 import arez.annotations.Feature;
 import arez.annotations.SuppressArezWarnings;
@@ -19,66 +18,56 @@ import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
 
 @NullMarked
-@SuppressArezWarnings({
-    "Arez:UnnecessaryDefault",
-    "Arez:UnnecessaryAllowEmpty"
-})
+@SuppressArezWarnings({"Arez:UnnecessaryDefault", "Arez:UnnecessaryAllowEmpty"})
 @ArezComponent(
-    name = "com_example_post_mount_or_update_PostMountAndPostMountOrUpdateModel",
+    name = "com_example_render_NoRenderWithSharedCallbackView",
     disposeNotifier = Feature.DISABLE,
     defaultSkipIfDisposed = Feature.ENABLE,
     sting = Feature.DISABLE,
-    allowEmpty = true
-)
+    allowEmpty = true)
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_PostMountAndPostMountOrUpdateModel extends PostMountAndPostMountOrUpdateModel {
-  React4j_PostMountAndPostMountOrUpdateModel(
-      final react4j.internal.NativeView $$react4j$$_nativeView) {
-  }
+abstract class React4j_NoRenderWithSharedCallbackView extends NoRenderWithSharedCallbackView {
+  React4j_NoRenderWithSharedCallbackView(
+      final react4j.internal.NativeView $$react4j$$_nativeView) {}
 
   private static ViewConstructorFunction getConstructorFunction() {
     final ViewConstructorFunction viewConstructor = NativeView::new;
-    if ( React.enableViewNames() ) {
-      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( viewConstructor ).set( "displayName", "PostMountAndPostMountOrUpdateModel" );
+    if (React.enableViewNames()) {
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "NoRenderWithSharedCallback");
     }
     return viewConstructor;
   }
 
   private void $$react4j$$_componentDidMount() {
-    postMountOrUpdate();
-    postMount();
+    afterCommit();
   }
 
   private void $$react4j$$_componentDidUpdate() {
-    postMountOrUpdate();
+    afterCommit();
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_PostMountAndPostMountOrUpdateModel) this).dispose();
-  }
-
-  @Nullable ReactNode $$react4j$$_render() {
-    assert Disposable.isNotDisposed( this );
-    return render();
+    ((Arez_React4j_NoRenderWithSharedCallbackView) this).dispose();
   }
 
   static final class Factory {
     static final ViewConstructorFunction TYPE = getConstructorFunction();
 
-    private Factory() {
-    }
+    private Factory() {}
   }
 
-  private static final class NativeView extends react4j.internal.NativeView implements OnComponentDidMount,
-      OnComponentDidUpdate,
-      OnShouldComponentUpdate,
-      OnComponentWillUnmount {
-    private final React4j_PostMountAndPostMountOrUpdateModel view;
+  private static final class NativeView extends react4j.internal.NativeView
+      implements OnComponentDidMount,
+          OnComponentDidUpdate,
+          OnShouldComponentUpdate,
+          OnComponentWillUnmount {
+    private final React4j_NoRenderWithSharedCallbackView view;
 
     @JsConstructor
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
-      super( inputs );
-      view = new Arez_React4j_PostMountAndPostMountOrUpdateModel( this );
+      super(inputs);
+      view = new Arez_React4j_NoRenderWithSharedCallbackView(this);
     }
 
     @Override
@@ -103,7 +92,7 @@ abstract class React4j_PostMountAndPostMountOrUpdateModel extends PostMountAndPo
 
     @Override
     public final @Nullable ReactNode render() {
-      return view.$$react4j$$_render();
+      return null;
     }
   }
 }

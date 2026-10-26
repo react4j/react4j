@@ -12,6 +12,8 @@ Views need several independently authored lifecycle callbacks, including callbac
 
 ## Requirements
 
+Canonical contract: [lifecycle callbacks](../../docs/specs/lifecycle-callbacks.md). The registration/override choice follows [the adopted ordering decision](../../docs/adr/0007-preserve-lifecycle-registration-order.md).
+
 - R1: Permit zero or more callbacks for each of `PostMount`, `PostUpdate`, and `PreUpdate`. A dual mount/update callback runs once in each applicable phase.
 - R2: Participation follows the effective Java declaration's annotations. An unannotated override disables inherited participation; a reannotated override runs once using virtual dispatch.
 - R3: The first ancestor annotation for each phase reserves that callback's position. Later overrides retain that position, including removal and subsequent reintroduction. Newly introduced phase registrations append at their declaring type's position.

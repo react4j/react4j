@@ -49,12 +49,24 @@ public final class CallbackAncestors {
     default void shadowed() {}
 
     @PostMount @PostUpdate @PreUpdate
+    default void disabledDefault() {}
+
+    @PostMount
+    default void extendedPhase() {}
+
+    @PostMount @PostUpdate @PreUpdate
     void abstractHook();
   }
 
   public interface Left extends Root {
     @PostMount @PostUpdate @PreUpdate
     default void left() {}
+
+    @Override
+    default void disabledDefault() {}
+
+    @Override @PostMount @PostUpdate @PreUpdate
+    default void extendedPhase() {}
   }
 
   public interface Right extends Root {
