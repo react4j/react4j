@@ -1,8 +1,8 @@
 # Task map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: planned
-- Current frontier: T01
+- Status: implementing
+- Current frontier: T02
 - Planning reviewer: terminal_children_plan_review (1/3 rounds; final confirmation unused); Findings: none. Complete plan and consequential repository claims checked.
 - Plan checkpoint: automatic; accepted scope and latest implementation/PR authority recovered, independent planning review passed.
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -16,7 +16,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Terminal child setters](T01-terminal-setters.md) | pending | None |
+| T01 | [Terminal child setters](T01-terminal-setters.md) | complete | None |
 | T02 | [Default children enhancer](T02-default-enhancer.md) | pending | T01 |
 
 ## Sequencing notes

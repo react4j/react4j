@@ -48,6 +48,24 @@ public final class InputEnhancerBrowserTest {
         }
         check(caught, "Static helper preserves checked exceptions");
         check(4 == _helperCalls, "Helpers preserve user side effects");
+        RuntimeBrowserTest.render(
+                InputEnhancerBrowserTest_OptionalChildBuilder.label("scalar")
+                        .extra("tail")
+                        .child(ReactNode.of("value")),
+                root);
+        equal("scalar:tail:value", root.getTextContent());
+        RuntimeBrowserTest.render(
+                InputEnhancerBrowserTest_OptionalChildrenBuilder.label("array")
+                        .extra("tail")
+                        .children(ReactNode.of("first"), ReactNode.of("second")),
+                root);
+        equal("array:tail:firstsecond", root.getTextContent());
+        RuntimeBrowserTest.render(
+                InputEnhancerBrowserTest_OptionalChildrenBuilder.label("omitted")
+                        .extra("tail")
+                        .build(),
+                root);
+        equal("omitted:tail:", root.getTextContent());
         RuntimeBrowserTest.render(null, root);
     }
 
@@ -65,6 +83,45 @@ public final class InputEnhancerBrowserTest {
                 throw new ConversionException("negative");
             }
             return count(value.intValue());
+        }
+    }
+
+    @View(type = View.Type.STATEFUL)
+    abstract static class OptionalChild {
+        private final @Nullable ReactNode _child;
+
+        OptionalChild(@Input final @Nullable ReactNode child) {
+            _child = child;
+        }
+
+        @Input
+        abstract @Nullable String label();
+
+        @Input
+        abstract @Nullable String extra();
+
+        @Render
+        ReactNode render() {
+            return ReactNode.of(ReactNode.of(label() + ":" + extra() + ":"), _child);
+        }
+    }
+
+    @View(type = View.Type.STATEFUL)
+    abstract static class OptionalChildren {
+        @Input
+        abstract ReactNode @Nullable [] children();
+
+        @Input
+        abstract @Nullable String label();
+
+        @Input
+        abstract @Nullable String extra();
+
+        @Render
+        ReactNode render() {
+            final var values = children();
+            return ReactNode.of(
+                    ReactNode.of(label() + ":" + extra() + ":"), null == values ? null : ReactNode.of(values));
         }
     }
 

@@ -6,6 +6,7 @@ import arez.processor.ArezProcessor;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.processing.Processor;
@@ -192,6 +193,38 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
 
     private void assertValid(final String declarations, final String inputs, final String expected) throws Exception {
         assertValid(declarations, inputs, expected, "");
+    }
+
+    @DataProvider(name = "childInputs")
+    public Object[][] childInputs() {
+        final var cases = new ArrayList<Object[]>();
+        for (final var plural : List.of(false, true)) {
+            for (final var constructor : List.of(false, true)) {
+                for (final var optional : List.of(false, true)) {
+                    final var name = plural ? "children" : "child";
+                    final var type = plural ? "ReactNode @Nullable []" : "@Nullable ReactNode";
+                    final var annotation = optional ? "@Input" : "@Input(require=Feature.ENABLE)";
+                    final var input = constructor
+                            ? "Component(" + annotation + " " + type + " " + name + ") {}"
+                            : annotation + " abstract " + type + " " + name + "();";
+                    cases.add(new Object[] {name, input, optional});
+                }
+            }
+        }
+        return cases.toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "childInputs")
+    public void childInputsAlwaysTerminate(final String name, final String input, final boolean optional)
+            throws Exception {
+        final var omitted = optional
+                ? "static ReactNode omitted() { return Case_ComponentBuilder.title(\"t\").extra(\"e\").build(); }"
+                : "";
+        assertValid(
+                "static ReactNode call() { return Case_ComponentBuilder.title(\"t\").extra(\"e\")." + name
+                        + "(ReactNode.of(\"child\")); } " + omitted,
+                input + " @Input abstract @Nullable String title(); @Input abstract @Nullable String extra();",
+                "ReactNode " + name + "(");
     }
 
     private void assertValid(

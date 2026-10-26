@@ -43,7 +43,7 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
   @Contract(
       pure = true
   )
-  static Step1 children(final ReactNode @Nullable ... children) {
+  static ReactNode children(final ReactNode @Nullable ... children) {
     return newBuilder().children( children );
   }
 
@@ -73,7 +73,7 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
     @Contract(
         pure = true
     )
-    Step1 children(ReactNode @Nullable ... children);
+    ReactNode children(ReactNode @Nullable ... children);
 
     @Contract(
         pure = true
@@ -121,9 +121,9 @@ final class RequiredChildrenWithOptionalAndRequiredBuilder {
     @Contract(
         pure = true
     )
-    public final Step1 children(final ReactNode @Nullable ... children) {
+    public final ReactNode children(final ReactNode @Nullable ... children) {
       _element.input( React4j_RequiredChildrenWithOptionalAndRequired.Inputs.children, children );
-      return this;
+      return build();
     }
 
     @Override

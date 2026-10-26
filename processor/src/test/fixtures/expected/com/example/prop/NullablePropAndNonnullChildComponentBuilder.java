@@ -40,7 +40,7 @@ final class NullablePropAndNonnullChildComponentBuilder {
     @Contract(
         pure = true
     )
-    Step2 child(@Nullable ReactNode child);
+    ReactNode child(@Nullable ReactNode child);
 
     @Contract(
         pure = true
@@ -73,9 +73,9 @@ final class NullablePropAndNonnullChildComponentBuilder {
     @Contract(
         pure = true
     )
-    public final Step2 child(final @Nullable ReactNode child) {
+    public final ReactNode child(final @Nullable ReactNode child) {
       _element.input( React4j_NullablePropAndNonnullChildComponent.Inputs.child, ReactNode.of( child ) );
-      return this;
+      return build();
     }
 
     @Override

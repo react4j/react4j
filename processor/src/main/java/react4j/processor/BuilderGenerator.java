@@ -837,7 +837,10 @@ final class BuilderGenerator {
                             input, hasSingleOptional ? StepMethodType.ADVANCE : StepMethodType.STAY);
                 } else {
                     optionalInputStep.addMethod(
-                            input, hasSingleOptional ? StepMethodType.TERMINATE : StepMethodType.STAY);
+                            input,
+                            input.isSpecialChildrenInput() || hasSingleOptional
+                                    ? StepMethodType.TERMINATE
+                                    : StepMethodType.STAY);
                 }
             } else {
                 if (null != optionalInputStep) {

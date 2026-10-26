@@ -38,7 +38,7 @@ final class RequiredChildrenWithManyRequiredBuilder {
   }
 
   @Contract(pure = true)
-  static Step1 children(final ReactNode @Nullable ... children) {
+  static ReactNode children(final ReactNode @Nullable ... children) {
     return newBuilder().children(children);
   }
 
@@ -61,7 +61,7 @@ final class RequiredChildrenWithManyRequiredBuilder {
     ReactNode children(Stream<? extends ReactNode> children);
 
     @Contract(pure = true)
-    Step1 children(ReactNode @Nullable ... children);
+    ReactNode children(ReactNode @Nullable ... children);
 
     @Contract(pure = true)
     ReactNode build();
@@ -104,9 +104,9 @@ final class RequiredChildrenWithManyRequiredBuilder {
 
     @Override
     @Contract(pure = true)
-    public final Step1 children(final ReactNode @Nullable ... children) {
+    public final ReactNode children(final ReactNode @Nullable ... children) {
       _element.input(React4j_RequiredChildrenWithManyRequired.Inputs.children, children);
-      return this;
+      return build();
     }
 
     @Override

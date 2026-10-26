@@ -27,7 +27,7 @@ final class MultiPropComponent3Builder {
   }
 
   @Contract(pure = true)
-  static Step1 child(final @Nullable ReactNode child) {
+  static ReactNode child(final @Nullable ReactNode child) {
     return newBuilder().child(child);
   }
 
@@ -44,7 +44,7 @@ final class MultiPropComponent3Builder {
     Step1 myProp2(@Nullable String myProp2);
 
     @Contract(pure = true)
-    Step1 child(@Nullable ReactNode child);
+    ReactNode child(@Nullable ReactNode child);
 
     @Contract(pure = true)
     ReactNode build();
@@ -70,9 +70,9 @@ final class MultiPropComponent3Builder {
 
     @Override
     @Contract(pure = true)
-    public final Step1 child(final @Nullable ReactNode child) {
+    public final ReactNode child(final @Nullable ReactNode child) {
       _element.input(React4j_MultiPropComponent3.Inputs.child, ReactNode.of(child));
-      return this;
+      return build();
     }
 
     @Override
