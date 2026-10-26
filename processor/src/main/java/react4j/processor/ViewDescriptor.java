@@ -37,17 +37,14 @@ final class ViewDescriptor {
     @Nullable
     private ExecutableElement _render;
 
-    @Nullable
-    private ExecutableElement _preUpdate;
+    private List<ExecutableElement> _preUpdateMethods = List.of();
 
     @Nullable
     private ExecutableElement _postRender;
 
-    @Nullable
-    private ExecutableElement _postUpdate;
+    private List<ExecutableElement> _postUpdateMethods = List.of();
 
-    @Nullable
-    private ExecutableElement _postMount;
+    private List<ExecutableElement> _postMountMethods = List.of();
 
     @Nullable
     private ExecutableElement _onError;
@@ -381,18 +378,12 @@ final class ViewDescriptor {
         return getInputs().stream().anyMatch(InputDescriptor::isObservable);
     }
 
-    @Nullable
-    ExecutableElement getPreUpdate() {
-        return _preUpdate;
+    List<ExecutableElement> getPreUpdateMethods() {
+        return _preUpdateMethods;
     }
 
-    void setPreUpdate(final ExecutableElement preUpdate) throws ProcessorException {
-        if (null != _preUpdate) {
-            throw new ProcessorException(
-                    "@PreUpdate target duplicates existing method named " + _preUpdate.getSimpleName(), preUpdate);
-        } else {
-            _preUpdate = preUpdate;
-        }
+    void setPreUpdateMethods(final List<ExecutableElement> methods) {
+        _preUpdateMethods = methods;
     }
 
     boolean shouldGenerateRender() {
@@ -437,32 +428,20 @@ final class ViewDescriptor {
         }
     }
 
-    @Nullable
-    ExecutableElement getPostUpdate() {
-        return _postUpdate;
+    List<ExecutableElement> getPostUpdateMethods() {
+        return _postUpdateMethods;
     }
 
-    void setPostUpdate(final ExecutableElement postUpdate) throws ProcessorException {
-        if (null != _postUpdate) {
-            throw new ProcessorException(
-                    "@PostUpdate target duplicates existing method named " + _postUpdate.getSimpleName(), postUpdate);
-        } else {
-            _postUpdate = postUpdate;
-        }
+    void setPostUpdateMethods(final List<ExecutableElement> methods) {
+        _postUpdateMethods = methods;
     }
 
-    @Nullable
-    ExecutableElement getPostMount() {
-        return _postMount;
+    List<ExecutableElement> getPostMountMethods() {
+        return _postMountMethods;
     }
 
-    void setPostMount(final ExecutableElement postMount) throws ProcessorException {
-        if (null != _postMount) {
-            throw new ProcessorException(
-                    "@PostMount target duplicates existing method named " + _postMount.getSimpleName(), postMount);
-        } else {
-            _postMount = postMount;
-        }
+    void setPostMountMethods(final List<ExecutableElement> methods) {
+        _postMountMethods = methods;
     }
 
     @Nullable
@@ -525,7 +504,7 @@ final class ViewDescriptor {
     }
 
     boolean generateComponentPreUpdate() {
-        return hasPreUpdateOnInputChange() || null != _preUpdate;
+        return hasPreUpdateOnInputChange() || !_preUpdateMethods.isEmpty();
     }
 
     boolean generateComponentDidMount() {
@@ -536,7 +515,7 @@ final class ViewDescriptor {
     }
 
     boolean generateComponentDidMountInLiteLifecycle() {
-        return null != _postMount || null != _postRender;
+        return !_postMountMethods.isEmpty() || null != _postRender;
     }
 
     boolean hasPreUpdateOnInputChange() {
@@ -555,7 +534,7 @@ final class ViewDescriptor {
     }
 
     boolean generateComponentDidUpdateInLiteLifecycle() {
-        return hasPostUpdateOnInputChange() || null != _postUpdate || null != _postRender;
+        return hasPostUpdateOnInputChange() || !_postUpdateMethods.isEmpty() || null != _postRender;
     }
 
     boolean shouldValidateInputs() {
@@ -571,10 +550,10 @@ final class ViewDescriptor {
         if (null == _viewAccessesDeprecatedElements) {
             _viewAccessesDeprecatedElements = isDeprecated(_element)
                     || isDeprecated(_constructor)
-                    || isDeprecated(_preUpdate)
+                    || _preUpdateMethods.stream().anyMatch(this::isDeprecated)
                     || isDeprecated(_postRender)
-                    || isDeprecated(_postMount)
-                    || isDeprecated(_postUpdate)
+                    || _postMountMethods.stream().anyMatch(this::isDeprecated)
+                    || _postUpdateMethods.stream().anyMatch(this::isDeprecated)
                     || isDeprecated(_onError)
                     || getInputs().stream()
                             .anyMatch(p -> isDeprecated(p.getElement())

@@ -82,6 +82,7 @@ java_testng(
         "react4j.processor.React4jProcessorTest.nestedNestedView",
         "react4j.processor.React4jProcessorTest.nestedCompleteComponent",
         "react4j.processor.React4jProcessorTest.renderFromParent",
+        "react4j.processor.React4jProcessorTest.orderedLifecycleSourceAndCompiledCallbacks",
         "react4j.processor.React4jProcessorTest.trackingInheritedAutoObserveMethodView",
         "react4j.processor.React4jProcessorTest.validProtectedAccessOnError",
         "react4j.processor.React4jProcessorTest.validPublicAccessViaInterfaceOnError",

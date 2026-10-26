@@ -537,8 +537,7 @@ final class ViewGenerator {
         if (null != postRender) {
             method.addStatement("$N()", postRender.getSimpleName().toString());
         }
-        final var postMount = descriptor.getPostMount();
-        if (null != postMount) {
+        for (final var postMount : descriptor.getPostMountMethods()) {
             method.addStatement("$N()", postMount.getSimpleName().toString());
         }
         if (descriptor.trackRender()) {
@@ -659,8 +658,7 @@ final class ViewGenerator {
             block.endControlFlow();
             method.addCode(block.build());
         }
-        final var preUpdate = descriptor.getPreUpdate();
-        if (null != preUpdate) {
+        for (final var preUpdate : descriptor.getPreUpdateMethods()) {
             method.addStatement("$N()", preUpdate.getSimpleName().toString());
         }
         return method;
@@ -685,8 +683,7 @@ final class ViewGenerator {
         if (null != postRender) {
             method.addStatement("$N()", postRender.getSimpleName().toString());
         }
-        final var postUpdate = descriptor.getPostUpdate();
-        if (null != postUpdate) {
+        for (final var postUpdate : descriptor.getPostUpdateMethods()) {
             method.addStatement("$N()", postUpdate.getSimpleName().toString());
         }
         if (descriptor.trackRender()) {

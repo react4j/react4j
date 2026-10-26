@@ -1,6 +1,6 @@
 # T01 — Ordered multiple callbacks
 
-- Status: pending
+- Status: complete
 - Blocked by: None
 - Spec coverage: R1–R4, R6; AC1 (processor), AC2, AC4 (processor)
 
@@ -10,10 +10,10 @@ Multiple callbacks with child-controlled participation and phase-specific inheri
 
 ## Acceptance criteria
 
-- [ ] All three phases generate ordered callback lists; dual callbacks run once per applicable phase.
-- [ ] Inherited registration positions survive overrides; disabling/reintroducing and newly added phases follow the spec.
-- [ ] Class/interface precedence, interface diamonds, declaration order, overload traps, and separately compiled ancestors have meaningful fixtures.
-- [ ] Existing validation, Arez actions, deprecated-member handling and no-render generation remain checked.
+- [x] All three phases generate ordered callback lists; dual callbacks run once per applicable phase.
+- [x] Inherited registration positions survive overrides; disabling/reintroducing and newly added phases follow the spec.
+- [x] Class/interface precedence, interface diamonds, declaration order, overload traps, and separately compiled ancestors have meaningful fixtures.
+- [x] Existing validation, Arez actions, deprecated-member handling and no-render generation remain checked.
 
 ## Validation
 
@@ -22,4 +22,7 @@ Multiple callbacks with child-controlled participation and phase-specific inheri
 
 ## Evidence
 
-Pending.
+- `tools/update_goldens.sh generated`: passed; reviewed exact source/compiled callback sequences and complete formatted/unformatted output.
+- `bazel test //processor:all_tests --test_output=errors`: all 7 targets passed, including strict generated-body checks, diagnostics and checker negative control.
+- Formatter, buildifier, and `git diff --check`: passed.
+- Used pinned Bazel 9.3.1 with an isolated output base; no product configuration change was needed.

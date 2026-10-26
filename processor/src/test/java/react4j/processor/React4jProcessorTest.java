@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.processing.Processor;
@@ -753,9 +754,6 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
                 "com.example.on_prop_change.ThrowsOnPropChange", "@OnInputChange target must not throw any exceptions"
             },
             new Object[] {"com.example.post_mount.AbstractModel", "@PostMount target must not be abstract"},
-            new Object[] {
-                "com.example.post_mount.DuplicateModel", "@PostMount target duplicates existing method named postMount"
-            },
             new Object[] {"com.example.post_mount.ParametersModel", "@PostMount target must not have any parameters"},
             new Object[] {"com.example.post_mount.PrivateModel", "@PostMount target must not be private"},
             new Object[] {"com.example.post_mount.ReturnsValueModel", "@PostMount target must not return a value"},
@@ -795,10 +793,6 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
                 "com.example.post_render.TypeParameterModel", "@PostRender target must not have any type parameters"
             },
             new Object[] {"com.example.post_update.AbstractModel", "@PostUpdate target must not be abstract"},
-            new Object[] {
-                "com.example.post_update.DuplicateModel",
-                "@PostUpdate target duplicates existing method named postUpdate"
-            },
             new Object[] {"com.example.post_update.ParametersModel", "@PostUpdate target must not have any parameters"},
             new Object[] {"com.example.post_update.PrivateModel", "@PostUpdate target must not be private"},
             new Object[] {"com.example.post_update.ReturnsValueModel", "@PostUpdate target must not return a value"},
@@ -814,9 +808,6 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
                 "com.example.pre_render.TypeParameterModel", "@PreRender target must not have any type parameters"
             },
             new Object[] {"com.example.pre_update.AbstractModel", "@PreUpdate target must not be abstract"},
-            new Object[] {
-                "com.example.pre_update.DuplicateModel", "@PreUpdate target duplicates existing method named preUpdate"
-            },
             new Object[] {"com.example.pre_update.ParametersModel", "@PreUpdate target must not have any parameters"},
             new Object[] {"com.example.pre_update.PrivateModel", "@PreUpdate target must not be private"},
             new Object[] {"com.example.pre_update.ReturnsValueModel", "@PreUpdate target must not return a value"},
@@ -1377,6 +1368,81 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
         assertFailedCompile(
                 "com.example.jspecify.UnknownConstructorView",
                 "Unspecified JSpecify nullness in injected constructor parameter");
+    }
+
+    @Test
+    public void orderedLifecycleSourceAndCompiledCallbacks() throws Exception {
+        var base = fixture("input/com/example/lifecycle/CallbackAncestors.java");
+        var view = fixture("input/com/example/lifecycle/OrderedCallbacksView.java");
+        var outputs = List.of(
+                "com/example/lifecycle/React4j_OrderedCallbacksView.java",
+                "com/example/lifecycle/OrderedCallbacksBuilder.java");
+        assertGoldenCompile(List.of(base, view), outputs, List.of());
+        assertLifecycleOrder(List.of(base, view), List.of());
+        var compiled = CompileTestUtil.assertCompilesWithoutWarnings(List.of(base), getOptions(), List.of(), List.of());
+        try {
+            assertGoldenCompile(
+                    List.of(view),
+                    outputs,
+                    buildClasspath(compiled.classOutput().toFile()));
+        } finally {
+            deleteDir(compiled.sourceOutput());
+            deleteDir(compiled.classOutput());
+        }
+    }
+
+    private void assertLifecycleOrder(List<JavaFileObject> inputs, List<File> classpath) throws Exception {
+        var compilation = CompileTestUtil.assertCompilesWithoutWarnings(inputs, getOptions(), processors(), classpath);
+        try {
+            var source = Files.readString(
+                    compilation.sourceOutput().resolve("com/example/lifecycle/React4j_OrderedCallbacksView.java"));
+            assertLifecycleCalls(
+                    source,
+                    "componentDidMount",
+                    List.of(
+                            "first",
+                            "second",
+                            "phaseAdded",
+                            "restored",
+                            "middle",
+                            "root",
+                            "left",
+                            "right",
+                            "childFirst",
+                            "dormant",
+                            "nameTrap",
+                            "localTrap"));
+            var update = List.of(
+                    "first",
+                    "second",
+                    "restored",
+                    "middle",
+                    "root",
+                    "left",
+                    "right",
+                    "childFirst",
+                    "phaseAdded",
+                    "dormant",
+                    "nameTrap",
+                    "localTrap");
+            assertLifecycleCalls(source, "componentPreUpdate", update);
+            assertLifecycleCalls(source, "componentDidUpdate", update);
+        } finally {
+            deleteDir(compilation.sourceOutput());
+            deleteDir(compilation.classOutput());
+        }
+    }
+
+    private void assertLifecycleCalls(String source, String phase, List<String> expected) {
+        var start = source.indexOf("private void $$react4j$$_" + phase + "()");
+        assertTrue(0 <= start, phase);
+        var body = source.substring(start, source.indexOf('}', start));
+        var actual = Pattern.compile("(?m)^\\s*(\\w+)\\(\\);$")
+                .matcher(body)
+                .results()
+                .map(match -> match.group(1))
+                .toList();
+        assertEquals(actual, expected, phase);
     }
 
     @Test

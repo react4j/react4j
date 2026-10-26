@@ -1,7 +1,9 @@
 filegroup(
     name = "files",
     srcs = [
+        "OrderedCallbacksBuilder.java",
         "OverrideLifecycleMethodsComponentBuilder.java",
+        "React4j_OrderedCallbacksView.java",
         "React4j_OverrideLifecycleMethodsComponent.java",
     ],
     visibility = ["//processor/src/test/fixtures:__pkg__"],
