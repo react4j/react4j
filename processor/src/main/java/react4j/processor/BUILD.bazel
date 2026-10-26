@@ -12,6 +12,7 @@ java_library(
         "ImmutableInputKeyStrategy.java",
         "InputComparator.java",
         "InputDescriptor.java",
+        "InputEnhancer.java",
         "Nullability.java",
         "ObserveMode.java",
         "OnInputChangeDescriptor.java",

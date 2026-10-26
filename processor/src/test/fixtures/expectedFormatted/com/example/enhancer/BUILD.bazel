@@ -1,0 +1,12 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "AdvancingBuilder.java",
+        "OptionalBuilder.java",
+        "React4j_AdvancingView.java",
+        "React4j_OptionalView.java",
+        "React4j_TerminalView.java",
+        "TerminalBuilder.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

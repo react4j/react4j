@@ -95,6 +95,7 @@ final class BuilderGenerator {
                 MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build());
 
         final var builderDescriptor = buildBuilderDescriptor(descriptor);
+        InputEnhancer.validateBuilder(processingEnv, descriptor, builderDescriptor);
 
         final var steps = builderDescriptor.getSteps();
 
@@ -209,12 +210,14 @@ final class BuilderGenerator {
             final MethodSpec.Builder method,
             final Step step,
             final StepMethodType stepMethodType) {
-        if (StepMethodType.TERMINATE == stepMethodType) {
-            method.returns(REACT_NODE_CLASSNAME);
-        } else {
-            final var returnIndex = step.getIndex() + (StepMethodType.STAY == stepMethodType ? 0 : 1);
-            method.returns(parameterizeIfRequired(descriptor, ClassName.bestGuess("Step" + returnIndex)));
-        }
+        method.returns(stepReturnType(descriptor, step, stepMethodType));
+    }
+
+    static TypeName stepReturnType(final ViewDescriptor descriptor, final Step step, final StepMethodType type) {
+        final var returnIndex = step.getIndex() + (StepMethodType.STAY == type ? 0 : 1);
+        return StepMethodType.TERMINATE == type
+                ? REACT_NODE_CLASSNAME
+                : parameterizeIfRequired(descriptor, ClassName.bestGuess("Step" + returnIndex));
     }
 
     private static TypeName parameterizeIfRequired(final ViewDescriptor descriptor, final ClassName className) {
@@ -241,6 +244,12 @@ final class BuilderGenerator {
         }
 
         for (final StepMethod stepMethod : step.getMethods()) {
+            final var enhancedInput = stepMethod.getInput();
+            final var enhancer = null == enhancedInput ? null : enhancedInput.getEnhancer();
+            if (null != enhancer) {
+                builder.addSuperinterface(
+                        enhancer.superinterface(stepReturnType(descriptor, step, stepMethod.getStepMethodType())));
+            }
             final var stepMethodType = stepMethod.getStepMethodType();
             // Magically handle the step method named build
             if (stepMethod.isBuildIntrinsic()) {

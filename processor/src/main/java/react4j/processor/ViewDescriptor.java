@@ -253,10 +253,10 @@ final class ViewDescriptor {
                 .map(parameter -> (VariableElement) parameter)
                 .filter(parameter -> AnnotationsUtil.hasAnnotationOfType(parameter, Constants.INPUT_CLASSNAME))
                 .map(parameter -> {
-                    final InputDescriptor input =
-                            findInputNamed(parameter.getSimpleName().toString());
-                    assert null != input;
-                    return input;
+                    return getInputs().stream()
+                            .filter(input -> parameter.equals(input.getElement()))
+                            .findFirst()
+                            .orElseThrow();
                 })
                 .toList();
     }

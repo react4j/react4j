@@ -1,0 +1,10 @@
+filegroup(
+    name = "files",
+    srcs = [
+        "AdvancingView.java",
+        "Enhancers.java",
+        "OptionalView.java",
+        "TerminalView.java",
+    ],
+    visibility = ["//processor/src/test/fixtures:__pkg__"],
+)

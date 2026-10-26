@@ -6,6 +6,7 @@ java_library(
     name = "test_classes",
     testonly = True,
     srcs = [
+        "InputEnhancerTest.java",
         "NullabilityTest.java",
         "React4jProcessorTest.java",
     ],
@@ -47,6 +48,16 @@ _RUNTIME = [
     "//third_party/java:jsinterop_annotations",
     "//third_party/java:zemeckis_core",
 ]
+
+java_testng(
+    name = "enhancers",
+    size = "medium",
+    srcs = [],
+    data = ["//third_party/java:strict_checker_options"],
+    jvm_flags = _FLAGS,
+    test_class = "react4j.processor.InputEnhancerTest",
+    deps = _RUNTIME,
+)
 
 java_testng(
     name = "regressions",
@@ -155,6 +166,7 @@ java_testng(
     test_methods = [
         "react4j.processor.React4jProcessorTest.constructorContracts",
         "react4j.processor.React4jProcessorTest.genericSourceAndCompiledContracts",
+        "react4j.processor.React4jProcessorTest.enhancerSourceAndCompiledContracts",
         "react4j.processor.React4jProcessorTest.presenceAndParametricContracts",
     ],
     deps = _RUNTIME,

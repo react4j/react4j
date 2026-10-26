@@ -261,6 +261,10 @@ public final class React4jProcessor extends AbstractStandardProcessor {
          */
         descriptor.sortInputs();
 
+        for (final var input : descriptor.getInputs()) {
+            InputEnhancer.parse(processingEnv, descriptor, input);
+        }
+
         verifyInputsNotAnnotatedWithArezAnnotations(descriptor);
 
         return descriptor;
