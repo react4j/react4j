@@ -27,6 +27,10 @@ public final class TerminalBuilder {
     return newBuilder().build();
   }
 
+  public static ReactNode unitPanels() {
+    return TerminalBuilder.newBuilder().unitPanels();
+  }
+
   public interface Step1 extends Enhancers.PanelTypes<ReactNode> {
     @Contract(pure = true)
     ReactNode panelTypes(@Nullable Set<Class<?>> panelTypes);

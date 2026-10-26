@@ -470,8 +470,13 @@ final class Nullability {
     }
 
     static TypeName typeName(Element declaration, TypeMirror resolvedType, TypeElement context) {
-        var type = GeneratorUtil.getTypeName(resolvedType);
-        var contract = requireSpecified(declaration, resolvedType, context);
+        return qualify(
+                declaration, declaredType(declaration), resolvedType, context, GeneratorUtil.getTypeName(resolvedType));
+    }
+
+    static TypeName qualify(
+            Element declaration, TypeMirror original, TypeMirror resolvedType, TypeElement context, TypeName type) {
+        var contract = requireSpecified(declaration, resolve(declaration, original, resolvedType, context));
         if (contract == Nullness.NULLABLE) {
             return nullable(type);
         }

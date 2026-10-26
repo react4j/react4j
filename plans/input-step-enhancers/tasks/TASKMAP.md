@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: `implementing`
-- Current frontier: `T02`
+- Current frontier: `T03`
 - Planning reviewer: `/root/planning_review` (`1/3` rounds; final confirmation unused); Findings: none. Checked complete scope, tasks, compiler and browser evidence. Residual risk: implementation tests for generic/nullness/J2CL interactions.
 - Plan checkpoint: automatic; accepted interview scope, explicit implementation/PR authority, and passing planning review establish the basis to proceed.
 - Implementation reviewer: pending (`0/5` rounds; final confirmation unused)
@@ -18,7 +18,7 @@
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
 | T01 | [Enhance generated steps](T01-enhance-steps.md) | complete | None |
-| T02 | [Forward first-step helpers](T02-static-shortcuts.md) | pending | T01 |
+| T02 | [Forward first-step helpers](T02-static-shortcuts.md) | complete | T01 |
 | T03 | [Verify browser behavior and publish the contract](T03-runtime-and-contract.md) | pending | T02 |
 
 ## Sequencing notes

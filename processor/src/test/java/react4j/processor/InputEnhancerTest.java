@@ -35,6 +35,10 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
     }
 
     private static JavaFileObject source(final String declarations, final String inputs) {
+        return source(declarations, inputs, "");
+    }
+
+    private static JavaFileObject source(final String declarations, final String inputs, final String typeParameters) {
         final var text = """
             package test;
             import java.util.*;
@@ -45,12 +49,12 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
             public final class Case {
               %s
               @View(type=View.Type.STATEFUL)
-              static abstract class Component {
+                  static abstract class Component%s {
                 %s
                 @Render @Nullable ReactNode render() { return null; }
               }
             }
-            """.formatted(declarations, inputs);
+            """.formatted(declarations, typeParameters, inputs);
         return new SimpleJavaFileObject(URI.create("string:///test/Case.java"), JavaFileObject.Kind.SOURCE) {
             @Override
             public CharSequence getCharContent(final boolean ignoreEncodingErrors) {
@@ -236,6 +240,137 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
         } finally {
             cleanup(compilation);
         }
+    }
+
+    @Test
+    public void genericStaticShortcuts() throws Exception {
+        final var declaration = """
+            public interface Base<Q> {
+              Q value(String value);
+              default <T extends Number, E extends Exception> Q generic(T value, E error) throws E {
+                if (value.intValue() < 0) { throw error; }
+                return value(value.toString());
+              }
+              default <R> Q stringify(R value) { return value(String.valueOf(value)); }
+              default Q joined(String... values) { return value(String.join(",", values)); }
+              @SuppressWarnings("unchecked")
+              default <X> Q several(X... values) { return value(Arrays.toString(values)); }
+            }
+            public interface Enhancer<R> extends Base<R> {}
+            static ReactNode calls() throws java.io.IOException {
+              var error = new java.io.IOException("conversion");
+              Case_ComponentBuilder.<Integer, Double, java.io.IOException>generic(1.0, error).z("done");
+              Case_ComponentBuilder.<Integer, String>stringify("typed").z("done");
+              Case_ComponentBuilder.<Integer>joined("a", "b").z("done");
+              return Case_ComponentBuilder.<Integer, String>several("a", "b").z("done");
+            }
+            """;
+        final var compilation = CompileTestUtil.assertCompilesWithoutWarnings(
+                List.of(source(
+                        declaration,
+                        "@Input(enhancer=Enhancer.class) abstract String value(); @Input abstract String z();",
+                        "<T extends Number>")),
+                getOptions(),
+                processors(),
+                List.of());
+        try {
+            StrictGeneratedCode.check(compilation, getOptions());
+            final var builder = Files.readString(compilation.sourceOutput().resolve("test/Case_ComponentBuilder.java"));
+            assertTrue(builder.contains("T2 extends Number"), builder);
+            assertTrue(builder.contains("throws E"), builder);
+            final var shortcut = builder.substring(
+                    builder.indexOf("static <T extends Number, T2"), builder.indexOf("interface Step1"));
+            assertFalse(shortcut.contains("@Contract"), shortcut);
+        } finally {
+            cleanup(compilation);
+        }
+    }
+
+    @Test
+    public void staticNestedNullness() throws Exception {
+        assertValid("""
+            public interface Base<R,V extends @Nullable Object> {
+              R value(String value);
+              default R nested(List<V> value) { return value(value.toString()); }
+              default R upper(List<? extends V> value) { return value(value.toString()); }
+              default R lower(List<? super V> value) { return value(value.toString()); }
+            }
+            public interface Enhancer<R> extends Base<R,@Nullable String> {}
+            static ReactNode call() { return Case_ComponentBuilder.nested(Arrays.asList("a", null)); }
+            """, "@Input(enhancer=Enhancer.class) abstract String value();", "List<@Nullable String>");
+    }
+
+    @Test
+    public void inaccessibleHelperTypesAndContextConflicts() throws Exception {
+        final var declaration =
+                "private static class Secret {} public interface Enhancer<R> { R value(String v); default R"
+                        + " hidden(List<? super Secret[]> v) { return value(\"x\"); } }";
+        assertInvalid(declaration, "@Input(enhancer=Enhancer.class) abstract String value();", "helper signature type");
+        assertInvalid(
+                "private static class Secret extends Exception { private static final long serialVersionUID=1L; }"
+                        + " public interface Enhancer<R> { R value(String v); default <T extends Secret> R hidden(T v)"
+                        + " throws T { return value(\"x\"); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value();",
+                "helper signature type");
+        assertInvalid(
+                "public interface Enhancer<R> { R value(String v); default R $context_context(@Nullable String v) {"
+                        + " return value(\"x\"); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input(fromTreeContext=true) abstract"
+                        + " @Nullable String context();",
+                "conflicts with generated builder method");
+        assertInvalid(
+                "public interface Enhancer<R> { R value(String v); default R build(react4j.ReactElement v) { return"
+                        + " value(\"x\"); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input(fromTreeContext=true) abstract"
+                        + " @Nullable String context();",
+                "conflicts with generated builder method");
+        assertInvalid(
+                "public interface Enhancer<R> { R children(ReactNode[] v); default R"
+                        + " children(java.util.stream.Stream<? extends ReactNode> v) { return"
+                        + " children(v.toArray(ReactNode[]::new)); } }",
+                "@Input(enhancer=Enhancer.class) abstract ReactNode @Nullable [] children(); @Input abstract @Nullable"
+                        + " String value();",
+                "conflicts with generated builder method");
+    }
+
+    @Test
+    public void nestedGenericParentConflicts() throws Exception {
+        final var inputs =
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input(enhancer=Other.class) abstract int"
+                        + " other();";
+        assertInvalid(
+                "public interface Base<X> {} public interface Enhancer<R> extends Base<R[]> { R value(String v); }"
+                        + " public interface Other<R> extends Base<R[]> { R other(int v); }",
+                inputs,
+                "incompatible generic parent");
+        assertInvalid(
+                "public interface Base<X> {} public interface Enhancer<R> extends Base<List<? extends R>> { R"
+                    + " value(String v); } public interface Other<R> extends Base<List<? extends R>> { R other(int v);"
+                    + " }",
+                inputs,
+                "incompatible generic parent");
+    }
+
+    @Test
+    public void nestedOwnerAndResultParameters() throws Exception {
+        assertValid("""
+                public static class Outer<T extends @Nullable Object> { public class Inner<U> {} }
+            public static class Plain { public class Inner<U> {} }
+            public interface Enhancer<R> {
+              R value(String value);
+              default R owners(Outer<@Nullable String>.Inner<Integer> a, Plain.Inner<String> b) { return value("owners"); }
+              default R previous(@Nullable R value) { return value("previous"); }
+              default <T extends Number & Comparable<T>> R intersection(T value) { return value(value.toString()); }
+              default <T extends R> R resultBound(T value) { return value("result-bound"); }
+            }
+            """, "@Input(enhancer=Enhancer.class) abstract String value();", "Plain.Inner<String>");
+        assertValid(
+                "public interface Common<R> { default R previous(R value) { return value; } } public interface"
+                        + " Enhancer<R> extends Common<R> { R value(@Nullable String v); } public interface Other<S>"
+                        + " extends Common<S> { S other(@Nullable String v); }",
+                "@Input(enhancer=Enhancer.class) abstract @Nullable String value(); @Input(enhancer=Other.class)"
+                        + " abstract @Nullable String other();",
+                "Enhancer<Step1>");
     }
 
     private void assertInvalid(final String declarations, final String inputs, final String expected) throws Exception {

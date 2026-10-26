@@ -2,6 +2,7 @@ package com.example.enhancer;
 
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import react4j.React;
 import react4j.ReactElement;
@@ -19,6 +20,15 @@ public final class AdvancingBuilder {
   @Contract(pure = true)
   public static <T extends Number> Step2<T> count(final int count) {
     return AdvancingBuilder.<T>newBuilder().count(count);
+  }
+
+  public static <T extends Number, T2 extends Number> Step2<T> number(final @NonNull T2 arg0)
+      throws Exception {
+    return AdvancingBuilder.<T>newBuilder().<T2>number(arg0);
+  }
+
+  public static <T extends Number> Step2<T> one() {
+    return AdvancingBuilder.<T>newBuilder().one();
   }
 
   @SuppressWarnings("unused")

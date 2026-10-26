@@ -8,6 +8,7 @@ java_library(
         "BuilderDescriptor.java",
         "BuilderGenerator.java",
         "Constants.java",
+        "EnhancerMethod.java",
         "FactoryGenerator.java",
         "ImmutableInputKeyStrategy.java",
         "InputComparator.java",

@@ -39,6 +39,14 @@ final class OptionalBuilder {
     return newBuilder().build();
   }
 
+  static Step1 unitPanels() {
+    return OptionalBuilder.newBuilder().unitPanels();
+  }
+
+  static Step1 titled(final String... arg0) {
+    return OptionalBuilder.newBuilder().titled(arg0);
+  }
+
   interface Step1 extends Enhancers.PanelTypes<Step1>, Enhancers.Title<Step1> {
     @Contract(
         pure = true

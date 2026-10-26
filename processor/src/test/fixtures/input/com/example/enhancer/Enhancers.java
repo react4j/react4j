@@ -19,10 +19,19 @@ public final class Enhancers
     }
   }
 
-  public interface Count<R>
+  public interface CountBase<R>
   {
     R count(int value);
 
+    default <T extends Number> R number(T value) throws Exception
+    {
+      if (value.intValue() < 0) { throw new Exception("negative"); }
+      return count(value.intValue());
+    }
+  }
+
+  public interface Count<R> extends CountBase<R>
+  {
     default R one()
     {
       return count(1);

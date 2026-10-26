@@ -13,11 +13,13 @@ import com.palantir.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -117,6 +119,8 @@ final class BuilderGenerator {
         return builder.build();
     }
 
+    private record StaticHelper(InputEnhancer enhancer, ExecutableElement method, TypeName result) {}
+
     private static void buildStaticStepMethodMethods(
             final ProcessingEnvironment processingEnv,
             final ViewDescriptor descriptor,
@@ -124,6 +128,28 @@ final class BuilderGenerator {
             final Step step) {
         for (final var method : step.getMethods()) {
             builder.addMethod(buildStaticStepMethodMethod(processingEnv, descriptor, step, method));
+        }
+        final var helpers = new LinkedHashMap<String, StaticHelper>();
+        for (final var stepMethod : step.getMethods()) {
+            final var input = stepMethod.getInput();
+            final var enhancer = null == input ? null : input.getEnhancer();
+            if (null != enhancer) {
+                for (final var helper : enhancer.getHelpers()) {
+                    final var result = stepReturnType(descriptor, step, stepMethod.getStepMethodType());
+                    final var key = enhancer.signature(processingEnv.getTypeUtils(), helper, result.toString());
+                    final var previous = helpers.get(key);
+                    if (null == previous
+                            || processingEnv
+                                    .getElementUtils()
+                                    .overrides(helper, previous.method(), enhancer.getElement())) {
+                        helpers.put(key, new StaticHelper(enhancer, helper, result));
+                    }
+                }
+            }
+        }
+        for (final var entry : helpers.values()) {
+            builder.addMethod(EnhancerMethod.shortcut(
+                    processingEnv, descriptor, entry.enhancer(), entry.method(), entry.result()));
         }
     }
 

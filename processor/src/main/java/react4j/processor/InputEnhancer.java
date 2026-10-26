@@ -5,9 +5,11 @@ import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
@@ -18,9 +20,11 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.IntersectionType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.Types;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.ElementsUtil;
@@ -105,11 +109,66 @@ final class InputEnhancer {
         }
         for (final var method : methods) {
             if (method.getModifiers().contains(Modifier.DEFAULT)) {
-                enhancer.validateResult(env, input, method, enhancer.methodType(env.getTypeUtils(), method));
+                final var methodType = enhancer.methodType(env.getTypeUtils(), method);
+                enhancer.validateResult(env, input, method, methodType);
+                for (final var parameter : methodType.getParameterTypes()) {
+                    validateAccessibleType(env, view, input, parameter, new HashSet<>());
+                }
+                for (final var thrown : methodType.getThrownTypes()) {
+                    validateAccessibleType(env, view, input, thrown, new HashSet<>());
+                }
+                for (final var variable : methodType.getTypeVariables()) {
+                    validateAccessibleType(env, view, input, variable, new HashSet<>());
+                }
                 enhancer._helpers.add(method);
             }
         }
         input.setEnhancer(enhancer);
+    }
+
+    private static void validateAccessibleType(
+            final ProcessingEnvironment env,
+            final ViewDescriptor view,
+            final InputDescriptor input,
+            final TypeMirror type,
+            final Set<Element> visited) {
+        if (type instanceof DeclaredType declared) {
+            for (Element owner = declared.asElement();
+                    owner instanceof TypeElement;
+                    owner = owner.getEnclosingElement()) {
+                if (owner.getModifiers().contains(Modifier.PRIVATE)
+                        || (!owner.getModifiers().contains(Modifier.PUBLIC)
+                                && !env.getElementUtils()
+                                        .getPackageOf(owner)
+                                        .equals(env.getElementUtils().getPackageOf(view.getElement())))) {
+                    throw error(
+                            input,
+                            "helper signature type '" + declared.asElement()
+                                    + "' must be accessible from the generated builder");
+                }
+            }
+            validateAccessibleType(env, view, input, declared.getEnclosingType(), visited);
+            for (final var argument : declared.getTypeArguments()) {
+                validateAccessibleType(env, view, input, argument, visited);
+            }
+        } else if (type instanceof TypeVariable variable && visited.add(variable.asElement())) {
+            validateAccessibleType(env, view, input, variable.getUpperBound(), visited);
+        } else if (type instanceof ArrayType array) {
+            validateAccessibleType(env, view, input, array.getComponentType(), visited);
+        } else if (type instanceof WildcardType wildcard) {
+            final var upper = wildcard.getExtendsBound();
+            final var lower = wildcard.getSuperBound();
+            if (null != upper) {
+                validateAccessibleType(env, view, input, upper, visited);
+            }
+            if (null != lower) {
+                validateAccessibleType(env, view, input, lower, visited);
+            }
+        } else if (type instanceof IntersectionType intersection) {
+            for (final var bound : intersection.getBounds()) {
+                validateAccessibleType(env, view, input, bound, visited);
+            }
+        }
     }
 
     private void validateResult(
@@ -153,6 +212,14 @@ final class InputEnhancer {
         final var generated = new HashMap<String, String>();
         generated.put("newBuilder()", "newBuilder");
         generated.put("build()", "build");
+        for (final var input : view.getInputs()) {
+            if (input.isFromTreeContext()) {
+                generated.put(
+                        "$context_" + input.getName() + "(" + env.getTypeUtils().erasure(input.getType()) + ")",
+                        "$context_" + input.getName());
+                generated.put("build(react4j.ReactElement)", "build");
+            }
+        }
         for (final var step : builder.getSteps()) {
             for (final var method : step.getMethods()) {
                 final var methodType = method.getType();
@@ -189,10 +256,7 @@ final class InputEnhancer {
                 enhancer.validateParents(
                         env.getTypeUtils(), (DeclaredType) enhancer._element.asType(), result, parents, input);
                 for (final var method : enhancer._helpers) {
-                    final var signature = method.getSimpleName()
-                            + enhancer.methodType(env.getTypeUtils(), method).getParameterTypes().stream()
-                                    .map(t -> enhancer.erasure(env.getTypeUtils(), t, result))
-                                    .collect(Collectors.joining(",", "(", ")"));
+                    final var signature = enhancer.signature(env.getTypeUtils(), method, result);
                     if (generated.containsKey(signature)) {
                         throw error(
                                 input,
@@ -240,6 +304,16 @@ final class InputEnhancer {
     }
 
     private String identity(final Types types, final TypeMirror type, final String result) {
+        if (type instanceof ArrayType array) {
+            return identity(types, array.getComponentType(), result) + "[]";
+        }
+        if (type instanceof WildcardType wildcard) {
+            final var lower = wildcard.getSuperBound();
+            final var upper = wildcard.getExtendsBound();
+            return null != lower
+                    ? "? super " + identity(types, lower, result)
+                    : null != upper ? "? extends " + identity(types, upper, result) : "?";
+        }
         if (type instanceof DeclaredType declared) {
             return declared.asElement()
                     + declared.getTypeArguments().stream()
@@ -247,6 +321,13 @@ final class InputEnhancer {
                             .collect(Collectors.joining(",", "<", ">"));
         }
         return types.isSameType(type, resultVariable()) ? result : type.toString();
+    }
+
+    String signature(final Types types, final ExecutableElement method, final String result) {
+        return method.getSimpleName()
+                + methodType(types, method).getParameterTypes().stream()
+                        .map(t -> erasure(types, t, result))
+                        .collect(Collectors.joining(",", "(", ")"));
     }
 
     private String erasure(final Types types, final TypeMirror type, final String result) {
