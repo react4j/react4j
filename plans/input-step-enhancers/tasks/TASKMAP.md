@@ -1,11 +1,11 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `implementation-review`
+- Status: `closeout`
 - Current frontier: none (all tasks complete)
 - Planning reviewer: `/root/planning_review` (`1/3` rounds; final confirmation unused); Findings: none. Checked complete scope, tasks, compiler and browser evidence. Residual risk: implementation tests for generic/nullness/J2CL interactions.
 - Plan checkpoint: automatic; accepted interview scope, explicit implementation/PR authority, and passing planning review establish the basis to proceed.
-- Implementation reviewer: `/root/implementation_review` (`2/5` rounds consumed; final confirmation unused). Round 1 reviewed the complete scope; round 2 confirmed the collection fix and found two residual signature variants. Fixes await confirmation.
+- Implementation reviewer: `/root/implementation_review` (`3/5` rounds consumed; final confirmation unused). Round 3: Findings: none; all prior findings resolved. No residual risk identified.
 - Authority: final interview acceptance, followed by the explicit request to implement and raise a PR. Correction 3A excludes children migration.
 
 ## Full-scope validation
@@ -46,3 +46,5 @@
 - Round 2: reserve view type-parameter bounds even when absent from inputs; include overridden ancestor setter erasures. Both personally reproduced before fixing. A focused plain-javac probe confirmed the ancestor-erasure failure also affects default helpers, so the fix covers both peers.
 - Cause and prevention: effective-member resolution discarded declarations whose erasures still participate in javac name-clash checks. Collect every overridden declaration's erasure for setters and helpers; source/precompiled negative tests exercise both. Earlier inheritance cases did not combine explicit payload specialization with a cross-enhancer overload. For name hygiene, java.lang bounds hid the omitted view-bound traversal; an unused external AtomicInteger bound now exercises it.
 - Round 2 validation: focused enhancer tests and regenerated source/precompiled goldens passed. The final full gate passed on frozen code, including all processor suites. One prior coverage launch collided with the Bazel server's IPv6 port; process/socket inspection identified the owner, focused runtime coverage passed on retry, then the complete gate passed without code changes. Domain contracts remain unchanged.
+- Round 3: Findings: none. Reviewer verified view-bound reservation, setter/helper ancestor erasures, source/precompiled tests and goldens, legal overloads, unchanged children fixtures, clean diff and the full gate. Focused enhancer and golden suites passed independently.
+- Final knowledge sweep: reuse prior classifications. Review fixes implement the existing public signature/diagnostic requirements; Java erasure traversal, name reservation and the one-off coverage port collision add no accepted domain requirement, architectural decision, glossary term or deliberately deferred question. The guide and canonical specification remain current.
