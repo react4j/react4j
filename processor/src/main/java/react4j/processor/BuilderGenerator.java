@@ -13,11 +13,15 @@ import com.palantir.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
@@ -81,11 +85,20 @@ final class BuilderGenerator {
         // Builder signatures mirror view contracts, including concrete collection types.
         final var concreteCollections = descriptor.getInputs().stream()
                 .anyMatch(input -> input.getType() instanceof DeclaredType type
-                        && (type.asElement().toString().equals("java.util.ArrayList")
-                                || type.asElement().toString().equals("java.util.HashSet")));
+                                && ("java.util.ArrayList"
+                                                .equals(type.asElement().toString())
+                                        || "java.util.HashSet"
+                                                .equals(type.asElement().toString()))
+                        || null != input.getEnhancer() && input.getEnhancer().usesConcreteCollections());
         final var suppression = SuppressWarningsUtil.maybeSuppressWarningsAnnotation(
                 concreteCollections ? "NonApiType" : null,
-                descriptor.builderAccessesDeprecatedElements() ? "deprecation" : null);
+                descriptor.builderAccessesDeprecatedElements()
+                                || descriptor.getInputs().stream().anyMatch(input -> {
+                                    final var enhancer = input.getEnhancer();
+                                    return null != enhancer && enhancer.usesDeprecatedTypes();
+                                })
+                        ? "deprecation"
+                        : null);
         if (suppression != null) {
             builder.addAnnotation(suppression);
         }
@@ -95,6 +108,7 @@ final class BuilderGenerator {
                 MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build());
 
         final var builderDescriptor = buildBuilderDescriptor(descriptor);
+        InputEnhancer.validateBuilder(processingEnv, descriptor, builderDescriptor);
 
         final var steps = builderDescriptor.getSteps();
 
@@ -105,7 +119,7 @@ final class BuilderGenerator {
         }
 
         // first step which may be required input, optional inputs, or build terminal step.
-        buildStaticStepMethodMethods(processingEnv, descriptor, builder, steps.get(0));
+        buildStaticStepMethodMethods(processingEnv, descriptor, builder, builderDescriptor);
 
         if (descriptor.getInputs().stream().anyMatch(InputDescriptor::isFromTreeContext)) {
             builder.addType(buildContextHolder(descriptor));
@@ -116,13 +130,84 @@ final class BuilderGenerator {
         return builder.build();
     }
 
+    private record StaticHelper(InputEnhancer enhancer, ExecutableElement method, TypeName result) {}
+
     private static void buildStaticStepMethodMethods(
             final ProcessingEnvironment processingEnv,
             final ViewDescriptor descriptor,
             final TypeSpec.Builder builder,
-            final Step step) {
+            final BuilderDescriptor builderDescriptor) {
+        final var step = builderDescriptor.getSteps().get(0);
         for (final var method : step.getMethods()) {
             builder.addMethod(buildStaticStepMethodMethod(processingEnv, descriptor, step, method));
+        }
+        final var helpers = new LinkedHashMap<String, StaticHelper>();
+        for (final var stepMethod : step.getMethods()) {
+            final var input = stepMethod.getInput();
+            final var enhancer = null == input ? null : input.getEnhancer();
+            if (null != enhancer) {
+                for (final var helper : enhancer.getHelpers()) {
+                    final var result = stepReturnType(descriptor, step, stepMethod.getStepMethodType());
+                    final var key = enhancer.signature(processingEnv.getTypeUtils(), helper, result.toString());
+                    final var previous = helpers.get(key);
+                    if (null == previous
+                            || processingEnv
+                                    .getElementUtils()
+                                    .overrides(helper, previous.method(), enhancer.getElement())) {
+                        helpers.put(key, new StaticHelper(enhancer, helper, result));
+                    }
+                }
+            }
+        }
+        if (helpers.isEmpty()) {
+            return;
+        }
+        // A shortcut's type parameters must not shadow types used anywhere in the generated builder.
+        final var reservedNames = new HashSet<>(
+                Set.of("Builder", CONTEXT_HOLDER, "Generated", "NullMarked", "Nullable", "NonNull", "NullUnmarked"));
+        for (final var generated : builderDescriptor.getSteps()) {
+            reservedNames.add("Step" + generated.getIndex());
+        }
+        for (final var type : List.of(
+                DISPOSABLE_CLASSNAME,
+                IDENTIFIABLE_CLASSNAME,
+                REACT_ELEMENT_CLASSNAME,
+                CONTEXT_CLASSNAME,
+                CONTEXT_RENDER_FUNCTION_CLASSNAME,
+                CONTEXTS_CLASSNAME,
+                REACT_CLASSNAME,
+                KEYED_CLASSNAME,
+                REACT_NODE_CLASSNAME,
+                JS_PROPERTY_MAP_CLASSNAME,
+                CONTRACT_CLASSNAME,
+                descriptor.getBuilderClassName(),
+                descriptor.getClassName(),
+                descriptor.getEnhancedClassName())) {
+            reservedNames.addAll(type.simpleNames());
+        }
+        EnhancerMethod.reserveTypeNames(descriptor.getDeclaredType(), reservedNames);
+        for (final var input : descriptor.getInputs()) {
+            EnhancerMethod.reserveTypeNames(input.getType(), reservedNames);
+            final var enhancer = input.getEnhancer();
+            if (null != enhancer) {
+                EnhancerMethod.reserveTypeNames(enhancer.getElement().asType(), reservedNames);
+                for (final var helper : enhancer.getHelpers()) {
+                    final var type = enhancer.methodType(processingEnv.getTypeUtils(), helper);
+                    for (final var parameter : type.getParameterTypes()) {
+                        EnhancerMethod.reserveTypeNames(parameter, reservedNames);
+                    }
+                    for (final var thrown : type.getThrownTypes()) {
+                        EnhancerMethod.reserveTypeNames(thrown, reservedNames);
+                    }
+                    for (final var variable : type.getTypeVariables()) {
+                        EnhancerMethod.reserveTypeNames(variable, reservedNames);
+                    }
+                }
+            }
+        }
+        for (final var entry : helpers.values()) {
+            builder.addMethod(EnhancerMethod.shortcut(
+                    processingEnv, descriptor, entry.enhancer(), entry.method(), entry.result(), reservedNames));
         }
     }
 
@@ -209,12 +294,14 @@ final class BuilderGenerator {
             final MethodSpec.Builder method,
             final Step step,
             final StepMethodType stepMethodType) {
-        if (StepMethodType.TERMINATE == stepMethodType) {
-            method.returns(REACT_NODE_CLASSNAME);
-        } else {
-            final var returnIndex = step.getIndex() + (StepMethodType.STAY == stepMethodType ? 0 : 1);
-            method.returns(parameterizeIfRequired(descriptor, ClassName.bestGuess("Step" + returnIndex)));
-        }
+        method.returns(stepReturnType(descriptor, step, stepMethodType));
+    }
+
+    static TypeName stepReturnType(final ViewDescriptor descriptor, final Step step, final StepMethodType type) {
+        final var returnIndex = step.getIndex() + (StepMethodType.STAY == type ? 0 : 1);
+        return StepMethodType.TERMINATE == type
+                ? REACT_NODE_CLASSNAME
+                : parameterizeIfRequired(descriptor, ClassName.bestGuess("Step" + returnIndex));
     }
 
     private static TypeName parameterizeIfRequired(final ViewDescriptor descriptor, final ClassName className) {
@@ -241,6 +328,12 @@ final class BuilderGenerator {
         }
 
         for (final StepMethod stepMethod : step.getMethods()) {
+            final var enhancedInput = stepMethod.getInput();
+            final var enhancer = null == enhancedInput ? null : enhancedInput.getEnhancer();
+            if (null != enhancer) {
+                builder.addSuperinterface(
+                        enhancer.superinterface(stepReturnType(descriptor, step, stepMethod.getStepMethodType())));
+            }
             final var stepMethodType = stepMethod.getStepMethodType();
             // Magically handle the step method named build
             if (stepMethod.isBuildIntrinsic()) {

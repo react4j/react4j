@@ -1377,6 +1377,31 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     }
 
     @Test
+    public void enhancerSourceAndCompiledContracts() throws Exception {
+        final var base = fixture("input/com/example/enhancer/Enhancers.java");
+        final var views = List.of("TerminalView", "AdvancingView", "OptionalView");
+        for (final var name : views) {
+            assertGoldenCompile(
+                    List.of(base, fixture("input/com/example/enhancer/" + name + ".java")),
+                    Arrays.asList(deriveExpectedOutputs("com.example.enhancer." + name, false)),
+                    List.of());
+        }
+        final var compiled =
+                CompileTestUtil.assertCompilesWithoutWarnings(List.of(base), getOptions(), List.of(), List.of());
+        try {
+            for (final var name : views) {
+                assertGoldenCompile(
+                        List.of(fixture("input/com/example/enhancer/" + name + ".java")),
+                        Arrays.asList(deriveExpectedOutputs("com.example.enhancer." + name, false)),
+                        buildClasspath(compiled.classOutput().toFile()));
+            }
+        } finally {
+            deleteDir(compiled.sourceOutput());
+            deleteDir(compiled.classOutput());
+        }
+    }
+
+    @Test
     public void genericSourceAndCompiledContracts() throws Exception {
         var base = fixture("input/com/example/jspecify/NestedContractBase.java");
         var view = fixture("input/com/example/jspecify/NestedContractView.java");

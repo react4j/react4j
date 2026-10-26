@@ -45,6 +45,22 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface Input {
     /**
+     * Interface supplying fluent default methods for this input's builder step.
+     * The interface has one unbounded result type parameter and one abstract method matching the
+     * generated input setter's name and value type. Its parameter nullness must be compatible with
+     * the input. Public default methods return the result parameter directly; they may declare
+     * method type parameters, varargs and checked exceptions.
+     *
+     * <p>The result is the next step, the current optional step, or {@link react4j.ReactNode} when
+     * setting the input finishes construction. First-step helpers also receive static shortcuts.
+     * Enhancers must coexist with all other methods and parent interfaces on the shared builder.
+     * Inputs sourced from tree context cannot specify an enhancer.</p>
+     *
+     * @return the enhancer interface, or {@code void.class} for no enhancer.
+     */
+    Class<?> enhancer() default void.class;
+
+    /**
      * Return the name of the input.
      * The name is the key used when accessing the input from the inputs object. It is also used when creating
      * the builder steps associated with inputs that are not sourced from tree context.

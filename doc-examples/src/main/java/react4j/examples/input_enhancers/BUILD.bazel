@@ -1,0 +1,11 @@
+package(default_visibility = ["//:__subpackages__"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "ColorEnhancer.java",
+        "Presets.java",
+        "Swatch.java",
+        "package-info.java",
+    ],
+)

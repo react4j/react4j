@@ -62,6 +62,18 @@ final class InputDescriptor {
     @Nullable
     private Nullness _nullness;
 
+    @Nullable
+    private InputEnhancer _enhancer;
+
+    @Nullable
+    InputEnhancer getEnhancer() {
+        return _enhancer;
+    }
+
+    void setEnhancer(final InputEnhancer enhancer) {
+        _enhancer = enhancer;
+    }
+
     InputDescriptor(
             final ViewDescriptor descriptor,
             final String name,

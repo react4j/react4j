@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+* Add `@Input(enhancer=...)` for fluent builder presets and conversions, with first-step static shortcuts, generic helper methods and checked exceptions. Helpers preserve the input setter's continuation, including terminal `ReactNode` results. Diagnose incompatible enhancer contracts and shared-builder signatures. Resolve renamed constructor inputs by declaration identity.
+
 * Breaking: remove `@PostMountOrUpdate`; replace it with both `@PostMount` and `@PostUpdate`. All three commit lifecycle phases now support multiple callbacks. The first ancestor annotation for each phase fixes callback order; overrides control participation and new phase registrations append in declaration order. Superclasses run first, then interfaces in written order with ancestors first and diamonds once, then current-class declarations. When migrating shared and phase-specific callbacks, arrange declarations in their intended execution order.
 
 * Upgrade development and CI to Bazel 9.3.1.

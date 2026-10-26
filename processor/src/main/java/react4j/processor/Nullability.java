@@ -255,10 +255,38 @@ final class Nullability {
                         Relation.ASSIGNABLE);
     }
 
+    static boolean isAssignable(
+            Types types,
+            Element source,
+            TypeMirror sourceType,
+            TypeElement sourceContext,
+            Element target,
+            TypeMirror targetType,
+            TypeElement targetContext) {
+        return types.isAssignable(sourceType, targetType)
+                && compatible(
+                        types,
+                        new TypeUse(source, declaredType(source), sourceType),
+                        new TypeUse(target, declaredType(target), targetType),
+                        sourceContext,
+                        targetContext,
+                        Relation.ASSIGNABLE);
+    }
+
     private static boolean compatible(
             Types types, TypeUse source, TypeUse target, TypeElement context, Relation relation) {
-        source = source.substitute(context);
-        target = target.substitute(context);
+        return compatible(types, source, target, context, context, relation);
+    }
+
+    private static boolean compatible(
+            Types types,
+            TypeUse source,
+            TypeUse target,
+            TypeElement sourceContext,
+            TypeElement targetContext,
+            Relation relation) {
+        source = source.substitute(sourceContext);
+        target = target.substitute(targetContext);
         if (target.type() instanceof WildcardType wildcard) {
             var upper = wildcard.getExtendsBound();
             var lower = wildcard.getSuperBound();
@@ -282,7 +310,8 @@ final class Nullability {
                                     types,
                                     source.at(originalSourceUpper, sourceUpper),
                                     target.at(originalUpper, upper),
-                                    context,
+                                    sourceContext,
+                                    targetContext,
                                     relation);
                 }
                 if (lower != null && sourceLower != null) {
@@ -295,7 +324,8 @@ final class Nullability {
                                     types,
                                     source.at(originalSourceLower, sourceLower),
                                     target.at(originalLower, lower),
-                                    context,
+                                    sourceContext,
+                                    targetContext,
                                     relation);
                 }
                 return true;
@@ -307,14 +337,15 @@ final class Nullability {
                 var originalUpper = target.original() instanceof WildcardType value ? value.getExtendsBound() : upper;
                 if (sourceBound == null || originalBound == null) {
                     return originalUpper != null
-                            && resolve(target.declaration(), originalUpper, upper, context) == Nullness.NULLABLE;
+                            && resolve(target.declaration(), originalUpper, upper, targetContext) == Nullness.NULLABLE;
                 }
                 return originalUpper != null
                         && compatible(
                                 types,
                                 source.at(originalBound, sourceBound),
                                 target.at(originalUpper, upper),
-                                context,
+                                sourceContext,
+                                targetContext,
                                 Relation.ASSIGNABLE);
             }
             if (lower != null) {
@@ -329,7 +360,8 @@ final class Nullability {
                                 types,
                                 target.at(originalLower, lower),
                                 source.at(originalBound, sourceBound),
-                                context,
+                                targetContext,
+                                sourceContext,
                                 Relation.ASSIGNABLE);
             }
             return true;
@@ -339,10 +371,10 @@ final class Nullability {
         }
         var from = source.overrideNullness() != null
                 ? source.overrideNullness()
-                : resolve(source.declaration(), source.original(), source.type(), context);
+                : resolve(source.declaration(), source.original(), source.type(), sourceContext);
         var to = target.overrideNullness() != null
                 ? target.overrideNullness()
-                : resolve(target.declaration(), target.original(), target.type(), context);
+                : resolve(target.declaration(), target.original(), target.type(), targetContext);
         if (from == Nullness.UNSPECIFIED
                 || to == Nullness.UNSPECIFIED
                 || (relation != Relation.ASSIGNABLE
@@ -363,7 +395,8 @@ final class Nullability {
                                 types,
                                 new TypeUse(variable.asElement(), bound, bound, source.bindings(), from),
                                 target,
-                                context,
+                                sourceContext,
+                                targetContext,
                                 relation)) {
                     return true;
                 }
@@ -383,7 +416,8 @@ final class Nullability {
                                     ? array.getComponentType()
                                     : targetArray.getComponentType(),
                             targetArray.getComponentType()),
-                    context,
+                    sourceContext,
+                    targetContext,
                     relation);
         }
         if (source.type() instanceof DeclaredType sourceDeclared
@@ -402,7 +436,8 @@ final class Nullability {
                                     types,
                                     new TypeUse(element, parent, parent, bindings, from),
                                     target,
-                                    context,
+                                    sourceContext,
+                                    targetContext,
                                     relation)) {
                         return true;
                     }
@@ -419,7 +454,8 @@ final class Nullability {
                         types,
                         source.argument(i),
                         target.argument(i),
-                        context,
+                        sourceContext,
+                        targetContext,
                         relation == Relation.ASSIGNABLE ? Relation.CONTAINED : Relation.IDENTICAL)) {
                     return false;
                 }
@@ -427,15 +463,21 @@ final class Nullability {
             var sourceOwner = source.owner();
             var targetOwner = target.owner();
             if (sourceOwner != null && targetOwner != null) {
-                return compatible(types, sourceOwner, targetOwner, context, Relation.IDENTICAL);
+                return compatible(types, sourceOwner, targetOwner, sourceContext, targetContext, Relation.IDENTICAL);
             }
         }
         return true;
     }
 
     static TypeName typeName(Element declaration, TypeMirror resolvedType, TypeElement context) {
-        var type = GeneratorUtil.getTypeName(resolvedType);
-        var contract = requireSpecified(declaration, resolvedType, context);
+        requireSpecified(declaration, resolvedType, context);
+        return qualify(
+                declaration, declaredType(declaration), resolvedType, context, GeneratorUtil.getTypeName(resolvedType));
+    }
+
+    static TypeName qualify(
+            Element declaration, TypeMirror original, TypeMirror resolvedType, TypeElement context, TypeName type) {
+        var contract = resolve(declaration, original, resolvedType, context);
         if (contract == Nullness.NULLABLE) {
             return nullable(type);
         }

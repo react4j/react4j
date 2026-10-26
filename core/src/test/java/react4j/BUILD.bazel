@@ -12,6 +12,7 @@ j2cl_library(
     testonly = True,
     srcs = [
         "ContextsTest.java",
+        "InputEnhancerBrowserTest.java",
         "LifecycleBrowserTest.java",
         "ReactConfigTest.java",
         "RuntimeBrowserTest.java",
