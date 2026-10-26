@@ -5,7 +5,7 @@
 - Current frontier: none
 - Planning reviewer: `/root/planning_review` (`1/3`; final confirmation unused; passed)
 - Plan checkpoint: automatic; confirmed scope, explicit delivery/PR authority, and passing planning review.
-- Implementation reviewer: pending (`0/5`; final confirmation unused)
+- Implementation reviewer: `/root/implementation_review` (`1/5`; final confirmation unused; recheck pending)
 - Authority: user confirmed the design and explicitly requested implementation and a PR on 2026-10-26.
 
 ## Tasks
@@ -23,6 +23,7 @@
 ## Review history
 
 - Planning round 1: Findings: none. Reviewed full spec/task coverage, repository claims, validation, migration and cleanup. Implementation results remain to be verified.
+- Implementation round 1: one P2 finding. The durable disposed-view requirement exceeded the accepted disposed-dependency guard scope. Qualified requirement 14 to views with disposable inputs, matching the generator and browser scenario; runtime behavior is unchanged. Reviewer checked the complete diff and reran processor, development/optimized browser and documentation-link checks; no other findings.
 
 ## Promoted knowledge
 

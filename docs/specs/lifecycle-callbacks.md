@@ -19,7 +19,7 @@ Define participation and invocation order for a view's commit-phase callbacks ac
 11. Existing input-change notifications for a phase run before its callbacks.
 12. An unchecked exception stops the remaining callbacks in that phase and propagates to the lifecycle caller.
 13. An immutable disposable input disposed before view construction suppresses construction and all mount callbacks.
-14. A disposed view invokes no pre-update or post-update callbacks.
+14. A disposed view with disposable inputs invokes no pre-update or post-update callbacks.
 
 ## Architectural basis
 
