@@ -11,6 +11,8 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Types;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.AnnotationsUtil;
 import org.realityforge.proton.ElementsUtil;
@@ -20,7 +22,7 @@ import org.realityforge.proton.ProcessorException;
 final class InputPolicies {
     private InputPolicies() {}
 
-    static void parseEquality(final ProcessingEnvironment env, final ViewDescriptor view, final InputDescriptor input) {
+    static void parseEquality(final ProcessingEnvironment env, final InputDescriptor input) {
         var type = (TypeMirror)
                 AnnotationsUtil.getAnnotationValue(input.getElement(), Constants.INPUT_CLASSNAME, "equalityComparator")
                         .getValue();
@@ -42,10 +44,10 @@ final class InputPolicies {
             }
             type = AnnotationsUtil.getAnnotationValueValue(annotation, "value");
         }
-        input.setEqualityComparator(validateProvider(env, view, input, type, Constants.EQUALITY_COMPARATOR_CLASSNAME));
+        input.setEqualityComparator(validateProvider(env, input, type, Constants.EQUALITY_COMPARATOR_CLASSNAME));
     }
 
-    static void parseKey(final ProcessingEnvironment env, final ViewDescriptor view, final InputDescriptor input) {
+    static void parseKey(final ProcessingEnvironment env, final InputDescriptor input) {
         final var type = (TypeMirror)
                 AnnotationsUtil.getAnnotationValue(input.getElement(), Constants.INPUT_CLASSNAME, "keyGenerator")
                         .getValue();
@@ -55,26 +57,27 @@ final class InputPolicies {
         if (!input.isImmutable()) {
             throw error(input, "keyGenerator is only valid on immutable constructor inputs");
         }
-        final var provider = validateProvider(env, view, input, type, Constants.INPUT_KEY_GENERATOR_CLASSNAME);
-        final var contract = findContract(env, provider.asType(), Constants.INPUT_KEY_GENERATOR_CLASSNAME);
+        final var types = env.getTypeUtils();
+        final var elements = env.getElementUtils();
+        final var view = input.getDescriptor().getElement();
+        final var provider = validateProvider(env, input, type, Constants.INPUT_KEY_GENERATOR_CLASSNAME);
+        final var contract = findContract(types, provider.asType(), Constants.INPUT_KEY_GENERATOR_CLASSNAME);
         if (null == contract || 1 != contract.getTypeArguments().size()) {
             throw error(input, "keyGenerator must implement InputKeyGenerator<T> with a resolved type argument");
         }
-        final var api =
-                Objects.requireNonNull(env.getElementUtils().getTypeElement(Constants.INPUT_KEY_GENERATOR_CLASSNAME));
-        final var apiMethod = ElementsUtil.getMethods(api, env.getElementUtils(), env.getTypeUtils()).stream()
+        final var api = Objects.requireNonNull(elements.getTypeElement(Constants.INPUT_KEY_GENERATOR_CLASSNAME));
+        final var apiMethod = ElementsUtil.getMethods(api, elements, types).stream()
                 .filter(method -> method.getSimpleName().contentEquals("getKey"))
                 .findFirst()
                 .orElseThrow();
-        final var signature = (ExecutableType) env.getTypeUtils().asMemberOf(contract, apiMethod);
+        final var signature = (ExecutableType) types.asMemberOf(contract, apiMethod);
         ExecutableElement target = apiMethod;
         ExecutableType targetType = signature;
-        for (final var method : ElementsUtil.getMethods(provider, env.getElementUtils(), env.getTypeUtils())) {
+        for (final var method : ElementsUtil.getMethods(provider, elements, types)) {
             if (method.getSimpleName().contentEquals("getKey")
                     && !method.getModifiers().contains(Modifier.STATIC)) {
-                final var resolved =
-                        (ExecutableType) env.getTypeUtils().asMemberOf((DeclaredType) provider.asType(), method);
-                if (env.getTypeUtils().isSubsignature(resolved, signature)) {
+                final var resolved = (ExecutableType) types.asMemberOf((DeclaredType) provider.asType(), method);
+                if (types.isSubsignature(resolved, signature)) {
                     target = method;
                     targetType = resolved;
                     break;
@@ -82,21 +85,22 @@ final class InputPolicies {
             }
         }
         final var sourceType = input.getType() instanceof PrimitiveType primitive
-                ? env.getTypeUtils().boxedClass(primitive).asType()
+                ? types.boxedClass(primitive).asType()
                 : input.getType();
+        // A wider implementation parameter must not bypass the generic interface's nullness contract.
         if (!Nullability.isAssignable(
-                        env.getTypeUtils(),
+                        types,
                         input.getElement(),
                         sourceType,
-                        view.getElement(),
+                        view,
                         apiMethod.getParameters().get(0),
                         signature.getParameterTypes().get(0),
                         provider)
                 || !Nullability.isAssignable(
-                        env.getTypeUtils(),
+                        types,
                         input.getElement(),
                         sourceType,
-                        view.getElement(),
+                        view,
                         target.getParameters().get(0),
                         targetType.getParameterTypes().get(0),
                         provider)) {
@@ -109,14 +113,13 @@ final class InputPolicies {
     }
 
     @Nullable
-    private static DeclaredType findContract(
-            final ProcessingEnvironment env, final TypeMirror type, final String name) {
+    private static DeclaredType findContract(final Types types, final TypeMirror type, final String name) {
         if (type instanceof DeclaredType declared
                 && declared.asElement().toString().equals(name)) {
             return declared;
         }
-        for (final var parent : env.getTypeUtils().directSupertypes(type)) {
-            final var found = findContract(env, parent, name);
+        for (final var parent : types.directSupertypes(type)) {
+            final var found = findContract(types, parent, name);
             if (null != found) {
                 return found;
             }
@@ -124,47 +127,39 @@ final class InputPolicies {
         return null;
     }
 
-    static TypeElement validateProvider(
+    private static TypeElement validateProvider(
             final ProcessingEnvironment env,
-            final ViewDescriptor view,
             final InputDescriptor input,
             final TypeMirror type,
             final String contractName) {
+        final var view = input.getDescriptor().getElement();
         if (!(type instanceof DeclaredType declared)
                 || !(declared.asElement() instanceof TypeElement provider)
                 || ElementKind.CLASS != provider.getKind()
                 || provider.getModifiers().contains(Modifier.ABSTRACT)
                 || ElementsUtil.isNonStaticNestedType(provider)
                 || !provider.getTypeParameters().isEmpty()
-                || !ElementsUtil.isTypeAccessibleFrom(view.getElement(), provider)
-                || !ElementsUtil.hasAccessibleNoArgConstructor(view.getElement(), provider)) {
+                || !ElementsUtil.isTypeAccessibleFrom(view, provider)
+                || !ElementsUtil.hasAccessibleNoArgConstructor(view, provider)) {
             throw error(
                     input,
                     "provider must be a concrete accessible class, static if nested, without type parameters,"
                             + " and with an accessible no-argument constructor");
         }
-        final var contract = Objects.requireNonNull(env.getElementUtils().getTypeElement(contractName));
-        if (!env.getTypeUtils()
-                .isAssignable(
-                        env.getTypeUtils().erasure(type), env.getTypeUtils().erasure(contract.asType()))) {
+        final var types = env.getTypeUtils();
+        final var elements = env.getElementUtils();
+        final var contract = Objects.requireNonNull(elements.getTypeElement(contractName));
+        if (!types.isAssignable(types.erasure(type), types.erasure(contract.asType()))) {
             throw error(input, "provider must implement " + contractName);
         }
-        for (final var member : provider.getEnclosedElements()) {
-            if (ElementKind.CONSTRUCTOR == member.getKind()
-                    && ((ExecutableElement) member).getParameters().isEmpty()) {
-                for (final var thrown : ((ExecutableElement) member).getThrownTypes()) {
-                    if (!env.getTypeUtils()
-                                    .isSubtype(
-                                            thrown,
-                                            Objects.requireNonNull(env.getElementUtils()
-                                                            .getTypeElement("java.lang.RuntimeException"))
-                                                    .asType())
-                            && !env.getTypeUtils()
-                                    .isSubtype(
-                                            thrown,
-                                            Objects.requireNonNull(env.getElementUtils()
-                                                            .getTypeElement("java.lang.Error"))
-                                                    .asType())) {
+        final var runtimeException = Objects.requireNonNull(elements.getTypeElement("java.lang.RuntimeException"))
+                .asType();
+        final var error = Objects.requireNonNull(elements.getTypeElement("java.lang.Error"))
+                .asType();
+        for (final var constructor : ElementFilter.constructorsIn(provider.getEnclosedElements())) {
+            if (constructor.getParameters().isEmpty()) {
+                for (final var thrown : constructor.getThrownTypes()) {
+                    if (!types.isSubtype(thrown, runtimeException) && !types.isSubtype(thrown, error)) {
                         throw error(input, "provider no-argument constructor must not throw checked exceptions");
                     }
                 }

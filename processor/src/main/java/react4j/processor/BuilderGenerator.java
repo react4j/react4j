@@ -10,7 +10,6 @@ import com.palantir.javapoet.ParameterSpec;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
 import com.palantir.javapoet.TypeSpec;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -24,7 +23,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import org.jspecify.annotations.Nullable;
 import org.realityforge.proton.GeneratorUtil;
@@ -628,83 +626,18 @@ final class BuilderGenerator {
                 }
             }
 
-            final var sb = new StringBuilder();
-            sb.append("$N.setKey( ");
-            final var params = new ArrayList<>();
-            params.add(elementName);
-            boolean firstInput = true;
-            for (final var input : syntheticInputs) {
-                if (!firstInput) {
-                    sb.append(" + \"-\" + ");
-                } else {
-                    firstInput = false;
-                }
-                final var strategy = input.getImmutableInputKeyStrategy();
-                if (ImmutableInputKeyStrategy.KEYED == strategy) {
-                    sb.append("$T.getKey( ($T) inputs.get( $T.Inputs.$N ) )");
-                    params.add(KEYED_CLASSNAME);
-                    params.add(input.getType());
-                    params.add(descriptor.getEnhancedClassName());
-                    params.add(input.getConstantName());
-                } else if (ImmutableInputKeyStrategy.IS_STRING == strategy
-                        || ImmutableInputKeyStrategy.ENUM == strategy) {
-                    sb.append("( ($T) inputs.get( $T.Inputs.$N ) )");
-                    params.add(input.getType());
-                    params.add(descriptor.getEnhancedClassName());
-                    params.add(input.getConstantName());
-                } else if (ImmutableInputKeyStrategy.TO_STRING == strategy) {
-                    final var inputType = input.getType();
-                    final var kind = inputType.getKind();
-                    final var value = kind.isPrimitive()
-                            ? "$T.requireNonNull( inputs.get( $T.Inputs.$N ) )"
-                            : "inputs.get( $T.Inputs.$N )";
-                    if (TypeKind.LONG == kind
-                            || TypeKind.INT == kind
-                            || TypeKind.SHORT == kind
-                            || TypeKind.BYTE == kind
-                            || TypeKind.FLOAT == kind) {
-                        sb.append("$T.valueOf( ($T) (double) " + value + " )");
-                    } else {
-                        sb.append("$T.valueOf( ($T) " + value + " )");
-                    }
-                    params.add(String.class);
-                    params.add(inputType);
-                    if (kind.isPrimitive()) {
-                        params.add(Objects.class);
-                    }
-                    params.add(descriptor.getEnhancedClassName());
-                    params.add(input.getConstantName());
-                } else if (ImmutableInputKeyStrategy.DYNAMIC == strategy) {
-                    final var name = "$" + input.getName() + "$";
-                    sb.append("( $N instanceof $T ? $T.getKey( $N ) : " + "$N instanceof $T ? $T.<$T>getArezId( $N ) : "
-                            + "$T.valueOf( $N ) )");
-                    params.add(name);
-                    params.add(KEYED_CLASSNAME);
-                    params.add(KEYED_CLASSNAME);
-                    params.add(name);
-                    params.add(name);
-                    params.add(IDENTIFIABLE_CLASSNAME);
-                    params.add(IDENTIFIABLE_CLASSNAME);
-                    params.add(Object.class);
-                    params.add(name);
-                    params.add(String.class);
-                    params.add(name);
-                } else {
-                    assert ImmutableInputKeyStrategy.AREZ_IDENTIFIABLE == strategy;
-                    sb.append("$T.valueOf( $T.<$T>getArezId( ($T) inputs.get( $T.Inputs.$N ) ) )");
-                    params.add(String.class);
-                    params.add(IDENTIFIABLE_CLASSNAME);
-                    params.add(Object.class);
-                    params.add(input.getType());
-                    params.add(descriptor.getEnhancedClassName());
-                    params.add(input.getConstantName());
-                }
-            }
-            sb.append(" + ( $T.enableViewNames() ? $S : $T.class.getName() ) )");
-            params.add(REACT_CLASSNAME);
-            params.add(descriptor.keySuffix());
-            params.add(descriptor.getClassName());
-            method.addStatement(sb.toString(), params.toArray());
+            final var key = CodeBlock.join(
+                    syntheticInputs.stream()
+                            .map(BuilderGenerator::unframedInputKey)
+                            .toList(),
+                    " + \"-\" + ");
+            method.addStatement(
+                    "$N.setKey( $L + ( $T.enableViewNames() ? $S : $T.class.getName() ) )",
+                    elementName,
+                    key,
+                    REACT_CLASSNAME,
+                    descriptor.keySuffix(),
+                    descriptor.getClassName());
         }
 
         method.addStatement("return $N", elementName).returns(REACT_NODE_CLASSNAME);
@@ -719,7 +652,7 @@ final class BuilderGenerator {
 
     private static CodeBlock inputKey(final InputDescriptor input) {
         if (null != input.getKeyGenerator()) {
-            return CodeBlock.of("$N.getKey($L)", keyGeneratorField(input), inputValue(input));
+            return CodeBlock.of("$N.getKey($L)", keyGeneratorField(input), InputValues.read(input, "inputs"));
         }
         final var value = CodeBlock.of(
                 "inputs.get($T.Inputs.$N)", input.getDescriptor().getEnhancedClassName(), input.getConstantName());
@@ -743,16 +676,58 @@ final class BuilderGenerator {
                         value,
                         value);
             case IS_STRING, ENUM -> CodeBlock.of("$T.valueOf($L)", String.class, value);
-            case TO_STRING -> CodeBlock.of("$T.valueOf($L)", String.class, inputValue(input));
+            case TO_STRING -> CodeBlock.of("$T.valueOf($L)", String.class, InputValues.read(input, "inputs"));
+        };
+    }
+
+    private static CodeBlock unframedInputKey(final InputDescriptor input) {
+        final var value = CodeBlock.of(
+                "inputs.get( $T.Inputs.$N )", input.getDescriptor().getEnhancedClassName(), input.getConstantName());
+        return switch (input.getImmutableInputKeyStrategy()) {
+            case KEYED -> CodeBlock.of("$T.getKey( ($T) $L )", KEYED_CLASSNAME, input.getType(), value);
+            case IS_STRING, ENUM -> CodeBlock.of("( ($T) $L )", input.getType(), value);
+            case TO_STRING -> {
+                final var kind = input.getType().getKind();
+                final var scalar =
+                        kind.isPrimitive() ? CodeBlock.of("$T.requireNonNull( $L )", Objects.class, value) : value;
+                final var converted =
+                        switch (kind) {
+                            case BYTE, SHORT, INT, LONG, FLOAT -> CodeBlock.of("(double) $L", scalar);
+                            default -> scalar;
+                        };
+                yield CodeBlock.of("$T.valueOf( ($T) $L )", String.class, input.getType(), converted);
+            }
+            case DYNAMIC -> {
+                final var name = "$" + input.getName() + "$";
+                yield CodeBlock.of(
+                        "( $N instanceof $T ? $T.getKey( $N ) : "
+                                + "$N instanceof $T ? $T.<$T>getArezId( $N ) : $T.valueOf( $N ) )",
+                        name,
+                        KEYED_CLASSNAME,
+                        KEYED_CLASSNAME,
+                        name,
+                        name,
+                        IDENTIFIABLE_CLASSNAME,
+                        IDENTIFIABLE_CLASSNAME,
+                        Object.class,
+                        name,
+                        String.class,
+                        name);
+            }
+            case AREZ_IDENTIFIABLE ->
+                CodeBlock.of(
+                        "$T.valueOf( $T.<$T>getArezId( ($T) $L ) )",
+                        String.class,
+                        IDENTIFIABLE_CLASSNAME,
+                        Object.class,
+                        input.getType(),
+                        value);
+            case ARRAY -> throw new IllegalStateException("Array keys require framing");
         };
     }
 
     private static String keyGeneratorField(final InputDescriptor input) {
         return "$keyGenerator_" + input.getName();
-    }
-
-    private static CodeBlock inputValue(final InputDescriptor input) {
-        return InputValues.read(input, "inputs");
     }
 
     private static TypeSpec buildContextHolder(final ViewDescriptor descriptor) {

@@ -262,8 +262,8 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         descriptor.sortInputs();
 
         for (final var input : descriptor.getInputs()) {
-            InputPolicies.parseKey(processingEnv, descriptor, input);
-            InputPolicies.parseEquality(processingEnv, descriptor, input);
+            InputPolicies.parseKey(processingEnv, input);
+            InputPolicies.parseEquality(processingEnv, input);
             InputEnhancer.parse(processingEnv, descriptor, input);
         }
 
@@ -982,7 +982,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                 requiredValue);
     }
 
-    private boolean isContentArray(final TypeMirror type) {
+    private static boolean isContentArray(final TypeMirror type) {
         if (type instanceof ArrayType array) {
             final var component = array.getComponentType();
             return component.getKind().isPrimitive()
