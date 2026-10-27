@@ -21,7 +21,7 @@ Domain document link validation, Java/Bazel formatting, site validation/preview 
 
 ## Evidence
 
-Passed: tools/check.sh (formatting, hermeticity, all 59 normal test targets, 17 optimized browser targets, 27 JVM coverage targets, runtime coverage in both configurations, unchanged coverage thresholds, 27,420 site links, unsigned archive validation). Domain link validation passed. Refreshed local site preview returned HTTP 200 with compiled examples and migration section. Initial coverage harness failure was a fixed render-count assumption: debug-state storage forces an extra mount render; equal-input assertions now use the actual mount baseline while memoization and callbacks stay exact. No coverage policy changes. Rose-agent prompt is supplied as a local handoff at closeout; no Rose changes.
+Passed: tools/check.sh (formatting, hermeticity, all 59 normal test targets, 17 optimized browser targets, 27 JVM coverage targets, runtime coverage in both configurations, unchanged coverage thresholds, 27,420 site links, unsigned archive validation). Domain link validation passed. Refreshed local site preview at /docs/input-semantics.html returned HTTP 200 (initial root URL was a 404 and was corrected before review) with compiled examples and migration section. Initial coverage harness failure was a fixed render-count assumption: debug-state storage forces an extra mount render; equal-input assertions now use the actual mount baseline while memoization and callbacks stay exact. No coverage policy changes. Rose-agent prompt is supplied as a local handoff at closeout; no Rose changes.
 
 ## Knowledge classification
 

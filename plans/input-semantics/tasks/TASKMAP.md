@@ -5,7 +5,7 @@
 - Current frontier: implementation review
 - Planning reviewer: plan_review (1/3 rounds; final confirmation unused; Findings: none)
 - Plan checkpoint: automatic (accepted interview scope, explicit implementation/PR authority, passing planning review)
-- Implementation reviewer: pending (0/5 rounds; final confirmation unused)
+- Implementation reviewer: implementation_review (1/5 rounds; final confirmation unused; review pending)
 
 ## Full-scope validation
 
