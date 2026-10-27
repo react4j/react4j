@@ -5,6 +5,7 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -27,7 +28,7 @@ final class ArezComponentLikePropModelBuilder {
     return newBuilder().build();
   }
 
-  interface Step1 {
+  interface Step1 extends Buildable {
     @Contract(pure = true)
     ReactNode model(ArezComponentLikePropModel.@Nullable Model model);
 

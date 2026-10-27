@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 /**
  * Identifies the method invoked to render the view.
  * There must be exactly one method annotated with this annotation within the view.
- * The method must return a value of type {@link react4j.ReactNode}.
+ * The method must return a value of type {@link react4j.Renderable}.
+ * A {@link react4j.Buildable} result is built before passing the node to React.
  *
  * <p>The method must also conform to the following constraints:</p>
  * <ul>

@@ -6,6 +6,7 @@ import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -29,7 +30,7 @@ final class PresenceBuilder {
     Step2 requiredNullable(@Nullable String requiredNullable);
   }
 
-  interface Step2 {
+  interface Step2 extends Buildable {
     @Contract(pure = true)
     Step2 optionalNullable(@Nullable String optionalNullable);
 

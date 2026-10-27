@@ -13,6 +13,7 @@ j2cl_library(
     srcs = [
         "BuildableBrowserTest.java",
         "ContextsTest.java",
+        "GeneratedBuildableBrowserTest.java",
         "InputEnhancerBrowserTest.java",
         "LifecycleBrowserTest.java",
         "ReactConfigTest.java",

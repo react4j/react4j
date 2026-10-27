@@ -6,9 +6,11 @@ import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ChildrenEnhancer;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.Renderable;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
@@ -34,10 +36,7 @@ final class OptionalChildrenWithOptionalAndRequiredBuilder {
     return newBuilder().myRequiredProp( myRequiredProp );
   }
 
-  @Contract(
-      pure = true
-  )
-  static ReactNode children(final ReactNode @Nullable ... children) {
+  static ReactNode children(final Renderable @Nullable ... children) {
     return newBuilder().children( children );
   }
 
@@ -48,11 +47,11 @@ final class OptionalChildrenWithOptionalAndRequiredBuilder {
     return newBuilder().build();
   }
 
-  static ReactNode children(final Stream<? extends ReactNode> arg0) {
+  static ReactNode children(final Stream<? extends Renderable> arg0) {
     return OptionalChildrenWithOptionalAndRequiredBuilder.newBuilder().children(arg0);
   }
 
-  interface Step1 extends ChildrenEnhancer<ReactNode> {
+  interface Step1 extends Buildable, ChildrenEnhancer<ReactNode> {
     @Contract(
         pure = true
     )
@@ -63,10 +62,7 @@ final class OptionalChildrenWithOptionalAndRequiredBuilder {
     )
     Step1 myRequiredProp(@Nullable String myRequiredProp);
 
-    @Contract(
-        pure = true
-    )
-    ReactNode children(ReactNode @Nullable ... children);
+    ReactNode children(Renderable @Nullable ... children);
 
     @Contract(
         pure = true
@@ -102,11 +98,9 @@ final class OptionalChildrenWithOptionalAndRequiredBuilder {
     }
 
     @Override
-    @Contract(
-        pure = true
-    )
-    public final ReactNode children(final ReactNode @Nullable ... children) {
-      _element.input( React4j_OptionalChildrenWithOptionalAndRequired.Inputs.children, children );
+    public final ReactNode children(final Renderable @Nullable ... children) {
+      final var $react4j$children = Renderable.toReactNodes( children );
+      _element.input( React4j_OptionalChildrenWithOptionalAndRequired.Inputs.children, $react4j$children );
       return build();
     }
 

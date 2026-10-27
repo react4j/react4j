@@ -6,6 +6,8 @@ final class Constants {
 
     static final String VNODE_CLASSNAME = "react4j.ReactNode";
 
+    static final String RENDERABLE_CLASSNAME = "react4j.Renderable";
+
     static final String CHILDREN_ENHANCER_CLASSNAME = "react4j.ChildrenEnhancer";
 
     static final String KEYED_CLASSNAME = "react4j.Keyed";

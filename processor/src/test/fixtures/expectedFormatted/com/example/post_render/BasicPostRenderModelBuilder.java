@@ -3,6 +3,7 @@ package com.example.post_render;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -20,7 +21,7 @@ final class BasicPostRenderModelBuilder {
     return newBuilder().build();
   }
 
-  interface Step1 {
+  interface Step1 extends Buildable {
     @Contract(pure = true)
     ReactNode build();
   }

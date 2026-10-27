@@ -5,6 +5,7 @@ import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -27,7 +28,7 @@ final class ColorfulNameInputDefaultBuilder {
     return newBuilder().build();
   }
 
-  interface Step1 {
+  interface Step1 extends Buildable {
     @Contract(pure = true)
     ReactNode myProp12$23(String myProp12$23);
 

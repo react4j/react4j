@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -50,7 +51,7 @@ public final class TerminalBuilder {
     return TerminalBuilder.newBuilder().collections(arg0, arg1);
   }
 
-  public interface Step1 extends Enhancers.PanelTypes<ReactNode> {
+  public interface Step1 extends Buildable, Enhancers.PanelTypes<ReactNode> {
     @Contract(
         pure = true
     )

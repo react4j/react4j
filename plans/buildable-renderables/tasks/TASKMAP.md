@@ -2,7 +2,7 @@
 
 - Spec: [SPEC.md](../SPEC.md)
 - Status: `implementing`
-- Current frontier: `T02`
+- Current frontier: `T03`
 - Planning reviewer: `/root/planning_review` (`1/3` rounds; final confirmation `unused`), Findings: none.
 - Plan checkpoint: automatic. Basis: confirmed interview, explicit implementation/PR instruction in this chat on 2026-10-27, and passing independent planning review.
 - Implementation reviewer: `pending` (`0/5` rounds; final confirmation `unused`)
@@ -17,7 +17,7 @@
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
 | T01 | [Core and DOM composition](T01-runtime-composition.md) | complete | None |
-| T02 | [Generated composition and enhancer migration](T02-generated-composition.md) | pending | T01 |
+| T02 | [Generated composition and enhancer migration](T02-generated-composition.md) | complete | T01 |
 | T03 | [Consumer guidance and full validation](T03-delivery-validation.md) | pending | T02 |
 
 ## Sequencing notes

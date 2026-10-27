@@ -1,9 +1,14 @@
 package react4j.processor;
 
+import com.palantir.javapoet.ArrayTypeName;
+import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.TypeName;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import org.jspecify.annotations.Nullable;
@@ -280,6 +285,43 @@ final class InputDescriptor {
 
     TypeName getTypeName() {
         return Nullability.typeName(getElement(), getType(), _descriptor.getElement());
+    }
+
+    static boolean isNodeType(final TypeMirror type) {
+        return type instanceof DeclaredType declared
+                && (Constants.VNODE_CLASSNAME.equals(declared.asElement().toString())
+                        || Constants.RENDERABLE_CLASSNAME.equals(
+                                declared.asElement().toString()));
+    }
+
+    boolean isRenderableInput() {
+        return isNodeType(_type) || isRenderableArrayInput();
+    }
+
+    boolean isRenderableArrayInput() {
+        return _type instanceof ArrayType array && isNodeType(array.getComponentType());
+    }
+
+    TypeMirror getBuilderType(final ProcessingEnvironment env) {
+        if (!isRenderableInput()) {
+            return _type;
+        }
+        final var renderable = env.getElementUtils()
+                .getTypeElement(Constants.RENDERABLE_CLASSNAME)
+                .asType();
+        return isRenderableArrayInput() ? env.getTypeUtils().getArrayType(renderable) : renderable;
+    }
+
+    TypeName getBuilderTypeName() {
+        final var type = getTypeName();
+        if (!isRenderableInput()) {
+            return type;
+        }
+        final var renderable = ClassName.bestGuess(Constants.RENDERABLE_CLASSNAME);
+        return type instanceof ArrayTypeName array
+                ? ArrayTypeName.of(renderable.annotated(array.componentType().annotations()))
+                        .annotated(type.annotations())
+                : renderable.annotated(type.annotations());
     }
 
     void markAsOptional() {

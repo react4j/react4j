@@ -8,8 +8,10 @@ import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.Renderable;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
@@ -29,6 +31,14 @@ final class OptionalBuilder {
   @Contract(pure = true)
   static Step1 title(final @Nullable String title) {
     return newBuilder().title(title);
+  }
+
+  static Step1 node(final @Nullable Renderable node) {
+    return newBuilder().node(node);
+  }
+
+  static Step1 nodes(final @Nullable Renderable @Nullable ... nodes) {
+    return newBuilder().nodes(nodes);
   }
 
   @Contract(pure = true)
@@ -53,12 +63,24 @@ final class OptionalBuilder {
     return OptionalBuilder.newBuilder().titled(arg0);
   }
 
-  interface Step1 extends Enhancers.PanelTypes<Step1>, Enhancers.Title<Step1> {
+  static Step1 emptyNode() {
+    return OptionalBuilder.newBuilder().emptyNode();
+  }
+
+  interface Step1
+      extends Buildable,
+          Enhancers.PanelTypes<Step1>,
+          Enhancers.Title<Step1>,
+          Enhancers.Node<Step1> {
     @Contract(pure = true)
     Step1 panelTypes(@Nullable Set<Class<?>> panelTypes);
 
     @Contract(pure = true)
     Step1 title(@Nullable String title);
+
+    Step1 node(@Nullable Renderable node);
+
+    Step1 nodes(@Nullable Renderable @Nullable ... nodes);
 
     @Contract(pure = true)
     ReactNode build();
@@ -79,6 +101,20 @@ final class OptionalBuilder {
     @Contract(pure = true)
     public final Step1 title(final @Nullable String title) {
       _element.input(React4j_OptionalView.Inputs.title, title);
+      return this;
+    }
+
+    @Override
+    public final Step1 node(final @Nullable Renderable node) {
+      final var $react4j$node = Renderable.toReactNode(node);
+      _element.input(React4j_OptionalView.Inputs.node, $react4j$node);
+      return this;
+    }
+
+    @Override
+    public final Step1 nodes(final @Nullable Renderable @Nullable ... nodes) {
+      final var $react4j$nodes = Renderable.toReactNodes(nodes);
+      _element.input(React4j_OptionalView.Inputs.nodes, $react4j$nodes);
       return this;
     }
 

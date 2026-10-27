@@ -4,6 +4,7 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -38,7 +39,7 @@ final class MultipleOnPropChangeBuilder {
     Step3 myProp3(int myProp3);
   }
 
-  interface Step3 {
+  interface Step3 extends Buildable {
     @Contract(
         pure = true
     )

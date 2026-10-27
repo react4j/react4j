@@ -3,6 +3,7 @@ package com.example.basic;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -20,7 +21,7 @@ public final class ExportedBuilderBuilder {
     return newBuilder().build();
   }
 
-  public interface Step1 {
+  public interface Step1 extends Buildable {
     @Contract(pure = true)
     ReactNode build();
   }

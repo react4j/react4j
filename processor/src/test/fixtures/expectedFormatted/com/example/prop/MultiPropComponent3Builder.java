@@ -4,8 +4,10 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.Renderable;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
@@ -26,8 +28,7 @@ final class MultiPropComponent3Builder {
     return newBuilder().myProp2(myProp2);
   }
 
-  @Contract(pure = true)
-  static ReactNode child(final @Nullable ReactNode child) {
+  static ReactNode child(final @Nullable Renderable child) {
     return newBuilder().child(child);
   }
 
@@ -36,15 +37,14 @@ final class MultiPropComponent3Builder {
     return newBuilder().build();
   }
 
-  interface Step1 {
+  interface Step1 extends Buildable {
     @Contract(pure = true)
     Step1 myProp(@Nullable String myProp);
 
     @Contract(pure = true)
     Step1 myProp2(@Nullable String myProp2);
 
-    @Contract(pure = true)
-    ReactNode child(@Nullable ReactNode child);
+    ReactNode child(@Nullable Renderable child);
 
     @Contract(pure = true)
     ReactNode build();
@@ -69,9 +69,9 @@ final class MultiPropComponent3Builder {
     }
 
     @Override
-    @Contract(pure = true)
-    public final ReactNode child(final @Nullable ReactNode child) {
-      _element.input(React4j_MultiPropComponent3.Inputs.child, ReactNode.of(child));
+    public final ReactNode child(final @Nullable Renderable child) {
+      final var $react4j$child = Renderable.toReactNode(child);
+      _element.input(React4j_MultiPropComponent3.Inputs.child, ReactNode.of($react4j$child));
       return build();
     }
 

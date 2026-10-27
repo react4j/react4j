@@ -4,6 +4,7 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -26,7 +27,7 @@ final class NullabilityPropsComponentBuilder {
     Step2 myProp(String myProp);
   }
 
-  interface Step2 {
+  interface Step2 extends Buildable {
     @Contract(pure = true)
     ReactNode myProp2(@Nullable String myProp2);
 

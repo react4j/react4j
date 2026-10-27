@@ -1049,24 +1049,17 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         }
     }
 
-    private static String typeIdentity(TypeMirror type) {
-        if (type instanceof ArrayType array) {
-            return typeIdentity(array.getComponentType()) + "[]";
-        }
-        return type instanceof DeclaredType declared ? declared.asElement().toString() : type.toString();
-    }
-
     private void validateInputNameAndType(final String name, final TypeMirror type, final Element element) {
         if ("build".equals(name)) {
             throw new ProcessorException(
                     "@Input named 'build' is invalid as it conflicts with the method named "
                             + "build() that is used in the generated Builder classes",
                     element);
-        } else if ("child".equals(name)
-                && (type.getKind() != TypeKind.DECLARED && !"react4j.ReactNode".equals(typeIdentity(type)))) {
+        } else if ("child".equals(name) && TypeKind.DECLARED != type.getKind()) {
             throw new ProcessorException("@Input named 'child' should be of type react4j.ReactNode", element);
         } else if ("children".equals(name)
-                && (type.getKind() != TypeKind.DECLARED && !"react4j.ReactNode[]".equals(typeIdentity(type)))) {
+                && TypeKind.DECLARED != type.getKind()
+                && !(type instanceof ArrayType array && InputDescriptor.isNodeType(array.getComponentType()))) {
             throw new ProcessorException("@Input named 'children' should be of type react4j.ReactNode[]", element);
         }
     }
@@ -1230,8 +1223,20 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                 MemberChecks.mustBeSubclassCallable(
                         typeElement, Constants.VIEW_CLASSNAME, Constants.RENDER_CLASSNAME, method);
                 MemberChecks.mustNotHaveAnyParameters(Constants.RENDER_CLASSNAME, method);
-                MemberChecks.mustReturnAnInstanceOf(
-                        processingEnv, method, Constants.RENDER_CLASSNAME, Constants.VNODE_CLASSNAME);
+                final var renderType = ((ExecutableType)
+                                processingEnv.getTypeUtils().asMemberOf((DeclaredType) typeElement.asType(), method))
+                        .getReturnType();
+                final var renderable = processingEnv
+                        .getElementUtils()
+                        .getTypeElement(Constants.RENDERABLE_CLASSNAME)
+                        .asType();
+                if (!processingEnv.getTypeUtils().isAssignable(renderType, renderable)) {
+                    throw new ProcessorException(
+                            MemberChecks.must(
+                                    Constants.RENDER_CLASSNAME,
+                                    "return an instance of " + Constants.RENDERABLE_CLASSNAME),
+                            method);
+                }
                 MemberChecks.mustNotThrowAnyExceptions(Constants.RENDER_CLASSNAME, method);
                 MemberChecks.mustNotHaveAnyTypeParameters(Constants.RENDER_CLASSNAME, method);
 

@@ -4,6 +4,7 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -32,7 +33,7 @@ final class GenericTypePropModelBuilder {
   }
 
   @SuppressWarnings("unused")
-  interface Step1<T> {
+  interface Step1<T> extends Buildable {
     @Contract(
         pure = true
     )

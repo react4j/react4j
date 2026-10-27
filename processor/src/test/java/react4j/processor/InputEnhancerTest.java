@@ -45,6 +45,8 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
             import java.util.*;
             import org.jspecify.annotations.*;
             import react4j.ReactNode;
+            import react4j.Renderable;
+            import react4j.Buildable;
             import react4j.annotations.*;
             @NullMarked
             public final class Case {
@@ -262,6 +264,65 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
     }
 
     @Test
+    public void renderableNodeInputContracts() throws Exception {
+        assertValid(
+                "public interface Enhancer<R> { R value(Renderable v); default R preset() { return value((Buildable)"
+                        + " () -> ReactNode.of(\"node\")); } }",
+                "@Input(enhancer=Enhancer.class) abstract ReactNode value();",
+                "Renderable value");
+        assertValid(
+                "public interface Enhancer<R> { R value(@Nullable Renderable @Nullable ... v); }",
+                "@Input(enhancer=Enhancer.class) abstract @Nullable ReactNode @Nullable [] value();",
+                "@Nullable Renderable @Nullable ... value");
+        assertInvalid(
+                "public interface Enhancer<R> { R value(@Nullable Renderable v); }",
+                "@Input(enhancer=Enhancer.class) abstract ReactNode value();",
+                "parameter nullness is incompatible");
+        assertInvalid(
+                "public interface Enhancer<R> { R value(@Nullable Renderable[] v); }",
+                "@Input(enhancer=Enhancer.class) abstract ReactNode[] value();",
+                "parameter nullness is incompatible");
+        assertInvalid(
+                "public interface Enhancer<R> { R children(ReactNode... v); }",
+                "@Input(enhancer=Enhancer.class) abstract ReactNode[] children();",
+                "abstract setter must match");
+    }
+
+    @Test
+    public void incompleteBuilderCannotBeComposed() throws Exception {
+        final var compilation = CompileTestUtil.compile(
+                List.of(source(
+                        "static Renderable invalid() { return Case_ComponentBuilder.newBuilder(); }",
+                        "@Input abstract String value(); @Input abstract @Nullable String note();")),
+                getOptions(),
+                processors(),
+                List.of());
+        try {
+            assertFalse(compilation.success());
+            final var message = CompileTestUtil.asMessage(compilation.diagnostics());
+            assertTrue(message.contains("Step1 cannot be converted to react4j.Renderable"), message);
+        } finally {
+            cleanup(compilation);
+        }
+        assertValid(
+                "static Renderable valid() { return Case_ComponentBuilder.value(\"required\"); }",
+                "@Input abstract String value(); @Input abstract @Nullable String note();",
+                "interface Step2 extends Buildable");
+    }
+
+    @Test
+    public void inheritedRenderableRenderResult() throws Exception {
+        assertValid("""
+            abstract static class Base<T extends Renderable> {
+              @Render @Nullable T render() { return null; }
+            }
+            @View(type=View.Type.STATEFUL)
+            abstract static class Derived extends Base<Buildable> {}
+            static Renderable inherited() { return Case_DerivedBuilder.newBuilder(); }
+            """, "", "interface Step1 extends Buildable");
+    }
+
+    @Test
     public void requiredCallCannotBeSkipped() throws Exception {
         final var declaration =
                 "public interface Enhancer<R> { R value(String v); default R preset() { return value(\"x\"); } }"
@@ -415,7 +476,7 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
     public void explicitChildrenEnhancerReplacesDefault() throws Exception {
         final var declarations = """
             public interface Enhancer<R> {
-              R children(ReactNode... values);
+              R children(Renderable... values);
               default R empty() { return children(new ReactNode[0]); }
             }
             static ReactNode call() { return Case_ComponentBuilder.empty(); }
@@ -427,8 +488,8 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
         assertFalse(builder.contains("ChildrenEnhancer"), builder);
         assertFalse(builder.contains("Stream"), builder);
         assertValid(
-                "public interface Enhancer<R> { R children(ReactNode... v); default R"
-                        + " children(java.util.stream.Stream<? extends ReactNode> v) { return"
+                "public interface Enhancer<R> { R children(Renderable... v); default R"
+                        + " children(java.util.stream.Stream<? extends Renderable> v) { return"
                         + " children(v.toArray(ReactNode[]::new)); } }",
                 "@Input(enhancer=Enhancer.class) abstract ReactNode @Nullable [] children();"
                         + " @Input abstract @Nullable String value();",
@@ -440,7 +501,7 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
         assertValid("""
             public interface Enhancer<R> extends react4j.ChildrenEnhancer<R> {
               default R empty() { return children(new ReactNode[0]); }
-              @Override default R children(java.util.stream.Stream<? extends ReactNode> values) {
+              @Override default R children(java.util.stream.Stream<? extends Renderable> values) {
                 return react4j.ChildrenEnhancer.super.children(values.limit(1));
               }
             }
@@ -454,7 +515,7 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
     @Test
     public void childrenEnhancersUseOrdinaryValidation() throws Exception {
         assertInvalid(
-                "public interface Enhancer<R> { R children(ReactNode @Nullable [] values); }",
+                "public interface Enhancer<R> { R children(Renderable @Nullable [] values); }",
                 "@Input(enhancer=Enhancer.class) abstract ReactNode[] children();",
                 "parameter nullness is incompatible");
         assertInvalid(

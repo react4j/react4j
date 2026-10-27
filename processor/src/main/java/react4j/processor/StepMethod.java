@@ -27,7 +27,7 @@ final class StepMethod {
     private final StepMethodType _stepMethodType;
 
     StepMethod(final InputDescriptor input, final StepMethodType stepMethodType) {
-        this(input.getName(), input.getTypeName(), input, stepMethodType);
+        this(input.getName(), input.getBuilderTypeName(), input, stepMethodType);
     }
 
     StepMethod(
@@ -79,5 +79,9 @@ final class StepMethod {
 
     boolean isChildIntrinsic() {
         return "child".equals(getName());
+    }
+
+    boolean isRenderableInput() {
+        return null != _input && _input.isRenderableInput();
     }
 }

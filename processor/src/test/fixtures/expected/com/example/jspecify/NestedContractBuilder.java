@@ -8,6 +8,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -50,7 +51,7 @@ final class NestedContractBuilder {
     Step4 unmarked(@NonNull List<String> unmarked);
   }
 
-  interface Step4 {
+  interface Step4 extends Buildable {
     @Contract(
         pure = true
     )

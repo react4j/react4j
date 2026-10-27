@@ -159,7 +159,7 @@ public final class InputEnhancerBrowserTest {
 
     interface FirstChild<R> extends ChildrenEnhancer<R> {
         @Override
-        default R children(Stream<? extends ReactNode> values) {
+        default R children(Stream<? extends Renderable> values) {
             return ChildrenEnhancer.super.children(values.limit(1));
         }
     }

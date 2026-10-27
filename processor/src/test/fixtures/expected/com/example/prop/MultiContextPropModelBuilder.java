@@ -4,6 +4,7 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.Context;
 import react4j.Contexts;
 import react4j.ReactElement;
@@ -26,7 +27,7 @@ final class MultiContextPropModelBuilder {
     return newBuilder().build();
   }
 
-  interface Step1 {
+  interface Step1 extends Buildable {
     @Contract(
         pure = true
     )
