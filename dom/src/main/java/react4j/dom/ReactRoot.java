@@ -4,8 +4,9 @@ import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import org.jspecify.annotations.Nullable;
-import react4j.ReactNode;
+import react4j.Renderable;
 
 /**
  * A React root represents the top level DOM element that react binds to.
@@ -31,11 +32,14 @@ public interface ReactRoot {
     }
 
     @JsOverlay
-    default void render(ReactNode children) {
+    default void render(Renderable children) {
         render(children, null);
     }
 
-    void render(ReactNode children, @Nullable PostRenderCallbackFn callback);
+    @JsOverlay
+    default void render(Renderable children, @Nullable PostRenderCallbackFn callback) {
+        Js.<NativeReactRoot>uncheckedCast(this).render(Renderable.toReactNode(children), callback);
+    }
 
     @JsOverlay
     default void unmount() {

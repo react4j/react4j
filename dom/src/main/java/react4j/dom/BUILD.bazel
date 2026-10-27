@@ -6,6 +6,7 @@ java_library(
     name = "dom",
     srcs = [
         "BatchingTaskInterceptor.java",
+        "NativeReactRoot.java",
         "ReactDOM.java",
         "ReactPortal.java",
         "ReactRoot.java",

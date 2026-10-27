@@ -98,12 +98,11 @@ public class ReactElement implements ReactNode {
     }
 
     @JsOverlay
-    @Contract(pure = true)
-    public static ReactElement createFragment(@Nullable final String key, final @Nullable ReactNode... children) {
+    public static ReactElement createFragment(@Nullable final String key, final @Nullable Renderable... children) {
         final var element = createRawNode(React.Element, React.Fragment);
         element.key = key;
         element.ref = null;
-        element.inputs = Js.uncheckedCast(JsPropertyMap.of("children", children));
+        element.inputs = Js.uncheckedCast(JsPropertyMap.of("children", Renderable.toReactNodes(children)));
         return element;
     }
 
@@ -114,25 +113,28 @@ public class ReactElement implements ReactNode {
      * @return a new React.StrictMode component.
      */
     @JsOverlay
-    @Contract(pure = true)
-    public static ReactNode createStrictMode(final @Nullable ReactNode... children) {
+    public static ReactNode createStrictMode(final @Nullable Renderable... children) {
         return ReactElement.createRawElement(
-                React.StrictMode, null, null, Js.uncheckedCast(JsPropertyMap.of("children", children)));
+                React.StrictMode,
+                null,
+                null,
+                Js.uncheckedCast(JsPropertyMap.of("children", Renderable.toReactNodes(children))));
     }
 
     @JsOverlay
-    @Contract(pure = true)
     public static ReactElement createSuspense(
             @Nullable final String key,
-            @Nullable final ReactNode fallback,
+            @Nullable final Renderable fallback,
             final int maxTimeToFallback,
-            final @Nullable ReactNode... children) {
+            final @Nullable Renderable... children) {
+        final var fallbackNode = Renderable.toReactNode(fallback);
+        final var childNodes = Renderable.toReactNodes(children);
         final var element = createRawNode(React.Element, React.Suspense);
         element.key = key;
         element.ref = null;
         element.inputs = Js.uncheckedCast(JsPropertyMap.of(
-                "children", children,
-                "fallback", fallback,
+                "children", childNodes,
+                "fallback", fallbackNode,
                 "ms", maxTimeToFallback));
         return element;
     }

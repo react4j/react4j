@@ -1,10 +1,10 @@
 
-  public static ReactNode {tag}( final {props} props, final @Nullable ReactNode @Nullable ... children )
+  public static ReactNode {tag}( final {props} props, final @Nullable Renderable @Nullable ... children )
   {
     return createElement( "{tag}", Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( props ), children );
   }
 
-  public static ReactNode {tag}( final @Nullable ReactNode @Nullable ... children )
+  public static ReactNode {tag}( final @Nullable Renderable @Nullable ... children )
   {
     return createElement( "{tag}", null, children );
   }
@@ -49,12 +49,12 @@
     return {tag}( ReactNode.of( content ) );
   }
 
-  public static ReactNode {tag}( final {props} props, final Stream<? extends @Nullable ReactNode> children )
+  public static ReactNode {tag}( final {props} props, final Stream<? extends @Nullable Renderable> children )
   {
     return {tag}( props, toArray( children ) );
   }
 
-  public static ReactNode {tag}( final Stream<? extends @Nullable ReactNode> children )
+  public static ReactNode {tag}( final Stream<? extends @Nullable Renderable> children )
   {
     return {tag}( toArray( children ) );
   }

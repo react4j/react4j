@@ -33,6 +33,7 @@ public final class RuntimeBrowserTest {
         try {
             InputEnhancerBrowserTest.run(root);
             ContextsTest.run(root);
+            BuildableBrowserTest.run(root);
             var element = RuntimeCoverageExample.element(component());
             check(
                     "copy-key".equals(element.key())

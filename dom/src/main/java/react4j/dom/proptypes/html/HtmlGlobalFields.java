@@ -11,7 +11,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
-import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.dom.events.ClipboardEventHandler;
 import react4j.dom.events.CompositionEventHandler;
 import react4j.dom.events.DragEventHandler;
@@ -30,7 +30,7 @@ import react4j.dom.proptypes.html.attributeTypes.YesNo;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class HtmlGlobalFields<T extends HtmlGlobalFields<T>> {
     @Nullable
-    public ReactNode children;
+    public Renderable children;
 
     @Nullable
     public String key;

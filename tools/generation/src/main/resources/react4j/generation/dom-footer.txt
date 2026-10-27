@@ -7,7 +7,7 @@
    * @param children The child elements.
    * @return the created ReactElement
    */
-  private static ReactElement createElement( final String type, @Nullable final JsPropertyMap<@Nullable Object> props, final @Nullable ReactNode @Nullable ... children )
+  private static ReactElement createElement( final String type, @Nullable final JsPropertyMap<@Nullable Object> props, final @Nullable Renderable @Nullable ... children )
   {
     final var actual = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( JsPropertyMap.of() );
     String key = null;
@@ -27,22 +27,27 @@
     }
     // In a future iteration if we re-write the reconciler we should probably ensure that shape of ReactElement
     // is always consistent and is either null or always an array element.
-    if ( null != children && children.length > 0 )
+    final var nodes = Renderable.toReactNodes( children );
+    if ( null != nodes && nodes.length > 0 )
     {
-      if ( 1 == children.length )
+      if ( 1 == nodes.length )
       {
-        actual.set( "children", children[ 0 ] );
+        actual.set( "children", nodes[ 0 ] );
       }
       else
       {
-        actual.set( "children", children );
+        actual.set( "children", nodes );
       }
+    }
+    if ( actual.has( "children" ) )
+    {
+      actual.set( "children", Renderable.toReactNode( Js.uncheckedCast( actual.get( "children" ) ) ) );
     }
     return ReactElement.createHostElement( type, key, ref, actual );
   }
 
-  private static @Nullable ReactNode[] toArray( final Stream<? extends @Nullable ReactNode> children )
+  private static @Nullable Renderable[] toArray( final Stream<? extends @Nullable Renderable> children )
   {
-    return children.toArray( ReactNode[]::new );
+    return children.toArray( Renderable[]::new );
   }
 }

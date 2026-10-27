@@ -1,10 +1,10 @@
 
   public static ReactNode {tag}()
   {
-    return createElement( "{tag}", null, (ReactNode[]) null );
+    return createElement( "{tag}", null, (Renderable[]) null );
   }
 
   public static ReactNode {tag}( final {props} props )
   {
-    return createElement( "{tag}", Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( props ), (ReactNode[]) null );
+    return createElement( "{tag}", Js.<JsPropertyMap<@Nullable Object>>uncheckedCast( props ), (Renderable[]) null );
   }

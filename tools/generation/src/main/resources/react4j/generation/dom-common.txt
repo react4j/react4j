@@ -18,77 +18,77 @@ public final class DOM
     return ReactNode.of( content );
   }
 
-  public static ReactNode fragment( @Nullable final String key, final @Nullable ReactNode... children )
+  public static ReactNode fragment( @Nullable final String key, final @Nullable Renderable... children )
   {
     return ReactElement.createFragment( key, children );
   }
 
-  public static ReactNode fragment( @Nullable final String key, final Stream<? extends @Nullable ReactNode> children )
+  public static ReactNode fragment( @Nullable final String key, final Stream<? extends @Nullable Renderable> children )
   {
     return fragment( key, toArray( children ) );
   }
 
-  public static ReactNode fragment( final @Nullable ReactNode... children )
+  public static ReactNode fragment( final @Nullable Renderable... children )
   {
     return fragment( null, children );
   }
 
-  public static ReactNode fragment( final Stream<? extends @Nullable ReactNode> children )
+  public static ReactNode fragment( final Stream<? extends @Nullable Renderable> children )
   {
     return fragment( null, children );
   }
 
   public static ReactNode suspense( @Nullable final String key,
-                                    @Nullable final ReactNode fallback,
+                                    @Nullable final Renderable fallback,
                                     final int maxTimeToFallback,
-                                    final @Nullable ReactNode... children )
+                                    final @Nullable Renderable... children )
   {
     return ReactElement.createSuspense( key, fallback, maxTimeToFallback, children );
   }
 
   public static ReactNode suspense( @Nullable final String key,
-                                    @Nullable final ReactNode fallback,
+                                    @Nullable final Renderable fallback,
                                     final int maxTimeToFallback,
-                                    final Stream<? extends @Nullable ReactNode> children )
+                                    final Stream<? extends @Nullable Renderable> children )
   {
     return suspense( key, fallback, maxTimeToFallback, toArray( children ) );
   }
 
-  public static ReactNode suspense( @Nullable final ReactNode fallback,
+  public static ReactNode suspense( @Nullable final Renderable fallback,
                                     final int maxTimeToFallback,
-                                    final @Nullable ReactNode... children )
+                                    final @Nullable Renderable... children )
   {
     return suspense( null, fallback, maxTimeToFallback, children );
   }
 
-  public static ReactNode suspense( @Nullable final ReactNode fallback,
+  public static ReactNode suspense( @Nullable final Renderable fallback,
                                     final int maxTimeToFallback,
-                                    final Stream<? extends @Nullable ReactNode> children )
+                                    final Stream<? extends @Nullable Renderable> children )
   {
     return suspense( null, fallback, maxTimeToFallback, children );
   }
 
   public static ReactNode suspense( @Nullable final String key,
-                                    @Nullable final ReactNode fallback,
-                                    final @Nullable ReactNode... children )
+                                    @Nullable final Renderable fallback,
+                                    final @Nullable Renderable... children )
   {
     return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, children );
   }
 
   public static ReactNode suspense( @Nullable final String key,
-                                    @Nullable final ReactNode fallback,
-                                    final Stream<? extends @Nullable ReactNode> children )
+                                    @Nullable final Renderable fallback,
+                                    final Stream<? extends @Nullable Renderable> children )
   {
     return suspense( key, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
   }
 
-  public static ReactNode suspense( @Nullable final ReactNode fallback, final @Nullable ReactNode... children )
+  public static ReactNode suspense( @Nullable final Renderable fallback, final @Nullable Renderable... children )
   {
     return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, children );
   }
 
-  public static ReactNode suspense( @Nullable final ReactNode fallback,
-                                    final Stream<? extends @Nullable ReactNode> children )
+  public static ReactNode suspense( @Nullable final Renderable fallback,
+                                    final Stream<? extends @Nullable Renderable> children )
   {
     return suspense( null, fallback, DEFAULT_TIME_TO_FALLBACK, toArray( children ) );
   }
