@@ -6,6 +6,7 @@ import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.ChildrenEnhancer;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -50,13 +51,6 @@ final class RequiredChildrenWithManyOptionalBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode children(final Stream<? extends ReactNode> children) {
-    return newBuilder().children( children );
-  }
-
-  @Contract(
-      pure = true
-  )
   static ReactNode children(final ReactNode @Nullable ... children) {
     return newBuilder().children( children );
   }
@@ -68,7 +62,11 @@ final class RequiredChildrenWithManyOptionalBuilder {
     return newBuilder().build();
   }
 
-  interface Step1 {
+  static ReactNode children(final Stream<? extends ReactNode> arg0) {
+    return RequiredChildrenWithManyOptionalBuilder.newBuilder().children(arg0);
+  }
+
+  interface Step1 extends ChildrenEnhancer<ReactNode> {
     @Contract(
         pure = true
     )
@@ -88,11 +86,6 @@ final class RequiredChildrenWithManyOptionalBuilder {
         pure = true
     )
     Step1 myPropD(@Nullable String myPropD);
-
-    @Contract(
-        pure = true
-    )
-    ReactNode children(Stream<? extends ReactNode> children);
 
     @Contract(
         pure = true
@@ -151,15 +144,6 @@ final class RequiredChildrenWithManyOptionalBuilder {
     public final Step1 myPropD(final @Nullable String myPropD) {
       _element.input( React4j_RequiredChildrenWithManyOptional.Inputs.myPropD, myPropD );
       return this;
-    }
-
-    @Override
-    @Contract(
-        pure = true
-    )
-    public final ReactNode children(final Stream<? extends ReactNode> children) {
-      children( children.toArray( ReactNode[]::new ) );
-      return build();
     }
 
     @Override

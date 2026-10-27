@@ -3,7 +3,11 @@ package(default_visibility = ["//:__subpackages__"])
 filegroup(
     name = "sources",
     srcs = [
+        "ChildrenPanel.java",
+        "ChildrenPresets.java",
         "ColorEnhancer.java",
+        "MenuChildren.java",
+        "MenuPanel.java",
         "Presets.java",
         "Swatch.java",
         "package-info.java",

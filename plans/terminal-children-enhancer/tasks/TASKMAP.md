@@ -1,8 +1,8 @@
 # Task map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementing
-- Current frontier: T02
+- Status: implementation-review
+- Current frontier: none (implementation review)
 - Planning reviewer: terminal_children_plan_review (1/3 rounds; final confirmation unused); Findings: none. Complete plan and consequential repository claims checked.
 - Plan checkpoint: automatic; accepted scope and latest implementation/PR authority recovered, independent planning review passed.
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -10,14 +10,14 @@
 ## Full-scope validation
 
 - Gate: tools/check.sh, including documentation/site and release validation; domain links separately.
-- Evidence: pending
+- Evidence: tools/check.sh passed on the complete implementation; 58 main, 17 optimized browser and 26 coverage targets passed, coverage thresholds and site/release checks passed. Domain links and specification-only audit passed.
 
 ## Tasks
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
 | T01 | [Terminal child setters](T01-terminal-setters.md) | complete | None |
-| T02 | [Default children enhancer](T02-default-enhancer.md) | pending | T01 |
+| T02 | [Default children enhancer](T02-default-enhancer.md) | complete | T01 |
 
 ## Sequencing notes
 
@@ -25,4 +25,6 @@ The primary agent implements sequentially. Reviewers are independent and read-on
 
 ## Promoted knowledge
 
-- Existing owner: [input-step-enhancers specification](../../../docs/specs/input-step-enhancers.md); update in T02. No new ADR or glossary term qualifies.
+- [Input-step-enhancers specification](../../../docs/specs/input-step-enhancers.md): default selection and override precedence, terminal child semantics, stream order/consumption and scalar binding are accepted durable, replacement-independent requirements. Existing owner/history inspected; glossary has no affected terms.
+- Author guide, checked examples and changelog own usage/migration. Code owns selection and source lists. This tree owns sequencing, downstream inspection and validation evidence.
+- No new ADR: ordinary enhancer selection/binding ownership is direct and does not qualify as a surprising hard-to-reverse architectural choice; no deferred question or new glossary term.

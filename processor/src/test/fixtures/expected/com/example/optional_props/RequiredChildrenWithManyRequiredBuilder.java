@@ -5,6 +5,7 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.ChildrenEnhancer;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -42,13 +43,6 @@ final class RequiredChildrenWithManyRequiredBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode children(final Stream<? extends ReactNode> children) {
-    return newBuilder().children( children );
-  }
-
-  @Contract(
-      pure = true
-  )
   static ReactNode children(final ReactNode @Nullable ... children) {
     return newBuilder().children( children );
   }
@@ -60,7 +54,11 @@ final class RequiredChildrenWithManyRequiredBuilder {
     return newBuilder().build();
   }
 
-  interface Step1 {
+  static ReactNode children(final Stream<? extends ReactNode> arg0) {
+    return RequiredChildrenWithManyRequiredBuilder.newBuilder().children(arg0);
+  }
+
+  interface Step1 extends ChildrenEnhancer<ReactNode> {
     @Contract(
         pure = true
     )
@@ -75,11 +73,6 @@ final class RequiredChildrenWithManyRequiredBuilder {
         pure = true
     )
     Step1 myRequiredProp3(@Nullable String myRequiredProp3);
-
-    @Contract(
-        pure = true
-    )
-    ReactNode children(Stream<? extends ReactNode> children);
 
     @Contract(
         pure = true
@@ -120,15 +113,6 @@ final class RequiredChildrenWithManyRequiredBuilder {
     public final Step1 myRequiredProp3(final @Nullable String myRequiredProp3) {
       _element.input( React4j_RequiredChildrenWithManyRequired.Inputs.myRequiredProp3, myRequiredProp3 );
       return this;
-    }
-
-    @Override
-    @Contract(
-        pure = true
-    )
-    public final ReactNode children(final Stream<? extends ReactNode> children) {
-      children( children.toArray( ReactNode[]::new ) );
-      return build();
     }
 
     @Override

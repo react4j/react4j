@@ -43,7 +43,7 @@ Child inputs have inconsistent completion depending on overload and optional gro
 
 ## Technical and testing decisions
 
-Public ChildrenEnhancer<R> lives beside core sources and uses existing JSpecify scope. Select it before ordinary parsing/validation; remove stream-specific generator metadata. Use focused compile tests and existing exact fixture regeneration, real React browser cases and the complete gate. Promote accepted contract to the existing input-step-enhancers specification; implementation details and verification stay in this temporary tree. These choices do not meet the surprising architectural-tradeoff threshold for a new ADR.
+Public ChildrenEnhancer<R> lives beside core sources and uses existing JSpecify scope. Select it before ordinary parsing/validation; remove stream-specific generator metadata. Use focused compile tests and existing exact fixture regeneration, real React browser cases and the complete gate. Promote accepted contract to the existing [input-step-enhancers specification](../../docs/specs/input-step-enhancers.md); implementation details and verification stay in this temporary tree. These choices do not meet the surprising architectural-tradeoff threshold for a new ADR.
 
 ## Open questions
 

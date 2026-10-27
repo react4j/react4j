@@ -2,8 +2,10 @@ filegroup(
     name = "files",
     srcs = [
         "AdvancingBuilder.java",
+        "ChildrenBuilder.java",
         "OptionalBuilder.java",
         "React4j_AdvancingView.java",
+        "React4j_ChildrenView.java",
         "React4j_OptionalView.java",
         "React4j_TerminalView.java",
         "TerminalBuilder.java",

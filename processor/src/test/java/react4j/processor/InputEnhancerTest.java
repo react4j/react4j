@@ -191,8 +191,8 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
                 "Enhancer<ReactNode>");
     }
 
-    private void assertValid(final String declarations, final String inputs, final String expected) throws Exception {
-        assertValid(declarations, inputs, expected, "");
+    private String assertValid(final String declarations, final String inputs, final String expected) throws Exception {
+        return assertValid(declarations, inputs, expected, "");
     }
 
     @DataProvider(name = "childInputs")
@@ -227,7 +227,7 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
                 "ReactNode " + name + "(");
     }
 
-    private void assertValid(
+    private String assertValid(
             final String declarations, final String inputs, final String expected, final String typeParameters)
             throws Exception {
         final var compilation = CompileTestUtil.assertCompilesWithoutWarnings(
@@ -236,6 +236,7 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
             StrictGeneratedCode.check(compilation, getOptions());
             final var builder = Files.readString(compilation.sourceOutput().resolve("test/Case_ComponentBuilder.java"));
             assertTrue(builder.contains(expected), builder);
+            return builder;
         } finally {
             cleanup(compilation);
         }
@@ -368,13 +369,99 @@ public final class InputEnhancerTest extends AbstractProcessorTest {
                 "@Input(enhancer=Enhancer.class) abstract String value(); @Input(fromTreeContext=true) abstract"
                         + " @Nullable String context();",
                 "conflicts with generated builder method");
+    }
+
+    @DataProvider(name = "defaultChildrenInputs")
+    public Object[][] defaultChildrenInputs() {
+        return new Object[][] {
+            {"@Input abstract ReactNode[] children();"},
+            {"@Input(enhancer=void.class) abstract ReactNode[] children();"},
+            {"@Input abstract ReactNode @Nullable [] children();"},
+            {"@Input(name=\"children\") abstract ReactNode[] getContent();"},
+            {"Component(@Input(name=\"children\") ReactNode[] content) {}"},
+        };
+    }
+
+    @Test(dataProvider = "defaultChildrenInputs")
+    public void defaultChildrenEnhancer(final String input) throws Exception {
+        final var builder = assertValid(
+                "static ReactNode call() { return Case_ComponentBuilder.children("
+                        + "java.util.stream.Stream.of(ReactNode.of(\"value\"))); }",
+                input,
+                "ChildrenEnhancer<ReactNode>");
+        assertFalse(builder.contains(".toArray("), builder);
+    }
+
+    @Test
+    public void defaultChildrenEnhancerScope() throws Exception {
+        final var ordinary = assertValid("", "@Input abstract ReactNode[] nodes();", "ReactNode nodes(");
+        assertFalse(ordinary.contains("ChildrenEnhancer"), ordinary);
+        final var context = assertValid(
+                "", "@Input(fromTreeContext=true) abstract ReactNode @Nullable [] children();", "interface Step1");
+        assertFalse(context.contains("ChildrenEnhancer"), context);
         assertInvalid(
-                "public interface Enhancer<R> { R children(ReactNode[] v); default R"
+                "",
+                "@Input(fromTreeContext=true, enhancer=react4j.ChildrenEnhancer.class)"
+                        + " abstract ReactNode @Nullable [] children();",
+                "tree-context");
+        assertValid(
+                "static ReactNode call() { return Case_ComponentBuilder.value(1).children("
+                        + "java.util.stream.Stream.of(ReactNode.of(\"value\"))); }",
+                "@Input abstract int value(); @Input abstract ReactNode[] children();",
+                "ChildrenEnhancer<ReactNode>");
+    }
+
+    @Test
+    public void explicitChildrenEnhancerReplacesDefault() throws Exception {
+        final var declarations = """
+            public interface Enhancer<R> {
+              R children(ReactNode... values);
+              default R empty() { return children(new ReactNode[0]); }
+            }
+            static ReactNode call() { return Case_ComponentBuilder.empty(); }
+            """;
+        final var builder = assertValid(
+                declarations,
+                "@Input(enhancer=Enhancer.class) abstract ReactNode[] children();",
+                "Enhancer<ReactNode>");
+        assertFalse(builder.contains("ChildrenEnhancer"), builder);
+        assertFalse(builder.contains("Stream"), builder);
+        assertValid(
+                "public interface Enhancer<R> { R children(ReactNode... v); default R"
                         + " children(java.util.stream.Stream<? extends ReactNode> v) { return"
                         + " children(v.toArray(ReactNode[]::new)); } }",
-                "@Input(enhancer=Enhancer.class) abstract ReactNode @Nullable [] children(); @Input abstract @Nullable"
-                        + " String value();",
-                "conflicts with generated builder method");
+                "@Input(enhancer=Enhancer.class) abstract ReactNode @Nullable [] children();"
+                        + " @Input abstract @Nullable String value();",
+                "Enhancer<ReactNode>");
+    }
+
+    @Test
+    public void customChildrenEnhancerInheritsAndOverridesDefault() throws Exception {
+        assertValid("""
+            public interface Enhancer<R> extends react4j.ChildrenEnhancer<R> {
+              default R empty() { return children(new ReactNode[0]); }
+              @Override default R children(java.util.stream.Stream<? extends ReactNode> values) {
+                return react4j.ChildrenEnhancer.super.children(values.limit(1));
+              }
+            }
+            static ReactNode call() {
+              Case_ComponentBuilder.empty();
+              return Case_ComponentBuilder.children(java.util.stream.Stream.of(ReactNode.of("first")));
+            }
+            """, "@Input(enhancer=Enhancer.class) abstract ReactNode[] children();", "Enhancer<ReactNode>");
+    }
+
+    @Test
+    public void childrenEnhancersUseOrdinaryValidation() throws Exception {
+        assertInvalid(
+                "public interface Enhancer<R> { R children(ReactNode @Nullable [] values); }",
+                "@Input(enhancer=Enhancer.class) abstract ReactNode[] children();",
+                "parameter nullness is incompatible");
+        assertInvalid(
+                "public interface Enhancer<R> { R value(String v); default R children(java.util.stream.Stream<?"
+                        + " extends ReactNode> v) { return value(\"x\"); } }",
+                "@Input(enhancer=Enhancer.class) abstract String value(); @Input abstract ReactNode[] children();",
+                "conflicts with another enhancer");
     }
 
     @Test

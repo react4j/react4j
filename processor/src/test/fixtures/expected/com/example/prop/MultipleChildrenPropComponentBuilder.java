@@ -5,6 +5,7 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.ChildrenEnhancer;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -21,13 +22,6 @@ final class MultipleChildrenPropComponentBuilder {
   @Contract(
       pure = true
   )
-  static ReactNode children(final Stream<? extends ReactNode> children) {
-    return newBuilder().children( children );
-  }
-
-  @Contract(
-      pure = true
-  )
   static ReactNode children(final ReactNode @Nullable ... children) {
     return newBuilder().children( children );
   }
@@ -39,12 +33,11 @@ final class MultipleChildrenPropComponentBuilder {
     return newBuilder().build();
   }
 
-  interface Step1 {
-    @Contract(
-        pure = true
-    )
-    ReactNode children(Stream<? extends ReactNode> children);
+  static ReactNode children(final Stream<? extends ReactNode> arg0) {
+    return MultipleChildrenPropComponentBuilder.newBuilder().children(arg0);
+  }
 
+  interface Step1 extends ChildrenEnhancer<ReactNode> {
     @Contract(
         pure = true
     )
@@ -58,15 +51,6 @@ final class MultipleChildrenPropComponentBuilder {
 
   private static class Builder implements Step1 {
     private final ReactElement _element = ReactElement.createViewElement( React4j_MultipleChildrenPropComponent.Factory.TYPE );
-
-    @Override
-    @Contract(
-        pure = true
-    )
-    public final ReactNode children(final Stream<? extends ReactNode> children) {
-      children( children.toArray( ReactNode[]::new ) );
-      return build();
-    }
 
     @Override
     @Contract(

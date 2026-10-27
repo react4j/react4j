@@ -18,3 +18,8 @@ Define how component authors add fluent presets and conversions to input builder
 9. Invalid interfaces, inaccessible helper signature types and incompatible setter contracts produce processor diagnostics attached to the input.
 10. Incompatible helper signatures, erasure clashes with generated members, and inconsistent generic parent instantiations across a builder produce processor diagnostics. Compatible shared defaults and overriding inherited methods remain supported.
 11. An enhancer cannot be selected for a tree-context input, which has no builder step.
+12. A non-context input whose effective name is `children` selects `react4j.ChildrenEnhancer` when `enhancer` is omitted or `void.class`. Other inputs have no default enhancer. Automatic selection is subject to the ordinary enhancer validation rules.
+13. An explicit enhancer replaces the default. It may inherit `ChildrenEnhancer` to retain or override its stream helper.
+14. Supplying `child` or `children` through a builder always finishes construction and returns `ReactNode`, including when other optional inputs share the step. These inputs follow all other builder inputs; optional children may still be omitted through `build()`.
+15. The standard stream helper materializes the stream once, in encounter order, and delegates to the array setter.
+16. Scalar `child` builder setters store their value as a single-element array under React's `children` property.

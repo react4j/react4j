@@ -1,6 +1,6 @@
 # T02 — Default children enhancer
 
-- Status: pending
+- Status: complete
 - Blocked by: T01
 - Spec coverage: R2, R3, R4, R5, R6; AC2, AC3, AC4
 
@@ -10,12 +10,12 @@ Public standard ChildrenEnhancer, selected automatically unless a custom interfa
 
 ## Acceptance criteria
 
-- [ ] Implicit/explicit void default selection, effective renamed children, unrelated arrays and context exclusions behave as specified.
-- [ ] Explicit replacement, inheritance, overriding, precompiled helpers, nullness and collision cases are compiled and checked.
-- [ ] First-step stream shortcuts and ordered exactly-once stream consumption render correctly with real React.
-- [ ] No stream intrinsic remains; source lists and publication include the public interface.
-- [ ] Guide, checked examples, annotation docs, changelog and existing canonical spec agree; domain links pass.
-- [ ] Complete tools/check.sh gate passes and implementation review can inspect exact evidence.
+- [x] Implicit/explicit void default selection, effective renamed children, unrelated arrays and context exclusions behave as specified.
+- [x] Explicit replacement, inheritance, overriding, precompiled helpers, nullness and collision cases are compiled and checked.
+- [x] First-step stream shortcuts and ordered exactly-once stream consumption render correctly with real React.
+- [x] No stream intrinsic remains; source lists and publication include the public interface.
+- [x] Guide, checked examples, annotation docs, changelog and existing canonical spec agree; domain links pass.
+- [x] Complete tools/check.sh gate passes and implementation review can inspect exact evidence.
 
 ## Validation
 
@@ -25,4 +25,8 @@ Public standard ChildrenEnhancer, selected automatically unless a custom interfa
 
 ## Evidence
 
-Pending.
+- Focused enhancer suite: 57 cases passed, including automatic/default, override/inheritance, scope, nullness and shared-builder collisions. Checked examples compiled.
+- Real React development browser suite passed ordered exactly-once stream materialization, static shortcut and custom default override; full gate also exercises scalar property storage and optimized production.
+- tools/update_goldens.sh generated passed; 12 existing golden files now inherit the standard enhancer and omit the intrinsic body.
+- New source/precompiled ChildrenView fixtures were generated in isolation, reviewed and declared explicitly; tools/update_goldens.sh jspecify then passed unchanged, including both source and compiled custom inheritance.
+- Domain link validator and specification-only contract audit passed. tools/check.sh passed: 58 main targets, 17 optimized browser targets, 26 coverage targets, runtime coverage thresholds, site build/check and unsigned release validation. The interrupted coverage run was restarted; the completed run reported All React4j checks passed.

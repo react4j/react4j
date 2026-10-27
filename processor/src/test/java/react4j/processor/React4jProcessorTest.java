@@ -1379,7 +1379,7 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     @Test
     public void enhancerSourceAndCompiledContracts() throws Exception {
         final var base = fixture("input/com/example/enhancer/Enhancers.java");
-        final var views = List.of("TerminalView", "AdvancingView", "OptionalView");
+        final var views = List.of("TerminalView", "AdvancingView", "OptionalView", "ChildrenView");
         for (final var name : views) {
             assertGoldenCompile(
                     List.of(base, fixture("input/com/example/enhancer/" + name + ".java")),
