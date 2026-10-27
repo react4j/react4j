@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: implementing
-- Current frontier: T04
+- Status: implementation-review
+- Current frontier: implementation review
 - Planning reviewer: plan_review (1/3 rounds; final confirmation unused; Findings: none)
 - Plan checkpoint: automatic (accepted interview scope, explicit implementation/PR authority, passing planning review)
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -10,7 +10,7 @@
 ## Full-scope validation
 
 - Gate: `tools/check.sh`
-- Evidence: pending
+- Evidence: tools/check.sh passed; documentation preview and domain links passed.
 
 ## Tasks
 
@@ -19,7 +19,7 @@
 | T01 | [Content-based immutable array identity](T01-array-identity.md) | complete | None |
 | T02 | [Typed custom immutable keys](T02-custom-keys.md) | complete | T01 |
 | T03 | [Mutable input equality policies](T03-input-equality.md) | complete | T02 |
-| T04 | [Contract, migration and complete verification](T04-delivery.md) | pending | T03 |
+| T04 | [Contract, migration and complete verification](T04-delivery.md) | complete | T03 |
 
 ## Sequencing notes
 
@@ -27,7 +27,7 @@ Primary agent implements the lowest-numbered unblocked task sequentially. Review
 
 ## Promoted knowledge
 
-Pending: canonical input-semantics contract and reader guidance.
+[Input contract](../../../docs/specs/input-semantics.md), [reader guide](../../../docs/input-semantics.md), compiled doc examples and Unreleased changelog. Specification qualification/ownership and link audit complete; no ADR/glossary/deferred artifact needed.
 
 ## Planning review
 

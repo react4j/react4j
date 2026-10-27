@@ -116,12 +116,12 @@ final class BuilderGenerator {
             final var generator = input.getKeyGenerator();
             if (null != generator) {
                 builder.addField(FieldSpec.builder(
-                                input.getKeyGeneratorType(),
+                                generator.type(),
                                 keyGeneratorField(input),
                                 Modifier.PRIVATE,
                                 Modifier.STATIC,
                                 Modifier.FINAL)
-                        .initializer("new $T()", ClassName.get(generator))
+                        .initializer("new $T()", ClassName.get(generator.element()))
                         .build());
             }
         }

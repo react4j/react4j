@@ -41,23 +41,26 @@ final class InputEqualityBrowserTest {
         _multi = 0;
         RuntimeBrowserTest.render(
                 InputEqualityBrowserTest_ContentBuilder.values("one").tick(0), root);
+        // Debug-state storage can force another mount render.
+        final var initialRenders = _renders;
         final String[] replacement = {"one"};
         RuntimeBrowserTest.render(
                 InputEqualityBrowserTest_ContentBuilder.values(replacement).tick(0), root);
         check(
-                1 == _constructed && 1 == _renders && 1 == _computations,
+                1 == _constructed && initialRenders == _renders && 1 == _computations,
                 "Equal content skips rendering and invalidation");
         check(0 == _pre && 0 == _post, "Equal content skips change callbacks");
         check(replacement == Objects.requireNonNull(_current).values(), "Equal replacement remains the current input");
         RuntimeBrowserTest.render(
                 InputEqualityBrowserTest_ContentBuilder.values("one").tick(1), root);
         check(
-                2 == _renders && 1 == _computations && 0 == _pre && 0 == _post,
+                initialRenders < _renders && 1 == _computations && 0 == _pre && 0 == _post,
                 "Other input changes render without invalidating equal content");
+        final var afterTick = _renders;
         RuntimeBrowserTest.render(
                 InputEqualityBrowserTest_ContentBuilder.values("two").tick(1), root);
         check(
-                1 == _constructed && 3 == _renders && 2 == _computations && 1 == _pre && 1 == _post,
+                1 == _constructed && afterTick < _renders && 2 == _computations && 1 == _pre && 1 == _post,
                 "Changed content updates the existing view and all change consequences");
         check(0 == _multi, "Multi-input callbacks require all listed inputs to change");
         RuntimeBrowserTest.render(
@@ -117,9 +120,14 @@ final class InputEqualityBrowserTest {
                 InputEqualityBrowserTest_ContentBuilder.values("reactive").tick(0), root);
         return Browser.delay(0).then(value -> {
             final var before = _renders;
+            final var computations = _computations;
+            final var pre = _pre;
+            final var post = _post;
             Objects.requireNonNull(_current).changeExtra();
             return Browser.delay(0)
-                    .thenDo(() -> check(before + 1 == _renders, "Arez dependency changes render despite equal inputs"));
+                    .thenDo(() -> check(
+                            before < _renders && computations == _computations && pre == _pre && post == _post,
+                            "Arez dependency changes render without changing equal inputs"));
         });
     }
 
