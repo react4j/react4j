@@ -66,11 +66,23 @@ public final class RuntimeCoverageExample {
     }
 
     public static void renderRoot(ReactRoot root, String text) {
-        root.render((Buildable) () -> DOM.span(text));
+        final var builds = new int[1];
+        root.render((Buildable) () -> {
+            builds[0]++;
+            return DOM.span(text);
+        });
+        check(1 == builds[0], "Root builds before scheduling its render");
     }
 
     public static void renderRootCallback(ReactRoot root, String text, PostRenderCallbackFn callback) {
-        root.render((Buildable) () -> DOM.span(text), callback);
+        final var builds = new int[1];
+        root.render(
+                (Buildable) () -> {
+                    builds[0]++;
+                    return DOM.span(text);
+                },
+                callback);
+        check(1 == builds[0], "Root callback overload builds before scheduling its render");
     }
 
     public static void unmountRoot(ReactRoot root) {

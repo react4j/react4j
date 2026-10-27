@@ -56,6 +56,10 @@ final class BuildableBrowserTest {
         equal("second", root.getTextContent());
         RuntimeBrowserTest.render(ReactElement.createSuspense(null, null, 0, (Renderable) null), root);
         equal("", root.getTextContent());
+        final Buildable[] builders = {first, second};
+        RuntimeBrowserTest.render(ReactNode.of(builders), root);
+        equal("firstsecond", root.getTextContent());
+        check(first == builders[0], "Covariant builder array is unchanged");
 
         final var context = React.createContext("default");
         final var builds = new int[1];
@@ -91,6 +95,15 @@ final class BuildableBrowserTest {
             throw new AssertionError("Expected eager failure");
         } catch (final IllegalStateException error) {
             check(failure == error, "Build exception propagates unchanged");
+        }
+        final ReactElement brokenConsumer = Js.uncheckedCast(context.consumer().render(value -> broken));
+        final Context.ConsumerRenderFunction<String> brokenCallback =
+                Js.uncheckedCast(brokenConsumer.inputs().get("children"));
+        try {
+            brokenCallback.render("value");
+            throw new AssertionError("Expected callback build failure");
+        } catch (final IllegalStateException error) {
+            check(failure == error, "Callback build exception propagates unchanged");
         }
     }
 }

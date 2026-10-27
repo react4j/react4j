@@ -423,11 +423,7 @@ final class BuilderGenerator {
         if (stepMethod.isRenderableInput()) {
             assert null != input;
             method.addStatement(
-                    "final var $N = $T.$N( $N )",
-                    valueName,
-                    RENDERABLE_CLASSNAME,
-                    input.isRenderableArrayInput() ? "toReactNodes" : "toReactNode",
-                    stepMethod.getName());
+                    "final var $N = $L", valueName, materializeInput(input, CodeBlock.of("$N", stepMethod.getName())));
         }
 
         if (null != input && input.isImmutable() && 1 == descriptor.syntheticKeyParts()) {

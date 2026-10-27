@@ -63,6 +63,10 @@ final class GeneratedBuildableBrowserTest {
         RuntimeBrowserTest.render(array, root);
         equal("countedcounted", root.getTextContent());
         check(2 == _builds, "View receives materialized nodes");
+        RuntimeBrowserTest.render(
+                ReactNode.of(GeneratedBuildableBrowserTest_NullableInputsBuilder.payload(counted)), root);
+        equal("opaque", root.getTextContent());
+        check(2 == _builds, "Ordinary data inputs retain their Buildable payload");
         final Buildable defaulted = GeneratedBuildableBrowserTest_DefaultBuilder.newBuilder();
         RuntimeBrowserTest.render(ReactNode.of(defaulted), root);
         equal("defaultarray", root.getTextContent());
@@ -191,6 +195,9 @@ final class GeneratedBuildableBrowserTest {
     @View(type = View.Type.STATEFUL)
     abstract static class NullableInputs {
         @Input
+        abstract @Nullable Object payload();
+
+        @Input
         abstract @Nullable ReactNode node();
 
         @Input
@@ -198,6 +205,9 @@ final class GeneratedBuildableBrowserTest {
 
         @Render
         ReactNode render() {
+            if (payload() instanceof Buildable) {
+                return ReactNode.of("opaque");
+            }
             final var values = nodes();
             return ReactNode.of(node(), null == values ? null : ReactNode.of(values));
         }

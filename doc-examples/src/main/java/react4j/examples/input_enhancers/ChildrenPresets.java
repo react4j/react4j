@@ -7,11 +7,12 @@ public final class ChildrenPresets {
     private ChildrenPresets() {}
 
     public static ReactNode titledPanel() {
-        return ChildrenPanelBuilder.title("Items").children(Stream.of(ReactNode.of("first"), ReactNode.of("second")));
+        return ChildrenPanelBuilder.title("Items")
+                .children(Stream.of(NoticeBuilder.message("Saved"), NoticeBuilder.message("Synchronized")));
     }
 
     public static ReactNode untitledPanel() {
-        return ChildrenPanelBuilder.children(Stream.of(ReactNode.of("only child")));
+        return ChildrenPanelBuilder.children(Stream.of(NoticeBuilder.message("Saved")));
     }
 
     public static ReactNode emptyMenu() {

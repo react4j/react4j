@@ -15,5 +15,9 @@ The "Hello World" of React4j that just returns a header is as simple as:
 
 The Java entry point is exported with `@JsMethod` and invoked by a Closure entry module. Bazel builds the Java sources, annotation processor output and J2CL bundle together. See [Project Setup](project_setup.md) for the build and nullness requirements.
 
+Components compose through `Renderable`: either a native `ReactNode` or a ready `Buildable`.
+See [composing ready builders](input-step-enhancers.md#composing-ready-builders) to nest components
+without explicit `build()` calls.
+
 {@file_content: file=react4j/examples/hello_world/HelloWorld.java}
 <iframe title="Hello World example" src="/examples/hello_world.html"></iframe>

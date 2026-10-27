@@ -6,6 +6,7 @@ import com.google.debugging.sourcemap.SourceMapConsumerV3;
 import com.google.debugging.sourcemap.SourceMapParseException;
 import com.google.gson.JsonArray;
 import com.sun.source.tree.MethodTree;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.zip.ZipFile;
 import org.jspecify.annotations.NullMarked;
 import org.testng.annotations.Test;
 
@@ -178,14 +180,26 @@ public final class RuntimeCoverageTest {
         var core = Path.of(System.getProperty("coverage.runtime.core.modules"));
         var original = new SourceMapConsumerV3();
         original.parse(Files.readString(core.resolve("react4j/ReactElement$$Overlay.js.map")));
+        final String source;
+        try (var archive = new ZipFile(System.getProperty("coverage.runtime.core.sources"))) {
+            source = new String(
+                    archive.getInputStream(Objects.requireNonNull(archive.getEntry("react4j/ReactElement.java")))
+                            .readAllBytes(),
+                    StandardCharsets.UTF_8);
+        }
+        final var strictMethod = source.indexOf("public static ReactNode createStrictMode(");
+        assertTrue(0 <= strictMethod, "Missing strict-mode factory");
+        final var strictLine =
+                sourceLine(source, source.indexOf("Js.uncheckedCast(JsPropertyMap.of(\"children\"", strictMethod));
+        final var suspenseLine = sourceLine(source, source.indexOf("\"ms\", maxTimeToFallback"));
         var mappedLines = new HashSet<Integer>();
         original.visitMappings((file, symbol, start, generated, end) -> mappedLines.add(start.getLine() + 1));
-        assertFalse(mappedLines.contains(120));
-        assertFalse(mappedLines.contains(136));
+        assertFalse(mappedLines.contains(strictLine));
+        assertFalse(mappedLines.contains(suspenseLine));
         String element = "core/src/main/java/react4j/ReactElement.java";
         var obligations = Objects.requireNonNull(inventory.get(element));
-        assertTrue(obligations.lines().containsKey(120));
-        assertTrue(obligations.lines().containsKey(136));
+        assertTrue(obligations.lines().containsKey(strictLine));
+        assertTrue(obligations.lines().containsKey(suspenseLine));
         String bundle = Files.readString(Path.of(System.getProperty("coverage.runtime.bundle")));
         var collector = new RuntimeCoverage(
                 bundle,
@@ -216,8 +230,8 @@ public final class RuntimeCoverageTest {
                 collector.report(instrumented, result.getAsJsonArray("lines"), result.getAsJsonArray("edges")));
         var observed = Objects.requireNonNull(report.get(element));
         assertEquals(observed.lines().keySet(), obligations.lines().keySet());
-        assertEquals(observed.lines().get(120), Long.valueOf(1));
-        assertEquals(observed.lines().get(136), Long.valueOf(1));
+        assertEquals(observed.lines().get(strictLine), Long.valueOf(1));
+        assertEquals(observed.lines().get(suspenseLine), Long.valueOf(1));
         var zeroLines = new JsonArray();
         instrumented.lines().forEach(unused -> zeroLines.add(false));
         var zeroEdges = new JsonArray();
@@ -283,6 +297,11 @@ public final class RuntimeCoverageTest {
                 }
             }
         }
+    }
+
+    private static int sourceLine(final String source, final int offset) {
+        assertTrue(0 <= offset, "Missing source expression");
+        return (int) source.substring(0, offset).chars().filter(c -> '\n' == c).count() + 1;
     }
 
     private static void assertMethodEnd(LcovReport.Source report, JavaCoverage source, String name, boolean covered) {

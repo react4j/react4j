@@ -28,6 +28,8 @@ A builder whose required calls are complete can be supplied anywhere a typed Rea
 
 ## Requirements
 
+The [composition contract](../../docs/specs/renderable-composition.md) owns R1–R6. Enhancer-specific constraints remain in the [input-step contract](../../docs/specs/input-step-enhancers.md).
+
 - `R1`: Public native `Renderable` is the common parent of `ReactNode` and public functional `Buildable`; `Buildable.build()` returns a non-null `ReactNode`. Existing raw nodes retain their representation and identity.
 - `R2`: Core node composition and context APIs accept renderables, materialize builders at consumption, and preserve existing nullable positions. Context callbacks materialize their result on every invocation.
 - `R3`: DOM composition, typed props children, suspense fallback, roots, portals and legacy rendering materialize renderables before calling React. Existing explicit-children precedence over props children remains unchanged.
@@ -51,7 +53,7 @@ A builder whose required calls are complete can be supplied anywhere a typed Rea
 | D1 | Cover all typed composition boundaries. | The issue's benefit should not depend on the nesting location. | Includes render callbacks and node inputs, not just children. | Builders can be used at each documented boundary. |
 | D2 | Migrate directly to Renderable consumers. | Avoid overload ambiguity and duplicate API paths. | Custom node-input enhancer setter signatures may require migration. | Migration example and public signatures. |
 | D3 | Eager build per occurrence. | Match an explicit build at the supplied position. | No caching; context callbacks convert on invocation; errors propagate. | Evaluation-count and exception scenarios. |
-| D4 | Native marker plus ordinary functional Buildable. | Preserve primitive/native nodes within J2CL constraints. | No instance-method calls on native nodes; custom Buildable implementations work. | Real J2CL builds and optimized browser checks. |
+| D4 | Native marker plus ordinary functional Buildable. | Preserve primitive/native nodes within J2CL constraints; see the [native boundary decision](../../docs/adr/0008-preserve-native-renderables.md). | No instance-method calls on native nodes; custom Buildable implementations work. | Real J2CL builds and optimized browser checks. |
 
 ## Technical decisions
 
