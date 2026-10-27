@@ -21,3 +21,5 @@ Processor goldens plus core browser tests in development and optimized modes; fo
 ## Evidence
 
 Passed: input_semantics strict compilations (formatted/unformatted), jspecify golden regeneration/check (four affected goldens), core browser tests in development and -c opt, Java and Bazel formatting. Browser evidence covers reuse/remount, defaults/context, composite framing, all primitive encodings, long precision, NaN/zero and J2CL extra float precision.
+
+Review correction: mixed array/Object/generic/unsupported-array regressions reproduced Object-to-String compilation failures before the fix. Converting the resolved dynamic contribution before framing passes formatted/unformatted strict compilation and development/optimized browser checks. Browser cases exercise Identifiable<Integer>, Keyed, toString and null contributions, including changed identifiers and arrays.

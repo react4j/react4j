@@ -3,8 +3,10 @@ package react4j;
 import static react4j.webtesting.Checks.check;
 
 import arez.annotations.PreDispose;
+import arez.component.Identifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.annotations.Feature;
 import react4j.annotations.Input;
 import react4j.annotations.InputDefault;
 import react4j.annotations.Render;
@@ -77,8 +79,69 @@ final class InputSemanticsBrowserTest {
         check(primitives == _constructed, "Primitive key provider receives a Java Integer");
         RuntimeBrowserTest.render(InputSemanticsBrowserTest_PrimitiveKeyBuilder.value(18), root);
         check(primitives + 1 == _constructed, "Primitive custom keys propagate changes");
+        mixedInputs(root);
         RuntimeBrowserTest.render(null, root);
         Contexts.clear();
+    }
+
+    private static void mixedInputs(final Browser.Element root) {
+        final @Nullable Object[] dynamic = {new Identified(17), new NamedKey("key"), new TextValue("text"), null};
+        final @Nullable Object[] equal = {new Identified(17), new NamedKey("key"), new TextValue("text"), null};
+        for (var i = 0; i < dynamic.length; i++) {
+            RuntimeBrowserTest.render(
+                    InputSemanticsBrowserTest_MixedArrayBuilder.values("same").other(dynamic[i]), root);
+            final var count = _constructed;
+            RuntimeBrowserTest.render(
+                    InputSemanticsBrowserTest_MixedArrayBuilder.values("same").other(equal[i]), root);
+            check(count == _constructed, "Array keys compose with each dynamic identity strategy");
+            RuntimeBrowserTest.render(
+                    InputSemanticsBrowserTest_MixedArrayBuilder.values("changed")
+                            .other(equal[i]),
+                    root);
+            check(count + 1 == _constructed, "Array changes propagate alongside dynamic inputs");
+        }
+        RuntimeBrowserTest.render(
+                InputSemanticsBrowserTest_MixedArrayBuilder.values("same").other(new Identified(17)), root);
+        final var arrays = _constructed;
+        RuntimeBrowserTest.render(
+                InputSemanticsBrowserTest_MixedArrayBuilder.values("same").other(new Identified(18)), root);
+        check(arrays + 1 == _constructed, "Dynamic identifier changes propagate alongside arrays");
+        RuntimeBrowserTest.render(
+                InputSemanticsBrowserTest_MixedCustomBuilder.values("same", "first")
+                        .other(new Identified(17)),
+                root);
+        final var custom = _constructed;
+        RuntimeBrowserTest.render(
+                InputSemanticsBrowserTest_MixedCustomBuilder.values("same", "second")
+                        .other(new Identified(17)),
+                root);
+        check(custom == _constructed, "Custom keys compose with equal dynamic identifiers");
+        RuntimeBrowserTest.render(
+                InputSemanticsBrowserTest_MixedCustomBuilder.values("same", "second")
+                        .other(new Identified(18)),
+                root);
+        check(custom + 1 == _constructed, "Dynamic identifier changes propagate alongside custom keys");
+    }
+
+    private record Identified(Integer id) implements Identifiable<Integer> {
+        @Override
+        public Integer getArezId() {
+            return id;
+        }
+    }
+
+    private record NamedKey(String key) implements Keyed {
+        @Override
+        public String getKey() {
+            return key;
+        }
+    }
+
+    private record TextValue(String text) {
+        @Override
+        public String toString() {
+            return text;
+        }
     }
 
     private static void encoding() {
@@ -235,6 +298,30 @@ final class InputSemanticsBrowserTest {
         ReactNode render() {
             _rendered++;
             return ReactNode.of("combined");
+        }
+    }
+
+    @View(type = View.Type.STATEFUL)
+    abstract static class MixedArray {
+        MixedArray(@Input final String[] values, @Input(require = Feature.ENABLE) @Nullable final Object other) {
+            _constructed++;
+        }
+
+        @Render
+        ReactNode render() {
+            return ReactNode.of("mixed-array");
+        }
+    }
+
+    @View(type = View.Type.STATEFUL)
+    abstract static class MixedCustom {
+        MixedCustom(@Input(keyGenerator = PrefixKeys.class) final String[] values, @Input final Object other) {
+            _constructed++;
+        }
+
+        @Render
+        ReactNode render() {
+            return ReactNode.of("mixed-custom");
         }
     }
 

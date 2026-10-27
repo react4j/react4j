@@ -21,3 +21,5 @@ Processor compile/diagnostic tests and relevant browser scenarios in both modes.
 ## Evidence
 
 Passed: input_semantics formatted/unformatted strict compilations and diagnostics (including nullable/inherited generic contracts and separately compiled provider), plus development and optimized core browser tests. Browser regression proves interface dispatch despite overloaded provider methods and normal primitive boxing. Java formatting applied.
+
+Review correction: a custom-key/Object mixed-input compiler regression fails before the dynamic-key string conversion and passes after it. Development and optimized browser cases retain identity for equal custom keys plus equal numeric Arez IDs, and remount for a changed ID.

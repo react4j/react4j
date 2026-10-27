@@ -730,17 +730,17 @@ final class BuilderGenerator {
                 CodeBlock.of("$T.valueOf($T.<Object>getArezId($L))", String.class, IDENTIFIABLE_CLASSNAME, value);
             case DYNAMIC ->
                 CodeBlock.of(
-                        "($L instanceof $T ? $T.getKey($L) : "
-                                + "$L instanceof $T ? $T.<Object>getArezId($L) : $T.valueOf($L))",
-                        value,
-                        KEYED_CLASSNAME,
-                        KEYED_CLASSNAME,
-                        value,
-                        value,
-                        IDENTIFIABLE_CLASSNAME,
-                        IDENTIFIABLE_CLASSNAME,
-                        value,
+                        "$T.valueOf($L instanceof $T ? $T.getKey($L) : "
+                                + "$L instanceof $T ? $T.<Object>getArezId($L) : $L)",
                         String.class,
+                        value,
+                        KEYED_CLASSNAME,
+                        KEYED_CLASSNAME,
+                        value,
+                        value,
+                        IDENTIFIABLE_CLASSNAME,
+                        IDENTIFIABLE_CLASSNAME,
+                        value,
                         value);
             case IS_STRING, ENUM -> CodeBlock.of("$T.valueOf($L)", String.class, value);
             case TO_STRING -> CodeBlock.of("$T.valueOf($L)", String.class, inputValue(input));

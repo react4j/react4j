@@ -91,6 +91,11 @@ public final class InputSemanticsTest extends AbstractProcessorTest {
                 "Component(@Input String[] values, @Input int count, @Input char letter, @Input long id, @Input float"
                         + " rate, @Input boolean flag, @Input double size, @Input byte tiny, @Input short small, @Input"
                         + " @Nullable Long wrapped) {}");
+        valid(
+                "",
+                "Component(@Input String[] values, @Input @Nullable Object other, @Input Object[] objects,"
+                        + " @Input String[][] nested, @Input T generic) {}",
+                "<T>");
     }
 
     @Test
@@ -103,6 +108,7 @@ public final class InputSemanticsTest extends AbstractProcessorTest {
                 + "public String getKey(String[] value) { return String.valueOf(value.length); } }";
         assertTrue(valid(keys, "Component(@Input(keyGenerator=Keys.class) String[] values) {}")
                 .contains("$keyGenerator_values.getKey"));
+        valid(keys, "Component(@Input(keyGenerator=Keys.class) String[] values, @Input Object other) {}");
         valid(keys, "Component(@Input(keyGenerator=Keys.class,fromTreeContext=true) String[] values) {}");
         valid(
                 keys,
