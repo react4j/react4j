@@ -1,5 +1,6 @@
 package react4j.annotations;
 
+import arez.EqualityComparator;
 import arez.annotations.Memoize;
 import arez.annotations.Observable;
 import arez.annotations.Observe;
@@ -54,6 +55,16 @@ public @interface Input {
      * @return the key provider class.
      */
     Class<?> keyGenerator() default void.class;
+
+    /**
+     * Comparator defining changes to this mutable method input, including rendering, Arez invalidation
+     * and input-change callbacks. An explicit comparator overrides the exact declared type's
+     * {@link arez.annotations.DefaultEqualityComparator}. Without either selection, JavaScript strict
+     * equality is used. Providers follow the construction and purity contract of {@link #keyGenerator()}.
+     *
+     * @return the comparator class, or {@code EqualityComparator.class} for automatic selection.
+     */
+    Class<? extends EqualityComparator> equalityComparator() default EqualityComparator.class;
 
     /**
      * Interface supplying fluent default methods for this input's builder step.

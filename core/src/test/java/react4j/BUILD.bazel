@@ -15,6 +15,7 @@ j2cl_library(
         "ContextsTest.java",
         "GeneratedBuildableBrowserTest.java",
         "InputEnhancerBrowserTest.java",
+        "InputEqualityBrowserTest.java",
         "InputSemanticsBrowserTest.java",
         "LifecycleBrowserTest.java",
         "ReactConfigTest.java",

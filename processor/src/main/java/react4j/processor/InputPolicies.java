@@ -20,6 +20,31 @@ import org.realityforge.proton.ProcessorException;
 final class InputPolicies {
     private InputPolicies() {}
 
+    static void parseEquality(final ProcessingEnvironment env, final ViewDescriptor view, final InputDescriptor input) {
+        var type = (TypeMirror)
+                AnnotationsUtil.getAnnotationValue(input.getElement(), Constants.INPUT_CLASSNAME, "equalityComparator")
+                        .getValue();
+        final boolean explicit = !Constants.EQUALITY_COMPARATOR_CLASSNAME.equals(type.toString());
+        if (input.isImmutable()) {
+            if (explicit) {
+                throw error(input, "equalityComparator is only valid on mutable method inputs");
+            }
+            return;
+        }
+        if (!explicit) {
+            if (!(input.getType() instanceof DeclaredType declared)) {
+                return;
+            }
+            final var annotation = AnnotationsUtil.findAnnotationByType(
+                    declared.asElement(), Constants.DEFAULT_EQUALITY_COMPARATOR_CLASSNAME);
+            if (null == annotation) {
+                return;
+            }
+            type = AnnotationsUtil.getAnnotationValueValue(annotation, "value");
+        }
+        input.setEqualityComparator(validateProvider(env, view, input, type, Constants.EQUALITY_COMPARATOR_CLASSNAME));
+    }
+
     static void parseKey(final ProcessingEnvironment env, final ViewDescriptor view, final InputDescriptor input) {
         final var type = (TypeMirror)
                 AnnotationsUtil.getAnnotationValue(input.getElement(), Constants.INPUT_CLASSNAME, "keyGenerator")

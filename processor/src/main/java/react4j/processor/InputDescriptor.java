@@ -21,6 +21,24 @@ import react4j.processor.Nullability.Nullness;
 @SuppressWarnings("Duplicates")
 final class InputDescriptor {
     private @Nullable TypeElement _keyGenerator;
+    private @Nullable TypeElement _equalityComparator;
+
+    @Nullable
+    TypeElement getEqualityComparator() {
+        return _equalityComparator;
+    }
+
+    void setEqualityComparator(final TypeElement comparator) {
+        _equalityComparator = comparator;
+    }
+
+    boolean hasCustomEqualityComparator() {
+        return null != _equalityComparator
+                && !Constants.OBJECTS_EQUALS_COMPARATOR_CLASSNAME.contentEquals(_equalityComparator.getQualifiedName())
+                && !Constants.OBJECTS_DEEP_EQUALS_COMPARATOR_CLASSNAME.contentEquals(
+                        _equalityComparator.getQualifiedName());
+    }
+
     private @Nullable TypeName _keyGeneratorType;
 
     @Nullable

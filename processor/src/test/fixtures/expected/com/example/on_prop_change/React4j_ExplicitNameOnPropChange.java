@@ -78,7 +78,7 @@ abstract class React4j_ExplicitNameOnPropChange extends ExplicitNameOnPropChange
       final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if ( null != prevInputs ) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
-      final boolean myProp = !Js.isTripleEqual( inputs.get( Inputs.myProp ), prevInputs.get( Inputs.myProp ) );
+      final boolean myProp = !Js.isTripleEqual( prevInputs.get( Inputs.myProp ), inputs.get( Inputs.myProp ) );
       if ( myProp ) {
         onMyInputChange( Objects.requireNonNull( inputs.getAsAny( Inputs.myProp ) ).asDouble() );
       }

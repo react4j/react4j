@@ -38,6 +38,10 @@ public final class InputSemanticsTest extends AbstractProcessorTest {
     }
 
     private static JavaFileObject source(final String declarations, final String inputs) {
+        return source(declarations, inputs, "");
+    }
+
+    private static JavaFileObject source(final String declarations, final String inputs, final String suffix) {
         final var text = """
             package test;
             import java.util.*;
@@ -48,12 +52,12 @@ public final class InputSemanticsTest extends AbstractProcessorTest {
             public final class Case {
               %s
               @View(type=View.Type.STATEFUL)
-              static abstract class Component {
+              static abstract class Component%s {
                 %s
                 @Render @Nullable ReactNode render() { return null; }
               }
             }
-            """.formatted(declarations, inputs);
+            """.formatted(declarations, suffix, inputs);
         return sourceFile("Case", text);
     }
 
@@ -79,9 +83,9 @@ public final class InputSemanticsTest extends AbstractProcessorTest {
                 "",
                 "Component(@Input String[] values) {} @InputDefault static String[] getValuesDefault() {"
                         + " return new String[]{\"default\"}; }");
-        assertFalse(valid("", "Component(@Input Object values) {}").contains("InputKeys"));
-        assertFalse(valid("", "Component(@Input String[][] values) {}").contains("InputKeys"));
-        assertFalse(valid("", "Component(@Input Object[] values) {}").contains("InputKeys"));
+        assertFalse(valid("", "Component(@Input Object values) {}").contains("InputKeys.arrayKey"));
+        assertFalse(valid("", "Component(@Input String[][] values) {}").contains("InputKeys.arrayKey"));
+        assertFalse(valid("", "Component(@Input Object[] values) {}").contains("InputKeys.arrayKey"));
         valid(
                 "",
                 "Component(@Input String[] values, @Input int count, @Input char letter, @Input long id, @Input float"
@@ -91,6 +95,10 @@ public final class InputSemanticsTest extends AbstractProcessorTest {
 
     @Test
     public void customKeys() throws Exception {
+        valid(
+                "public static final class Keys implements InputKeyGenerator<List<String>> { "
+                        + "public String getKey(List<String> value) { return String.join(\",\", value); } }",
+                "Component(@Input(keyGenerator=Keys.class) List<String> values) {}");
         final var keys = "public static final class Keys implements InputKeyGenerator<String[]> { "
                 + "public String getKey(String[] value) { return String.valueOf(value.length); } }";
         assertTrue(valid(keys, "Component(@Input(keyGenerator=Keys.class) String[] values) {}")
@@ -237,16 +245,143 @@ public final class InputSemanticsTest extends AbstractProcessorTest {
         }
     }
 
+    @Test
+    public void inputEquality() throws Exception {
+        valid(
+                "",
+                "@Input(require=Feature.ENABLE,equalityComparator=arez.ObjectsEqualsComparator.class) abstract T"
+                        + " value();",
+                "<T extends @Nullable Object>");
+        valid("", "@Input(equalityComparator=arez.ObjectsEqualsComparator.class) abstract List<String> value();");
+        final var deep = valid(
+                "",
+                "@Input(equalityComparator=arez.ObjectsDeepEqualsComparator.class) abstract String[] values(); "
+                        + "@OnInputChange void changed(String[] values) {} "
+                        + "@OnInputChange(phase=OnInputChange.Phase.POST) void after(String[] values) {}");
+        assertTrue(deep.contains("Objects.deepEquals"), deep);
+        assertFalse(deep.contains("new ObjectsDeepEqualsComparator"), deep);
+        assertFalse(deep.contains("$inputComparator_"), deep);
+        assertEquals(deep.split("Objects.deepEquals", -1).length - 1, 3);
+        final var ordinary =
+                valid("", "@Input(equalityComparator=arez.ObjectsEqualsComparator.class) abstract String[] values();");
+        assertTrue(ordinary.contains("Objects.equals"), ordinary);
+        assertFalse(ordinary.contains("new ObjectsEqualsComparator"), ordinary);
+        assertFalse(ordinary.contains("$inputComparator_"), ordinary);
+        final var comparator = "public static final class Same implements arez.EqualityComparator { public boolean"
+                + " areEqual(@Nullable Object oldValue, @Nullable Object newValue) { return"
+                + " Objects.equals(oldValue,newValue); } }";
+        final var custom = valid(comparator, "@Input(equalityComparator=Same.class) abstract int value();");
+        assertTrue(custom.contains(".areEqual("), custom);
+        assertTrue(custom.contains(".asInt()"), custom);
+        for (final var type : List.of(
+                "boolean",
+                "byte",
+                "short",
+                "int",
+                "long",
+                "char",
+                "float",
+                "double",
+                "@Nullable Boolean",
+                "@Nullable Byte",
+                "@Nullable Short",
+                "@Nullable Integer",
+                "@Nullable Long",
+                "@Nullable Character",
+                "@Nullable Float",
+                "@Nullable Double")) {
+            valid(comparator, "@Input(equalityComparator=Same.class) abstract " + type + " value();");
+        }
+    }
+
+    @Test
+    public void exactTypeDefaults() throws Exception {
+        final var declarations = "@arez.annotations.DefaultEqualityComparator(arez.ObjectsEqualsComparator.class) "
+                + "public static class Value {} public static class Child extends Value {}";
+        assertTrue(valid(declarations, "@Input abstract Value value();").contains("Objects.equals"));
+        assertTrue(valid(declarations, "@Input abstract Child value();").contains("Js.isTripleEqual"));
+        assertTrue(valid(declarations, "@Input abstract Value[] value();").contains("Js.isTripleEqual"));
+        assertTrue(valid(declarations, "@Input(require=Feature.ENABLE) abstract T value();", "<T extends Value>")
+                .contains("Js.isTripleEqual"));
+        assertTrue(valid(
+                        declarations,
+                        "@Input(equalityComparator=arez.ObjectsDeepEqualsComparator.class) abstract Value value();")
+                .contains("Objects.deepEquals"));
+        assertFalse(valid(declarations, "Component(@Input Value value) {}").contains("Objects.equals"));
+        assertTrue(valid(
+                        declarations + "public abstract static class Base<T> { @Input abstract T value(); }",
+                        "",
+                        " extends Base<Value>")
+                .contains("Objects.equals"));
+    }
+
+    @Test
+    public void compiledTypeDefault() throws Exception {
+        final var value = sourceFile("Value", """
+            package test;
+            @org.jspecify.annotations.NullMarked
+            @arez.annotations.DefaultEqualityComparator(arez.ObjectsEqualsComparator.class)
+            public record Value(String text) {}
+            """);
+        final var compiled =
+                CompileTestUtil.assertCompilesWithoutWarnings(List.of(value), getOptions(), List.of(), List.of());
+        try {
+            final var classpath = buildClasspath(compiled.classOutput().toFile());
+            final var options = new ArrayList<>(getOptions());
+            options.addAll(List.of(
+                    "-classpath",
+                    classpath.stream().map(File::toString).collect(Collectors.joining(File.pathSeparator))));
+            final var compilation = CompileTestUtil.assertCompilesWithoutWarnings(
+                    List.of(source("", "@Input abstract Value value();")), options, processors(), classpath);
+            try {
+                StrictGeneratedCode.check(compilation, options);
+                assertTrue(Files.readString(compilation.sourceOutput().resolve("test/Case_React4j_Component.java"))
+                        .contains("Objects.equals"));
+            } finally {
+                cleanup(compilation);
+            }
+        } finally {
+            cleanup(compiled);
+        }
+    }
+
+    @Test
+    public void rejectsInvalidComparators() throws Exception {
+        invalid(
+                "",
+                "Component(@Input(equalityComparator=arez.ObjectsEqualsComparator.class) String value) {}",
+                "mutable method");
+        invalid(
+                "public abstract static class Same implements arez.EqualityComparator {}",
+                "@Input(equalityComparator=Same.class) abstract String value();",
+                "concrete");
+        invalid(
+                "public static final class Same implements arez.EqualityComparator { private Same() {} "
+                        + "public boolean areEqual(@Nullable Object a,@Nullable Object b) { return true; } }",
+                "@Input(equalityComparator=Same.class) abstract String value();",
+                "constructor");
+        invalid(
+                "@arez.annotations.DefaultEqualityComparator(Same.class) public static class Value {} "
+                        + "public abstract static class Same implements arez.EqualityComparator {}",
+                "@Input abstract Value value();",
+                "concrete");
+    }
+
     private String valid(final String declarations, final String inputs) throws Exception {
+        return valid(declarations, inputs, "");
+    }
+
+    private String valid(final String declarations, final String inputs, final String suffix) throws Exception {
         String result = "";
         for (final boolean formatted : List.of(false, true)) {
             final var options = new ArrayList<>(getOptions());
             options.add("-Areact4j.format_generated_source=" + formatted);
             final var compilation = CompileTestUtil.assertCompilesWithoutWarnings(
-                    List.of(source(declarations, inputs)), options, processors(), List.of());
+                    List.of(source(declarations, inputs, suffix)), options, processors(), List.of());
             try {
                 StrictGeneratedCode.check(compilation, options);
                 result = Files.readString(compilation.sourceOutput().resolve("test/Case_ComponentBuilder.java"));
+                result += Files.readString(compilation.sourceOutput().resolve("test/Case_React4j_Component.java"));
             } finally {
                 cleanup(compilation);
             }

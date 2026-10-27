@@ -752,33 +752,7 @@ final class BuilderGenerator {
     }
 
     private static CodeBlock inputValue(final InputDescriptor input) {
-        final var owner = input.getDescriptor().getEnhancedClassName();
-        if (input.getType().getKind().isPrimitive()) {
-            final var converter =
-                    switch (input.getType().getKind()) {
-                        case BOOLEAN -> "asBoolean";
-                        case BYTE -> "asByte";
-                        case SHORT -> "asShort";
-                        case INT -> "asInt";
-                        case LONG -> "asLong";
-                        case CHAR -> "asChar";
-                        case FLOAT -> "asFloat";
-                        case DOUBLE -> "asDouble";
-                        default -> throw new IllegalStateException();
-                    };
-            return CodeBlock.of(
-                    "$T.requireNonNull(inputs.getAsAny($T.Inputs.$N)).$N()",
-                    Objects.class,
-                    owner,
-                    input.getConstantName(),
-                    converter);
-        }
-        final var value = CodeBlock.of(
-                "($T) inputs.get($T.Inputs.$N)",
-                input.getTypeName().withoutAnnotations(),
-                owner,
-                input.getConstantName());
-        return input.isNonNull() ? CodeBlock.of("$T.requireNonNull($L)", Objects.class, value) : value;
+        return InputValues.read(input, "inputs");
     }
 
     private static TypeSpec buildContextHolder(final ViewDescriptor descriptor) {

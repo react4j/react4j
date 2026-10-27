@@ -162,7 +162,7 @@ abstract class React4j_NestedContractView extends NestedContractView {
       final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if ( null != prevInputs ) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
-      final boolean data = !Js.isTripleEqual( inputs.get( Inputs.data ), prevInputs.get( Inputs.data ) );
+      final boolean data = !Js.isTripleEqual( prevInputs.get( Inputs.data ), inputs.get( Inputs.data ) );
       if ( data ) {
         changed( Objects.requireNonNull( inputs.getAsAny( Inputs.data ) ).cast() );
       }

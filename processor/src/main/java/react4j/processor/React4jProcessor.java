@@ -263,6 +263,7 @@ public final class React4jProcessor extends AbstractStandardProcessor {
 
         for (final var input : descriptor.getInputs()) {
             InputPolicies.parseKey(processingEnv, descriptor, input);
+            InputPolicies.parseEquality(processingEnv, descriptor, input);
             InputEnhancer.parse(processingEnv, descriptor, input);
         }
 
