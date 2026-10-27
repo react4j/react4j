@@ -112,6 +112,20 @@ final class BuilderGenerator {
         builder.addMethod(
                 MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build());
 
+        for (final var input : descriptor.getImmutableInputs()) {
+            final var generator = input.getKeyGenerator();
+            if (null != generator) {
+                builder.addField(FieldSpec.builder(
+                                input.getKeyGeneratorType(),
+                                keyGeneratorField(input),
+                                Modifier.PRIVATE,
+                                Modifier.STATIC,
+                                Modifier.FINAL)
+                        .initializer("new $T()", ClassName.get(generator))
+                        .build());
+            }
+        }
+
         final var builderDescriptor = buildBuilderDescriptor(descriptor);
         InputEnhancer.validateBuilder(processingEnv, descriptor, builderDescriptor);
 
@@ -699,10 +713,14 @@ final class BuilderGenerator {
 
     private static boolean usesFramedKeys(final ViewDescriptor descriptor) {
         return descriptor.getImmutableInputs().stream()
-                .anyMatch(input -> ImmutableInputKeyStrategy.ARRAY == input.getImmutableInputKeyStrategy());
+                .anyMatch(input -> null != input.getKeyGenerator()
+                        || ImmutableInputKeyStrategy.ARRAY == input.getImmutableInputKeyStrategy());
     }
 
     private static CodeBlock inputKey(final InputDescriptor input) {
+        if (null != input.getKeyGenerator()) {
+            return CodeBlock.of("$N.getKey($L)", keyGeneratorField(input), inputValue(input));
+        }
         final var value = CodeBlock.of(
                 "inputs.get($T.Inputs.$N)", input.getDescriptor().getEnhancedClassName(), input.getConstantName());
         return switch (input.getImmutableInputKeyStrategy()) {
@@ -727,6 +745,10 @@ final class BuilderGenerator {
             case IS_STRING, ENUM -> CodeBlock.of("$T.valueOf($L)", String.class, value);
             case TO_STRING -> CodeBlock.of("$T.valueOf($L)", String.class, inputValue(input));
         };
+    }
+
+    private static String keyGeneratorField(final InputDescriptor input) {
+        return "$keyGenerator_" + input.getName();
     }
 
     private static CodeBlock inputValue(final InputDescriptor input) {

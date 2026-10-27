@@ -45,6 +45,17 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface Input {
     /**
+     * Provider of this immutable constructor input's key contribution. The provider implements
+     * {@link react4j.InputKeyGenerator} for a compatible input type, including its nullness, and
+     * has an accessible no-argument constructor. Providers must be deterministic and have no
+     * observable side effects; the framework may reuse instances and invoke them repeatedly.
+     * Explicit providers override automatic key derivation. {@code void.class} uses automatic derivation.
+     *
+     * @return the key provider class.
+     */
+    Class<?> keyGenerator() default void.class;
+
+    /**
      * Interface supplying fluent default methods for this input's builder step.
      * The interface has one unbounded result type parameter and one abstract method matching the
      * generated input setter's name and builder-facing value type. Its parameter nullness must be compatible with

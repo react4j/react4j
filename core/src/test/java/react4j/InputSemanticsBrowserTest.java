@@ -17,6 +17,7 @@ final class InputSemanticsBrowserTest {
     private static int _constructed;
     private static int _rendered;
     private static int _disposed;
+    private static String @Nullable [] _captured;
 
     private InputSemanticsBrowserTest() {}
 
@@ -63,6 +64,19 @@ final class InputSemanticsBrowserTest {
                         .children(InputSemanticsBrowserTest_ContextualBuilder.build()),
                 root);
         check(contexts + 1 == _constructed, "Changed context arrays remount");
+        final String[] first = {"same", "first"};
+        RuntimeBrowserTest.render(InputSemanticsBrowserTest_CustomBuilder.values(first), root);
+        final var custom = _constructed;
+        RuntimeBrowserTest.render(InputSemanticsBrowserTest_CustomBuilder.values("same", "second"), root);
+        check(custom == _constructed && first == _captured, "Custom key retains original immutable input");
+        RuntimeBrowserTest.render(InputSemanticsBrowserTest_CustomBuilder.values("changed", "third"), root);
+        check(custom + 1 == _constructed, "Custom key changes remount");
+        RuntimeBrowserTest.render(InputSemanticsBrowserTest_PrimitiveKeyBuilder.value(17), root);
+        final var primitives = _constructed;
+        RuntimeBrowserTest.render(InputSemanticsBrowserTest_PrimitiveKeyBuilder.value(17), root);
+        check(primitives == _constructed, "Primitive key provider receives a Java Integer");
+        RuntimeBrowserTest.render(InputSemanticsBrowserTest_PrimitiveKeyBuilder.value(18), root);
+        check(primitives + 1 == _constructed, "Primitive custom keys propagate changes");
         RuntimeBrowserTest.render(null, root);
         Contexts.clear();
     }
@@ -146,6 +160,51 @@ final class InputSemanticsBrowserTest {
 
     private static void different(@Nullable final Object a, @Nullable final Object b) {
         check(!InputKeys.arrayKey(a).equals(InputKeys.arrayKey(b)), "Distinct array content keys");
+    }
+
+    public static final class PrefixKeys implements InputKeyGenerator<String[]> {
+        @Override
+        public String getKey(final String[] value) {
+            return value[0];
+        }
+    }
+
+    public static final class IntegerKeys implements InputKeyGenerator<Integer> {
+        @Override
+        public String getKey(final Integer value) {
+            return value.toString();
+        }
+
+        public String getKey(final int value) {
+            return "wrong-overload";
+        }
+    }
+
+    @View(type = View.Type.STATEFUL)
+    abstract static class Custom {
+        Custom(@Input(keyGenerator = PrefixKeys.class) final String[] values) {
+            _constructed++;
+            _captured = values;
+        }
+
+        @Render
+        ReactNode render() {
+            _rendered++;
+            return ReactNode.of("custom");
+        }
+    }
+
+    @View(type = View.Type.STATEFUL)
+    abstract static class PrimitiveKey {
+        PrimitiveKey(@Input(keyGenerator = IntegerKeys.class) final int value) {
+            _constructed++;
+        }
+
+        @Render
+        ReactNode render() {
+            _rendered++;
+            return ReactNode.of("primitive");
+        }
     }
 
     @View(type = View.Type.STATEFUL)

@@ -14,6 +14,7 @@ java_library(
         "InputComparator.java",
         "InputDescriptor.java",
         "InputEnhancer.java",
+        "InputPolicies.java",
         "Nullability.java",
         "ObserveMode.java",
         "OnInputChangeDescriptor.java",

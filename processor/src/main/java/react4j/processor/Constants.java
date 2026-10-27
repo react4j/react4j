@@ -12,6 +12,8 @@ final class Constants {
 
     static final String KEYED_CLASSNAME = "react4j.Keyed";
 
+    static final String INPUT_KEY_GENERATOR_CLASSNAME = "react4j.InputKeyGenerator";
+
     static final String RENDER_CLASSNAME = "react4j.annotations.Render";
 
     static final String INPUT_CLASSNAME = "react4j.annotations.Input";

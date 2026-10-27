@@ -3,9 +3,11 @@ package react4j.processor;
 import com.palantir.javapoet.ArrayTypeName;
 import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.TypeName;
+import java.util.Objects;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -18,6 +20,22 @@ import react4j.processor.Nullability.Nullness;
 
 @SuppressWarnings("Duplicates")
 final class InputDescriptor {
+    private @Nullable TypeElement _keyGenerator;
+    private @Nullable TypeName _keyGeneratorType;
+
+    @Nullable
+    TypeElement getKeyGenerator() {
+        return _keyGenerator;
+    }
+
+    void setKeyGenerator(final TypeElement generator, final TypeName type) {
+        _keyGenerator = generator;
+        _keyGeneratorType = type;
+    }
+
+    TypeName getKeyGeneratorType() {
+        return Objects.requireNonNull(_keyGeneratorType);
+    }
 
     private final ViewDescriptor _descriptor;
 

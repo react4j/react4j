@@ -1,6 +1,6 @@
 # T02 — Typed custom immutable keys
 
-- Status: pending
+- Status: complete
 - Blocked by: T01
 - Spec coverage: R2, R6, AC2
 
@@ -10,9 +10,9 @@ Input.keyGenerator selects a generic InputKeyGenerator<T> implementation, with c
 
 ## Acceptance criteria
 
-- [ ] Explicit provider overrides builtins and receives declared Java values/nulls.
-- [ ] Generic inheritance, incompatible input, nullness, invalid class/construction and mutable-target misuse are diagnosed or compiled as appropriate.
-- [ ] Browser counts demonstrate equal custom keys retain identity and changed keys remount.
+- [x] Explicit provider overrides builtins and receives declared Java values/nulls.
+- [x] Generic inheritance, incompatible input, nullness, invalid class/construction and mutable-target misuse are diagnosed or compiled as appropriate.
+- [x] Browser counts demonstrate equal custom keys retain identity and changed keys remount.
 
 ## Validation
 
@@ -20,4 +20,4 @@ Processor compile/diagnostic tests and relevant browser scenarios in both modes.
 
 ## Evidence
 
-Pending.
+Passed: input_semantics formatted/unformatted strict compilations and diagnostics (including nullable/inherited generic contracts and separately compiled provider), plus development and optimized core browser tests. Browser regression proves interface dispatch despite overloaded provider methods and normal primitive boxing. Java formatting applied.
