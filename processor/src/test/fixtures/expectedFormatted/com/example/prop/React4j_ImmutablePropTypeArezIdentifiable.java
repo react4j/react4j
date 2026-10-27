@@ -12,6 +12,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
@@ -48,7 +49,7 @@ abstract class React4j_ImmutablePropTypeArezIdentifiable extends ImmutablePropTy
   @Nullable
   ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed(this);
-    return render();
+    return Renderable.toReactNode(render());
   }
 
   static final class Factory {

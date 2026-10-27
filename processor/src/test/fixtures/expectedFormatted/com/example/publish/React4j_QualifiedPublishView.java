@@ -14,6 +14,7 @@ import react4j.Context;
 import react4j.Contexts;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
@@ -46,7 +47,8 @@ abstract class React4j_QualifiedPublishView extends QualifiedPublishView {
   @Nullable
   ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed(this);
-    return ContextHolder.CONTEXT_getMyContextVar.provide(getMyContextVar(), render());
+    return ContextHolder.CONTEXT_getMyContextVar.provide(
+        getMyContextVar(), Renderable.toReactNode(render()));
   }
 
   private static final class ContextHolder {

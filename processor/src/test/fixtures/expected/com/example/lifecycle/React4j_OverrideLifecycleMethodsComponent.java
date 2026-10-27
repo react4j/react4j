@@ -14,6 +14,7 @@ import react4j.JsError;
 import react4j.React;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.internal.OnComponentDidCatch;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
@@ -68,7 +69,7 @@ abstract class React4j_OverrideLifecycleMethodsComponent extends OverrideLifecyc
 
   @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
-    return render();
+    return Renderable.toReactNode( render() );
   }
 
   static final class Factory {

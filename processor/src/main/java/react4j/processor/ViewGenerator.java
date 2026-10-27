@@ -768,17 +768,9 @@ final class ViewGenerator {
         final var explicitReturnRequired = isTrackingType || !postRenderDescriptors.isEmpty();
 
         if (null != render) {
-            final var rawNode = render.getReturnType() instanceof DeclaredType declared
-                    && Constants.VNODE_CLASSNAME.equals(declared.asElement().toString());
-            if (!rawNode) {
-                sb.append("$T.toReactNode( ");
-                args.add(ClassName.bestGuess(Constants.RENDERABLE_CLASSNAME));
-            }
-            sb.append("$N()");
+            sb.append("$T.toReactNode( $N() )");
+            args.add(ClassName.bestGuess(Constants.RENDERABLE_CLASSNAME));
             args.add(render.getSimpleName().toString());
-            if (!rawNode) {
-                sb.append(" )");
-            }
         } else if (publishDescriptors.isEmpty()) {
             sb.append("null");
         } else {

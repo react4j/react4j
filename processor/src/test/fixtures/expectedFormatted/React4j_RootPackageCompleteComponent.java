@@ -11,6 +11,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
@@ -91,7 +92,7 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     preRender2();
     preRender3();
     preRender4();
-    final ReactNode result = render();
+    final ReactNode result = Renderable.toReactNode(render());
     postRender1();
     postRender2();
     postRender3();

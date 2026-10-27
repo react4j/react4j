@@ -54,6 +54,11 @@ final class GeneratedBuildableBrowserTest {
         equal("hooked", root.getTextContent());
         check(0 < _builds && _builds == _postRenders, "Render result builds before each post-render hook");
         _builds = 0;
+        _postRenders = 0;
+        RuntimeBrowserTest.render(GeneratedBuildableBrowserTest_HookedRawResultBuilder.build(), root);
+        equal("hybrid", root.getTextContent());
+        check(0 < _builds && _builds == _postRenders, "ReactNode render result builds before each post-render hook");
+        _builds = 0;
         final Buildable counted = () -> {
             _builds++;
             return ReactNode.of("counted");
@@ -227,6 +232,28 @@ final class GeneratedBuildableBrowserTest {
         void afterRender() {
             _postRenders++;
             check(_builds == _postRenders, "Post-render observes the completed build");
+        }
+    }
+
+    static final class Hybrid implements ReactNode, Buildable {
+        @Override
+        public ReactNode build() {
+            _builds++;
+            return ReactNode.of("hybrid");
+        }
+    }
+
+    @View(type = View.Type.STATEFUL)
+    abstract static class HookedRawResult {
+        @Render
+        ReactNode render() {
+            return new Hybrid();
+        }
+
+        @PostRender
+        void afterRender() {
+            _postRenders++;
+            check(_builds == _postRenders, "Post-render observes the completed hybrid build");
         }
     }
 

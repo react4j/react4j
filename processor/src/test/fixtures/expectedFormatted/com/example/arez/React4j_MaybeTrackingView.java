@@ -21,6 +21,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.internal.IntrospectUtil;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
@@ -96,7 +97,7 @@ abstract class React4j_MaybeTrackingView extends MaybeTrackingView {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed(this);
     SchedulerUtil.pauseUntilRenderLoopComplete();
-    return render();
+    return Renderable.toReactNode(render());
   }
 
   void onRenderDepsChange() {

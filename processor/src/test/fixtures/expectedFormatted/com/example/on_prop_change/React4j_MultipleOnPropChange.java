@@ -14,6 +14,7 @@ import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.OnShouldComponentUpdate;
@@ -130,7 +131,7 @@ abstract class React4j_MultipleOnPropChange extends MultipleOnPropChange {
   @Nullable
   ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed(this);
-    return render();
+    return Renderable.toReactNode(render());
   }
 
   static final class Factory {

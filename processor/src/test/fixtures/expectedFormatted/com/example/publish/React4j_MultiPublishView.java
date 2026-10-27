@@ -14,6 +14,7 @@ import react4j.Context;
 import react4j.Contexts;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
@@ -51,7 +52,7 @@ abstract class React4j_MultiPublishView extends MultiPublishView {
         ContextHolder.CONTEXT_getMyQualifiedContextVar.provide(
             getMyQualifiedContextVar(),
             ContextHolder.CONTEXT_getPrimitiveContextVar.provide(
-                getPrimitiveContextVar(), render())));
+                getPrimitiveContextVar(), Renderable.toReactNode(render()))));
   }
 
   private static final class ContextHolder {

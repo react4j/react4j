@@ -26,6 +26,7 @@ import org.jspecify.annotations.Nullable;
 import org.realityforge.braincheck.Guards;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.internal.IntrospectUtil;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
@@ -124,7 +125,7 @@ abstract class React4j_InputAndMemoizeComponent extends InputAndMemoizeComponent
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed(this);
     SchedulerUtil.pauseUntilRenderLoopComplete();
-    final ReactNode result = render();
+    final ReactNode result = Renderable.toReactNode(render());
     if (Arez.shouldCheckInvariants() && Arez.areSpiesEnabled()) {
       Guards.invariant(
           () -> !$$react4j$$_getRenderObserver()

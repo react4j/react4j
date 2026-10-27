@@ -12,6 +12,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
@@ -46,7 +47,7 @@ abstract class React4j_MultiplePreRenderModel extends MultiplePreRenderModel {
     assert Disposable.isNotDisposed(this);
     preRender1();
     preRender2();
-    return render();
+    return Renderable.toReactNode(render());
   }
 
   static final class Factory {
