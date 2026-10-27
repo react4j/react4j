@@ -4,6 +4,7 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
@@ -28,7 +29,7 @@ final class ImmutablePropTypeKeyedInterfaceBuilder {
     return newBuilder().build();
   }
 
-  interface Step1 {
+  interface Step1 extends Buildable {
     @Contract(pure = true)
     ReactNode myProp(ImmutablePropTypeKeyedInterface.@Nullable KeyedInterface myProp);
 

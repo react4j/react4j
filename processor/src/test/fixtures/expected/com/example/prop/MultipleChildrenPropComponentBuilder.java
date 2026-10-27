@@ -5,9 +5,11 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ChildrenEnhancer;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.Renderable;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
@@ -19,10 +21,7 @@ final class MultipleChildrenPropComponentBuilder {
     return new Builder();
   }
 
-  @Contract(
-      pure = true
-  )
-  static ReactNode children(final ReactNode @Nullable ... children) {
+  static ReactNode children(final Renderable @Nullable ... children) {
     return newBuilder().children( children );
   }
 
@@ -33,15 +32,12 @@ final class MultipleChildrenPropComponentBuilder {
     return newBuilder().build();
   }
 
-  static ReactNode children(final Stream<? extends ReactNode> arg0) {
+  static ReactNode children(final Stream<? extends Renderable> arg0) {
     return MultipleChildrenPropComponentBuilder.newBuilder().children(arg0);
   }
 
-  interface Step1 extends ChildrenEnhancer<ReactNode> {
-    @Contract(
-        pure = true
-    )
-    ReactNode children(ReactNode @Nullable ... children);
+  interface Step1 extends Buildable, ChildrenEnhancer<ReactNode> {
+    ReactNode children(Renderable @Nullable ... children);
 
     @Contract(
         pure = true
@@ -53,11 +49,9 @@ final class MultipleChildrenPropComponentBuilder {
     private final ReactElement _element = ReactElement.createViewElement( React4j_MultipleChildrenPropComponent.Factory.TYPE );
 
     @Override
-    @Contract(
-        pure = true
-    )
-    public final ReactNode children(final ReactNode @Nullable ... children) {
-      _element.input( React4j_MultipleChildrenPropComponent.Inputs.children, children );
+    public final ReactNode children(final Renderable @Nullable ... children) {
+      final var $react4j$children = Renderable.toReactNodes( children );
+      _element.input( React4j_MultipleChildrenPropComponent.Inputs.children, $react4j$children );
       return build();
     }
 

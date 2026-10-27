@@ -4,6 +4,7 @@ import arez.Arez;
 import jsinterop.annotations.JsType;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.React;
 import react4j.ReactTestUtil;
 import react4j.dom.ReactDOM.RenderCallbackFn;
@@ -65,11 +66,23 @@ public final class RuntimeCoverageExample {
     }
 
     public static void renderRoot(ReactRoot root, String text) {
-        root.render(DOM.span(text));
+        final var builds = new int[1];
+        root.render((Buildable) () -> {
+            builds[0]++;
+            return DOM.span(text);
+        });
+        check(1 == builds[0], "Root builds before scheduling its render");
     }
 
     public static void renderRootCallback(ReactRoot root, String text, PostRenderCallbackFn callback) {
-        root.render(DOM.span(text), callback);
+        final var builds = new int[1];
+        root.render(
+                (Buildable) () -> {
+                    builds[0]++;
+                    return DOM.span(text);
+                },
+                callback);
+        check(1 == builds[0], "Root callback overload builds before scheduling its render");
     }
 
     public static void unmountRoot(ReactRoot root) {

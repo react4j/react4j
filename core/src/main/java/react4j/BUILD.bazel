@@ -5,6 +5,7 @@ package(default_visibility = ["//:__subpackages__"])
 java_library(
     name = "react4j",
     srcs = [
+        "Buildable.java",
         "ChildrenEnhancer.java",
         "Context.java",
         "Contexts.java",
@@ -16,6 +17,7 @@ java_library(
         "ReactErrorInfo.java",
         "ReactNode.java",
         "ReactTestUtil.java",
+        "Renderable.java",
         "package-info.java",
         "//core/src/main/java/react4j/annotations:sources",
         "//core/src/main/java/react4j/internal:sources",

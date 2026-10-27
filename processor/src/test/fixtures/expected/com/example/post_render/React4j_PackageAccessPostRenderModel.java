@@ -12,6 +12,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
@@ -47,7 +48,7 @@ abstract class React4j_PackageAccessPostRenderModel extends PackageAccessPostRen
 
   @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
-    final ReactNode result = render();
+    final ReactNode result = Renderable.toReactNode( render() );
     postRender();
     return result;
   }

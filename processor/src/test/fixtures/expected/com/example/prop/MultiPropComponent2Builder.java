@@ -5,9 +5,11 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.ChildrenEnhancer;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.Renderable;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
@@ -33,10 +35,7 @@ final class MultiPropComponent2Builder {
     return newBuilder().myProp2( myProp2 );
   }
 
-  @Contract(
-      pure = true
-  )
-  static ReactNode children(final ReactNode @Nullable ... children) {
+  static ReactNode children(final Renderable @Nullable ... children) {
     return newBuilder().children( children );
   }
 
@@ -47,11 +46,11 @@ final class MultiPropComponent2Builder {
     return newBuilder().build();
   }
 
-  static ReactNode children(final Stream<? extends ReactNode> arg0) {
+  static ReactNode children(final Stream<? extends Renderable> arg0) {
     return MultiPropComponent2Builder.newBuilder().children(arg0);
   }
 
-  interface Step1 extends ChildrenEnhancer<ReactNode> {
+  interface Step1 extends Buildable, ChildrenEnhancer<ReactNode> {
     @Contract(
         pure = true
     )
@@ -62,10 +61,7 @@ final class MultiPropComponent2Builder {
     )
     Step1 myProp2(@Nullable String myProp2);
 
-    @Contract(
-        pure = true
-    )
-    ReactNode children(ReactNode @Nullable ... children);
+    ReactNode children(Renderable @Nullable ... children);
 
     @Contract(
         pure = true
@@ -95,11 +91,9 @@ final class MultiPropComponent2Builder {
     }
 
     @Override
-    @Contract(
-        pure = true
-    )
-    public final ReactNode children(final ReactNode @Nullable ... children) {
-      _element.input( React4j_MultiPropComponent2.Inputs.children, children );
+    public final ReactNode children(final Renderable @Nullable ... children) {
+      final var $react4j$children = Renderable.toReactNodes( children );
+      _element.input( React4j_MultiPropComponent2.Inputs.children, $react4j$children );
       return build();
     }
 

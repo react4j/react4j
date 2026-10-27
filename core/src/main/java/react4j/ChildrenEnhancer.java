@@ -8,9 +8,9 @@ import java.util.stream.Stream;
  * @param <R> the result of setting the children input.
  */
 public interface ChildrenEnhancer<R> {
-    R children(ReactNode... children);
+    R children(Renderable... children);
 
-    default R children(Stream<? extends ReactNode> children) {
-        return children(children.toArray(ReactNode[]::new));
+    default R children(Stream<? extends Renderable> children) {
+        return children(children.toArray(Renderable[]::new));
     }
 }

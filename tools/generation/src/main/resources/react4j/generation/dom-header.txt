@@ -8,3 +8,4 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.Renderable;

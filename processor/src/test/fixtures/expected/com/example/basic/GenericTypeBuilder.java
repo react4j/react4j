@@ -3,6 +3,7 @@ package com.example.basic;
 import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
+import react4j.Buildable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -24,7 +25,7 @@ final class GenericTypeBuilder {
   }
 
   @SuppressWarnings("unused")
-  interface Step1<T> {
+  interface Step1<T> extends Buildable {
     @Contract(
         pure = true
     )

@@ -36,7 +36,7 @@ public final class Context<T extends @Nullable Object> {
      * @return the element.
      */
     @JsOverlay
-    public ReactNode provide(@Nullable final T value, final @Nullable ReactNode @Nullable ... children) {
+    public ReactNode provide(@Nullable final T value, final @Nullable Renderable @Nullable ... children) {
         return provider().value(value).children(children);
     }
 
@@ -54,7 +54,7 @@ public final class Context<T extends @Nullable Object> {
      * A Builder for the Provider component.
      * A provider component is a react component that allows Consumers to subscribe to context changes.
      */
-    public static final class ProviderBuilder<ST extends @Nullable Object> {
+    public static final class ProviderBuilder<ST extends @Nullable Object> implements Buildable {
 
         private final ReactElement _element;
 
@@ -79,11 +79,12 @@ public final class Context<T extends @Nullable Object> {
             return this;
         }
 
-        public ReactNode children(final @Nullable ReactNode @Nullable ... children) {
-            _element.input("children", children);
+        public ReactNode children(final @Nullable Renderable @Nullable ... children) {
+            _element.input("children", Renderable.toReactNodes(children));
             return build();
         }
 
+        @Override
         public ReactNode build() {
             return _element;
         }
@@ -102,7 +103,7 @@ public final class Context<T extends @Nullable Object> {
          * @return the rendered react node tree.
          */
         @Nullable
-        ReactNode render(@Nullable T value);
+        Renderable render(@Nullable T value);
     }
 
     /**
@@ -136,7 +137,8 @@ public final class Context<T extends @Nullable Object> {
          * @return the creates react node.
          */
         public ReactNode render(final ConsumerRenderFunction<ST> render) {
-            _element.input("children", render);
+            _element.input(
+                    "children", (ConsumerRenderFunction<ST>) value -> Renderable.toReactNode(render.render(value)));
             return _element;
         }
     }

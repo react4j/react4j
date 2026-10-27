@@ -47,9 +47,13 @@ public @interface Input {
     /**
      * Interface supplying fluent default methods for this input's builder step.
      * The interface has one unbounded result type parameter and one abstract method matching the
-     * generated input setter's name and value type. Its parameter nullness must be compatible with
+     * generated input setter's name and builder-facing value type. Its parameter nullness must be compatible with
      * the input. Public default methods return the result parameter directly; they may declare
      * method type parameters, varargs and checked exceptions.
+     *
+     * <p>Inputs declared as {@link react4j.ReactNode} or its array type have builder setters accepting
+     * {@link react4j.Renderable} or its array type with the same nullness. Match those widened types
+     * in custom enhancers; supplied builders are materialized before storing the view input.</p>
      *
      * <p>The result is the next step, the current optional step, or {@link react4j.ReactNode} when
      * setting the input finishes construction. First-step helpers also receive static shortcuts.

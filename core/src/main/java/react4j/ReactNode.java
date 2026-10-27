@@ -10,7 +10,7 @@ import org.jspecify.annotations.Nullable;
  * Union type representing possible output of render method.
  */
 @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-public interface ReactNode {
+public interface ReactNode extends Renderable {
     @JsOverlay
     static ReactNode of(final byte value) {
         return Js.uncheckedCast(Js.asAny(value));
@@ -47,7 +47,7 @@ public interface ReactNode {
     }
 
     @JsOverlay
-    static ReactNode of(final @Nullable ReactNode... elements) {
-        return Js.uncheckedCast(elements);
+    static ReactNode of(final @Nullable Renderable... elements) {
+        return Js.uncheckedCast(Renderable.toReactNodes(elements));
     }
 }

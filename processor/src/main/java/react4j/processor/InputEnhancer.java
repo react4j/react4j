@@ -101,11 +101,11 @@ final class InputEnhancer {
         if (!setter.getSimpleName().contentEquals(input.getName())
                 || !setterType.getTypeVariables().isEmpty()
                 || 1 != setterType.getParameterTypes().size()
-                || !env.getTypeUtils().isSameType(setterType.getParameterTypes().get(0), input.getType())
+                || !env.getTypeUtils().isSameType(setterType.getParameterTypes().get(0), input.getBuilderType(env))
                 || !setterType.getThrownTypes().isEmpty()) {
             throw error(
                     input,
-                    "abstract setter must match '" + input.getName() + "(" + input.getType()
+                    "abstract setter must match '" + input.getName() + "(" + input.getBuilderType(env)
                             + ")' without method type parameters or exceptions");
         }
         enhancer.validateResult(env, input, setter, setterType);
@@ -115,7 +115,7 @@ final class InputEnhancer {
                 setterType.getParameterTypes().get(0),
                 element,
                 input.getElement(),
-                input.getType(),
+                input.getBuilderType(env),
                 view.getElement())) {
             throw error(input, "setter parameter nullness is incompatible with the input");
         }
@@ -284,7 +284,8 @@ final class InputEnhancer {
                                         : methodType.withoutAnnotations().toString())
                         + ")";
                 // TypeMirror erasure is required for ordinary generic inputs.
-                final var type = method.getTypeMirror();
+                final var input = method.getInput();
+                final var type = null == input ? null : input.getBuilderType(env);
                 generated.put(
                         null == type
                                 ? signature

@@ -8,6 +8,7 @@ import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Buildable;
 import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
@@ -37,7 +38,7 @@ final class ImmutablePropTypesBuilder {
     Step2 stillAnotherProp(int stillAnotherProp);
   }
 
-  interface Step2 {
+  interface Step2 extends Buildable {
     @Contract(
         pure = true
     )

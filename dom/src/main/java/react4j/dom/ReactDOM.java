@@ -11,6 +11,7 @@ import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.Renderable;
 
 /**
  * Core interface into React DOM library.
@@ -67,7 +68,13 @@ public class ReactDOM {
      * @param container the DOM element to render into.
      * @return the new portal.
      */
-    public static native ReactPortal createPortal(ReactNode children, Object container);
+    @JsOverlay
+    public static ReactPortal createPortal(final Renderable children, final Object container) {
+        return nativeCreatePortal(Renderable.toReactNode(children), container);
+    }
+
+    @JsMethod(name = "createPortal")
+    private static native ReactPortal nativeCreatePortal(ReactNode children, Object container);
 
     /**
      * Render a React element into the DOM in the supplied container.
@@ -85,8 +92,10 @@ public class ReactDOM {
     @Nullable
     @JsOverlay
     public static Object render(
-            final ReactNode node, final Object container, @Nullable final RenderCallbackFn onUpdate) {
-        return _render(React.shouldCheckInvariants() ? ReactElement.createStrictMode(node) : node, container, onUpdate);
+            final Renderable node, final Object container, @Nullable final RenderCallbackFn onUpdate) {
+        final var actual = Renderable.toReactNode(node);
+        return _render(
+                React.shouldCheckInvariants() ? ReactElement.createStrictMode(actual) : actual, container, onUpdate);
     }
 
     @Nullable
@@ -102,11 +111,11 @@ public class ReactDOM {
      * @param node      the react node to render.
      * @param container the DOM element to render into.
      * @return a reference to the created React Component, DOM Node, Portal or null (stateless components).
-     * @see #render(ReactNode, Object, RenderCallbackFn)
+     * @see #render(Renderable, Object, RenderCallbackFn)
      */
     @Nullable
     @JsOverlay
-    public static Object render(ReactNode node, Object container) {
+    public static Object render(Renderable node, Object container) {
         return render(node, container, null);
     }
 

@@ -4,8 +4,8 @@ title: Input Step Enhancers
 
 Use `@Input(enhancer=...)` to add presets or conversions to an input's generated builder step.
 The enhancer is an interface with one result type parameter and one abstract method matching the
-input's generated setter name and value type. Its public default methods return the result parameter
-directly and delegate to that setter.
+input's generated setter name and builder-facing value type. Its public default methods return the result
+parameter directly and delegate to that setter.
 
 {@file_content: file=react4j/examples/input_enhancers/ColorEnhancer.java}
 
@@ -46,10 +46,30 @@ The interface has only its one abstract input setter; additional abstract capabi
 Private and static interface utilities remain implementation details. Tree-context inputs have no
 builder step and cannot select an enhancer.
 
+## Composing ready builders
+
+A step that exposes `build()` also implements `Buildable`. Both `Buildable` and `ReactNode` extend
+`Renderable`, which composition APIs accept. Supply a ready builder directly to children, DOM helpers,
+context providers, roots or portals; the receiving API calls `build()` immediately. Each occurrence
+builds separately, and exceptions propagate. There is no implicit caching or freezing.
+
+For example, supplying the required message leaves this builder ready, with an optional class name:
+
+{@file_content: file=react4j/examples/input_enhancers/Notice.java}
+
+Declare an `@Render` method's return type as `Renderable` when it may return a ready builder:
+
+{@file_content: file=react4j/examples/input_enhancers/NoticeHost.java}
+
+Existing `ReactNode` return types and explicit `build()` calls remain valid. A Java variable, field or
+helper declared as `ReactNode` still requires a materialized node; use `Renderable` when it should
+also hold a ready builder. Steps with required calls remaining cannot be supplied as renderables.
+Context consumer callbacks and generated render bridges build their returned value on each invocation.
+
 ## Children inputs
 
 An input whose effective name is `children` automatically selects `react4j.ChildrenEnhancer`.
-It supplies `children(Stream<? extends ReactNode>)`, which consumes the stream once in encounter
+It supplies `children(Stream<? extends Renderable>)`, which consumes the stream once in encounter
 order and delegates to the array setter. No enhancer annotation is needed:
 
 {@file_content: file=react4j/examples/input_enhancers/ChildrenPanel.java}
@@ -71,6 +91,12 @@ stream helper while adding presets:
 A standalone custom enhancer supplies only its own helpers, so it can also provide its own stream
 overload. Omitting `enhancer` or specifying `void.class` selects the standard default for `children`
 and no enhancer for other inputs. Tree-context inputs do not receive the default.
+
+Generated setters for `ReactNode` and `ReactNode[]` inputs now accept `Renderable` and `Renderable[]`,
+with the same nullness. The view's input declarations can keep their node types: builders are
+materialized before storage. Update custom node-input enhancer setters to those widened types.
+Overrides of the standard children stream helper must use `Stream<? extends Renderable>` as well.
+Ordinary data inputs and untyped property maps are not traversed for builders.
 
 When migrating existing chains, move setters after `child` or `children` before that call and
 remove the trailing `build()`:

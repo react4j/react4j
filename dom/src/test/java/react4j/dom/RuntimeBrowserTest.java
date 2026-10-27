@@ -18,6 +18,7 @@ public final class RuntimeBrowserTest {
         var container = Browser.append("div");
         var target = Browser.append("div");
         try {
+            BuildableBrowserTest.run(container, target);
             int[] rendered = {0};
             RuntimeCoverageExample.render(container, true, () -> rendered[0]++);
             check(1 == rendered[0], "Render callback");

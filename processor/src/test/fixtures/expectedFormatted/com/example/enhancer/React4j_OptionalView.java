@@ -13,6 +13,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactNode;
+import react4j.Renderable;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
@@ -64,6 +65,28 @@ abstract class React4j_OptionalView extends OptionalView {
     }
   }
 
+  @Override
+  @Nullable
+  ReactNode node() {
+    if (React.shouldCheckInvariants()) {
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.node);
+      return null != value ? value.cast() : null;
+    } else {
+      return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.node));
+    }
+  }
+
+  @Override
+  @Nullable
+  ReactNode @Nullable [] nodes() {
+    if (React.shouldCheckInvariants()) {
+      final var value = $$react4j$$_nativeView.requireInputs().getAsAny(Inputs.nodes);
+      return null != value ? value.cast() : null;
+    } else {
+      return Js.uncheckedCast($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.nodes));
+    }
+  }
+
   private boolean $$react4j$$_shouldComponentUpdate(
       final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
@@ -72,6 +95,12 @@ abstract class React4j_OptionalView extends OptionalView {
       return true;
     }
     if (!Js.isTripleEqual(inputs.get(Inputs.title), nextInputs.get(Inputs.title))) {
+      return true;
+    }
+    if (!Js.isTripleEqual(inputs.get(Inputs.node), nextInputs.get(Inputs.node))) {
+      return true;
+    }
+    if (!Js.isTripleEqual(inputs.get(Inputs.nodes), nextInputs.get(Inputs.nodes))) {
       return true;
     }
     return false;
@@ -84,7 +113,7 @@ abstract class React4j_OptionalView extends OptionalView {
   @Nullable
   ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed(this);
-    return render();
+    return Renderable.toReactNode(render());
   }
 
   static final class Factory {
@@ -97,6 +126,10 @@ abstract class React4j_OptionalView extends OptionalView {
     static final String panelTypes = React.shouldMinimizeInputKeys() ? "a" : "panelTypes";
 
     static final String title = React.shouldMinimizeInputKeys() ? "b" : "title";
+
+    static final String node = React.shouldMinimizeInputKeys() ? "c" : "node";
+
+    static final String nodes = React.shouldMinimizeInputKeys() ? "d" : "nodes";
 
     private Inputs() {}
   }

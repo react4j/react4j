@@ -7,6 +7,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.ChildrenEnhancer;
 import react4j.ReactNode;
+import react4j.Renderable;
 
 @NullMarked
 public final class Enhancers
@@ -18,6 +19,16 @@ public final class Enhancers
     default R empty()
     {
       return children(new ReactNode[0]);
+    }
+  }
+
+  public interface Node<R>
+  {
+    R node(@Nullable Renderable value);
+
+    default R emptyNode()
+    {
+      return node(null);
     }
   }
 

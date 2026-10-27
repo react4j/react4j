@@ -3,6 +3,7 @@ package react4j.processor;
 import com.palantir.javapoet.AnnotationSpec;
 import com.palantir.javapoet.ArrayTypeName;
 import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.FieldSpec;
 import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.ParameterSpec;
@@ -50,6 +51,10 @@ final class BuilderGenerator {
     private static final ClassName KEYED_CLASSNAME = ClassName.get("react4j", "Keyed");
 
     private static final ClassName REACT_NODE_CLASSNAME = ClassName.get("react4j", "ReactNode");
+
+    private static final ClassName RENDERABLE_CLASSNAME = ClassName.get("react4j", "Renderable");
+
+    private static final ClassName BUILDABLE_CLASSNAME = ClassName.get("react4j", "Buildable");
 
     private static final ClassName JS_PROPERTY_MAP_CLASSNAME = ClassName.get("jsinterop.base", "JsPropertyMap");
 
@@ -176,6 +181,8 @@ final class BuilderGenerator {
                 REACT_CLASSNAME,
                 KEYED_CLASSNAME,
                 REACT_NODE_CLASSNAME,
+                RENDERABLE_CLASSNAME,
+                BUILDABLE_CLASSNAME,
                 JS_PROPERTY_MAP_CLASSNAME,
                 CONTRACT_CLASSNAME,
                 descriptor.getBuilderClassName(),
@@ -228,7 +235,12 @@ final class BuilderGenerator {
             final Step step,
             final StepMethod stepMethod) {
         final var method = MethodSpec.methodBuilder(stepMethod.getName());
-        addPureContract(method);
+        if (!stepMethod.isRenderableInput()
+                && descriptor.getInputs().stream()
+                        .noneMatch(input ->
+                                input.isRenderableInput() && (input.hasDefaultField() || input.hasDefaultMethod()))) {
+            addPureContract(method);
+        }
 
         method.addModifiers(Modifier.STATIC);
         if (descriptor.exportBuilder()) {
@@ -274,16 +286,17 @@ final class BuilderGenerator {
 
     private static MethodSpec.Builder buildStepInterfaceMethod(
             final ViewDescriptor descriptor,
-            final String name,
+            final StepMethod stepMethod,
             final Step step,
-            final StepMethodType stepMethodType,
             final Consumer<MethodSpec.Builder> action) {
-        final var method = MethodSpec.methodBuilder(name);
+        final var method = MethodSpec.methodBuilder(stepMethod.getName());
         method.addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
 
-        addPureContract(method);
+        if (!stepMethod.isRenderableInput()) {
+            addPureContract(method);
+        }
         action.accept(method);
-        configureStepMethodReturns(descriptor, method, step, stepMethodType);
+        configureStepMethodReturns(descriptor, method, step, stepMethod.getStepMethodType());
         return method;
     }
 
@@ -321,6 +334,10 @@ final class BuilderGenerator {
         }
         builder.addTypeVariables(GeneratorUtil.getTypeArgumentsAsNames(descriptor.getDeclaredType()));
 
+        if (step.getMethods().stream().anyMatch(StepMethod::isBuildIntrinsic)) {
+            builder.addSuperinterface(BUILDABLE_CLASSNAME);
+        }
+
         if (!descriptor.getDeclaredType().getTypeArguments().isEmpty()) {
             builder.addAnnotation(SuppressWarningsUtil.suppressWarningsAnnotation("unused"));
         }
@@ -332,38 +349,35 @@ final class BuilderGenerator {
                 builder.addSuperinterface(
                         enhancer.superinterface(stepReturnType(descriptor, step, stepMethod.getStepMethodType())));
             }
-            final var stepMethodType = stepMethod.getStepMethodType();
             // Magically handle the step method named build
             if (stepMethod.isBuildIntrinsic()) {
-                builder.addMethod(buildStepInterfaceMethod(descriptor, "build", step, stepMethodType, m -> {})
+                builder.addMethod(buildStepInterfaceMethod(descriptor, stepMethod, step, m -> {})
                         .build());
             } else {
-                builder.addMethod(buildStepInterfaceMethod(
-                                descriptor, stepMethod.getName(), step, stepMethodType, m -> {
-                                    final var inputMethod = stepMethod.getMethod();
-                                    if (null != inputMethod) {
-                                        final InputDescriptor input = stepMethod.getInput();
-                                        assert null != input;
-                                        final var inputMethodType = input.getMethodType();
-                                        assert null != inputMethodType;
-                                        GeneratorUtil.copyTypeParameters(inputMethodType, m);
-                                    }
-                                    final var type = stepMethod.getType();
-                                    if (type instanceof ArrayTypeName) {
-                                        m.varargs();
-                                    }
-                                    final var parameter = ParameterSpec.builder(type, stepMethod.getName());
-                                    final var inputElement = stepMethod.getElement();
-                                    if (null != inputElement) {
-                                        Nullability.preserveScope(inputElement, m);
-                                        GeneratorUtil.copyWhitelistedAnnotations(inputElement, m);
-                                        final var inputType = stepMethod.getTypeMirror();
-                                        assert null != inputType;
-                                        SuppressWarningsUtil.addSuppressWarningsIfRequired(
-                                                processingEnv, parameter, inputType);
-                                    }
-                                    m.addParameter(parameter.build());
-                                })
+                builder.addMethod(buildStepInterfaceMethod(descriptor, stepMethod, step, m -> {
+                            final var inputMethod = stepMethod.getMethod();
+                            if (null != inputMethod) {
+                                final InputDescriptor input = stepMethod.getInput();
+                                assert null != input;
+                                final var inputMethodType = input.getMethodType();
+                                assert null != inputMethodType;
+                                GeneratorUtil.copyTypeParameters(inputMethodType, m);
+                            }
+                            final var type = stepMethod.getType();
+                            if (type instanceof ArrayTypeName) {
+                                m.varargs();
+                            }
+                            final var parameter = ParameterSpec.builder(type, stepMethod.getName());
+                            final var inputElement = stepMethod.getElement();
+                            if (null != inputElement) {
+                                Nullability.preserveScope(inputElement, m);
+                                GeneratorUtil.copyWhitelistedAnnotations(inputElement, m);
+                                final var inputType = stepMethod.getTypeMirror();
+                                assert null != inputType;
+                                SuppressWarningsUtil.addSuppressWarningsIfRequired(processingEnv, parameter, inputType);
+                            }
+                            m.addParameter(parameter.build());
+                        })
                         .build());
             }
         }
@@ -380,7 +394,9 @@ final class BuilderGenerator {
         method.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
         method.addAnnotation(Override.class);
 
-        addPureContract(method);
+        if (!stepMethod.isRenderableInput()) {
+            addPureContract(method);
+        }
 
         final InputDescriptor input = stepMethod.getInput();
         final ExecutableType inputMethodType = null != input && input.isMethodInput() ? input.getMethodType() : null;
@@ -402,13 +418,21 @@ final class BuilderGenerator {
         }
         method.addParameter(parameter.build());
 
+        final var valueName =
+                stepMethod.isRenderableInput() ? "$react4j$" + stepMethod.getName() : stepMethod.getName();
+        if (stepMethod.isRenderableInput()) {
+            assert null != input;
+            method.addStatement(
+                    "final var $N = $L", valueName, materializeInput(input, CodeBlock.of("$N", stepMethod.getName())));
+        }
+
         if (null != input && input.isImmutable() && 1 == descriptor.syntheticKeyParts()) {
             final var strategy = input.getImmutableInputKeyStrategy();
             if (ImmutableInputKeyStrategy.KEYED == strategy) {
                 method.addStatement(
                         "_element.setKey( $T.getKey( $N ) + " + "( $T.enableViewNames() ? $S : $T.class.getName() ) )",
                         KEYED_CLASSNAME,
-                        stepMethod.getName(),
+                        valueName,
                         REACT_CLASSNAME,
                         descriptor.keySuffix(),
                         descriptor.getClassName());
@@ -417,13 +441,13 @@ final class BuilderGenerator {
                     || ImmutableInputKeyStrategy.ENUM == strategy) {
                 method.addStatement(
                         "_element.setKey( $N + ( $T.enableViewNames() ? $S : $T.class.getName() ) )",
-                        stepMethod.getName(),
+                        valueName,
                         REACT_CLASSNAME,
                         descriptor.keySuffix(),
                         descriptor.getClassName());
             } else if (ImmutableInputKeyStrategy.DYNAMIC == strategy) {
                 final var keyValue = "$" + stepMethod.getName() + "$";
-                method.addStatement("final $T $N = $N", Object.class, keyValue, stepMethod.getName());
+                method.addStatement("final $T $N = $N", Object.class, keyValue, valueName);
                 method.addStatement(
                         "_element.setKey( ( $N instanceof $T ? $T.getKey( $N ) : "
                                 + "$N instanceof $T ? $T.<$T>getArezId( $N ) : $T.valueOf( $N ) ) + "
@@ -448,7 +472,7 @@ final class BuilderGenerator {
                         "_element.setKey( $T.<Object>getArezId( $N ) + "
                                 + "( $T.enableViewNames() ? $S : $T.class.getName() ) )",
                         IDENTIFIABLE_CLASSNAME,
-                        stepMethod.getName(),
+                        valueName,
                         REACT_CLASSNAME,
                         descriptor.keySuffix(),
                         descriptor.getClassName());
@@ -456,7 +480,7 @@ final class BuilderGenerator {
         }
 
         if (null != input && input.isDisposable()) {
-            method.addStatement("assert $T.isNotDisposed( $N )", DISPOSABLE_CLASSNAME, stepMethod.getName());
+            method.addStatement("assert $T.isNotDisposed( $N )", DISPOSABLE_CLASSNAME, valueName);
         }
         if (stepMethod.isChildIntrinsic()) {
             assert null != inputElement;
@@ -466,7 +490,7 @@ final class BuilderGenerator {
                     descriptor.getEnhancedClassName(),
                     input.getConstantName(),
                     REACT_NODE_CLASSNAME,
-                    stepMethod.getName());
+                    valueName);
         } else {
 
             assert null != input;
@@ -474,7 +498,7 @@ final class BuilderGenerator {
                     "_element.input( $T.Inputs.$N, $N )",
                     descriptor.getEnhancedClassName(),
                     input.getConstantName(),
-                    stepMethod.getName());
+                    valueName);
         }
 
         if (StepMethodType.TERMINATE == stepMethod.getStepMethodType()) {
@@ -515,10 +539,10 @@ final class BuilderGenerator {
                                 Nullability.nullable(current.getTypeName()), current.getName(), Modifier.FINAL)
                         .build())
                 .addStatement(
-                        "_element.input( $T.Inputs.$N, $N )",
+                        "_element.input( $T.Inputs.$N, $L )",
                         descriptor.getEnhancedClassName(),
                         current.getConstantName(),
-                        current.getName());
+                        materializeInput(current, CodeBlock.of("$N", current.getName())));
         if (null == next) {
             method.addStatement("return build( _element.dup() )");
         } else {
@@ -713,13 +737,17 @@ final class BuilderGenerator {
             method.addStatement("final $T inputs = _element.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME);
             for (final var input : inputsWithDefaults) {
                 method.addStatement(
-                        "inputs.set( $T.Inputs.$N, $T.$N" + (input.hasDefaultField() ? "" : "()") + " )",
+                        "inputs.set( $T.Inputs.$N, $L )",
                         descriptor.getEnhancedClassName(),
                         input.getConstantName(),
-                        descriptor.getClassName(),
-                        input.hasDefaultField()
-                                ? input.getDefaultField().getSimpleName()
-                                : input.getDefaultMethod().getSimpleName());
+                        materializeInput(
+                                input,
+                                CodeBlock.of(
+                                        "$T.$N" + (input.hasDefaultField() ? "" : "()"),
+                                        descriptor.getClassName(),
+                                        input.hasDefaultField()
+                                                ? input.getDefaultField().getSimpleName()
+                                                : input.getDefaultMethod().getSimpleName())));
             }
 
             builder.addMethod(method.build());
@@ -853,5 +881,15 @@ final class BuilderGenerator {
      */
     private static void addBuildStep(final Step step) {
         step.addTerminalMethod("build", REACT_NODE_CLASSNAME);
+    }
+
+    private static CodeBlock materializeInput(final InputDescriptor input, final CodeBlock value) {
+        return input.isRenderableInput()
+                ? CodeBlock.of(
+                        "$T.$N( $L )",
+                        RENDERABLE_CLASSNAME,
+                        input.isRenderableArrayInput() ? "toReactNodes" : "toReactNode",
+                        value)
+                : value;
     }
 }

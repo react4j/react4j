@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.Renderable;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
@@ -15,14 +16,12 @@ final class NonnullChildPropComponentBuilder {
     return new Builder();
   }
 
-  @Contract(pure = true)
-  static ReactNode child(final ReactNode child) {
+  static ReactNode child(final Renderable child) {
     return newBuilder().child(child);
   }
 
   interface Step1 {
-    @Contract(pure = true)
-    ReactNode child(ReactNode child);
+    ReactNode child(Renderable child);
   }
 
   private static class Builder implements Step1 {
@@ -30,9 +29,9 @@ final class NonnullChildPropComponentBuilder {
         ReactElement.createViewElement(React4j_NonnullChildPropComponent.Factory.TYPE);
 
     @Override
-    @Contract(pure = true)
-    public final ReactNode child(final ReactNode child) {
-      _element.input(React4j_NonnullChildPropComponent.Inputs.child, ReactNode.of(child));
+    public final ReactNode child(final Renderable child) {
+      final var $react4j$child = Renderable.toReactNode(child);
+      _element.input(React4j_NonnullChildPropComponent.Inputs.child, ReactNode.of($react4j$child));
       return build();
     }
 
