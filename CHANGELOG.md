@@ -3,11 +3,8 @@
 ### Unreleased
 
 * Breaking: setting `child` or `children` now always finishes its builder. Move subsequent optional setters before the child call and remove a trailing `build()`. Plural `children` inputs automatically select the public `ChildrenEnhancer` for stream conversion; an explicit enhancer replaces that default and may extend it to retain stream helpers. `void.class` uses the default selection.
-
 * Add `@Input(enhancer=...)` for fluent builder presets and conversions, with first-step static shortcuts, generic helper methods and checked exceptions. Helpers preserve the input setter's continuation, including terminal `ReactNode` results. Diagnose incompatible enhancer contracts and shared-builder signatures. Resolve renamed constructor inputs by declaration identity.
-
 * Breaking: remove `@PostMountOrUpdate`; replace it with both `@PostMount` and `@PostUpdate`. All three commit lifecycle phases now support multiple callbacks. The first ancestor annotation for each phase fixes callback order; overrides control participation and new phase registrations append in declaration order. Superclasses run first, then interfaces in written order with ancestors first and diamonds once, then current-class declarations. When migrating shared and phase-specific callbacks, arrange declarations in their intended execution order.
-
 * Upgrade development and CI to Bazel 9.3.1.
 * Breaking: require Java 21 for application sources, publication bytecode and generated sources. Use the Java 21 Arez and Sting revisions and align processor declarations, compiler checks and Javadocs with the new baseline.
 * Add public native utility guides, worked recipes and a runnable example demonstrating containers, scoped popovers and entry motion. Run it with `tools/examples.sh serve native-utilities development`.
