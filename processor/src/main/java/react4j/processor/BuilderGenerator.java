@@ -50,6 +50,8 @@ final class BuilderGenerator {
 
     private static final ClassName KEYED_CLASSNAME = ClassName.get("react4j", "Keyed");
 
+    private static final ClassName INPUT_KEYS_CLASSNAME = ClassName.get("react4j.internal", "InputKeys");
+
     private static final ClassName REACT_NODE_CLASSNAME = ClassName.get("react4j", "ReactNode");
 
     private static final ClassName RENDERABLE_CLASSNAME = ClassName.get("react4j", "Renderable");
@@ -426,7 +428,10 @@ final class BuilderGenerator {
                     "final var $N = $L", valueName, materializeInput(input, CodeBlock.of("$N", stepMethod.getName())));
         }
 
-        if (null != input && input.isImmutable() && 1 == descriptor.syntheticKeyParts()) {
+        if (null != input
+                && input.isImmutable()
+                && 1 == descriptor.syntheticKeyParts()
+                && !usesFramedKeys(descriptor)) {
             final var strategy = input.getImmutableInputKeyStrategy();
             if (ImmutableInputKeyStrategy.KEYED == strategy) {
                 method.addStatement(
@@ -583,7 +588,19 @@ final class BuilderGenerator {
         final var syntheticInputs = descriptor.getInputs().stream()
                 .filter(InputDescriptor::isImmutable)
                 .toList();
-        if (syntheticInputs.size() > 1) {
+        if (usesFramedKeys(descriptor)) {
+            method.addStatement("final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, elementName);
+            final var key = CodeBlock.builder();
+            for (final var input : syntheticInputs) {
+                key.add("$T.frame($L) + ", INPUT_KEYS_CLASSNAME, inputKey(input));
+            }
+            key.add(
+                    "($T.enableViewNames() ? $S : $T.class.getName())",
+                    REACT_CLASSNAME,
+                    descriptor.keySuffix(),
+                    descriptor.getClassName());
+            method.addStatement("$N.setKey($L)", elementName, key.build());
+        } else if (syntheticInputs.size() > 1) {
             method.addStatement("final $T inputs = $N.inputs()", JS_PROPERTY_MAP_T_OBJECT_CLASSNAME, elementName);
 
             for (final var input : syntheticInputs) {
@@ -678,6 +695,68 @@ final class BuilderGenerator {
 
         method.addStatement("return $N", elementName).returns(REACT_NODE_CLASSNAME);
         return method.build();
+    }
+
+    private static boolean usesFramedKeys(final ViewDescriptor descriptor) {
+        return descriptor.getImmutableInputs().stream()
+                .anyMatch(input -> ImmutableInputKeyStrategy.ARRAY == input.getImmutableInputKeyStrategy());
+    }
+
+    private static CodeBlock inputKey(final InputDescriptor input) {
+        final var value = CodeBlock.of(
+                "inputs.get($T.Inputs.$N)", input.getDescriptor().getEnhancedClassName(), input.getConstantName());
+        return switch (input.getImmutableInputKeyStrategy()) {
+            case ARRAY -> CodeBlock.of("$T.arrayKey($L)", INPUT_KEYS_CLASSNAME, value);
+            case KEYED -> CodeBlock.of("$T.getKey($L)", KEYED_CLASSNAME, value);
+            case AREZ_IDENTIFIABLE ->
+                CodeBlock.of("$T.valueOf($T.<Object>getArezId($L))", String.class, IDENTIFIABLE_CLASSNAME, value);
+            case DYNAMIC ->
+                CodeBlock.of(
+                        "($L instanceof $T ? $T.getKey($L) : "
+                                + "$L instanceof $T ? $T.<Object>getArezId($L) : $T.valueOf($L))",
+                        value,
+                        KEYED_CLASSNAME,
+                        KEYED_CLASSNAME,
+                        value,
+                        value,
+                        IDENTIFIABLE_CLASSNAME,
+                        IDENTIFIABLE_CLASSNAME,
+                        value,
+                        String.class,
+                        value);
+            case IS_STRING, ENUM -> CodeBlock.of("$T.valueOf($L)", String.class, value);
+            case TO_STRING -> CodeBlock.of("$T.valueOf($L)", String.class, inputValue(input));
+        };
+    }
+
+    private static CodeBlock inputValue(final InputDescriptor input) {
+        final var owner = input.getDescriptor().getEnhancedClassName();
+        if (input.getType().getKind().isPrimitive()) {
+            final var converter =
+                    switch (input.getType().getKind()) {
+                        case BOOLEAN -> "asBoolean";
+                        case BYTE -> "asByte";
+                        case SHORT -> "asShort";
+                        case INT -> "asInt";
+                        case LONG -> "asLong";
+                        case CHAR -> "asChar";
+                        case FLOAT -> "asFloat";
+                        case DOUBLE -> "asDouble";
+                        default -> throw new IllegalStateException();
+                    };
+            return CodeBlock.of(
+                    "$T.requireNonNull(inputs.getAsAny($T.Inputs.$N)).$N()",
+                    Objects.class,
+                    owner,
+                    input.getConstantName(),
+                    converter);
+        }
+        final var value = CodeBlock.of(
+                "($T) inputs.get($T.Inputs.$N)",
+                input.getTypeName().withoutAnnotations(),
+                owner,
+                input.getConstantName());
+        return input.isNonNull() ? CodeBlock.of("$T.requireNonNull($L)", Objects.class, value) : value;
     }
 
     private static TypeSpec buildContextHolder(final ViewDescriptor descriptor) {

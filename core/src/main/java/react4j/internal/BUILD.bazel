@@ -1,6 +1,7 @@
 filegroup(
     name = "sources",
     srcs = [
+        "InputKeys.java",
         "IntrospectUtil.java",
         "NativeView.java",
         "OnComponentDidCatch.java",

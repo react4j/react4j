@@ -126,6 +126,10 @@ final class InputDescriptor {
         return _type;
     }
 
+    ViewDescriptor getDescriptor() {
+        return _descriptor;
+    }
+
     boolean isMethodInput() {
         return !isImmutable();
     }

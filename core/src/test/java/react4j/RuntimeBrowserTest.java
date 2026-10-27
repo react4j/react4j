@@ -35,6 +35,7 @@ public final class RuntimeBrowserTest {
             ContextsTest.run(root);
             BuildableBrowserTest.run(root);
             GeneratedBuildableBrowserTest.run(root);
+            InputSemanticsBrowserTest.run(root);
             var element = RuntimeCoverageExample.element(component());
             check(
                     "copy-key".equals(element.key())

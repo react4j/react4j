@@ -1,8 +1,8 @@
 # Task Map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: planned
-- Current frontier: T01
+- Status: implementing
+- Current frontier: T02
 - Planning reviewer: plan_review (1/3 rounds; final confirmation unused; Findings: none)
 - Plan checkpoint: automatic (accepted interview scope, explicit implementation/PR authority, passing planning review)
 - Implementation reviewer: pending (0/5 rounds; final confirmation unused)
@@ -16,7 +16,7 @@
 
 | ID | Task | Status | Blocked by |
 | --- | --- | --- | --- |
-| T01 | [Content-based immutable array identity](T01-array-identity.md) | pending | None |
+| T01 | [Content-based immutable array identity](T01-array-identity.md) | complete | None |
 | T02 | [Typed custom immutable keys](T02-custom-keys.md) | pending | T01 |
 | T03 | [Mutable input equality policies](T03-input-equality.md) | pending | T02 |
 | T04 | [Contract, migration and complete verification](T04-delivery.md) | pending | T03 |

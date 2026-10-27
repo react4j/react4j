@@ -7,6 +7,7 @@ java_library(
     testonly = True,
     srcs = [
         "InputEnhancerTest.java",
+        "InputSemanticsTest.java",
         "NullabilityTest.java",
         "React4jProcessorTest.java",
     ],
@@ -48,6 +49,16 @@ _RUNTIME = [
     "//third_party/java:jsinterop_annotations",
     "//third_party/java:zemeckis_core",
 ]
+
+java_testng(
+    name = "input_semantics",
+    size = "medium",
+    srcs = [],
+    data = ["//third_party/java:strict_checker_options"],
+    jvm_flags = _FLAGS,
+    test_class = "react4j.processor.InputSemanticsTest",
+    deps = _RUNTIME,
+)
 
 java_testng(
     name = "enhancers",
