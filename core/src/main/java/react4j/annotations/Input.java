@@ -56,7 +56,12 @@ public @interface Input {
      * Enhancers must coexist with all other methods and parent interfaces on the shared builder.
      * Inputs sourced from tree context cannot specify an enhancer.</p>
      *
-     * @return the enhancer interface, or {@code void.class} for no enhancer.
+     * <p>{@code void.class} selects {@link react4j.ChildrenEnhancer} for a non-context input named
+     * {@code children}, and no enhancer for other inputs. An explicit interface replaces this default;
+     * it may extend {@code ChildrenEnhancer} to retain its helpers. Setting {@code child} or
+     * {@code children} always finishes construction, so their result parameter is {@code ReactNode}.</p>
+     *
+     * @return the enhancer interface, or {@code void.class} for the default selection.
      */
     Class<?> enhancer() default void.class;
 

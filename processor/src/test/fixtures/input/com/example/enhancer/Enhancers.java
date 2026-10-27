@@ -5,11 +5,21 @@ import java.util.HashSet;
 import java.util.Set;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.ChildrenEnhancer;
+import react4j.ReactNode;
 
 @NullMarked
 public final class Enhancers
 {
   private Enhancers() {}
+
+  public interface Children<R> extends ChildrenEnhancer<R>
+  {
+    default R empty()
+    {
+      return children(new ReactNode[0]);
+    }
+  }
 
   public interface PanelTypes<R>
   {

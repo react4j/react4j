@@ -9,7 +9,6 @@ import com.palantir.javapoet.ParameterSpec;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
 import com.palantir.javapoet.TypeSpec;
-import com.palantir.javapoet.WildcardTypeName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,7 +18,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -350,9 +348,6 @@ final class BuilderGenerator {
                                         assert null != inputMethodType;
                                         GeneratorUtil.copyTypeParameters(inputMethodType, m);
                                     }
-                                    if (stepMethod.isChildrenIntrinsic()) {
-                                        m.varargs();
-                                    }
                                     final var type = stepMethod.getType();
                                     if (type instanceof ArrayTypeName) {
                                         m.varargs();
@@ -463,17 +458,7 @@ final class BuilderGenerator {
         if (null != input && input.isDisposable()) {
             method.addStatement("assert $T.isNotDisposed( $N )", DISPOSABLE_CLASSNAME, stepMethod.getName());
         }
-        if (stepMethod.isChildrenIntrinsic()) {
-            method.varargs();
-            assert null != input;
-            method.addStatement(
-                    "_element.input( $T.Inputs.$N, $N )",
-                    descriptor.getEnhancedClassName(),
-                    input.getConstantName(),
-                    stepMethod.getName());
-        } else if (stepMethod.isChildrenStreamIntrinsic()) {
-            method.addStatement("children( $N.toArray( $T[]::new ) )", stepMethod.getName(), REACT_NODE_CLASSNAME);
-        } else if (stepMethod.isChildIntrinsic()) {
+        if (stepMethod.isChildIntrinsic()) {
             assert null != inputElement;
             assert null != input;
             method.addStatement(
@@ -829,31 +814,26 @@ final class BuilderGenerator {
                 if (null == optionalInputStep) {
                     optionalInputStep = builder.addStep();
                 }
-                if (input.getName().equals("children")) {
-                    addChildrenStreamInputStepMethod(optionalInputStep);
-                }
                 if (hasNonOptionalChild) {
                     optionalInputStep.addMethod(
                             input, hasSingleOptional ? StepMethodType.ADVANCE : StepMethodType.STAY);
                 } else {
                     optionalInputStep.addMethod(
-                            input, hasSingleOptional ? StepMethodType.TERMINATE : StepMethodType.STAY);
+                            input,
+                            input.isSpecialChildrenInput() || hasSingleOptional
+                                    ? StepMethodType.TERMINATE
+                                    : StepMethodType.STAY);
                 }
             } else {
                 if (null != optionalInputStep) {
                     // Need this when we have children magic input that is required that follows the optional inputs.
                     optionalInputStep.addMethod(input, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE);
-                    // This is when children are built up using child steps
-                    if (input.getName().equals("children")) {
-                        addChildrenStreamInputStepMethod(optionalInputStep);
-                    }
                     hasRequiredAfterOptional = true;
                 }
                 // Single method step
                 final var step = builder.addStep();
                 step.addMethod(input, isLast ? StepMethodType.TERMINATE : StepMethodType.ADVANCE);
                 if (input.getName().equals("children")) {
-                    addChildrenStreamInputStepMethod(step);
                     addBuildStep(step);
                 }
             }
@@ -872,17 +852,6 @@ final class BuilderGenerator {
      * Setup the "build" intrinsic step.
      */
     private static void addBuildStep(final Step step) {
-        step.addTerminalMethod("build", "build", REACT_NODE_CLASSNAME);
-    }
-
-    /**
-     * A helper intrinsic that converts children streams.
-     */
-    private static void addChildrenStreamInputStepMethod(final Step step) {
-        final ParameterizedTypeName typeName = ParameterizedTypeName.get(
-                ClassName.get(Stream.class), WildcardTypeName.subtypeOf(REACT_NODE_CLASSNAME));
-
-        // TODO: Replace this with input enhancer
-        step.addTerminalMethod("children", "*children_stream*", typeName);
+        step.addTerminalMethod("build", REACT_NODE_CLASSNAME);
     }
 }

@@ -5,6 +5,7 @@ package(default_visibility = ["//:__subpackages__"])
 java_library(
     name = "react4j",
     srcs = [
+        "ChildrenEnhancer.java",
         "Context.java",
         "Contexts.java",
         "JsError.java",

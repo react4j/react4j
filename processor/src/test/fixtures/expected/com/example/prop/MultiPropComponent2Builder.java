@@ -5,6 +5,7 @@ import javax.annotation.processing.Generated;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.ChildrenEnhancer;
 import react4j.ReactElement;
 import react4j.ReactNode;
 
@@ -35,14 +36,7 @@ final class MultiPropComponent2Builder {
   @Contract(
       pure = true
   )
-  static ReactNode children(final Stream<? extends ReactNode> children) {
-    return newBuilder().children( children );
-  }
-
-  @Contract(
-      pure = true
-  )
-  static Step1 children(final ReactNode @Nullable ... children) {
+  static ReactNode children(final ReactNode @Nullable ... children) {
     return newBuilder().children( children );
   }
 
@@ -53,7 +47,11 @@ final class MultiPropComponent2Builder {
     return newBuilder().build();
   }
 
-  interface Step1 {
+  static ReactNode children(final Stream<? extends ReactNode> arg0) {
+    return MultiPropComponent2Builder.newBuilder().children(arg0);
+  }
+
+  interface Step1 extends ChildrenEnhancer<ReactNode> {
     @Contract(
         pure = true
     )
@@ -67,12 +65,7 @@ final class MultiPropComponent2Builder {
     @Contract(
         pure = true
     )
-    ReactNode children(Stream<? extends ReactNode> children);
-
-    @Contract(
-        pure = true
-    )
-    Step1 children(ReactNode @Nullable ... children);
+    ReactNode children(ReactNode @Nullable ... children);
 
     @Contract(
         pure = true
@@ -105,18 +98,9 @@ final class MultiPropComponent2Builder {
     @Contract(
         pure = true
     )
-    public final ReactNode children(final Stream<? extends ReactNode> children) {
-      children( children.toArray( ReactNode[]::new ) );
-      return build();
-    }
-
-    @Override
-    @Contract(
-        pure = true
-    )
-    public final Step1 children(final ReactNode @Nullable ... children) {
+    public final ReactNode children(final ReactNode @Nullable ... children) {
       _element.input( React4j_MultiPropComponent2.Inputs.children, children );
-      return this;
+      return build();
     }
 
     @Override

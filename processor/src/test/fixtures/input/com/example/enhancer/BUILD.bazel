@@ -2,6 +2,7 @@ filegroup(
     name = "files",
     srcs = [
         "AdvancingView.java",
+        "ChildrenView.java",
         "Enhancers.java",
         "OptionalView.java",
         "TerminalView.java",

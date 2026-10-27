@@ -7,25 +7,13 @@ import javax.lang.model.type.TypeMirror;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Represents a step in the builder. There are a few "intrinsic" methods that are handled by generator
- * but the rest are driven by Input annotation details. The intrinsics are as follows:
- *
- * <ul>
- * <li>name = build: no parameters returns ReactNode and terminates build. This has custom code in implementation.</li>
- * <li>name = child, key = child: This is for single child views and the implementation caches child and returns build().</li>
- * <li>name = children: This is for multi child views and the implementation passes the supplied Java array to the input before invoking build().</li>
- * <li>name = child, key = children: This is for multi child views built one child at a time. The implementation passes the child as a single-element Java array.</li>
- * </ul>
+ * A builder input setter or the build method. Scalar child setters wrap their value for React's children property.
  */
 final class StepMethod {
     /**
      * The name of the input and the corresponding builder method.
      */
     private final String _name;
-    /**
-     * The key under which the input is added into inputs.
-     */
-    private final String _key;
     /**
      * The expected type of the input.
      */
@@ -39,17 +27,15 @@ final class StepMethod {
     private final StepMethodType _stepMethodType;
 
     StepMethod(final InputDescriptor input, final StepMethodType stepMethodType) {
-        this(input.getName(), input.getName(), input.getTypeName(), input, stepMethodType);
+        this(input.getName(), input.getTypeName(), input, stepMethodType);
     }
 
     StepMethod(
             final String name,
-            final String key,
             final TypeName type,
             @Nullable final InputDescriptor input,
             final StepMethodType stepMethodType) {
         _name = name;
-        _key = key;
         _type = type;
         _input = input;
         _stepMethodType = stepMethodType;
@@ -92,14 +78,6 @@ final class StepMethod {
     }
 
     boolean isChildIntrinsic() {
-        return getName().equals("child") && _key.equals("child");
-    }
-
-    boolean isChildrenIntrinsic() {
-        return getName().equals("children") && _key.equals("children");
-    }
-
-    boolean isChildrenStreamIntrinsic() {
-        return getName().equals("children") && _key.equals("*children_stream*");
+        return "child".equals(getName());
     }
 }

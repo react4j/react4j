@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -44,11 +45,15 @@ final class InputEnhancer {
     }
 
     static void parse(final ProcessingEnvironment env, final ViewDescriptor view, final InputDescriptor input) {
-        final var type = (TypeMirror)
+        var type = (TypeMirror)
                 AnnotationsUtil.getAnnotationValue(input.getElement(), Constants.INPUT_CLASSNAME, "enhancer")
                         .getValue();
         if (TypeKind.VOID == type.getKind()) {
-            return;
+            if (input.isFromTreeContext() || !"children".equals(input.getName())) {
+                return;
+            }
+            type = Objects.requireNonNull(env.getElementUtils().getTypeElement(Constants.CHILDREN_ENHANCER_CLASSNAME))
+                    .asType();
         }
         if (input.isFromTreeContext()) {
             throw error(input, "cannot be specified on a tree-context input");

@@ -21,8 +21,8 @@ final class Step {
         getMethods().add(new StepMethod(input, stepMethodType));
     }
 
-    void addTerminalMethod(final String name, final String key, final TypeName type) {
-        getMethods().add(new StepMethod(name, key, type, null, StepMethodType.TERMINATE));
+    void addTerminalMethod(final String name, final TypeName type) {
+        getMethods().add(new StepMethod(name, type, null, StepMethodType.TERMINATE));
     }
 
     List<StepMethod> getMethods() {
