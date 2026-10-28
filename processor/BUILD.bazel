@@ -21,7 +21,6 @@ test_suite(
         "//processor/src/test/java/react4j/processor:diagnostics",
         "//processor/src/test/java/react4j/processor:enhancers",
         "//processor/src/test/java/react4j/processor:generated_goldens",
-        "//processor/src/test/java/react4j/processor:input_semantics",
         "//processor/src/test/java/react4j/processor:jspecify_diagnostics",
         "//processor/src/test/java/react4j/processor:jspecify_goldens",
         "//processor/src/test/java/react4j/processor:nullness_contracts",

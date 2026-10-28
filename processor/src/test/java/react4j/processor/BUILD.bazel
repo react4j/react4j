@@ -7,7 +7,6 @@ java_library(
     testonly = True,
     srcs = [
         "InputEnhancerTest.java",
-        "InputSemanticsTest.java",
         "NullabilityTest.java",
         "React4jProcessorTest.java",
     ],
@@ -51,16 +50,6 @@ _RUNTIME = [
 ]
 
 java_testng(
-    name = "input_semantics",
-    size = "medium",
-    srcs = [],
-    data = ["//third_party/java:strict_checker_options"],
-    jvm_flags = _FLAGS,
-    test_class = "react4j.processor.InputSemanticsTest",
-    deps = _RUNTIME,
-)
-
-java_testng(
     name = "enhancers",
     size = "medium",
     srcs = [],
@@ -99,6 +88,7 @@ java_testng(
     test_class = "react4j.processor.React4jProcessorTest",
     test_methods = [
         "react4j.processor.React4jProcessorTest.processSuccessfulCompile",
+        "react4j.processor.React4jProcessorTest.inputPolicySourceAndCompiledContracts",
         "react4j.processor.React4jProcessorTest.processSuccessfulStingCompile",
         "react4j.processor.React4jProcessorTest.nestedView",
         "react4j.processor.React4jProcessorTest.nestedNestedView",

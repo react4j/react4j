@@ -60,6 +60,35 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
             new Object[] {"com.example.input.InputOrderingView"},
             new Object[] {"com.example.input.NoShouldComponentUpdateForInputsView"},
             new Object[] {"com.example.input.ChildInputView"},
+            new Object[] {"com.example.input_semantics.ScalarArraysView"},
+            new Object[] {"com.example.input_semantics.NullableArrayView"},
+            new Object[] {"com.example.input_semantics.ContextArrayView"},
+            new Object[] {"com.example.input_semantics.DefaultArrayView"},
+            new Object[] {"com.example.input_semantics.MixedArrayScalarsView"},
+            new Object[] {"com.example.input_semantics.MixedGenericArraysView"},
+            new Object[] {"com.example.input_semantics.ReferenceArraysView"},
+            new Object[] {"com.example.input_semantics.ArrayHelperNameView"},
+            new Object[] {"com.example.input_semantics.ArrayHelperNamesView"},
+            new Object[] {"com.example.input_semantics.ArrayHelperTypeView"},
+            new Object[] {"com.example.input_semantics.BoundedArrayView"},
+            new Object[] {"com.example.input_semantics.NestedArraysView"},
+            new Object[] {"com.example.input_semantics.CustomNestedArrayView"},
+            new Object[] {"com.example.input_semantics.MixedCustomArrayView"},
+            new Object[] {"com.example.input_semantics.CollectionKeyView"},
+            new Object[] {"com.example.input_semantics.CustomArrayView"},
+            new Object[] {"com.example.input_semantics.CustomMixedScalarsView"},
+            new Object[] {"com.example.input_semantics.CustomContextArrayView"},
+            new Object[] {"com.example.input_semantics.CustomDefaultArrayView"},
+            new Object[] {"com.example.input_semantics.InheritedKeyProviderView"},
+            new Object[] {"com.example.input_semantics.PrimitiveKeyView"},
+            new Object[] {"com.example.input_semantics.NullableArrayKeyView"},
+            new Object[] {"com.example.input_semantics.GenericEqualityView"},
+            new Object[] {"com.example.input_semantics.CollectionEqualityView"},
+            new Object[] {"com.example.input_semantics.DeepEqualityView"},
+            new Object[] {"com.example.input_semantics.ArrayEqualityView"},
+            new Object[] {"com.example.input_semantics.PrimitiveEqualityView"},
+            new Object[] {"com.example.input_semantics.DefaultEqualityView"},
+            new Object[] {"com.example.input_semantics.InheritedEqualityView"},
             new Object[] {"com.example.lifecycle.OverrideLifecycleMethodsComponent"},
             new Object[] {"com.example.on_error.BasicOnErrorComponent"},
             new Object[] {"com.example.on_error.ErrorOnlyOnErrorComponent"},
@@ -548,6 +577,83 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
     @DataProvider(name = "failedCompiles")
     public Object[][] failedCompiles() {
         return new Object[][] {
+            new Object[] {
+                "com.example.input_semantics.RawKeyProvider",
+                "@Input policy for 'values': keyGenerator must implement InputKeyGenerator<T> with a resolved type"
+                        + " argument"
+            },
+            new Object[] {
+                "com.example.input_semantics.WideNullnessKeyProvider",
+                "@Input policy for 'values': keyGenerator parameter type or nullness is incompatible with the input"
+            },
+            new Object[] {
+                "com.example.input_semantics.IncompatibleKeyProvider",
+                "@Input policy for 'values': keyGenerator parameter type or nullness is incompatible with the input"
+            },
+            new Object[] {
+                "com.example.input_semantics.NonNullKeyProvider",
+                "@Input policy for 'values': keyGenerator parameter type or nullness is incompatible with the input"
+            },
+            new Object[] {
+                "com.example.input_semantics.PrivateKeyProvider",
+                "@Input policy for 'values': provider must be a concrete accessible class"
+            },
+            new Object[] {
+                "com.example.input_semantics.AbstractKeyProvider",
+                "@Input policy for 'values': provider must be a concrete accessible class"
+            },
+            new Object[] {
+                "com.example.input_semantics.InterfaceKeyProvider",
+                "@Input policy for 'values': provider must be a concrete accessible class"
+            },
+            new Object[] {
+                "com.example.input_semantics.InnerKeyProvider",
+                "@Input policy for 'values': provider must be a concrete accessible class"
+            },
+            new Object[] {
+                "com.example.input_semantics.PrivateKeyConstructor",
+                "@Input policy for 'values': provider must be a concrete accessible class"
+            },
+            new Object[] {
+                "com.example.input_semantics.MissingKeyConstructor",
+                "@Input policy for 'values': provider must be a concrete accessible class"
+            },
+            new Object[] {
+                "com.example.input_semantics.CheckedKeyConstructor",
+                "@Input policy for 'values': provider no-argument constructor must not throw checked exceptions"
+            },
+            new Object[] {
+                "com.example.input_semantics.UnimplementedKeyProvider",
+                "@Input policy for 'values': provider must implement react4j.InputKeyGenerator"
+            },
+            new Object[] {
+                "com.example.input_semantics.GenericKeyProvider",
+                "@Input policy for 'values': provider must be a concrete accessible class"
+            },
+            new Object[] {
+                "com.example.input_semantics.NullableKeyResult",
+                "@Input policy for 'values': keyGenerator must return a non-null String"
+            },
+            new Object[] {
+                "com.example.input_semantics.MutableKeyInput",
+                "@Input policy for 'values': keyGenerator is only valid on immutable constructor inputs"
+            },
+            new Object[] {
+                "com.example.input_semantics.ImmutableEqualityInput",
+                "@Input policy for 'value': equalityComparator is only valid on mutable method inputs"
+            },
+            new Object[] {
+                "com.example.input_semantics.AbstractComparator",
+                "@Input policy for 'value': provider must be a concrete accessible class"
+            },
+            new Object[] {
+                "com.example.input_semantics.PrivateComparatorConstructor",
+                "@Input policy for 'value': provider must be a concrete accessible class"
+            },
+            new Object[] {
+                "com.example.input_semantics.AbstractDefaultComparator",
+                "@Input policy for 'value': provider must be a concrete accessible class"
+            },
             new Object[] {"com.example.component.ConcreteComponent", "@View target must be abstract"},
             new Object[] {
                 "com.example.component.BadNameComponent",
@@ -1374,6 +1480,31 @@ public final class React4jProcessorTest extends AbstractProcessorTest {
                 .map(match -> match.group(1))
                 .toList();
         assertEquals(actual, expected, phase);
+    }
+
+    @Test
+    public void inputPolicySourceAndCompiledContracts() throws Exception {
+        final var types = fixture("input/com/example/input_semantics/InputPolicyTypes.java");
+        final var views = List.of("ExternalKeyProviderView", "ExternalDefaultEqualityView");
+        for (final var name : views) {
+            assertGoldenCompile(
+                    List.of(types, fixture("input/com/example/input_semantics/" + name + ".java")),
+                    Arrays.asList(deriveExpectedOutputs("com.example.input_semantics." + name, false)),
+                    List.of());
+        }
+        final var compiled =
+                CompileTestUtil.assertCompilesWithoutWarnings(List.of(types), getOptions(), List.of(), List.of());
+        try {
+            for (final var name : views) {
+                assertGoldenCompile(
+                        List.of(fixture("input/com/example/input_semantics/" + name + ".java")),
+                        Arrays.asList(deriveExpectedOutputs("com.example.input_semantics." + name, false)),
+                        buildClasspath(compiled.classOutput().toFile()));
+            }
+        } finally {
+            deleteDir(compiled.sourceOutput());
+            deleteDir(compiled.classOutput());
+        }
     }
 
     @Test
