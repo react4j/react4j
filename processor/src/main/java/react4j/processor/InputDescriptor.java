@@ -6,6 +6,7 @@ import com.palantir.javapoet.TypeName;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -18,6 +19,35 @@ import react4j.processor.Nullability.Nullness;
 
 @SuppressWarnings("Duplicates")
 final class InputDescriptor {
+    record KeyProvider(TypeElement element, TypeName type) {}
+
+    private @Nullable KeyProvider _keyGenerator;
+    private @Nullable TypeElement _equalityComparator;
+
+    @Nullable
+    TypeElement getEqualityComparator() {
+        return _equalityComparator;
+    }
+
+    void setEqualityComparator(final TypeElement comparator) {
+        _equalityComparator = comparator;
+    }
+
+    boolean hasCustomEqualityComparator() {
+        return null != _equalityComparator
+                && !Constants.OBJECTS_EQUALS_COMPARATOR_CLASSNAME.contentEquals(_equalityComparator.getQualifiedName())
+                && !Constants.OBJECTS_DEEP_EQUALS_COMPARATOR_CLASSNAME.contentEquals(
+                        _equalityComparator.getQualifiedName());
+    }
+
+    @Nullable
+    KeyProvider getKeyGenerator() {
+        return _keyGenerator;
+    }
+
+    void setKeyGenerator(final TypeElement generator, final TypeName type) {
+        _keyGenerator = new KeyProvider(generator, type);
+    }
 
     private final ViewDescriptor _descriptor;
 
@@ -124,6 +154,10 @@ final class InputDescriptor {
 
     TypeMirror getType() {
         return _type;
+    }
+
+    ViewDescriptor getDescriptor() {
+        return _descriptor;
     }
 
     boolean isMethodInput() {

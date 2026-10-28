@@ -4,6 +4,7 @@ filegroup(
         "arez.md",
         "compared_to_react.md",
         "faq.md",
+        "input-semantics.md",
         "input-step-enhancers.md",
         "intellij.md",
         "native-utilities.md",

@@ -9,6 +9,7 @@ java_library(
         "ChildrenEnhancer.java",
         "Context.java",
         "Contexts.java",
+        "InputKeyGenerator.java",
         "JsError.java",
         "Keyed.java",
         "React.java",

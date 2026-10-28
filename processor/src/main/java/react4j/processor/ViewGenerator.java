@@ -23,6 +23,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.MemberChecks;
@@ -167,9 +168,29 @@ final class ViewGenerator {
         builder.superclass(descriptor.getViewType());
 
         final AnnotationSpec suppression = SuppressWarningsUtil.maybeSuppressWarningsAnnotation(
-                descriptor.viewAccessesDeprecatedElements() ? "deprecation" : null);
+                descriptor.viewAccessesDeprecatedElements() ? "deprecation" : null,
+                descriptor.getInputs().stream()
+                                .anyMatch(input -> TypeKind.ARRAY
+                                                == input.getType().getKind()
+                                        && null != input.getEqualityComparator()
+                                        && Constants.OBJECTS_EQUALS_COMPARATOR_CLASSNAME.contentEquals(
+                                                input.getEqualityComparator().getQualifiedName()))
+                        ? "ArrayEquals"
+                        : null);
         if (null != suppression) {
             builder.addAnnotation(suppression);
+        }
+        for (final var input : descriptor.getInputs()) {
+            if (input.hasCustomEqualityComparator()) {
+                builder.addField(FieldSpec.builder(
+                                ClassName.bestGuess(Constants.EQUALITY_COMPARATOR_CLASSNAME),
+                                InputEquality.field(input),
+                                Modifier.PRIVATE,
+                                Modifier.STATIC,
+                                Modifier.FINAL)
+                        .initializer("new $T()", ClassName.get(Objects.requireNonNull(input.getEqualityComparator())))
+                        .build());
+            }
         }
         builder.addAnnotation(buildSuppressArezWarnings(descriptor));
         final AnnotationSpec.Builder arezAnnotation = AnnotationSpec.builder(AREZ_COMPONENT_CLASSNAME)
@@ -487,11 +508,7 @@ final class ViewGenerator {
 
         for (final var input : inputs) {
             code.addStatement(
-                    "final boolean $N = !$T.isTripleEqual( inputs.get( Inputs.$N ), prevInputs.get( Inputs.$N ) )",
-                    input.getName(),
-                    JS_CLASSNAME,
-                    input.getConstantName(),
-                    input.getConstantName());
+                    "final boolean $N = !$L", input.getName(), InputEquality.compare(input, "prevInputs", "inputs"));
         }
         for (final var onInputChange : onInputChanges) {
             final var onChangeBlock = CodeBlock.builder();
@@ -597,11 +614,7 @@ final class ViewGenerator {
 
             for (final var input : observableInputs) {
                 final var block = CodeBlock.builder();
-                block.beginControlFlow(
-                        "if ( !$T.isTripleEqual( inputs.get( Inputs.$N ), nextInputs.get( Inputs.$N ) ) )",
-                        JS_CLASSNAME,
-                        input.getConstantName(),
-                        input.getConstantName());
+                block.beginControlFlow("if ( !$L )", InputEquality.compare(input, "inputs", "nextInputs"));
                 block.addStatement("$N().reportChanged()", toObservableValueRefMethodName(input));
                 if (input.shouldUpdateOnChange()) {
                     block.addStatement("modified = true");
@@ -612,11 +625,7 @@ final class ViewGenerator {
 
             for (final var input : updateOnChangeInputs) {
                 final var block = CodeBlock.builder();
-                block.beginControlFlow(
-                        "if ( !$T.isTripleEqual( inputs.get( Inputs.$N ), nextInputs.get( Inputs.$N ) ) )",
-                        JS_CLASSNAME,
-                        input.getConstantName(),
-                        input.getConstantName());
+                block.beginControlFlow("if ( !$L )", InputEquality.compare(input, "inputs", "nextInputs"));
                 block.addStatement("return true");
                 block.endControlFlow();
                 method.addCode(block.build());

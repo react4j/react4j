@@ -12,6 +12,16 @@ final class Constants {
 
     static final String KEYED_CLASSNAME = "react4j.Keyed";
 
+    static final String INPUT_KEY_GENERATOR_CLASSNAME = "react4j.InputKeyGenerator";
+
+    static final String EQUALITY_COMPARATOR_CLASSNAME = "arez.EqualityComparator";
+
+    static final String DEFAULT_EQUALITY_COMPARATOR_CLASSNAME = "arez.annotations.DefaultEqualityComparator";
+
+    static final String OBJECTS_EQUALS_COMPARATOR_CLASSNAME = "arez.ObjectsEqualsComparator";
+
+    static final String OBJECTS_DEEP_EQUALS_COMPARATOR_CLASSNAME = "arez.ObjectsDeepEqualsComparator";
+
     static final String RENDER_CLASSNAME = "react4j.annotations.Render";
 
     static final String INPUT_CLASSNAME = "react4j.annotations.Input";

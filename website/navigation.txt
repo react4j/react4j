@@ -4,6 +4,7 @@ project_setup
 
 [Reference]
 arez
+input-semantics
 input-step-enhancers
 compared_to_react
 

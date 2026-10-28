@@ -19,6 +19,7 @@ java_library(
         "//doc-examples/src/main/java/react4j/examples/factory_example:sources",
         "//doc-examples/src/main/java/react4j/examples/hello_world:sources",
         "//doc-examples/src/main/java/react4j/examples/input_enhancers:sources",
+        "//doc-examples/src/main/java/react4j/examples/input_semantics:sources",
     ],
     plugins = [
         "//:processor",

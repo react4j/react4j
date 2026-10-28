@@ -29,6 +29,7 @@ public class JDependTest {
         final JavaPackage jsinteropAnnotations = constraint.addPackage("jsinterop.annotations");
         final JavaPackage jsinteropBase = constraint.addPackage("jsinterop.base");
         final JavaPackage arez = constraint.addPackage("arez");
+        final JavaPackage arezComponent = constraint.addPackage("arez.component");
         final JavaPackage arezSpy = constraint.addPackage("arez.spy");
         final JavaPackage zemeckis = constraint.addPackage("zemeckis");
 
@@ -46,6 +47,7 @@ public class JDependTest {
         react4jInternal.dependsUpon(jsinteropBase);
         react4jInternal.dependsUpon(react4j);
         react4jInternal.dependsUpon(arez);
+        react4jInternal.dependsUpon(arezComponent);
         react4jInternal.dependsUpon(arezSpy);
         react4jInternal.dependsUpon(zemeckis);
 

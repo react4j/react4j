@@ -1,15 +1,17 @@
 package com.example.jspecify;
 
-import arez.component.Identifiable;
 import javax.annotation.processing.Generated;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.Buildable;
-import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.ArrayKeyStrategy;
+import react4j.internal.InputKeys;
 
 @NullMarked
 @Generated("react4j.processor.React4jProcessor")
@@ -45,15 +47,6 @@ final class ConstructorContractBuilder {
     @Override
     @Contract(pure = true)
     public final ReactNode values(final @Nullable String @Nullable ... values) {
-      final Object $values$ = values;
-      _element.setKey(($values$ instanceof Keyed
-              ? Keyed.getKey($values$)
-              : $values$ instanceof Identifiable
-                  ? Identifiable.<Object>getArezId($values$)
-                  : String.valueOf($values$))
-          + (React.enableViewNames()
-              ? "_ConstructorContractView_3e519637"
-              : ConstructorContractView.class.getName()));
       _element.input(React4j_ConstructorContractView.Inputs.values, values);
       return build();
     }
@@ -61,6 +54,15 @@ final class ConstructorContractBuilder {
     @Override
     @Contract(pure = true)
     public final ReactNode build() {
+      final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
+      _element.setKey(InputKeys.frame(InputKeys.arrayKey(
+              Js.<@Nullable String @Nullable []>uncheckedCast(
+                  inputs.get(React4j_ConstructorContractView.Inputs.values)),
+              1,
+              ArrayKeyStrategy.STRING))
+          + (React.enableViewNames()
+              ? "_ConstructorContractView_3e519637"
+              : ConstructorContractView.class.getName()));
       return _element;
     }
   }

@@ -88,6 +88,7 @@ java_testng(
     test_class = "react4j.processor.React4jProcessorTest",
     test_methods = [
         "react4j.processor.React4jProcessorTest.processSuccessfulCompile",
+        "react4j.processor.React4jProcessorTest.inputPolicySourceAndCompiledContracts",
         "react4j.processor.React4jProcessorTest.processSuccessfulStingCompile",
         "react4j.processor.React4jProcessorTest.nestedView",
         "react4j.processor.React4jProcessorTest.nestedNestedView",

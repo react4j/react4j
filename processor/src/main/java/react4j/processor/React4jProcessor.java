@@ -262,6 +262,8 @@ public final class React4jProcessor extends AbstractStandardProcessor {
         descriptor.sortInputs();
 
         for (final var input : descriptor.getInputs()) {
+            InputPolicies.parseKey(processingEnv, input);
+            InputPolicies.parseEquality(processingEnv, input);
             InputEnhancer.parse(processingEnv, descriptor, input);
         }
 
@@ -952,8 +954,12 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                             + "The return type should be the primitive type.",
                     parameter);
         }
-        final ImmutableInputKeyStrategy strategy =
-                getImmutableInputKeyStrategy(typeName.withoutAnnotations(), inputType);
+        var scalarType = type;
+        while (scalarType instanceof ArrayType array) {
+            scalarType = array.getComponentType();
+        }
+        final ImmutableInputKeyStrategy strategy = getImmutableInputKeyStrategy(
+                TypeName.get(scalarType).withoutAnnotations(), ElementsUtil.asTypeElement(processingEnv, scalarType));
         if (!"".equals(qualifier) && !fromTreeContextInput) {
             throw new ProcessorException(
                     MemberChecks.mustNot(Constants.INPUT_CLASSNAME, "specify qualifier unless fromTreeContext=true"),

@@ -1,5 +1,6 @@
 package react4j.annotations;
 
+import arez.EqualityComparator;
 import arez.annotations.Memoize;
 import arez.annotations.Observable;
 import arez.annotations.Observe;
@@ -44,6 +45,27 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface Input {
+    /**
+     * Provider of this immutable constructor input's key contribution. The provider implements
+     * {@link react4j.InputKeyGenerator} for a compatible input type, including its nullness, and
+     * has an accessible no-argument constructor. Providers must be deterministic and have no
+     * observable side effects; the framework may reuse instances and invoke them repeatedly.
+     * Explicit providers override automatic key derivation. {@code void.class} uses automatic derivation.
+     *
+     * @return the key provider class.
+     */
+    Class<?> keyGenerator() default void.class;
+
+    /**
+     * Comparator defining changes to this mutable method input, including rendering, Arez invalidation
+     * and input-change callbacks. An explicit comparator overrides the exact declared type's
+     * {@link arez.annotations.DefaultEqualityComparator}. Without either selection, JavaScript strict
+     * equality is used. Providers follow the construction and purity contract of {@link #keyGenerator()}.
+     *
+     * @return the comparator class, or {@code EqualityComparator.class} for automatic selection.
+     */
+    Class<? extends EqualityComparator> equalityComparator() default EqualityComparator.class;
+
     /**
      * Interface supplying fluent default methods for this input's builder step.
      * The interface has one unbounded result type parameter and one abstract method matching the

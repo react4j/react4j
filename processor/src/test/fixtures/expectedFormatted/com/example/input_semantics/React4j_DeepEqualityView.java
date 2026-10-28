@@ -1,0 +1,180 @@
+package com.example.input_semantics;
+
+import arez.Disposable;
+import arez.annotations.ArezComponent;
+import arez.annotations.Feature;
+import arez.annotations.SuppressArezWarnings;
+import java.util.Objects;
+import javax.annotation.processing.Generated;
+import jsinterop.annotations.JsConstructor;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+import org.realityforge.braincheck.Guards;
+import react4j.React;
+import react4j.ReactNode;
+import react4j.Renderable;
+import react4j.internal.OnComponentDidUpdate;
+import react4j.internal.OnComponentWillUnmount;
+import react4j.internal.OnGetSnapshotBeforeUpdate;
+import react4j.internal.OnShouldComponentUpdate;
+import react4j.internal.ViewConstructorFunction;
+
+@NullMarked
+@SuppressArezWarnings({"Arez:UnnecessaryDefault", "Arez:UnnecessaryAllowEmpty"})
+@ArezComponent(
+    name = "com_example_input_semantics_DeepEqualityView",
+    disposeNotifier = Feature.DISABLE,
+    defaultSkipIfDisposed = Feature.ENABLE,
+    sting = Feature.DISABLE,
+    allowEmpty = true)
+@Generated("react4j.processor.React4jProcessor")
+abstract class React4j_DeepEqualityView extends DeepEqualityView {
+  private final react4j.internal.NativeView $$react4j$$_nativeView;
+
+  React4j_DeepEqualityView(final react4j.internal.NativeView $$react4j$$_nativeView) {
+    this.$$react4j$$_nativeView = $$react4j$$_nativeView;
+  }
+
+  private static ViewConstructorFunction getConstructorFunction() {
+    final ViewConstructorFunction viewConstructor = NativeView::new;
+    if (React.enableViewNames()) {
+      Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
+          .set("displayName", "DeepEquality");
+    }
+    return viewConstructor;
+  }
+
+  @Override
+  String[] values() {
+    return Objects.requireNonNull($$react4j$$_nativeView.requireInputs().getAsAny(Inputs.values))
+        .cast();
+  }
+
+  private static void $$react4j$$_validateInputValues(
+      final JsPropertyMap<@Nullable Object> inputs) {
+    final Object raw$values = inputs.get(Inputs.values);
+    if (React.shouldCheckInvariants()) {
+      Guards.apiInvariant(
+          () -> null != raw$values,
+          () ->
+              "Required input named 'values' is missing from view named 'DeepEqualityView' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+    }
+  }
+
+  private boolean $$react4j$$_shouldComponentUpdate(
+      final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
+    assert null != nextInputs;
+    if (React.shouldValidateInputValues()) {
+      $$react4j$$_validateInputValues(nextInputs);
+    }
+    final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
+    if (!Objects.deepEquals(
+        Objects.requireNonNull(
+            Js.<String[]>uncheckedCast(inputs.get(React4j_DeepEqualityView.Inputs.values))),
+        Objects.requireNonNull(
+            Js.<String[]>uncheckedCast(nextInputs.get(React4j_DeepEqualityView.Inputs.values))))) {
+      return true;
+    }
+    return false;
+  }
+
+  private void $$react4j$$_componentPreUpdate(
+      final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
+    if (null != prevInputs) {
+      final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
+      final boolean values = !Objects.deepEquals(
+          Objects.requireNonNull(
+              Js.<String[]>uncheckedCast(prevInputs.get(React4j_DeepEqualityView.Inputs.values))),
+          Objects.requireNonNull(
+              Js.<String[]>uncheckedCast(inputs.get(React4j_DeepEqualityView.Inputs.values))));
+      if (values) {
+        changed(Objects.requireNonNull(inputs.getAsAny(Inputs.values)).cast());
+      }
+    }
+  }
+
+  private void $$react4j$$_componentDidUpdate(
+      final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
+    if (null != prevInputs) {
+      final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
+      final boolean values = !Objects.deepEquals(
+          Objects.requireNonNull(
+              Js.<String[]>uncheckedCast(prevInputs.get(React4j_DeepEqualityView.Inputs.values))),
+          Objects.requireNonNull(
+              Js.<String[]>uncheckedCast(inputs.get(React4j_DeepEqualityView.Inputs.values))));
+      if (values) {
+        after(Objects.requireNonNull(inputs.getAsAny(Inputs.values)).cast());
+      }
+    }
+  }
+
+  private void $$react4j$$_componentWillUnmount() {
+    ((Arez_React4j_DeepEqualityView) this).dispose();
+  }
+
+  @Nullable
+  ReactNode $$react4j$$_render() {
+    assert Disposable.isNotDisposed(this);
+    return Renderable.toReactNode(render());
+  }
+
+  static final class Factory {
+    static final ViewConstructorFunction TYPE = getConstructorFunction();
+
+    private Factory() {}
+  }
+
+  static final class Inputs {
+    static final String values = React.shouldMinimizeInputKeys() ? "a" : "values";
+
+    private Inputs() {}
+  }
+
+  private static final class NativeView extends react4j.internal.NativeView
+      implements OnComponentDidUpdate,
+          OnShouldComponentUpdate,
+          OnComponentWillUnmount,
+          OnGetSnapshotBeforeUpdate {
+    private final React4j_DeepEqualityView view;
+
+    @JsConstructor
+    NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
+      super(inputs);
+      view = new Arez_React4j_DeepEqualityView(this);
+      if (React.shouldValidateInputValues()) {
+        assert null != inputs;
+        React4j_DeepEqualityView.$$react4j$$_validateInputValues(inputs);
+      }
+    }
+
+    @Override
+    public final boolean shouldComponentUpdate(final JsPropertyMap<@Nullable Object> nextInputs) {
+      return view.$$react4j$$_shouldComponentUpdate(nextInputs);
+    }
+
+    @Override
+    public final @Nullable Object getSnapshotBeforeUpdate(
+        final JsPropertyMap<@Nullable Object> prevInputs,
+        final JsPropertyMap<@Nullable Object> prevState) {
+      view.$$react4j$$_componentPreUpdate(prevInputs);
+      return null;
+    }
+
+    @Override
+    public final void componentDidUpdate(final JsPropertyMap<@Nullable Object> prevInputs) {
+      view.$$react4j$$_componentDidUpdate(prevInputs);
+    }
+
+    @Override
+    public final void componentWillUnmount() {
+      view.$$react4j$$_componentWillUnmount();
+    }
+
+    @Override
+    public final @Nullable ReactNode render() {
+      return view.$$react4j$$_render();
+    }
+  }
+}

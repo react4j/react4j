@@ -35,6 +35,9 @@ public final class RuntimeBrowserTest {
             ContextsTest.run(root);
             BuildableBrowserTest.run(root);
             GeneratedBuildableBrowserTest.run(root);
+            InputSemanticsBrowserTest.run(root);
+            ArrayKeyBrowserTest.run(root);
+            InputEqualityBrowserTest.run(root);
             var element = RuntimeCoverageExample.element(component());
             check(
                     "copy-key".equals(element.key())
@@ -69,6 +72,7 @@ public final class RuntimeBrowserTest {
                     return Browser.delay(0);
                 })
                 .thenDo(() -> check(!RuntimeCoverageExample.schedulerPaused(), "Scheduler can pause again"))
+                .then(value -> InputEqualityBrowserTest.reactiveScenario(root))
                 .finallyDo(() -> cleanup(root));
     }
 

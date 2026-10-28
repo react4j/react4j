@@ -1,0 +1,12 @@
+package(default_visibility = ["//:__subpackages__"])
+
+filegroup(
+    name = "sources",
+    srcs = [
+        "ImmutableIcons.java",
+        "LowerCaseKeys.java",
+        "MutableIcons.java",
+        "NamedPanel.java",
+        "package-info.java",
+    ],
+)

@@ -103,9 +103,9 @@ abstract class React4j_MultipleOnPropChange extends MultipleOnPropChange {
       final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if ( null != prevInputs ) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
-      final boolean myProp1 = !Js.isTripleEqual( inputs.get( Inputs.myProp1 ), prevInputs.get( Inputs.myProp1 ) );
-      final boolean myProp2 = !Js.isTripleEqual( inputs.get( Inputs.myProp2 ), prevInputs.get( Inputs.myProp2 ) );
-      final boolean myProp3 = !Js.isTripleEqual( inputs.get( Inputs.myProp3 ), prevInputs.get( Inputs.myProp3 ) );
+      final boolean myProp1 = !Js.isTripleEqual( prevInputs.get( Inputs.myProp1 ), inputs.get( Inputs.myProp1 ) );
+      final boolean myProp2 = !Js.isTripleEqual( prevInputs.get( Inputs.myProp2 ), inputs.get( Inputs.myProp2 ) );
+      final boolean myProp3 = !Js.isTripleEqual( prevInputs.get( Inputs.myProp3 ), inputs.get( Inputs.myProp3 ) );
       if ( myProp1 && myProp2 && myProp3 ) {
         onPropChange( Objects.requireNonNull( inputs.getAsAny( Inputs.myProp1 ) ).asBoolean(), Js.uncheckedCast( inputs.getAsAny( Inputs.myProp2 ) ), Objects.requireNonNull( inputs.getAsAny( Inputs.myProp3 ) ).asInt() );
       }
