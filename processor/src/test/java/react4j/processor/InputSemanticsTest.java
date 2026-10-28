@@ -76,16 +76,16 @@ public final class InputSemanticsTest extends AbstractProcessorTest {
                 + "@Input short[] shorts, @Input int[] ints, @Input long[] longs, @Input char[] chars, "
                 + "@Input float[] floats, @Input double[] doubles) {}";
         final var generated = valid("", inputs);
-        assertEquals(generated.split("InputKeys.arrayKey", -1).length - 1, 9);
+        assertEquals(generated.split("key.append", -1).length - 1, 9);
         valid("", "Component(@Input @Nullable String @Nullable [] values) {}");
         valid("", "Component(@Input(fromTreeContext=true) String[] values) {}");
         valid(
                 "",
                 "Component(@Input String[] values) {} @InputDefault static String[] getValuesDefault() {"
                         + " return new String[]{\"default\"}; }");
-        assertFalse(valid("", "Component(@Input Object values) {}").contains("InputKeys.arrayKey"));
-        assertFalse(valid("", "Component(@Input String[][] values) {}").contains("InputKeys.arrayKey"));
-        assertFalse(valid("", "Component(@Input Object[] values) {}").contains("InputKeys.arrayKey"));
+        assertFalse(valid("", "Component(@Input Object values) {}").contains("class ArrayKeys"));
+        assertTrue(valid("", "Component(@Input String[][] values) {}").contains("class ArrayKeys"));
+        assertTrue(valid("", "Component(@Input Object[] values) {}").contains("class ArrayKeys"));
         valid(
                 "",
                 "Component(@Input String[] values, @Input int count, @Input char letter, @Input long id, @Input float"
@@ -96,6 +96,47 @@ public final class InputSemanticsTest extends AbstractProcessorTest {
                 "Component(@Input String[] values, @Input @Nullable Object other, @Input Object[] objects,"
                         + " @Input String[][] nested, @Input T generic) {}",
                 "<T>");
+    }
+
+    @Test
+    public void arrayStrategies() throws Exception {
+        final var declarations = "public enum Choice { ONE, TWO } "
+                + "public interface Ref extends arez.component.Identifiable<Integer> {} "
+                + "@arez.annotations.ArezComponentLike public static final class Like {} "
+                + "public static final class Value {}";
+        final var generated = valid(
+                declarations,
+                "Component(@Input Choice[] choices, @Input Keyed[] keys, @Input Ref[][] refs, @Input Like[] likes,"
+                    + " @Input Value[] values, @Input List<String>[] lists, @Input ArrayList<String>[] concrete,"
+                    + " @Input Object[][] objects, @Input T[][] generic, @Input @Nullable String @Nullable []"
+                    + " @Nullable [] nested, @Input Boolean[] booleans, @Input Byte[] bytes, @Input Short[] shorts,"
+                    + " @Input Integer[] ints, @Input Long[] longs, @Input Character[] chars, @Input Float[] floats,"
+                    + " @Input Double[] doubles) {}",
+                "<T extends @Nullable Object>");
+        assertTrue(generated.contains("Keyed.getKey(value)"), generated);
+        assertTrue(generated.contains("Identifiable.<Object>getArezId(value)"), generated);
+        assertTrue(generated.contains("value instanceof Keyed"), generated);
+        valid("", "Component(@Input ArrayKeys[][] values) {}", "<ArrayKeys>");
+        valid("public static final class ArrayKeys {}", "Component(@Input ArrayKeys[] values) {}");
+        valid("", "Component(@Input ArrayKeys[][] values, @Input ArrayKeys_[] other) {}", "<ArrayKeys, ArrayKeys_>");
+        valid("", "Component(@Input T[] values) {}", "<T extends Keyed>");
+        valid("", "Component(@Input String[][][] values) {}");
+        valid(
+                "",
+                "Component(@Input boolean[][] booleans, @Input byte[][] bytes, @Input short[][] shorts,"
+                        + " @Input int[][] ints, @Input long[][] longs, @Input char[][] chars, @Input float[][] floats,"
+                        + " @Input double[][] doubles) {}");
+        final var custom = valid(
+                "public static final class Keys implements InputKeyGenerator<String[][]> { "
+                        + "public String getKey(String[][] value) { return \"key\"; } }",
+                "Component(@Input(keyGenerator=Keys.class) String[][] values) {}");
+        assertFalse(custom.contains("class ArrayKeys"), custom);
+        final var mixed = valid(
+                "public static final class Keys implements InputKeyGenerator<String[][]> { "
+                        + "public String getKey(String[][] value) { return \"key\"; } }",
+                "Component(@Input(keyGenerator=Keys.class) String[][] values, @Input Object[][] other) {}");
+        assertTrue(mixed.contains("class ArrayKeys"), mixed);
+        assertFalse(mixed.contains("$values_0"), mixed);
     }
 
     @Test

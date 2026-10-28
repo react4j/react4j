@@ -11,7 +11,6 @@ import react4j.annotations.Input;
 import react4j.annotations.InputDefault;
 import react4j.annotations.Render;
 import react4j.annotations.View;
-import react4j.internal.InputKeys;
 import react4j.webtesting.Browser;
 
 @NullMarked
@@ -24,7 +23,6 @@ final class InputSemanticsBrowserTest {
     private InputSemanticsBrowserTest() {}
 
     static void run(final Browser.Element root) {
-        encoding();
         _constructed = 0;
         _rendered = 0;
         _disposed = 0;
@@ -142,87 +140,6 @@ final class InputSemanticsBrowserTest {
         public String toString() {
             return text;
         }
-    }
-
-    private static void encoding() {
-        final Object[] values = {
-            new String[] {"a"},
-            new boolean[] {true},
-            new byte[] {1},
-            new short[] {1},
-            new int[] {1},
-            new long[] {1},
-            new char[] {'a'},
-            new float[] {1},
-            new double[] {1}
-        };
-        final Object[] equal = {
-            new String[] {"a"},
-            new boolean[] {true},
-            new byte[] {1},
-            new short[] {1},
-            new int[] {1},
-            new long[] {1},
-            new char[] {'a'},
-            new float[] {1},
-            new double[] {1}
-        };
-        final Object[] different = {
-            new String[] {"b"},
-            new boolean[] {false},
-            new byte[] {2},
-            new short[] {2},
-            new int[] {2},
-            new long[] {2},
-            new char[] {'b'},
-            new float[] {2},
-            new double[] {2}
-        };
-        final Object[] empty = {
-            new String[0],
-            new boolean[0],
-            new byte[0],
-            new short[0],
-            new int[0],
-            new long[0],
-            new char[0],
-            new float[0],
-            new double[0]
-        };
-        for (var i = 0; i < values.length; i++) {
-            same(values[i], equal[i]);
-            different(values[i], different[i]);
-            different(values[i], empty[i]);
-            different(null, empty[i]);
-        }
-        same(null, null);
-        same(new float[] {Float.NaN, 0}, new float[] {Float.NaN, -0.0f});
-        same(new double[] {Double.NaN, 0}, new double[] {Double.NaN, -0.0});
-        different(new String[] {"a, b"}, new String[] {"a", "b"});
-        different(new @Nullable String[] {null}, new String[] {"null"});
-        different(new String[0], new String[] {""});
-        different(new String[] {"Aa"}, new String[] {"BB"});
-        different(new long[] {9007199254740992L}, new long[] {9007199254740993L});
-        different(new long[] {Long.MIN_VALUE}, new long[] {Long.MAX_VALUE});
-        different(new char[] {'\0', ':', '\ud800'}, new char[] {'\0', ':', '\ud801'});
-        different(new double[] {Double.NEGATIVE_INFINITY}, new double[] {Double.POSITIVE_INFINITY});
-        final float base = Float.parseFloat("16777216");
-        different(new float[] {base}, new float[] {base + 1});
-        var rejected = false;
-        try {
-            InputKeys.arrayKey(new Object[0]);
-        } catch (final IllegalArgumentException error) {
-            rejected = true;
-        }
-        check(rejected, "Unsupported arrays do not silently acquire content keys");
-    }
-
-    private static void same(@Nullable final Object a, @Nullable final Object b) {
-        check(InputKeys.arrayKey(a).equals(InputKeys.arrayKey(b)), "Equal array content keys");
-    }
-
-    private static void different(@Nullable final Object a, @Nullable final Object b) {
-        check(!InputKeys.arrayKey(a).equals(InputKeys.arrayKey(b)), "Distinct array content keys");
     }
 
     public static final class PrefixKeys implements InputKeyGenerator<String[]> {

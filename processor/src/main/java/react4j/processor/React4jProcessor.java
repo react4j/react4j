@@ -954,9 +954,12 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                             + "The return type should be the primitive type.",
                     parameter);
         }
-        final ImmutableInputKeyStrategy strategy = isContentArray(type)
-                ? ImmutableInputKeyStrategy.ARRAY
-                : getImmutableInputKeyStrategy(typeName.withoutAnnotations(), inputType);
+        var scalarType = type;
+        while (scalarType instanceof ArrayType array) {
+            scalarType = array.getComponentType();
+        }
+        final ImmutableInputKeyStrategy strategy = getImmutableInputKeyStrategy(
+                TypeName.get(scalarType).withoutAnnotations(), ElementsUtil.asTypeElement(processingEnv, scalarType));
         if (!"".equals(qualifier) && !fromTreeContextInput) {
             throw new ProcessorException(
                     MemberChecks.mustNot(Constants.INPUT_CLASSNAME, "specify qualifier unless fromTreeContext=true"),
@@ -980,16 +983,6 @@ public final class React4jProcessor extends AbstractStandardProcessor {
                 disposable,
                 strategy,
                 requiredValue);
-    }
-
-    private static boolean isContentArray(final TypeMirror type) {
-        if (type instanceof ArrayType array) {
-            final var component = array.getComponentType();
-            return component.getKind().isPrimitive()
-                    || (component instanceof DeclaredType declared
-                            && "java.lang.String".equals(declared.asElement().toString()));
-        }
-        return false;
     }
 
     private ImmutableInputKeyStrategy getImmutableInputKeyStrategy(

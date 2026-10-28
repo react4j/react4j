@@ -2,7 +2,7 @@
 
 ### Unreleased
 
-* Derive immutable keys for declared string and primitive arrays from ordered contents, including defaults and tree context. Retain caller-owned arrays; immutable contents must remain unchanged. Add typed `InputKeyGenerator<T>` providers selected by constructor `@Input(keyGenerator=...)`.
+* Derive immutable keys for all declared arrays from ordered element keys using their declared component type's scalar strategy. Traverse declared nested dimensions and preserve null, empty and nested boundaries, including defaults and tree context. Retain caller-owned arrays and elements; their key-relevant state must remain unchanged. Add typed `InputKeyGenerator<T>` providers selected by constructor `@Input(keyGenerator=...)`.
 * Add mutable `@Input(equalityComparator=...)` using Arez comparators consistently for rendering, reactive invalidation and input-change callbacks. Emit direct equivalent calls for the two standard Arez comparators.
 * Breaking: mutable inputs now honor Arez `@DefaultEqualityComparator` on their exact effective declared value type. Explicit input comparators override that default; inputs without either selection retain JavaScript strict equality. Review replacement-identity assumptions when migrating.
 * Add public `Renderable` and functional `Buildable` interfaces. Ready generated builders compose without explicit `build()` through node factories, DOM helpers, roots, portals, contexts, node-valued inputs and `@Render` methods returning `Renderable`. Build each occurrence at its receiving boundary, preserving native node identity, nullness, ordering and exceptions.

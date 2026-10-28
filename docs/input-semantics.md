@@ -8,11 +8,23 @@ Constructor `@Input` parameters contribute to the view's React key. Matching key
 
 ## Immutable arrays
 
-`String[]` and all eight primitive-array types use ordered contents in their default immutable keys. Fresh arrays with equal values reuse the view. Changes to length, order or scalar identity create a new view. Null arrays, empty arrays, null string elements and literal `"null"` elements remain distinct.
+Every declared array uses ordered element keys for its default immutable identity. Fresh arrays with equal element keys reuse the view. Changes to length, order or element identity create a new view. Null arrays, empty arrays, null elements and literal `"null"` elements remain distinct.
 
 {@file_content: file=react4j/examples/input_semantics/ImmutableIcons.java}
 
-React4j retains the supplied array. Keep its contents unchanged while the view can use it. The automatic rule follows the declared input type: an `Object`, `T[]`, nested array or other object array retains its existing identity behavior, even when a runtime value happens to be a string array.
+The declared component type selects the same key rule as a scalar input:
+
+| Component type | Element identity |
+| --- | --- |
+| String, primitive or boxed primitive | Scalar text |
+| Enum | Enum text |
+| `Keyed` | Its key |
+| Identifiable Arez component | Its Arez ID |
+| Other object or type variable | Dynamic: `Keyed`, then Arez ID, then string conversion |
+
+Nested arrays recurse through the declared dimensions, preserving row boundaries and null or empty rows. For example, `String[][]` uses string keys within each row. `T[]` traverses one dimension and treats each `T` as a scalar; when `T` happens to be an array, that runtime value keeps its scalar identity. An input declared as `Object` also keeps scalar behavior when supplied an array.
+
+React4j retains the supplied arrays and their elements. Keep the structure, contents and elements' key-relevant state unchanged while the view can use them. Objects sharing an element key retain the original constructor value even when their other fields differ. Review existing object-array and nested-array inputs when adopting this content-based identity.
 
 ## Custom immutable keys
 

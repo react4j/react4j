@@ -1,6 +1,7 @@
 package com.example.jspecify;
 
 import javax.annotation.processing.Generated;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
@@ -50,6 +51,22 @@ final class UnmarkedConstructorBuilder {
     ReactNode build();
   }
 
+  private static class ArrayKeys {
+    private ArrayKeys() {
+    }
+
+    private static String $values_0(@Nullable Object @Nullable [] values) {
+      if (null == values) {
+        return "n";
+      }
+      final var key = new StringBuilder("a");
+      for (final var value : values) {
+        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
+      }
+      return key.toString();
+    }
+  }
+
   private static class Builder implements Step1 {
     private final ReactElement _element = ReactElement.createViewElement( React4j_UnmarkedConstructorView.Factory.TYPE );
 
@@ -69,7 +86,7 @@ final class UnmarkedConstructorBuilder {
     )
     public final ReactNode build() {
       final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
-      _element.setKey(InputKeys.frame(InputKeys.arrayKey(inputs.get(React4j_UnmarkedConstructorView.Inputs.values))) + (React.enableViewNames() ? "_UnmarkedConstructorView_662b72e8" : UnmarkedConstructorView.class.getName()));
+      _element.setKey(InputKeys.frame(ArrayKeys.$values_0(Js.<@Nullable String @Nullable []>uncheckedCast(inputs.get(React4j_UnmarkedConstructorView.Inputs.values)))) + (React.enableViewNames() ? "_UnmarkedConstructorView_662b72e8" : UnmarkedConstructorView.class.getName()));
       return _element;
     }
   }

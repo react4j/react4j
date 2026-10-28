@@ -11,6 +11,7 @@ j2cl_library(
     name = "runtime_coverage",
     testonly = True,
     srcs = [
+        "ArrayKeyBrowserTest.java",
         "BuildableBrowserTest.java",
         "ContextsTest.java",
         "GeneratedBuildableBrowserTest.java",

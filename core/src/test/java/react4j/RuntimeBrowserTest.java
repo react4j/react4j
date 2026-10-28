@@ -36,6 +36,7 @@ public final class RuntimeBrowserTest {
             BuildableBrowserTest.run(root);
             GeneratedBuildableBrowserTest.run(root);
             InputSemanticsBrowserTest.run(root);
+            ArrayKeyBrowserTest.run(root);
             InputEqualityBrowserTest.run(root);
             var element = RuntimeCoverageExample.element(component());
             check(

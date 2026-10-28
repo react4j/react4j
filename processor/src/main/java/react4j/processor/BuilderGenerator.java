@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
@@ -70,6 +71,8 @@ final class BuilderGenerator {
     private static final String CONTEXT_INPUT_PREFIX = "CONTEXT_";
 
     private static final String CONTEXT_HOLDER = "ContextHolder";
+
+    private static final String ARRAY_KEYS = "ArrayKeys";
 
     private BuilderGenerator() {}
 
@@ -142,6 +145,11 @@ final class BuilderGenerator {
             builder.addType(buildContextHolder(descriptor));
         }
 
+        if (descriptor.getImmutableInputs().stream()
+                .anyMatch(input -> null == input.getKeyGenerator() && input.getType() instanceof ArrayType)) {
+            builder.addType(buildArrayKeys(descriptor));
+        }
+
         builder.addType(buildBuilder(processingEnv, descriptor, builderDescriptor));
 
         return builder.build();
@@ -180,8 +188,16 @@ final class BuilderGenerator {
             return;
         }
         // A shortcut's type parameters must not shadow types used anywhere in the generated builder.
-        final var reservedNames = new HashSet<>(
-                Set.of("Builder", CONTEXT_HOLDER, "Generated", "NullMarked", "Nullable", "NonNull", "NullUnmarked"));
+        final var reservedNames = new HashSet<>(Set.of(
+                "Builder",
+                CONTEXT_HOLDER,
+                ARRAY_KEYS,
+                "Generated",
+                "NullMarked",
+                "Nullable",
+                "NonNull",
+                "NullUnmarked"));
+        reservedNames.add(arrayKeysClass(descriptor).simpleName());
         for (final var generated : builderDescriptor.getSteps()) {
             reservedNames.add("Step" + generated.getIndex());
         }
@@ -277,9 +293,7 @@ final class BuilderGenerator {
                 assert null != inputType;
                 SuppressWarningsUtil.addSuppressWarningsIfRequired(processingEnv, parameter, inputType);
             }
-            if (type instanceof ArrayTypeName) {
-                method.varargs();
-            }
+            configureInputVarargs(processingEnv, stepMethod, method);
             method.addParameter(parameter.build());
 
             final var infix = asTypeArgumentsInfix(descriptor.getDeclaredType());
@@ -378,9 +392,7 @@ final class BuilderGenerator {
                                 GeneratorUtil.copyTypeParameters(inputMethodType, m);
                             }
                             final var type = stepMethod.getType();
-                            if (type instanceof ArrayTypeName) {
-                                m.varargs();
-                            }
+                            configureInputVarargs(processingEnv, stepMethod, m);
                             final var parameter = ParameterSpec.builder(type, stepMethod.getName());
                             final var inputElement = stepMethod.getElement();
                             if (null != inputElement) {
@@ -419,9 +431,7 @@ final class BuilderGenerator {
         }
         final var type = stepMethod.getType();
         final var parameter = ParameterSpec.builder(type, stepMethod.getName(), Modifier.FINAL);
-        if (type instanceof ArrayTypeName) {
-            method.varargs();
-        }
+        configureInputVarargs(processingEnv, stepMethod, method);
         final var inputElement = stepMethod.getElement();
         if (null != inputElement) {
             GeneratorUtil.copyWhitelistedAnnotations(inputElement, method);
@@ -538,6 +548,18 @@ final class BuilderGenerator {
         return buildBuildMethodContent(descriptor, method, "_element");
     }
 
+    private static void configureInputVarargs(
+            final ProcessingEnvironment env, final StepMethod step, final MethodSpec.Builder method) {
+        if (step.getType() instanceof ArrayTypeName) {
+            method.varargs();
+            final var type = Objects.requireNonNull(step.getTypeMirror());
+            if (!env.getTypeUtils().isSameType(type, env.getTypeUtils().erasure(type))) {
+                // Input setters store or forward the array without writing into it.
+                method.addAnnotation(SuppressWarningsUtil.suppressWarningsAnnotation("unchecked"));
+            }
+        }
+    }
+
     private static FieldSpec buildContextBuildField(final InputDescriptor current) {
         final var typeName = ParameterizedTypeName.get(
                 CONTEXT_RENDER_FUNCTION_CLASSNAME,
@@ -646,18 +668,31 @@ final class BuilderGenerator {
 
     private static boolean usesFramedKeys(final ViewDescriptor descriptor) {
         return descriptor.getImmutableInputs().stream()
-                .anyMatch(input -> null != input.getKeyGenerator()
-                        || ImmutableInputKeyStrategy.ARRAY == input.getImmutableInputKeyStrategy());
+                .anyMatch(input -> null != input.getKeyGenerator() || input.getType() instanceof ArrayType);
     }
 
     private static CodeBlock inputKey(final InputDescriptor input) {
         if (null != input.getKeyGenerator()) {
             return CodeBlock.of("$N.getKey($L)", keyGeneratorField(input), InputValues.read(input, "inputs"));
         }
-        final var value = CodeBlock.of(
-                "inputs.get($T.Inputs.$N)", input.getDescriptor().getEnhancedClassName(), input.getConstantName());
-        return switch (input.getImmutableInputKeyStrategy()) {
-            case ARRAY -> CodeBlock.of("$T.arrayKey($L)", INPUT_KEYS_CLASSNAME, value);
+        if (input.getType() instanceof ArrayType) {
+            return CodeBlock.of(
+                    "$T.$N($L)",
+                    arrayKeysClass(input.getDescriptor()),
+                    arrayKeyMethod(input, 0),
+                    InputValues.read(input, "inputs"));
+        }
+        final var value = ImmutableInputKeyStrategy.TO_STRING == input.getImmutableInputKeyStrategy()
+                ? InputValues.read(input, "inputs")
+                : CodeBlock.of(
+                        "inputs.get($T.Inputs.$N)",
+                        input.getDescriptor().getEnhancedClassName(),
+                        input.getConstantName());
+        return scalarKey(input.getImmutableInputKeyStrategy(), value);
+    }
+
+    private static CodeBlock scalarKey(final ImmutableInputKeyStrategy strategy, final CodeBlock value) {
+        return switch (strategy) {
             case KEYED -> CodeBlock.of("$T.getKey($L)", KEYED_CLASSNAME, value);
             case AREZ_IDENTIFIABLE ->
                 CodeBlock.of("$T.valueOf($T.<Object>getArezId($L))", String.class, IDENTIFIABLE_CLASSNAME, value);
@@ -675,8 +710,7 @@ final class BuilderGenerator {
                         IDENTIFIABLE_CLASSNAME,
                         value,
                         value);
-            case IS_STRING, ENUM -> CodeBlock.of("$T.valueOf($L)", String.class, value);
-            case TO_STRING -> CodeBlock.of("$T.valueOf($L)", String.class, InputValues.read(input, "inputs"));
+            case IS_STRING, ENUM, TO_STRING -> CodeBlock.of("$T.valueOf($L)", String.class, value);
         };
     }
 
@@ -722,8 +756,90 @@ final class BuilderGenerator {
                         Object.class,
                         input.getType(),
                         value);
-            case ARRAY -> throw new IllegalStateException("Array keys require framing");
         };
+    }
+
+    private static TypeSpec buildArrayKeys(final ViewDescriptor descriptor) {
+        final var builder =
+                TypeSpec.classBuilder(arrayKeysClass(descriptor)).addModifiers(Modifier.PRIVATE, Modifier.STATIC);
+        builder.addMethod(
+                MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build());
+        for (final var input : descriptor.getImmutableInputs()) {
+            if (null == input.getKeyGenerator()) {
+                var type = input.getType();
+                var depth = 0;
+                while (type instanceof ArrayType array) {
+                    builder.addMethod(buildArrayKey(input, array, depth));
+                    type = array.getComponentType();
+                    depth++;
+                }
+            }
+        }
+        return builder.build();
+    }
+
+    private static MethodSpec buildArrayKey(final InputDescriptor input, final ArrayType array, final int depth) {
+        final var component = array.getComponentType();
+        final var method = MethodSpec.methodBuilder(arrayKeyMethod(input, depth))
+                .addModifiers(Modifier.PRIVATE, Modifier.STATIC)
+                .returns(String.class)
+                .addParameter(Nullability.nullable(arrayKeyType(array)), "values")
+                .beginControlFlow("if (null == values)")
+                .addStatement("return $S", "n")
+                .endControlFlow()
+                .addStatement("final var key = new $T($S)", StringBuilder.class, "a")
+                .beginControlFlow("for (final var value : values)");
+        final CodeBlock elementKey;
+        if (component instanceof ArrayType) {
+            elementKey = CodeBlock.of("$N(value)", arrayKeyMethod(input, depth + 1));
+        } else {
+            final var strategy = input.getImmutableInputKeyStrategy();
+            var scalar = scalarKey(strategy, CodeBlock.of("value"));
+            if (ImmutableInputKeyStrategy.TO_STRING == strategy) {
+                final var scalarType =
+                        TypeName.get(component).withoutAnnotations().unbox();
+                if (TypeName.FLOAT.equals(scalarType) || TypeName.DOUBLE.equals(scalarType)) {
+                    final var value = component.getKind().isPrimitive()
+                            ? CodeBlock.of("value")
+                            : CodeBlock.of(
+                                    "(($T) value).$N()",
+                                    TypeName.get(component).withoutAnnotations(),
+                                    TypeName.FLOAT.equals(scalarType) ? "floatValue" : "doubleValue");
+                    scalar = CodeBlock.of("0 == $L ? $S : $L", value, "0", scalar);
+                }
+            }
+            elementKey = component.getKind().isPrimitive() ? scalar : CodeBlock.of("null == value ? null : $L", scalar);
+        }
+        return method.addStatement("key.append($T.frame($L))", INPUT_KEYS_CLASSNAME, elementKey)
+                .endControlFlow()
+                .addStatement("return key.toString()")
+                .build();
+    }
+
+    private static String arrayKeyMethod(final InputDescriptor input, final int depth) {
+        return "$" + input.getName() + "_" + depth;
+    }
+
+    private static ClassName arrayKeysClass(final ViewDescriptor descriptor) {
+        final var variables = descriptor.getElement().getTypeParameters().stream()
+                .map(parameter -> parameter.getSimpleName().toString())
+                .toList();
+        var name = ARRAY_KEYS;
+        while (variables.contains(name)) {
+            name += "_";
+        }
+        return descriptor.getBuilderClassName().nestedClass(name);
+    }
+
+    private static ArrayTypeName arrayKeyType(final ArrayType type) {
+        // Erase reference leaves so helpers need no view type parameters; preserve primitive conversions.
+        final var component = type.getComponentType();
+        final TypeName element = component instanceof ArrayType array
+                ? Nullability.nullable(arrayKeyType(array))
+                : component.getKind().isPrimitive()
+                        ? TypeName.get(component)
+                        : Nullability.nullable(ClassName.get(Object.class));
+        return ArrayTypeName.of(element);
     }
 
     private static String keyGeneratorField(final InputDescriptor input) {
