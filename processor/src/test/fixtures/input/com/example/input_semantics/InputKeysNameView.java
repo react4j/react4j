@@ -9,10 +9,8 @@ import react4j.annotations.View;
 
 @NullMarked
 @View(type = View.Type.STATEFUL)
-abstract class ArrayHelperTypeView {
-    public static final class ArrayKeys {}
-
-    ArrayHelperTypeView(@Input ArrayKeys[] values) {}
+abstract class InputKeysNameView<InputKeys> {
+    InputKeysNameView(@Input InputKeys[][] values) {}
 
     @Render
     @Nullable

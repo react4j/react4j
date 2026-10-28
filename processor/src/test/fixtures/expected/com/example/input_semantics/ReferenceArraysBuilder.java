@@ -1,6 +1,5 @@
 package com.example.input_semantics;
 
-import arez.component.Identifiable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +14,7 @@ import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.ArrayKeyStrategy;
 import react4j.internal.InputKeys;
 
 @NullMarked
@@ -185,253 +185,6 @@ final class ReferenceArraysBuilder {
         pure = true
     )
     ReactNode build();
-  }
-
-  private static class ArrayKeys {
-    private ArrayKeys() {
-    }
-
-    private static String $choices_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $keys_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : Keyed.getKey(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $refs_0(@Nullable Object @Nullable [] @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame($refs_1(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $refs_1(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(Identifiable.<Object>getArezId(value))));
-      }
-      return key.toString();
-    }
-
-    private static String $likes_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(Identifiable.<Object>getArezId(value))));
-      }
-      return key.toString();
-    }
-
-    private static String $values_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value instanceof Keyed ? Keyed.getKey(value) : value instanceof Identifiable ? Identifiable.<Object>getArezId(value) : value)));
-      }
-      return key.toString();
-    }
-
-    private static String $lists_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value instanceof Keyed ? Keyed.getKey(value) : value instanceof Identifiable ? Identifiable.<Object>getArezId(value) : value)));
-      }
-      return key.toString();
-    }
-
-    private static String $concrete_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value instanceof Keyed ? Keyed.getKey(value) : value instanceof Identifiable ? Identifiable.<Object>getArezId(value) : value)));
-      }
-      return key.toString();
-    }
-
-    private static String $objects_0(@Nullable Object @Nullable [] @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame($objects_1(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $objects_1(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value instanceof Keyed ? Keyed.getKey(value) : value instanceof Identifiable ? Identifiable.<Object>getArezId(value) : value)));
-      }
-      return key.toString();
-    }
-
-    private static String $generic_0(@Nullable Object @Nullable [] @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame($generic_1(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $generic_1(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value instanceof Keyed ? Keyed.getKey(value) : value instanceof Identifiable ? Identifiable.<Object>getArezId(value) : value)));
-      }
-      return key.toString();
-    }
-
-    private static String $booleans_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $bytes_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $shorts_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $ints_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $longs_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $chars_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $floats_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : 0 == ((Float) value).floatValue() ? "0" : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $doubles_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : 0 == ((Double) value).doubleValue() ? "0" : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $nested_0(@Nullable Object @Nullable [] @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame($nested_1(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $nested_1(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
   }
 
   private static class Builder<T extends @Nullable Object> implements Step1<T>,
@@ -625,7 +378,7 @@ final class ReferenceArraysBuilder {
     )
     public final ReactNode build() {
       final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
-      _element.setKey(InputKeys.frame(ArrayKeys.$choices_0(Objects.requireNonNull(Js.<ReferenceArraysView.Choice[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.choices))))) + InputKeys.frame(ArrayKeys.$keys_0(Objects.requireNonNull(Js.<Keyed[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.keys))))) + InputKeys.frame(ArrayKeys.$refs_0(Objects.requireNonNull(Js.<ReferenceArraysView.Ref[][]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.refs))))) + InputKeys.frame(ArrayKeys.$likes_0(Objects.requireNonNull(Js.<ReferenceArraysView.Like[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.likes))))) + InputKeys.frame(ArrayKeys.$values_0(Objects.requireNonNull(Js.<ReferenceArraysView.Value[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.values))))) + InputKeys.frame(ArrayKeys.$lists_0(Objects.requireNonNull(Js.<List<String>[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.lists))))) + InputKeys.frame(ArrayKeys.$concrete_0(Objects.requireNonNull(Js.<ArrayList<String>[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.concrete))))) + InputKeys.frame(ArrayKeys.$objects_0(Objects.requireNonNull(Js.<Object[][]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.objects))))) + InputKeys.frame(ArrayKeys.$generic_0(Objects.requireNonNull(Js.<T[][]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.generic))))) + InputKeys.frame(ArrayKeys.$booleans_0(Objects.requireNonNull(Js.<Boolean[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.booleans))))) + InputKeys.frame(ArrayKeys.$bytes_0(Objects.requireNonNull(Js.<Byte[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.bytes))))) + InputKeys.frame(ArrayKeys.$shorts_0(Objects.requireNonNull(Js.<Short[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.shorts))))) + InputKeys.frame(ArrayKeys.$ints_0(Objects.requireNonNull(Js.<Integer[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.ints))))) + InputKeys.frame(ArrayKeys.$longs_0(Objects.requireNonNull(Js.<Long[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.longs))))) + InputKeys.frame(ArrayKeys.$chars_0(Objects.requireNonNull(Js.<Character[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.chars))))) + InputKeys.frame(ArrayKeys.$floats_0(Objects.requireNonNull(Js.<Float[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.floats))))) + InputKeys.frame(ArrayKeys.$doubles_0(Objects.requireNonNull(Js.<Double[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.doubles))))) + InputKeys.frame(ArrayKeys.$nested_0(Js.<@Nullable String @Nullable [] @Nullable []>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.nested)))) + (React.enableViewNames() ? "_ReferenceArraysView_54356cb7" : ReferenceArraysView.class.getName()));
+      _element.setKey(InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<ReferenceArraysView.Choice[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.choices))), 1, ArrayKeyStrategy.STRING)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<Keyed[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.keys))), 1, ArrayKeyStrategy.KEYED)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<ReferenceArraysView.Ref[][]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.refs))), 2, ArrayKeyStrategy.AREZ_IDENTIFIABLE)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<ReferenceArraysView.Like[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.likes))), 1, ArrayKeyStrategy.AREZ_IDENTIFIABLE)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<ReferenceArraysView.Value[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.values))), 1, ArrayKeyStrategy.DYNAMIC)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<List<String>[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.lists))), 1, ArrayKeyStrategy.DYNAMIC)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<ArrayList<String>[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.concrete))), 1, ArrayKeyStrategy.DYNAMIC)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<Object[][]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.objects))), 2, ArrayKeyStrategy.DYNAMIC)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<T[][]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.generic))), 2, ArrayKeyStrategy.DYNAMIC)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<Boolean[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.booleans))), 1, ArrayKeyStrategy.STRING)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<Byte[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.bytes))), 1, ArrayKeyStrategy.STRING)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<Short[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.shorts))), 1, ArrayKeyStrategy.STRING)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<Integer[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.ints))), 1, ArrayKeyStrategy.STRING)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<Long[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.longs))), 1, ArrayKeyStrategy.STRING)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<Character[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.chars))), 1, ArrayKeyStrategy.STRING)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<Float[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.floats))), 1, ArrayKeyStrategy.FLOATING_POINT)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<Double[]>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.doubles))), 1, ArrayKeyStrategy.FLOATING_POINT)) + InputKeys.frame(InputKeys.arrayKey(Js.<@Nullable String @Nullable [] @Nullable []>uncheckedCast(inputs.get(React4j_ReferenceArraysView.Inputs.nested)), 2, ArrayKeyStrategy.STRING)) + (React.enableViewNames() ? "_ReferenceArraysView_54356cb7" : ReferenceArraysView.class.getName()));
       return _element;
     }
   }

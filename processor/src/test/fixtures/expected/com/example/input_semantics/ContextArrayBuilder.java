@@ -13,6 +13,7 @@ import react4j.Contexts;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.ArrayKeyStrategy;
 import react4j.internal.InputKeys;
 
 @NullMarked
@@ -46,22 +47,6 @@ final class ContextArrayBuilder {
     }
   }
 
-  private static class ArrayKeys {
-    private ArrayKeys() {
-    }
-
-    private static String $values_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-  }
-
   private static class Builder implements Step1 {
     private final ReactElement _element = ReactElement.createViewElement( React4j_ContextArrayView.Factory.TYPE );
 
@@ -69,7 +54,7 @@ final class ContextArrayBuilder {
 
     private ReactNode build(final ReactElement element) {
       final JsPropertyMap<@Nullable Object> inputs = element.inputs();
-      element.setKey(InputKeys.frame(ArrayKeys.$values_0(Objects.requireNonNull(Js.<String[]>uncheckedCast(inputs.get(React4j_ContextArrayView.Inputs.values))))) + (React.enableViewNames() ? "_ContextArrayView_d0384ae8" : ContextArrayView.class.getName()));
+      element.setKey(InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<String[]>uncheckedCast(inputs.get(React4j_ContextArrayView.Inputs.values))), 1, ArrayKeyStrategy.STRING)) + (React.enableViewNames() ? "_ContextArrayView_d0384ae8" : ContextArrayView.class.getName()));
       return element;
     }
 

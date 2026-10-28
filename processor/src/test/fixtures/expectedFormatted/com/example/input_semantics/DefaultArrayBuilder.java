@@ -11,6 +11,7 @@ import react4j.Buildable;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.ArrayKeyStrategy;
 import react4j.internal.InputKeys;
 
 @NullMarked
@@ -40,21 +41,6 @@ final class DefaultArrayBuilder {
     ReactNode build();
   }
 
-  private static class ArrayKeys {
-    private ArrayKeys() {}
-
-    private static String $values_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-  }
-
   private static class Builder implements Step1 {
     private final ReactElement _element;
 
@@ -75,8 +61,11 @@ final class DefaultArrayBuilder {
     @Contract(pure = true)
     public final ReactNode build() {
       final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
-      _element.setKey(InputKeys.frame(ArrayKeys.$values_0(Objects.requireNonNull(
-              Js.<String[]>uncheckedCast(inputs.get(React4j_DefaultArrayView.Inputs.values)))))
+      _element.setKey(InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(
+                  Js.<String[]>uncheckedCast(inputs.get(React4j_DefaultArrayView.Inputs.values))),
+              1,
+              ArrayKeyStrategy.STRING))
           + (React.enableViewNames()
               ? "_DefaultArrayView_b0a0d405"
               : DefaultArrayView.class.getName()));

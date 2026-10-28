@@ -22,18 +22,18 @@ import react4j.internal.ViewConstructorFunction;
 @NullMarked
 @SuppressArezWarnings({"Arez:UnnecessaryDefault", "Arez:UnnecessaryAllowEmpty"})
 @ArezComponent(
-    name = "com_example_input_semantics_ArrayHelperNamesView",
+    name = "com_example_input_semantics_InputKeysNamesView",
     disposeNotifier = Feature.DISABLE,
     defaultSkipIfDisposed = Feature.ENABLE,
     sting = Feature.DISABLE,
     allowEmpty = true)
 @Generated("react4j.processor.React4jProcessor")
-abstract class React4j_ArrayHelperNamesView<ArrayKeys, ArrayKeys_>
-    extends ArrayHelperNamesView<ArrayKeys, ArrayKeys_> {
-  React4j_ArrayHelperNamesView(
+abstract class React4j_InputKeysNamesView<InputKeys, ArrayKeyStrategy>
+    extends InputKeysNamesView<InputKeys, ArrayKeyStrategy> {
+  React4j_InputKeysNamesView(
       final react4j.internal.NativeView $$react4j$$_nativeView,
-      final ArrayKeys[][] values,
-      final ArrayKeys_[] other) {
+      final InputKeys[][] values,
+      final ArrayKeyStrategy[] other) {
     super(values, other);
   }
 
@@ -41,7 +41,7 @@ abstract class React4j_ArrayHelperNamesView<ArrayKeys, ArrayKeys_>
     final ViewConstructorFunction viewConstructor = NativeView::new;
     if (React.enableViewNames()) {
       Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(viewConstructor)
-          .set("displayName", "ArrayHelperNames");
+          .set("displayName", "InputKeysNames");
     }
     return viewConstructor;
   }
@@ -53,14 +53,14 @@ abstract class React4j_ArrayHelperNamesView<ArrayKeys, ArrayKeys_>
       Guards.apiInvariant(
           () -> null != raw$values,
           () ->
-              "Required input named 'values' is missing from view named 'ArrayHelperNamesView' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+              "Required input named 'values' is missing from view named 'InputKeysNamesView' so it was either incorrectly omitted or a null value has been incorrectly specified.");
     }
     final Object raw$other = inputs.get(Inputs.other);
     if (React.shouldCheckInvariants()) {
       Guards.apiInvariant(
           () -> null != raw$other,
           () ->
-              "Required input named 'other' is missing from view named 'ArrayHelperNamesView' so it was either incorrectly omitted or a null value has been incorrectly specified.");
+              "Required input named 'other' is missing from view named 'InputKeysNamesView' so it was either incorrectly omitted or a null value has been incorrectly specified.");
     }
   }
 
@@ -74,7 +74,7 @@ abstract class React4j_ArrayHelperNamesView<ArrayKeys, ArrayKeys_>
   }
 
   private void $$react4j$$_componentWillUnmount() {
-    ((Arez_React4j_ArrayHelperNamesView) this).dispose();
+    ((Arez_React4j_InputKeysNamesView) this).dispose();
   }
 
   @Nullable
@@ -97,22 +97,23 @@ abstract class React4j_ArrayHelperNamesView<ArrayKeys, ArrayKeys_>
     private Inputs() {}
   }
 
-  private static final class NativeView<ArrayKeys, ArrayKeys_> extends react4j.internal.NativeView
+  private static final class NativeView<InputKeys, ArrayKeyStrategy>
+      extends react4j.internal.NativeView
       implements OnShouldComponentUpdate, OnComponentWillUnmount {
-    private final React4j_ArrayHelperNamesView<ArrayKeys, ArrayKeys_> view;
+    private final React4j_InputKeysNamesView<InputKeys, ArrayKeyStrategy> view;
 
     @JsConstructor
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       assert null != inputs;
-      final ArrayKeys[][] values =
+      final InputKeys[][] values =
           Objects.requireNonNull(inputs.getAsAny(Inputs.values)).cast();
-      final ArrayKeys_[] other =
+      final ArrayKeyStrategy[] other =
           Objects.requireNonNull(inputs.getAsAny(Inputs.other)).cast();
-      view = new Arez_React4j_ArrayHelperNamesView<ArrayKeys, ArrayKeys_>(this, values, other);
+      view = new Arez_React4j_InputKeysNamesView<InputKeys, ArrayKeyStrategy>(this, values, other);
       if (React.shouldValidateInputValues()) {
         assert null != inputs;
-        React4j_ArrayHelperNamesView.$$react4j$$_validateInputValues(inputs);
+        React4j_InputKeysNamesView.$$react4j$$_validateInputValues(inputs);
       }
     }
 

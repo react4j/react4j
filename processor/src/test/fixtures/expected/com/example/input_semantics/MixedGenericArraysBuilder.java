@@ -14,6 +14,7 @@ import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.ArrayKeyStrategy;
 import react4j.internal.InputKeys;
 
 @NullMarked
@@ -78,55 +79,6 @@ final class MixedGenericArraysBuilder {
     ReactNode build();
   }
 
-  private static class ArrayKeys {
-    private ArrayKeys() {
-    }
-
-    private static String $values_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $objects_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value instanceof Keyed ? Keyed.getKey(value) : value instanceof Identifiable ? Identifiable.<Object>getArezId(value) : value)));
-      }
-      return key.toString();
-    }
-
-    private static String $nested_0(@Nullable Object @Nullable [] @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame($nested_1(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $nested_1(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-  }
-
   private static class Builder<T> implements Step1<T>,
       Step2<T>,
       Step3<T>,
@@ -185,7 +137,7 @@ final class MixedGenericArraysBuilder {
     )
     public final ReactNode build() {
       final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
-      _element.setKey(InputKeys.frame(ArrayKeys.$values_0(Objects.requireNonNull(Js.<String[]>uncheckedCast(inputs.get(React4j_MixedGenericArraysView.Inputs.values))))) + InputKeys.frame(ArrayKeys.$objects_0(Objects.requireNonNull(Js.<Object[]>uncheckedCast(inputs.get(React4j_MixedGenericArraysView.Inputs.objects))))) + InputKeys.frame(ArrayKeys.$nested_0(Objects.requireNonNull(Js.<String[][]>uncheckedCast(inputs.get(React4j_MixedGenericArraysView.Inputs.nested))))) + InputKeys.frame(String.valueOf(inputs.get(React4j_MixedGenericArraysView.Inputs.generic) instanceof Keyed ? Keyed.getKey(inputs.get(React4j_MixedGenericArraysView.Inputs.generic)) : inputs.get(React4j_MixedGenericArraysView.Inputs.generic) instanceof Identifiable ? Identifiable.<Object>getArezId(inputs.get(React4j_MixedGenericArraysView.Inputs.generic)) : inputs.get(React4j_MixedGenericArraysView.Inputs.generic))) + InputKeys.frame(String.valueOf(inputs.get(React4j_MixedGenericArraysView.Inputs.other) instanceof Keyed ? Keyed.getKey(inputs.get(React4j_MixedGenericArraysView.Inputs.other)) : inputs.get(React4j_MixedGenericArraysView.Inputs.other) instanceof Identifiable ? Identifiable.<Object>getArezId(inputs.get(React4j_MixedGenericArraysView.Inputs.other)) : inputs.get(React4j_MixedGenericArraysView.Inputs.other))) + (React.enableViewNames() ? "_MixedGenericArraysView_506d1665" : MixedGenericArraysView.class.getName()));
+      _element.setKey(InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<String[]>uncheckedCast(inputs.get(React4j_MixedGenericArraysView.Inputs.values))), 1, ArrayKeyStrategy.STRING)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<Object[]>uncheckedCast(inputs.get(React4j_MixedGenericArraysView.Inputs.objects))), 1, ArrayKeyStrategy.DYNAMIC)) + InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<String[][]>uncheckedCast(inputs.get(React4j_MixedGenericArraysView.Inputs.nested))), 2, ArrayKeyStrategy.STRING)) + InputKeys.frame(String.valueOf(inputs.get(React4j_MixedGenericArraysView.Inputs.generic) instanceof Keyed ? Keyed.getKey(inputs.get(React4j_MixedGenericArraysView.Inputs.generic)) : inputs.get(React4j_MixedGenericArraysView.Inputs.generic) instanceof Identifiable ? Identifiable.<Object>getArezId(inputs.get(React4j_MixedGenericArraysView.Inputs.generic)) : inputs.get(React4j_MixedGenericArraysView.Inputs.generic))) + InputKeys.frame(String.valueOf(inputs.get(React4j_MixedGenericArraysView.Inputs.other) instanceof Keyed ? Keyed.getKey(inputs.get(React4j_MixedGenericArraysView.Inputs.other)) : inputs.get(React4j_MixedGenericArraysView.Inputs.other) instanceof Identifiable ? Identifiable.<Object>getArezId(inputs.get(React4j_MixedGenericArraysView.Inputs.other)) : inputs.get(React4j_MixedGenericArraysView.Inputs.other))) + (React.enableViewNames() ? "_MixedGenericArraysView_506d1665" : MixedGenericArraysView.class.getName()));
       return _element;
     }
   }

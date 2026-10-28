@@ -11,6 +11,7 @@ import react4j.Buildable;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.ArrayKeyStrategy;
 import react4j.internal.InputKeys;
 
 @NullMarked
@@ -103,22 +104,6 @@ final class MixedArrayScalarsBuilder {
         pure = true
     )
     ReactNode build();
-  }
-
-  private static class ArrayKeys {
-    private ArrayKeys() {
-    }
-
-    private static String $values_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
   }
 
   private static class Builder implements Step1,
@@ -229,7 +214,7 @@ final class MixedArrayScalarsBuilder {
     )
     public final ReactNode build() {
       final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
-      _element.setKey(InputKeys.frame(ArrayKeys.$values_0(Objects.requireNonNull(Js.<String[]>uncheckedCast(inputs.get(React4j_MixedArrayScalarsView.Inputs.values))))) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.count)).asInt())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.letter)).asChar())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.id)).asLong())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.rate)).asFloat())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.flag)).asBoolean())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.size)).asDouble())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.tiny)).asByte())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.small)).asShort())) + InputKeys.frame(String.valueOf(Js.<@Nullable Long>uncheckedCast(inputs.get(React4j_MixedArrayScalarsView.Inputs.wrapped)))) + (React.enableViewNames() ? "_MixedArrayScalarsView_36952042" : MixedArrayScalarsView.class.getName()));
+      _element.setKey(InputKeys.frame(InputKeys.arrayKey(Objects.requireNonNull(Js.<String[]>uncheckedCast(inputs.get(React4j_MixedArrayScalarsView.Inputs.values))), 1, ArrayKeyStrategy.STRING)) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.count)).asInt())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.letter)).asChar())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.id)).asLong())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.rate)).asFloat())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.flag)).asBoolean())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.size)).asDouble())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.tiny)).asByte())) + InputKeys.frame(String.valueOf(Objects.requireNonNull(inputs.getAsAny(React4j_MixedArrayScalarsView.Inputs.small)).asShort())) + InputKeys.frame(String.valueOf(Js.<@Nullable Long>uncheckedCast(inputs.get(React4j_MixedArrayScalarsView.Inputs.wrapped)))) + (React.enableViewNames() ? "_MixedArrayScalarsView_36952042" : MixedArrayScalarsView.class.getName()));
       return _element;
     }
   }

@@ -10,6 +10,7 @@ import react4j.Buildable;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.ArrayKeyStrategy;
 import react4j.internal.InputKeys;
 
 @NullMarked
@@ -39,21 +40,6 @@ final class NullableArrayBuilder {
     ReactNode build();
   }
 
-  private static class ArrayKeys {
-    private ArrayKeys() {}
-
-    private static String $values_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-  }
-
   private static class Builder implements Step1 {
     private final ReactElement _element =
         ReactElement.createViewElement(React4j_NullableArrayView.Factory.TYPE);
@@ -69,12 +55,14 @@ final class NullableArrayBuilder {
     @Contract(pure = true)
     public final ReactNode build() {
       final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
-      _element.setKey(
-          InputKeys.frame(ArrayKeys.$values_0(Js.<@Nullable String @Nullable []>uncheckedCast(
-                  inputs.get(React4j_NullableArrayView.Inputs.values))))
-              + (React.enableViewNames()
-                  ? "_NullableArrayView_d6e13fbd"
-                  : NullableArrayView.class.getName()));
+      _element.setKey(InputKeys.frame(InputKeys.arrayKey(
+              Js.<@Nullable String @Nullable []>uncheckedCast(
+                  inputs.get(React4j_NullableArrayView.Inputs.values)),
+              1,
+              ArrayKeyStrategy.STRING))
+          + (React.enableViewNames()
+              ? "_NullableArrayView_d6e13fbd"
+              : NullableArrayView.class.getName()));
       return _element;
     }
   }

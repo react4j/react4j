@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.ArrayKeyStrategy;
 import react4j.internal.InputKeys;
 
 @NullMarked
@@ -69,109 +70,6 @@ final class ScalarArraysBuilder {
   interface Step9 {
     @Contract(pure = true)
     ReactNode doubles(double... doubles);
-  }
-
-  private static class ArrayKeys {
-    private ArrayKeys() {}
-
-    private static String $strings_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(null == value ? null : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $booleans_0(boolean @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $bytes_0(byte @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $shorts_0(short @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $ints_0(int @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $longs_0(long @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $chars_0(char @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $floats_0(float @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(0 == value ? "0" : String.valueOf(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $doubles_0(double @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(0 == value ? "0" : String.valueOf(value)));
-      }
-      return key.toString();
-    }
   }
 
   private static class Builder
@@ -245,24 +143,51 @@ final class ScalarArraysBuilder {
     @Contract(pure = true)
     private final ReactNode build() {
       final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
-      _element.setKey(InputKeys.frame(ArrayKeys.$strings_0(Objects.requireNonNull(
-              Js.<String[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.strings)))))
-          + InputKeys.frame(ArrayKeys.$booleans_0(Objects.requireNonNull(
-              Js.<boolean[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.booleans)))))
-          + InputKeys.frame(ArrayKeys.$bytes_0(Objects.requireNonNull(
-              Js.<byte[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.bytes)))))
-          + InputKeys.frame(ArrayKeys.$shorts_0(Objects.requireNonNull(
-              Js.<short[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.shorts)))))
-          + InputKeys.frame(ArrayKeys.$ints_0(Objects.requireNonNull(
-              Js.<int[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.ints)))))
-          + InputKeys.frame(ArrayKeys.$longs_0(Objects.requireNonNull(
-              Js.<long[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.longs)))))
-          + InputKeys.frame(ArrayKeys.$chars_0(Objects.requireNonNull(
-              Js.<char[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.chars)))))
-          + InputKeys.frame(ArrayKeys.$floats_0(Objects.requireNonNull(
-              Js.<float[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.floats)))))
-          + InputKeys.frame(ArrayKeys.$doubles_0(Objects.requireNonNull(
-              Js.<double[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.doubles)))))
+      _element.setKey(InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(
+                  Js.<String[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.strings))),
+              1,
+              ArrayKeyStrategy.STRING))
+          + InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(Js.<boolean[]>uncheckedCast(
+                  inputs.get(React4j_ScalarArraysView.Inputs.booleans))),
+              1,
+              ArrayKeyStrategy.BOOLEAN))
+          + InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(
+                  Js.<byte[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.bytes))),
+              1,
+              ArrayKeyStrategy.BYTE))
+          + InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(
+                  Js.<short[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.shorts))),
+              1,
+              ArrayKeyStrategy.SHORT))
+          + InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(
+                  Js.<int[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.ints))),
+              1,
+              ArrayKeyStrategy.INT))
+          + InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(
+                  Js.<long[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.longs))),
+              1,
+              ArrayKeyStrategy.LONG))
+          + InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(
+                  Js.<char[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.chars))),
+              1,
+              ArrayKeyStrategy.CHAR))
+          + InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(
+                  Js.<float[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.floats))),
+              1,
+              ArrayKeyStrategy.FLOAT))
+          + InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(
+                  Js.<double[]>uncheckedCast(inputs.get(React4j_ScalarArraysView.Inputs.doubles))),
+              1,
+              ArrayKeyStrategy.DOUBLE))
           + (React.enableViewNames()
               ? "_ScalarArraysView_b69331f7"
               : ScalarArraysView.class.getName()));

@@ -1,6 +1,5 @@
 package com.example.input_semantics;
 
-import arez.component.Identifiable;
 import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.base.Js;
@@ -12,6 +11,7 @@ import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.ArrayKeyStrategy;
 import react4j.internal.InputKeys;
 
 @NullMarked
@@ -36,29 +36,6 @@ final class BoundedArrayBuilder {
     ReactNode values(T... values);
   }
 
-  private static class ArrayKeys {
-    private ArrayKeys() {}
-
-    private static String $values_0(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(
-            null == value
-                ? null
-                : String.valueOf(
-                    value instanceof Keyed
-                        ? Keyed.getKey(value)
-                        : value instanceof Identifiable
-                            ? Identifiable.<Object>getArezId(value)
-                            : value)));
-      }
-      return key.toString();
-    }
-  }
-
   private static class Builder<T extends Keyed> implements Step1<T> {
     private final ReactElement _element =
         ReactElement.createViewElement(React4j_BoundedArrayView.Factory.TYPE);
@@ -74,8 +51,11 @@ final class BoundedArrayBuilder {
     @Contract(pure = true)
     private final ReactNode build() {
       final JsPropertyMap<@Nullable Object> inputs = _element.inputs();
-      _element.setKey(InputKeys.frame(ArrayKeys.$values_0(Objects.requireNonNull(
-              Js.<T[]>uncheckedCast(inputs.get(React4j_BoundedArrayView.Inputs.values)))))
+      _element.setKey(InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(
+                  Js.<T[]>uncheckedCast(inputs.get(React4j_BoundedArrayView.Inputs.values))),
+              1,
+              ArrayKeyStrategy.DYNAMIC))
           + (React.enableViewNames()
               ? "_BoundedArrayView_0521032e"
               : BoundedArrayView.class.getName()));

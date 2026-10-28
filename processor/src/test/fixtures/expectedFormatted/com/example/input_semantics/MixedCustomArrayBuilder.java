@@ -1,6 +1,5 @@
 package com.example.input_semantics;
 
-import arez.component.Identifiable;
 import java.util.Objects;
 import javax.annotation.processing.Generated;
 import jsinterop.base.Js;
@@ -9,10 +8,10 @@ import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.InputKeyGenerator;
-import react4j.Keyed;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.ArrayKeyStrategy;
 import react4j.internal.InputKeys;
 
 @NullMarked
@@ -42,40 +41,6 @@ final class MixedCustomArrayBuilder {
     ReactNode other(Object[]... other);
   }
 
-  private static class ArrayKeys {
-    private ArrayKeys() {}
-
-    private static String $other_0(@Nullable Object @Nullable [] @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame($other_1(value)));
-      }
-      return key.toString();
-    }
-
-    private static String $other_1(@Nullable Object @Nullable [] values) {
-      if (null == values) {
-        return "n";
-      }
-      final var key = new StringBuilder("a");
-      for (final var value : values) {
-        key.append(InputKeys.frame(
-            null == value
-                ? null
-                : String.valueOf(
-                    value instanceof Keyed
-                        ? Keyed.getKey(value)
-                        : value instanceof Identifiable
-                            ? Identifiable.<Object>getArezId(value)
-                            : value)));
-      }
-      return key.toString();
-    }
-  }
-
   private static class Builder implements Step1, Step2 {
     private final ReactElement _element =
         ReactElement.createViewElement(React4j_MixedCustomArrayView.Factory.TYPE);
@@ -100,8 +65,11 @@ final class MixedCustomArrayBuilder {
       _element.setKey(InputKeys.frame(
               $keyGenerator_values.getKey(Objects.requireNonNull(Js.<String[][]>uncheckedCast(
                   inputs.get(React4j_MixedCustomArrayView.Inputs.values)))))
-          + InputKeys.frame(ArrayKeys.$other_0(Objects.requireNonNull(
-              Js.<Object[][]>uncheckedCast(inputs.get(React4j_MixedCustomArrayView.Inputs.other)))))
+          + InputKeys.frame(InputKeys.arrayKey(
+              Objects.requireNonNull(Js.<Object[][]>uncheckedCast(
+                  inputs.get(React4j_MixedCustomArrayView.Inputs.other))),
+              2,
+              ArrayKeyStrategy.DYNAMIC))
           + (React.enableViewNames()
               ? "_MixedCustomArrayView_87547d32"
               : MixedCustomArrayView.class.getName()));
