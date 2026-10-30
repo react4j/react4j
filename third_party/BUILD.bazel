@@ -35,7 +35,7 @@ alias(
 
 alias(
     name = "chromium_local",
-    actual = "@rules_webtesting//browsers:chromium-local",
+    actual = "//tools/webtesting:chromium_files",
 )
 
 alias(

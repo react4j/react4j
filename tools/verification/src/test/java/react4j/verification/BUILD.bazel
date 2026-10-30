@@ -16,10 +16,9 @@ java_browser_testng(
     size = "medium",
     srcs = ["BrowserCoverageTest.java"],
     data = [
-        "//tools/webtesting:chromium",
-        "//tools/webtesting:chromium.gen.json",
+        "//tools/webtesting:chromium.json",
     ],
-    jvm_flags = ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)"],
+    jvm_flags = ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.json)"],
     test_class = "react4j.verification.BrowserCoverageTest",
     visibility = ["//:__pkg__"],
     deps = [
@@ -33,10 +32,9 @@ java_browser_testng(
     size = "medium",
     srcs = ["CoverageInstrumenterTest.java"],
     data = [
-        "//tools/webtesting:chromium",
-        "//tools/webtesting:chromium.gen.json",
+        "//tools/webtesting:chromium.json",
     ],
-    jvm_flags = ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)"],
+    jvm_flags = ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.json)"],
     test_class = "react4j.verification.CoverageInstrumenterTest",
     visibility = ["//:__pkg__"],
     deps = [
@@ -66,8 +64,7 @@ java_browser_testng(
         "//tools/verification/src/test/java/react4j/verification/fixture:libfixture_java-src.jar",
         "//tools/verification/src/test/js/react4j/verification:fixture.js",
         "//tools/verification/src/test/js/react4j/verification:runtime.js",
-        "//tools/webtesting:chromium",
-        "//tools/webtesting:chromium.gen.json",
+        "//tools/webtesting:chromium.json",
     ],
     jvm_flags = [
         "-Dcoverage.runtime.bundle=$(rootpath //tools/verification/src/test/js/react4j/verification:runtime.js)",
@@ -80,7 +77,7 @@ java_browser_testng(
         "-Dcoverage.runtime.dom.sources=$(rootpath //tools/release:dom_sources)",
         "-Dcoverage.runtime.core.modules=$(rootpath //tools/verification:core_modules)",
         "-Dcoverage.runtime.dom.modules=$(rootpath //tools/verification:dom_modules)",
-        "-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)",
+        "-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.json)",
         "-Dcoverage.fixture.bundle=$(rootpath //tools/verification/src/test/js/react4j/verification:fixture.js)",
         "-Dcoverage.fixture.jar=$(rootpath //tools/verification/src/test/java/react4j/verification/fixture:libfixture_java.jar)",
         "-Dcoverage.fixture.sources=$(rootpath //tools/verification/src/test/java/react4j/verification/fixture:libfixture_java-src.jar)",
@@ -133,8 +130,7 @@ java_browser_testng(
             "no_maps",
         ]
     ] + [
-        "//tools/webtesting:chromium",
-        "//tools/webtesting:chromium.gen.json",
+        "//tools/webtesting:chromium.json",
     ],
     jvm_flags = [
         "-Dapplication.%s.%s.%s=$(rootpath //tools/browser/src/test/js/react4j/browser:application_%s_%s_%s)" % (runtime, level, maps, runtime, level, maps)
@@ -150,7 +146,7 @@ java_browser_testng(
             "maps",
             "no_maps",
         ]
-    ] + ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.gen.json)"],
+    ] + ["-Dreact4j.browser.metadata=$(rootpath //tools/webtesting:chromium.json)"],
     test_class = "react4j.verification.BrowserApplicationTest",
     visibility = ["//:__pkg__"],
     deps = [

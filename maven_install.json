@@ -16,6 +16,9 @@
     "org.jsoup:jsoup": -1040080959,
     "org.jspecify:jspecify": 2105307712,
     "org.seleniumhq.selenium:selenium-api": 1359790425,
+    "org.seleniumhq.selenium:selenium-chrome-driver": -697181640,
+    "org.seleniumhq.selenium:selenium-chromium-driver": 548310612,
+    "org.seleniumhq.selenium:selenium-json": 1402780483,
     "org.seleniumhq.selenium:selenium-remote-driver": -1144232444,
     "org.seleniumhq.selenium:selenium-support": 204710084,
     "repositories": 514854214
@@ -67,6 +70,8 @@
     "org.mockito:mockito-core": 1627635737,
     "org.objenesis:objenesis": 104859887,
     "org.seleniumhq.selenium:selenium-api": 1856885217,
+    "org.seleniumhq.selenium:selenium-chrome-driver": 1025978422,
+    "org.seleniumhq.selenium:selenium-chromium-driver": -1002311581,
     "org.seleniumhq.selenium:selenium-http": -1479318771,
     "org.seleniumhq.selenium:selenium-json": 1768129386,
     "org.seleniumhq.selenium:selenium-manager": 281187930,
@@ -356,6 +361,18 @@
       },
       "version": "4.27.0"
     },
+    "org.seleniumhq.selenium:selenium-chrome-driver": {
+      "shasums": {
+        "jar": "ab0e52e9ed99b71750f9781bc294467ec108956eeaa5c8f3e58ca1927dc46039"
+      },
+      "version": "4.27.0"
+    },
+    "org.seleniumhq.selenium:selenium-chromium-driver": {
+      "shasums": {
+        "jar": "066e1c24cd40a5bc77f3162628750ee36ab615173651087b8e7b9605ca25c56b"
+      },
+      "version": "4.27.0"
+    },
     "org.seleniumhq.selenium:selenium-http": {
       "shasums": {
         "jar": "76bcefd92f1d7cb2ad60efe969f21aa13398c977d6b0dcadd9a3e0a58e977e9e"
@@ -492,6 +509,19 @@
     ],
     "org.seleniumhq.selenium:selenium-api": [
       "org.jspecify:jspecify"
+    ],
+    "org.seleniumhq.selenium:selenium-chrome-driver": [
+      "com.google.auto.service:auto-service-annotations",
+      "org.seleniumhq.selenium:selenium-api",
+      "org.seleniumhq.selenium:selenium-chromium-driver",
+      "org.seleniumhq.selenium:selenium-json",
+      "org.seleniumhq.selenium:selenium-manager",
+      "org.seleniumhq.selenium:selenium-remote-driver"
+    ],
+    "org.seleniumhq.selenium:selenium-chromium-driver": [
+      "com.google.auto.service:auto-service-annotations",
+      "org.seleniumhq.selenium:selenium-json",
+      "org.seleniumhq.selenium:selenium-remote-driver"
     ],
     "org.seleniumhq.selenium:selenium-http": [
       "com.google.auto.service:auto-service-annotations",
@@ -1100,6 +1130,12 @@
       "org.openqa.selenium.print",
       "org.openqa.selenium.virtualauthenticator"
     ],
+    "org.seleniumhq.selenium:selenium-chrome-driver": [
+      "org.openqa.selenium.chrome"
+    ],
+    "org.seleniumhq.selenium:selenium-chromium-driver": [
+      "org.openqa.selenium.chromium"
+    ],
     "org.seleniumhq.selenium:selenium-http": [
       "org.openqa.selenium.remote.http",
       "org.openqa.selenium.remote.http.jdk"
@@ -1203,6 +1239,8 @@
       "org.mockito:mockito-core",
       "org.objenesis:objenesis",
       "org.seleniumhq.selenium:selenium-api",
+      "org.seleniumhq.selenium:selenium-chrome-driver",
+      "org.seleniumhq.selenium:selenium-chromium-driver",
       "org.seleniumhq.selenium:selenium-http",
       "org.seleniumhq.selenium:selenium-json",
       "org.seleniumhq.selenium:selenium-manager",
@@ -1239,6 +1277,34 @@
     "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure": {
       "io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider": [
         "io.opentelemetry.sdk.autoconfigure.internal.EnvironmentResourceProvider"
+      ]
+    },
+    "org.seleniumhq.selenium:selenium-chrome-driver": {
+      "org.openqa.selenium.WebDriverInfo": [
+        "org.openqa.selenium.chrome.ChromeDriverInfo"
+      ],
+      "org.openqa.selenium.remote.AdditionalHttpCommands": [
+        "org.openqa.selenium.chrome.AddHasCasting",
+        "org.openqa.selenium.chrome.AddHasCdp"
+      ],
+      "org.openqa.selenium.remote.AugmenterProvider": [
+        "org.openqa.selenium.chrome.AddHasCasting",
+        "org.openqa.selenium.chrome.AddHasCdp"
+      ],
+      "org.openqa.selenium.remote.service.DriverService$Builder": [
+        "org.openqa.selenium.chrome.ChromeDriverService$Builder"
+      ]
+    },
+    "org.seleniumhq.selenium:selenium-chromium-driver": {
+      "org.openqa.selenium.remote.AdditionalHttpCommands": [
+        "org.openqa.selenium.chromium.AddHasLaunchApp",
+        "org.openqa.selenium.chromium.AddHasNetworkConditions",
+        "org.openqa.selenium.chromium.AddHasPermissions"
+      ],
+      "org.openqa.selenium.remote.AugmenterProvider": [
+        "org.openqa.selenium.chromium.AddHasLaunchApp",
+        "org.openqa.selenium.chromium.AddHasNetworkConditions",
+        "org.openqa.selenium.chromium.AddHasPermissions"
       ]
     },
     "org.seleniumhq.selenium:selenium-http": {
