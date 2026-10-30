@@ -91,18 +91,12 @@ final class BrowserCoverage {
 
         Driver(Path metadata) throws Exception {
             var config = JsonParser.parseString(Files.readString(metadata)).getAsJsonObject();
-            var named = new JsonObject();
-            for (var entry : config.getAsJsonArray("webTestFiles")) {
-                entry.getAsJsonObject()
-                        .getAsJsonObject("namedFiles")
-                        .entrySet()
-                        .forEach(e -> named.add(e.getKey(), e.getValue()));
-            }
             var runfiles = Runfiles.preload().withSourceRepository(AutoBazelRepository_BrowserCoverage.NAME);
-            String executable = Objects.requireNonNull(
-                    runfiles.rlocation(named.get("CHROMEDRIVER").getAsString()));
-            String browser = Objects.requireNonNull(
-                    runfiles.rlocation(named.get("CHROMIUM").getAsString()));
+            // Both binaries come from external archives; their rootpaths start with "../".
+            String driverPath = Objects.requireNonNull(System.getProperty("react4j.browser.driver"));
+            String browserPath = Objects.requireNonNull(System.getProperty("react4j.browser.binary"));
+            String executable = Objects.requireNonNull(runfiles.rlocation(driverPath.substring(3)));
+            String browser = Objects.requireNonNull(runfiles.rlocation(browserPath.substring(3)));
             int port;
             try (var socket = new ServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
                 port = socket.getLocalPort();

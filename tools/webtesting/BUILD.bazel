@@ -1,9 +1,51 @@
-load("@rules_webtesting//web:web.bzl", "custom_browser")
+load("@rules_closure//closure:defs.bzl", "custom_browser")
+load(":browser.bzl", "browser_files")
+
+[
+    config_setting(
+        name = name,
+        constraint_values = [
+            "@platforms//os:" + os,
+            "@platforms//cpu:" + cpu,
+        ],
+    )
+    for name, os, cpu in [
+        ("linux", "linux", "x86_64"),
+        ("mac", "osx", "x86_64"),
+        ("mac_arm", "osx", "aarch64"),
+        ("win", "windows", "x86_64"),
+    ]
+]
+
+browser_files(
+    name = "chromium_files",
+    visibility = ["//:__subpackages__"],
+    deps = select({
+        ":" + platform: [
+            "@react4j_chrome_" + platform + "//:info",
+            "@react4j_chromedriver_" + platform + "//:info",
+        ]
+        for platform in [
+            "linux",
+            "mac",
+            "mac_arm",
+            "win",
+        ]
+    }),
+)
+
+exports_files(
+    ["chromium.json"],
+    visibility = [
+        "//tools/verification/src/main/java/react4j/verification:__pkg__",
+        "//tools/verification/src/test/java/react4j/verification:__pkg__",
+    ],
+)
 
 # Chromium 123 old headless leaves documents unfocused on macOS.
 custom_browser(
     name = "chromium",
-    browser = "//third_party:chromium_local",
+    browser = ":chromium_files",
     metadata = "chromium.json",
     visibility = [
         "//tools/browser:__pkg__",

@@ -16,10 +16,10 @@
 * Add a JVM-only native utility rule language with typed families, numeric bounds, container/starting-style variants and checked scoped anchors. Independent Java consumers share checked descriptors and candidate expansions; JVM authoring commands expose structured diagnostics and traces.
 * Add checked utility CSS with `UtilityCssLibrary`, `UtilityStyles` and method-level `UtilityCss`. Consume explicit inline/file stylesheets and dependency catalogues without a utility generator. Preserve ordered class lists, hybrid/interface contracts and owner-scoped classes, properties, animations, fonts and containers through optimized removal, name compression, source maps and asset finalization. Try the runnable example with `tools/examples.sh serve utility-css development`.
 * Support modern flat utility CSS, static animation/font variable chains, custom-property transitions, safe class-token selectors, container queries, starting styles and empty variable fallbacks. Preserve independent library layer order beneath component CSS. Resets remain explicit global inputs; standard important declarations are permitted in global/shared inputs and rejected in component/utility definitions.
-* Pin the consolidated J2CL compiler and matching Braincheck, Zemeckis, Arez and Sting revisions; remove the local J2CL patches.
+* Pin refreshed J2CL and Closure integration snapshots and remove local J2CL/Closure/browser-runner patches.
+  Use declared Chrome 145 and ChromeDriver inputs for browser tests and runtime coverage.
 * Forward J2CL's public JavaInfo compiler validations through CSS and browser output roots, so JavaScript-only builds enforce configured checks on transitive libraries.
 * Preserve final-round visitor generation so types created by other annotation processors remain visible, accepting the compiler warnings.
-* Use the upstream rules_closure protobuf-rule migration and remove the redundant local patch.
 * Simplify release validation by removing standalone artifact checks, isolated consumer compilation tests, and the separate reproducibility build.
 * Remove the downstream Bazel configuration exporter and external consumer check; applications own their dependency configuration.
 * Expose the existing patched React and ReactDOM runtime scripts through `@react4j//third_party:react_runtime_assets` for downstream deployment packaging.

@@ -1,37 +1,21 @@
-"""JVM browser tests with loopback access limited to test execution."""
+"""JVM browser tests with declared Chrome and ChromeDriver inputs."""
 
-load("//third_party/java:rules.bzl", "java_binary")
+load("//third_party/java:rules.bzl", "java_testng")
 
 visibility(["//tools/browser/src/test/java/react4j/browser", "//tools/verification/src/test/java/react4j/verification"])
 
-def _loopback_test_impl(ctx):
-    runner = ctx.executable.runner
-    launcher = ctx.actions.declare_file(ctx.label.name + ".sh")
-    ctx.actions.write(
-        launcher,
-        "#!/usr/bin/env bash\nset -euo pipefail\nexec \"${TEST_SRCDIR}/%s/%s\" \"$@\"\n" % (ctx.workspace_name, runner.short_path),
-        is_executable = True,
-    )
-    return [
-        DefaultInfo(executable = launcher, runfiles = ctx.runfiles([runner]).merge(ctx.attr.runner[DefaultInfo].default_runfiles)),
-        testing.ExecutionInfo({"requires-network": ""}),
-    ]
-
-_loopback_test = rule(
-    implementation = _loopback_test_impl,
-    test = True,
-    attrs = {"runner": attr.label(mandatory = True, executable = True, cfg = "target")},
-)
-
-def java_browser_testng(name, test_class, size = "medium", jvm_flags = [], deps = [], visibility = None, **kwargs):
-    """Run a TestNG browser test without granting its build actions network access."""
-    java_binary(
-        name = name + "_runner",
-        testonly = True,
-        main_class = "org.testng.TestNG",
-        jvm_flags = ["-ea"] + jvm_flags,
-        deps = ["//third_party/java:testng"] + deps,
+def java_browser_testng(name, test_class, size = "medium", jvm_flags = [], deps = [], data = [], visibility = None, **kwargs):
+    java_testng(
+        name = name,
+        test_class = test_class,
+        size = size,
+        jvm_flags = [
+            "-Dreact4j.browser.binary='$(CHROME-HEADLESS-SHELL)'",
+            "-Dreact4j.browser.driver='$(CHROMEDRIVER)'",
+        ] + jvm_flags,
+        toolchains = ["//tools/webtesting:chromium_files"],
+        data = ["//tools/webtesting:chromium_files"] + data,
+        deps = deps,
         visibility = visibility,
         **kwargs
     )
-    _loopback_test(name = name, size = size, runner = ":" + name + "_runner", args = ["-testclass", test_class, "-verbose", "2"], visibility = visibility)
