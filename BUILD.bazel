@@ -19,6 +19,7 @@ java_format_check(
     testonly = True,
     remediation = "tools/java_format.sh write",
     targets = [
+        "@browser_files_consumer//:smoke",
         "//css/core/src/main/java/react4j/css",
         "//css/internal/src/main/java/react4j/css/internal",
         "//css/utility-language/src/main/java/react4j/css/utility/language:language",
@@ -297,5 +298,7 @@ test_suite(
         "//tools/verification/src/test/java/react4j/verification:instrumenter_tests",
         "//tools/verification/src/test/java/react4j/verification:lcov_report_tests",
         "//tools/verification/src/test/java/react4j/verification:runtime_coverage_tests",
+        "//tools/webtesting/tests",
+        "@browser_files_consumer//:smoke",
     ],
 )

@@ -1,0 +1,30 @@
+load("@react4j//:defs.bzl", "browser_files")
+load("@rules_java//java:defs.bzl", "java_test")
+
+browser_files(
+    name = "browser",
+    deps = ["@rules_browsers//browsers/chromium"],
+)
+
+java_test(
+    name = "smoke",
+    size = "medium",
+    srcs = ["BrowserFilesSmoke.java"],
+    data = [":browser"],
+    exclude_build_data = True,
+    jvm_flags = [
+        "-Dtest.browser='$(CHROME-HEADLESS-SHELL)'",
+        "-Dtest.driver='$(CHROMEDRIVER)'",
+    ],
+    main_class = "BrowserFilesSmoke",
+    toolchains = [":browser"],
+    use_testrunner = False,
+    visibility = ["//visibility:public"],
+    deps = [
+        "@maven//:org_seleniumhq_selenium_selenium_api",
+        "@maven//:org_seleniumhq_selenium_selenium_chrome_driver",
+        "@maven//:org_seleniumhq_selenium_selenium_chromium_driver",
+        "@maven//:org_seleniumhq_selenium_selenium_remote_driver",
+        "@rules_java//java/runfiles",
+    ],
+)

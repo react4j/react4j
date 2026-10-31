@@ -1,5 +1,5 @@
 load("@rules_closure//closure:defs.bzl", "custom_browser")
-load(":browser.bzl", "browser_files")
+load("//:defs.bzl", "browser_files")
 
 [
     config_setting(

@@ -1,0 +1,3 @@
+load(":browser_files_test.bzl", "browser_files_tests")
+
+browser_files_tests(name = "tests")
