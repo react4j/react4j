@@ -9,6 +9,7 @@ case "$mode" in
 esac
 cd "$root"
 paths=(
+  tools/webtesting/tests/consumer
   css/core/src/main/java
   css/utility-language/src/main/java
   css/utility-language/src/test/java

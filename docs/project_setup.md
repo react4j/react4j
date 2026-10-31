@@ -10,6 +10,40 @@ Owned nullness contracts use JSpecify `@NullMarked`, `@NullUnmarked`, `@NonNull`
 
 The Bazel build pins migrated Arez, Proton and Sting revisions. Maven consumption requires a compatible published Arez release containing the pinned changes, including Java 21 support; existing older releases do not acquire the new contents merely by choosing their version number. The snapshot below is the local build default, not a claim that migrated artifacts have been published to Central. Replace it with the migrated React4j release you intend to use.
 
+## Configure Bazel browser tests
+
+Load `browser_files` from `@react4j//:defs.bzl` to combine declared browser inputs
+for Closure and JVM tests:
+
+```starlark
+load("@react4j//:defs.bzl", "browser_files")
+
+browser_files(
+    name = "chromium_files",
+    deps = ["@rules_browsers//browsers/chromium"],
+)
+```
+
+`deps` must be nonempty. Each dependency supplies `NamedFilesInfo` from
+`@rules_browsers//browsers:named_files_info.bzl` and its complete default runfiles.
+The result preserves those runfiles and combines the named files. Repeated names
+may refer to the same file; conflicting files fail analysis.
+
+Pass the resulting target to Closure's `custom_browser`, or include it in a JVM
+target's `data` and `toolchains`. The latter exposes each file name as a Make
+variable, such as `$(CHROME-HEADLESS-SHELL)` and `$(CHROMEDRIVER)`. Quote expanded
+paths in JVM flags because browser paths may contain spaces.
+
+Variable values follow Bazel `rootpath` semantics. Resolve them through the
+runtime's runfiles library: remove the leading `../` for an external-repository
+file, or prefix the test workspace name for a main-repository file. Preserve the
+complete browser runfiles so shared libraries and other support files remain
+available.
+
+Select browser versions, platform-specific inputs and capabilities in the
+application's build configuration. The [Bazel integration contract](https://github.com/react4j/react4j/blob/master/docs/specs/bazel-integration.md)
+preserves that ownership.
+
 ## Configure Maven
 
 Run Maven on Java 21+. Add the DOM library (which includes the core runtime transitively), JSpecify, and the processor. This uses the same compiler plugin configuration as the Arez reference build:

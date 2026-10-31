@@ -43,7 +43,16 @@ git_override(
 )
 
 bazel_dep(name = "buildifier_prebuilt", version = "10.0.1", dev_dependency = True)
+bazel_dep(name = "bazel_skylib", version = "1.9.0", dev_dependency = True)
 bazel_dep(name = "ahab", version = "0.4.0", dev_dependency = True)
+
+_local_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:local.bzl", "local_repository")
+
+_local_repository(
+    name = "browser_files_consumer",
+    dev_dependency = True,
+    path = "tools/webtesting/tests/consumer",
+)
 
 bazel_dep(name = "rules_palantir_java_format")
 git_override(
