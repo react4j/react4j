@@ -18,6 +18,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
 import react4j.css.internal.CssIdentity;
@@ -30,6 +32,9 @@ import react4j.css.internal.SourceMap;
 /** Pure JVM rule preparation, checking and stateless expansion. No operation performs I/O. */
 public final class UtilityLanguage {
     private static final int VERSION = 1;
+    private static final Map<Source, Locations> LOCATIONS = new WeakHashMap<>();
+
+    private record Locations(JsonObject map, Map<Integer, SourceMap.Location> values) {}
 
     private UtilityLanguage() {}
 
@@ -1143,13 +1148,23 @@ public final class UtilityLanguage {
     }
 
     private static SourceMap.Location location(Source source, int offset) {
-        if (!source.sourceMap().isEmpty()) {
-            var location = SourceMap.location(
-                    source.text(), JsonParser.parseString(source.sourceMap()).getAsJsonObject(), offset);
-            if (null != location) {
-                return location;
-            }
+        if (source.sourceMap().isEmpty()) {
+            return unmappedLocation(source, offset);
         }
+        final Locations locations;
+        synchronized (LOCATIONS) {
+            locations = LOCATIONS.computeIfAbsent(
+                    source,
+                    key -> new Locations(
+                            JsonParser.parseString(key.sourceMap()).getAsJsonObject(), new ConcurrentHashMap<>()));
+        }
+        return locations.values().computeIfAbsent(offset, key -> {
+            var location = SourceMap.location(source.text(), locations.map(), key);
+            return null != location ? location : unmappedLocation(source, key);
+        });
+    }
+
+    private static SourceMap.Location unmappedLocation(Source source, int offset) {
         int line = 0;
         int start = 0;
         for (int i = 0; i < offset; i++) {

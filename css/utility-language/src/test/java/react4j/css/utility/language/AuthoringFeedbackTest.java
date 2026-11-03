@@ -3,10 +3,14 @@ package react4j.css.utility.language;
 import static org.testng.Assert.*;
 
 import com.google.gson.JsonParser;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Executors;
 import org.testng.annotations.Test;
 import react4j.css.internal.CssCatalogue;
 import react4j.css.internal.CssNames;
@@ -100,18 +104,8 @@ public final class AuthoringFeedbackTest {
     public void mappedDefinitionsAndLiteralContextErrorsUseTheirOriginalJavaFile() {
         String text = RULES + "@utility bad {padding:anchor(left);}";
         String original = "class Rules {\n" + text + "\n}";
-        var writer = new SourceMap.Writer();
-        int base = original.indexOf(text);
-        for (int i = 0; i < text.length(); i++) {
-            int at = base + i;
-            var line = (int)
-                    original.substring(0, at).chars().filter(c -> '\n' == c).count();
-            int column = at - original.lastIndexOf('\n', at - 1) - 1;
-            writer.append(text.substring(i, i + 1), new SourceMap.Location("Rules.java", original, line, column));
-        }
         var failure = expectThrows(
-                UtilityLanguage.Failure.class,
-                () -> UtilityLanguage.prepare(new UtilityLanguage.Source("rules.css", text, writer.map("rules.css"))));
+                UtilityLanguage.Failure.class, () -> UtilityLanguage.prepare(mappedSource(text, original)));
         assertEquals(failure.diagnostic().code(), "U_VALUE_CONTEXT");
         assertEquals(failure.diagnostic().origin().source(), "Rules.java");
         assertEquals(failure.diagnostic().origin().start(), original.indexOf("padding:anchor"));
@@ -232,5 +226,69 @@ public final class AuthoringFeedbackTest {
                                 IllegalArgumentException.class, () -> UtilityLanguage.readChecked(bindings.toString()))
                         .getMessage())
                 .contains("externalAnchors"));
+    }
+
+    @Test(timeOut = 30_000)
+    public void mappedSourcesWithTheSameNameKeepIndependentConcurrentLocations() throws Exception {
+        String text = RULES + "@utility bad {padding:anchor(left);}";
+        var sources = new ArrayList<UtilityLanguage.Source>();
+        var starts = new ArrayList<Integer>();
+        for (int i = 0; i < 16; i++) {
+            String original = "\n".repeat(i) + "class Rules {\n" + text + "\n}";
+            sources.add(mappedSource(text, original));
+            starts.add(original.indexOf("padding:anchor"));
+        }
+        var tasks = new ArrayList<Callable<UtilityLanguage.Diagnostic>>();
+        var startTogether = new CyclicBarrier(4);
+        for (int i = 0; i < 64; i++) {
+            var source = sources.get(i / 2 % sources.size());
+            tasks.add(() -> {
+                startTogether.await();
+                return expectThrows(UtilityLanguage.Failure.class, () -> UtilityLanguage.prepare(source))
+                        .diagnostic();
+            });
+        }
+        try (var executor = Executors.newFixedThreadPool(4)) {
+            var results = executor.invokeAll(tasks);
+            for (int i = 0; i < results.size(); i++) {
+                var diagnostic = results.get(i).get();
+                assertEquals(diagnostic.code(), "U_VALUE_CONTEXT");
+                int source = i / 2 % sources.size();
+                int offset = starts.get(source);
+                assertEquals(
+                        diagnostic.origin(),
+                        new UtilityLanguage.Origin("Rules.java", offset, offset + 1, source + 7, 14));
+            }
+        }
+    }
+
+    @Test
+    public void unmappedSegmentsKeepTheirSourceLocationAfterRepeatedPreparation() {
+        String bad = "@utility bad {padding:anchor(left);}";
+        var writer = new SourceMap.Writer();
+        writer.append(RULES, new SourceMap.Location("Rules.java", RULES, 0, 0));
+        writer.append(bad);
+        String text = writer.css();
+        var source = new UtilityLanguage.Source("rules.css", text, writer.map("rules.css"));
+        int offset = text.indexOf("padding:anchor");
+        for (int i = 0; i < 2; i++) {
+            var diagnostic = expectThrows(UtilityLanguage.Failure.class, () -> UtilityLanguage.prepare(source))
+                    .diagnostic();
+            assertEquals(diagnostic.code(), "U_VALUE_CONTEXT");
+            assertEquals(diagnostic.origin(), new UtilityLanguage.Origin("rules.css", offset, offset + 1, 6, 14));
+        }
+    }
+
+    private static UtilityLanguage.Source mappedSource(String text, String original) {
+        var writer = new SourceMap.Writer();
+        int base = original.indexOf(text);
+        for (int i = 0; i < text.length(); i++) {
+            int at = base + i;
+            var line = (int)
+                    original.substring(0, at).chars().filter(c -> '\n' == c).count();
+            int column = at - original.lastIndexOf('\n', at - 1) - 1;
+            writer.append(text.substring(i, i + 1), new SourceMap.Location("Rules.java", original, line, column));
+        }
+        return new UtilityLanguage.Source("rules.css", text, writer.map("rules.css"));
     }
 }
