@@ -61,6 +61,10 @@ public final class CssSyntax {
     }
 
     public CascadingStyleSheet parse(Mode mode) {
+        return parse(mode, false);
+    }
+
+    private CascadingStyleSheet parse(Mode mode, boolean nestedGroupBody) {
         boolean component = Mode.COMPONENT == mode;
         boolean framesOnly = Mode.KEYFRAMES == mode;
         var stream = new CSSCharStream(new StringReader(source));
@@ -101,7 +105,7 @@ public final class CssSyntax {
         parser.setBrowserCompliantMode(false);
         CSSNode tree;
         try {
-            tree = parser.styleSheet();
+            tree = nestedGroupBody ? parser.nestedGroupBody() : parser.styleSheet();
         } catch (ParseException e) {
             var token = e.currentToken;
             if (null != token && null != token.next) {
@@ -123,7 +127,7 @@ public final class CssSyntax {
         if (framesOnly && (1 != tree.jjtGetNumChildren() || !ECSSNodeType.KEYFRAMESRULE.isNode(tree.jjtGetChild(0)))) {
             throw new InvalidCss("@Keyframes requires a single animation frame body", 0);
         }
-        checkSyntaxTree(tree, mode, 0, false);
+        checkSyntaxTree(tree, mode, 0, nestedGroupBody);
         var sheet = CSSHandler.readCascadingStyleSheetFromNode(
                 new ICSSInterpretErrorHandler() {
                     @Override
@@ -139,6 +143,8 @@ public final class CssSyntax {
                 true,
                 tree);
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
+            private int styleDepth;
+
             @Override
             public void onUnknownRule(CSSUnknownRule rule) {
                 if (null == rule.getParsedRules()) {
@@ -151,7 +157,8 @@ public final class CssSyntax {
                             body.setCharAt(i, ' ');
                         }
                     }
-                    rule.setParsedRules(new CssSyntax(body.toString(), prefix).parse(mode));
+                    rule.setParsedRules(
+                            new CssSyntax(body.toString(), prefix).parse(mode, nestedGroupBody || 0 != styleDepth));
                 }
             }
 
@@ -160,6 +167,12 @@ public final class CssSyntax {
                 if (Mode.UTILITY == mode && rule.hasRules()) {
                     throw invalid("Utility CSS must be flattened before compilation", rule);
                 }
+                styleDepth++;
+            }
+
+            @Override
+            public void onEndStyleRule(CSSStyleRule rule) {
+                styleDepth--;
             }
         });
         return sheet;

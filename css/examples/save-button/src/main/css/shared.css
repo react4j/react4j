@@ -4,3 +4,10 @@ button[data-shared][data-shared] {
   background-color: #333;
   color: #000;
 }
+
+input[data-nested=shared]::placeholder {
+  color: currentcolor;
+  @supports (color: red) {
+    color: red;
+  }
+}

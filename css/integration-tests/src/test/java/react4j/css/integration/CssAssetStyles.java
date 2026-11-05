@@ -22,7 +22,7 @@ public final class CssAssetStyles {
 
     @CssImport(value = AssetFixtures.Media.class, name = "media")
     @GlobalCss("""
-        body {background:url(asset:media.unused);}
+        body {@supports (color: red) {background:url(asset:media.unused);}}
         """)
     static final class Additional {}
 

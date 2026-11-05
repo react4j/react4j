@@ -400,6 +400,7 @@ public final class CssRenamerTest {
                 "#a{}",
                 ":root{--b:red;}",
                 "body{color:var(--b);}",
+                "body{@container (width > 1px){@starting-style{color:var(--b);}}}",
                 "body{animation:c 1s;}",
                 "body{animation-name:'c';}",
                 "#\\61 {}",

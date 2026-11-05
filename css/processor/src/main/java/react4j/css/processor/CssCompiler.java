@@ -421,24 +421,27 @@ final class CssCompiler {
             } else if (nested instanceof CSSNestedDeclarations declarations) {
                 declarations(declarations.getAllDeclarations(), selectors, rule);
             } else if (nested instanceof CSSMediaRule media) {
-                conditional(media, nestedParent);
+                conditional(media, nestedParent, selectors, rule);
             } else if (nested instanceof CSSSupportsRule supports) {
-                conditional(supports, nestedParent);
+                conditional(supports, nestedParent, selectors, rule);
             } else {
                 throw syntax.invalid("Unsupported component rule", (ICSSSourceLocationAware) nested);
             }
         }
     }
 
-    private void conditional(AbstractHasTopLevelRules rule, Scope parent) {
+    private void conditional(
+            AbstractHasTopLevelRules rule, Scope parent, List<Scope> selectors, CSSStyleRule styleRule) {
         output.append(conditionalHeader(rule) + "{", location((ICSSSourceLocationAware) rule));
         for (var child : rule.getAllRules()) {
             if (child instanceof CSSStyleRule style) {
                 style(style, parent, false);
             } else if (child instanceof CSSMediaRule media) {
-                conditional(media, parent);
+                conditional(media, parent, selectors, styleRule);
             } else if (child instanceof CSSSupportsRule supports) {
-                conditional(supports, parent);
+                conditional(supports, parent, selectors, styleRule);
+            } else if (child instanceof CSSNestedDeclarations declarations) {
+                declarations(declarations.getAllDeclarations(), selectors, styleRule);
             } else {
                 throw syntax.invalid("Unsupported component rule", (ICSSSourceLocationAware) child);
             }

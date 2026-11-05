@@ -229,8 +229,23 @@ public final class AssetBundleTest {
                             "react4j.css.integration.AssetFixtures$Media#unused");
                     assertEquals(cssOnly.getAsJsonArray("retainedBy").size(), 1);
                     assertEquals(cssOnly.getAsJsonArray("retainedBy").get(0).getAsString(), "css:alternate.css");
-                    assertFalse(
-                            Files.readString(directory.resolve("alternate.css")).contains("../assets/"));
+                    String alternateCss = Files.readString(directory.resolve("alternate.css"));
+                    String relativeUrl = cssOnly.get("url").getAsString();
+                    assertTrue(
+                            alternateCss.contains("@supports (color:red){background:url(" + relativeUrl), alternateCss);
+                    assertFalse(alternateCss.contains("../assets/"));
+                    var alternateMap = new SourceMapConsumerV3();
+                    alternateMap.parse(Files.readString(directory.resolve("alternate.css.map")));
+                    int urlStart = alternateCss.indexOf(relativeUrl);
+                    int urlLine = 1
+                            + (int) alternateCss
+                                    .substring(0, urlStart)
+                                    .chars()
+                                    .filter(c -> '\n' == c)
+                                    .count();
+                    int urlColumn = urlStart - alternateCss.lastIndexOf('\n', urlStart - 1);
+                    var origin = Objects.requireNonNull(alternateMap.getMappingForLine(urlLine, urlColumn));
+                    assertTrue(origin.getOriginalFile().endsWith("CssAssetStyles.java"), origin.toString());
                 }
             } finally {
                 delete(directory);

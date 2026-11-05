@@ -2,7 +2,6 @@ package react4j.css.processor;
 
 import static org.testng.Assert.*;
 
-import com.helger.css.decl.AbstractHasTopLevelRules;
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSExpressionMemberTermSimple;
 import com.helger.css.decl.CSSKeyframesRule;
@@ -130,6 +129,24 @@ public final class CssCompilerTest {
     }
 
     @Test
+    public void conditionalDeclarationsUseTheImplicitRootAndTheExactParentSelectorList() {
+        String css = component(
+                "@media screen { color: red; }"
+                        + " &::placeholder, &.success::placeholder {"
+                        + " @supports (color: red) { color: blue; @media all { color: green; } color: red; } }",
+                "style",
+                "success");
+        String root = "." + ROOT;
+        String placeholders = root + "::placeholder," + root + "." + ROOT + "--success::placeholder";
+        assertEquals(
+                css,
+                "@media screen{" + root + "{color:red;}}"
+                        + "@supports (color:red){" + placeholders + "{color:blue;}"
+                        + "@media all{" + placeholders + "{color:green;}}"
+                        + placeholders + "{color:red;}}");
+    }
+
+    @Test
     public void conditionalRulesAndSelectorListSpecificityArePreserved() {
         String css = component(
                 "@media (width > 1px) { &.success { color: green; } }"
@@ -203,8 +220,7 @@ public final class CssCompilerTest {
                         Map.entry("@layer global { &.success { color: red; } }", "Unsupported component rule"),
                         Map.entry("color red;", "Invalid CSS"),
                         Map.entry("color: red; &: { color: blue; }", "Invalid CSS"),
-                        Map.entry("} body { color: red; } /*", "Invalid CSS"),
-                        Map.entry("@media (width > 1px) { color: red; }", "Invalid CSS"))
+                        Map.entry("} body { color: red; } /*", "Invalid CSS"))
                 .entrySet()) {
             var error = expectThrows(CssSyntax.InvalidCss.class, () -> component(entry.getKey(), "style", "success"));
             assertTrue(
@@ -848,9 +864,14 @@ public final class CssCompilerTest {
     }
 
     @Test
-    public void nestedGlobalConditionalsRequireExplicitSelectors() {
-        for (var condition : List.of("@media screen", "@supports (display: grid)")) {
-            String css = "body { " + condition + " { & { color: red; } } }";
+    public void nestedGlobalGroupsKeepDirectDeclarationsAndExplicitSelectorsInOrder() {
+        for (var group : List.of(
+                "@media screen",
+                "@supports (display: grid)",
+                "@container (width > 1px)",
+                "@layer theme",
+                "@starting-style")) {
+            String css = "::placeholder { " + group + " { color: red; & { opacity: .5; } color: green; } }";
             var result = CssCompiler.global(
                     css,
                     "jcss-demo-Global",
@@ -860,23 +881,10 @@ public final class CssCompilerTest {
                     Map.of(),
                     Map.of(),
                     new CssCompiler.Resources(Map.of(), Map.of()));
-            var style = parse(result.output().css()).getAllStyleRules().get(0);
-            var conditional = (AbstractHasTopLevelRules) style.getAllRules().get(0);
-            var nested = conditional.getAllStyleRules().get(0);
-            assertEquals(nested.getSelectorsAsCSSString(new CSSWriterSettings(true), 0), "&");
-            assertEquals(value(Objects.requireNonNull(nested.getDeclarationOfPropertyName("color"))), "red");
-            String invalid = "body { " + condition + " { color: red; } }";
-            expectThrows(
-                    CssSyntax.InvalidCss.class,
-                    () -> CssCompiler.global(
-                            invalid,
-                            "jcss-demo-Global",
-                            new CssCompiler.Exports(List.of(), Set.of(), Set.of()),
-                            offset -> new SourceMap.Location("Defaults.java", invalid, 0, offset),
-                            Map.of(),
-                            Map.of(),
-                            Map.of(),
-                            new CssCompiler.Resources(Map.of(), Map.of())));
+            String rendered = result.output().css();
+            assertTrue(rendered.startsWith("::placeholder{"), rendered);
+            assertTrue(rendered.contains("{color:red;&{opacity:.5;}color:green;}"), rendered);
+            new CssSyntax(rendered, 0).parse(CssSyntax.Mode.PROCESSED);
         }
     }
 

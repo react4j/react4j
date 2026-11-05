@@ -1,4 +1,4 @@
-"""Build the pinned CSS parser with the CSS empty-fallback grammar repair."""
+"""Build the pinned CSS parser with React4j's source patches."""
 
 load("@rules_java//java/common:java_common.bzl", "java_common")
 load("@rules_java//java/common:java_info.bzl", "JavaInfo")

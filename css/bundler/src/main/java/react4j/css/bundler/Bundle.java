@@ -221,7 +221,14 @@ final class Bundle {
                     continue;
                 }
             } catch (CssSyntax.InvalidCss e) {
-                throw new IllegalArgumentException(path + ": " + e.getMessage(), e);
+                int offset = e.offset();
+                int lineNumber = 1
+                        + (int) css.substring(0, offset)
+                                .chars()
+                                .filter(c -> '\n' == c)
+                                .count();
+                int column = offset - css.lastIndexOf('\n', offset - 1);
+                throw new IllegalArgumentException(path + ":" + lineNumber + ":" + column + ": " + e.getMessage(), e);
             }
             if (null != renamer) {
                 renamer.checkShared(css, path.toString());

@@ -1,12 +1,10 @@
 package com.example.bare_conditional;
 
 import org.jspecify.annotations.NullMarked;
-import react4j.css.Css;
+import react4j.css.GlobalCss;
 
 @NullMarked
-@Css("""
+@GlobalCss("""
     @media (width > 1px) { color: red; }
     """)
-abstract class Button {
-    abstract String style();
-}
+final class Button {}
