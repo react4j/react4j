@@ -1,11 +1,11 @@
 # Task map
 
 - Spec: [SPEC.md](../SPEC.md)
-- Status: `implementation-review`
+- Status: `implementation-reviewed`
 - Current frontier: none
 - Planning reviewer: planning_review passed (1/3 attempts). Findings: none. Reviewed scope, dependency path, acceptance coverage, and project gate.
 - Plan checkpoint: automatic (complete). The user authorized execution. No intermediate approval was requested.
-- Implementation reviewer: pending (0/5 attempts)
+- Implementation reviewer: implementation_review passed (1/5 attempts). Findings: none. Reviewed R1–R5 and AC1–AC5, independently probed mixed and opaque nested groups, selector parsing, invalid placement, preserved shared output and maps, and verified the full gate evidence and restored Chromium configuration.
 
 ## Tasks
 
