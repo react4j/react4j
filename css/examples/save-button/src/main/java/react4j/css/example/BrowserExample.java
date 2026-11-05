@@ -19,6 +19,7 @@ import react4j.dom.ReactDOM;
 import react4j.dom.proptypes.html.BtnProps;
 import react4j.dom.proptypes.html.CssProps;
 import react4j.dom.proptypes.html.HtmlProps;
+import react4j.dom.proptypes.html.InputProps;
 
 public final class BrowserExample {
     private BrowserExample() {}
@@ -63,6 +64,25 @@ public final class BrowserExample {
         StateStyle<String> statusStates = status;
         var custom = new CssProps().customProperty(buttonStates.successProperty(), success);
         return DOM.div(
+                DOM.input(new InputProps()
+                        .id("nested-shared")
+                        .data("nested", "shared")
+                        .placeHolder("Shared")),
+                DOM.input(new InputProps()
+                        .id("nested-global")
+                        .data("nested", "global")
+                        .placeHolder("Global")),
+                DOM.input(new InputProps()
+                        .id("nested-component")
+                        .data("nested", "component")
+                        .className(NestedDeclarations.get().style())
+                        .placeHolder("Component")),
+                DOM.input(new InputProps()
+                        .id("nested-component-priority")
+                        .data("nested", "component")
+                        .data("priority", "true")
+                        .className(NestedDeclarations.get().style())
+                        .placeHolder("Component with priority")),
                 DOM.span(
                         new HtmlProps()
                                 .id("utility")
@@ -588,6 +608,26 @@ public final class BrowserExample {
         """)
     abstract static class UnusedAnimation {}
 
+    @Css("""
+        @media all { opacity: .9; }
+        &::placeholder, &[data-priority][data-priority]::placeholder {
+          color: gray;
+          @media all {
+            color: blue;
+            @supports (color: red) { color: red; }
+            color: green;
+          }
+        }
+        &[data-nested]::placeholder { color: purple; }
+        """)
+    abstract static class NestedDeclarations {
+        static NestedDeclarations get() {
+            return BrowserExample_Styled_NestedDeclarations.get();
+        }
+
+        abstract String style();
+    }
+
     @GlobalCss("""
         :root {
           --on-accent: #fff;
@@ -597,6 +637,10 @@ public final class BrowserExample {
           --theme-color: #080;
         }
         #base { border-top-width: 2px; }
+        input[data-nested=global]::placeholder {
+          color: currentcolor;
+          @supports (color: red) { color: var(--theme-color); }
+        }
         """)
     abstract static class Defaults {
         static Defaults get() {

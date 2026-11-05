@@ -10,7 +10,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 import org.jspecify.annotations.NullMarked;
 
-/** Extends the pinned grammar and opaque-rule model for processed modern CSS. */
+/** Applies React4j's patches to the pinned CSS parser sources. */
 @NullMarked
 public final class CssParserSources {
     private CssParserSources() {}
@@ -30,21 +30,22 @@ public final class CssParserSources {
                 }
                 String source = new String(content, StandardCharsets.UTF_8);
                 source = switch (entry.getName()) {
-                    case "com/helger/css/parser/ParserCSS30.java" -> repair(source);
+                    case "com/helger/css/parser/ParserCSS30.java" -> nestedGroups(repair(source));
                     case "com/helger/css/parser/ParserCSS30TokenManager.java" -> propertyComments(source);
                     case "com/helger/css/decl/CSSUnknownRule.java" -> structuredRule(source);
+                    case "com/helger/css/decl/CSSNestedDeclarations.java" ->
+                        replaceOnce(source, "ICSSNestedRule,", "ICSSNestedRule, ICSSTopLevelRule,");
+                    case "com/helger/css/handler/CSSHandler.java" ->
+                        replaceOnce(
+                                source,
+                                "if (!ECSSNodeType.ROOT.isNode (aNode))",
+                                "if (!ECSSNodeType.ROOT.isNode (aNode)"
+                                        + " && !ECSSNodeType.STYLEDECLARATIONLISTWITHNESTED.isNode (aNode))");
                     case "com/helger/css/decl/CSSLayerRule.java" ->
                         replaceOnce(
                                 source, "if (nRuleCount == 0)", "if (nRuleCount == 0 && m_aSelectors.isNotEmpty ())");
                     case "com/helger/css/handler/CSSNodeToDomainObject.java" -> conditionalChildren(source);
-                    case "com/helger/css/decl/visit/CSSVisitor.java" ->
-                        replaceOnce(source, "    aVisitor.onUnknownRule (aUnknownRule);", """
-                                aVisitor.onUnknownRule (aUnknownRule);
-                                final CascadingStyleSheet parsed = aUnknownRule.getParsedRules ();
-                                if (parsed != null)
-                                  for (final ICSSTopLevelRule child : parsed.getAllRules ())
-                                    visitTopLevelRule (child, aVisitor);
-                            """.stripTrailing());
+                    case "com/helger/css/decl/visit/CSSVisitor.java" -> visitGroups(source);
                     default -> source;
                 };
                 content = source.getBytes(StandardCharsets.UTF_8);
@@ -74,6 +75,102 @@ public final class CssParserSources {
                 output.closeEntry();
             }
         }
+    }
+
+    private static String visitGroups(String source) {
+        source = replaceOnce(source, "    aVisitor.onUnknownRule (aUnknownRule);", """
+                aVisitor.onUnknownRule (aUnknownRule);
+                final CascadingStyleSheet parsed = aUnknownRule.getParsedRules ();
+                if (parsed != null)
+                  for (final ICSSTopLevelRule child : parsed.getAllRules ())
+                    visitTopLevelRule (child, aVisitor);
+            """.stripTrailing());
+        return replaceOnce(source, "    if (aTopLevelRule instanceof CSSStyleRule)", """
+            if (aTopLevelRule instanceof CSSNestedDeclarations)
+            {
+              visitNestedDeclarations ((CSSNestedDeclarations) aTopLevelRule, aVisitor);
+              return;
+            }
+            if (aTopLevelRule instanceof CSSStyleRule)\
+            """.stripTrailing());
+    }
+
+    private static String nestedGroups(String source) {
+        source = replaceOnce(
+                source,
+                "  final public CSSNode styleDeclarationListWithNested() throws ParseException {",
+                """
+                private int styleDepth;
+
+                public CSSNode nestedGroupBody() throws ParseException {
+                  final CSSNode body = styleDeclarationListWithNested();
+                  jj_consume_token(EOF);
+                  return body;
+                }
+
+                final public CSSNode styleDeclarationListWithNested() throws ParseException {
+                  styleDepth++;
+                  try {
+                    return styleBlockContents();
+                  } finally {
+                    styleDepth--;
+                  }
+                }
+
+                // A type selector followed by a pseudo can start like a declaration.
+                private boolean startsDeclaration() {
+                  if (!jj_2_21(2147483647)) return false;
+                  Token next = getToken(1);
+                  if (styleDepth != 0 && next.image.startsWith("--")) return true;
+                  int depth = 0;
+                  for (;;) {
+                    final int kind = next.kind;
+                    if (kind == EOF) return true;
+                    if (depth == 0) {
+                      if (kind == LBRACE) return false;
+                      if (kind == SEMICOLON || kind == RBRACE) return true;
+                    }
+                    if (kind == LSQUARE || kind == LROUND || kind >= FUNCTION_CALC && kind <= FUNCTION) depth++;
+                    if (kind == RSQUARE || kind == RROUND) depth--;
+                    if (next.next == null) next.next = token_source.getNextToken();
+                    next = next.next;
+                  }
+                }
+
+                private CSSNode styleBlockContents() throws ParseException {\
+                """.stripTrailing());
+        source = replaceOnce(source, "    if (jj_2_21(2147483647)) {", "    if (startsDeclaration()) {");
+        source = replaceOnce(source, "  final public void styleRule() throws ParseException {", """
+              final public void styleRule() throws ParseException {
+                if (styleDepth == 0 && startsDeclaration()) {
+                  final ParseException error = new ParseException("CSS declaration requires an enclosing style rule");
+                  error.currentToken = token;
+                  throw error;
+                }
+            """.stripTrailing());
+        int media = source.indexOf("        label_122:");
+        int mediaBody =
+                source.indexOf("        switch (jj_ntk", source.indexOf("          jj_consume_token(S);", media));
+        if (media < 0 || mediaBody < media || mediaBody > source.indexOf("          mediaRuleList();", media)) {
+            throw new IllegalArgumentException("Pinned ph-css media body changed");
+        }
+        source = source.substring(0, mediaBody)
+                + "        if (styleDepth != 0) styleDeclarationListWithNested();\n        else\n"
+                + source.substring(mediaBody);
+        source = replaceOnce(source, "public void layerBody() throws ParseException {", """
+            public void layerBody() throws ParseException {
+              if (styleDepth != 0) {
+                styleDeclarationListWithNested();
+                return;
+              }\
+            """.stripTrailing());
+        return replaceOnce(source, "public void supportsRuleBody() throws ParseException {", """
+            public void supportsRuleBody() throws ParseException {
+              if (styleDepth != 0) {
+                styleDeclarationBlockWithNested();
+                return;
+              }\
+            """.stripTrailing());
     }
 
     private static String propertyComments(String source) {
@@ -108,8 +205,69 @@ public final class CssParserSources {
     }
 
     private static String conditionalChildren(String source) {
+        source = replaceOnce(
+                source,
+                "final boolean bIsTopLevel)\n"
+                        + "  {\n"
+                        + "    _expectNodeType (aNode, ECSSNodeType.STYLEDECLARATIONLISTWITHNESTED);",
+                "final boolean bIsTopLevel, @Nullable final Consumer <CSSPropertyRule> aGroupPropertyConsumer)"
+                        + "\n  {\n    _expectNodeType (aNode, ECSSNodeType.STYLEDECLARATIONLISTWITHNESTED);");
+        source = replaceOnce(
+                source,
+                "CSSNestedDeclarations aNestedDeclarations = null;",
+                "CSSNestedDeclarations aNestedDeclarations = aGroupPropertyConsumer != null ? new"
+                        + " CSSNestedDeclarations () : null;");
+        source = replaceOnce(
+                source,
+                "_readStyleDeclarationListWithNestedRules (aChildNode, ret::addDeclaration, ret::addRule,"
+                        + " bIsTopLevel);",
+                "_readStyleDeclarationListWithNestedRules (aChildNode, ret::addDeclaration, ret::addRule,"
+                        + " bIsTopLevel, null);");
+        // Keep property registrations visible when a group uses the mixed declaration and rule production.
+        source = replaceOnce(
+                source,
+                "      // else\n      // ignore ERROR_SKIP to and all unsupported nested \"@\" rules",
+                """
+                            else
+                              if (aGroupPropertyConsumer != null && ECSSNodeType.PROPERTYRULE.isNode (aChildNode))
+                              {
+                                if (aNestedDeclarations.hasDeclarations ())
+                                  aNestedRuleConsumer.accept (aNestedDeclarations);
+                                aGroupPropertyConsumer.accept (_createPropertyRule (aChildNode));
+                                aNestedDeclarations = new CSSNestedDeclarations ();
+                              }
+                // else
+                // ignore ERROR_SKIP to and all unsupported nested "@" rules\
+                """.stripTrailing());
+        source = replaceOnce(source, "  private void _recursiveFillCascadingStyleSheetFromNode", """
+            private void _readNestedGroupBody (final CSSNode body, final AbstractHasTopLevelRules group)
+            {
+              _readStyleDeclarationListWithNestedRules (body, declaration -> {
+                throw new IllegalStateException ("Expected a nested declaration");
+              }, rule -> group.addRule ((ICSSTopLevelRule) rule), false, group::addRule);
+            }
+
+            private void _recursiveFillCascadingStyleSheetFromNode\
+            """.stripTrailing());
+        source = replaceOnce(source, "    _expectNodeType (aNode, ECSSNodeType.ROOT);", """
+            if (ECSSNodeType.STYLEDECLARATIONLISTWITHNESTED.isNode (aNode))
+            {
+              _readNestedGroupBody (aNode, ret);
+              return;
+            }
+            _expectNodeType (aNode, ECSSNodeType.ROOT);\
+            """.stripTrailing());
         for (var kind : new String[] {"media", "supports", "layer"}) {
             String variable = "layer".equals(kind) ? "aBodyChildNode" : "aChildNode";
+            int production = source.indexOf("Unsupported " + kind + "-rule child:");
+            int firstStyle = source.lastIndexOf("if (ECSSNodeType.STYLERULE.isNode (" + variable + "))", production);
+            if (production < 0 || firstStyle < 0) {
+                throw new IllegalArgumentException("Pinned ph-css group body conversion changed");
+            }
+            source = source.substring(0, firstStyle)
+                    + "if (ECSSNodeType.STYLEDECLARATIONLISTWITHNESTED.isNode (" + variable + "))\n"
+                    + "  _readNestedGroupBody (" + variable + ", ret);\nelse "
+                    + source.substring(firstStyle);
             int marker = source.indexOf("\"Unsupported " + kind + "-rule child:");
             String check = "if (!ECSSNodeType.isErrorNode (" + variable + "))";
             int offset = source.lastIndexOf(check, marker);

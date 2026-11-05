@@ -11,6 +11,7 @@ testSuite({
   setUpPage() { TestCase.getActiveTestCase().promiseTimeout = 30000; },
   setUp() { test = new Test('production' === Mode.environment, variant); return test.setUp(); },
   tearDown() { test.tearDown(); },
+  testNestedDeclarationsKeepPlaceholderMatchingSpecificityAndOrder() { test.testNestedDeclarationsKeepPlaceholderMatchingSpecificityAndOrder(); },
   testPackagedAssetsAtAnApplicationMountAndNestedRoute() { return test.testPackagedAssetsAtAnApplicationMountAndNestedRoute(); },
   testUtilitiesKeepLibraryOrderAndExplicitGlobalPrecedence() { return test.testUtilitiesKeepLibraryOrderAndExplicitGlobalPrecedence(); },
   testNativeContainerStatesAndStartingTransition() { return test.testNativeContainerStatesAndStartingTransition(); },

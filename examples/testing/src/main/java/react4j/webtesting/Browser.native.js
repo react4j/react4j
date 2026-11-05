@@ -86,6 +86,9 @@ Browser.property = function(object, name) { return object[name]; };
 Browser.same = function(first, second) { return first === second; };
 /** @param {!Element} element @param {string} property @return {string} */
 Browser.computed = function(element, property) { return getComputedStyle(element).getPropertyValue(property); };
+Browser.computedPseudo = function(element, pseudo, property) {
+  return getComputedStyle(element, pseudo).getPropertyValue(property);
+};
 /** @param {!Element} element @param {string} property @return {string} */
 Browser.inlineStyle = function(element, property) { return element.style.getPropertyValue(property); };
 /** @param {number} width @param {number} height @return {!HTMLIFrameElement} */

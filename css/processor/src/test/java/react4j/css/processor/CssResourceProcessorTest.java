@@ -546,8 +546,8 @@ public final class CssResourceProcessorTest {
                 "@font-face { font-family: font; src: url(font.woff); }",
                 "body { animation-name: unknown; }",
                 "body { animation: var(--animation); }",
-                "body { @media screen { color: red; } }",
-                "body { @supports (display: grid) { color: red; } }",
+                "@media screen { color: red; }",
+                "@supports (display: grid) { color: red; }",
                 "body { color red; }",
                 "color: red;")) {
             cases.add(new Object[] {global("Button", "", css), "ERROR"});

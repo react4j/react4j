@@ -324,6 +324,13 @@ public final class BundleTest {
                     () -> Bundle.assemble(List.of(), List.of(shared), List.of(), "app.css"));
             assertTrue(String.valueOf(error.getMessage()).startsWith(shared.toString()), error.getMessage());
         }
+        Files.writeString(shared, "@supports (color:red) {\n  color:red;\n}");
+        var declaration = expectThrows(
+                IllegalArgumentException.class,
+                () -> Bundle.assemble(List.of(), List.of(shared), List.of(), "app.css"));
+        String message = String.valueOf(declaration.getMessage());
+        assertTrue(message.startsWith(shared + ":2:3:"), message);
+        assertTrue(message.contains("requires an enclosing style rule"), message);
         String globals = "@layer defaults { button { color:red!important; } }";
         Files.writeString(shared, globals);
         assertEquals(

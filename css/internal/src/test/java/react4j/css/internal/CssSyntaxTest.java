@@ -134,6 +134,42 @@ public final class CssSyntaxTest {
     }
 
     @Test
+    public void groupsUnderStyleRulesVisitDirectDeclarationsInOrder() {
+        for (String group : List.of(
+                "@media screen",
+                "@supports (color: red)",
+                "@container (width > 1px)",
+                "@layer theme",
+                "@starting-style")) {
+            String body = "--before:red; button:hover { --child:blue; } @supports (color:red) { --inside:green; }"
+                    + " @property --registered{syntax:\"*\";inherits:false;} --after:yellow;";
+            String css = "/* 😀 */\n::placeholder { " + group + " {" + body + "} }";
+            var syntax = new CssSyntax(css, 0);
+            var sheet = syntax.parse(CssSyntax.Mode.GLOBAL);
+            var declarations = new ArrayList<String>();
+            CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
+                @Override
+                public void onDeclaration(CSSDeclaration declaration) {
+                    String property = declaration.getProperty();
+                    if (property.startsWith("--")) {
+                        assertEquals(syntax.invalid("location", declaration).offset(), css.indexOf(property));
+                        declarations.add(property);
+                    }
+                }
+            });
+            assertEquals(declarations, List.of("--before", "--child", "--inside", "--after"), group);
+            assertTrue(CssTokens.read(css).stream().anyMatch(token -> "--registered".equals(token.name())), group);
+            expectThrows(CssSyntax.InvalidCss.class, () -> syntax.parse(CssSyntax.Mode.UTILITY));
+            String invalid = group + " {\n  --before:red;\n}";
+            var error = expectThrows(CssSyntax.InvalidCss.class, () -> new CssSyntax(invalid, 0).parse(false));
+            assertTrue(
+                    String.valueOf(error.getMessage()).contains("requires an enclosing style rule"),
+                    error.getMessage());
+            assertEquals(error.offset(), invalid.indexOf("--before"));
+        }
+    }
+
+    @Test
     public void containerLessThanComparisonsRemainValidAfterNestedGroups() {
         for (String condition :
                 List.of("not (width < 20px)", "(24rem <= width < 40rem)", "(width > 0px) and (width < 40rem)")) {

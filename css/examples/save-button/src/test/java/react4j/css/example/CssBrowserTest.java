@@ -60,6 +60,14 @@ public final class CssBrowserTest {
         return Browser.computed(node(id), property);
     }
 
+    public void testNestedDeclarationsKeepPlaceholderMatchingSpecificityAndOrder() {
+        equal("rgb(255, 0, 0)", Browser.computedPseudo(node("nested-shared"), "::placeholder", "color"));
+        equal("rgb(153, 0, 153)", Browser.computedPseudo(node("nested-global"), "::placeholder", "color"));
+        equal("0.9", css("nested-component", "opacity"));
+        equal("rgb(128, 0, 128)", Browser.computedPseudo(node("nested-component"), "::placeholder", "color"));
+        equal("rgb(0, 128, 0)", Browser.computedPseudo(node("nested-component-priority"), "::placeholder", "color"));
+    }
+
     public BrowserPromise testPackagedAssetsAtAnApplicationMountAndNestedRoute() {
         var root = _variant.isEmpty()
                 ? "/css/examples/save-button/asset_example/"
@@ -627,7 +635,7 @@ public final class CssBrowserTest {
             var owner = match[1].split("--")[0];
             groups.computeIfAbsent(owner, key -> new ArrayList<>()).add(text);
         }
-        check((_optimized ? 5 : 6) == groups.size(), "Component group count");
+        check((_optimized ? 6 : 7) == groups.size(), "Component group count");
         while (0 < Browser.childRules(layer).length) {
             layer.deleteRule(0);
         }

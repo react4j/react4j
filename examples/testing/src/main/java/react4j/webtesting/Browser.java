@@ -179,6 +179,9 @@ public final class Browser {
     public static native String computed(Element element, String property);
 
     @JsMethod
+    public static native String computedPseudo(Element element, String pseudo, String property);
+
+    @JsMethod
     public static native String inlineStyle(Element element, String property);
 
     @JsFunction
