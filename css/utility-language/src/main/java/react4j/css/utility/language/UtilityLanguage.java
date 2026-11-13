@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -18,8 +19,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
 import react4j.css.internal.CssIdentity;
@@ -32,9 +31,41 @@ import react4j.css.internal.SourceMap;
 /** Pure JVM rule preparation, checking and stateless expansion. No operation performs I/O. */
 public final class UtilityLanguage {
     private static final int VERSION = 1;
-    private static final Map<Source, Locations> LOCATIONS = new WeakHashMap<>();
 
-    private record Locations(SourceMap.Lookup lookup, Map<Integer, SourceMap.Location> values) {}
+    static final class Locations {
+        private final Source source;
+        private final SourceMap.@Nullable Lookup lookup;
+        private final int[] lines;
+
+        Locations(Source source) {
+            this.source = source;
+            lookup = source.sourceMap().isEmpty()
+                    ? null
+                    : new SourceMap.Lookup(
+                            source.text(),
+                            JsonParser.parseString(source.sourceMap()).getAsJsonObject());
+            lines = new int
+                    [1 + (int) source.text().chars().filter(c -> '\n' == c).count()];
+            int line = 1;
+            for (int i = 0; i < source.text().length(); i++) {
+                if ('\n' == source.text().charAt(i)) {
+                    lines[line++] = i + 1;
+                }
+            }
+        }
+
+        SourceMap.Location location(int offset) {
+            var mapped = null == lookup ? null : lookup.location(offset);
+            if (null != mapped) {
+                return mapped;
+            }
+            int line = Arrays.binarySearch(lines, offset);
+            if (line < 0) {
+                line = -line - 2;
+            }
+            return new SourceMap.Location(source.name(), source.text(), line, offset - lines[line]);
+        }
+    }
 
     private UtilityLanguage() {}
 
@@ -206,7 +237,7 @@ public final class UtilityLanguage {
                         var origins = new LinkedHashMap<String, Origin>();
                         entry.getValue()
                                 .offsets()
-                                .forEach((key, offset) -> origins.put(key, origin(rules.source, offset)));
+                                .forEach((key, offset) -> origins.put(key, origin(rules.locations, offset)));
                         return new TokenGroup(
                                 entry.getKey(),
                                 entry.getValue().type(),
@@ -230,13 +261,27 @@ public final class UtilityLanguage {
         private final String owner;
         private final Bindings bindings;
         private final CssUtilityBinding.Bound support;
+        private final CssUtilityBinding.Provider provider;
+        private final Set<String> anchors;
         private final String fingerprint;
 
-        private Checked(Prepared prepared, String owner, Bindings bindings, CssUtilityBinding.Bound support) {
+        private Checked(
+                Prepared prepared,
+                String owner,
+                Bindings bindings,
+                CssUtilityBinding.Provider provider,
+                CssUtilityBinding.Bound support) {
             this.prepared = prepared;
             this.owner = owner;
             this.bindings = bindings;
             this.support = support;
+            this.provider = provider;
+            var anchors = new HashSet<>(bindings.context().externalAnchors());
+            support.metadata().symbols().stream()
+                    .filter(symbol -> CssResource.SymbolKind.ANCHOR == symbol.kind())
+                    .map(CssResource.Symbol::name)
+                    .forEach(anchors::add);
+            this.anchors = Set.copyOf(anchors);
             var value = JsonParser.parseString(json()).getAsJsonObject();
             value.remove("sourceMap");
             fingerprint = digest(value.toString());
@@ -302,23 +347,24 @@ public final class UtilityLanguage {
     }
 
     public static Prepared prepare(Source source) {
+        var locations = new Locations(source);
         try {
-            var prepared = new Prepared(new RuleLibrary(source));
+            var prepared = new Prepared(new RuleLibrary(source, locations));
             validateTemplates(prepared);
             return prepared;
         } catch (RuleSyntax.Syntax e) {
             throw new Failure(new Diagnostic(
                     "U_CANDIDATE_SYNTAX".equals(e.code) ? "U_SYNTAX" : e.code,
                     String.valueOf(e.getMessage()),
-                    origin(source, Math.min(e.offset, source.text().length())),
-                    e.related.stream().map(offset -> origin(source, offset)).toList(),
+                    origin(locations, Math.min(e.offset, source.text().length())),
+                    e.related.stream().map(offset -> origin(locations, offset)).toList(),
                     Map.of()));
         } catch (CssSyntax.InvalidCss e) {
             String message = String.valueOf(e.getMessage());
             String code = message.startsWith("U_") && message.contains(":")
                     ? message.substring(0, message.indexOf(':'))
                     : "U_SYNTAX";
-            throw failure(source, code, message, e.offset());
+            throw failure(locations, code, message, e.offset());
         }
     }
 
@@ -341,23 +387,20 @@ public final class UtilityLanguage {
         try {
             RuleAnchors.check(output.css(), bindings.context().externalAnchors());
             int boundary = supportCss(prepared).length();
-            var result = CssUtilityBinding.compile(
+            var provider = CssUtilityBinding.prepare(
                     output,
-                    CssIdentity.root(owner),
-                    Set.of("probe"),
+                    owner,
                     bindings.exportedIds(),
                     bindings.exportedAnimations(),
                     probeContext(prepared, bindings.context()),
-                    true,
                     boundary);
-            var resolved = stability(
-                    CssUtilityBinding.resolve(owner, result, Map.of(), bindings.context()), bindings.stability());
+            var resolved = stability(provider.bound(), bindings.stability());
             for (var group : rules.tokens.values()) {
                 for (var token : group.values().entrySet()) {
                     try {
                         CssUtilityBinding.checkValue(token.getValue(), resolved.metadata(), bindings.context());
                     } catch (IllegalArgumentException e) {
-                        var diagnostic = bindingFailure(rules.source, e).diagnostic();
+                        var diagnostic = bindingFailure(rules.locations, e).diagnostic();
                         throw RuleLibrary.error(
                                 diagnostic.code(),
                                 diagnostic.message(),
@@ -365,7 +408,7 @@ public final class UtilityLanguage {
                     }
                 }
             }
-            var checked = new Checked(prepared, owner, bindings, resolved.project(0, resolved.boundary()));
+            var checked = new Checked(prepared, owner, bindings, provider, resolved.project(0, resolved.boundary()));
             for (var rule : rules.utilities) {
                 templateHooks(checked, substitute(rule.body(), rule.parameter(), RuleLibrary.sample(rule.type())));
                 hooks(checked, probe(rules, rule, false), "probe");
@@ -376,11 +419,11 @@ public final class UtilityLanguage {
             }
             return checked;
         } catch (RuleSyntax.Syntax e) {
-            throw failure(rules.source, e.code, String.valueOf(e.getMessage()), e.offset);
+            throw failure(rules.locations, e.code, String.valueOf(e.getMessage()), e.offset);
         } catch (CssSyntax.InvalidCss e) {
-            throw mappedFailure(rules.source, output, e);
+            throw mappedFailure(rules.locations, output, e);
         } catch (IllegalArgumentException e) {
-            throw bindingFailure(rules.source, e);
+            throw bindingFailure(rules.locations, e);
         }
     }
 
@@ -441,7 +484,7 @@ public final class UtilityLanguage {
                 problems.add(e.diagnostic());
             } catch (RuleSyntax.Syntax e) {
                 var related = origin(
-                        checked.prepared.source(),
+                        checked.prepared.rules.locations,
                         Math.min(e.offset, checked.prepared.source().text().length()));
                 problems.add(new Diagnostic(
                         e.code,
@@ -607,29 +650,17 @@ public final class UtilityLanguage {
             }
         }
         String className = CssIdentity.root(checked.owner) + "--class-" + CssIdentity.encode(candidate);
-        var writer = bindingOutput(checked.prepared);
-        int boundary = writer.css().length();
+        var writer = new SourceMap.Writer();
         render(rules, body, "." + className, writer);
-        hooks(checked, writer.css().substring(boundary), className);
+        hooks(checked, writer.css(), className);
         CssUtilityBinding.Bound fragment;
         try {
-            RuleAnchors.check(writer.css(), checked.bindings.context().externalAnchors());
-            var compiled = CssUtilityBinding.compile(
-                    writer,
-                    CssIdentity.root(checked.owner),
-                    Set.of("probe", className),
-                    checked.bindings.exportedIds(),
-                    checked.bindings.exportedAnimations(),
-                    probeContext(checked.prepared, checked.bindings.context()),
-                    true,
-                    boundary);
+            RuleAnchors.check(writer.css(), checked.anchors);
             var resolved = stability(
-                    CssUtilityBinding.resolve(
-                            checked.owner, compiled, Map.of(candidate, className), checked.bindings.context()),
-                    checked.bindings.stability());
-            fragment = resolved.project(resolved.boundary(), resolved.css().length());
+                    checked.provider.bind(writer, Map.of(candidate, className)), checked.bindings.stability());
+            fragment = resolved.project(0, resolved.css().length());
         } catch (IllegalArgumentException e) {
-            var failure = bindingFailure(rules.source, e);
+            var failure = bindingFailure(rules.locations, e);
             throw candidateFailure(
                     checked,
                     candidate,
@@ -708,7 +739,7 @@ public final class UtilityLanguage {
                             .map(argument -> argument.kind() + "(" + argument.name() + ")")
                             .collect(Collectors.joining(" | ")));
             facts.put("interval", rule.interval());
-            related.add(origin(checked.prepared.source(), rule.offset()));
+            related.add(origin(checked.prepared.rules.locations, rule.offset()));
             first += rule.prefix().length();
             String payload = part.text().substring(rule.prefix().length());
             if (payload.startsWith("[") && payload.endsWith("]")) {
@@ -788,7 +819,7 @@ public final class UtilityLanguage {
         }
         String[] parts = match.source().split(":");
         return List.of(origin(
-                rules.source,
+                rules.locations,
                 Objects.requireNonNull(Objects.requireNonNull(rules.tokens.get(parts[1]))
                         .offsets()
                         .get(parts[2]))));
@@ -849,7 +880,7 @@ public final class UtilityLanguage {
                 match.rule().name(),
                 match.source(),
                 match.value(),
-                origin(rules.source, match.rule().offset()),
+                origin(rules.locations, match.rule().offset()),
                 tokenOrigins(rules, match),
                 RuleBounds.check(match.rule().type(), match.rule().interval(), match.value()));
     }
@@ -881,7 +912,7 @@ public final class UtilityLanguage {
         int index = 0;
         while (index < nodes.size()) {
             var node = nodes.get(index);
-            var location = location(rules.source, node.offset());
+            var location = rules.locations.location(node.offset());
             if (node.block()) {
                 if (node.head().startsWith("@")) {
                     writer.append(node.head() + " {\n", location);
@@ -895,7 +926,7 @@ public final class UtilityLanguage {
                 writer.append(selector + " {\n", location);
                 do {
                     var declaration = nodes.get(index++);
-                    writer.append(declaration.head() + ";\n", location(rules.source, declaration.offset()));
+                    writer.append(declaration.head() + ";\n", rules.locations.location(declaration.offset()));
                 } while (index < nodes.size() && !nodes.get(index).block());
                 writer.append("}\n", location);
             }
@@ -904,10 +935,10 @@ public final class UtilityLanguage {
 
     private static void raw(RuleLibrary rules, List<RuleSyntax.Node> nodes, SourceMap.Writer writer) {
         for (var node : nodes) {
-            writer.append(node.head() + (node.block() ? " {\n" : ";\n"), location(rules.source, node.offset()));
+            writer.append(node.head() + (node.block() ? " {\n" : ";\n"), rules.locations.location(node.offset()));
             if (node.block()) {
                 raw(rules, node.children(), writer);
-                writer.append("}\n", location(rules.source, node.offset()));
+                writer.append("}\n", rules.locations.location(node.offset()));
             }
         }
     }
@@ -917,7 +948,7 @@ public final class UtilityLanguage {
         try {
             RuleAnchors.check(writer.css(), Set.of());
         } catch (CssSyntax.InvalidCss e) {
-            throw mappedFailure(prepared.source(), writer, e);
+            throw mappedFailure(prepared.rules.locations, writer, e);
         }
     }
 
@@ -961,7 +992,7 @@ public final class UtilityLanguage {
                                 .toList(),
                         rule.interval(),
                         template(rules, rule),
-                        origin(rules.source, rule.offset())))
+                        origin(rules.locations, rule.offset())))
                 .toList();
     }
 
@@ -994,12 +1025,12 @@ public final class UtilityLanguage {
                 value.get("sourceMap").getAsString());
     }
 
-    private static Failure mappedFailure(Source source, SourceMap.Writer writer, CssSyntax.InvalidCss error) {
+    private static Failure mappedFailure(Locations locations, SourceMap.Writer writer, CssSyntax.InvalidCss error) {
         var location = SourceMap.location(
                 writer.css(),
                 JsonParser.parseString(writer.map("utility.css")).getAsJsonObject(),
                 Math.min(writer.css().length(), error.offset()));
-        var failure = bindingFailure(source, error);
+        var failure = bindingFailure(locations, error);
         if (null == location) {
             return failure;
         }
@@ -1017,7 +1048,7 @@ public final class UtilityLanguage {
                 Map.of()));
     }
 
-    private static Failure bindingFailure(Source source, IllegalArgumentException error) {
+    private static Failure bindingFailure(Locations locations, IllegalArgumentException error) {
         String message = String.valueOf(error.getMessage());
         String code = message.startsWith("U_") && message.contains(":")
                 ? message.substring(0, message.indexOf(':'))
@@ -1027,7 +1058,7 @@ public final class UtilityLanguage {
         if (message.startsWith(code + ":")) {
             message = message.substring(code.length() + 1).stripLeading();
         }
-        return failure(source, code, message, 0);
+        return failure(locations, code, message, 0);
     }
 
     private static JsonObject descriptor(String json, String kind) {
@@ -1119,17 +1150,23 @@ public final class UtilityLanguage {
         }
     }
 
-    private static Failure failure(Source source, String code, String message, int offset) {
+    private static Failure failure(Locations locations, String code, String message, int offset) {
         return new Failure(new Diagnostic(
                 code,
                 message,
-                origin(source, Math.max(0, Math.min(offset, source.text().length()))),
+                origin(
+                        locations,
+                        Math.max(0, Math.min(offset, locations.source.text().length()))),
                 List.of(),
                 Map.of()));
     }
 
     private static Origin origin(Source source, int offset) {
-        var location = location(source, offset);
+        return origin(new Locations(source), offset);
+    }
+
+    private static Origin origin(Locations locations, int offset) {
+        var location = locations.location(offset);
         return new Origin(
                 location.source(),
                 originalOffset(location),
@@ -1145,37 +1182,5 @@ public final class UtilityLanguage {
             start = next < 0 ? location.content().length() : next + 1;
         }
         return Math.min(location.content().length(), start + location.column());
-    }
-
-    private static SourceMap.Location location(Source source, int offset) {
-        if (source.sourceMap().isEmpty()) {
-            return unmappedLocation(source, offset);
-        }
-        final Locations locations;
-        synchronized (LOCATIONS) {
-            locations = LOCATIONS.computeIfAbsent(
-                    source,
-                    key -> new Locations(
-                            new SourceMap.Lookup(
-                                    key.text(),
-                                    JsonParser.parseString(key.sourceMap()).getAsJsonObject()),
-                            new ConcurrentHashMap<>()));
-        }
-        return locations.values().computeIfAbsent(offset, key -> {
-            var location = locations.lookup().location(key);
-            return null != location ? location : unmappedLocation(source, key);
-        });
-    }
-
-    private static SourceMap.Location unmappedLocation(Source source, int offset) {
-        int line = 0;
-        int start = 0;
-        for (int i = 0; i < offset; i++) {
-            if ('\n' == source.text().charAt(i)) {
-                line++;
-                start = i + 1;
-            }
-        }
-        return new SourceMap.Location(source.name(), source.text(), line, offset - start);
     }
 }

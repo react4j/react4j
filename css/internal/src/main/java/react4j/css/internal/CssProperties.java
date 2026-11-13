@@ -55,6 +55,20 @@ public final class CssProperties {
 
     public static Set<String> rewrite(
             CascadingStyleSheet sheet, CssSyntax syntax, UnaryOperator<String> resolve, boolean modern) {
+        return visit(sheet, syntax, resolve, modern, true);
+    }
+
+    static Set<String> analyze(
+            CascadingStyleSheet sheet, CssSyntax syntax, UnaryOperator<String> resolve, boolean modern) {
+        return visit(sheet, syntax, resolve, modern, false);
+    }
+
+    private static Set<String> visit(
+            CascadingStyleSheet sheet,
+            CssSyntax syntax,
+            UnaryOperator<String> resolve,
+            boolean modern,
+            boolean rewrite) {
         var names = new LinkedHashSet<String>();
         BiFunction<String, ICSSSourceLocationAware, String> property = (token, declaration) -> {
             String name = (modern ? CSSParseHelper.unescapeURL(token) : token).substring(2);
@@ -93,7 +107,10 @@ public final class CssProperties {
                                         "var() requires an unquoted custom property name and optional fallback",
                                         declaration);
                             }
-                            first.setValue(property.apply(first.getValue(), declaration));
+                            String value = property.apply(first.getValue(), declaration);
+                            if (rewrite) {
+                                first.setValue(value);
+                            }
                         }
                     }
                 });
@@ -103,10 +120,16 @@ public final class CssProperties {
             public void onDeclaration(CSSDeclaration declaration) {
                 if ((modern ? CSSParseHelper.unescapeURL(declaration.getProperty()) : declaration.getProperty())
                         .startsWith("--")) {
-                    declaration.setProperty(property.apply(declaration.getProperty(), declaration));
+                    String value = property.apply(declaration.getProperty(), declaration);
+                    if (rewrite) {
+                        declaration.setProperty(value);
+                    }
                 }
                 for (var target : CssPropertyValues.names(declaration)) {
-                    target.setValue(property.apply(target.getValue(), declaration));
+                    String value = property.apply(target.getValue(), declaration);
+                    if (rewrite) {
+                        target.setValue(value);
+                    }
                 }
                 expression(declaration.getExpression(), declaration);
             }
@@ -133,7 +156,9 @@ public final class CssProperties {
                     }
                 }
                 String text = parameters.toString().strip();
-                rule.setParameterList(text.isEmpty() ? null : text);
+                if (rewrite) {
+                    rule.setParameterList(text.isEmpty() ? null : text);
+                }
             }
 
             @Override

@@ -264,6 +264,73 @@ public final class AuthoringFeedbackTest {
     }
 
     @Test(timeOut = 30_000)
+    public void candidateAssignmentsCheckUnrequestedConsumersWithoutChangingTheProvider() throws Exception {
+        String animation = "@keyframes pulse {to{opacity:1;}} @utility run {animation-name:var(--value);}";
+        String font =
+                "@font-face {font-family:Widget;src:local('Widget');}" + " @utility use {font-family:var(--value);}";
+        String data = "@utility data {content:var(--value);}";
+        var definitions = List.of(
+                animation,
+                animation + data,
+                font,
+                font + data,
+                font + "@property --value {syntax:\"Widget | <string>\";inherits:false;}");
+        var failures = List.of(
+                List.of("", "Unknown animation: Widget", "Unknown animation: other"),
+                List.of("Ambiguous managed name", "Unknown animation: Widget", "Unknown animation: other"),
+                List.of("", "", ""),
+                List.of("", "Ambiguous managed name", ""),
+                List.of("", "A registered name carrier cannot constrain a managed name", ""));
+        var requests = List.of("set-['pulse']", "set-['Widget']", "set-['other']");
+        for (int definition = 0; definition < definitions.size(); definition++) {
+            var library = UtilityLanguage.bind(
+                    UtilityLanguage.prepare(new UtilityLanguage.Source(
+                            "carriers.css",
+                            "@utility-rules;"
+                                    + definitions.get(definition)
+                                    + "@utility \"set-{v}\" (v:arbitrary(<string>)) {--value:param(v);}")),
+                    "demo.Carriers",
+                    new UtilityLanguage.Bindings(Set.of()));
+            String descriptor = library.json();
+            var expected = new ArrayList<UtilityLanguage.Batch>();
+            for (int request = 0; request < requests.size(); request++) {
+                var batch = UtilityLanguage.expand(library, List.of(requests.get(request)));
+                String failure = failures.get(definition).get(request);
+                if (failure.isEmpty()) {
+                    assertEquals(batch.diagnostics(), List.of());
+                    String value = 0 == definition
+                            ? "jcss-demo-Carriers--keyframes-pulse"
+                            : 2 == definition && 1 == request
+                                    ? "jcss-demo-Carriers--font-widget"
+                                    : List.of("pulse", "Widget", "other").get(request);
+                    assertTrue(batch.expansions().get(0).css().contains("--jcss-demo-Carriers--value:'" + value + "'"));
+                } else {
+                    assertEquals(batch.expansions(), List.of());
+                    assertEquals(batch.diagnostics().get(0).code(), "U_BINDING");
+                    assertTrue(batch.diagnostics().get(0).message().startsWith(failure));
+                }
+                expected.add(batch);
+            }
+            var tasks = new ArrayList<Callable<UtilityLanguage.Batch>>();
+            var startTogether = new CyclicBarrier(4);
+            for (int i = 0; i < 24; i++) {
+                String candidate = requests.get(i % requests.size());
+                tasks.add(() -> {
+                    startTogether.await();
+                    return UtilityLanguage.expand(library, List.of(candidate));
+                });
+            }
+            try (var executor = Executors.newFixedThreadPool(4)) {
+                var results = executor.invokeAll(tasks);
+                for (int i = 0; i < results.size(); i++) {
+                    assertEquals(results.get(i).get(), expected.get(i % requests.size()));
+                }
+            }
+            assertEquals(library.json(), descriptor);
+        }
+    }
+
+    @Test(timeOut = 30_000)
     public void mappedSourcesWithTheSameNameKeepIndependentConcurrentLocations() throws Exception {
         String text = RULES + "@utility bad {padding:anchor(left);}";
         var sources = new ArrayList<UtilityLanguage.Source>();

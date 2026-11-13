@@ -52,14 +52,16 @@ final class RuleLibrary {
     record Match(Rule rule, String value, String source) {}
 
     final UtilityLanguage.Source source;
+    final UtilityLanguage.Locations locations;
     final Map<String, String> scales = new LinkedHashMap<>();
     final Map<String, Tokens> tokens = new LinkedHashMap<>();
     final List<Rule> utilities = new ArrayList<>();
     final List<Rule> variants = new ArrayList<>();
     final List<RuleSyntax.Node> support = new ArrayList<>();
 
-    RuleLibrary(UtilityLanguage.Source source) {
+    RuleLibrary(UtilityLanguage.Source source, UtilityLanguage.Locations locations) {
         this.source = source;
+        this.locations = locations;
         var nodes = RuleSyntax.nodes(source.text());
         if (nodes.isEmpty()
                 || nodes.get(0).block()

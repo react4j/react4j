@@ -11,6 +11,18 @@ import org.testng.annotations.Test;
 
 public final class SourceMapTest {
     @Test
+    public void decodedLookupsUseTheLastAnchorAtAnOffset() {
+        var map = JsonParser.parseString("""
+            {"sources":["input.css"],"sourcesContent":["abc"],"mappings":"AAAA,AAAC,C,CAAD"}
+            """).getAsJsonObject();
+        var lookup = new SourceMap.Lookup("abc", map);
+        assertEquals(lookup.location(0), new SourceMap.Location("input.css", "abc", 0, 1));
+        assertNull(lookup.location(1));
+        assertEquals(lookup.location(2), new SourceMap.Location("input.css", "abc", 0, 0));
+        assertEquals(lookup.location(3), lookup.location(2));
+    }
+
+    @Test
     public void decodedLookupsKeepMappedUnmappedAndTerminalAnchors() {
         var first = new SourceMap.Location("A.java", "first", 2, 3);
         var second = new SourceMap.Location("B.java", "second", 0, 1);

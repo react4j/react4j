@@ -71,6 +71,20 @@ public final class CssIds {
 
     public static Map<String, String> rewrite(
             CascadingStyleSheet sheet, CssSyntax syntax, Map<String, String> bindings, boolean global) {
+        return visit(sheet, syntax, bindings, global, true);
+    }
+
+    static Map<String, String> analyze(
+            CascadingStyleSheet sheet, CssSyntax syntax, Map<String, String> bindings, boolean global) {
+        return visit(sheet, syntax, bindings, global, false);
+    }
+
+    private static Map<String, String> visit(
+            CascadingStyleSheet sheet,
+            CssSyntax syntax,
+            Map<String, String> bindings,
+            boolean global,
+            boolean rewrite) {
         var found = new LinkedHashMap<String, String>();
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
             private String resolve(String name) {
@@ -96,7 +110,10 @@ public final class CssIds {
             public void onDeclaration(CSSDeclaration declaration) {
                 CssExpressions.visit(declaration.getExpression(), member -> {
                     if (member instanceof CSSExpressionMemberTermURI uri) {
-                        uri.setURIString(fragment(uri.getURIString(), declaration));
+                        String value = fragment(uri.getURIString(), declaration);
+                        if (rewrite) {
+                            uri.setURIString(value);
+                        }
                     } else if (member instanceof CSSExpressionMemberFunction function
                             && "url".equalsIgnoreCase(CSSParseHelper.unescapeURL(function.getFunctionName()))) {
                         var expression = function.getExpression();
@@ -108,7 +125,7 @@ public final class CssIds {
                             String value = CSSParseHelper.unescapeURL(
                                     quoted ? Objects.requireNonNull(CSSParseHelper.extractStringValue(raw)) : raw);
                             String resolved = fragment(value, declaration);
-                            if (!resolved.equals(value)) {
+                            if (rewrite && !resolved.equals(value)) {
                                 first.setValue(quoted ? raw.charAt(0) + resolved + raw.charAt(0) : resolved);
                             }
                         }

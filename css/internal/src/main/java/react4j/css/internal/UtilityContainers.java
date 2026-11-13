@@ -21,8 +21,9 @@ final class UtilityContainers {
             CssSyntax syntax,
             String root,
             Set<String> external,
-            boolean allowUnused) {
-        var names = new LinkedHashMap<String, String>();
+            boolean allowUnused,
+            Map<String, String> known) {
+        var names = new LinkedHashMap<String, String>(known);
         var seen = new HashSet<String>();
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
             @Override

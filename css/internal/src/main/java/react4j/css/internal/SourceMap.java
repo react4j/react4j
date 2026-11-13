@@ -42,7 +42,17 @@ public final class SourceMap {
             if (offset < 0 || offset > length) {
                 throw new IllegalArgumentException("CSS offset is outside the source");
             }
-            return SourceMap.location(mappings, offset);
+            int low = 0;
+            int high = mappings.size();
+            while (low < high) {
+                int middle = (low + high) >>> 1;
+                if (mappings.get(middle).offset() <= offset) {
+                    low = middle + 1;
+                } else {
+                    high = middle;
+                }
+            }
+            return 0 == low ? null : mappings.get(low - 1).location();
         }
     }
 

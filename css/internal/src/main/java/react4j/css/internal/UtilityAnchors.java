@@ -14,9 +14,10 @@ import java.util.Set;
 final class UtilityAnchors {
     private UtilityAnchors() {}
 
-    static Map<String, String> names(CascadingStyleSheet sheet, CssSyntax syntax, String root, Set<String> external) {
+    static Map<String, String> names(
+            CascadingStyleSheet sheet, CssSyntax syntax, String root, Set<String> external, Map<String, String> known) {
         external.forEach(CssAnchors::checkName);
-        var names = new LinkedHashMap<String, String>();
+        var names = new LinkedHashMap<String, String>(known);
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
             @Override
             public void onDeclaration(CSSDeclaration declaration) {

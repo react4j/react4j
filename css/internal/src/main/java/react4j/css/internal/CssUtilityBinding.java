@@ -14,9 +14,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import org.jspecify.annotations.Nullable;
 
 /** Annotation-free binding of utility CSS to a defining owner and explicit browser hooks. */
 public final class CssUtilityBinding {
@@ -100,6 +102,77 @@ public final class CssUtilityBinding {
         }
     }
 
+    private record Compilation(Result result, UtilityNames.@Nullable Prepared names, Set<String> ownedProperties) {}
+
+    /** Checked provider context; requests never modify its syntax, names or variable definitions. */
+    public static final class Provider {
+        private final String owner;
+        private final Context context;
+        private final Set<String> exportedIds;
+        private final Set<String> exportedAnimations;
+        private final Result result;
+        private final UtilityNames.Prepared names;
+        private final Set<String> ownedProperties;
+        private final Bound bound;
+
+        private Provider(
+                String owner,
+                Context context,
+                Set<String> exportedIds,
+                Set<String> exportedAnimations,
+                Compilation compilation) {
+            this.owner = owner;
+            this.context = context;
+            this.exportedIds = Set.copyOf(exportedIds);
+            this.exportedAnimations = Set.copyOf(exportedAnimations);
+            result = compilation.result();
+            names = Objects.requireNonNull(compilation.names());
+            ownedProperties = compilation.ownedProperties();
+            bound = resolve(owner, result, Map.of(), context);
+        }
+
+        public Bound bound() {
+            return bound;
+        }
+
+        public Bound bind(SourceMap.Writer input, Map<String, String> classes) {
+            var managed = new LinkedHashSet<>(classes.values());
+            managed.add("probe");
+            var compiled = compile(
+                            input,
+                            CssIdentity.root(owner),
+                            managed,
+                            exportedIds,
+                            exportedAnimations,
+                            context,
+                            true,
+                            0,
+                            this)
+                    .result();
+            return resolve(owner, compiled, classes, context);
+        }
+    }
+
+    public static Provider prepare(
+            SourceMap.Writer input,
+            String owner,
+            Set<String> exportedIds,
+            Set<String> exportedAnimations,
+            Context context,
+            int boundary) {
+        var compiled = compile(
+                input,
+                CssIdentity.root(owner),
+                Set.of("probe"),
+                exportedIds,
+                exportedAnimations,
+                context,
+                true,
+                boundary,
+                null);
+        return new Provider(owner, context, exportedIds, exportedAnimations, compiled);
+    }
+
     public static Result compile(
             SourceMap.Writer input,
             String root,
@@ -109,31 +182,62 @@ public final class CssUtilityBinding {
             Context context,
             boolean nativeRules,
             int boundary) {
+        return compile(input, root, managed, exportedIds, exportedAnimations, context, nativeRules, boundary, null)
+                .result();
+    }
+
+    private static Compilation compile(
+            SourceMap.Writer input,
+            String root,
+            Set<String> managed,
+            Set<String> exportedIds,
+            Set<String> exportedAnimations,
+            Context context,
+            boolean nativeRules,
+            int boundary,
+            @Nullable Provider provider) {
         String css = input.css();
         var syntax = new CssSyntax(css, 0);
         var sheet = syntax.parse(CssSyntax.Mode.UTILITY);
         UtilitySelectors.check(sheet, syntax, managed);
-        var containers = UtilityContainers.names(css, sheet, syntax, root, context.externalContainers(), nativeRules);
-        var anchors = nativeRules
-                ? UtilityAnchors.names(sheet, syntax, root, context.externalAnchors())
-                : Map.<String, String>of();
-        var names = UtilityNames.analyze(
+        var containers = UtilityContainers.names(
                 css,
                 sheet,
                 syntax,
                 root,
-                context.externalAnimations(),
-                context.externalFonts(),
-                exportedAnimations,
-                context.imports(),
-                context.fonts(),
-                nativeRules);
+                context.externalContainers(),
+                nativeRules,
+                null == provider ? Map.of() : provider.result.containers());
+        var anchors = nativeRules
+                ? UtilityAnchors.names(
+                        sheet,
+                        syntax,
+                        root,
+                        context.externalAnchors(),
+                        null == provider ? Map.of() : provider.result.anchors())
+                : Map.<String, String>of();
+        var preparedNames = null == provider
+                ? UtilityNames.prepare(
+                        css,
+                        sheet,
+                        syntax,
+                        root,
+                        context.externalAnimations(),
+                        context.externalFonts(),
+                        exportedAnimations,
+                        context.imports(),
+                        context.fonts(),
+                        nativeRules)
+                : null;
+        var names = null == provider
+                ? Objects.requireNonNull(preparedNames).result()
+                : UtilityNames.analyze(css, sheet, syntax, provider.names);
         if (context.externalProperties().stream().anyMatch(context.properties()::containsKey)) {
             throw new IllegalArgumentException("An external custom property cannot also be imported");
         }
         List<CssTokens.Token> tokens = List.of();
+        var owned = new LinkedHashSet<String>(null == provider ? Set.of() : provider.ownedProperties);
         if (nativeRules) {
-            var owned = new LinkedHashSet<String>();
             CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
                 @Override
                 public void onDeclaration(CSSDeclaration declaration) {
@@ -162,9 +266,9 @@ public final class CssUtilityBinding {
                 }
             }
         }
-        var properties = new LinkedHashMap<String, String>();
-        var usedProperties = new LinkedHashSet<String>();
-        CssProperties.rewrite(
+        var properties = new LinkedHashMap<String, String>(null == provider ? Map.of() : provider.result.properties());
+        var usedProperties = new LinkedHashSet<String>(null == provider ? Set.of() : provider.result.propertyImports());
+        CssProperties.analyze(
                 sheet,
                 syntax,
                 name -> {
@@ -182,7 +286,8 @@ public final class CssUtilityBinding {
         var idBindings = new LinkedHashMap<String, String>();
         exportedIds.forEach(name -> idBindings.put(name, root + "--id-" + CssIdentity.encode(name)));
         context.ids().keySet().forEach(name -> idBindings.put(name, root + "--id-" + CssIdentity.encode(name)));
-        var ids = CssIds.rewrite(sheet, syntax, idBindings, true);
+        var ids = new LinkedHashMap<String, String>(null == provider ? Map.of() : provider.result.ids());
+        ids.putAll(CssIds.analyze(sheet, syntax, idBindings, true));
         var edits = new ArrayList<SourceMap.Edit>();
         for (var token : nativeRules ? tokens : CssTokens.read(css)) {
             String replacement = CssResource.SymbolKind.PROPERTY == token.kind()
@@ -221,19 +326,22 @@ public final class CssUtilityBinding {
                 ? input
                 : SourceMap.replace(
                         css, JsonParser.parseString(input.map("utility.css")).getAsJsonObject(), edits);
-        return new Result(
-                output,
-                names.imports(),
-                Map.copyOf(properties),
-                Set.copyOf(usedProperties),
-                ids,
-                names.animations(),
-                names.fonts(),
-                containers,
-                anchors,
-                List.copyOf(nameTokens),
-                names.dynamicFonts(),
-                boundary + delta(edits, boundary));
+        return new Compilation(
+                new Result(
+                        output,
+                        names.imports(),
+                        Map.copyOf(properties),
+                        Set.copyOf(usedProperties),
+                        ids,
+                        names.animations(),
+                        names.fonts(),
+                        containers,
+                        anchors,
+                        List.copyOf(nameTokens),
+                        names.dynamicFonts(),
+                        boundary + delta(edits, boundary)),
+                preparedNames,
+                Set.copyOf(owned));
     }
 
     /** Checks references in a token even when no template instantiates that token. */
