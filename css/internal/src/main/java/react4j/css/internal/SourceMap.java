@@ -42,17 +42,7 @@ public final class SourceMap {
             if (offset < 0 || offset > length) {
                 throw new IllegalArgumentException("CSS offset is outside the source");
             }
-            int low = 0;
-            int high = mappings.size();
-            while (low < high) {
-                int middle = (low + high) >>> 1;
-                if (mappings.get(middle).offset() <= offset) {
-                    low = middle + 1;
-                } else {
-                    high = middle;
-                }
-            }
-            return 0 == low ? null : mappings.get(low - 1).location();
+            return SourceMap.location(mappings, offset);
         }
     }
 
@@ -73,14 +63,7 @@ public final class SourceMap {
                 throw new IllegalArgumentException("CSS edits must be ordered and within the source");
             }
             copy(css, mappings, new Span(offset, edit.start()), writer);
-            Location origin = null;
-            for (var mapping : mappings) {
-                if (mapping.offset() > edit.start()) {
-                    break;
-                }
-                origin = mapping.location();
-            }
-            writer.append(edit.value(), origin);
+            writer.append(edit.value(), location(mappings, edit.start()));
             offset = edit.end();
         }
         copy(css, mappings, new Span(offset, css.length()), writer);
@@ -96,14 +79,17 @@ public final class SourceMap {
     }
 
     private static @Nullable Location location(List<Mapping> mappings, int offset) {
-        Location result = null;
-        for (var mapping : mappings) {
-            if (mapping.offset() > offset) {
-                break;
+        int low = 0;
+        int high = mappings.size();
+        while (low < high) {
+            int middle = (low + high) >>> 1;
+            if (mappings.get(middle).offset() <= offset) {
+                low = middle + 1;
+            } else {
+                high = middle;
             }
-            result = mapping.location();
         }
-        return result;
+        return 0 == low ? null : mappings.get(low - 1).location();
     }
 
     /** Publishes an intermediate source's authoritative map for independently produced fragments. */

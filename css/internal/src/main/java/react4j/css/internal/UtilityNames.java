@@ -54,16 +54,14 @@ final class UtilityNames {
     static final class Prepared {
         private final UtilityNames names;
         private final CascadingStyleSheet sheet;
-        private final Result result;
 
         private Prepared(UtilityNames names, CascadingStyleSheet sheet) {
             this.names = names;
             this.sheet = sheet;
-            result = names.result();
         }
 
         Result result() {
-            return result;
+            return names.result();
         }
     }
 

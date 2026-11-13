@@ -37,24 +37,23 @@ public final class UtilityLanguage {
         private final SourceMap.@Nullable Lookup lookup;
         private final int[] lines;
 
-        Locations(Source source) {
+        private Locations(Source source) {
             this.source = source;
+            String text = source.text();
             lookup = source.sourceMap().isEmpty()
                     ? null
                     : new SourceMap.Lookup(
-                            source.text(),
-                            JsonParser.parseString(source.sourceMap()).getAsJsonObject());
-            lines = new int
-                    [1 + (int) source.text().chars().filter(c -> '\n' == c).count()];
+                            text, JsonParser.parseString(source.sourceMap()).getAsJsonObject());
+            lines = new int[1 + (int) text.chars().filter(c -> '\n' == c).count()];
             int line = 1;
-            for (int i = 0; i < source.text().length(); i++) {
-                if ('\n' == source.text().charAt(i)) {
+            for (int i = 0; i < text.length(); i++) {
+                if ('\n' == text.charAt(i)) {
                     lines[line++] = i + 1;
                 }
             }
         }
 
-        SourceMap.Location location(int offset) {
+        private SourceMap.Location location(int offset) {
             var mapped = null == lookup ? null : lookup.location(offset);
             if (null != mapped) {
                 return mapped;
@@ -1167,10 +1166,11 @@ public final class UtilityLanguage {
 
     private static Origin origin(Locations locations, int offset) {
         var location = locations.location(offset);
+        int start = originalOffset(location);
         return new Origin(
                 location.source(),
-                originalOffset(location),
-                Math.min(originalOffset(location) + 1, location.content().length()),
+                start,
+                Math.min(start + 1, location.content().length()),
                 location.line(),
                 location.column());
     }

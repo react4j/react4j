@@ -109,22 +109,15 @@ public final class CssUtilityBinding {
         private final String owner;
         private final Context context;
         private final Set<String> exportedIds;
-        private final Set<String> exportedAnimations;
         private final Result result;
         private final UtilityNames.Prepared names;
         private final Set<String> ownedProperties;
         private final Bound bound;
 
-        private Provider(
-                String owner,
-                Context context,
-                Set<String> exportedIds,
-                Set<String> exportedAnimations,
-                Compilation compilation) {
+        private Provider(String owner, Context context, Set<String> exportedIds, Compilation compilation) {
             this.owner = owner;
             this.context = context;
             this.exportedIds = Set.copyOf(exportedIds);
-            this.exportedAnimations = Set.copyOf(exportedAnimations);
             result = compilation.result();
             names = Objects.requireNonNull(compilation.names());
             ownedProperties = compilation.ownedProperties();
@@ -139,15 +132,7 @@ public final class CssUtilityBinding {
             var managed = new LinkedHashSet<>(classes.values());
             managed.add("probe");
             var compiled = compile(
-                            input,
-                            CssIdentity.root(owner),
-                            managed,
-                            exportedIds,
-                            exportedAnimations,
-                            context,
-                            true,
-                            0,
-                            this)
+                            input, CssIdentity.root(owner), managed, exportedIds, Set.of(), context, true, 0, this)
                     .result();
             return resolve(owner, compiled, classes, context);
         }
@@ -170,7 +155,7 @@ public final class CssUtilityBinding {
                 true,
                 boundary,
                 null);
-        return new Provider(owner, context, exportedIds, exportedAnimations, compiled);
+        return new Provider(owner, context, exportedIds, compiled);
     }
 
     public static Result compile(
