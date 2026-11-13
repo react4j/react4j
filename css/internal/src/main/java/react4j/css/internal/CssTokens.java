@@ -21,6 +21,7 @@ import com.helger.css.decl.CSSSelectorMemberSlotted;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CSSSupportsRule;
 import com.helger.css.decl.CSSUnknownRule;
+import com.helger.css.decl.CascadingStyleSheet;
 import com.helger.css.decl.ECSSAttributeCase;
 import com.helger.css.decl.ECSSAttributeOperator;
 import com.helger.css.decl.visit.CSSVisitor;
@@ -153,10 +154,13 @@ public final class CssTokens {
     }
 
     static Parsed parse(String css) {
+        var syntax = new CssSyntax(css, 0);
+        return parse(css, syntax, syntax.parse(CssSyntax.Mode.PROCESSED));
+    }
+
+    static Parsed parse(String css, CssSyntax syntax, CascadingStyleSheet sheet) {
         var attributes = new ArrayList<Attribute>();
         var tokens = new ArrayList<Token>();
-        var syntax = new CssSyntax(css, 0);
-        var sheet = syntax.parse(CssSyntax.Mode.PROCESSED);
         CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
             private int start(ICSSSourceLocationAware node) {
                 var location = Objects.requireNonNull(node.getSourceLocation());

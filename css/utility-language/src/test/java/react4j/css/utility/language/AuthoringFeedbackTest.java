@@ -229,6 +229,41 @@ public final class AuthoringFeedbackTest {
     }
 
     @Test(timeOut = 30_000)
+    public void checkedProvidersKeepIndependentConcurrentExpansions() throws Exception {
+        var libraries = List.of(
+                checked(),
+                UtilityLanguage.bind(
+                        UtilityLanguage.prepare(
+                                new UtilityLanguage.Source("rules.css", RULES.replace(".25rem", ".5rem"))),
+                        "demo.Rules",
+                        new UtilityLanguage.Bindings(Set.of())));
+        var requests = List.of(List.of("pad-4", "hover:flex", "missing"), List.of("pad-2", "pad-[1s]"));
+        var expected = libraries.stream()
+                .map(library -> requests.stream()
+                        .map(candidates -> UtilityLanguage.expand(library, candidates))
+                        .toList())
+                .toList();
+        var descriptors = libraries.stream().map(UtilityLanguage.Checked::json).toList();
+        var tasks = new ArrayList<Callable<UtilityLanguage.Batch>>();
+        var startTogether = new CyclicBarrier(4);
+        for (int i = 0; i < 16; i++) {
+            var library = libraries.get(i % 2);
+            var candidates = requests.get(i / 2 % 2);
+            tasks.add(() -> {
+                startTogether.await();
+                return UtilityLanguage.expand(library, candidates);
+            });
+        }
+        try (var executor = Executors.newFixedThreadPool(4)) {
+            var results = executor.invokeAll(tasks);
+            for (int i = 0; i < results.size(); i++) {
+                assertEquals(results.get(i).get(), expected.get(i % 2).get(i / 2 % 2));
+            }
+        }
+        assertEquals(libraries.stream().map(UtilityLanguage.Checked::json).toList(), descriptors);
+    }
+
+    @Test(timeOut = 30_000)
     public void mappedSourcesWithTheSameNameKeepIndependentConcurrentLocations() throws Exception {
         String text = RULES + "@utility bad {padding:anchor(left);}";
         var sources = new ArrayList<UtilityLanguage.Source>();

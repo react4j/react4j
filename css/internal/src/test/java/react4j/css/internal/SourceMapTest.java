@@ -11,6 +11,31 @@ import org.testng.annotations.Test;
 
 public final class SourceMapTest {
     @Test
+    public void decodedLookupsKeepMappedUnmappedAndTerminalAnchors() {
+        var first = new SourceMap.Location("A.java", "first", 2, 3);
+        var second = new SourceMap.Location("B.java", "second", 0, 1);
+        var writer = new SourceMap.Writer()
+                .append(" ")
+                .append("😀\r\n", first)
+                .append("x", second)
+                .append(" ");
+        var map = JsonParser.parseString(writer.map("input.css")).getAsJsonObject();
+        var lookup = new SourceMap.Lookup(writer.css(), map);
+        map.addProperty("mappings", "");
+        assertNull(lookup.location(0));
+        assertEquals(lookup.location(1), first);
+        assertEquals(lookup.location(2), first);
+        assertEquals(lookup.location(5), second);
+        assertNull(lookup.location(6));
+        assertNull(lookup.location(writer.css().length()));
+        expectThrows(IllegalArgumentException.class, () -> lookup.location(-1));
+        expectThrows(
+                IllegalArgumentException.class,
+                () -> lookup.location(writer.css().length() + 1));
+        assertNull(new SourceMap.Lookup("", map).location(0));
+    }
+
+    @Test
     public void closureReadsUtf16ColumnsUnmappedSpansAndSignedDeltas() throws Exception {
         var writer = new SourceMap.Writer();
         writer.append("", new SourceMap.Location("ignored", "", 0, 0));

@@ -131,6 +131,7 @@ public final class CssUtilityBinding {
         if (context.externalProperties().stream().anyMatch(context.properties()::containsKey)) {
             throw new IllegalArgumentException("An external custom property cannot also be imported");
         }
+        List<CssTokens.Token> tokens = List.of();
         if (nativeRules) {
             var owned = new LinkedHashSet<String>();
             CSSVisitor.visitCSS(sheet, new DefaultCSSVisitor() {
@@ -147,7 +148,8 @@ public final class CssUtilityBinding {
                     owned.add(CSSParseHelper.unescapeURL(rule.getIdentifier()).substring(2));
                 }
             });
-            for (var token : CssTokens.read(css)) {
+            tokens = CssTokens.parse(css, syntax, sheet).tokens();
+            for (var token : tokens) {
                 if (CssResource.SymbolKind.PROPERTY == token.kind()) {
                     String name = token.name().substring(2);
                     if (!owned.contains(name)
@@ -182,7 +184,7 @@ public final class CssUtilityBinding {
         context.ids().keySet().forEach(name -> idBindings.put(name, root + "--id-" + CssIdentity.encode(name)));
         var ids = CssIds.rewrite(sheet, syntax, idBindings, true);
         var edits = new ArrayList<SourceMap.Edit>();
-        for (var token : CssTokens.read(css)) {
+        for (var token : nativeRules ? tokens : CssTokens.read(css)) {
             String replacement = CssResource.SymbolKind.PROPERTY == token.kind()
                     ? properties.get(token.name().substring(2))
                     : CssResource.SymbolKind.ID == token.kind()

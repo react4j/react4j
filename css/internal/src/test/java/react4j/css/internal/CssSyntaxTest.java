@@ -15,6 +15,23 @@ import org.testng.annotations.Test;
 
 public final class CssSyntaxTest {
     @Test
+    public void offsetsPreserveUtf16ColumnsPrefixesAndClamping() {
+        String prefix = ".root {\n";
+        String body = "/* 😀 */\r\n\tcolor:red;\n}\n";
+        var syntax = new CssSyntax(prefix + body, prefix.length());
+        assertEquals(syntax.offset(1, 1), 0);
+        assertEquals(syntax.offset(2, 4), body.indexOf("😀"));
+        assertEquals(syntax.offset(2, 6), body.indexOf(" */"));
+        assertEquals(syntax.offset(3, 2), body.indexOf("color"));
+        assertEquals(syntax.offset(4, 1), body.indexOf('}'));
+        assertEquals(syntax.offset(5, 1), body.length());
+        assertEquals(syntax.offset(100, 100), body.length());
+        assertEquals(syntax.offset(0, 0), 0);
+        assertEquals(new CssSyntax("", 0).offset(2, 1), 0);
+        assertEquals(new CssSyntax("last", 0).offset(2, 1), 4);
+    }
+
+    @Test
     public void emptyVariableFallbackPreservesTheCommaAndSourceLocations() {
         // Tailwind 4.3.3's optimized Rose output supplied the first fallback; the second covers no space.
         String css = ".turn { transform: var(--tw-rotate-x, ) var(--skew,); }";

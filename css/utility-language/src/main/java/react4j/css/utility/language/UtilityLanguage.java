@@ -34,7 +34,7 @@ public final class UtilityLanguage {
     private static final int VERSION = 1;
     private static final Map<Source, Locations> LOCATIONS = new WeakHashMap<>();
 
-    private record Locations(JsonObject map, Map<Integer, SourceMap.Location> values) {}
+    private record Locations(SourceMap.Lookup lookup, Map<Integer, SourceMap.Location> values) {}
 
     private UtilityLanguage() {}
 
@@ -181,9 +181,11 @@ public final class UtilityLanguage {
 
     public static final class Prepared {
         private final RuleLibrary rules;
+        private final String probeProperty;
 
         private Prepared(RuleLibrary rules) {
             this.rules = rules;
+            probeProperty = "react4j-utility-" + digest(rules.source.text());
         }
 
         public Source source() {
@@ -228,12 +230,16 @@ public final class UtilityLanguage {
         private final String owner;
         private final Bindings bindings;
         private final CssUtilityBinding.Bound support;
+        private final String fingerprint;
 
         private Checked(Prepared prepared, String owner, Bindings bindings, CssUtilityBinding.Bound support) {
             this.prepared = prepared;
             this.owner = owner;
             this.bindings = bindings;
             this.support = support;
+            var value = JsonParser.parseString(json()).getAsJsonObject();
+            value.remove("sourceMap");
+            fingerprint = digest(value.toString());
         }
 
         public CssUtilityBinding.Bound support() {
@@ -253,9 +259,7 @@ public final class UtilityLanguage {
         }
 
         public String fingerprint() {
-            var value = JsonParser.parseString(json()).getAsJsonObject();
-            value.remove("sourceMap");
-            return digest(value.toString());
+            return fingerprint;
         }
 
         public String json() {
@@ -469,13 +473,9 @@ public final class UtilityLanguage {
         return prototypes(prepared, false);
     }
 
-    private static String probeProperty(Prepared prepared) {
-        return "react4j-utility-" + digest(prepared.source().text());
-    }
-
     private static CssUtilityBinding.Context probeContext(Prepared prepared, CssUtilityBinding.Context context) {
         var external = new HashSet<>(context.externalProperties());
-        external.add(probeProperty(prepared));
+        external.add(prepared.probeProperty);
         return new CssUtilityBinding.Context(
                 external,
                 context.externalAnimations(),
@@ -539,7 +539,7 @@ public final class UtilityLanguage {
             Prepared prepared, RuleLibrary.Rule rule, List<RuleSyntax.Node> nodes) {
         var result = new ArrayList<RuleSyntax.Node>();
         for (var node : nodes) {
-            String value = "an+b".equals(rule.type()) ? "1" : "var(--" + probeProperty(prepared) + ")";
+            String value = "an+b".equals(rule.type()) ? "1" : "var(--" + prepared.probeProperty + ")";
             if ("string".equals(rule.type())
                     && RuleSyntax.functions(node.head()).stream()
                             .anyMatch(function -> "url".equals(function.name())
@@ -1156,10 +1156,13 @@ public final class UtilityLanguage {
             locations = LOCATIONS.computeIfAbsent(
                     source,
                     key -> new Locations(
-                            JsonParser.parseString(key.sourceMap()).getAsJsonObject(), new ConcurrentHashMap<>()));
+                            new SourceMap.Lookup(
+                                    key.text(),
+                                    JsonParser.parseString(key.sourceMap()).getAsJsonObject()),
+                            new ConcurrentHashMap<>()));
         }
         return locations.values().computeIfAbsent(offset, key -> {
-            var location = SourceMap.location(source.text(), locations.map(), key);
+            var location = locations.lookup().location(key);
             return null != location ? location : unmappedLocation(source, key);
         });
     }

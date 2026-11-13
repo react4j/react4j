@@ -46,10 +46,18 @@ public final class CssSyntax {
 
     private final String source;
     private final int prefix;
+    private final int[] lineOffsets;
 
     public CssSyntax(String source, int prefix) {
         this.source = source;
         this.prefix = prefix;
+        lineOffsets = new int[1 + (int) source.chars().filter(c -> '\n' == c).count()];
+        int line = 1;
+        for (int i = 0; i < source.length(); i++) {
+            if ('\n' == source.charAt(i)) {
+                lineOffsets[line++] = i + 1;
+            }
+        }
     }
 
     public CascadingStyleSheet parse(boolean component) {
@@ -277,11 +285,7 @@ public final class CssSyntax {
     }
 
     public int offset(int line, int column) {
-        int offset = 0;
-        for (int i = 1; i < line && offset < source.length(); i++) {
-            int next = source.indexOf('\n', offset);
-            offset = next < 0 ? source.length() : next + 1;
-        }
+        int offset = lineOffsets.length < line ? source.length() : lineOffsets[Math.max(1, line) - 1];
         return Math.max(0, Math.min(source.length() - prefix, offset + column - 1 - prefix));
     }
 }

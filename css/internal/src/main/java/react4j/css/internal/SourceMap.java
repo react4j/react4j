@@ -28,6 +28,24 @@ public final class SourceMap {
 
     private record Mapping(int offset, @Nullable Location location) {}
 
+    /** Immutable decoded anchors for repeated lookups in one source. */
+    public static final class Lookup {
+        private final int length;
+        private final List<Mapping> mappings;
+
+        public Lookup(String css, JsonObject map) {
+            length = css.length();
+            mappings = SourceMap.mappings(css, map);
+        }
+
+        public @Nullable Location location(int offset) {
+            if (offset < 0 || offset > length) {
+                throw new IllegalArgumentException("CSS offset is outside the source");
+            }
+            return SourceMap.location(mappings, offset);
+        }
+    }
+
     /** Copies retained bytes and their original mapping segments without reserializing CSS. */
     public static Writer project(String css, JsonObject map, List<Span> spans) {
         return copy(css, mappings(css, map), spans);

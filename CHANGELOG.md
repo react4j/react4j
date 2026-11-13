@@ -3,7 +3,7 @@
 ### Unreleased
 
 * Accept direct declarations inside supported nested CSS groups in shared stylesheets, `@GlobalCss` and `@Css`. Preserve declaration order and the enclosing selector's specificity and pseudo-element matching.
-* Reuse utility source-map lookups during rule preparation and expansion, preserving diagnostic locations, CSS, source maps and traces.
+* Reduce native utility compilation work by decoding source maps and indexing line starts once, reusing parsed CSS tokens and retaining invariant provider hashes. Preserve generated Java/CSS, metadata, source maps, diagnostics and traces.
 * Expose `browser_files` through `@react4j//:defs.bzl` to share declared browser runfiles and executable-path variables between Closure and JVM tests. Reject empty dependency lists and conflicting named files; applications retain browser-version and capability selection.
 * Derive immutable keys for all declared arrays from ordered element keys using their declared component type's scalar strategy. Traverse declared nested dimensions and preserve null, empty and nested boundaries, including defaults and tree context. Retain caller-owned arrays and elements; their key-relevant state must remain unchanged. Add typed `InputKeyGenerator<T>` providers selected by constructor `@Input(keyGenerator=...)`.
 * Add mutable `@Input(equalityComparator=...)` using Arez comparators consistently for rendering, reactive invalidation and input-change callbacks. Emit direct equivalent calls for the two standard Arez comparators.
