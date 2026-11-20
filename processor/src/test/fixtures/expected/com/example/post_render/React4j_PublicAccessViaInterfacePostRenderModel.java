@@ -49,7 +49,7 @@ abstract class React4j_PublicAccessViaInterfacePostRenderModel extends PublicAcc
 
   @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
-    final ReactNode result = Renderable.toReactNode( render() );
+    final var result = Renderable.toReactNode( render() );
     postRender();
     return result;
   }

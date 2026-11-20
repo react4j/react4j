@@ -58,7 +58,7 @@ abstract class React4j_ShortPropValidate extends ShortPropValidate {
       Guards.apiInvariant( () -> null != raw$myProp, () -> "Required input named 'myProp' is missing from view named 'ShortPropValidate' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
     }
     if ( null != raw$myProp ) {
-      final short typed$myProp = Js.asShort( raw$myProp );
+      final var typed$myProp = Js.asShort( raw$myProp );
       validateMyProp( typed$myProp );
     }
   }

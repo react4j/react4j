@@ -146,14 +146,14 @@ abstract class React4j_MixedArrayScalarsView extends MixedArrayScalarsView {
       super( inputs );
       assert null != inputs;
       final String[] values = Objects.requireNonNull( inputs.getAsAny( Inputs.values ) ).cast();
-      final int count = Objects.requireNonNull( inputs.getAsAny( Inputs.count ) ).asInt();
-      final char letter = Objects.requireNonNull( inputs.getAsAny( Inputs.letter ) ).asChar();
-      final long id = Objects.requireNonNull( inputs.getAsAny( Inputs.id ) ).asLong();
-      final float rate = Objects.requireNonNull( inputs.getAsAny( Inputs.rate ) ).asFloat();
-      final boolean flag = Objects.requireNonNull( inputs.getAsAny( Inputs.flag ) ).asBoolean();
-      final double size = Objects.requireNonNull( inputs.getAsAny( Inputs.size ) ).asDouble();
-      final byte tiny = Objects.requireNonNull( inputs.getAsAny( Inputs.tiny ) ).asByte();
-      final short small = Objects.requireNonNull( inputs.getAsAny( Inputs.small ) ).asShort();
+      final var count = Objects.requireNonNull( inputs.getAsAny( Inputs.count ) ).asInt();
+      final var letter = Objects.requireNonNull( inputs.getAsAny( Inputs.letter ) ).asChar();
+      final var id = Objects.requireNonNull( inputs.getAsAny( Inputs.id ) ).asLong();
+      final var rate = Objects.requireNonNull( inputs.getAsAny( Inputs.rate ) ).asFloat();
+      final var flag = Objects.requireNonNull( inputs.getAsAny( Inputs.flag ) ).asBoolean();
+      final var size = Objects.requireNonNull( inputs.getAsAny( Inputs.size ) ).asDouble();
+      final var tiny = Objects.requireNonNull( inputs.getAsAny( Inputs.tiny ) ).asByte();
+      final var small = Objects.requireNonNull( inputs.getAsAny( Inputs.small ) ).asShort();
       Long wrapped;
       if ( React.shouldCheckInvariants() ) {
         final var raw$wrapped = inputs.getAsAny( Inputs.wrapped );

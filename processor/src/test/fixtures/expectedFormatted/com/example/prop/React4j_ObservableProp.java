@@ -87,7 +87,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
       final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
-    boolean modified = false;
+    var modified = false;
     if (!Js.isTripleEqual(inputs.get(Inputs.value), nextInputs.get(Inputs.value))) {
       getValueObservableValue().reportChanged();
       modified = true;
@@ -124,7 +124,7 @@ abstract class React4j_ObservableProp extends ObservableProp {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed(this);
     SchedulerUtil.pauseUntilRenderLoopComplete();
-    final ReactNode result = Renderable.toReactNode(render());
+    final var result = Renderable.toReactNode(render());
     if (Arez.shouldCheckInvariants() && Arez.areSpiesEnabled()) {
       Guards.invariant(
           () -> !$$react4j$$_getRenderObserver()

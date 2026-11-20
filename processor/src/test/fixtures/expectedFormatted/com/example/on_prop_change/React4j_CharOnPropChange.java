@@ -79,7 +79,7 @@ abstract class React4j_CharOnPropChange extends CharOnPropChange {
       final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if (null != prevInputs) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
-      final boolean myProp =
+      final var myProp =
           !Js.isTripleEqual(prevInputs.get(Inputs.myProp), inputs.get(Inputs.myProp));
       if (myProp) {
         onMyPropChange(Objects.requireNonNull(inputs.getAsAny(Inputs.myProp)).asChar());

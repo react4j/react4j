@@ -212,8 +212,8 @@ final class FactoryGenerator {
                 method.addCode(extraction.build());
             } else {
                 method.addStatement(
-                        "final $T $N = $T.requireNonNull( view.requireInputs().getAsAny( $T.Inputs.$N ) ).$N()",
-                        input.getTypeName().withoutAnnotations(),
+                        "final $L $N = $T.requireNonNull( view.requireInputs().getAsAny( $T.Inputs.$N ) ).$N()",
+                        InputValues.convertedLocalType(input, convertMethodName),
                         localName,
                         Objects.class,
                         descriptor.getEnhancedClassName(),

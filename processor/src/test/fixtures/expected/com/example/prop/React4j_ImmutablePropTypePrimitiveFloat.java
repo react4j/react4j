@@ -93,7 +93,7 @@ abstract class React4j_ImmutablePropTypePrimitiveFloat extends ImmutablePropType
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       assert null != inputs;
-      final float myProp = Objects.requireNonNull( inputs.getAsAny( Inputs.myProp ) ).asFloat();
+      final var myProp = Objects.requireNonNull( inputs.getAsAny( Inputs.myProp ) ).asFloat();
       view = new Arez_React4j_ImmutablePropTypePrimitiveFloat( this, myProp );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;

@@ -93,7 +93,7 @@ abstract class React4j_PrimitiveKeyView extends PrimitiveKeyView {
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       assert null != inputs;
-      final int value = Objects.requireNonNull(inputs.getAsAny(Inputs.value)).asInt();
+      final var value = Objects.requireNonNull(inputs.getAsAny(Inputs.value)).asInt();
       view = new Arez_React4j_PrimitiveKeyView(this, value);
       if (React.shouldValidateInputValues()) {
         assert null != inputs;

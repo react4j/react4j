@@ -93,7 +93,7 @@ abstract class React4j_ImmutablePropTypePrimitiveDouble extends ImmutablePropTyp
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       assert null != inputs;
-      final double myProp = Objects.requireNonNull( inputs.getAsAny( Inputs.myProp ) ).asDouble();
+      final var myProp = Objects.requireNonNull( inputs.getAsAny( Inputs.myProp ) ).asDouble();
       view = new Arez_React4j_ImmutablePropTypePrimitiveDouble( this, myProp );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;

@@ -93,7 +93,7 @@ abstract class React4j_ImmutablePropTypePrimitiveByte extends ImmutablePropTypeP
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       assert null != inputs;
-      final byte myProp = Objects.requireNonNull(inputs.getAsAny(Inputs.myProp)).asByte();
+      final var myProp = Objects.requireNonNull(inputs.getAsAny(Inputs.myProp)).asByte();
       view = new Arez_React4j_ImmutablePropTypePrimitiveByte(this, myProp);
       if (React.shouldValidateInputValues()) {
         assert null != inputs;

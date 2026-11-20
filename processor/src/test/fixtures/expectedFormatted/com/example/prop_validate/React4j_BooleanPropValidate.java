@@ -59,7 +59,7 @@ abstract class React4j_BooleanPropValidate extends BooleanPropValidate {
               "Required input named 'myProp' is missing from view named 'BooleanPropValidate' so it was either incorrectly omitted or a null value has been incorrectly specified.");
     }
     if (null != raw$myProp) {
-      final boolean typed$myProp = Js.asBoolean(raw$myProp);
+      final var typed$myProp = Js.asBoolean(raw$myProp);
       validateMyProp(typed$myProp);
     }
   }

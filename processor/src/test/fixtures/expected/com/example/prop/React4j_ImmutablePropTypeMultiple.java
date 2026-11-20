@@ -223,14 +223,14 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       assert null != inputs;
-      final boolean booleanProp = Objects.requireNonNull( inputs.getAsAny( Inputs.booleanProp ) ).asBoolean();
-      final byte byteProp = Objects.requireNonNull( inputs.getAsAny( Inputs.byteProp ) ).asByte();
-      final char charProp = Objects.requireNonNull( inputs.getAsAny( Inputs.charProp ) ).asChar();
-      final double doubleProp = Objects.requireNonNull( inputs.getAsAny( Inputs.doubleProp ) ).asDouble();
-      final float floatProp = Objects.requireNonNull( inputs.getAsAny( Inputs.floatProp ) ).asFloat();
-      final int intProp = Objects.requireNonNull( inputs.getAsAny( Inputs.intProp ) ).asInt();
-      final long longProp = Objects.requireNonNull( inputs.getAsAny( Inputs.longProp ) ).asLong();
-      final short shortProp = Objects.requireNonNull( inputs.getAsAny( Inputs.shortProp ) ).asShort();
+      final var booleanProp = Objects.requireNonNull( inputs.getAsAny( Inputs.booleanProp ) ).asBoolean();
+      final var byteProp = Objects.requireNonNull( inputs.getAsAny( Inputs.byteProp ) ).asByte();
+      final var charProp = Objects.requireNonNull( inputs.getAsAny( Inputs.charProp ) ).asChar();
+      final var doubleProp = Objects.requireNonNull( inputs.getAsAny( Inputs.doubleProp ) ).asDouble();
+      final var floatProp = Objects.requireNonNull( inputs.getAsAny( Inputs.floatProp ) ).asFloat();
+      final var intProp = Objects.requireNonNull( inputs.getAsAny( Inputs.intProp ) ).asInt();
+      final var longProp = Objects.requireNonNull( inputs.getAsAny( Inputs.longProp ) ).asLong();
+      final var shortProp = Objects.requireNonNull( inputs.getAsAny( Inputs.shortProp ) ).asShort();
       final ImmutablePropTypeMultiple.MyEnum enumProp = Objects.requireNonNull( inputs.getAsAny( Inputs.enumProp ) ).cast();
       final ImmutablePropTypeMultiple.KeyedComponent keyedComponentProp = Objects.requireNonNull( inputs.getAsAny( Inputs.keyedComponentProp ) ).cast();
       final ImmutablePropTypeMultiple.IdentifiableComponent identifiableProp = Objects.requireNonNull( inputs.getAsAny( Inputs.identifiableProp ) ).cast();

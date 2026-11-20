@@ -59,7 +59,7 @@ abstract class React4j_NonnullPropValidate extends NonnullPropValidate {
               "Required input named 'myProp' is missing from view named 'NonnullPropValidate' so it was either incorrectly omitted or a null value has been incorrectly specified.");
     }
     if (null != raw$myProp) {
-      final String typed$myProp = Js.asString(raw$myProp);
+      final var typed$myProp = Js.asString(raw$myProp);
       validateMyProp(typed$myProp);
     }
   }

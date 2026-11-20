@@ -124,7 +124,7 @@ abstract class React4j_ImmutablePropTypes extends ImmutablePropTypes {
       } else {
         myOtherProp = Js.uncheckedCast(inputs.getAsAny(Inputs.myOtherProp));
       }
-      final int stillAnotherProp =
+      final var stillAnotherProp =
           Objects.requireNonNull(inputs.getAsAny(Inputs.stillAnotherProp)).asInt();
       ImmutablePropTypes.KeyedComponent bobsProp;
       if (React.shouldCheckInvariants()) {

@@ -59,7 +59,7 @@ abstract class React4j_BytePropValidate extends BytePropValidate {
               "Required input named 'myProp' is missing from view named 'BytePropValidate' so it was either incorrectly omitted or a null value has been incorrectly specified.");
     }
     if (null != raw$myProp) {
-      final byte typed$myProp = Js.asByte(raw$myProp);
+      final var typed$myProp = Js.asByte(raw$myProp);
       validateMyProp(typed$myProp);
     }
   }

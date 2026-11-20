@@ -58,7 +58,7 @@ abstract class React4j_LongPropValidate extends LongPropValidate {
       Guards.apiInvariant( () -> null != raw$myProp, () -> "Required input named 'myProp' is missing from view named 'LongPropValidate' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
     }
     if ( null != raw$myProp ) {
-      final long typed$myProp = Js.asLong( raw$myProp );
+      final var typed$myProp = Js.asLong( raw$myProp );
       validateMyProp( typed$myProp );
     }
   }

@@ -59,7 +59,7 @@ abstract class React4j_CharPropValidate extends CharPropValidate {
               "Required input named 'myProp' is missing from view named 'CharPropValidate' so it was either incorrectly omitted or a null value has been incorrectly specified.");
     }
     if (null != raw$myProp) {
-      final char typed$myProp = Js.asChar(raw$myProp);
+      final var typed$myProp = Js.asChar(raw$myProp);
       validateMyProp(typed$myProp);
     }
   }

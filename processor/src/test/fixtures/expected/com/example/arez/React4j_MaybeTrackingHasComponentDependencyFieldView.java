@@ -110,7 +110,7 @@ abstract class React4j_MaybeTrackingHasComponentDependencyFieldView extends Mayb
   @Nullable ReactNode $$react4j$$_render() {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
-    final MaybeTrackingHasComponentDependencyFieldView.Model $$react4jv$$_candidate0 = model;
+    final var $$react4jv$$_candidate0 = model;
     if ( !ComponentObservable.observe( $$react4jv$$_candidate0 ) ) {
       return null;
     }

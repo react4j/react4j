@@ -68,7 +68,7 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
       final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if (null != prevInputs) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
-      final boolean myProp =
+      final var myProp =
           !Js.isTripleEqual(prevInputs.get(Inputs.myProp), inputs.get(Inputs.myProp));
       if (myProp) {
         onMyPropChange(Objects.requireNonNull(inputs.getAsAny(Inputs.myProp)).asInt());
@@ -92,7 +92,7 @@ abstract class React4j_RootPackageCompleteComponent extends RootPackageCompleteC
     preRender2();
     preRender3();
     preRender4();
-    final ReactNode result = Renderable.toReactNode(render());
+    final var result = Renderable.toReactNode(render());
     postRender1();
     postRender2();
     postRender3();

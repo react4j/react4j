@@ -116,7 +116,7 @@ abstract class React4j_AdvancingView<T extends AtomicInteger> extends AdvancingV
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       assert null != inputs;
-      final int count = Objects.requireNonNull(inputs.getAsAny(Inputs.count)).asInt();
+      final var count = Objects.requireNonNull(inputs.getAsAny(Inputs.count)).asInt();
       view = new Arez_React4j_AdvancingView<T>(this, count);
       if (React.shouldValidateInputValues()) {
         assert null != inputs;

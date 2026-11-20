@@ -328,21 +328,21 @@ abstract class React4j_ImmutablePropTypeMultiple extends ImmutablePropTypeMultip
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       assert null != inputs;
-      final boolean booleanProp =
+      final var booleanProp =
           Objects.requireNonNull(inputs.getAsAny(Inputs.booleanProp)).asBoolean();
-      final byte byteProp =
+      final var byteProp =
           Objects.requireNonNull(inputs.getAsAny(Inputs.byteProp)).asByte();
-      final char charProp =
+      final var charProp =
           Objects.requireNonNull(inputs.getAsAny(Inputs.charProp)).asChar();
-      final double doubleProp =
+      final var doubleProp =
           Objects.requireNonNull(inputs.getAsAny(Inputs.doubleProp)).asDouble();
-      final float floatProp =
+      final var floatProp =
           Objects.requireNonNull(inputs.getAsAny(Inputs.floatProp)).asFloat();
-      final int intProp =
+      final var intProp =
           Objects.requireNonNull(inputs.getAsAny(Inputs.intProp)).asInt();
-      final long longProp =
+      final var longProp =
           Objects.requireNonNull(inputs.getAsAny(Inputs.longProp)).asLong();
-      final short shortProp =
+      final var shortProp =
           Objects.requireNonNull(inputs.getAsAny(Inputs.shortProp)).asShort();
       final ImmutablePropTypeMultiple.MyEnum enumProp =
           Objects.requireNonNull(inputs.getAsAny(Inputs.enumProp)).cast();
