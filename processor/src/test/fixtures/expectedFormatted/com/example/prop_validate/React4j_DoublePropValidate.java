@@ -59,7 +59,7 @@ abstract class React4j_DoublePropValidate extends DoublePropValidate {
               "Required input named 'myProp' is missing from view named 'DoublePropValidate' so it was either incorrectly omitted or a null value has been incorrectly specified.");
     }
     if (null != raw$myProp) {
-      final double typed$myProp = Js.asDouble(raw$myProp);
+      final var typed$myProp = Js.asDouble(raw$myProp);
       validateMyProp(typed$myProp);
     }
   }

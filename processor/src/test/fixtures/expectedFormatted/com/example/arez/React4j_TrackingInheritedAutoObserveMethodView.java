@@ -119,7 +119,7 @@ abstract class React4j_TrackingInheritedAutoObserveMethodView
       return null;
     }
     SchedulerUtil.pauseUntilRenderLoopComplete();
-    final ReactNode result = Renderable.toReactNode(render());
+    final var result = Renderable.toReactNode(render());
     if (Arez.shouldCheckInvariants() && Arez.areSpiesEnabled()) {
       Guards.invariant(
           () -> !$$react4j$$_getRenderObserver()

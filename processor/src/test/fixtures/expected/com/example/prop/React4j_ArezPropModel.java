@@ -122,7 +122,7 @@ abstract class React4j_ArezPropModel extends ArezPropModel {
     $$react4j$$_state = ViewState.IDLE;
     assert Disposable.isNotDisposed( this );
     SchedulerUtil.pauseUntilRenderLoopComplete();
-    final ReactNode result = Renderable.toReactNode( render() );
+    final var result = Renderable.toReactNode( render() );
     if ( Arez.shouldCheckInvariants() && Arez.areSpiesEnabled() ) {
       Guards.invariant( () -> !$$react4j$$_getRenderObserver().getContext().getSpy().asObserverInfo( $$react4j$$_getRenderObserver() ).getDependencies().isEmpty(), () -> "View render completed on '" + this + "' without accessing any Arez dependencies but has a type set to TRACKING. The render method needs to access an Arez dependency or the type should be changed to STATEFUL or MAYBE_TRACKING." );
     }

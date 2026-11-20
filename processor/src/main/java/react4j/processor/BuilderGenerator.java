@@ -463,7 +463,11 @@ final class BuilderGenerator {
                         descriptor.getClassName());
             } else if (ImmutableInputKeyStrategy.DYNAMIC == strategy) {
                 final var keyValue = "$" + stepMethod.getName() + "$";
-                method.addStatement("final $T $N = $N", Object.class, keyValue, valueName);
+                if (TypeName.get(Object.class).equals(type)) {
+                    method.addStatement("final var $N = $N", keyValue, valueName);
+                } else {
+                    method.addStatement("final $T $N = $N", Object.class, keyValue, valueName);
+                }
                 method.addStatement(
                         "_element.setKey( ( $N instanceof $T ? $T.getKey( $N ) : "
                                 + "$N instanceof $T ? $T.<$T>getArezId( $N ) : $T.valueOf( $N ) ) + "

@@ -48,7 +48,7 @@ abstract class React4j_MultipleSortedPostRenderModel extends MultipleSortedPostR
 
   @Nullable ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed( this );
-    final ReactNode result = Renderable.toReactNode( render() );
+    final var result = Renderable.toReactNode( render() );
     postRender4();
     postRender2();
     postRender3();

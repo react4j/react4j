@@ -93,7 +93,7 @@ abstract class React4j_ImmutablePropTypePrimitiveLong extends ImmutablePropTypeP
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super( inputs );
       assert null != inputs;
-      final long myProp = Objects.requireNonNull( inputs.getAsAny( Inputs.myProp ) ).asLong();
+      final var myProp = Objects.requireNonNull( inputs.getAsAny( Inputs.myProp ) ).asLong();
       view = new Arez_React4j_ImmutablePropTypePrimitiveLong( this, myProp );
       if ( React.shouldValidateInputValues() ) {
         assert null != inputs;

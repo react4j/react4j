@@ -105,10 +105,8 @@ abstract class React4j_NoShouldComponentUpdateForInputsView
     NativeView(final @Nullable JsPropertyMap<@Nullable Object> inputs) {
       super(inputs);
       assert null != inputs;
-      final boolean paramZ =
-          Objects.requireNonNull(inputs.getAsAny(Inputs.paramZ)).asBoolean();
-      final boolean paramP =
-          Objects.requireNonNull(inputs.getAsAny(Inputs.paramP)).asBoolean();
+      final var paramZ = Objects.requireNonNull(inputs.getAsAny(Inputs.paramZ)).asBoolean();
+      final var paramP = Objects.requireNonNull(inputs.getAsAny(Inputs.paramP)).asBoolean();
       view = new Arez_React4j_NoShouldComponentUpdateForInputsView(this, paramZ, paramP);
       if (React.shouldValidateInputValues()) {
         assert null != inputs;

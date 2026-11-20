@@ -45,7 +45,7 @@ abstract class React4j_MultiplePostRenderModel extends MultiplePostRenderModel {
   @Nullable
   ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed(this);
-    final ReactNode result = Renderable.toReactNode(render());
+    final var result = Renderable.toReactNode(render());
     postRender1();
     postRender2();
     return result;

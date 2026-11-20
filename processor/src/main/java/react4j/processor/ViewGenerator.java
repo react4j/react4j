@@ -21,10 +21,12 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.WildcardType;
 import org.realityforge.proton.GeneratorUtil;
 import org.realityforge.proton.MemberChecks;
 import org.realityforge.proton.ProcessorException;
@@ -508,7 +510,7 @@ final class ViewGenerator {
 
         for (final var input : inputs) {
             code.addStatement(
-                    "final boolean $N = !$L", input.getName(), InputEquality.compare(input, "prevInputs", "inputs"));
+                    "final var $N = !$L", input.getName(), InputEquality.compare(input, "prevInputs", "inputs"));
         }
         for (final var onInputChange : onInputChanges) {
             final var onChangeBlock = CodeBlock.builder();
@@ -609,7 +611,7 @@ final class ViewGenerator {
                     observableInputs.stream().anyMatch(InputDescriptor::shouldUpdateOnChange);
 
             if (hasObservableInputsToUpdateOnChange) {
-                method.addStatement("boolean modified = false");
+                method.addStatement("var modified = false");
             }
 
             for (final var input : observableInputs) {
@@ -746,11 +748,13 @@ final class ViewGenerator {
                 }
                 final var varName = "$$react4jv$$_candidate" + candidateIndex++;
                 final var memberName = candidate.element().getSimpleName().toString();
-                method.addStatement(
-                        "final $T $N = $N" + (candidate.element() instanceof ExecutableElement ? "()" : ""),
-                        candidate.type(),
-                        varName,
-                        memberName);
+                final var accessor = candidate.element() instanceof ExecutableElement;
+                final var type = candidate.type();
+                final var needsType = hasTypeAnnotations(type)
+                        || candidate.element() instanceof ExecutableElement executable
+                                && !executable.getTypeParameters().isEmpty();
+                final var localType = needsType ? CodeBlock.of("$T", type) : CodeBlock.of("var");
+                method.addStatement("final $L $N = $N" + (accessor ? "()" : ""), localType, varName, memberName);
                 addRenderPreludeObservationCheck(method, candidate, varName);
             }
         }
@@ -793,8 +797,11 @@ final class ViewGenerator {
         if (!explicitReturnRequired) {
             method.addStatement("return " + sb, args.toArray());
         } else {
-            args.add(0, REACT_NODE_CLASSNAME);
-            method.addStatement("final $T result = " + sb, args.toArray());
+            if (null == render && publishDescriptors.isEmpty()) {
+                method.addStatement("final $T result = null", REACT_NODE_CLASSNAME);
+            } else {
+                method.addStatement("final var result = " + sb, args.toArray());
+            }
 
             if (isTrackingType) {
                 final var depCheckBlock = CodeBlock.builder();
@@ -973,13 +980,13 @@ final class ViewGenerator {
                 if (input.hasValidateMethod()) {
                     final var block = CodeBlock.builder();
                     block.beginControlFlow("if ( null != $N )", rawName);
-                    final TypeMirror returnType = input.getType();
+                    final var converter = getConverter(input.getType(), input.getElement());
                     block.addStatement(
-                            "final $T $N = $T.$N( $N )",
-                            input.getTypeName().withoutAnnotations(),
+                            "final $L $N = $T.$N( $N )",
+                            InputValues.convertedLocalType(input, converter),
                             typedName,
                             JS_CLASSNAME,
-                            getConverter(returnType, input.getElement()),
+                            converter,
                             rawName);
                     block.addStatement(
                             "$N( $N )",
@@ -1204,8 +1211,8 @@ final class ViewGenerator {
                         method.addCode(extraction.build());
                     } else {
                         method.addStatement(
-                                "final $T $N = $T.requireNonNull( inputs.getAsAny( Inputs.$N ) ).$N()",
-                                input.getTypeName().withoutAnnotations(),
+                                "final $L $N = $T.requireNonNull( inputs.getAsAny( Inputs.$N ) ).$N()",
+                                InputValues.convertedLocalType(input, convertMethodName),
                                 localName,
                                 Objects.class,
                                 input.getConstantName(),
@@ -1464,6 +1471,20 @@ final class ViewGenerator {
             method.addStatement("$N.$N" + args, VIEW_FIELD, onError.getSimpleName());
         }
         return method;
+    }
+
+    private static boolean hasTypeAnnotations(final TypeMirror type) {
+        return !type.getAnnotationMirrors().isEmpty()
+                || switch (type) {
+                    case ArrayType array -> hasTypeAnnotations(array.getComponentType());
+                    case DeclaredType declared ->
+                        hasTypeAnnotations(declared.getEnclosingType())
+                                || declared.getTypeArguments().stream().anyMatch(ViewGenerator::hasTypeAnnotations);
+                    case WildcardType wildcard ->
+                        null != wildcard.getExtendsBound() && hasTypeAnnotations(wildcard.getExtendsBound())
+                                || null != wildcard.getSuperBound() && hasTypeAnnotations(wildcard.getSuperBound());
+                    default -> false;
+                };
     }
 
     private static void addRenderPreludeObservationCheck(

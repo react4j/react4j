@@ -79,7 +79,7 @@ abstract class React4j_DeepEqualityView extends DeepEqualityView {
       final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if ( null != prevInputs ) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
-      final boolean values = !Objects.deepEquals(Objects.requireNonNull(Js.<String[]>uncheckedCast(prevInputs.get(React4j_DeepEqualityView.Inputs.values))), Objects.requireNonNull(Js.<String[]>uncheckedCast(inputs.get(React4j_DeepEqualityView.Inputs.values))));
+      final var values = !Objects.deepEquals(Objects.requireNonNull(Js.<String[]>uncheckedCast(prevInputs.get(React4j_DeepEqualityView.Inputs.values))), Objects.requireNonNull(Js.<String[]>uncheckedCast(inputs.get(React4j_DeepEqualityView.Inputs.values))));
       if ( values ) {
         changed( Objects.requireNonNull( inputs.getAsAny( Inputs.values ) ).cast() );
       }
@@ -90,7 +90,7 @@ abstract class React4j_DeepEqualityView extends DeepEqualityView {
       final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if ( null != prevInputs ) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
-      final boolean values = !Objects.deepEquals(Objects.requireNonNull(Js.<String[]>uncheckedCast(prevInputs.get(React4j_DeepEqualityView.Inputs.values))), Objects.requireNonNull(Js.<String[]>uncheckedCast(inputs.get(React4j_DeepEqualityView.Inputs.values))));
+      final var values = !Objects.deepEquals(Objects.requireNonNull(Js.<String[]>uncheckedCast(prevInputs.get(React4j_DeepEqualityView.Inputs.values))), Objects.requireNonNull(Js.<String[]>uncheckedCast(inputs.get(React4j_DeepEqualityView.Inputs.values))));
       if ( values ) {
         after( Objects.requireNonNull( inputs.getAsAny( Inputs.values ) ).cast() );
       }

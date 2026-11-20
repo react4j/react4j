@@ -58,7 +58,7 @@ abstract class React4j_FloatPropValidate extends FloatPropValidate {
       Guards.apiInvariant( () -> null != raw$myProp, () -> "Required input named 'myProp' is missing from view named 'FloatPropValidate' so it was either incorrectly omitted or a null value has been incorrectly specified." ) ;
     }
     if ( null != raw$myProp ) {
-      final float typed$myProp = Js.asFloat( raw$myProp );
+      final var typed$myProp = Js.asFloat( raw$myProp );
       validateMyProp( typed$myProp );
     }
   }

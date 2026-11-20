@@ -9,6 +9,12 @@ import javax.lang.model.type.TypeKind;
 final class InputValues {
     private InputValues() {}
 
+    static CodeBlock convertedLocalType(final InputDescriptor input, final String converter) {
+        return "cast".equals(converter)
+                ? CodeBlock.of("$T", input.getTypeName().withoutAnnotations())
+                : CodeBlock.of("var");
+    }
+
     static CodeBlock read(final InputDescriptor input, final String map) {
         final var type = input.getType();
         if (type.getKind().isPrimitive()) {

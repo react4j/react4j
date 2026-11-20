@@ -103,9 +103,9 @@ abstract class React4j_CustomNamingOnPropChange extends CustomNamingOnPropChange
       final @Nullable JsPropertyMap<@Nullable Object> prevInputs) {
     if ( null != prevInputs ) {
       final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
-      final boolean myProp1 = !Js.isTripleEqual( prevInputs.get( Inputs.myProp1 ), inputs.get( Inputs.myProp1 ) );
-      final boolean myProp2 = !Js.isTripleEqual( prevInputs.get( Inputs.myProp2 ), inputs.get( Inputs.myProp2 ) );
-      final boolean myProp3 = !Js.isTripleEqual( prevInputs.get( Inputs.myProp3 ), inputs.get( Inputs.myProp3 ) );
+      final var myProp1 = !Js.isTripleEqual( prevInputs.get( Inputs.myProp1 ), inputs.get( Inputs.myProp1 ) );
+      final var myProp2 = !Js.isTripleEqual( prevInputs.get( Inputs.myProp2 ), inputs.get( Inputs.myProp2 ) );
+      final var myProp3 = !Js.isTripleEqual( prevInputs.get( Inputs.myProp3 ), inputs.get( Inputs.myProp3 ) );
       if ( myProp1 ) {
         onPropChange( Objects.requireNonNull( inputs.getAsAny( Inputs.myProp1 ) ).asBoolean() );
       }

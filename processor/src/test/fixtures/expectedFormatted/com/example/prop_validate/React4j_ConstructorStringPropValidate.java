@@ -44,7 +44,7 @@ abstract class React4j_ConstructorStringPropValidate extends ConstructorStringPr
   private void $$react4j$$_validateInputValues(final JsPropertyMap<@Nullable Object> inputs) {
     final Object raw$myProp = inputs.get(Inputs.myProp);
     if (null != raw$myProp) {
-      final String typed$myProp = Js.asString(raw$myProp);
+      final var typed$myProp = Js.asString(raw$myProp);
       validateMyProp(typed$myProp);
     }
   }

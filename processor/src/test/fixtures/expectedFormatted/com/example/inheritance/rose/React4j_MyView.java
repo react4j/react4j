@@ -116,7 +116,7 @@ abstract class React4j_MyView extends MyView {
   ReactNode $$react4j$$_render() {
     assert Disposable.isNotDisposed(this);
     preRenderPushingDateRange();
-    final ReactNode result = Renderable.toReactNode(render());
+    final var result = Renderable.toReactNode(render());
     postRenderPoppingDateRange();
     return result;
   }

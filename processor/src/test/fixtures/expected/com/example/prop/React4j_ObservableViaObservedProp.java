@@ -76,7 +76,7 @@ abstract class React4j_ObservableViaObservedProp extends ObservableViaObservedPr
       final @Nullable JsPropertyMap<@Nullable Object> nextInputs) {
     assert null != nextInputs;
     final JsPropertyMap<@Nullable Object> inputs = $$react4j$$_nativeView.requireInputs();
-    boolean modified = false;
+    var modified = false;
     if ( !Js.isTripleEqual( inputs.get( Inputs.value ), nextInputs.get( Inputs.value ) ) ) {
       getValueObservableValue().reportChanged();
       modified = true;
