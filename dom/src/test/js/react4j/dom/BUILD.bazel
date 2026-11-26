@@ -13,6 +13,13 @@ browser_test(
     ],
 )
 
+browser_test(
+    name = "devtools_test",
+    srcs = ["devtools_test.js"],
+    entry_point = "react4j.dom.DevToolsTest",
+    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
+)
+
 closure_js_library(
     name = "properties_test",
     testonly = True,

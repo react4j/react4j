@@ -1,7 +1,10 @@
 package react4j;
 
 import jsinterop.annotations.JsFunction;
-import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -12,6 +15,9 @@ import org.jspecify.annotations.Nullable;
  * views without having to explicitly pass a input through every level of the tree.
  */
 public final class Context<T extends @Nullable Object> {
+    private static final Object CONTEXT_TYPE = symbol("react.context");
+    private static final Object PROVIDER_TYPE = symbol("react.provider");
+
     private final @Nullable T _defaultValue;
     private final Provider<T> _provider = new Provider<>(this);
     private final Consumer<T> _consumer = new Consumer<>(this);
@@ -22,6 +28,19 @@ public final class Context<T extends @Nullable Object> {
 
     Context(@Nullable final T defaultValue) {
         _defaultValue = defaultValue;
+        final var record = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(this);
+        record.set("$$typeof", CONTEXT_TYPE);
+        record.set("_currentValue", defaultValue);
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Symbol.for")
+    private static native Object symbol(String name);
+
+    private static void describe(final Object descriptor, final Object marker, final Context<?> context) {
+        // The React DevTools backend reads these properties by name outside the compiled application.
+        final var record = Js.<JsPropertyMap<Object>>uncheckedCast(descriptor);
+        record.set("$$typeof", marker);
+        record.set("_context", context);
     }
 
     public @Nullable T defaultValue() {
@@ -33,10 +52,9 @@ public final class Context<T extends @Nullable Object> {
 
         private Provider(final Context<T> context) {
             _context = context;
+            describe(this, PROVIDER_TYPE, context);
         }
 
-        @SuppressWarnings("unusable-by-js")
-        @JsProperty(name = "_context")
         public Context<T> context() {
             return _context;
         }
@@ -47,10 +65,9 @@ public final class Context<T extends @Nullable Object> {
 
         private Consumer(final Context<T> context) {
             _context = context;
+            describe(this, CONTEXT_TYPE, context);
         }
 
-        @SuppressWarnings("unusable-by-js")
-        @JsProperty(name = "_context")
         public Context<T> context() {
             return _context;
         }

@@ -1,4 +1,4 @@
-// Usage: node measure.mjs CHROME REFERENCE_DIRECTORY CANDIDATE_DIRECTORY [UNPACKED_REACT_DEVTOOLS]
+// Usage: node measure.mjs CHROME REFERENCE_DIRECTORY CANDIDATE_DIRECTORY [EXTENSION [PRODUCTION_DIRECTORY [NAMED_PRODUCTION_DIRECTORY]]]
 import {spawn} from 'node:child_process';
 import {mkdtemp, readFile, rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
@@ -7,7 +7,7 @@ import {extname, join, resolve, sep} from 'node:path';
 import {gzipSync} from 'node:zlib';
 import assert from 'node:assert/strict';
 
-const [chrome, reference, candidate, extension] = process.argv.slice(2);
+const [chrome, reference, candidate, extension, production, namedProduction] = process.argv.slice(2);
 if (!candidate || !reference || !chrome) throw Error('Expected Chrome and two built TodoMVC directories');
 const profile = await mkdtemp(join(tmpdir(), 'react4j-browser-'));
 const types = {'.html':'text/html', '.js':'text/javascript', '.css':'text/css', '.svg':'image/svg+xml'};
@@ -29,6 +29,8 @@ async function serve(path) {
   return {directory, server, url:'http://127.0.0.1:' + server.address().port + '/index.html'};
 }
 const sites = {reference:await serve(reference), candidate:await serve(candidate)};
+if (production) sites.production = await serve(production);
+if (namedProduction) sites.namedProduction = await serve(namedProduction);
 const browser = spawn(chrome, ['--headless=new', '--no-first-run', '--disable-back-forward-cache', '--disable-background-networking', '--disable-dev-shm-usage',
   '--user-data-dir=' + profile, '--remote-debugging-port=0',
   ...(extension ? ['--auto-open-devtools-for-tabs', '--disable-extensions-except=' + extension, '--load-extension=' + extension] : []),
@@ -90,17 +92,21 @@ try {
   await send('Runtime.enable');
   const workload = await readFile(new URL('./todo-workload.js', import.meta.url), 'utf8');
   const probe = extension && await readFile(new URL('./devtools.js', import.meta.url), 'utf8');
-  const results = {reference:{samples:[]}, candidate:{samples:[]}};
+  const results = Object.fromEntries(Object.keys(sites).map(key => [key, {samples:[]}]));
   const titles = Array.from({length:50}, (_, i) => 'Row ' + i);
   for (let run = 0; run < (extension ? 1 : 11); run++) {
-    for (const variant of (run % 2 ? ['candidate', 'reference'] : ['reference', 'candidate'])) {
+    const variants = Object.keys(sites);
+    for (const variant of (run % 2 ? variants.reverse() : variants)) {
       const site = sites[variant];
       const output = results[variant];
       const url = site.url + '?run=' + run;
       await send('Page.navigate', {url});
       await until(() => evaluate('location.href === ' + JSON.stringify(url) +
         ' && document.readyState === "complete" && !!document.querySelector("input[placeholder]")'));
-      if (probe) await evaluate(probe);
+      if (probe) {
+        const optimized = variant === 'production' || variant === 'namedProduction';
+        await evaluate(probe + '(' + optimized + ',' + (variant !== 'production') + ')');
+      }
       const {timings, ...observation} = await evaluate(workload);
       assert.deepEqual(observation, {titles, completed:25, retained:true, entry:''});
       if (probe) observation.devtools = await evaluate('window.finishDevToolsProbe()');
@@ -121,6 +127,8 @@ try {
       await evaluate('localStorage.clear()');
     }
     assert.deepEqual(results.candidate.observation, results.reference.observation);
+    if (production) assert.equal(results.production.observation.devtools.commits, results.reference.observation.devtools.commits);
+    if (namedProduction) assert.deepEqual(results.namedProduction.observation, results.reference.observation);
   }
   assert.deepEqual(exceptions, []);
   assert.deepEqual(extensionErrors, []);

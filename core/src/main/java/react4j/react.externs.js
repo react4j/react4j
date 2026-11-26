@@ -1,10 +1,28 @@
 /**
- * @fileoverview Properties shared between React4j JavaScript records and J2CL overlays.
+ * @fileoverview Properties shared between React4j, J2CL overlays and browser integrations.
  * @externs
  */
 
 /** @const */
 var React4jExterns = {};
+
+/** @record */
+React4jExterns.DevToolsHook = function() {};
+
+/** @type {boolean} */
+React4jExterns.DevToolsHook.prototype.supportsFiber;
+
+/** @type {boolean|undefined} */
+React4jExterns.DevToolsHook.prototype.isDisabled;
+
+/** @param {!Object} renderer @return {number} */
+React4jExterns.DevToolsHook.prototype.inject = function(renderer) {};
+
+/** @param {number} id @param {!Object} root */
+React4jExterns.DevToolsHook.prototype.onCommitFiberRoot = function(id, root) {};
+
+/** @param {number} id @param {!Object} fiber */
+React4jExterns.DevToolsHook.prototype.onCommitFiberUnmount = function(id, fiber) {};
 
 /**
  * Properties shared by the host input maps and their typed overlays.

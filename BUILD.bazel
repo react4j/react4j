@@ -251,6 +251,7 @@ test_suite(
         "//css/examples/save-button/src/test/js/react4j/css/example:uncompressed_browser_tests",
         "//doc-examples/src/test/js/react4j/examples:browser_tests",
         "//dom/src/test/js/react4j/dom:browser_tests",
+        "//dom/src/test/js/react4j/dom:devtools_test",
         "//examples/drumloop/src/test/js/react4j/drumloop:browser_tests",
         "//examples/heart-rate-monitor/src/test/js/react4j/hrm:browser_tests",
         "//examples/native-utilities/src/test/js/react4j/nativeutilities:browser_tests",

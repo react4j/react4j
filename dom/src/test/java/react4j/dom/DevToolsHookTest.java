@@ -5,10 +5,12 @@ import static react4j.webtesting.Checks.check;
 import java.util.Objects;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Contexts;
 import react4j.webtesting.Browser;
 
 /** Exercises renderer registration and host selection across commits through the public extension hook. */
@@ -79,12 +81,62 @@ public final class DevToolsHookTest {
             } finally {
                 observer.throwNotifications = false;
             }
+            checkContext(container, find);
             checkObserver();
         } finally {
+            ReactDOM.unmountComponentAtNode(container);
             container.remove();
             Js.global().delete("__REACT_DEVTOOLS_GLOBAL_HOOK__");
         }
     }
+
+    private static void checkContext(final Browser.Element container, final FindFiber find) {
+        Contexts.register(String.class, "devtools-context", "default");
+        final var context = Contexts.get(String.class, "devtools-context");
+        final var contextRecord = record(context);
+        contextRecord.set("displayName", "Theme");
+        ReactDOM.render(
+                DOM.section(
+                        context.provide(
+                                "outer",
+                                context.provide(
+                                        "inner",
+                                        context.consumer().render(value -> DOM.span(Objects.requireNonNull(value))))),
+                        context.consumer().render(value -> DOM.button(Objects.requireNonNull(value)))),
+                container);
+        final var provided =
+                record(record(find.find(Browser.query(container, "span"))).get("return"));
+        final var consumerType = record(provided.get("type"));
+        check(Js.isTripleEqual(symbol("react.context"), consumerType.get("$$typeof")), "Recognizable consumer type");
+        check(context == consumerType.get("_context"), "Consumer points to its original context");
+        check("Theme".equals(contextRecord.get("displayName")), "Context keeps its display name");
+        check("default".equals(contextRecord.get("_currentValue")), "Context exposes its default value");
+        final var inner = record(provided.get("return"));
+        final var outer = record(inner.get("return"));
+        for (final var provider : new JsPropertyMap<?>[] {inner, outer}) {
+            final var providerType = record(provider.get("type"));
+            check(
+                    Js.isTripleEqual(symbol("react.provider"), providerType.get("$$typeof")),
+                    "Recognizable provider type");
+            check(context == providerType.get("_context"), "Provider shares context identity with the consumer");
+        }
+        check("inner".equals(record(inner.get("memoizedProps")).get("value")), "Nearest provider exposes its value");
+        check("outer".equals(record(outer.get("memoizedProps")).get("value")), "Outer provider exposes its own value");
+        check("inner".equals(Browser.query(container, "span").getTextContent()), "Consumer renders the nearest value");
+        final var unprovided =
+                record(record(find.find(Browser.query(container, "button"))).get("return"));
+        check(consumerType == unprovided.get("type"), "Consumer type identity is stable outside the provider");
+        check(
+                "default".equals(Browser.query(container, "button").getTextContent()),
+                "Unprovided consumer renders the default");
+    }
+
+    private static JsPropertyMap<@Nullable Object> record(final @Nullable Object value) {
+        return Js.uncheckedCast(Objects.requireNonNull(value));
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Symbol.for")
+    private static native Object symbol(String name);
 
     @JsMethod
     public static void checkSuspense() {

@@ -1,0 +1,24 @@
+load("//:defs.bzl", "browser_application", "css_bundle")
+
+css_bundle(
+    name = "styles",
+    testonly = True,
+    css = "index.css",
+    root = ":named_production_bundle",
+    source_map = "index.css.map",
+)
+
+browser_application(
+    name = "named_production",
+    testonly = True,
+    compilation_level = "ADVANCED",
+    defs = [
+        "--define=react4j.enable_view_names='true'",
+        "--define=react4j.minimize_input_keys='false'",
+    ],
+    entry_point = "react4j.todomvc.raw.AppEntry",
+    html = "//examples/todomvc:public/index.html",
+    runtime_mode = "production",
+    styles = {":styles": "css/index.css"},
+    deps = ["//examples/todomvc/raw:entry"],
+)

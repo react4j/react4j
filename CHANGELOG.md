@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+* Preserve React DevTools hook registration and commit notifications in Closure-optimized production builds.
 * Accept direct declarations inside supported nested CSS groups in shared stylesheets, `@GlobalCss` and `@Css`. Preserve declaration order and the enclosing selector's specificity and pseudo-element matching.
 * Reduce native utility compilation work by preparing each provider once per compiler invocation and binding only requested fragments. Reuse read-only provider syntax and name analysis, decoded source maps, indexed line starts, parsed CSS tokens and invariant hashes. Preserve generated Java/CSS, metadata, source maps, diagnostics and traces.
 * Expose `browser_files` through `@react4j//:defs.bzl` to share declared browser runfiles and executable-path variables between Closure and JVM tests. Reject empty dependency lists and conflicting named files; applications retain browser-version and capability selection.
