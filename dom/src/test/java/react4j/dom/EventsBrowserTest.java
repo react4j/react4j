@@ -1132,6 +1132,24 @@ public final class EventsBrowserTest {
             attribute(fontFace, "fontFamily", null);
             attribute(fontFace, "hidden", null);
 
+            beginMountProbe();
+            ReactDOM.render(
+                    host(
+                            "react4j-mount-parent",
+                            JsPropertyMap.of(
+                                    "data-probe",
+                                    "parent",
+                                    "children",
+                                    host(
+                                            "react4j-mount-child",
+                                            JsPropertyMap.of("data-probe", "child", "children", "text")))),
+                    root);
+            check(
+                    ("child:construct:false child:attribute:0:false parent:construct:false "
+                                    + "parent:attribute:1:false parent:connected:true child:connected:true")
+                            .equals(mountProbeTrace()),
+                    "New custom elements initialize after their detached descendants and connect during insertion");
+
             registerCustomizedButton();
             final var clickTrace = new StringBuilder();
             final ReactEventHandler customClick = event -> clickTrace.append("click");
@@ -1159,6 +1177,12 @@ public final class EventsBrowserTest {
             root.remove();
         }
     }
+
+    @JsMethod
+    private static native void beginMountProbe();
+
+    @JsMethod
+    private static native String mountProbeTrace();
 
     @JsMethod
     private static native void registerCustomizedButton();

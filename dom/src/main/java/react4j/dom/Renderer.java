@@ -663,6 +663,7 @@ final class Renderer {
 
         private final @Nullable Object _portalState;
         private @Nullable String _hostTag;
+        private @Nullable String _childNamespace;
         private @Nullable Object output;
 
         double actualDuration;
@@ -1036,7 +1037,16 @@ final class Renderer {
                     node = element;
                     if (walkChildren) {
                         visitCommittedChildren(scope);
-                        finishHost(element, false, false, 0, scope, complete, root._resultChanged, root._resultFailure);
+                        finishHost(
+                                element,
+                                null,
+                                null,
+                                false,
+                                0,
+                                scope,
+                                complete,
+                                root._resultChanged,
+                                root._resultFailure);
                     } else {
                         prepareHost(element, oldNode, scope, mounting, complete);
                     }
@@ -1167,22 +1177,24 @@ final class Renderer {
                 boolean mounting,
                 Completion complete) {
             final var inputs = element.inputs();
-            final var host = null == dom
-                    ? DomHost.createElement(boundary(), hostParent(false), Js.asString(type), inputs)
-                    : Js.<Element>uncheckedCast(dom);
-            dom = host;
-            final var cachedTag = _hostTag;
-            final var tag = null == cachedTag ? (_hostTag = host.localName) : cachedTag;
+            final var currentTag = _hostTag;
+            final var tag = null == currentTag ? Js.asString(type) : currentTag;
+            final var namespace = mounting ? DomHost.elementNamespace(parentNamespace(), tag) : null;
+            if (null != namespace) {
+                _childNamespace = DomHost.childNamespace(namespace, tag);
+            }
             final var hasHtml = DomHost.hasHtml(inputs);
             final var content = inputs.get("children");
-            final var tracksChildren = !hasHtml && !"textarea".equals(tag);
+            final var tracksChildren = !hasHtml && !"textarea".equalsIgnoreCase(tag);
             final var directText = tracksChildren && isText(content);
             if ((hasHtml || directText) && 0 != children.length) {
                 queueDeletions(children);
                 children = NO_CHILDREN;
             }
             final var previous = null == oldNode ? null : oldNode.inputs();
-            if (!Js.isTripleEqual(previous, inputs)) {
+            final var initialText =
+                    mounting && directText ? Js.asString(stringValue(Objects.requireNonNull(content))) : null;
+            if (!mounting && !Js.isTripleEqual(previous, inputs)) {
                 String text = null;
                 if (tracksChildren) {
                     final var oldContent = null == previous ? null : previous.get("children");
@@ -1192,19 +1204,21 @@ final class Renderer {
                         text = "";
                     }
                 }
-                root._mutations.add(new HostProperties(this, null == previous, inputs, text));
+                root._mutations.add(new HostProperties(this, inputs, text));
             }
 
             final var duration = root.time() - actualStartTime;
-            final var restoreControl = DomHost.isControlTag(tag) && oldNode != element;
+            final var restoreControl = !mounting && DomHost.isControlTag(tag) && oldNode != element;
             if (tracksChildren && !directText) {
                 if (root.concurrent) {
-                    prepareHostChildren(content, scope, element, mounting, restoreControl, duration, complete);
+                    prepareHostChildren(
+                            content, scope, element, namespace, initialText, restoreControl, duration, complete);
                 } else {
                     reconcileChildren(content, scope, root._saveResult);
                     finishHost(
                             element,
-                            mounting,
+                            namespace,
+                            initialText,
                             restoreControl,
                             duration,
                             scope,
@@ -1213,7 +1227,7 @@ final class Renderer {
                             root._resultFailure);
                 }
             } else {
-                finishHost(element, mounting, restoreControl, duration, scope, complete, false, null);
+                finishHost(element, namespace, initialText, restoreControl, duration, scope, complete, false, null);
             }
         }
 
@@ -1221,41 +1235,79 @@ final class Renderer {
                 @Nullable Object content,
                 @Nullable Scope scope,
                 ReactElement element,
-                boolean mounting,
+                @Nullable String namespace,
+                @Nullable String initialText,
                 boolean restoreControl,
                 double duration,
                 Completion complete) {
             reconcileChildren(
                     content,
                     scope,
-                    (changed, failure) ->
-                            finishHost(element, mounting, restoreControl, duration, scope, complete, changed, failure));
+                    (changed, failure) -> finishHost(
+                            element,
+                            namespace,
+                            initialText,
+                            restoreControl,
+                            duration,
+                            scope,
+                            complete,
+                            changed,
+                            failure));
         }
 
         private void finishHost(
                 ReactElement element,
-                boolean mounting,
+                @Nullable String namespace,
+                @Nullable String initialText,
                 boolean restoreControl,
                 double duration,
                 @Nullable Scope scope,
                 Completion complete,
                 boolean contentChanged,
                 @Nullable RenderFailure failure) {
-            if (null == failure) {
-                final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(dom));
-                final var tag = Objects.requireNonNull(_hostTag);
-                if (contentChanged || restoreControl) {
-                    root._mutations.add(new HostPlacement(this, contentChanged, restoreControl));
-                }
-                if (mounting
-                        && Boolean.TRUE.equals(element.inputs().get("autoFocus"))
-                        && ("button".equals(tag) || DomHost.isControlTag(tag))) {
-                    root._effects.add(new Effect(this, () -> host.focus(null)));
-                }
-                reconcileRef(element.ref(), host);
-                recordDurations(mounting, duration);
+            if (null != failure) {
+                finishUpdate(false, failure, scope, complete);
+                return;
             }
-            finishUpdate(false, failure, scope, complete);
+            final var mounting = null != namespace;
+            if (null != namespace) {
+                final var started = root.time();
+                try {
+                    mountHost(element, namespace, initialText);
+                } catch (Throwable error) {
+                    finishUpdate(false, new RenderFailure(this, error), scope, complete);
+                    return;
+                }
+                duration += root.time() - started;
+            } else if (contentChanged || restoreControl) {
+                root._mutations.add(new HostPlacement(this, contentChanged, restoreControl));
+            }
+            final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(dom));
+            final var tag = Objects.requireNonNull(_hostTag);
+            if (mounting
+                    && Boolean.TRUE.equals(element.inputs().get("autoFocus"))
+                    && ("button".equals(tag) || DomHost.isControlTag(tag))) {
+                autofocus(host);
+            }
+            reconcileRef(element.ref(), host);
+            recordDurations(mounting, duration);
+            finishUpdate(false, null, scope, complete);
+        }
+
+        private void mountHost(ReactElement element, String namespace, @Nullable String initialText) {
+            final var container = boundary();
+            final var inputs = element.inputs();
+            final var host = DomHost.createElement(container, namespace, Js.asString(type), inputs);
+            appendInitialChildren(host);
+            final var tag = host.localName;
+            final var state = DomHost.prepareInitial(host, tag, inputs, initialText);
+            _hostTag = tag;
+            dom = host;
+            root._mutations.add(new HostAttach(this, container, state));
+        }
+
+        private void autofocus(Element host) {
+            root._effects.add(new Effect(this, () -> host.focus(null)));
         }
 
         private void recordDurations(boolean mounting, double duration) {
@@ -1591,6 +1643,8 @@ final class Renderer {
             final var previousView = view;
             final var previousPredicate = _viewPredicate;
             final var previousDom = dom;
+            final var hostTag = _hostTag;
+            final var childNamespace = _childNamespace;
             final var previousRef = ref;
             final var previousOutput = output;
             final var previousActualDuration = actualDuration;
@@ -1621,6 +1675,8 @@ final class Renderer {
                 view = previousView;
                 _viewPredicate = previousPredicate;
                 dom = previousDom;
+                _hostTag = hostTag;
+                _childNamespace = childNamespace;
                 ref = previousRef;
                 output = previousOutput;
                 actualDuration = previousActualDuration;
@@ -1728,16 +1784,38 @@ final class Renderer {
             return mountParent(root.container);
         }
 
-        private @Nullable Element hostParent(boolean logical) {
+        private String parentNamespace() {
+            for (var current = parent; null != current; current = current.parent) {
+                if (Kind.HOST == current.kind) {
+                    return Objects.requireNonNull(current._childNamespace);
+                }
+                if (Kind.PORTAL == current.kind) {
+                    return DomHost.rootNamespace(mountParent(Js.uncheckedCast(current.type)));
+                }
+            }
+            return DomHost.rootNamespace(mountParent(root.container));
+        }
+
+        private @Nullable Element hostParent() {
             for (var current = parent; null != current; current = current.parent) {
                 if (Kind.HOST == current.kind) {
                     return Js.uncheckedCast(current.dom);
                 }
-                if (Kind.PORTAL == current.kind && !logical) {
-                    break;
-                }
             }
             return null;
+        }
+
+        private void appendInitialChildren(Node target) {
+            for (final var child : children) {
+                if (Kind.PORTAL != child.kind) {
+                    final var node = child.dom;
+                    if (null != node) {
+                        target.appendChild(node);
+                    } else {
+                        child.appendInitialChildren(target);
+                    }
+                }
+            }
         }
 
         private void placeChildren(Node container, @Nullable Node anchor) {
@@ -1934,25 +2012,22 @@ final class Renderer {
         }
     }
 
+    private record HostAttach(Fiber fiber, Node container, DomEvents.State state) implements CommitEffect {
+        @Override
+        public void apply() {
+            final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(fiber.dom));
+            DomHost.attachInitial(host, state, container, fiber.root.container, fiber.hostParent());
+        }
+    }
+
     private record HostProperties(
             Fiber fiber,
-            boolean mounting,
             JsPropertyMap<@Nullable Object> inputs,
             @Nullable String text) implements CommitEffect {
         @Override
         public void apply() {
             final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(fiber.dom));
-            if (mounting) {
-                DomHost.mount(
-                        host,
-                        Objects.requireNonNull(fiber._hostTag),
-                        fiber.boundary(),
-                        fiber.root.container,
-                        fiber.hostParent(true),
-                        inputs);
-            } else {
-                DomHost.update(host, inputs);
-            }
+            DomHost.update(host, inputs);
             if (null != text) {
                 setTextContent(host, text);
             }

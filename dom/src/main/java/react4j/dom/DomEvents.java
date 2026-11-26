@@ -248,22 +248,22 @@ final class DomEvents {
         paused--;
     }
 
-    static State mount(
+    static void attach(
             final DomHost.Element element,
-            final String tag,
+            final State state,
             final DomHost.Node container,
             final DomHost.Node rootContainer,
-            final DomHost.@Nullable Element logicalParent,
-            final JsPropertyMap<@Nullable Object> inputs) {
+            final DomHost.@Nullable Element logicalParent) {
         var boundary = BOUNDARIES.get(container);
         if (null == boundary) {
             boundary = new Boundary(container);
             BOUNDARIES.set(container, boundary);
         }
         boundary.hosts++;
-        final var state = new State(boundary, rootContainer, logicalParent, inputs, tag, DomHost.isHtml(element));
+        state.boundary = boundary;
+        state.rootContainer = rootContainer;
+        state.logicalParent = logicalParent;
         STATES.set(element, state);
-        return state;
     }
 
     @Nullable
@@ -280,7 +280,7 @@ final class DomEvents {
         if (null != state.trackedProperty) {
             DomHost.properties(element).delete(state.trackedProperty);
         }
-        final var boundary = state.boundary;
+        final var boundary = Objects.requireNonNull(state.boundary);
         if (0 == --boundary.hosts) {
             boundary.listeners.forEach(
                     (name, listener) -> boundary.node.removeEventListener(name, listener, NON_BUBBLING.contains(name)));
@@ -406,20 +406,25 @@ final class DomEvents {
     }
 
     private static List<Origin> outerRoots(final State inner) {
-        final var outer = closestManaged(inner.rootContainer);
+        final var container = Objects.requireNonNull(inner.rootContainer);
+        final var outer = closestManaged(container);
         if (null == outer) {
             return List.of();
         }
         final List<Origin> roots = new ArrayList<>();
         final Set<DomHost.Node> seen = new HashSet<>();
-        seen.add(inner.rootContainer);
+        seen.add(container);
         for (var element = outer; null != element; ) {
             final var state = STATES.get(element);
-            if (null == state || !seen.add(state.rootContainer)) {
+            if (null == state) {
+                break;
+            }
+            final var outerContainer = Objects.requireNonNull(state.rootContainer);
+            if (!seen.add(outerContainer)) {
                 break;
             }
             roots.add(new Origin(element, state));
-            element = closestManaged(state.rootContainer);
+            element = closestManaged(outerContainer);
         }
         return roots;
     }
@@ -447,7 +452,7 @@ final class DomEvents {
             final String name,
             final NativeEvent nativeEvent,
             final boolean change) {
-        final var boundary = state.boundary;
+        final var boundary = Objects.requireNonNull(state.boundary);
         if ("Blur".equals(name)) {
             DomHost.commitNumberOnBlur(element, state);
         }
@@ -762,11 +767,11 @@ final class DomEvents {
     }
 
     static final class State {
-        final Boundary boundary;
-        final DomHost.Node rootContainer;
+        private @Nullable Boundary boundary;
+        private DomHost.@Nullable Node rootContainer;
         final String tag;
         final boolean html;
-        final DomHost.@Nullable Element logicalParent;
+        private DomHost.@Nullable Element logicalParent;
         JsPropertyMap<@Nullable Object> inputs;
         boolean hasHandlers;
         boolean controlInitialized;
@@ -783,18 +788,9 @@ final class DomEvents {
         @Nullable
         String trackedProperty;
 
-        State(
-                final Boundary boundary,
-                final DomHost.Node rootContainer,
-                final DomHost.@Nullable Element logicalParent,
-                final JsPropertyMap<@Nullable Object> inputs,
-                final String tag,
-                final boolean html) {
-            this.boundary = boundary;
-            this.rootContainer = rootContainer;
+        State(final JsPropertyMap<@Nullable Object> inputs, final String tag, final boolean html) {
             this.tag = tag;
             this.html = html;
-            this.logicalParent = logicalParent;
             this.inputs = inputs;
         }
     }

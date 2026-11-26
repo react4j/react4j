@@ -11,6 +11,34 @@ const touchEvent = goog.require('react4j.dom.events.TouchEvent.$Overlay');
 const uIEvent = goog.require('react4j.dom.events.UIEvent.$Overlay');
 const wheelEvent = goog.require('react4j.dom.events.WheelEvent.$Overlay');
 
+let mountProbe = [];
+
+EventsBrowserTest.beginMountProbe = function() {
+  mountProbe = [];
+  for (const role of ['parent', 'child']) {
+    const name = 'react4j-mount-' + role;
+    if (customElements.get(name)) continue;
+    /** @constructor @extends {HTMLElement} */
+    function Observed() {
+      const element = /** @type {!HTMLElement} */ (Reflect.construct(HTMLElement, [], Observed));
+      mountProbe.push(role + ':construct:' + element.isConnected);
+      return element;
+    }
+    Object.setPrototypeOf(Observed, HTMLElement);
+    Object.setPrototypeOf(Observed.prototype, HTMLElement.prototype);
+    Object.defineProperty(Observed, 'observedAttributes', {value: ['data-probe']});
+    Observed.prototype['attributeChangedCallback'] = function() {
+      mountProbe.push(role + ':attribute:' + this.childNodes.length + ':' + this.isConnected);
+    };
+    Observed.prototype['connectedCallback'] = function() {
+      mountProbe.push(role + ':connected:' + this.isConnected);
+    };
+    customElements.define(name, Observed);
+  }
+};
+
+EventsBrowserTest.mountProbeTrace = function() { return mountProbe.join(' '); };
+
 EventsBrowserTest.registerCustomizedButton = function() {
   const name = 'react4j-test-button';
   if (!customElements.get(name)) {

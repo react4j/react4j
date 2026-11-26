@@ -186,27 +186,47 @@ final class DomHost {
 
     private DomHost() {}
 
+    static String rootNamespace(final Node container) {
+        if (9 == container.nodeType) {
+            final var root = container.document().documentElement;
+            final var namespace = null == root ? null : root.namespaceURI;
+            return null == namespace ? HTML : namespace;
+        }
+        final var node = 8 == container.nodeType ? container.parentNode : container;
+        if (null != node && 1 == node.nodeType) {
+            final var element = Js.<Element>uncheckedCast(node);
+            final var namespace = element.namespaceURI;
+            if (null != namespace) {
+                final var tag = element.tagName;
+                return childNamespace(elementNamespace(namespace, tag), tag);
+            }
+        }
+        return HTML;
+    }
+
+    static String elementNamespace(final String parentNamespace, final String tag) {
+        if (HTML.equals(parentNamespace)) {
+            return switch (tag) {
+                case "svg" -> SVG;
+                case "math" -> MATHML;
+                default -> HTML;
+            };
+        }
+        return parentNamespace;
+    }
+
+    static String childNamespace(final String namespace, final String tag) {
+        return SVG.equals(namespace) && "foreignObject".equals(tag) ? HTML : namespace;
+    }
+
     static Element createElement(
             final Node container,
-            @Nullable final Element physicalParent,
+            final String namespace,
             final String tag,
             final JsPropertyMap<@Nullable Object> inputs) {
         final var document = container.document();
-        final var parent = null != physicalParent
-                ? physicalParent
-                : 9 == container.nodeType ? document.documentElement : Js.<@Nullable Element>uncheckedCast(container);
-        final var namespace = null == parent ? null : parent.namespaceURI;
-        if (null != parent
-                && null != namespace
-                && !HTML.equals(namespace)
-                && !(SVG.equals(namespace) && "foreignObject".equals(parent.localName))) {
+        if (!HTML.equals(namespace)) {
             return document.createElementNS(namespace, tag);
-        }
-        if ("svg".equals(tag)) {
-            return document.createElementNS(SVG, tag);
-        }
-        if ("math".equals(tag)) {
-            return document.createElementNS(MATHML, tag);
         }
         if ("script".equals(tag)) {
             final var wrapper = document.createElement("div");
@@ -217,40 +237,52 @@ final class DomHost {
         if ("string".equals(Js.typeof(customName))) {
             return document.createElement(tag, JsPropertyMap.of("is", customName));
         }
-        return document.createElement(tag);
+        final var element = document.createElement(tag);
+        if ("select".equals(tag) && Js.isTruthy(inputs.get("multiple"))) {
+            properties(element).set("multiple", true);
+        }
+        return element;
     }
 
     static Node createText(final Node container, final String value) {
         return container.document().createTextNode(value);
     }
 
-    static boolean isHtml(final Element element) {
-        return HTML.equals(element.namespaceURI);
-    }
-
-    static void mount(
+    static DomEvents.State prepareInitial(
             final Element element,
             final String tag,
+            final JsPropertyMap<@Nullable Object> inputs,
+            @Nullable final String text) {
+        final var state = new DomEvents.State(inputs, tag, HTML.equals(element.namespaceURI));
+        applyProperties(element, state, null, inputs, text);
+        if (isControlTag(tag)) {
+            restoreControlled(element, state);
+        }
+        return state;
+    }
+
+    static void attachInitial(
+            final Element element,
+            final DomEvents.State state,
             final Node boundary,
             final Node rootContainer,
-            @Nullable final Element logicalParent,
-            final JsPropertyMap<@Nullable Object> inputs) {
-        final var state = DomEvents.mount(element, tag, boundary, rootContainer, logicalParent, inputs);
-        applyProperties(element, state, null, inputs);
+            @Nullable final Element logicalParent) {
+        DomEvents.attach(element, state, boundary, rootContainer, logicalParent);
     }
 
     static void update(final Element element, final JsPropertyMap<@Nullable Object> next) {
         final var state = Objects.requireNonNull(DomEvents.state(element));
         final var previous = state.inputs;
         state.inputs = next;
-        applyProperties(element, state, previous, next);
+        applyProperties(element, state, previous, next, null);
     }
 
     private static void applyProperties(
             final Element element,
             final DomEvents.State state,
             @Nullable final JsPropertyMap<@Nullable Object> previous,
-            final JsPropertyMap<@Nullable Object> next) {
+            final JsPropertyMap<@Nullable Object> next,
+            @Nullable final String initialText) {
         final var tag = state.tag;
         final boolean custom = tag.contains("-")
                 ? !RESERVED_HYPHENATED_TAGS.contains(tag)
@@ -269,6 +301,10 @@ final class DomHost {
             }
         }
         for (final var name : ownKeys(next)) {
+            if (null != initialText && "children".equals(name)) {
+                element.textContent = initialText;
+                continue;
+            }
             final var oldValue = null == previous ? null : previous.get(name);
             final var newValue = next.get(name);
             if (!Js.isTripleEqual(oldValue, newValue)) {
@@ -838,6 +874,7 @@ final class DomHost {
     @SuppressWarnings("NullAway.Init")
     static class Element extends Node {
         String localName;
+        String tagName;
 
         @Nullable
         String namespaceURI;
