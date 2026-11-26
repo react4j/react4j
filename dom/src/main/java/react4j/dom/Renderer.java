@@ -662,7 +662,6 @@ final class Renderer {
         Object ref;
 
         private final @Nullable Object _portalState;
-        private @Nullable String _hostTag;
         private @Nullable String _childNamespace;
         private @Nullable Object output;
 
@@ -1177,15 +1176,14 @@ final class Renderer {
                 boolean mounting,
                 Completion complete) {
             final var inputs = element.inputs();
-            final var currentTag = _hostTag;
-            final var tag = null == currentTag ? Js.asString(type) : currentTag;
+            final var tag = Js.asString(type);
             final var namespace = mounting ? DomHost.elementNamespace(parentNamespace(), tag) : null;
             if (null != namespace) {
                 _childNamespace = DomHost.childNamespace(namespace, tag);
             }
             final var hasHtml = DomHost.hasHtml(inputs);
             final var content = inputs.get("children");
-            final var tracksChildren = !hasHtml && !"textarea".equalsIgnoreCase(tag);
+            final var tracksChildren = !hasHtml && !"textarea".equals(tag);
             final var directText = tracksChildren && isText(content);
             if ((hasHtml || directText) && 0 != children.length) {
                 queueDeletions(children);
@@ -1283,7 +1281,7 @@ final class Renderer {
                 root._mutations.add(new HostPlacement(this, contentChanged, restoreControl));
             }
             final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(dom));
-            final var tag = Objects.requireNonNull(_hostTag);
+            final var tag = Js.asString(type);
             if (mounting
                     && Boolean.TRUE.equals(element.inputs().get("autoFocus"))
                     && ("button".equals(tag) || DomHost.isControlTag(tag))) {
@@ -1297,11 +1295,10 @@ final class Renderer {
         private void mountHost(ReactElement element, String namespace, @Nullable String initialText) {
             final var container = boundary();
             final var inputs = element.inputs();
-            final var host = DomHost.createElement(container, namespace, Js.asString(type), inputs);
+            final var tag = Js.asString(type);
+            final var host = DomHost.createElement(container, namespace, tag, inputs);
             appendInitialChildren(host);
-            final var tag = host.localName;
             final var state = DomHost.prepareInitial(host, tag, inputs, initialText);
-            _hostTag = tag;
             dom = host;
             root._mutations.add(new HostAttach(this, container, state));
         }
@@ -1643,7 +1640,6 @@ final class Renderer {
             final var previousView = view;
             final var previousPredicate = _viewPredicate;
             final var previousDom = dom;
-            final var hostTag = _hostTag;
             final var childNamespace = _childNamespace;
             final var previousRef = ref;
             final var previousOutput = output;
@@ -1675,7 +1671,6 @@ final class Renderer {
                 view = previousView;
                 _viewPredicate = previousPredicate;
                 dom = previousDom;
-                _hostTag = hostTag;
                 _childNamespace = childNamespace;
                 ref = previousRef;
                 output = previousOutput;

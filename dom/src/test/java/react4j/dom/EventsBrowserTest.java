@@ -1132,6 +1132,43 @@ public final class EventsBrowserTest {
             attribute(fontFace, "fontFamily", null);
             attribute(fontFace, "hidden", null);
 
+            ReactDOM.render(
+                    ReactNode.of(
+                            host("TEXTAREA", JsPropertyMap.of("defaultValue", "unused")),
+                            host("INPUT", JsPropertyMap.of("type", "checkbox", "checked", Browser.bool(true)))),
+                    root);
+            check("".equals(Browser.query(root, "textarea").getValue()), "Mixed-case textarea bypasses defaultValue");
+            final var uppercaseCheckbox = Browser.query(root, "input");
+            check(Boolean.TRUE.equals(Browser.property(uppercaseCheckbox, "checked")), "Mixed-case input sets checked");
+            attribute(uppercaseCheckbox, "checked", null);
+
+            final var observed = new StringBuilder();
+            final ReactEventHandler upperChange =
+                    event -> observed.append(Browser.property(event.getTarget(), "value"));
+            ReactDOM.render(host("INPUT", JsPropertyMap.of("value", "first", "onChange", upperChange)), root);
+            final var uppercaseInput = Browser.query(root, "input");
+            writeValue(uppercaseInput, "typed");
+            check("typed".contentEquals(observed), "Mixed-case input still dispatches native changes");
+            ReactDOM.render(host("INPUT", JsPropertyMap.of("value", "next", "onChange", upperChange)), root);
+            attribute(uppercaseInput, "value", "next");
+            check("typed".equals(uppercaseInput.getValue()), "Mixed-case input leaves its live value uncontrolled");
+
+            ReactDOM.render(
+                    host(
+                            "svg",
+                            JsPropertyMap.of(
+                                    "children",
+                                    host(
+                                            "foreignobject",
+                                            JsPropertyMap.of(
+                                                    "children",
+                                                    host("span", JsPropertyMap.of("id", "svg-descendant")))))),
+                    root);
+            check(
+                    "http://www.w3.org/2000/svg"
+                            .equals(Browser.property(Browser.query(root, "#svg-descendant"), "namespaceURI")),
+                    "Only exact foreignObject casing changes the SVG child namespace");
+
             beginMountProbe();
             ReactDOM.render(
                     host(

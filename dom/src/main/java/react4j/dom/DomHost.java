@@ -673,7 +673,7 @@ final class DomHost {
 
     static void restoreAfterEvent(final Element element) {
         final var state = DomEvents.state(element);
-        if (null == state) {
+        if (null == state || !state.controlInitialized) {
             return;
         }
         restoreControlled(element, state);
@@ -695,7 +695,7 @@ final class DomHost {
                     && name.equals(radioProps.get("name"))
                     && Js.isTripleEqual(form, radioProps.get("form"))) {
                 final var radioState = DomEvents.state(radio);
-                if (null != radioState) {
+                if (null != radioState && radioState.controlInitialized) {
                     radioState.lastValue = stringify(controlValue(radio, true));
                     restoreControlled(radio, radioState);
                 }

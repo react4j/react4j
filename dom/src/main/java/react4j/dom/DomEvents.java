@@ -456,7 +456,7 @@ final class DomEvents {
         if ("Blur".equals(name)) {
             DomHost.commitNumberOnBlur(element, state);
         }
-        final var selected = boundary.selectTarget(name, element, state.tag);
+        final var selected = boundary.selectTarget(name, element);
         final var batch = new DispatchBatch();
         if (!"Change".equals(name)
                 && !"TextInput".equals(name)
@@ -492,7 +492,7 @@ final class DomEvents {
         if (!"Click".equals(event) && !"Input".equals(event) && !"Change".equals(event)) {
             return false;
         }
-        final var tag = state.tag;
+        final var tag = state.controlInitialized ? state.tag : element.localName;
         final var type = DomHost.properties(element).get("type");
         if ("select".equals(tag) || "input".equals(tag) && "file".equals(type)) {
             return "Change".equals(event);
@@ -862,11 +862,11 @@ final class DomEvents {
             }
         }
 
-        private DomHost.@Nullable Element selectTarget(
-                final String name, final DomHost.Element element, final String tag) {
+        private DomHost.@Nullable Element selectTarget(final String name, final DomHost.Element element) {
             switch (name) {
                 case "Focus" -> {
                     final var props = DomHost.properties(element);
+                    final var tag = element.localName;
                     if ("textarea".equals(tag)
                             || "input".equals(tag) && TEXT_INPUT_TYPES.contains(DomHost.stringify(props.get("type")))
                             || "true".equals(props.get("contentEditable"))) {
