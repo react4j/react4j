@@ -6,6 +6,7 @@ import arez.Arez;
 import java.util.Objects;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsMethod;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -59,9 +60,19 @@ public final class RuntimeBrowserTest {
                     RuntimeCoverageExample.inputs(view) == element.inputs()
                             && RuntimeCoverageExample.requireInputs(view) == element.inputs(),
                     "Native inputs");
-            check(null == RuntimeCoverageExample.state(view), "Initial state");
+            check(
+                    RuntimeCoverageExample.inputs(view) == viewProperties(view).get("props"),
+                    "Java and JS props identity");
+            check(RuntimeCoverageExample.state(view) == view._initialState, "Constructor-assigned initial state");
+            check(
+                    RuntimeCoverageExample.state(view) == viewProperties(view).get("state"),
+                    "Java and JS state identity");
+            for (final var method : new String[] {"render", "setState", "forceUpdate"}) {
+                check("function".equals(Js.typeof(viewProperties(view).get(method))), "JS view method " + method);
+            }
             RuntimeCoverageExample.updateState(view, JsPropertyMap.of("count", 2));
             check("copy:2".equals(root.getTextContent()), "Native state update");
+            check(RuntimeCoverageExample.state(view) == viewProperties(view).get("state"), "Updated JS state identity");
             ReactDOM.batchedUpdates(() -> {
                 view.setState(JsPropertyMap.of("other", "kept"));
                 view.setState(JsPropertyMap.of("count", 3));
@@ -111,16 +122,23 @@ public final class RuntimeBrowserTest {
         LegacyRenderSupport.render(element, root);
     }
 
+    private static JsPropertyMap<@Nullable Object> viewProperties(NativeView view) {
+        return Js.uncheckedCast(view);
+    }
+
     private static final class StateView extends NativeView {
+        private final JsPropertyMap<@Nullable Object> _initialState = JsPropertyMap.of("count", 1);
+
         @JsConstructor
         StateView(@Nullable JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
+            viewProperties(this).set("state", _initialState);
         }
 
         @Override
         public ReactNode render() {
-            final var state = state();
-            return ReactNode.of(requireInputs().get("label") + ":" + (null == state ? "1" : state.get("count")));
+            final var state = Objects.requireNonNull(state());
+            return ReactNode.of(requireInputs().get("label") + ":" + state.get("count"));
         }
     }
 }

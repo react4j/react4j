@@ -24,6 +24,23 @@ React4jExterns.DevToolsHook.prototype.onCommitFiberRoot = function(id, root) {};
 /** @param {number} id @param {!Object} fiber */
 React4jExterns.DevToolsHook.prototype.onCommitFiberUnmount = function(id, fiber) {};
 
+/** @record */
+React4jExterns.ViewInstance = function() {};
+
+/** @type {?Object} */
+React4jExterns.ViewInstance.prototype.props;
+
+/** @type {?Object} */
+React4jExterns.ViewInstance.prototype.state;
+
+/** @return {*} */
+React4jExterns.ViewInstance.prototype.render = function() {};
+
+/** @param {!Object} state */
+React4jExterns.ViewInstance.prototype.setState = function(state) {};
+
+React4jExterns.ViewInstance.prototype.forceUpdate = function() {};
+
 /**
  * Properties shared by the host input maps and their typed overlays.
  * @interface

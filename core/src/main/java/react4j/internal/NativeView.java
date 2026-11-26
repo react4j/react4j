@@ -3,6 +3,8 @@ package react4j.internal;
 import java.util.Objects;
 import java.util.function.Consumer;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsProperty;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
@@ -10,8 +12,12 @@ import react4j.ReactNode;
 
 /** Component instance used by generated views. */
 public abstract class NativeView {
+    @JsProperty(name = "props")
     private @Nullable JsPropertyMap<@Nullable Object> _inputs;
+
+    @JsProperty(name = "state")
     private @Nullable JsPropertyMap<@Nullable Object> _state;
+
     private @Nullable JsPropertyMap<@Nullable Object> _pendingState;
     private @Nullable Consumer<Runnable> _update;
     private boolean _forceUpdate;
@@ -25,6 +31,7 @@ public abstract class NativeView {
         return Js.<ViewConstructorFunction>uncheckedCast(type).construct(inputs);
     }
 
+    @JsMethod
     public abstract @Nullable ReactNode render();
 
     public final @Nullable JsPropertyMap<@Nullable Object> inputs() {
@@ -83,6 +90,7 @@ public abstract class NativeView {
         };
     }
 
+    @JsMethod
     public final void setState(final JsPropertyMap<@Nullable Object> state) {
         final var update = _update;
         if (null != update) {
@@ -105,6 +113,7 @@ public abstract class NativeView {
         }
     }
 
+    @JsMethod
     public final void forceUpdate() {
         final var update = _update;
         if (null != update) {
