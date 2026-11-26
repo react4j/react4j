@@ -19,6 +19,7 @@ public abstract class NativeView {
     private @Nullable JsPropertyMap<@Nullable Object> _state;
 
     private @Nullable JsPropertyMap<@Nullable Object> _pendingState;
+    private @Nullable Runnable _legacyUpdate;
     private @Nullable Consumer<Runnable> _update;
     private boolean _forceUpdate;
 
@@ -46,11 +47,18 @@ public abstract class NativeView {
         return _state;
     }
 
+    public final void attachLegacy(final Runnable update) {
+        _update = null;
+        _legacyUpdate = update;
+    }
+
     public final void attach(final Consumer<Runnable> update) {
+        _legacyUpdate = null;
         _update = update;
     }
 
     public final void detach() {
+        _legacyUpdate = null;
         _update = null;
         _pendingState = null;
         _forceUpdate = false;
@@ -92,18 +100,27 @@ public abstract class NativeView {
 
     @JsMethod
     public final void setState(final JsPropertyMap<@Nullable Object> state) {
-        final var update = _update;
-        if (null != update) {
-            update.accept(() -> {
-                var pending = _pendingState;
-                if (null == pending) {
-                    pending = JsPropertyMap.of();
-                    copyState(pending, _state);
-                    _pendingState = pending;
-                }
-                copyState(pending, state);
-            });
+        final var legacyUpdate = _legacyUpdate;
+        if (null != legacyUpdate) {
+            mergePendingState(state);
+            legacyUpdate.run();
+        } else if (null != _update) {
+            deferState(_update, state);
         }
+    }
+
+    private void deferState(final Consumer<Runnable> update, final JsPropertyMap<@Nullable Object> state) {
+        update.accept(() -> mergePendingState(state));
+    }
+
+    private void mergePendingState(final JsPropertyMap<@Nullable Object> state) {
+        var pending = _pendingState;
+        if (null == pending) {
+            pending = JsPropertyMap.of();
+            copyState(pending, _state);
+            _pendingState = pending;
+        }
+        copyState(pending, state);
     }
 
     private static void copyState(
@@ -115,9 +132,16 @@ public abstract class NativeView {
 
     @JsMethod
     public final void forceUpdate() {
-        final var update = _update;
-        if (null != update) {
-            update.accept(() -> _forceUpdate = true);
+        final var legacyUpdate = _legacyUpdate;
+        if (null != legacyUpdate) {
+            _forceUpdate = true;
+            legacyUpdate.run();
+        } else if (null != _update) {
+            deferForceUpdate(_update);
         }
+    }
+
+    private void deferForceUpdate(final Consumer<Runnable> update) {
+        update.accept(() -> _forceUpdate = true);
     }
 }

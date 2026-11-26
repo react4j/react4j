@@ -1,12 +1,12 @@
 package react4j.dom;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
@@ -32,12 +32,13 @@ import react4j.internal.OnShouldComponentUpdate;
 
 final class Renderer {
     private static final Fiber[] NO_CHILDREN = new Fiber[0];
+    private static final List<Task> NO_CALLBACKS = List.of();
     private static final double RENDER_BUDGET_MS = 5;
     private static final int NORMAL_EXPIRATION_MS = 5000;
     private static final int INTERACTIVE_EXPIRATION_MS = 500;
     private static final boolean DEVELOPMENT = "development".equals(System.getProperty("react4j.environment"));
     private static final DomHost.WeakMap<Node, Root> ROOTS = new DomHost.WeakMap<>();
-    private static final LinkedHashSet<Root> PENDING = new LinkedHashSet<>();
+    private static final ArrayDeque<Root> PENDING = new ArrayDeque<>();
     private static final LinkedHashSet<Root> INTERACTIVE = new LinkedHashSet<>();
     private static final LinkedHashSet<Root> SYNCHRONOUS = new LinkedHashSet<>();
     private static int _batchDepth;
@@ -80,7 +81,7 @@ final class Renderer {
         if (_working || 0 != _batchDepth && root._initialized) {
             root.enqueue(task);
         } else {
-            root.commit(null == task ? List.of() : List.of(task));
+            root.commit(null == task ? NO_CALLBACKS : List.of(task));
         }
         return root.publicInstance();
     }
@@ -144,9 +145,10 @@ final class Renderer {
         try {
             while (!PENDING.isEmpty() || !SYNCHRONOUS.isEmpty()) {
                 flushPriority(SYNCHRONOUS);
-                if (!PENDING.isEmpty()) {
-                    final var root = PENDING.iterator().next();
-                    root.runScheduled();
+                final var root = PENDING.pollFirst();
+                if (null != root) {
+                    root._queued = false;
+                    root.runLegacy();
                 }
             }
         } finally {
@@ -226,6 +228,7 @@ final class Renderer {
         private @Nullable LegacySuspense _legacySuspense;
         private boolean _initialized;
         private boolean _scheduled;
+        private boolean _queued;
         private @Nullable Task _nextStep;
         private List<Task> _activeCallbacks = List.of();
         private List<Runnable> _activeUpdates = List.of();
@@ -286,7 +289,10 @@ final class Renderer {
             if (null != callback) {
                 _callbacks.add(callback);
             }
-            PENDING.add(this);
+            if (!_queued) {
+                PENDING.addLast(this);
+                _queued = true;
+            }
             flush();
         }
 
@@ -305,21 +311,21 @@ final class Renderer {
 
         private void runScheduled() {
             _scheduled = false;
-            PENDING.remove(this);
-            if (concurrent) {
-                runSlice(false);
-                return;
+            runSlice(false);
+        }
+
+        private void runLegacy() {
+            if (_callbacks.isEmpty()) {
+                commit(NO_CALLBACKS);
+            } else {
+                final var callbacks = List.copyOf(_callbacks);
+                _callbacks.clear();
+                commit(callbacks);
             }
-            final var callbacks = List.copyOf(_callbacks);
-            _callbacks.clear();
-            commit(callbacks);
         }
 
         private void update(Runnable action) {
-            if (!concurrent) {
-                action.run();
-                enqueue(null);
-            } else if (_interactive || _committing) {
+            if (_interactive || _committing) {
                 _urgentUpdates.add(action);
                 scheduleUrgent();
             } else {
@@ -449,8 +455,12 @@ final class Renderer {
             if (_working) {
                 enqueue(this::unregister);
             } else {
+                if (_queued) {
+                    PENDING.remove(this);
+                    _queued = false;
+                }
                 _callbacks.add(this::unregister);
-                runScheduled();
+                runLegacy();
             }
         }
 
@@ -957,18 +967,30 @@ final class Renderer {
         }
 
         private void invalidate() {
-            root.update(this::markDirty);
+            if (root.concurrent) {
+                root.update(this::markDirty);
+            } else {
+                invalidateLegacy();
+            }
+        }
+
+        private void invalidateLegacy() {
+            markDirty();
+            root.enqueue(null);
         }
 
         private void markDirty() {
+            final var undo = root._renderUndo;
             for (var fiber = this; null != fiber && !fiber._dirty; fiber = fiber.parent) {
-                final var undo = root._renderUndo;
                 if (null != undo) {
-                    final var clean = fiber;
-                    undo.add(() -> clean._dirty = false);
+                    fiber.rememberClean(undo);
                 }
                 fiber._dirty = true;
             }
+        }
+
+        private void rememberClean(List<Runnable> undo) {
+            undo.add(() -> _dirty = false);
         }
 
         private boolean canReuse(@Nullable Object next, @Nullable Scope scope) {
@@ -1132,7 +1154,12 @@ final class Renderer {
                         _contextValue = value;
                         final var consumer = Js.<Context.ConsumerRenderFunction<@Nullable Object>>uncheckedCast(
                                 Objects.requireNonNull(element.inputs().get("children")));
-                        output = renderOwned(() -> Renderable.toReactNode(consumer.render(value)));
+                        final var owner = React.swapCurrentOwner(this);
+                        try {
+                            output = Renderable.toReactNode(consumer.render(value));
+                        } finally {
+                            React.swapCurrentOwner(owner);
+                        }
                     }
                     recordDurations(mounting, root.time() - actualStartTime);
                     reconcileChildren(output, scope, finish);
@@ -1315,6 +1342,14 @@ final class Renderer {
         }
 
         private void attachUpdater(final NativeView component) {
+            if (root.concurrent) {
+                attachConcurrentUpdater(component);
+            } else {
+                component.attachLegacy(this::invalidateLegacy);
+            }
+        }
+
+        private void attachConcurrentUpdater(final NativeView component) {
             component.attach(action -> root.update(() -> {
                 if (alive && component == view) {
                     final var undo = root._renderUndo;
@@ -1386,9 +1421,9 @@ final class Renderer {
         private void renderView(NativeView component) {
             _renderedCommit = root._commitSequence;
             _captured = false;
-            output = renderOwned(component::render);
+            output = renderOwned(component);
             if (DEVELOPMENT && strict) {
-                renderOwned(component::render);
+                renderOwned(component);
             }
         }
 
@@ -1449,10 +1484,10 @@ final class Renderer {
             }
         }
 
-        private @Nullable Object renderOwned(Supplier<@Nullable Object> render) {
+        private @Nullable ReactNode renderOwned(NativeView component) {
             final var owner = React.swapCurrentOwner(this);
             try {
-                return render.get();
+                return component.render();
             } finally {
                 React.swapCurrentOwner(owner);
             }

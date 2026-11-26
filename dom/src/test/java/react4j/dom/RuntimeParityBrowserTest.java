@@ -55,6 +55,7 @@ public final class RuntimeParityBrowserTest {
             commitErrors(container);
             rootUpdates(container);
             nestedRoots(container, target);
+            batchedRootState(container, target);
             skippedUpdates(container);
             committedChildren(container);
             alternateContainers();
@@ -479,6 +480,51 @@ public final class RuntimeParityBrowserTest {
             equal("inner", target.getTextContent());
         });
         equal("", target.getTextContent());
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
+    private static void batchedRootState(Browser.Element container, Browser.Element target) {
+        final var trace = new StringBuilder();
+        final ViewConstructorFunction type = Counter::new;
+        final RefConsumer ref = node -> {};
+        final var firstElement = counter(type, trace, container, ref, "A");
+        final var secondElement = counter(type, trace, target, ref, "B");
+        final var first =
+                Js.<NativeView>uncheckedCast(Objects.requireNonNull(ReactDOM.render(firstElement, container)));
+        final var second = Js.<NativeView>uncheckedCast(Objects.requireNonNull(ReactDOM.render(secondElement, target)));
+        trace.setLength(0);
+
+        ReactDOM.batchedUpdates(() -> {
+            first.setState(JsPropertyMap.of("count", 1));
+            second.setState(JsPropertyMap.of("count", 2));
+            second.forceUpdate();
+            ReactDOM.render(firstElement, container, () -> {
+                equal("A1", container.getTextContent());
+                equal("B0", target.getTextContent());
+                second.setState(JsPropertyMap.of("count", 3));
+                trace.append("first,");
+            });
+            equal("A0", container.getTextContent());
+            equal("B0", target.getTextContent());
+        });
+        equal("render:A1,snapshot:A:A0,update:A:A1,first,render:B3,snapshot:B:B0,update:B:B3,", trace.toString());
+
+        trace.setLength(0);
+        ReactDOM.batchedUpdates(() -> {
+            first.setState(JsPropertyMap.of("count", 4));
+            second.setState(JsPropertyMap.of("count", 5));
+            ReactDOM.render(secondElement, target, () -> {
+                equal("", target.getTextContent());
+                first.setState(JsPropertyMap.of("count", 6));
+                trace.append("removed,");
+            });
+            check(ReactDOM.unmountComponentAtNode(target), "An unmount drains the second root's queued callbacks");
+            equal("A1", container.getTextContent());
+            equal("", target.getTextContent());
+        });
+        equal("unmount:B3,removed,render:A6,snapshot:A:A1,update:A:A6,", trace.toString());
+        equal("A6", container.getTextContent());
+        check(!ReactDOM.unmountComponentAtNode(target), "The second root was unregistered");
         ReactDOM.unmountComponentAtNode(container);
     }
 
