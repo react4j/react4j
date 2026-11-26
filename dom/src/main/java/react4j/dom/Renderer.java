@@ -726,7 +726,12 @@ final class Renderer {
             if (isArray(content)) {
                 final @Nullable Object[] values = Js.uncheckedCast(content);
                 if (1 != values.length || !reuseSingle(values[0], scope, complete)) {
-                    new ChildList(values, previous, scope, complete).advance();
+                    final var deletionPosition = root._mutations.size();
+                    if (root.concurrent || null != root._legacySuspense || 0 == previous.length) {
+                        new ChildList(values, previous, scope, complete, 0, deletionPosition, null).advance();
+                    } else {
+                        reconcileAlignedChildren(values, previous, scope, complete, deletionPosition);
+                    }
                 }
                 return;
             }
@@ -781,6 +786,47 @@ final class Renderer {
             return false;
         }
 
+        private void reconcileAlignedChildren(
+                @Nullable Object[] values,
+                Fiber[] previous,
+                @Nullable Scope scope,
+                Completion complete,
+                int deletionPosition) {
+            final var count = Math.min(values.length, previous.length);
+            RenderFailure failure = null;
+            int position = 0;
+            while (position < count) {
+                final var child = previous[position];
+                final var value = values[position];
+                if (null == value || !child._initialized || child._index != position || child._position != position) {
+                    break;
+                }
+                try {
+                    if (!matchesSlot(child, value, position)) {
+                        break;
+                    }
+                } catch (Throwable error) {
+                    failure = new RenderFailure(this, error);
+                    break;
+                }
+                position++;
+                if (child.canReuse(value, scope)) {
+                    child.queuePlacement();
+                } else {
+                    child.update(value, scope, root._saveResult);
+                    failure = root._resultFailure;
+                    if (null != failure) {
+                        break;
+                    }
+                }
+            }
+            if (position == values.length && position == previous.length) {
+                complete.finish(failure);
+            } else {
+                new ChildList(values, previous, scope, complete, position, deletionPosition, failure).advance();
+            }
+        }
+
         private final class ChildList {
             private final @Nullable Object[] _values;
             private final Fiber[] _previous;
@@ -792,16 +838,29 @@ final class Renderer {
             private int _cursor;
             private int _position;
             private int _lastPlacedIndex;
-            private int _deletionPosition = root._mutations.size();
+            private int _deletionPosition;
             private @Nullable LinkedHashMap<Object, Fiber> _unmatched;
             private @Nullable RenderFailure _failure;
 
-            private ChildList(@Nullable Object[] values, Fiber[] previous, @Nullable Scope scope, Completion complete) {
+            private ChildList(
+                    @Nullable Object[] values,
+                    Fiber[] previous,
+                    @Nullable Scope scope,
+                    Completion complete,
+                    int prefix,
+                    int deletionPosition,
+                    @Nullable RenderFailure failure) {
                 _values = values;
                 _previous = previous;
                 _scope = scope;
                 _complete = complete;
                 _completeChild = root.concurrent ? this::completed : root._saveResult;
+                _index = prefix;
+                _cursor = prefix;
+                _position = prefix;
+                _lastPlacedIndex = 0 == prefix ? 0 : prefix - 1;
+                _deletionPosition = deletionPosition;
+                _failure = failure;
             }
 
             private void advance() {
