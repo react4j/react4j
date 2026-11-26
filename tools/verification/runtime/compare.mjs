@@ -25,6 +25,11 @@ const rows = Object.keys(baseline).map(metric => ({
 }));
 console.table(rows);
 for (const {metric, baseline, candidate} of rows) {
-  const tolerance = Math.max(baseline * 0.1, metric.endsWith('Ms') ? 1 : 0);
-  assert(candidate <= baseline + tolerance, metric + ' exceeded the comparison budget');
+  // Subtracting browser timestamps can leave binary rounding noise at the exact 1 ms boundary.
+  const timing = metric.endsWith('Ms');
+  const unitsPerMs = 1_000_000;
+  const reference = timing ? Math.round(baseline * unitsPerMs) : baseline;
+  const measured = timing ? Math.round(candidate * unitsPerMs) : candidate;
+  const tolerance = Math.max(reference / 10, timing ? unitsPerMs : 0);
+  assert(measured <= reference + tolerance, metric + ' exceeded the comparison budget');
 }

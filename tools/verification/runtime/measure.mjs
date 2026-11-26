@@ -1,5 +1,6 @@
 // Usage: node measure.mjs CHROME REFERENCE_DIRECTORY CANDIDATE_DIRECTORY [EXTENSION [PRODUCTION_DIRECTORY [NAMED_PRODUCTION_DIRECTORY]]]
 import {spawn} from 'node:child_process';
+import {once} from 'node:events';
 import {mkdtemp, readFile, rm} from 'node:fs/promises';
 import {createServer} from 'node:http';
 import {tmpdir} from 'node:os';
@@ -9,6 +10,8 @@ import assert from 'node:assert/strict';
 
 const [chrome, reference, candidate, extension, production, namedProduction] = process.argv.slice(2);
 if (!candidate || !reference || !chrome) throw Error('Expected Chrome and two built TodoMVC directories');
+const pairs = Number(process.env.REACT4J_BENCHMARK_PAIRS ?? 10);
+if (!Number.isSafeInteger(pairs) || pairs < 1) throw Error('Expected a positive number of benchmark pairs');
 const profile = await mkdtemp(join(tmpdir(), 'react4j-browser-'));
 const types = {'.html':'text/html', '.js':'text/javascript', '.css':'text/css', '.svg':'image/svg+xml'};
 async function serve(path) {
@@ -51,6 +54,7 @@ async function until(probe) {
   throw Error('Browser timeout: ' + diagnostics);
 }
 try {
+  await once(browser, 'spawn');
   const port = await until(async () => (await readFile(join(profile, 'DevToolsActivePort'), 'utf8')
     .catch(() => '')).split('\n')[0]);
   const pages = await (await fetch('http://127.0.0.1:' + port + '/json/list')).json();
@@ -94,7 +98,7 @@ try {
   const probe = extension && await readFile(new URL('./devtools.js', import.meta.url), 'utf8');
   const results = Object.fromEntries(Object.keys(sites).map(key => [key, {samples:[]}]));
   const titles = Array.from({length:50}, (_, i) => 'Row ' + i);
-  for (let run = 0; run < (extension ? 1 : 11); run++) {
+  for (let run = 0; run < (extension ? 1 : pairs + 1); run++) {
     const variants = Object.keys(sites);
     for (const variant of (run % 2 ? variants.reverse() : variants)) {
       const site = sites[variant];
@@ -109,7 +113,11 @@ try {
       }
       const {timings, ...observation} = await evaluate(workload);
       assert.deepEqual(observation, {titles, completed:25, retained:true, entry:''});
-      if (probe) observation.devtools = await evaluate('window.finishDevToolsProbe()');
+      if (probe) {
+        const devtools = await evaluate('window.finishDevToolsProbe()');
+        observation.devtools = devtools.observation;
+        output.devtoolsTiming = devtools.timing;
+      }
       output.observation = observation;
       await send('HeapProfiler.collectGarbage');
       const {usedSize} = await send('Runtime.getHeapUsage');
@@ -135,8 +143,10 @@ try {
   console.log(JSON.stringify({browser:await evaluate('navigator.userAgent'), ...results}, null, 2));
 } finally {
   socket?.close();
-  browser.kill();
-  await stopped;
+  if (browser.pid !== undefined) {
+    browser.kill();
+    await stopped;
+  }
   for (const site of Object.values(sites)) site.server.close();
   await rm(profile, {recursive:true, force:true, maxRetries:4});
 }

@@ -42,12 +42,26 @@
   window.finishDevToolsProbe = () => {
     renderer.stopProfiling();
     const commits = renderer.getProfilingData().dataForRoots.flatMap(root => root.commitData);
-    if (!commits.some(commit => commit.fiberActualDurations?.some(([fiber,duration]) => fiber === id && duration > 0))) {
+    let timedCommits = 0;
+    let todoEntryTimedCommits = 0;
+    let todoEntryPeakMs = 0;
+    for (const {fiberActualDurations} of commits) {
+      if (fiberActualDurations?.some(([, duration]) => duration > 0)) timedCommits++;
+      const entry = fiberActualDurations?.find(([fiber, duration]) => fiber === id && duration > 0);
+      if (entry) {
+        todoEntryTimedCommits++;
+        todoEntryPeakMs = Math.max(todoEntryPeakMs, entry[1]);
+      }
+    }
+    if (!todoEntryTimedCommits) {
       throw Error('Extension profile has no measured TodoEntry update');
     }
     const {props} = inspect(document.querySelector('#app li input[type=checkbox]'), 'TodoItem');
     const keys = Object.keys(props);
     if (readableNames ? !Object.hasOwn(props, 'todo') : !keys.length) throw Error('Extension lost the TodoItem input');
-    return {component, inspectedInput:readableNames ? 'TodoItem.todo' : keys.join(','), highlight:component, commits:commits.length};
+    return {
+      observation:{component, inspectedInput:readableNames ? 'TodoItem.todo' : keys.join(','), highlight:component, commits:commits.length},
+      timing:{timedCommits, todoEntryTimedCommits, todoEntryPeakMs},
+    };
   };
 })
