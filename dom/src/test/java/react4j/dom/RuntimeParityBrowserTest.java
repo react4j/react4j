@@ -8,7 +8,9 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
@@ -45,6 +47,7 @@ public final class RuntimeParityBrowserTest {
         ReactTestUtil.noCheckInvariants();
         try {
             lifecycle(container);
+            statePayloads(container);
             keyedList(container);
             focusAfterKeyedMove(container);
             hostText(container);
@@ -121,6 +124,75 @@ public final class RuntimeParityBrowserTest {
         check(ReactDOM.unmountComponentAtNode(container), "Mounted root unmounts");
         equal("unmount:B2,ref:null,", trace.toString());
     }
+
+    private static void statePayloads(Browser.Element container) {
+        final var trace = new StringBuilder();
+        final var mounted = new Counter[1];
+        final ViewConstructorFunction type = inputs -> {
+            final var view = new Counter(inputs);
+            mounted[0] = view;
+            return view;
+        };
+        final var errors = new StringBuilder();
+        final var getterOrder = new StringBuilder();
+        final ViewConstructorFunction boundary = CommitBoundary::new;
+        final var child =
+                counter(type, trace, container, ignored -> {}, "state").input("getterOrder", getterOrder);
+        ReactDOM.render(
+                commitBoundary(boundary, errors, "outer", commitBoundary(boundary, errors, "inner", child)), container);
+        trace.setLength(0);
+        final var instance = Objects.requireNonNull(mounted[0]);
+        final var patch = ownState(JsPropertyMap.of("inherited", true));
+        patch.set("count", 1);
+        final var symbol = stateSymbol("react4j.test.state");
+        setStateKey(patch, symbol, "symbol value");
+        ReactDOM.batchedUpdates(() -> {
+            instance.setState(patch);
+            instance.setState(withStateGetter(() -> {
+                getterOrder.append("getter,");
+                return "second patch";
+            }));
+            patch.set("count", 2);
+            equal("state0", container.getTextContent());
+        });
+        final var state = Objects.requireNonNull(instance.state());
+        equal(
+                "state2|render:state2,snapshot:state:state0,update:state:state2,|null|symbol value",
+                container.getTextContent() + "|" + trace + "|" + (null == state.get("inherited") ? "null" : "inherited")
+                        + "|" + String.valueOf(getStateKey(state, symbol)));
+        equal("getter,predicate:previous,", getterOrder.toString());
+        equal("second patch", String.valueOf(state.get("marker")));
+        ReactDOM.batchedUpdates(() -> {
+            instance.setState(withStateGetter(() -> {
+                throw new IllegalStateException("A descendant failed");
+            }));
+            errors.append("queued,");
+            equal("state2", container.getTextContent());
+        });
+        equal("queued,catch:inner,", errors.toString());
+        equal("inner", container.getTextContent());
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
+    @JsMethod
+    private static native JsPropertyMap<@Nullable Object> withStateGetter(StateGetter getter);
+
+    @JsFunction
+    private interface StateGetter {
+        String get();
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.create")
+    private static native JsPropertyMap<@Nullable Object> ownState(Object prototype);
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Symbol.for")
+    private static native Object stateSymbol(String name);
+
+    @JsMethod
+    private static native void setStateKey(Object target, Object key, Object value);
+
+    @JsMethod
+    private static native @Nullable Object getStateKey(Object target, Object key);
 
     private static ReactElement counter(
             ViewConstructorFunction type,
@@ -1315,7 +1387,11 @@ public final class RuntimeParityBrowserTest {
     private static native ViewConstructorFunction constructible(ViewConstructorFunction type);
 
     private static final class Counter extends NativeView
-            implements OnComponentDidMount, OnGetSnapshotBeforeUpdate, OnComponentDidUpdate, OnComponentWillUnmount {
+            implements OnComponentDidMount,
+                    OnGetSnapshotBeforeUpdate,
+                    OnComponentDidUpdate,
+                    OnComponentWillUnmount,
+                    OnShouldComponentUpdate {
         @JsConstructor
         Counter(@Nullable JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
@@ -1339,6 +1415,14 @@ public final class RuntimeParityBrowserTest {
                     null,
                     requireInputs().get("refCallback"),
                     JsPropertyMap.of("children", ReactNode.of(value)));
+        }
+
+        @Override
+        public boolean shouldComponentUpdate(JsPropertyMap<@Nullable Object> nextInputs) {
+            if (nextInputs.get("getterOrder") instanceof StringBuilder order) {
+                order.append(null == state() ? "predicate:previous," : "predicate:updated,");
+            }
+            return true;
         }
 
         @Override

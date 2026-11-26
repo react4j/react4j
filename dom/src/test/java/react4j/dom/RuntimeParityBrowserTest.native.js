@@ -98,3 +98,16 @@ RuntimeParityBrowserTest.observeMove = function(container, ancestor, update) {
     observer.disconnect();
   }
 };
+
+/** @param {!Object} target @param {*} key @param {*} value */
+RuntimeParityBrowserTest.setStateKey = function(target, key, value) {
+  target[key] = value;
+};
+
+/** @param {!Object} target @param {*} key @return {*} */
+RuntimeParityBrowserTest.getStateKey = function(target, key) { return target[key]; };
+
+/** @param {function():string} getter @return {!Object} */
+RuntimeParityBrowserTest.withStateGetter = function(getter) {
+  return Object.defineProperty({}, 'marker', {enumerable:true, get:getter});
+};

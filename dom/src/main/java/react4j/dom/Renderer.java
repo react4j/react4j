@@ -1366,8 +1366,8 @@ final class Renderer {
             final boolean retry = _retrySuspendedView;
             _retrySuspendedView = false;
             final var predicate = _viewPredicate;
-            final boolean changed =
-                    null == existing || oldNode != element || dirty && component.hasPendingUpdate() || force || retry;
+            final var pendingState = dirty ? component.preparePendingState() : null;
+            final boolean changed = null == existing || oldNode != element || null != pendingState || force || retry;
             final boolean render = changed
                     && (null == existing
                             || force
@@ -1377,7 +1377,9 @@ final class Renderer {
             final var previousState =
                     render && component instanceof OnGetSnapshotBeforeUpdate ? component.state() : null;
             component.updateInputs(inputs);
-            component.applyPendingState();
+            if (null != pendingState) {
+                component.applyState(pendingState);
+            }
             if (render) {
                 renderView(component);
             } else if (_captured || !refreshChildren) {
