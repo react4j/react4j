@@ -6,7 +6,6 @@ import static react4j.webtesting.Checks.equal;
 import arez.Arez;
 import arez.Disposable;
 import arez.annotations.Action;
-import java.util.Objects;
 import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -20,11 +19,11 @@ import react4j.annotations.PostUpdate;
 import react4j.annotations.PreUpdate;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
-import react4j.internal.ViewConstructorFunction;
 import react4j.webtesting.Browser;
 
 @NullMarked
@@ -90,9 +89,7 @@ public final class LifecycleBrowserTest {
 
     private static void failurePropagation() {
         var element = Js.<ReactElement>uncheckedCast(LifecycleBrowserTest_ThrowingBuilder.build());
-        var properties = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(element);
-        var constructor = Js.<ViewConstructorFunction>uncheckedCast(Objects.requireNonNull(properties.get("type")));
-        var view = constructor.construct(element.inputs());
+        var view = NativeView.construct(element.type(), element.inputs());
         try {
             for (var invocation : new Runnable[] {
                 () -> ((OnComponentDidMount) view).componentDidMount(),

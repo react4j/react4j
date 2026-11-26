@@ -67,7 +67,10 @@ public final class MeasurementFixture {
     @SuppressWarnings("fallthrough")
     public static int decisions(int value) {
         int result = value > 0 ? 1 : 2;
-        if (value > 0 && value < 3 || -1 == value) {
+        if (value > 0 // Keep the evaluated right operand on its own line.
+                        && value < parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("3")
+                || parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("-1") == value
+                || parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("-2") == value) {
             result++;
         }
         for (int i = 0; i < value; i++) {
@@ -81,7 +84,7 @@ public final class MeasurementFixture {
             value++;
         } while (value < 0);
         switch (value) {
-            case 1:
+            case 1, 3:
                 result++;
             case 2:
                 result++;
@@ -101,14 +104,19 @@ public final class MeasurementFixture {
     }
 
     public static int pattern(@Nullable Object value) {
-        if (!(value instanceof Double)) {
+        if (!(value instanceof Double number && number.doubleValue() > 0)) {
             return switch (value) {
                 case null -> parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("79");
                 case String text -> text.length();
                 case Integer number -> {
                     yield parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("83") + number;
                 }
-                default -> parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("89");
+                default ->
+                    value instanceof Boolean
+                            ? value.equals(Boolean.TRUE)
+                                    ? parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("89")
+                                    : parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("97")
+                            : parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement("101");
             };
         }
         return -2;
@@ -148,7 +156,7 @@ public final class MeasurementFixture {
     }
 
     public static final class NeverConstructed {
-        int value;
+        int value = 70;
 
         public NeverConstructed() {
             value = 73;

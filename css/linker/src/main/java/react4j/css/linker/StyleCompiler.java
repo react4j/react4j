@@ -109,16 +109,25 @@ final class StyleCompiler extends Compiler {
                 // J2CL modules are package-relative inside the declared .js tree artifact.
                 int tree = path.lastIndexOf(".js/");
                 String source = tree < 0 ? path : path.substring(tree + 4);
-                if (bindingSources.contains(source)) {
-                    inputSources.put(input.getName(), source);
-                    var treeRoot = Path.of(input.getName()).toAbsolutePath();
+                boolean binding = bindingSources.contains(source);
+                var pathInTree = Path.of(input.getName());
+                if (binding
+                        || (link.optimized()
+                                && tree >= 0
+                                && source.endsWith(".impl.java.js")
+                                && Files.isRegularFile(pathInTree.resolveSibling(
+                                        pathInTree.getFileName().toString().replace(".impl.java.js", ".js.map"))))) {
+                    var treeRoot = pathInTree.toAbsolutePath();
                     for (int i = 0; i < Path.of(source).getNameCount(); i++) {
                         treeRoot = Objects.requireNonNull(treeRoot.getParent());
                     }
-                    var map = BindingSourceMap.read(Path.of(input.getName()), treeRoot);
-                    inputMaps.put(input.getName(), map.mapping());
+                    var map = BindingSourceMap.read(pathInTree, treeRoot);
                     enrichedMaps.put(input.getName(), map.input());
-                    found.add(source);
+                    if (binding) {
+                        inputSources.put(input.getName(), source);
+                        inputMaps.put(input.getName(), map.mapping());
+                        found.add(source);
+                    }
                 }
             }
         }

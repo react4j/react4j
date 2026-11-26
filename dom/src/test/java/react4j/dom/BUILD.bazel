@@ -10,12 +10,15 @@ j2cl_library(
     testonly = True,
     srcs = [
         "BuildableBrowserTest.java",
+        "DevToolsHookTest.java",
         "EventsBrowserTest.java",
         "EventsBrowserTest.native.js",
         "PropertiesBrowserTest.java",
         "PropertiesBrowserTest.native.js",
         "RuntimeBrowserTest.java",
         "RuntimeCoverageExample.java",
+        "RuntimeParityBrowserTest.java",
+        "RuntimeParityBrowserTest.native.js",
     ],
     deps = [
         "//:core",
@@ -23,6 +26,19 @@ j2cl_library(
         "//examples/testing/src/main/java/react4j/webtesting:browser",
         "//third_party:arez_core-j2cl",
         "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "legacy_render_support",
+    testonly = True,
+    srcs = ["LegacyRenderSupport.java"],
+    visibility = ["//core/src/test/java/react4j:__pkg__"],
+    deps = [
+        "//:core",
+        "//:dom",
         "//third_party:jspecify-j2cl",
     ],
 )

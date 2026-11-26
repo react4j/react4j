@@ -6,7 +6,9 @@ import com.google.devtools.build.runfiles.AutoBazelRepository;
 import com.google.devtools.build.runfiles.Runfiles;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.javascript.jscomp.NodeUtil;
 import com.google.javascript.rhino.Node;
+import com.sun.source.tree.Tree;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,11 +17,13 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.IntStream;
 import java.util.zip.ZipFile;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -32,9 +36,14 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
 
     private record Origin(JavaCoverage source, int line, int position) {}
 
+    private record Branch(JavaCoverage source, JavaCoverage.Decision decision) {}
+
     private final TreeMap<Integer, Module> modules = new TreeMap<>();
     private final Map<String, JavaCoverage> sources = new TreeMap<>();
-    private final Set<String> boundDecisions = new HashSet<>();
+    private final Set<CoverageInstrumenter.Edge> boundDecisions = new HashSet<>();
+    private final Set<CoverageInstrumenter.Edge> ambiguousEdges = new HashSet<>();
+    private final Map<CoverageInstrumenter.Edge, CoverageInstrumenter.Line> branchEntryLines = new HashMap<>();
+    private final Map<Node, Branch> expressionBranches = new IdentityHashMap<>();
 
     RuntimeCoverage(
             String bundle,
@@ -240,7 +249,20 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
 
     @Override
     public List<CoverageInstrumenter.Edge> edges(Node node) {
+        var branch = expressionBranches.remove(node);
+        if (null != branch) {
+            return bind(node, branch.source(), branch.decision());
+        }
+        if (isPatternBindingGuard(node)) {
+            return List.of();
+        }
         String kind = node.getToken().name();
+        if (node.isAnd() || node.isOr() || node.isHook()) {
+            var expression = bindExpressionBranches(node);
+            if (!expression.isEmpty()) {
+                return expression;
+            }
+        }
         if (!Set.of("IF", "HOOK", "AND", "OR", "COALESCE", "WHILE", "DO", "FOR", "SWITCH", "CALL")
                 .contains(kind)) {
             return List.of();
@@ -261,6 +283,9 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
         var origins = new ArrayList<Origin>();
         if (null != condition) {
             branchOrigins(condition, kind, origins);
+        }
+        if (node.isAnd() || node.isOr()) {
+            branchOrigins(Objects.requireNonNull(node.getLastChild()), kind, origins);
         }
         var direct = origin(node);
         if (origins.isEmpty() && null != direct && null != direct.source().decision(direct.position(), kind)) {
@@ -287,16 +312,116 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
                 throw new IllegalArgumentException("Ambiguous Java branch positions: " + source.name);
             }
         }
-        String identity = source.name + ":" + decision.id();
-        if (!boundDecisions.add(identity)) {
-            throw new IllegalArgumentException("Ambiguous generated Java branch: " + identity);
+        return bind(node, source, decision);
+    }
+
+    private List<CoverageInstrumenter.Edge> bindExpressionBranches(Node node) {
+        var parent = node.getParent();
+        if (null == parent) {
+            return List.of();
         }
+        var context =
+                switch (parent.getToken()) {
+                    case IF -> node == parent.getFirstChild() ? Tree.Kind.IF : null;
+                    case WHILE -> node == parent.getFirstChild() ? Tree.Kind.WHILE_LOOP : null;
+                    case DO -> node == parent.getLastChild() ? Tree.Kind.DO_WHILE_LOOP : null;
+                    case FOR -> node == parent.getSecondChild() ? Tree.Kind.FOR_LOOP : null;
+                    case RETURN -> Tree.Kind.RETURN;
+                    case NAME ->
+                        NodeUtil.isNameDeclaration(Objects.requireNonNull(parent.getParent()))
+                                ? Tree.Kind.VARIABLE
+                                : null;
+                    default -> null;
+                };
+        if (null == context) {
+            return List.of();
+        }
+        var anchor = origin(parent);
+        if (null == anchor) {
+            return List.of();
+        }
+        // Nested operators can share one map location. Anchor the whole expression to its
+        // authored statement and require the same short-circuit and ternary structure.
+        var authored = anchor.source().expressionBranch(anchor.position(), context);
+        if (null == authored.decision() && Tree.Kind.RETURN == context && isSwitchArmReturn(parent)) {
+            authored = anchor.source().expressionBranch(anchor.position(), Tree.Kind.CASE);
+        }
+        var decision = authored.decision();
+        var matches = new IdentityHashMap<Node, Branch>();
+        if (null == decision || !matchExpressionBranches(node, authored, anchor.source(), matches)) {
+            return List.of();
+        }
+        matches.remove(node);
+        if (matches.isEmpty()) {
+            return List.of();
+        }
+        expressionBranches.putAll(matches);
+        return bind(node, anchor.source(), decision);
+    }
+
+    private static boolean isSwitchArmReturn(Node statement) {
+        var block = statement.getParent();
+        var arm = null != block && block.isBlock() ? block.getParent() : null;
+        return null != arm && (arm.isCase() || arm.isDefaultCase());
+    }
+
+    private static boolean matchExpressionBranches(
+            Node node, JavaCoverage.ExpressionBranch authored, JavaCoverage source, Map<Node, Branch> matches) {
+        var decision = authored.decision();
+        if (null == decision) {
+            return !(node.isAnd() || node.isOr() || node.isHook()) || isPatternBindingGuard(node);
+        }
+        if (!decision.kind().equals(node.getToken().name())) {
+            return false;
+        }
+        var child = node.getFirstChild();
+        for (var operand : authored.operands()) {
+            if (null == child || !matchExpressionBranches(child, operand, source, matches)) {
+                return false;
+            }
+            child = child.getNext();
+        }
+        matches.put(node, new Branch(source, decision));
+        return true;
+    }
+
+    private List<CoverageInstrumenter.Edge> bind(Node node, JavaCoverage source, JavaCoverage.Decision decision) {
         var result = new ArrayList<CoverageInstrumenter.Edge>();
-        for (int edge = 0; edge < decision.edges(); edge++) {
-            result.add(
-                    new CoverageInstrumenter.Edge(source.name, decision.range().firstLine(), decision.id() + edge));
+        // J2CL emits a JavaScript case for each label, with all labels in a Java arm sharing one outcome.
+        var arms = node.isSwitch()
+                ? decision.switchArms()
+                : IntStream.range(0, decision.edges()).boxed().toList();
+        for (int edge : arms) {
+            var origin =
+                    new CoverageInstrumenter.Edge(source.name, decision.range().firstLine(), decision.id() + edge);
+            result.add(origin);
+            var entered = source.branchEntryLine(decision, edge);
+            if (null != entered) {
+                branchEntryLines.put(origin, entered);
+            }
+        }
+        if (!boundDecisions.add(result.getFirst())) {
+            ambiguousEdges.addAll(result);
+            return List.of();
         }
         return result;
+    }
+
+    private static boolean isPatternBindingGuard(Node node) {
+        if (!node.isAnd()) {
+            return false;
+        }
+        final var condition = Objects.requireNonNull(node.getFirstChild());
+        final var binding = Objects.requireNonNull(node.getLastChild());
+        final var target = condition.getFirstChild();
+        // J2CL lowers an instanceof binding into a type check followed by an assignment and true.
+        return condition.isCall()
+                && null != target
+                && target.isGetProp()
+                && "$isInstance".equals(target.getString())
+                && binding.isComma()
+                && Objects.requireNonNull(binding.getFirstChild()).isAssign()
+                && Objects.requireNonNull(binding.getLastChild()).isTrue();
     }
 
     private void branchOrigins(Node node, String kind, List<Origin> origins) {
@@ -337,8 +462,15 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
             }
             if (hit.getAsBoolean()) {
                 var origin = instrumentation.edges().get(i);
-                edges.computeIfAbsent(origin.source(), ignored -> new HashSet<>())
-                        .add(origin.id());
+                if (!ambiguousEdges.contains(origin)) {
+                    edges.computeIfAbsent(origin.source(), ignored -> new HashSet<>())
+                            .add(origin.id());
+                    var entered = branchEntryLines.get(origin);
+                    if (null != entered) {
+                        lines.computeIfAbsent(entered.source(), ignored -> new HashSet<>())
+                                .add(entered.line());
+                    }
+                }
             }
         }
         var result = new TreeMap<String, LcovReport.Source>();
@@ -348,27 +480,27 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
     }
 
     public static void main(String[] args) throws Exception {
-        if (12 != args.length) {
+        if (10 != args.length) {
             throw new IllegalArgumentException(
-                    "Expected bundle, React, ReactDOM, browser metadata, two source archives, two module sets, source"
+                    "Expected bundle, browser metadata, two source archives, two module sets, source"
                             + " inventory, two class archives, output LCOV");
         }
         var runfiles = Runfiles.preload().withSourceRepository(AutoBazelRepository_RuntimeCoverage.NAME);
         var paths = new ArrayList<Path>();
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 9; i++) {
             paths.add(Path.of(Objects.requireNonNull(
                     runfiles.rlocation("_main/" + Path.of(args[i]).normalize()))));
         }
-        var destination = Path.of(args[11]);
+        var destination = Path.of(args[9]);
         Files.deleteIfExists(destination);
         String bundle = Files.readString(paths.get(0));
-        var declared = Set.copyOf(Files.readAllLines(paths.get(8)));
+        var declared = Set.copyOf(Files.readAllLines(paths.get(6)));
         var collector = new RuntimeCoverage(
                 bundle,
                 JavaInventory.read(
-                        Map.of("core/src/main/java", paths.get(9), "dom/src/main/java", paths.get(10)), declared),
-                Map.of("core/src/main/java", paths.get(4), "dom/src/main/java", paths.get(5)),
-                paths.subList(6, 8),
+                        Map.of("core/src/main/java", paths.get(7), "dom/src/main/java", paths.get(8)), declared),
+                Map.of("core/src/main/java", paths.get(2), "dom/src/main/java", paths.get(3)),
+                paths.subList(4, 6),
                 declared);
         var instrumentation = CoverageInstrumenter.instrument(bundle, collector);
         var runs = new ArrayList<JsonObject>();
@@ -392,18 +524,13 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
                     "/index.html",
                     "<!doctype html><body><script>var CLOSURE_DEFINES=" + defines
                             + ";window.coverageError=null;window.addEventListener('error',e=>window.coverageError=String(e.error||e.message));</script><script"
-                            + " src='/react.js'></script><script src='/react-dom.js'></script><script"
                             + " src='/runtime.js'></script>",
-                    "/react.js",
-                    Files.readString(paths.get(1)),
-                    "/react-dom.js",
-                    Files.readString(paths.get(2)),
                     "/runtime.js",
                     instrumentation.javascript()
                             + "\n"
                             + "Promise.resolve(window.runRuntimeCoverageTests()).then(()=>window.coverageDone=true,e=>window.coverageError=String(e));");
             var result = BrowserCoverage.run(
-                    paths.get(3),
+                    paths.get(1),
                     assets,
                     "window.coverageError||window.coverageDone",
                     "({error:window.coverageError,counters:window['" + instrumentation.variable() + "']})");

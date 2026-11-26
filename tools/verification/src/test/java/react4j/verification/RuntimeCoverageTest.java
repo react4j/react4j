@@ -91,7 +91,7 @@ public final class RuntimeCoverageTest {
         assertCovered(
                 observed, source.text, "parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(\"37\")", false);
         assertCovered(
-                observed, source.text, "parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(\"41\")", false);
+                observed, source.text, "parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(\"41\")", true);
         assertCovered(
                 observed, source.text, "parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(\"43\")", false);
         assertCovered(
@@ -112,15 +112,22 @@ public final class RuntimeCoverageTest {
         assertEquals(assertionEdges.size(), 2);
         assertTrue(assertionEdges.stream().allMatch(entry -> entry.getValue() > 0));
         assertBranches(observed, source.text, "int result = value > 0", 2, 1);
-        assertBranches(observed, source.text, "if (value > 0 &&", 6, 3);
+        assertBranches(observed, source.text, "if (value > 0", 8, 4);
+        assertCovered(observed, source.text, "&& value < parseDecimal", true);
+        assertCovered(
+                observed, source.text, "parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(\"-1\")", false);
+        assertCovered(
+                observed, source.text, "parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(\"-2\")", false);
         assertBranches(observed, source.text, "for (int i =", 2, 1);
         assertBranches(observed, source.text, "while (value > 0)", 2, 2);
         assertBranches(observed, source.text, "do {", 2, 1);
         assertBranches(observed, source.text, "switch (value)", 3, 2);
         assertBranches(observed, source.text, "for (int value :", 2, 2);
         assertBranches(observed, source.text, "return (first ?", 4, 0);
-        assertBranches(observed, source.text, "if (!(value instanceof Double))", 2, 1);
+        assertBranches(observed, source.text, "if (!(value instanceof Double number", 4, 2);
         assertBranches(observed, source.text, "return switch (value)", 4, 3);
+        assertBranches(observed, source.text, "value instanceof Boolean", 2, 1);
+        assertBranches(observed, source.text, "value.equals(Boolean.TRUE)", 2, 1);
         assertCovered(observed, source.text, "case String text", true);
         assertCovered(
                 observed, source.text, "parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(\"83\")", false);
@@ -128,6 +135,7 @@ public final class RuntimeCoverageTest {
         assertMethodEnd(observed, source, "throwingVoid", false);
         assertMethodEnd(observed, source, "deferredVoid", true);
         assertCovered(observed, source.text, "// deferred void callback end", false);
+        assertCovered(observed, source.text, "int value = 70;", false);
         assertCovered(observed, source.text, "value = 73;", false);
         assertCovered(
                 observed, source.text, "parseDecimalUsingBrowserNativeFunctionForCoverageMeasurement(\"67\")", false);
@@ -216,14 +224,9 @@ public final class RuntimeCoverageTest {
                 Path.of(System.getProperty("react4j.browser.metadata")),
                 Map.of(
                         "/index.html",
-                        "<script src='/react.js'></script><script src='/react-dom.js'></script><script"
-                                + " src='/runtime.js'></script>",
+                        "<script src='/runtime.js'></script>",
                         "/runtime.js",
-                        instrumented.javascript() + "\nwindow.runRuntimeMapProbe();window.coverageDone=true;",
-                        "/react.js",
-                        Files.readString(Path.of(System.getProperty("coverage.runtime.react"))),
-                        "/react-dom.js",
-                        Files.readString(Path.of(System.getProperty("coverage.runtime.react-dom")))),
+                        instrumented.javascript() + "\nwindow.runRuntimeMapProbe();window.coverageDone=true;"),
                 "window.coverageDone",
                 "window['" + instrumented.variable() + "']");
         var report = LcovReport.read(

@@ -80,8 +80,3 @@ SpeechBrowserTest.boundary = function(frame, index, length) { frame.contentWindo
 SpeechBrowserTest.voiceCount = function(frame) { return frame.contentWindow.speechSynthesis.getVoices().length; };
 /** @param {!HTMLIFrameElement} frame @return {boolean} */
 SpeechBrowserTest.paused = function(frame) { return frame.contentWindow.speechSynthesis.paused; };
-/** @param {!HTMLIFrameElement} frame */
-SpeechBrowserTest.unmount = function(frame) {
-  const view = frame.contentWindow;
-  if (view['ReactDOM']) view['ReactDOM']['unmountComponentAtNode'](frame.contentDocument.getElementById('app'));
-};

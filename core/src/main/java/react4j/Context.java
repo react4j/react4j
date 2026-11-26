@@ -1,12 +1,7 @@
 package react4j;
 
-import java.util.Objects;
 import jsinterop.annotations.JsFunction;
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
+import jsinterop.annotations.JsProperty;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -16,14 +11,56 @@ import org.jspecify.annotations.Nullable;
  * many views within an application. Context provides a way to share values like this between
  * views without having to explicitly pass a input through every level of the tree.
  */
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public final class Context<T extends @Nullable Object> {
+    private final @Nullable T _defaultValue;
+    private final Provider<T> _provider = new Provider<>(this);
+    private final Consumer<T> _consumer = new Consumer<>(this);
+
+    public Context() {
+        this(null);
+    }
+
+    Context(@Nullable final T defaultValue) {
+        _defaultValue = defaultValue;
+    }
+
+    public @Nullable T defaultValue() {
+        return _defaultValue;
+    }
+
+    public static final class Provider<T extends @Nullable Object> {
+        private final Context<T> _context;
+
+        private Provider(final Context<T> context) {
+            _context = context;
+        }
+
+        @SuppressWarnings("unusable-by-js")
+        @JsProperty(name = "_context")
+        public Context<T> context() {
+            return _context;
+        }
+    }
+
+    public static final class Consumer<T extends @Nullable Object> {
+        private final Context<T> _context;
+
+        private Consumer(final Context<T> context) {
+            _context = context;
+        }
+
+        @SuppressWarnings("unusable-by-js")
+        @JsProperty(name = "_context")
+        public Context<T> context() {
+            return _context;
+        }
+    }
+
     /**
      * Create a builder for the Provider component.
      *
      * @return a builder for the Provider component.
      */
-    @JsOverlay
     public ProviderBuilder<T> provider() {
         return new ProviderBuilder<>(this);
     }
@@ -35,7 +72,6 @@ public final class Context<T extends @Nullable Object> {
      * @param children the child elements.
      * @return the element.
      */
-    @JsOverlay
     public ReactNode provide(@Nullable final T value, final @Nullable Renderable @Nullable ... children) {
         return provider().value(value).children(children);
     }
@@ -45,7 +81,6 @@ public final class Context<T extends @Nullable Object> {
      *
      * @return a builder for the Consumer component.
      */
-    @JsOverlay
     public ConsumerBuilder<T> consumer() {
         return new ConsumerBuilder<>(this);
     }
@@ -59,8 +94,7 @@ public final class Context<T extends @Nullable Object> {
         private final ReactElement _element;
 
         private ProviderBuilder(final Context<ST> context) {
-            _element = ReactElement.createContextElement(Objects.requireNonNull(
-                    Js.<JsPropertyMap<@Nullable Object>>cast(context).get("Provider")));
+            _element = ReactElement.createContextElement(context._provider);
         }
 
         /**
@@ -115,8 +149,7 @@ public final class Context<T extends @Nullable Object> {
         private final ReactElement _element;
 
         private ConsumerBuilder(final Context<ST> context) {
-            _element = ReactElement.createContextElement(Objects.requireNonNull(
-                    Js.<JsPropertyMap<@Nullable Object>>cast(context).get("Consumer")));
+            _element = ReactElement.createContextElement(context._consumer);
         }
 
         /**

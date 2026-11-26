@@ -42,6 +42,8 @@ public class DomJDependTest {
 
         react4jDom.dependsUpon(arez);
         react4jDom.dependsUpon(react4j);
+        react4jDom.dependsUpon(constraint.addPackage("react4j.internal"));
+        react4jDom.dependsUpon(react4jDomEvents);
         react4jDom.dependsUpon(jsinteropAnnotations);
         react4jDom.dependsUpon(jsinteropBase);
         react4jDom.dependsUpon(react4jDomHtml);

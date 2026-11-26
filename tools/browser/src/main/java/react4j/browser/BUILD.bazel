@@ -1,4 +1,4 @@
-load("//third_party/java:rules.bzl", "java_binary", "java_library")
+load("//third_party/java:rules.bzl", "java_library")
 
 java_library(
     name = "preview",
@@ -9,11 +9,4 @@ java_library(
         "//tools/site/src/main/java/react4j/site:__pkg__",
     ],
     deps = ["//css/bundler/src/main/java/react4j/css/bundler:media"],
-)
-
-java_binary(
-    name = "assets",
-    srcs = ["BrowserAssets.java"],
-    main_class = "react4j.browser.BrowserAssets",
-    visibility = ["//tools/browser:__pkg__"],
 )

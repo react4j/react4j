@@ -1,15 +1,10 @@
 package react4j;
 
-import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsProperty;
-import jsinterop.annotations.JsType;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Native interface to native runtime for creating views.
- */
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "React")
+/** Configuration and element types used by the React4j runtime. */
 public final class React {
     private React() {}
 
@@ -19,7 +14,6 @@ public final class React {
      *
      * @return true to enable human readable names for views.
      */
-    @JsOverlay
     public static boolean enableViewNames() {
         return ReactConfig.enableViewNames();
     }
@@ -31,7 +25,6 @@ public final class React {
      *
      * @return true to minimize input keys.
      */
-    @JsOverlay
     public static boolean shouldMinimizeInputKeys() {
         return ReactConfig.shouldMinimizeInputKeys();
     }
@@ -41,7 +34,6 @@ public final class React {
      *
      * @return true to validate input values.
      */
-    @JsOverlay
     public static boolean shouldValidateInputValues() {
         return ReactConfig.shouldValidateInputValues();
     }
@@ -53,7 +45,6 @@ public final class React {
      *
      * @return true if react state should be used to store debug data.
      */
-    @JsOverlay
     public static boolean shouldStoreDebugDataAsState() {
         return ReactConfig.shouldStoreDebugDataAsState();
     }
@@ -63,57 +54,31 @@ public final class React {
      *
      * @return true if invariants will be checked.
      */
-    @JsOverlay
     public static boolean shouldCheckInvariants() {
         return ReactConfig.shouldCheckInvariants();
     }
 
-    /*
-     * WARNING: The following symbols are all imported from react which involves manually patching the js files
-     * for each react release. We do this rather than trying to redefine them as Elemental2 does not correctly
-     * model Symbol and we would still have to use primitive integer abstraction for IE11 anyway.
-     */
-    /**
-     * The Symbol type for Fragments.
-     */
-    @JsProperty(name = "Fragment")
-    @SuppressWarnings("NullAway.Init")
-    static Object Fragment;
-    /**
-     * The Symbol type for StrictMode.
-     */
-    @JsProperty(name = "StrictMode")
-    @SuppressWarnings("NullAway.Init")
-    static Object StrictMode;
-    /**
-     * The Symbol type for Suspense.
-     */
-    @JsProperty(name = "Suspense")
-    @SuppressWarnings("NullAway.Init")
-    static Object Suspense;
-    /**
-     * The Symbol type for Element.
-     */
-    @JsProperty(name = "Element")
-    @SuppressWarnings("NullAway.Init")
-    static Object Element;
+    public static final Object Fragment = symbol("react.fragment");
+    public static final Object StrictMode = symbol("react.strict_mode");
+    public static final Object Suspense = symbol("react.suspense");
+    static final Object Element = symbol("react.element");
 
-    /**
-     * Creates a context with specified default value.
-     *
-     * @param <T>          the type of the context.
-     * @param defaultValue the default value.
-     * @return the context.
-     */
-    static native <T> Context<T> createContext(@Nullable T defaultValue);
+    private static @Nullable Object c_currentOwner = null;
 
-    /**
-     * Return the fiber for current component.
-     * This can return null when not called from within the render method of a component.
-     */
-    @JsProperty(
-            name = "React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner.current",
-            namespace = JsPackage.GLOBAL)
-    @Nullable
-    static native Object currentOwner();
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Symbol.for")
+    private static native Object symbol(String name);
+
+    static <T extends @Nullable Object> Context<T> createContext(@Nullable final T defaultValue) {
+        return new Context<>(defaultValue);
+    }
+
+    static @Nullable Object currentOwner() {
+        return c_currentOwner;
+    }
+
+    public static @Nullable Object swapCurrentOwner(@Nullable final Object owner) {
+        final var previous = c_currentOwner;
+        c_currentOwner = owner;
+        return previous;
+    }
 }

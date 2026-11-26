@@ -7,7 +7,10 @@ browser_test(
     name = "browser_tests",
     srcs = ["browser_test.js"],
     entry_point = "react4j.dom.BrowserTest",
-    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
+    deps = [
+        "//dom/src/test/java/react4j/dom:runtime_coverage",
+        "//third_party:closure_testcase",
+    ],
 )
 
 closure_js_library(

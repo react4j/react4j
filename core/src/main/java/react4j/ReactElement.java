@@ -150,6 +150,28 @@ public class ReactElement implements ReactNode {
     }
 
     @JsOverlay
+    public static boolean isElement(@Nullable final Object node) {
+        return null != node
+                && "object".equals(Js.typeof(node))
+                && React.Element == Js.<ReactElement>uncheckedCast(node).typeof;
+    }
+
+    @JsOverlay
+    public final Object type() {
+        return type;
+    }
+
+    @JsOverlay
+    public final @Nullable Object owner() {
+        return _owner;
+    }
+
+    @JsOverlay
+    public final @Nullable Object ref() {
+        return ref;
+    }
+
+    @JsOverlay
     @Nullable
     @Contract(pure = true)
     public final String key() {

@@ -502,7 +502,7 @@ Set `runtime_mode = "development"` or `"production"` independently of `compilati
 
 `defs` accepts Closure `--define=name=value` flags. Explicit values override the selected framework defaults in both compiled code and BUNDLE runtime configuration; quote string values. `include_source_maps = False` withholds generated JS/CSS maps and removes their final map comments from the delivered files. Internal maps remain available for linking and asset finalization. Map publication defaults to `True` in every mode.
 
-Omit `html` when downstream tooling owns launch documents. An HTML-free BUNDLE application includes `config.js`; load it before `app.js`, alongside the supplied `react.js` and `react-dom.js`. With an HTML template, `@@DEFINES@@` expands to the same effective configuration.
+Omit `html` when downstream tooling owns launch documents. An HTML-free BUNDLE application includes `config.js`; load it before `app.js`, which includes the J2CL renderer. With an HTML template, `@@DEFINES@@` expands to the same effective configuration.
 
 The target's default output is the application directory. Its build-only `application.manifest.json` inventories every delivered file with its logical source, accessor, URL, SHA-256 digest, size, MIME type and retention reason, plus pruned candidates. The manifest stays outside the application directory. Expose it to a downstream Bazel action through its output group:
 

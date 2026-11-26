@@ -14,6 +14,7 @@ import react4j.annotations.View;
 import react4j.internal.IntrospectUtil;
 import react4j.internal.NativeView;
 import react4j.internal.SchedulerUtil;
+import react4j.internal.ViewConstructorFunction;
 
 @NullMarked
 @JsType
@@ -52,8 +53,8 @@ public final class RuntimeCoverageExample {
         ReactTestUtil.setViewEnableNames(true);
     }
 
-    public static ReactElement element(Object constructor) {
-        var original = ReactElement.createViewElement(Js.uncheckedCast(constructor));
+    public static ReactElement element(ViewConstructorFunction constructor) {
+        var original = ReactElement.createViewElement(constructor);
         original.input("label", "original");
         original.setInputs(Js.uncheckedCast(JsPropertyMap.of("label", "replacement")));
         var copy = original.dup();

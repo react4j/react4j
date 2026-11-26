@@ -2,14 +2,23 @@ load("//third_party/java:rules.bzl", "java_library")
 
 package(default_visibility = ["//:__subpackages__"])
 
+exports_files(
+    ["Renderer.native.js"],
+    visibility = ["//tools/release:__pkg__"],
+)
+
 java_library(
     name = "dom",
     srcs = [
         "BatchingTaskInterceptor.java",
+        "DomDevTools.java",
+        "DomEvents.java",
+        "DomHost.java",
         "NativeReactRoot.java",
         "ReactDOM.java",
         "ReactPortal.java",
         "ReactRoot.java",
+        "Renderer.java",
         "package-info.java",
         "//dom/src/main/java/react4j/dom/events:sources",
         "//dom/src/main/java/react4j/dom/proptypes/cssPropertyTypes:sources",

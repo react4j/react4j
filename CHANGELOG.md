@@ -25,7 +25,7 @@
 * Preserve final-round visitor generation so types created by other annotation processors remain visible, accepting the compiler warnings.
 * Simplify release validation by removing standalone artifact checks, isolated consumer compilation tests, and the separate reproducibility build.
 * Remove the downstream Bazel configuration exporter and external consumer check; applications own their dependency configuration.
-* Expose the existing patched React and ReactDOM runtime scripts through `@react4j//third_party:react_runtime_assets` for downstream deployment packaging.
+* Compile the React4j renderer into the application with J2CL. Remove the `react.js` and `react-dom.js` script tags from deployment templates.
 * Update the Bazel Braincheck, Arez, and Zemeckis source pins for Java/J2CL-only Braincheck and consume the public library targets.
 * Add experimental CSS-in-Java and checked web assets in `react4j.css`: colocate styles, animations, fonts and file references with Java components, using typed bindings, interface contracts and checked imports. JVM processing derives names from Java owners, validates declarations, removes unused CSS and assets, compresses CSS names in optimized builds and preserves source maps back to Java. Retained files use content-addressed URLs and a build-only manifest for downstream deployment tooling; asset byte changes preserve compilation caches. Load the Bazel build integration from `@react4j//:defs.bzl`, with independent React runtime, Closure optimization and source-map publication settings.
 * Restore Delete-button hover visibility in all three TodoMVC examples.

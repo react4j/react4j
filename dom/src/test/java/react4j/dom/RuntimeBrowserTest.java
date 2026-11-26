@@ -3,7 +3,11 @@ package react4j.dom;
 import static react4j.webtesting.Checks.check;
 
 import jsinterop.annotations.JsMethod;
+import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+import react4j.ReactElement;
+import react4j.ReactNode;
 import react4j.webtesting.Browser;
 import react4j.webtesting.BrowserPromise;
 
@@ -19,6 +23,7 @@ public final class RuntimeBrowserTest {
         var target = Browser.append("div");
         try {
             BuildableBrowserTest.run(container, target);
+            keyedReconciliation(container);
             int[] rendered = {0};
             RuntimeCoverageExample.render(container, true, () -> rendered[0]++);
             check(1 == rendered[0], "Render callback");
@@ -68,5 +73,25 @@ public final class RuntimeBrowserTest {
             target.remove();
             throw error;
         }
+    }
+
+    private static void keyedReconciliation(Browser.Element container) {
+        ReactDOM.render(DOM.div(item("a"), null, item(null), item("b")), container);
+        final var parent = container.getFirstElementChild();
+        final var a = parent.getFirstElementChild();
+        final var unkeyed = a.getNextElementSibling();
+        final var b = unkeyed.getNextElementSibling();
+        ReactDOM.render(DOM.div(item("b"), null, item(null), item("a")), container);
+        check(b == parent.getFirstElementChild(), "Moved keyed child reuses the DOM node");
+        check(unkeyed == b.getNextElementSibling(), "Unkeyed child retains its sparse position");
+        check(a == unkeyed.getNextElementSibling(), "Moved keyed sibling reuses the DOM node");
+        ReactDOM.render(DOM.div(item("c")), container);
+        check(!parent.contains(a) && !parent.contains(b) && !parent.contains(unkeyed), "Deleted children detach");
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
+    private static ReactElement item(@Nullable String key) {
+        return ReactElement.createHostElement(
+                "span", key, null, JsPropertyMap.of("children", ReactNode.of(null == key ? "-" : key)));
     }
 }

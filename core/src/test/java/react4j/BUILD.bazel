@@ -21,7 +21,6 @@ j2cl_library(
         "LifecycleBrowserTest.java",
         "ReactConfigTest.java",
         "RuntimeBrowserTest.java",
-        "RuntimeBrowserTest.native.js",
         "RuntimeCoverageExample.java",
     ],
     plugins = [
@@ -30,6 +29,8 @@ j2cl_library(
     ],
     deps = [
         "//:core",
+        "//:dom",
+        "//dom/src/test/java/react4j/dom:legacy_render_support",
         "//examples/testing/src/main/java/react4j/webtesting:browser",
         "//third_party:arez_core-j2cl",
         "//third_party:braincheck_core-j2cl",

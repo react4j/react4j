@@ -8,13 +8,18 @@ const Mode = goog.require('react4j.browser.Mode');
 const Properties = goog.require('react4j.dom.PropertiesTest');
 /** @return {!Promise<void>} */
 async function run() {
+  if ('development' === Mode.environment) {
+    Dom.checkDevTools();
+  }
   Config.browserDefaults('production' === Mode.environment);
   Example.mapProbe();
   Properties();
   Events();
   await Core();
-  await Dom();
-
+  await Dom.run('production' === Mode.environment);
+  if ('development' === Mode.environment) {
+    Dom.checkSuspense();
+  }
 }
 window['runRuntimeCoverageTests'] = run;
 /** Verifies native element construction. */

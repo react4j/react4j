@@ -2,6 +2,8 @@ package react4j.verification;
 
 import static org.testng.Assert.*;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,21 +40,26 @@ public final class BrowserApplicationTest {
                         assets.put(
                                 "/index.html",
                                 ("<div id='app'></div><link rel='stylesheet' href='css/application.css'><script"
-                                                + " src='config.js'></script><script src='react.js'></script><script"
-                                                + " src='react-dom.js'></script><script src='app.js'></script>")
+                                                + " src='config.js'></script><script src='app.js'></script>")
                                         .getBytes(StandardCharsets.UTF_8));
                     } else {
                         assertFalse(assets.containsKey("/config.js"));
                     }
                     assertEquals(Files.exists(directory.resolve("app.js.map")), "maps".equals(maps));
+                    if ("maps".equals(maps)) {
+                        var sourceMap = JsonParser.parseString(Files.readString(directory.resolve("app.js.map")))
+                                .getAsJsonObject();
+                        for (var type : new String[] {"react4j/dom/Renderer", "react4j/css/example/AssetsExample"}) {
+                            assertTrue(hasJavaSource(sourceMap, type), level + " source map must embed " + type);
+                        }
+                    }
                     assertEquals(Files.exists(directory.resolve("css/application.css.map")), "maps".equals(maps));
                     var result = BrowserCoverage.runBytes(
                             Path.of(Objects.requireNonNull(System.getProperty("react4j.browser.metadata"))),
                             assets,
                             "window.applicationSettings && document.getElementById('icon').naturalWidth > 0 &&"
                                     + " document.getElementById('photo').naturalWidth > 0",
-                            "Object.assign(window.applicationSettings, {developmentReact:"
-                                    + " Object.prototype.hasOwnProperty.call(React.createElement('div'), '_store'),"
+                            "Object.assign(window.applicationSettings, {"
                                     + " padding: getComputedStyle(document.getElementById('card')).padding})");
                     assertTrue(result.getAsJsonPrimitive("text").isString());
                     assertTrue(result.getAsJsonPrimitive("flag").isBoolean());
@@ -65,9 +72,27 @@ public final class BrowserApplicationTest {
                     assertEquals(result.get("number").getAsDouble(), 12.5);
                     assertEquals(result.get("environment").getAsString(), runtime);
                     assertEquals(result.get("debug").getAsBoolean(), "development".equals(runtime));
-                    assertEquals(result.get("developmentReact").getAsBoolean(), "development".equals(runtime));
+                    assertFalse(assets.containsKey("/react.js"));
+                    assertFalse(assets.containsKey("/react-dom.js"));
                 }
             }
         }
+    }
+
+    private static boolean hasJavaSource(JsonObject map, String type) {
+        if (map.has("sections")) {
+            return map.getAsJsonArray("sections").asList().stream()
+                    .anyMatch(section -> hasJavaSource(section.getAsJsonObject().getAsJsonObject("map"), type));
+        }
+        var sources = map.getAsJsonArray("sources");
+        for (int i = 0; i < sources.size(); i++) {
+            if (sources.get(i).getAsString().endsWith(type + ".java")) {
+                var body = map.getAsJsonArray("sourcesContent").get(i);
+                return !map.get("mappings").getAsString().isEmpty()
+                        && !body.isJsonNull()
+                        && body.getAsString().contains("class " + type.substring(type.lastIndexOf('/') + 1));
+            }
+        }
+        return false;
     }
 }

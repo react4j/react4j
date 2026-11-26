@@ -123,7 +123,7 @@ def _application_impl(ctx):
     bundle = ctx.attr.bundle[WebBundleInfo]
     directory = ctx.actions.declare_directory(ctx.label.name)
     manifest = ctx.actions.declare_file(ctx.label.name + ".manifest.json")
-    roots = {"app.js": bundle.javascript, "react-dom.js": ctx.file.dom, "react.js": ctx.file.react}
+    roots = {"app.js": bundle.javascript}
     strip_maps = []
     if ctx.attr.include_source_maps:
         roots["app.js.map"] = bundle.source_map
@@ -173,15 +173,10 @@ _application = rule(implementation = _application_impl, attrs = {
     "bundle": attr.label(mandatory = True, providers = [WebBundleInfo]),
     "compilation_level": attr.string(mandatory = True, values = ["BUNDLE", "ADVANCED"]),
     "defines": attr.string_list(),
-    "dom": attr.label(allow_single_file = True, mandatory = True),
     "html": attr.label(allow_single_file = True),
     "include_source_maps": attr.bool(default = True),
-    "react": attr.label(allow_single_file = True, mandatory = True),
     "_packager": attr.label(default = Label("//css/bundler/src/main/java/react4j/css/bundler:application_tool"), executable = True, cfg = "exec"),
 })
-
-def _asset(name, runtime_mode = ""):
-    return _mode_value(runtime_mode, Label("//tools/generation:" + name + "_prod"), Label("//tools/generation:" + name + "_dev"))
 
 def _browser_application_impl(name, visibility, entry_point, deps, html, assets, styles, defs, compilation_level, runtime_mode, include_source_maps, testonly):
     if compilation_level not in ["", "BUNDLE", "ADVANCED"]:
@@ -200,7 +195,7 @@ def _browser_application_impl(name, visibility, entry_point, deps, html, assets,
         visibility = visibility,
     )
     web_bundle(name = name + "_web", testonly = testonly, root = name + "_bundle", styles = styles)
-    _application(name = name, testonly = testonly, html = html, bundle = name + "_web", defines = defines, compilation_level = level, include_source_maps = include_source_maps, react = _asset("react", runtime_mode), dom = _asset("react_dom", runtime_mode), assets = assets, visibility = visibility)
+    _application(name = name, testonly = testonly, html = html, bundle = name + "_web", defines = defines, compilation_level = level, include_source_maps = include_source_maps, assets = assets, visibility = visibility)
 
 browser_application = macro(
     implementation = _browser_application_impl,
@@ -240,22 +235,6 @@ browser_application_variant = rule(
     },
 )
 
-def _runtime_impl(ctx):
-    output = ctx.outputs.js
-
-    # UMD assets are runtime scripts; concatenating after Closure compilation
-    # preserves their published bytes and keeps their legacy JSDoc out of Closure.
-    ctx.actions.run(
-        executable = ctx.executable._assets,
-        inputs = [ctx.file.react, ctx.file.dom, ctx.file.js],
-        outputs = [output],
-        arguments = ["bundle", ctx.file.react.path, ctx.file.dom.path, ctx.file.js.path, output.path],
-        mnemonic = "BrowserRuntimeBundle",
-    )
-    return [DefaultInfo(files = depset([output]))]
-
-_runtime = rule(implementation = _runtime_impl, outputs = {"js": "%{name}.js"}, attrs = {"dom": attr.label(allow_single_file = True), "js": attr.label(allow_single_file = True), "react": attr.label(allow_single_file = True), "_assets": attr.label(default = Label("//tools/browser:assets"), executable = True, cfg = "exec")})
-
 def _browser_test_impl(name, visibility, srcs, deps, entry_point, data, defs, runtime_defines):
     closure_js_library(name = name + "_lib", testonly = True, srcs = srcs, deps = deps + [Label("//tools/browser:mode"), Label("//third_party:closure_asserts"), Label("//third_party:closure_testsuite")])
     css_js_binary(
@@ -267,8 +246,7 @@ def _browser_test_impl(name, visibility, srcs, deps, entry_point, data, defs, ru
         defs = _compiler_defines(test = True) + defs,
         visibility = visibility,
     )
-    _runtime(name = name + "_runtime", testonly = True, js = name + "_bin.js", react = _asset("react"), dom = _asset("react_dom"))
-    webdriver_test(name = name, test_file_js = name + "_runtime.js", data = data, browsers = [Label("//tools/webtesting:chromium")], runtime_defines = _defines(test = True, extra = runtime_defines), visibility = visibility)
+    webdriver_test(name = name, test_file_js = name + "_bin.js", data = data, browsers = [Label("//tools/webtesting:chromium")], runtime_defines = _defines(test = True, extra = runtime_defines), visibility = visibility)
 
 browser_test = macro(
     implementation = _browser_test_impl,

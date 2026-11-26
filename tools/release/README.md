@@ -4,7 +4,7 @@
 
 Public `//:core` and `//:dom` provide J2CL libraries from the assembled source archives; `//:processor` wraps the shaded processor jar as a plugin. JVM jar imports are repository-only. Publication bytecode and generated sources target Java 21; annotation processing requires Java 21 or later. Processor dependencies are shaded into its jar.
 
-Binary jars contain bytecode and metadata. Source jars contain all authored and generated Java, native JavaScript, and the pinned React/ReactDOM assets. J2CL consumers use a byte-preserving projection of these source archives that excludes only the public UMD asset directories from Closure compilation. Browser pages load the UMD scripts separately. Source archives depend on checked JVM class outputs, so building the publication sources for J2CL also checks React4j's complete Java under the repository policy. Downstream application sources use native J2CL and their own checker selection.
+Binary jars contain bytecode and metadata. Source jars supply the J2CL compiler with authored and generated Java, native bridges and Closure externs. Source archives depend on checked JVM class outputs, so building the publication sources for J2CL also checks React4j's complete Java under the repository policy. Downstream application sources use native J2CL and their own checker selection.
 
 ## Dependency publication prerequisite
 

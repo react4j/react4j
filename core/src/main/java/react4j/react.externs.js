@@ -1,142 +1,50 @@
 /**
- * @fileoverview Closure Compiler externs for Facebook React.js
- * @see http://reactjs.org
+ * @fileoverview Properties shared between React4j JavaScript records and J2CL overlays.
  * @externs
  */
 
-/**
- * @const {!Object}
- * @suppress {const|duplicate}
- */
-var React = {};
+/** @const */
+var React4jExterns = {};
 
 /**
- * @constructor
- * @param {Object} props Initial props of the component instance.
- */
-React.Component = function(props) {};
-
-/**
- * @type {Object}
- * @nosideeffects
- */
-React.Component.prototype.props;
-
-/**
- * @type {Object}
- * @nosideeffects
- */
-React.Component.prototype.state;
-
-/**
- * @param {function(): void=} callback
- * @return {void}
- */
-React.Component.prototype.forceUpdate = function(callback) {};
-
-/**
- * @param {Object} nextState
- * @param {(function(): void)=} callback
- * @return {void}
- */
-React.Component.prototype.setState = function(nextState, callback) {};
-
-/**
- * @return {void}
- */
-React.Component.prototype.componentDidMount = function() {};
-
-/**
- * @param {Object} nextProps
- * @param {Object} nextState
- * @return {boolean}
- */
-React.Component.prototype.shouldComponentUpdate = function(nextProps, nextState) {};
-
-/**
- * @param {Object} prevProps
- * @param {Object} prevState
- * @return {void}
- */
-React.Component.prototype.componentDidUpdate = function(prevProps, prevState) {};
-
-/**
- * @return {void}
- */
-React.Component.prototype.componentWillUnmount = function() {};
-
-/**
- * @return {void}
- */
-React.Component.prototype.componentDidCatch = function() {};
-
-/**
- * @param {Object} prevProps
- * @param {Object} prevState
- * @return {*}
- */
-React.Component.prototype.getSnapshotBeforeUpdate = function(prevProps, prevState) {};
-
-/**
- * @return {React.Component}
- */
-React.Component.prototype.render = function() {};
-
-/**
- * @type {!Object}
- * @const
- * @suppress {const|duplicate}
- */
-React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = {};
-
-/**
- * @type {!Object}
- * @const
- * @suppress {const|duplicate}
- */
-React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner = {};
-
-/**
- * @type {!Object}
- * @suppress {duplicate}
- */
-React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner.current;
-
-/**
- * Interface to preserve React attributes for advanced compilation.
+ * Properties shared by the host input maps and their typed overlays.
  * @interface
  */
-React.ReactAttribute = function() {};
+React4jExterns.HostInput = function() {};
 
 /**
  * @type {Object}
  */
-React.ReactAttribute.dangerouslySetInnerHTML;
+React4jExterns.HostInput.dangerouslySetInnerHTML;
 
 /**
  * @type {string}
  */
-React.ReactAttribute.__html;
+React4jExterns.HostInput.__html;
 
 /**
  * @type {string}
  */
-React.ReactAttribute.key;
+React4jExterns.HostInput.key;
 
 /**
  * @type {symbol}
  */
-React.ReactAttribute.$$typeof;
+React4jExterns.HostInput.$$typeof;
 
 /**
  * @type {Object}
  */
-React.ReactAttribute._owner;
+React4jExterns.HostInput._owner;
 
-/**
- * @type {string}
- */
-React.ReactAttribute.ref;
+/** @type {*} */
+React4jExterns.HostInput.ref;
+
+/** @type {!Object} */
+React4jExterns.HostInput.props;
+
+/** @type {string} */
+React4jExterns.HostInput.componentStack;
 
 // Attributes not defined in default Closure Compiler DOM externs.
 // http://facebook.github.io/react/docs/tags-and-attributes.html#html-attributes
@@ -148,518 +56,318 @@ React.ReactAttribute.ref;
 /**
  * @type {Object}
  */
-React.ReactAttribute.styleMedia;
+React4jExterns.HostInput.styleMedia;
 
 /**
  * @type {boolean}
  */
-React.ReactAttribute.allowFullScreen;
+React4jExterns.HostInput.allowFullScreen;
 
 /**
  * @type {boolean}
  */
-React.ReactAttribute.autoComplete;
+React4jExterns.HostInput.autoComplete;
 
 /**
  * @type {boolean}
  */
-React.ReactAttribute.autoFocus;
+React4jExterns.HostInput.autoFocus;
 
 /**
  * @type {boolean}
  */
-React.ReactAttribute.autoPlay;
+React4jExterns.HostInput.autoPlay;
 
 /**
  * @type {boolean}
  */
-React.ReactAttribute.noValidate;
+React4jExterns.HostInput.noValidate;
 
 /**
  * @type {boolean}
  */
-React.ReactAttribute.spellCheck;
+React4jExterns.HostInput.spellCheck;
 
 // http://facebook.github.io/react/docs/events.html
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onCopy;
+React4jExterns.HostInput.onCopy;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onCut;
+React4jExterns.HostInput.onCut;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onPaste;
+React4jExterns.HostInput.onPaste;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onCompositionEnd;
+React4jExterns.HostInput.onCompositionEnd;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onCompositionStart;
+React4jExterns.HostInput.onCompositionStart;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onCompositionUpdate;
+React4jExterns.HostInput.onCompositionUpdate;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onKeyDown;
+React4jExterns.HostInput.onKeyDown;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onKeyPress;
+React4jExterns.HostInput.onKeyPress;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onKeyUp;
+React4jExterns.HostInput.onKeyUp;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onFocus;
+React4jExterns.HostInput.onFocus;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onBlur;
+React4jExterns.HostInput.onBlur;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onChange;
+React4jExterns.HostInput.onChange;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onInput;
+React4jExterns.HostInput.onInput;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onInvalid;
+React4jExterns.HostInput.onInvalid;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onSubmit;
+React4jExterns.HostInput.onSubmit;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onClick;
+React4jExterns.HostInput.onClick;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onContextMenu;
+React4jExterns.HostInput.onContextMenu;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onDoubleClick;
+React4jExterns.HostInput.onDoubleClick;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onDrag;
+React4jExterns.HostInput.onDrag;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onDragEnd;
+React4jExterns.HostInput.onDragEnd;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onDragEnter;
+React4jExterns.HostInput.onDragEnter;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onDragExit;
+React4jExterns.HostInput.onDragExit;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onDragLeave;
+React4jExterns.HostInput.onDragLeave;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onDragOver;
+React4jExterns.HostInput.onDragOver;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onDragStart;
+React4jExterns.HostInput.onDragStart;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onDrop;
+React4jExterns.HostInput.onDrop;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onMouseDown;
+React4jExterns.HostInput.onMouseDown;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onMouseEnter;
+React4jExterns.HostInput.onMouseEnter;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onMouseLeave;
+React4jExterns.HostInput.onMouseLeave;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onMouseMove;
+React4jExterns.HostInput.onMouseMove;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onMouseOut;
+React4jExterns.HostInput.onMouseOut;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onMouseOver;
+React4jExterns.HostInput.onMouseOver;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onMouseUp;
+React4jExterns.HostInput.onMouseUp;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onSelect;
+React4jExterns.HostInput.onSelect;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onTouchCancel;
+React4jExterns.HostInput.onTouchCancel;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onTouchEnd;
+React4jExterns.HostInput.onTouchEnd;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onTouchMove;
+React4jExterns.HostInput.onTouchMove;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onTouchStart;
+React4jExterns.HostInput.onTouchStart;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onScroll;
+React4jExterns.HostInput.onScroll;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onWheel;
+React4jExterns.HostInput.onWheel;
 
 /**
  * @type {Function}
  */
-React.ReactAttribute.onAbort;
-React.ReactAttribute.onCanPlay;
-React.ReactAttribute.onCanPlayThrough;
-React.ReactAttribute.onDurationChange;
-React.ReactAttribute.onEmptied;
-React.ReactAttribute.onEncrypted;
-React.ReactAttribute.onEnded;
-React.ReactAttribute.onError;
-React.ReactAttribute.onLoadedData;
-React.ReactAttribute.onLoadedMetadata;
-React.ReactAttribute.onLoadStart;
-React.ReactAttribute.onPause;
-React.ReactAttribute.onPlay;
-React.ReactAttribute.onPlaying;
-React.ReactAttribute.onProgress;
-React.ReactAttribute.onRateChange;
-React.ReactAttribute.onSeeked;
-React.ReactAttribute.onSeeking;
-React.ReactAttribute.onStalled;
-React.ReactAttribute.onSuspend;
-React.ReactAttribute.onTimeUpdate;
-React.ReactAttribute.onVolumeChange;
-React.ReactAttribute.onWaiting;
+React4jExterns.HostInput.onAbort;
+React4jExterns.HostInput.onCanPlay;
+React4jExterns.HostInput.onCanPlayThrough;
+React4jExterns.HostInput.onDurationChange;
+React4jExterns.HostInput.onEmptied;
+React4jExterns.HostInput.onEncrypted;
+React4jExterns.HostInput.onEnded;
+React4jExterns.HostInput.onError;
+React4jExterns.HostInput.onLoadedData;
+React4jExterns.HostInput.onLoadedMetadata;
+React4jExterns.HostInput.onLoadStart;
+React4jExterns.HostInput.onPause;
+React4jExterns.HostInput.onPlay;
+React4jExterns.HostInput.onPlaying;
+React4jExterns.HostInput.onProgress;
+React4jExterns.HostInput.onRateChange;
+React4jExterns.HostInput.onSeeked;
+React4jExterns.HostInput.onSeeking;
+React4jExterns.HostInput.onStalled;
+React4jExterns.HostInput.onSuspend;
+React4jExterns.HostInput.onTimeUpdate;
+React4jExterns.HostInput.onVolumeChange;
+React4jExterns.HostInput.onWaiting;
 
-React.ReactAttribute.onAnimationStart;
-React.ReactAttribute.onAnimationEnd;
-React.ReactAttribute.onAnimationIteration;
+React4jExterns.HostInput.onAnimationStart;
+React4jExterns.HostInput.onAnimationEnd;
+React4jExterns.HostInput.onAnimationIteration;
 
-React.ReactAttribute.onTransitionEnd;
+React4jExterns.HostInput.onTransitionEnd;
 
-React.ReactAttribute.onToggle;
+React4jExterns.HostInput.onToggle;
 
 /** @record @struct */
-React.SyntheticEvent = function() {};
+React4jExterns.SyntheticEvent = function() {};
  /** @type {boolean} */
-React.SyntheticEvent.prototype.bubbles;
+React4jExterns.SyntheticEvent.prototype.bubbles;
  /** @type {?} */
-React.SyntheticEvent.prototype.currentTarget;
+React4jExterns.SyntheticEvent.prototype.currentTarget;
  /** @type {boolean} */
-React.SyntheticEvent.prototype.cancelable;
+React4jExterns.SyntheticEvent.prototype.cancelable;
  /** @type {boolean} */
-React.SyntheticEvent.prototype.defaultPrevented;
+React4jExterns.SyntheticEvent.prototype.defaultPrevented;
  /** @type {number} */
-React.SyntheticEvent.prototype.eventPhase;
+React4jExterns.SyntheticEvent.prototype.eventPhase;
  /** @type {boolean} */
-React.SyntheticEvent.prototype.isTrusted;
+React4jExterns.SyntheticEvent.prototype.isTrusted;
  /** @type {!Event} */
-React.SyntheticEvent.prototype.nativeEvent;
+React4jExterns.SyntheticEvent.prototype.nativeEvent;
  /** @type {!EventTarget} */
-React.SyntheticEvent.prototype.target;
+React4jExterns.SyntheticEvent.prototype.target;
  /** @type {number} */
-React.SyntheticEvent.prototype.timeStamp;
+React4jExterns.SyntheticEvent.prototype.timeStamp;
  /** @type {string} */
-React.SyntheticEvent.prototype.type;
+React4jExterns.SyntheticEvent.prototype.type;
 /**
  * @return {void}
  */
-React.SyntheticEvent.prototype.preventDefault = function() {};
+React4jExterns.SyntheticEvent.prototype.preventDefault = function() {};
 
 /**
  * @return {boolean}
  */
-React.SyntheticEvent.prototype.isDefaultPrevented = function() {};
+React4jExterns.SyntheticEvent.prototype.isDefaultPrevented = function() {};
 
 /**
  * @return {void}
  */
-React.SyntheticEvent.prototype.stopPropagation = function() {};
+React4jExterns.SyntheticEvent.prototype.stopPropagation = function() {};
 
 /**
  * @return {boolean}
  */
-React.SyntheticEvent.prototype.isPropagationStopped = function() {};
+React4jExterns.SyntheticEvent.prototype.isPropagationStopped = function() {};
 
 /**
  * @return {void}
  */
-React.SyntheticEvent.prototype.persist = function() {};
-
-/**
- * React event system creates plugins and event properties dynamically.
- * These externs are needed when consuming React as a JavaScript module
- * in light of new ClojureScript compiler additions (as of version 1.9.456).
- * See the following link for an example.
- * https://github.com/facebook/react/blob/c7129c/src/renderers/dom/shared/eventPlugins/SimpleEventPlugin.js#L43
- */
-var ResponderEventPlugin;
-var SimpleEventPlugin;
-var TapEventPlugin;
-var EnterLeaveEventPlugin;
-var ChangeEventPlugin;
-var SelectEventPlugin;
-var BeforeInputEventPlugin;
-
-var bubbled;
-var captured;
-var topAbort;
-var topAnimationEnd;
-var topAnimationIteration;
-var topAnimationStart;
-var topBlur;
-var topCancel;
-var topCanPlay;
-var topCanPlayThrough;
-var topClick;
-var topClose;
-var topContextMenu;
-var topCopy;
-var topCut;
-var topDoubleClick;
-var topDrag;
-var topDragEnd;
-var topDragEnter;
-var topDragExit;
-var topDragLeave;
-var topDragOver;
-var topDragStart;
-var topDrop;
-var topDurationChange;
-var topEmptied;
-var topEncrypted;
-var topEnded;
-var topError;
-var topFocus;
-var topInput;
-var topInvalid;
-var topKeyDown;
-var topKeyPress;
-var topKeyUp;
-var topLoad;
-var topLoadedData;
-var topLoadedMetadata;
-var topLoadStart;
-var topMouseDown;
-var topMouseMove;
-var topMouseOut;
-var topMouseOver;
-var topMouseUp;
-var topPaste;
-var topPause;
-var topPlay;
-var topPlaying;
-var topProgress;
-var topRateChange;
-var topReset;
-var topScroll;
-var topSeeked;
-var topSeeking;
-var topStalled;
-var topSubmit;
-var topSuspend;
-var topTimeUpdate;
-var topTouchCancel;
-var topTouchEnd;
-var topTouchMove;
-var topTouchStart;
-var topTransitionEnd;
-var topVolumeChange;
-var topWaiting;
-var topWheel;
-
-/**
- * @param {*} defaultValue
- * @return {!Object}
- */
-React.createContext = function(defaultValue) {};
-
-React.Context = function() {};
-React.Context.prototype.Provider = function() {};
-React.Context.prototype.Consumer = function() {};
-
-/**
- * @const {symbol}
- */
-React.Fragment;
-
-/**
- * @const {symbol}
- */
-React.StrictMode;
-/**
- * @const {symbol}
- */
-React.Suspense;
-/**
- * @const {symbol}
- */
-React.unstable_Profiler;
-/**
- * @const {symbol}
- */
-React.Element;
-/**
- * @const {symbol}
- */
-React.Provider;
-
-// https://github.com/facebook/react/blob/master/packages/shared/isTextInputElement.js#L13-L29
-// Closure will rename these properties during optimization
-// But these are used dynamically to check against element props so they must not be renamed.
-var isTextInputElement = {};
-isTextInputElement.supportedInputTypes = {
-  color: true,
-  date: true,
-  datetime: true,
-  'datetime-local': true,
-  email: true,
-  month: true,
-  number: true,
-  password: true,
-  range: true,
-  search: true,
-  tel: true,
-  text: true,
-  time: true,
-  url: true,
-  week: true
-};
-
-/**
- * The ReactDOM global object.
- *
- * @type {!Object}
- * @const
- * @suppress {const|duplicate}
- */
-var ReactDOM = {};
-
-/**
- * @param {React.Component} container
- * @param {*} mountPoint
- * @param {(function(): void)=} opt_callback
- * @return {React.Component}
- */
-ReactDOM.render = function(container, mountPoint, opt_callback) {};
-
-/**
- * @param {*} container
- * @return {boolean}
- */
-ReactDOM.unmountComponentAtNode = function(container) {};
-
-/**
- * Call the provided function in a context within which calls to `setState`
- * and friends are batched such that components aren't updated unnecessarily.
- *
- * @param {(function(): void)} callback Function which calls `setState`, `forceUpdate`, etc.
- */
-ReactDOM.unstable_batchedUpdates = function(callback) {};
-
-/**
- * @param {*} children
- * @param {*} container
- * @return {!Object}
- */
-ReactDOM.createPortal = function(children, container) {};
-
-/**
- * @interface
- */
-React.ReactRoot = function() {};
-
-/**
- * @param {React.Component} child
- * @param {(function(): void)=} opt_callback
- */
-React.ReactRoot.prototype.render = function(child, opt_callback) {};
-
-/**
- * @param {(function(): void)=} opt_callback
- */
-React.ReactRoot.prototype.unmount = function(opt_callback) {};
-
-/**
- * @param {*} container
- * @return {React.ReactRoot}
- */
-ReactDOM.unstable_createRoot = function(container) {};
+React4jExterns.SyntheticEvent.prototype.persist = function() {};

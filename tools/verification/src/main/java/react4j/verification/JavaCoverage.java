@@ -3,24 +3,30 @@ package react4j.verification;
 import com.sun.source.tree.AssertTree;
 import com.sun.source.tree.BinaryTree;
 import com.sun.source.tree.BlockTree;
+import com.sun.source.tree.CaseTree;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.ConditionalExpressionTree;
+import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
+import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.IfTree;
 import com.sun.source.tree.LambdaExpressionTree;
 import com.sun.source.tree.MethodTree;
+import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.SwitchExpressionTree;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
+import com.sun.source.tree.WhileLoopTree;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.TreeScanner;
 import com.sun.source.util.Trees;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,7 +51,27 @@ final class JavaCoverage {
         }
     }
 
-    record Decision(Range range, String kind, int edges, int id) {}
+    record Decision(Range range, String kind, int edges, int id) {
+        private List<? extends CaseTree> switchCases() {
+            return range.tree() instanceof SwitchTree statement
+                    ? statement.getCases()
+                    : ((SwitchExpressionTree) range.tree()).getCases();
+        }
+
+        List<Integer> switchArms() {
+            var cases = switchCases();
+            var arms = new ArrayList<Integer>();
+            for (int i = 0; i < cases.size(); i++) {
+                arms.addAll(Collections.nCopies(cases.get(i).getLabels().size(), i));
+            }
+            if (cases.size() < edges) {
+                arms.add(cases.size());
+            }
+            return arms;
+        }
+    }
+
+    record ExpressionBranch(@Nullable Decision decision, List<ExpressionBranch> operands) {}
 
     final String name;
     final String text;
@@ -137,6 +163,10 @@ final class JavaCoverage {
                         Tree expression =
                                 switch (tree.getKind()) {
                                     case IF -> ((IfTree) tree).getCondition();
+                                    case WHILE_LOOP -> ((WhileLoopTree) tree).getCondition();
+                                    case DO_WHILE_LOOP -> ((DoWhileLoopTree) tree).getCondition();
+                                    case FOR_LOOP -> ((ForLoopTree) tree).getCondition();
+                                    case CASE -> ((CaseTree) tree).getBody() instanceof ExpressionTree arm ? arm : null;
                                     case RETURN -> ((ReturnTree) tree).getExpression();
                                     case VARIABLE -> ((VariableTree) tree).getInitializer();
                                     case EXPRESSION_STATEMENT -> ((ExpressionStatementTree) tree).getExpression();
@@ -293,6 +323,28 @@ final class JavaCoverage {
         return executable.contains(line) ? List.of(new CoverageInstrumenter.Line(name, line)) : List.of();
     }
 
+    CoverageInstrumenter.@Nullable Line branchEntryLine(Decision decision, int edge) {
+        final Tree tree = decision.range().tree();
+        final Tree entered;
+        if (tree instanceof BinaryTree binary
+                && (Tree.Kind.CONDITIONAL_AND == tree.getKind() && 0 == edge
+                        || Tree.Kind.CONDITIONAL_OR == tree.getKind() && 1 == edge)) {
+            entered = withoutParentheses(binary.getRightOperand());
+        } else if (tree instanceof ConditionalExpressionTree conditional) {
+            entered =
+                    withoutParentheses(0 == edge ? conditional.getTrueExpression() : conditional.getFalseExpression());
+        } else if ("SWITCH".equals(decision.kind())) {
+            var cases = decision.switchCases();
+            entered = edge < cases.size() ? cases.get(edge).getBody() : null;
+        } else {
+            entered = null;
+        }
+        var location = null == entered ? null : range(entered);
+        return null != location && executable.contains(location.firstLine())
+                ? new CoverageInstrumenter.Line(name, location.firstLine())
+                : null;
+    }
+
     List<CoverageInstrumenter.Line> completed(int position) {
         Range selected = null;
         for (var candidate : statements) {
@@ -334,15 +386,8 @@ final class JavaCoverage {
 
     @Nullable
     Decision expressionDecision(int position, String kind) {
-        Range selected = null;
-        for (var expression : expressions.keySet()) {
-            if (expression.contains(position)
-                    && (null == selected
-                            || expression.end() - expression.start() < selected.end() - selected.start())) {
-                selected = expression;
-            }
-        }
-        if (null == selected) {
+        var expression = expressionAt(position, null);
+        if (null == expression) {
             return null;
         }
         var candidates = new ArrayList<Decision>();
@@ -357,13 +402,57 @@ final class JavaCoverage {
                         .forEach(candidates::add);
                 return super.scan(tree, unused);
             }
-        }.scan(expressions.get(selected), null);
+        }.scan(expression, null);
         return 1 == candidates.size() ? candidates.get(0) : null;
     }
 
     @Nullable
     Decision decision(int position, String kind) {
         return decision(List.of(position), kind);
+    }
+
+    private @Nullable Tree expressionAt(int position, Tree.@Nullable Kind context) {
+        Range selected = null;
+        for (var expression : expressions.keySet()) {
+            if ((null == context || context == expression.tree().getKind())
+                    && expression.contains(position)
+                    && (null == selected
+                            || expression.end() - expression.start() < selected.end() - selected.start())) {
+                selected = expression;
+            }
+        }
+        return null == selected ? null : expressions.get(selected);
+    }
+
+    ExpressionBranch expressionBranch(int position, Tree.Kind context) {
+        return expressionBranch(expressionAt(position, context));
+    }
+
+    private ExpressionBranch expressionBranch(@Nullable Tree tree) {
+        var expression = withoutParentheses(tree);
+        var decision =
+                decisions.stream().filter(d -> d.range().tree() == expression).findFirst();
+        if (decision.isPresent() && expression instanceof BinaryTree binary) {
+            return new ExpressionBranch(
+                    decision.get(),
+                    List.of(expressionBranch(binary.getLeftOperand()), expressionBranch(binary.getRightOperand())));
+        }
+        if (decision.isPresent() && expression instanceof ConditionalExpressionTree conditional) {
+            return new ExpressionBranch(
+                    decision.get(),
+                    List.of(
+                            expressionBranch(conditional.getCondition()),
+                            expressionBranch(conditional.getTrueExpression()),
+                            expressionBranch(conditional.getFalseExpression())));
+        }
+        return new ExpressionBranch(null, List.of());
+    }
+
+    private static @Nullable Tree withoutParentheses(@Nullable Tree tree) {
+        while (tree instanceof ParenthesizedTree parenthesized) {
+            tree = parenthesized.getExpression();
+        }
+        return tree;
     }
 
     @Nullable

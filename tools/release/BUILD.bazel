@@ -52,16 +52,12 @@ release_source_jar(
         "react4j/ReactConfig.native.js",
         "react4j/react4j.js",
         "react4j/react.externs.js",
-        "react4j/public/dev/react.js",
-        "react4j/public/react.js",
     ],
     resource_files = [
         "//:LICENSE",
         "//core/src/main/java/react4j:ReactConfig.native.js",
         "//core/src/main/java/react4j:react4j.js",
         "//core/src/main/java/react4j:react.externs.js",
-        "//tools/generation:react_dev",
-        "//tools/generation:react_prod",
     ],
 )
 
@@ -119,13 +115,11 @@ release_source_jar(
     java_targets = ["//dom/src/main/java/react4j/dom"],
     resource_entries = [
         "META-INF/LICENSE",
-        "react4j/dom/public/dev/react-dom.js",
-        "react4j/dom/public/react-dom.js",
+        "react4j/dom/Renderer.native.js",
     ],
     resource_files = [
         "//:LICENSE",
-        "//tools/generation:react_dom_dev",
-        "//tools/generation:react_dom_prod",
+        "//dom/src/main/java/react4j/dom:Renderer.native.js",
     ],
 )
 
@@ -298,22 +292,6 @@ filegroup(
         ":processor_pom",
         ":processor_sources",
     ],
-)
-
-# React UMD scripts are runtime assets, not Closure compilation units.
-release_jar(
-    name = "core_j2cl_sources",
-    out = "react4j-core-j2cl-sources.jar",
-    exclude_prefixes = ["react4j/public/"],
-    jars = [":core_sources"],
-)
-
-# React UMD scripts are runtime assets, not Closure compilation units.
-release_jar(
-    name = "dom_j2cl_sources",
-    out = "react4j-dom-j2cl-sources.jar",
-    exclude_prefixes = ["react4j/dom/public/"],
-    jars = [":dom_sources"],
 )
 
 alias(
