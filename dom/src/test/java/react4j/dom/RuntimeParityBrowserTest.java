@@ -56,6 +56,7 @@ public final class RuntimeParityBrowserTest {
             rootUpdates(container);
             nestedRoots(container, target);
             skippedUpdates(container);
+            committedChildren(container);
             alternateContainers();
             invalidContainers();
             strictMode(container, production);
@@ -499,6 +500,56 @@ public final class RuntimeParityBrowserTest {
         probe.forceUpdate();
         equal("second:2", container.getTextContent());
         equal("render,predicate,predicate,render,", trace.toString());
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
+    private static void committedChildren(Browser.Element container) {
+        final var trace = new StringBuilder();
+        final var mounted = new OutputProbe[1];
+        final boolean[] fail = {false};
+        final ReactNode[] output = {
+            ReactElement.createHostElement("em", null, null, JsPropertyMap.of("children", "old"))
+        };
+        final ViewConstructorFunction probe = constructible(inputs -> {
+            final var instance = new OutputProbe(inputs);
+            mounted[0] = instance;
+            return instance;
+        });
+        final var child = ReactElement.createViewElement(probe).input("output", (Supplier<ReactNode>) () -> {
+            if (fail[0]) {
+                throw new IllegalStateException("A descendant failed");
+            }
+            return output[0];
+        });
+        final ViewConstructorFunction boundary = CommitBoundary::new;
+        final var article = DOM.article(DOM.span("prefix"), child, DOM.strong("suffix"));
+        final var inner = commitBoundary(boundary, trace, "inner", article);
+        ReactDOM.render(commitBoundary(boundary, trace, "outer", DOM.section(inner, DOM.p("outside"))), container);
+        final var prefix = Browser.query(container, "article span");
+        final var suffix = Browser.query(container, "article strong");
+        final var outside = Browser.query(container, "section p");
+        final var instance = Objects.requireNonNull(mounted[0]);
+        equal("prefixoldsuffixoutside", container.getTextContent());
+
+        final var refTrace = new StringBuilder();
+        final RefConsumer ref = node -> refTrace.append(null == node ? "detach," : "attach,");
+        output[0] = ReactNode.of(
+                ReactElement.createHostElement("b", null, ref, JsPropertyMap.of("children", "new")), DOM.i("extra"));
+        instance.forceUpdate();
+        equal("prefixnewextrasuffixoutside", container.getTextContent());
+        check(prefix == Browser.query(container, "article span"), "Descendant placement preserves the preceding host");
+        check(
+                suffix == Browser.query(container, "article strong"),
+                "Descendant placement preserves the following host");
+        check(!Browser.exists(container, "article em"), "Descendant replaces its old host");
+        equal("attach,", refTrace.toString());
+
+        fail[0] = true;
+        instance.forceUpdate();
+        equal("catch:inner,", trace.toString());
+        equal("inneroutside", container.getTextContent());
+        equal("attach,detach,", refTrace.toString());
+        check(outside == Browser.query(container, "section p"), "Nearest boundary recovery preserves its sibling");
         ReactDOM.unmountComponentAtNode(container);
     }
 
@@ -1323,6 +1374,20 @@ public final class RuntimeParityBrowserTest {
             if (Boolean.TRUE.equals(inputs.get(fail))) {
                 throw new IllegalStateException("Commit parity failure");
             }
+        }
+    }
+
+    private static final class OutputProbe extends NativeView {
+        @JsConstructor
+        OutputProbe(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final Supplier<ReactNode> output =
+                    Js.uncheckedCast(Objects.requireNonNull(requireInputs().get("output")));
+            return output.get();
         }
     }
 

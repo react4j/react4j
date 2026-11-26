@@ -128,7 +128,7 @@ final class DomDevTools {
         next.set("memoizedProps", null == fiber.node ? null : fiber.node.inputs());
         if (Renderer.Kind.ROOT == fiber.kind) {
             final var state = JsPropertyMap.<@Nullable Object>of();
-            state.set("element", fiber.children.isEmpty() ? null : fiber.children.get(0).type);
+            state.set("element", 0 == fiber.children.length ? null : fiber.children[0].type);
             next.set("memoizedState", state);
         } else {
             next.set("memoizedState", null == fiber.view ? null : fiber.view.state());
@@ -155,9 +155,9 @@ final class DomDevTools {
             next.set("child", primary);
             primary.set("sibling", fallback);
             children(fiber, primary, root, 0, count);
-            children(fiber, fallback, root, count, fiber.children.size());
+            children(fiber, fallback, root, count, fiber.children.length);
         } else {
-            children(fiber, next, root, 0, fiber.children.size());
+            children(fiber, next, root, 0, fiber.children.length);
         }
         return next;
     }
@@ -170,7 +170,7 @@ final class DomDevTools {
             int end) {
         JsPropertyMap<@Nullable Object> sibling = null;
         for (int i = end - 1; i >= start; i--) {
-            final var child = snapshot(fiber.children.get(i), next, root);
+            final var child = snapshot(fiber.children[i], next, root);
             child.set("sibling", sibling);
             child.set("index", i - start);
             sibling = child;

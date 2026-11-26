@@ -1,6 +1,7 @@
 package react4j.dom;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,6 +31,7 @@ import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.OnShouldComponentUpdate;
 
 final class Renderer {
+    private static final Fiber[] NO_CHILDREN = new Fiber[0];
     private static final double RENDER_BUDGET_MS = 5;
     private static final int NORMAL_EXPIRATION_MS = 5000;
     private static final int INTERACTIVE_EXPIRATION_MS = 500;
@@ -588,10 +590,10 @@ final class Renderer {
         }
 
         private @Nullable Object publicInstance() {
-            if (fiber.children.isEmpty()) {
+            if (0 == fiber.children.length) {
                 return null;
             }
-            return fiber.children.get(0).publicInstance();
+            return fiber.children[0].publicInstance();
         }
 
         private void captureCommitFailure(Fiber source, Throwable error) {
@@ -643,7 +645,7 @@ final class Renderer {
         final Object type;
         final @Nullable String key;
         final boolean strict;
-        List<Fiber> children = List.of();
+        Fiber[] children = NO_CHILDREN;
 
         @Nullable
         ReactElement node;
@@ -712,11 +714,11 @@ final class Renderer {
             _placementStart = 0;
             final var content = unwrapFragment(next);
             if (null == content || !isChild(content)) {
-                if (!previous.isEmpty()) {
-                    children = List.of();
-                    root._deletions.addAll(previous);
+                if (0 != previous.length) {
+                    children = NO_CHILDREN;
+                    queueDeletions(previous);
                 }
-                complete.finish(!previous.isEmpty(), null);
+                complete.finish(0 != previous.length, null);
                 return;
             }
             if (isArray(content)) {
@@ -733,15 +735,15 @@ final class Renderer {
             try {
                 descriptor = Descriptor.of(content);
             } catch (Throwable error) {
-                children = List.of();
-                root._deletions.addAll(previous);
+                children = NO_CHILDREN;
+                queueDeletions(previous);
                 complete.finish(false, new RenderFailure(this, error));
                 return;
             }
             Fiber candidate = null;
             if (Kind.TEXT == descriptor.kind) {
-                if (!previous.isEmpty() && descriptor.matches(previous.get(0))) {
-                    candidate = previous.get(0);
+                if (0 != previous.length && descriptor.matches(previous[0])) {
+                    candidate = previous[0];
                 }
             } else {
                 for (final var child : previous) {
@@ -761,9 +763,9 @@ final class Renderer {
             final var child = null != candidate
                     ? candidate
                     : new Fiber(root, this, descriptor.kind, descriptor.type, descriptor.key);
-            final var replaced = null == candidate || 1 != previous.size();
+            final var replaced = null == candidate || 1 != previous.length;
             if (replaced) {
-                children = List.of(child);
+                children = new Fiber[] {child};
             }
             reuse(child, content, 0, scope, replaced ? withPlacement(complete) : complete);
         }
@@ -773,8 +775,8 @@ final class Renderer {
         }
 
         private boolean reuseSingle(@Nullable Object value, @Nullable Scope scope, Completion complete) {
-            if (1 == children.size() && null != value && matchesSlot(children.get(0), value, 0)) {
-                reuse(children.get(0), value, 0, scope, complete);
+            if (1 == children.length && null != value && matchesSlot(children[0], value, 0)) {
+                reuse(children[0], value, 0, scope, complete);
                 return true;
             }
             return false;
@@ -782,7 +784,8 @@ final class Renderer {
 
         private final class ChildList {
             private final @Nullable Object[] _values;
-            private final List<Fiber> _previous;
+            private final Fiber[] _previous;
+            private Fiber @Nullable [] _next;
             private final @Nullable Scope _scope;
             private final Completion _complete;
             private final Completion _completeChild;
@@ -794,8 +797,7 @@ final class Renderer {
             private @Nullable LinkedHashMap<Object, Fiber> _unmatched;
             private @Nullable RenderFailure _failure;
 
-            private ChildList(
-                    @Nullable Object[] values, List<Fiber> previous, @Nullable Scope scope, Completion complete) {
+            private ChildList(@Nullable Object[] values, Fiber[] previous, @Nullable Scope scope, Completion complete) {
                 _values = values;
                 _previous = previous;
                 _scope = scope;
@@ -817,12 +819,15 @@ final class Renderer {
                         _failure = new RenderFailure(Fiber.this, error);
                         break;
                     }
-                    if (children != _previous) {
-                        children.add(child);
-                    } else if (_position >= _previous.size() || _previous.get(_position) != child) {
-                        children = copyPrefix();
-                        children.add(child);
+                    var next = _next;
+                    if (null == next && (_position >= _previous.length || _previous[_position] != child)) {
+                        next = new Fiber[_values.length];
+                        System.arraycopy(_previous, 0, next, 0, _position);
+                        _next = next;
                         _changed = true;
+                    }
+                    if (null != next) {
+                        next[_position] = child;
                     }
                     _position++;
                     reuse(child, value, index, _scope, _completeChild);
@@ -835,22 +840,16 @@ final class Renderer {
                 if (null != unmatched) {
                     root._deletions.addAll(unmatched.values());
                 } else {
-                    for (; _cursor < _previous.size(); _cursor++) {
-                        root._deletions.add(_previous.get(_cursor));
+                    for (; _cursor < _previous.length; _cursor++) {
+                        root._deletions.add(_previous[_cursor]);
                     }
                 }
-                if (children == _previous && _position < _previous.size()) {
-                    children = copyPrefix();
+                final var next = _next;
+                if (null != next || _position != _previous.length) {
+                    children = sliceChildren(null == next ? _previous : next, 0, _position);
                 }
                 _placementStart = _stablePrefix;
-                _complete.finish(_changed || _previous.size() != _position, _failure);
-            }
-
-            private List<Fiber> copyPrefix() {
-                if (0 == _position) {
-                    return new ArrayList<>();
-                }
-                return new ArrayList<>(_position == _previous.size() ? _previous : _previous.subList(0, _position));
+                _complete.finish(_changed || _previous.length != _position, _failure);
             }
 
             private void completed(boolean changed, @Nullable RenderFailure failure) {
@@ -865,8 +864,8 @@ final class Renderer {
             }
 
             private Fiber match(Object value, int index) {
-                if (null == _unmatched && _cursor < _previous.size()) {
-                    final var child = _previous.get(_cursor);
+                if (null == _unmatched && _cursor < _previous.length) {
+                    final var child = _previous[_cursor];
                     if (matchesSlot(child, value, index)) {
                         _cursor++;
                         return child;
@@ -874,15 +873,15 @@ final class Renderer {
                 }
                 final var descriptor = Descriptor.of(value);
                 final var key = descriptor.reconciliationKey(index);
-                if (null == _unmatched && _cursor < _previous.size()) {
-                    final var child = _previous.get(_cursor);
+                if (null == _unmatched && _cursor < _previous.length) {
+                    final var child = _previous[_cursor];
                     if (key.equals(child.reconciliationKey()) && descriptor.matches(child)) {
                         _cursor++;
                         return child;
                     }
                     final var unmatched = new LinkedHashMap<Object, Fiber>();
-                    for (; _cursor < _previous.size(); _cursor++) {
-                        final var leftover = _previous.get(_cursor);
+                    for (; _cursor < _previous.length; _cursor++) {
+                        final var leftover = _previous[_cursor];
                         final var duplicate = unmatched.put(leftover.reconciliationKey(), leftover);
                         if (null != duplicate) {
                             root._deletions.add(duplicate);
@@ -972,12 +971,33 @@ final class Renderer {
             }
         }
 
-        private boolean canReuse(Object next, @Nullable Scope scope) {
+        private boolean canReuse(@Nullable Object next, @Nullable Scope scope) {
             return _initialized
                     && !_dirty
                     && !_retrySuspendedView
                     && _scope == scope
                     && Js.isTripleEqual(_description, next);
+        }
+
+        private void visitCommittedChildren(@Nullable Scope scope) {
+            _placementStart = 0;
+            int index = 0;
+            boolean changed = false;
+            for (final var child : children) {
+                final var description = child._description;
+                if (!child.canReuse(description, scope)) {
+                    child.update(Objects.requireNonNull(description), scope, root._saveResult);
+                    if (null != root._resultFailure) {
+                        return;
+                    }
+                    if (!changed && root._resultChanged) {
+                        _placementStart = index;
+                        changed = true;
+                    }
+                }
+                index++;
+            }
+            root.saveResult(changed, null);
         }
 
         private void update(Object next, @Nullable Scope scope, Completion complete) {
@@ -987,7 +1007,8 @@ final class Renderer {
             }
             _selfDuration = 0;
             final var dirty = _dirty;
-            final var refreshChildren = dirty || _scope != scope;
+            final var sameScope = _scope == scope;
+            final var refreshChildren = dirty || !sameScope;
             _dirty = false;
             _description = next;
             _scope = scope;
@@ -997,15 +1018,28 @@ final class Renderer {
             }
             final var oldNode = node;
             final var mounting = !_initialized;
+            // Changed inputs or scope need matching. Suspense and concurrent work can own uncommitted children.
+            final var walkChildren = dirty
+                    && sameScope
+                    && oldNode == next
+                    && !mounting
+                    && !_retrySuspendedView
+                    && !root.concurrent
+                    && null == root._legacySuspense;
             try {
                 if (Kind.VIEW == kind) {
                     final var element = Js.<ReactElement>uncheckedCast(next);
                     node = element;
-                    updateView(element, oldNode, scope, dirty, refreshChildren, mounting, complete);
+                    updateView(element, oldNode, scope, dirty, refreshChildren, walkChildren, mounting, complete);
                 } else if (Kind.HOST == kind) {
                     final var element = Js.<ReactElement>uncheckedCast(next);
                     node = element;
-                    prepareHost(element, oldNode, scope, mounting, complete);
+                    if (walkChildren) {
+                        visitCommittedChildren(scope);
+                        finishHost(element, false, false, 0, scope, complete, root._resultChanged, root._resultFailure);
+                    } else {
+                        prepareHost(element, oldNode, scope, mounting, complete);
+                    }
                 } else {
                     updateOther(next, oldNode, scope, mounting, complete);
                 }
@@ -1143,9 +1177,9 @@ final class Renderer {
             final var content = inputs.get("children");
             final var tracksChildren = !hasHtml && !"textarea".equals(tag);
             final var directText = tracksChildren && isText(content);
-            if ((hasHtml || directText) && !children.isEmpty()) {
-                root._deletions.addAll(children);
-                children = List.of();
+            if ((hasHtml || directText) && 0 != children.length) {
+                queueDeletions(children);
+                children = NO_CHILDREN;
             }
             final var previous = null == oldNode ? null : oldNode.inputs();
             if (!Js.isTripleEqual(previous, inputs)) {
@@ -1250,6 +1284,7 @@ final class Renderer {
                 @Nullable Scope scope,
                 boolean dirty,
                 boolean refreshChildren,
+                boolean walkChildren,
                 boolean mounting,
                 Completion complete) {
             final var inputs = element.inputs();
@@ -1291,6 +1326,7 @@ final class Renderer {
                     component,
                     null == existing,
                     render,
+                    walkChildren && !changed,
                     previousInputs,
                     previousState,
                     scope,
@@ -1312,6 +1348,7 @@ final class Renderer {
                 NativeView component,
                 boolean newView,
                 boolean render,
+                boolean walkChildren,
                 @Nullable JsPropertyMap<@Nullable Object> previousInputs,
                 @Nullable JsPropertyMap<@Nullable Object> previousState,
                 @Nullable Scope scope,
@@ -1355,7 +1392,12 @@ final class Renderer {
                 recordDurations(mounting, render ? elapsed : 0);
                 finishUpdate(changedOutput || null != onError, null, scope, complete);
             };
-            reconcileChildren(output, scope, finish);
+            if (walkChildren) {
+                visitCommittedChildren(scope);
+                finish.finish(root._resultChanged, root._resultFailure);
+            } else {
+                reconcileChildren(output, scope, finish);
+            }
         }
 
         private @Nullable Object renderOwned(Supplier<@Nullable Object> render) {
@@ -1375,8 +1417,8 @@ final class Renderer {
             }
             final var suspended = null != _suspension;
             final var previous = children;
-            final var primary = suspended ? previous.subList(0, _primaryCount) : previous;
-            final var fallback = suspended ? previous.subList(_primaryCount, previous.size()) : List.<Fiber>of();
+            final var primary = suspended ? sliceChildren(previous, 0, _primaryCount) : previous;
+            final var fallback = suspended ? sliceChildren(previous, _primaryCount, previous.length) : NO_CHILDREN;
             final var undo = Objects.requireNonNull(root._renderUndo);
             final var checkpoint = undo.size();
             final var deadline = root._fallbackDeadline;
@@ -1392,7 +1434,7 @@ final class Renderer {
                     return;
                 }
                 if (!failure.isSuspension()) {
-                    root._deletions.addAll(fallback);
+                    queueDeletions(fallback);
                     complete.finish(false, failure);
                     return;
                 }
@@ -1449,8 +1491,8 @@ final class Renderer {
                 JsPropertyMap<@Nullable Object> inputs, @Nullable Scope scope, Completion complete) {
             final var suspended = null != _suspension;
             final var previous = children;
-            final var primary = suspended ? previous.subList(0, _primaryCount) : previous;
-            final var fallback = suspended ? previous.subList(_primaryCount, previous.size()) : List.<Fiber>of();
+            final var primary = suspended ? sliceChildren(previous, 0, _primaryCount) : previous;
+            final var fallback = suspended ? sliceChildren(previous, _primaryCount, previous.length) : NO_CHILDREN;
             final var pending = _fallbackPending;
             if (null != pending) {
                 _fallbackPending = null;
@@ -1466,7 +1508,7 @@ final class Renderer {
             reconcileChildren(inputs.get("children"), scope, (changed, renderFailure) -> {
                 root._legacySuspense = outer;
                 if (null != renderFailure) {
-                    root._deletions.addAll(fallback);
+                    queueDeletions(fallback);
                     complete.finish(false, renderFailure);
                     return;
                 }
@@ -1506,8 +1548,8 @@ final class Renderer {
             });
         }
 
-        private void completePrimary(List<Fiber> fallback) {
-            root._deletions.addAll(fallback);
+        private void completePrimary(Fiber[] fallback) {
+            queueDeletions(fallback);
             if (null != _suspension) {
                 _suspension = null;
                 _primaryCount = 0;
@@ -1522,16 +1564,20 @@ final class Renderer {
         private void showFallback(
                 JsPropertyMap<@Nullable Object> inputs,
                 @Nullable Scope scope,
-                List<Fiber> primary,
-                List<Fiber> fallback,
+                Fiber[] primary,
+                Fiber[] fallback,
                 boolean suspended,
                 Completion complete) {
             children = fallback;
             reconcileChildren(inputs.get("fallback"), scope, (changed, failure) -> {
-                final var next = new ArrayList<>(primary);
-                next.addAll(children);
-                children = next;
-                _primaryCount = primary.size();
+                if (0 == children.length) {
+                    children = primary;
+                } else if (0 != primary.length) {
+                    final var next = Arrays.copyOf(primary, primary.length + children.length);
+                    System.arraycopy(children, 0, next, primary.length, children.length);
+                    children = next;
+                }
+                _primaryCount = primary.length;
                 if (!suspended) {
                     root._effects.add(new Effect(this, () -> setHidden(primary, true)));
                 }
@@ -1596,8 +1642,26 @@ final class Renderer {
             };
         }
 
-        private static void setHidden(List<Fiber> branch, boolean hidden) {
-            for (final var child : branch) {
+        private static Fiber[] sliceChildren(Fiber[] source, int start, int end) {
+            if (start == end) {
+                return NO_CHILDREN;
+            }
+            return 0 == start && end == source.length ? source : Arrays.copyOfRange(source, start, end);
+        }
+
+        private void queueDeletions(Fiber[] removed) {
+            for (final var child : removed) {
+                root._deletions.add(child);
+            }
+        }
+
+        private static void setHidden(Fiber[] branch, boolean hidden) {
+            setHidden(branch, 0, hidden);
+        }
+
+        private static void setHidden(Fiber[] branch, int start, boolean hidden) {
+            for (int i = start; i < branch.length; i++) {
+                final var child = branch[i];
                 final var dom = child.dom;
                 if (Kind.HOST == child.kind && null != dom) {
                     final var host = Js.<Element>uncheckedCast(dom);
@@ -1615,8 +1679,7 @@ final class Renderer {
                 } else if (Kind.TEXT == child.kind && null != dom) {
                     dom.nodeValue = hidden ? "" : Js.asString(stringValue(Objects.requireNonNull(child._description)));
                 } else {
-                    final var children = child.children;
-                    setHidden(hidden ? children : children.subList(child._primaryCount, children.size()), hidden);
+                    setHidden(child.children, hidden ? 0 : child._primaryCount, hidden);
                 }
             }
         }
@@ -1627,8 +1690,8 @@ final class Renderer {
             if (committing) {
                 disposeChildren();
             } else {
-                root._deletions.addAll(children);
-                children = new ArrayList<>();
+                queueDeletions(children);
+                children = NO_CHILDREN;
             }
             final var info = Js.<ReactErrorInfo>uncheckedCast(JsPropertyMap.of("componentStack", failure.stack()));
             return () -> catcher.componentDidCatch(Js.uncheckedCast(failure.thrown()), info);
@@ -1636,19 +1699,23 @@ final class Renderer {
 
         private void reconcileRef(@Nullable Object next, Object value) {
             if (ref != next) {
-                final var previous = ref;
-                if (null != previous && previous == _attachedRef) {
-                    root._mutations.add(new Effect(this, this::detachRef));
-                }
-                ref = next;
-                if (null != next) {
-                    root._effects.add(new Effect(this, () -> {
-                        if (ref == next) {
-                            _attachedRef = next;
-                            applyRef(next, value);
-                        }
-                    }));
-                }
+                changeRef(next, value);
+            }
+        }
+
+        private void changeRef(@Nullable Object next, Object value) {
+            final var previous = ref;
+            if (null != previous && previous == _attachedRef) {
+                root._mutations.add(new Effect(this, this::detachRef));
+            }
+            ref = next;
+            if (null != next) {
+                root._effects.add(new Effect(this, () -> {
+                    if (ref == next) {
+                        _attachedRef = next;
+                        applyRef(next, value);
+                    }
+                }));
             }
         }
 
@@ -1678,8 +1745,8 @@ final class Renderer {
         }
 
         private @Nullable Node lastDomChild() {
-            for (int i = children.size() - 1; 0 <= i; i--) {
-                final var child = children.get(i);
+            for (int i = children.length - 1; 0 <= i; i--) {
+                final var child = children[i];
                 if (Kind.PORTAL != child.kind) {
                     final var last = null != child.dom ? child.dom : child.lastDomChild();
                     if (null != last) {
@@ -1692,8 +1759,8 @@ final class Renderer {
 
         private @Nullable Node placeChildrenFrom(Node container, @Nullable Node before, int start) {
             var anchor = before;
-            for (int i = children.size() - 1; start <= i; i--) {
-                final var child = children.get(i);
+            for (int i = children.length - 1; start <= i; i--) {
+                final var child = children[i];
                 if (Kind.PORTAL != child.kind) {
                     final var node = child.dom;
                     if (null == node) {
@@ -1742,8 +1809,10 @@ final class Renderer {
 
         private void disposeChildren() {
             final var previous = children;
-            children = new ArrayList<>();
-            previous.forEach(Fiber::dispose);
+            children = NO_CHILDREN;
+            for (final var child : previous) {
+                child.dispose();
+            }
         }
 
         private void detachRef() {
