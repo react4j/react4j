@@ -61,7 +61,7 @@ final class Renderer {
     }
 
     private static Node mountParent(Node container) {
-        return 8 == container.nodeType ? Objects.requireNonNull(container.parentNode) : container;
+        return 8 == container.nodeType ? DomHost.requireNode(container.parentNode) : container;
     }
 
     static ReactRoot createRoot(Node container) {
@@ -1277,7 +1277,7 @@ final class Renderer {
                 }
                 duration += root.time() - started;
             }
-            final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(dom));
+            final var host = Js.<Element>uncheckedCast(DomHost.requireNode(dom));
             final var tag = Js.asString(type);
             if (mounting
                     && Boolean.TRUE.equals(element.inputs().get("autoFocus"))
@@ -1852,7 +1852,7 @@ final class Renderer {
             final Node container;
             final Node anchor;
             if (Kind.HOST == host.kind) {
-                container = Objects.requireNonNull(host.dom);
+                container = DomHost.requireNode(host.dom);
                 host.resetContent(container);
                 anchor = nextStableHost(host);
             } else {
@@ -2087,7 +2087,7 @@ final class Renderer {
     private record HostAttach(Fiber fiber, Node container, DomEvents.State state) implements CommitEffect {
         @Override
         public void apply() {
-            final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(fiber.dom));
+            final var host = Js.<Element>uncheckedCast(DomHost.requireNode(fiber.dom));
             DomHost.attachInitial(host, state, container, fiber.root.container, fiber.hostParent());
         }
     }
@@ -2116,7 +2116,7 @@ final class Renderer {
             implements CommitEffect {
         @Override
         public void apply() {
-            final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(fiber.dom));
+            final var host = Js.<Element>uncheckedCast(DomHost.requireNode(fiber.dom));
             fiber.resetContent(host);
             if (detach) {
                 fiber.detachRef();

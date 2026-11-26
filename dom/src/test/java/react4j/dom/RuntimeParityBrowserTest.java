@@ -54,6 +54,7 @@ public final class RuntimeParityBrowserTest {
             replaceRefs(container);
             portalContext(container, target);
             portalReplacement(container, target);
+            iframePortal(container);
             boundary(container, production, true);
             boundary(container, production, false);
             commitErrors(container);
@@ -399,6 +400,65 @@ public final class RuntimeParityBrowserTest {
             sibling.remove();
         }
     }
+
+    private static void iframePortal(Browser.Element container) {
+        final var iframe = Browser.append("iframe");
+        final var target = frameBody(iframe);
+        final var events = new StringBuilder();
+        final var refs = new StringBuilder();
+        final var captured = new Object[1];
+        final RefConsumer ref = value -> {
+            if (null == value) {
+                refs.append("detach,");
+            } else {
+                captured[0] = value;
+                refs.append("attach,");
+            }
+        };
+        final ReactEventHandler parent = event -> {
+            check(Browser.same(captured[0], event.getTarget()), "Iframe click retains its target");
+            events.append("parent,");
+        };
+        final ReactEventHandler first = event -> events.append("first,");
+        final ReactEventHandler next = event -> events.append("next,");
+        try {
+            ReactDOM.render(framePortal(target, ref, "first", first, parent), container);
+            final var button = Browser.query(target, "button");
+            check(Browser.same(captured[0], button), "The portal ref receives the iframe element");
+            check(
+                    Browser.same(Browser.property(target, "ownerDocument"), Browser.property(button, "ownerDocument")),
+                    "The portal host was created in the iframe document");
+            equal("first", target.getTextContent());
+            button.click();
+            equal("first,parent,", events.toString());
+            ReactDOM.render(framePortal(target, ref, "next", next, parent), container);
+            check(Browser.same(button, Browser.query(target, "button")), "Updating reuses the iframe host");
+            equal("next", target.getTextContent());
+            equal("attach,", refs.toString());
+            button.click();
+            equal("first,parent,next,parent,", events.toString());
+            check(ReactDOM.unmountComponentAtNode(container), "The iframe portal unmounts with its root");
+            equal("", target.getTextContent());
+            equal("attach,detach,", refs.toString());
+        } finally {
+            ReactDOM.unmountComponentAtNode(container);
+            iframe.remove();
+        }
+    }
+
+    private static ReactElement framePortal(
+            Browser.Element target, RefConsumer ref, String text, ReactEventHandler child, ReactEventHandler parent) {
+        final var button = ReactElement.createHostElement(
+                "button", null, ref, JsPropertyMap.of("children", text, "onClick", child));
+        return ReactElement.createHostElement(
+                "section",
+                null,
+                null,
+                JsPropertyMap.of("onClick", parent, "children", ReactDOM.createPortal(button, target)));
+    }
+
+    @JsMethod
+    private static native Browser.Element frameBody(Browser.Element iframe);
 
     private static void boundary(Browser.Element container, boolean production, boolean useDisplayName) {
         final var failing = namedFailure(Failure::new);

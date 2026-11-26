@@ -2,7 +2,6 @@ package react4j.dom;
 
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
@@ -231,7 +230,7 @@ final class DomHost {
         if ("script".equals(tag)) {
             final var wrapper = document.createElement("div");
             wrapper.innerHTML = "<script></script>";
-            return Js.uncheckedCast(wrapper.removeChild(Objects.requireNonNull(wrapper.firstChild)));
+            return Js.uncheckedCast(wrapper.removeChild(requireNode(wrapper.firstChild)));
         }
         final var customName = inputs.get("is");
         if ("string".equals(Js.typeof(customName))) {
@@ -242,6 +241,14 @@ final class DomHost {
             properties(element).set("multiple", true);
         }
         return element;
+    }
+
+    static Node requireNode(@Nullable final Node node) {
+        // DOM nodes can come from another window's constructors.
+        if (null == node) {
+            throw new NullPointerException();
+        }
+        return node;
     }
 
     static Node createText(final Node container, final String value) {
@@ -939,7 +946,14 @@ final class DomHost {
 
         @JsOverlay
         final Document document() {
-            return 9 == nodeType ? Js.uncheckedCast(this) : Objects.requireNonNull(ownerDocument);
+            if (9 == nodeType) {
+                return Js.uncheckedCast(this);
+            }
+            final var document = ownerDocument;
+            if (null == document) {
+                throw new NullPointerException();
+            }
+            return document;
         }
     }
 

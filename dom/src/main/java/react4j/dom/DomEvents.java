@@ -398,7 +398,10 @@ final class DomEvents {
             } finally {
                 if (!changedControls.isEmpty()) {
                     Renderer.flushInteractive();
-                    changedControls.forEach(DomHost::restoreAfterEvent);
+                    final List<?> controls = changedControls;
+                    for (int i = 0; i < controls.size(); i++) {
+                        DomHost.restoreAfterEvent(Js.uncheckedCast(controls.get(i)));
+                    }
                 }
             }
             return;
@@ -406,7 +409,7 @@ final class DomEvents {
     }
 
     private static List<Origin> outerRoots(final State inner) {
-        final var container = Objects.requireNonNull(inner.rootContainer);
+        final var container = DomHost.requireNode(inner.rootContainer);
         final var outer = closestManaged(container);
         if (null == outer) {
             return List.of();
@@ -419,7 +422,7 @@ final class DomEvents {
             if (null == state) {
                 break;
             }
-            final var outerContainer = Objects.requireNonNull(state.rootContainer);
+            final var outerContainer = DomHost.requireNode(state.rootContainer);
             if (!seen.add(outerContainer)) {
                 break;
             }
@@ -634,7 +637,7 @@ final class DomEvents {
             enterLength--;
         }
         final var prefix = name.startsWith("Pointer") ? "Pointer" : "Mouse";
-        final var document = (null != from ? from : Objects.requireNonNull(to)).document();
+        final var document = DomHost.requireNode(null != from ? from : to).document();
         final var window = DomHost.properties(document).get("defaultView");
         if (null != from) {
             final var leaveName = prefix + "Leave";
@@ -670,12 +673,11 @@ final class DomEvents {
         return path;
     }
 
-    private static List<Invocation> pathHandlers(
-            final List<DomHost.Element> path, final int length, final String name) {
+    private static List<Invocation> pathHandlers(final List<?> path, final int length, final String name) {
         final List<Invocation> calls = new ArrayList<>();
         final var property = "on" + name;
         for (int i = 0; i < length; i++) {
-            final var element = path.get(i);
+            final var element = Js.<DomHost.Element>uncheckedCast(path.get(i));
             final var state = STATES.get(element);
             if (null != state) {
                 addHandler(calls, element, state.inputs.get(property));

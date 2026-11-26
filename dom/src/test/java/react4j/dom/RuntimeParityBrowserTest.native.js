@@ -111,3 +111,10 @@ RuntimeParityBrowserTest.getStateKey = function(target, key) { return target[key
 RuntimeParityBrowserTest.withStateGetter = function(getter) {
   return Object.defineProperty({}, 'marker', {enumerable:true, get:getter});
 };
+
+
+/** @param {!Element} iframe @return {!Element} */
+RuntimeParityBrowserTest.frameBody = function(iframe) {
+  const frame = /** @type {!HTMLIFrameElement} */ (iframe);
+  return /** @type {!Element} */ (frame.contentDocument.body);
+};
