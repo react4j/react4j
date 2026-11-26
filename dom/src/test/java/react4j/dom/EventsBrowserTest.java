@@ -997,6 +997,37 @@ public final class EventsBrowserTest {
             ReactDOM.render(host("section", inheritedProps(JsPropertyMap.of("title", "inherited title"))), root);
             attribute(section, "title", null);
 
+            final var unknown = JsPropertyMap.<@Nullable Object>of(
+                    "constructor", "attribute", "ÉCase", "yes", "invalid name", "ignored");
+            ReactDOM.render(host("section", unknown), root);
+            attribute(section, "constructor", "attribute");
+            attribute(section, "Écase", "yes");
+            attribute(section, "écase", null);
+            attribute(section, "invalid name", null);
+            ReactDOM.render(host("section", JsPropertyMap.of("invalid name", "still ignored")), root);
+            attribute(section, "constructor", null);
+            attribute(section, "Écase", null);
+
+            final var rawNamespaced = JsPropertyMap.<@Nullable Object>of("xlink:href", "#raw", "xml:lang", "fr");
+            rawNamespaced.set("panose1", "1");
+            rawNamespaced.set("transformOrigin", "0 0");
+            rawNamespaced.set("crossOrigin", "anonymous");
+            ReactDOM.render(host("svg", JsPropertyMap.of("children", host("use", rawNamespaced))), root);
+            final var rawUse = Browser.query(root, "use");
+            attribute(rawUse, "panose1", "1");
+            attribute(rawUse, "panose-1", null);
+            attribute(rawUse, "transformOrigin", "0 0");
+            attribute(rawUse, "transform-origin", null);
+            attribute(rawUse, "crossOrigin", "anonymous");
+            attribute(rawUse, "crossorigin", null);
+            attribute(rawUse, "xlink:href", "#raw");
+            attribute(rawUse, "xml:lang", "fr");
+            check(null == attributeIn(rawUse, "http://www.w3.org/1999/xlink", "href"), "Raw XLink name");
+            check(null == attributeIn(rawUse, "http://www.w3.org/XML/1998/namespace", "lang"), "Raw XML name");
+            ReactDOM.render(host("svg", JsPropertyMap.of("children", host("use", JsPropertyMap.of()))), root);
+            attribute(rawUse, "xlink:href", null);
+            attribute(rawUse, "xml:lang", null);
+
             final var svgUse = JsPropertyMap.<@Nullable Object>of(
                     "xlinkHref", "#shape", "strokeWidth", Browser.number(3), "xmlLang", "en");
             svgUse.set("tabIndex", Browser.number(0));
@@ -1058,7 +1089,7 @@ public final class EventsBrowserTest {
                                     JsPropertyMap.of(
                                             "children",
                                             ReactNode.of(
-                                                    host("mi", JsPropertyMap.of("children", "x")),
+                                                    host("mi", JsPropertyMap.of("children", "x", "mixedCase", "yes")),
                                                     host("svg", JsPropertyMap.of("id", "inherited-namespace"))))),
                             host("a", JsPropertyMap.of("download", Browser.bool(true))),
                             host("img", JsPropertyMap.of("crossOrigin", "anonymous")),
@@ -1079,6 +1110,8 @@ public final class EventsBrowserTest {
                     "http://www.w3.org/1998/Math/MathML"
                             .equals(Browser.property(Browser.query(root, "#inherited-namespace"), "namespaceURI")),
                     "Nested names inherit the MathML namespace");
+            attribute(Browser.query(root, "mi"), "mixedCase", "yes");
+            attribute(Browser.query(root, "mi"), "mixedcase", null);
             attribute(Browser.query(root, "a"), "download", "");
             attribute(Browser.query(root, "img"), "crossorigin", "anonymous");
             attribute(Browser.query(root, "input"), "capture", "environment");

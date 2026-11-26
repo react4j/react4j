@@ -18,110 +18,7 @@ final class DomHost {
     private static final String HTML = "http://www.w3.org/1999/xhtml";
     private static final String XLINK = "http://www.w3.org/1999/xlink";
     private static final String XML = "http://www.w3.org/XML/1998/namespace";
-    private static final Set<String> BOOLEAN_ATTRIBUTES = Set.of(
-            "allowFullScreen",
-            "async",
-            "autoPlay",
-            "controls",
-            "default",
-            "defer",
-            "disabled",
-            "formNoValidate",
-            "hidden",
-            "loop",
-            "noModule",
-            "noValidate",
-            "open",
-            "playsInline",
-            "readOnly",
-            "required",
-            "reversed",
-            "scoped",
-            "seamless",
-            "itemScope");
-    private static final Set<String> BOOLEAN_STRINGS = Set.of(
-            "contentEditable",
-            "draggable",
-            "spellCheck",
-            "focusable",
-            "autoReverse",
-            "externalResourcesRequired",
-            "preserveAlpha",
-            "value");
-    private static final Set<String> SVG_HYPHENATED = Set.of(
-            "accentHeight",
-            "alignmentBaseline",
-            "arabicForm",
-            "baselineShift",
-            "capHeight",
-            "clipPath",
-            "clipRule",
-            "colorInterpolation",
-            "colorInterpolationFilters",
-            "colorProfile",
-            "colorRendering",
-            "dominantBaseline",
-            "enableBackground",
-            "fillOpacity",
-            "fillRule",
-            "floodColor",
-            "floodOpacity",
-            "fontFamily",
-            "fontSize",
-            "fontSizeAdjust",
-            "fontStretch",
-            "fontStyle",
-            "fontVariant",
-            "fontWeight",
-            "glyphName",
-            "glyphOrientationHorizontal",
-            "glyphOrientationVertical",
-            "horizAdvX",
-            "horizOriginX",
-            "imageRendering",
-            "letterSpacing",
-            "lightingColor",
-            "markerEnd",
-            "markerMid",
-            "markerStart",
-            "overlinePosition",
-            "overlineThickness",
-            "paintOrder",
-            "panose1",
-            "pointerEvents",
-            "renderingIntent",
-            "shapeRendering",
-            "stopColor",
-            "stopOpacity",
-            "strikethroughPosition",
-            "strikethroughThickness",
-            "strokeDasharray",
-            "strokeDashoffset",
-            "strokeLinecap",
-            "strokeLinejoin",
-            "strokeMiterlimit",
-            "strokeOpacity",
-            "strokeWidth",
-            "textAnchor",
-            "textDecoration",
-            "textRendering",
-            "transformOrigin",
-            "underlinePosition",
-            "underlineThickness",
-            "unicodeBidi",
-            "unicodeRange",
-            "unitsPerEm",
-            "vAlphabetic",
-            "vHanging",
-            "vIdeographic",
-            "vMathematical",
-            "vectorEffect",
-            "vertAdvY",
-            "vertOriginX",
-            "vertOriginY",
-            "wordSpacing",
-            "writingMode",
-            "xHeight");
+    private static final JsPropertyMap<AttributeInfo> ATTRIBUTES = buildAttributes();
     private static final Set<String> UNITLESS_STYLES = Set.of(
             "animationIterationCount",
             "borderImageOutset",
@@ -165,8 +62,6 @@ final class DomHost {
             "widows",
             "zIndex",
             "zoom");
-    private static final Set<String> POSITIVE_ATTRIBUTES = Set.of("cols", "rows", "size", "span");
-    private static final Set<String> NUMERIC_ATTRIBUTES = Set.of("rowSpan", "start");
     private static final Set<String> CONTROLLED_TAGS = Set.of("input", "select", "textarea");
     private static final Set<String> RESERVED_HYPHENATED_TAGS = Set.of(
             "annotation-xml",
@@ -271,7 +166,7 @@ final class DomHost {
             final String tag,
             final JsPropertyMap<@Nullable Object> inputs,
             @Nullable final String text) {
-        final var state = new DomEvents.State(inputs, tag, HTML.equals(element.namespaceURI));
+        final var state = new DomEvents.State(inputs, tag);
         applyProperties(element, state, null, inputs, text);
         if (isControlTag(tag)) {
             restoreControlled(element, state);
@@ -372,7 +267,7 @@ final class DomHost {
             case "checked", "multiple", "muted", "selected" -> {
                 if (!"checked".equals(name) || !"input".equals(state.tag)) {
                     if (custom) {
-                        setCustomAttribute(element, name, value);
+                        setUnknownAttribute(element, name, value, true);
                     } else {
                         properties(element).set(name, Js.isTruthy(value));
                     }
@@ -381,7 +276,7 @@ final class DomHost {
             case "defaultValue", "defaultChecked" -> {}
             case "value" -> {
                 if (!CONTROLLED_TAGS.contains(state.tag)) {
-                    setAttribute(element, name, value, custom, state.html);
+                    setAttribute(element, name, value, custom);
                 }
             }
             default -> {
@@ -393,7 +288,7 @@ final class DomHost {
                         break;
                     }
                 }
-                setAttribute(element, name, value, custom, state.html);
+                setAttribute(element, name, value, custom);
             }
         }
     }
@@ -404,80 +299,233 @@ final class DomHost {
                 && ('n' == name.charAt(1) || 'N' == name.charAt(1));
     }
 
-    private static void setCustomAttribute(final Element element, final String name, @Nullable final Object value) {
+    private enum AttributeType {
+        STRING,
+        BOOLEAN_STRING,
+        BOOLEAN,
+        OVERLOADED_BOOLEAN,
+        POSITIVE_NUMERIC,
+        NUMERIC
+    }
+
+    private record AttributeInfo(String name, @Nullable String namespace, AttributeType type) {}
+
+    private static JsPropertyMap<AttributeInfo> buildAttributes() {
+        final var table = newAttributeTable(null);
+        table.set("acceptCharset", new AttributeInfo("accept-charset", null, AttributeType.STRING));
+        table.set("className", new AttributeInfo("class", null, AttributeType.STRING));
+        table.set("htmlFor", new AttributeInfo("for", null, AttributeType.STRING));
+        table.set("httpEquiv", new AttributeInfo("http-equiv", null, AttributeType.STRING));
+        table.set("tabIndex", new AttributeInfo("tabindex", null, AttributeType.STRING));
+        addHtmlAttributes(table, AttributeType.BOOLEAN_STRING, "contentEditable", "draggable", "spellCheck", "value");
+        addHtmlAttributes(
+                table,
+                AttributeType.BOOLEAN,
+                "allowFullScreen",
+                "async",
+                "autoPlay",
+                "controls",
+                "default",
+                "defer",
+                "disabled",
+                "formNoValidate",
+                "hidden",
+                "loop",
+                "noModule",
+                "noValidate",
+                "open",
+                "playsInline",
+                "readOnly",
+                "required",
+                "reversed",
+                "scoped",
+                "seamless",
+                "itemScope");
+        addHtmlAttributes(table, AttributeType.OVERLOADED_BOOLEAN, "capture", "download");
+        addHtmlAttributes(table, AttributeType.POSITIVE_NUMERIC, "cols", "rows", "size", "span");
+        addHtmlAttributes(table, AttributeType.NUMERIC, "rowSpan", "start");
+        addSvgAttributes(
+                table,
+                AttributeType.BOOLEAN_STRING,
+                null,
+                "autoReverse",
+                "externalResourcesRequired",
+                "focusable",
+                "preserveAlpha");
+        addSvgAttributes(
+                table,
+                AttributeType.STRING,
+                null,
+                "accent-height",
+                "alignment-baseline",
+                "arabic-form",
+                "baseline-shift",
+                "cap-height",
+                "clip-path",
+                "clip-rule",
+                "color-interpolation",
+                "color-interpolation-filters",
+                "color-profile",
+                "color-rendering",
+                "dominant-baseline",
+                "enable-background",
+                "fill-opacity",
+                "fill-rule",
+                "flood-color",
+                "flood-opacity",
+                "font-family",
+                "font-size",
+                "font-size-adjust",
+                "font-stretch",
+                "font-style",
+                "font-variant",
+                "font-weight",
+                "glyph-name",
+                "glyph-orientation-horizontal",
+                "glyph-orientation-vertical",
+                "horiz-adv-x",
+                "horiz-origin-x",
+                "image-rendering",
+                "letter-spacing",
+                "lighting-color",
+                "marker-end",
+                "marker-mid",
+                "marker-start",
+                "overline-position",
+                "overline-thickness",
+                "paint-order",
+                "panose-1",
+                "pointer-events",
+                "rendering-intent",
+                "shape-rendering",
+                "stop-color",
+                "stop-opacity",
+                "strikethrough-position",
+                "strikethrough-thickness",
+                "stroke-dasharray",
+                "stroke-dashoffset",
+                "stroke-linecap",
+                "stroke-linejoin",
+                "stroke-miterlimit",
+                "stroke-opacity",
+                "stroke-width",
+                "text-anchor",
+                "text-decoration",
+                "text-rendering",
+                "underline-position",
+                "underline-thickness",
+                "unicode-bidi",
+                "unicode-range",
+                "units-per-em",
+                "v-alphabetic",
+                "v-hanging",
+                "v-ideographic",
+                "v-mathematical",
+                "vector-effect",
+                "vert-adv-y",
+                "vert-origin-x",
+                "vert-origin-y",
+                "word-spacing",
+                "writing-mode",
+                "xmlns:xlink",
+                "x-height");
+        addSvgAttributes(
+                table,
+                AttributeType.STRING,
+                XLINK,
+                "xlink:actuate",
+                "xlink:arcrole",
+                "xlink:href",
+                "xlink:role",
+                "xlink:show",
+                "xlink:title",
+                "xlink:type");
+        addSvgAttributes(table, AttributeType.STRING, XML, "xml:base", "xml:lang", "xml:space");
+        return table;
+    }
+
+    private static void addHtmlAttributes(JsPropertyMap<AttributeInfo> table, AttributeType type, String... names) {
+        for (final var name : names) {
+            table.set(name, new AttributeInfo(name.toLowerCase(Locale.ROOT), null, type));
+        }
+    }
+
+    private static void addSvgAttributes(
+            JsPropertyMap<AttributeInfo> table, AttributeType type, @Nullable String namespace, String... names) {
+        for (final var name : names) {
+            final var property = new StringBuilder(name.length());
+            for (int i = 0; i < name.length(); i++) {
+                final var ch = name.charAt(i);
+                if (('-' == ch || ':' == ch) && i + 1 < name.length()) {
+                    final var next = name.charAt(i + 1);
+                    if (next >= 'a' && next <= 'z') {
+                        property.append(Character.toUpperCase(next));
+                        i++;
+                        continue;
+                    }
+                }
+                property.append(ch);
+            }
+            table.set(property.toString(), new AttributeInfo(name, namespace, type));
+        }
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.create")
+    private static native JsPropertyMap<AttributeInfo> newAttributeTable(@Nullable Object prototype);
+
+    private static void setUnknownAttribute(Element element, String name, @Nullable Object value, boolean custom) {
         if (!ATTRIBUTE_NAME.test(name)) {
             return;
         }
         final var type = Js.typeof(value);
-        if (null == value || "function".equals(type) || "symbol".equals(type)) {
+        if (null == value
+                || "function".equals(type)
+                || "symbol".equals(type)
+                || !custom
+                        && "boolean".equals(type)
+                        && !name.regionMatches(true, 0, "aria-", 0, 5)
+                        && !name.regionMatches(true, 0, "data-", 0, 5)) {
             element.removeAttribute(name);
         } else {
             element.setAttribute(name, stringify(value));
         }
     }
 
-    private static void setAttribute(
-            final Element element,
-            final String name,
-            @Nullable final Object value,
-            final boolean custom,
-            final boolean html) {
-        if (custom) {
-            setCustomAttribute(element, name, value);
+    private static void setAttribute(Element element, String name, @Nullable Object value, boolean custom) {
+        final var info = custom ? null : ATTRIBUTES.get(name);
+        if (null == info) {
+            setUnknownAttribute(element, name, value, custom);
             return;
         }
-        final var attribute =
-                switch (name) {
-                    case "className" -> "class";
-                    case "htmlFor" -> "for";
-                    case "acceptCharset" -> "accept-charset";
-                    case "httpEquiv" -> "http-equiv";
-                    case "tabIndex" -> "tabindex";
-                    case "crossOrigin" -> "crossorigin";
-                    case "xmlnsXlink" -> "xmlns:xlink";
-                    case "xlinkActuate" -> "xlink:actuate";
-                    case "xlinkArcrole" -> "xlink:arcrole";
-                    case "xlinkHref" -> "xlink:href";
-                    case "xlinkRole" -> "xlink:role";
-                    case "xlinkShow" -> "xlink:show";
-                    case "xlinkTitle" -> "xlink:title";
-                    case "xlinkType" -> "xlink:type";
-                    case "xmlBase" -> "xml:base";
-                    case "xmlLang" -> "xml:lang";
-                    case "xmlSpace" -> "xml:space";
-                    default ->
-                        html ? name.toLowerCase(Locale.ROOT) : SVG_HYPHENATED.contains(name) ? hyphenate(name) : name;
-                };
-        final var namespace = attribute.startsWith("xlink:") ? XLINK : attribute.startsWith("xml:") ? XML : null;
-        final boolean booleanAttribute = BOOLEAN_ATTRIBUTES.contains(name);
-        final boolean overloaded = "capture".equals(name) || "download".equals(name);
-        final var type = Js.typeof(value);
+        final var valueType = Js.typeof(value);
         if (null == value
-                || "function".equals(type)
-                || "symbol".equals(type)
-                || POSITIVE_ATTRIBUTES.contains(name) && !(1 <= number(value))
-                || NUMERIC_ATTRIBUTES.contains(name) && Double.isNaN(number(value))
-                || booleanAttribute && !Js.isTruthy(value)
-                || "boolean".equals(type)
-                        && (overloaded
-                                ? !Js.isTruthy(value)
-                                : !booleanAttribute
-                                        && !BOOLEAN_STRINGS.contains(name)
-                                        && !name.regionMatches(true, 0, "aria-", 0, 5)
-                                        && !name.regionMatches(true, 0, "data-", 0, 5))) {
-            if (null == namespace) {
-                element.removeAttribute(attribute);
-            } else {
-                element.removeAttributeNS(namespace, attribute.substring(attribute.indexOf(':') + 1));
-            }
-        } else {
-            final var text = booleanAttribute || overloaded && Boolean.TRUE.equals(value) ? "" : stringify(value);
-            if (null == namespace) {
-                element.setAttribute(attribute, text);
-            } else {
-                element.setAttributeNS(namespace, attribute, text);
-            }
+                || "function".equals(valueType)
+                || "symbol".equals(valueType)
+                || removeAttributeValue(info.type(), value, valueType)) {
+            element.removeAttribute(info.name());
+            return;
         }
+        final var text = AttributeType.BOOLEAN == info.type()
+                        || AttributeType.OVERLOADED_BOOLEAN == info.type() && Js.isTripleEqual(Boolean.TRUE, value)
+                ? ""
+                : stringify(value);
+        final var namespace = info.namespace();
+        if (null == namespace) {
+            element.setAttribute(info.name(), text);
+        } else {
+            element.setAttributeNS(namespace, info.name(), text);
+        }
+    }
+
+    private static boolean removeAttributeValue(AttributeType type, Object value, String valueType) {
+        return switch (type) {
+            case BOOLEAN -> !Js.isTruthy(value);
+            case BOOLEAN_STRING -> false;
+            case OVERLOADED_BOOLEAN -> Js.isTripleEqual(Boolean.FALSE, value);
+            case POSITIVE_NUMERIC -> "boolean".equals(valueType) || !(1 <= number(value));
+            case NUMERIC -> "boolean".equals(valueType) || Double.isNaN(number(value));
+            case STRING -> "boolean".equals(valueType);
+        };
     }
 
     private static void setStyles(final Element element, @Nullable final Object previous, @Nullable final Object next) {

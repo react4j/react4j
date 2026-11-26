@@ -772,7 +772,6 @@ final class DomEvents {
         private @Nullable Boundary boundary;
         private DomHost.@Nullable Node rootContainer;
         final String tag;
-        final boolean html;
         private DomHost.@Nullable Element logicalParent;
         JsPropertyMap<@Nullable Object> inputs;
         boolean hasHandlers;
@@ -790,9 +789,8 @@ final class DomEvents {
         @Nullable
         String trackedProperty;
 
-        State(final JsPropertyMap<@Nullable Object> inputs, final String tag, final boolean html) {
+        State(final JsPropertyMap<@Nullable Object> inputs, final String tag) {
             this.tag = tag;
-            this.html = html;
             this.inputs = inputs;
         }
     }
