@@ -11,7 +11,21 @@ const touchEvent = goog.require('react4j.dom.events.TouchEvent.$Overlay');
 const uIEvent = goog.require('react4j.dom.events.UIEvent.$Overlay');
 const wheelEvent = goog.require('react4j.dom.events.WheelEvent.$Overlay');
 
-/** @param {!Element} target @param {string} name */
+EventsBrowserTest.registerCustomizedButton = function() {
+  const name = 'react4j-test-button';
+  if (!customElements.get(name)) {
+    /** @constructor @extends {HTMLButtonElement} */
+    function Button() {
+      return Reflect.construct(HTMLButtonElement, [], Button);
+    }
+    Object.setPrototypeOf(Button, HTMLButtonElement);
+    Object.setPrototypeOf(Button.prototype, HTMLButtonElement.prototype);
+    Button.prototype['connectedCallback'] = function() { this.setAttribute('data-upgraded', 'yes'); };
+    customElements.define(name, Button, {extends: 'button'});
+  }
+};
+
+/** @param {!Element} target @param {string} name @return {!Event} */
 EventsBrowserTest.dispatch = function(target, name) {
   const mouseOptions = {bubbles: true, cancelable: true, altKey: true, ctrlKey: false,
     shiftKey: true, metaKey: false, button: 1, buttons: 2, clientX: 11, clientY: 17,
@@ -33,16 +47,52 @@ EventsBrowserTest.dispatch = function(target, name) {
     'onSpaceKeyPress': () => new KeyboardEvent('keypress', {bubbles: true, charCode: 32, which: 32}),
     'onCompositionEnd': () => new window.CompositionEvent('compositionend', {bubbles: true, data: 'typed'}),
     'onDragStart': () => new window.DragEvent('dragstart', Object.assign({}, mouseOptions, {dataTransfer: transfer})),
+    'onPointerDown': () => new PointerEvent('pointerdown', {...mouseOptions, pointerId: 7,
+      pointerType: 'pen', pressure: 0.5, tangentialPressure: 0.25, width: 4, height: 6, tiltX: 17,
+      tiltY: -20, twist: 70, isPrimary: true}),
     'onWheel': () => new window.WheelEvent('wheel', Object.assign({}, mouseOptions, {deltaX: 11, deltaY: 17, deltaZ: 23, deltaMode: 1})),
     'onTouchStart': () => new window.TouchEvent('touchstart', {bubbles: true, touches: [], targetTouches: [], changedTouches: [], altKey: true}),
-    'onAnimationEnd': () => new AnimationEvent('animationend', {bubbles: true, animationName: 'fade'}),
+    'onAnimationEnd': () => new AnimationEvent('animationend', {bubbles: true, animationName: 'fade', elapsedTime: 0.5, pseudoElement: '::before'}),
     'onTransitionEnd': () => new TransitionEvent('transitionend', {bubbles: true, propertyName: 'opacity', elapsedTime: 0.25, pseudoElement: ''}),
     'onCancel': () => new Event('cancel'),
     'onClose': () => new Event('close'),
     'onBlur': () => new FocusEvent('blur'),
     'onScroll': () => new window.UIEvent('scroll', {detail: 7, view: window}),
+    'legacyWheel': () => Object.assign(new Event('wheel', {bubbles: true}), {'wheelDeltaX': 12, 'wheelDeltaY': -34}),
+    'legacyVerticalWheel': () => Object.assign(new Event('wheel', {bubbles: true}), {'wheelDelta': 56}),
+    'legacyMouse': () => {
+      const event = new Event('mousemove', {bubbles: true});
+      Object.defineProperty(event, 'srcElement', {value: document.body});
+      Object.assign(event, {'fromElement': document.body, 'toElement': target});
+      Object.defineProperty(event, 'timeStamp', {value: 0});
+      return event;
+    },
+    'legacyCopy': () => new Event('copy', {bubbles: true}),
+    'legacyCanceled': () => {
+      const event = new MouseEvent('click', {bubbles: true, cancelable: true});
+      event.preventDefault();
+      Object.defineProperty(event, 'defaultPrevented', {value: undefined});
+      return event;
+    },
+    'legacyMissingKeyCode': () => new Event('keydown', {bubbles: true}),
+    'legacyEventMethods': () => {
+      const event = new MouseEvent('click', {bubbles: true, cancelable: true});
+      Object.defineProperties(event, {'preventDefault': {value: undefined}, 'stopPropagation': {value: undefined}});
+      return event;
+    },
   };
-  target.dispatchEvent(events[name]());
+  const event = events[name]();
+  if ('legacyCopy' === name) {
+    window['clipboardData'] = transfer;
+    try {
+      target.dispatchEvent(event);
+    } finally {
+      delete window['clipboardData'];
+    }
+  } else {
+    target.dispatchEvent(event);
+  }
+  return event;
 };
 /** @param {string} name @return {!Array<!Function>} */
 EventsBrowserTest.eventOverlays = function(name) {

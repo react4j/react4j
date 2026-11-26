@@ -15,6 +15,7 @@ testSuite({
   testKeyboardVariants() { Events.runKeyboardVariants('production' === Mode.environment); },
   testDomEventVariants() { Events.runDomEventVariants(); },
   testEvents() { Events.runBehavior(); },
+  testEventPayloads() { Events.runPayloads(); },
   testParity() {
     TestCase.getActiveTestCase().promiseTimeout = 15000;
     // React 16 development replays caught render errors through window.onerror.

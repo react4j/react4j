@@ -19,6 +19,7 @@ import react4j.ReactElement;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
 import react4j.ReactTestUtil;
+import react4j.dom.events.ReactEventHandler;
 import react4j.dom.proptypes.html.RefConsumer;
 import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidCatch;
@@ -50,6 +51,7 @@ public final class RuntimeParityBrowserTest {
             boundary(container);
             commitErrors(container);
             rootUpdates(container);
+            nestedRoots(container, target);
             skippedUpdates(container);
             alternateContainers();
             invalidContainers();
@@ -66,11 +68,19 @@ public final class RuntimeParityBrowserTest {
                 .then(ignored -> laterSuspense(false))
                 .then(ignored -> laterSuspense(true))
                 .then(ignored -> concurrentUpdates())
+                .then(ignored -> concurrentYield())
+                .then(ignored -> concurrentInterruption(false))
+                .then(ignored -> concurrentInterruption(true))
+                .then(ignored -> repeatedInteractiveUpdates())
+                .then(ignored -> delayedFallback(false))
+                .then(ignored -> delayedFallback(true))
                 .then(ignored -> abandonSuspense(false))
                 .then(ignored -> abandonSuspense(true))
                 .then(ignored -> rejectedSuspense())
                 .then(ignored -> pendingFallback(false))
-                .then(ignored -> pendingFallback(true));
+                .then(ignored -> pendingFallback(true))
+                .then(ignored -> supersedeHeldFallback(false))
+                .then(ignored -> supersedeHeldFallback(true));
     }
 
     private static void lifecycle(Browser.Element container) {
@@ -148,6 +158,11 @@ public final class RuntimeParityBrowserTest {
                 nested[1] == moved[0] && nested[0] == moved[1],
                 "Nested arrays retain keyed identities through empty slots");
         equal("2", container.getTextContent());
+        ReactDOM.render(ReactNode.of(keyedInput("leading"), ReactNode.of(2)), container);
+        final var laterText = Objects.requireNonNull(Browser.property(container, "lastChild"));
+        ReactDOM.render(ReactNode.of(3), container);
+        equal("3", container.getTextContent());
+        check(null == Browser.property(laterText, "parentNode"), "A single text child only reuses the first child");
         ReactDOM.unmountComponentAtNode(container);
     }
 
@@ -390,7 +405,37 @@ public final class RuntimeParityBrowserTest {
         check(!ReactDOM.unmountComponentAtNode(container), "The removed root is unregistered");
         ReactDOM.render(ReactNode.of("fresh"), container);
         equal("fresh", container.getTextContent());
-        check(ReactDOM.unmountComponentAtNode(container), "A reused container has a fresh root");
+        trace.setLength(0);
+        ReactDOM.batchedUpdates(() -> {
+            ReactDOM.render(
+                    ReactNode.of("queued"),
+                    container,
+                    () -> trace.append("callback:").append(container.getTextContent()));
+            equal("fresh", container.getTextContent());
+            check(ReactDOM.unmountComponentAtNode(container), "A reused container has a fresh root");
+            equal("", container.getTextContent());
+            equal("callback:", trace.toString());
+        });
+        check(!ReactDOM.unmountComponentAtNode(container), "Unmount inside a batch unregisters the root");
+    }
+
+    private static void nestedRoots(Browser.Element container, Browser.Element target) {
+        final var trace = new StringBuilder();
+        ReactDOM.render(ReactNode.of("outer"), container, () -> {
+            trace.append("outer,");
+            ReactDOM.render(ReactNode.of("inner"), target, () -> trace.append("inner,"));
+            equal("", target.getTextContent());
+            trace.append("outer done,");
+        });
+        equal("outer,outer done,inner,", trace.toString());
+        equal("inner", target.getTextContent());
+
+        ReactDOM.render(ReactNode.of("outer update"), container, () -> {
+            check(ReactDOM.unmountComponentAtNode(target), "Another root can be unmounted from a callback");
+            equal("inner", target.getTextContent());
+        });
+        equal("", target.getTextContent());
+        ReactDOM.unmountComponentAtNode(container);
     }
 
     private static void skippedUpdates(Browser.Element container) {
@@ -430,6 +475,171 @@ public final class RuntimeParityBrowserTest {
                     return null;
                 })
                 .finallyDo(container::remove);
+    }
+
+    private static BrowserPromise concurrentYield() {
+        final var container = Browser.append("div");
+        final var root = ReactDOM.createRoot(container);
+        final var visits = new int[1];
+        final var attached = new int[1];
+        final var observed = new boolean[1];
+        final var trace = new StringBuilder();
+        final var children = slowChildren(visits, attached, () -> {
+            observed[0] = 0 < visits[0]
+                    && visits[0] < SLOW_CHILDREN
+                    && 0 == attached[0]
+                    && "".equals(container.getTextContent());
+            root.unmount(() -> trace.append("unmount,"));
+        });
+        root.render(children, () -> {
+            trace.append("render,");
+            check(SLOW_CHILDREN == attached[0], "Each ref attaches during the commit");
+        });
+        return Browser.until(() -> trace.toString().endsWith("unmount,"), 5000, 25, "Queued unmount")
+                .then(ignored -> {
+                    check(observed[0], "A browser task runs during preparation without observing a partial commit");
+                    equal("render,unmount,", trace.toString());
+                    equal("", container.getTextContent());
+                    return null;
+                })
+                .finallyDo(container::remove);
+    }
+
+    private static BrowserPromise concurrentInterruption(boolean unmount) {
+        final var container = Browser.append("div");
+        final var trigger = Browser.append("div");
+        final var root = ReactDOM.createRoot(container);
+        final var visits = new int[1];
+        final var attached = new int[1];
+        final var observed = new boolean[1];
+        final var trace = new StringBuilder();
+        final var result = unmount ? "" : "replacement";
+        final ReactEventHandler onClick = event -> {
+            if (unmount) {
+                root.unmount(() -> trace.append("unmount:")
+                        .append(container.getTextContent())
+                        .append(','));
+            } else {
+                root.render(
+                        ReactNode.of(result),
+                        () -> trace.append("replacement:")
+                                .append(container.getTextContent())
+                                .append(','));
+            }
+        };
+        ReactDOM.render(
+                ReactElement.createHostElement("button", null, null, JsPropertyMap.of("onClick", onClick)), trigger);
+        final var children = slowChildren(visits, attached, () -> {
+            observed[0] = 0 < visits[0]
+                    && visits[0] < SLOW_CHILDREN
+                    && 0 == attached[0]
+                    && "committed".equals(container.getTextContent());
+            Browser.query(trigger, "button").click();
+        });
+        return Browser.callback(done -> root.render(ReactNode.of("committed"), done::run))
+                .then(ignored -> Browser.callback(done -> root.render(children, () -> {
+                    trace.append("render:").append(container.getTextContent()).append(',');
+                    done.run();
+                })))
+                .then(ignored -> {
+                    check(observed[0], "Interrupted preparation leaves the committed DOM visible");
+                    check(SLOW_CHILDREN > visits[0], "Priority work supersedes preparation");
+                    check(0 == attached[0], "Superseded work never attaches refs");
+                    equal(
+                            unmount ? "unmount:,render:," : "replacement:replacement,render:replacement,",
+                            trace.toString());
+                    equal(result, container.getTextContent());
+                    return Browser.callback(done -> root.unmount(done::run));
+                })
+                .finallyDo(() -> {
+                    ReactDOM.unmountComponentAtNode(trigger);
+                    trigger.remove();
+                    container.remove();
+                });
+    }
+
+    private static BrowserPromise repeatedInteractiveUpdates() {
+        final var container = Browser.append("div");
+        final var root = ReactDOM.createRoot(container);
+        final var trace = new StringBuilder();
+        final var count = new int[1];
+        final var handler = new ReactEventHandler[1];
+        handler[0] = event -> {
+            trace.append("handler:").append(container.getTextContent()).append(',');
+            root.render(
+                    clickButton(++count[0], Objects.requireNonNull(handler[0])),
+                    () -> trace.append("callback:")
+                            .append(container.getTextContent())
+                            .append(','));
+        };
+        return Browser.callback(done -> root.render(clickButton(0, Objects.requireNonNull(handler[0])), done::run))
+                .then(ignored -> {
+                    final var button = Browser.query(container, "button");
+                    button.click();
+                    equal("0", container.getTextContent());
+                    button.click();
+                    equal("1", container.getTextContent());
+                    button.click();
+                    equal("2", container.getTextContent());
+                    return Browser.until(() -> "3".equals(container.getTextContent()), 5000, 25, "Interactive commit");
+                })
+                .then(ignored -> {
+                    equal("handler:0,callback:1,handler:1,callback:2,handler:2,callback:3,", trace.toString());
+                    return Browser.callback(done -> root.unmount(done::run));
+                })
+                .finallyDo(container::remove);
+    }
+
+    private static ReactElement clickButton(int count, ReactEventHandler handler) {
+        return ReactElement.createHostElement(
+                "button", null, null, JsPropertyMap.of("onClick", handler, "children", ReactNode.of(count)));
+    }
+
+    private static final int SLOW_CHILDREN = 64;
+
+    private static ReactNode slowChildren(int[] visits, int[] attached, BrowserPromise.Action onYield) {
+        final var children = new ReactNode[SLOW_CHILDREN];
+        final ViewConstructorFunction type = YieldProbe::new;
+        for (int i = 0; i < children.length; i++) {
+            final var index = i;
+            final Runnable work = () -> {
+                if (visits[0] == index) {
+                    visits[0]++;
+                    if (0 == index) {
+                        nextBrowserTask(onYield);
+                    }
+                    check(2 <= spendTime(), "Each component performs measurable work");
+                }
+            };
+            final RefConsumer ref = value -> {
+                if (null != value) {
+                    attached[0]++;
+                }
+            };
+            children[i] =
+                    ReactElement.createViewElement(type).input("work", work).input("refCallback", ref);
+        }
+        return ReactNode.of(children);
+    }
+
+    @JsMethod
+    private static native void nextBrowserTask(BrowserPromise.Action task);
+
+    @JsMethod
+    private static native double spendTime();
+
+    private static final class YieldProbe extends NativeView {
+        @JsConstructor
+        YieldProbe(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            ((Runnable) Objects.requireNonNull(requireInputs().get("work"))).run();
+            return ReactElement.createHostElement(
+                    "span", null, requireInputs().get("refCallback"), JsPropertyMap.of("children", ReactNode.of("x")));
+        }
     }
 
     private static void alternateContainers() {
@@ -758,6 +968,105 @@ public final class RuntimeParityBrowserTest {
                     equal(
                             replace ? "update:readyreplaced,replace:readyreplaced," : "update:readyupdated,",
                             callbacks.toString());
+                    return null;
+                })
+                .finallyDo(() -> root.unmount(container::remove));
+    }
+
+    private static BrowserPromise supersedeHeldFallback(boolean urgent) {
+        final var container = Browser.append("div");
+        final var trigger = Browser.append("div");
+        final var root = ReactDOM.createRoot(container);
+        final var trace = new StringBuilder();
+        final var pending = Browser.callback(callback -> {});
+        final var child = ReactElement.createViewElement(constructible(SuspendingView::new))
+                .input("ready", (BooleanSupplier) () -> false)
+                .input("pending", pending);
+        final Runnable replace = () -> root.render(
+                ReactNode.of("replacement"),
+                () -> trace.append("replace:")
+                        .append(container.getTextContent())
+                        .append(','));
+        final ReactEventHandler click = event -> replace.run();
+        ReactDOM.render(
+                ReactElement.createHostElement("button", null, null, JsPropertyMap.of("onClick", click)), trigger);
+        root.render(pendingBoundary("original", child, "initial"));
+        return Browser.until(() -> "original".equals(container.getTextContent()), 5000, 25, "Original fallback")
+                .then(ignored -> {
+                    root.render(
+                            pendingBoundary("updated", child.dup(), "updated"),
+                            () -> trace.append("update:")
+                                    .append(container.getTextContent())
+                                    .append(','));
+                    return Browser.delay(100);
+                })
+                .then(ignored -> {
+                    equal("original", container.getTextContent());
+                    equal("", trace.toString());
+                    if (urgent) {
+                        Browser.query(trigger, "button").click();
+                    } else {
+                        replace.run();
+                    }
+                    return Browser.until(
+                            () -> trace.toString().contains("update:")
+                                    && trace.toString().contains("replace:"),
+                            5000,
+                            25,
+                            "Replacement releases both render callbacks");
+                })
+                .then(ignored -> {
+                    equal(
+                            urgent
+                                    ? "replace:replacement,update:replacement,"
+                                    : "update:replacement,replace:replacement,",
+                            trace.toString());
+                    equal("replacement", container.getTextContent());
+                    return Browser.callback(done -> root.unmount(done::run));
+                })
+                .finallyDo(() -> {
+                    ReactDOM.unmountComponentAtNode(trigger);
+                    trigger.remove();
+                    container.remove();
+                });
+    }
+
+    private static BrowserPromise delayedFallback(boolean replace) {
+        final var container = Browser.append("div");
+        final var root = ReactDOM.createRoot(container);
+        final var trace = new StringBuilder();
+        final var ready = new boolean[1];
+        final var started = new boolean[1];
+        final BrowserPromise.Action[] resolve = new BrowserPromise.Action[1];
+        final var pending = Browser.callback(callback -> resolve[0] = callback);
+        final var child = ReactElement.createViewElement(constructible(SuspendingView::new))
+                .input("ready", (BooleanSupplier) () -> {
+                    started[0] = true;
+                    return ready[0];
+                })
+                .input("pending", pending);
+        root.render(
+                ReactElement.createSuspense(null, ReactNode.of("loading"), 4000, child),
+                () -> trace.append(container.getTextContent()));
+        return Browser.until(() -> started[0], 5000, 10, "Concurrent render starts")
+                .then(ignored -> Browser.delay(80))
+                .then(ignored -> {
+                    equal("", container.getTextContent());
+                    equal("", trace.toString());
+                    if (replace) {
+                        root.render(ReactNode.of("replacement"));
+                    } else {
+                        ready[0] = true;
+                        Objects.requireNonNull(resolve[0]).run();
+                    }
+                    return Browser.until(
+                            () -> (replace ? "replacement" : "ready").equals(container.getTextContent()),
+                            5000,
+                            10,
+                            "Ready content supersedes a delayed fallback");
+                })
+                .then(ignored -> {
+                    equal(replace ? "replacement" : "ready", trace.toString());
                     return null;
                 })
                 .finallyDo(() -> root.unmount(container::remove));

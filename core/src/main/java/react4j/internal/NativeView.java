@@ -1,6 +1,7 @@
 package react4j.internal;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -12,7 +13,7 @@ public abstract class NativeView {
     private @Nullable JsPropertyMap<@Nullable Object> _inputs;
     private @Nullable JsPropertyMap<@Nullable Object> _state;
     private @Nullable JsPropertyMap<@Nullable Object> _pendingState;
-    private @Nullable Runnable _update;
+    private @Nullable Consumer<Runnable> _update;
     private boolean _forceUpdate;
 
     @JsConstructor
@@ -38,7 +39,7 @@ public abstract class NativeView {
         return _state;
     }
 
-    public final void attach(final Runnable update) {
+    public final void attach(final Consumer<Runnable> update) {
         _update = update;
     }
 
@@ -85,14 +86,15 @@ public abstract class NativeView {
     public final void setState(final JsPropertyMap<@Nullable Object> state) {
         final var update = _update;
         if (null != update) {
-            var pending = _pendingState;
-            if (null == pending) {
-                pending = JsPropertyMap.of();
-                copyState(pending, _state);
-                _pendingState = pending;
-            }
-            copyState(pending, state);
-            update.run();
+            update.accept(() -> {
+                var pending = _pendingState;
+                if (null == pending) {
+                    pending = JsPropertyMap.of();
+                    copyState(pending, _state);
+                    _pendingState = pending;
+                }
+                copyState(pending, state);
+            });
         }
     }
 
@@ -106,8 +108,7 @@ public abstract class NativeView {
     public final void forceUpdate() {
         final var update = _update;
         if (null != update) {
-            _forceUpdate = true;
-            update.run();
+            update.accept(() -> _forceUpdate = true);
         }
     }
 }

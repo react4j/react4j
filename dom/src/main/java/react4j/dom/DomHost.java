@@ -169,17 +169,53 @@ final class DomHost {
     private static final Set<String> POSITIVE_ATTRIBUTES = Set.of("cols", "rows", "size", "span");
     private static final Set<String> NUMERIC_ATTRIBUTES = Set.of("rowSpan", "start");
     private static final Set<String> CONTROLLED_TAGS = Set.of("input", "select", "textarea");
+    private static final Set<String> RESERVED_HYPHENATED_TAGS = Set.of(
+            "annotation-xml",
+            "color-profile",
+            "font-face",
+            "font-face-src",
+            "font-face-uri",
+            "font-face-format",
+            "font-face-name",
+            "missing-glyph");
+    private static final String ATTRIBUTE_NAME_START =
+            ":A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF"
+                    + "\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD";
+    private static final AttributeName ATTRIBUTE_NAME = new AttributeName("^[" + ATTRIBUTE_NAME_START + "]["
+            + ATTRIBUTE_NAME_START + "\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040]*$");
 
     private DomHost() {}
 
-    static Element createElement(final Node container, @Nullable final Element physicalParent, final String tag) {
-        final var parent = null == physicalParent ? Js.<Element>uncheckedCast(container) : physicalParent;
+    static Element createElement(
+            final Node container,
+            @Nullable final Element physicalParent,
+            final String tag,
+            final JsPropertyMap<@Nullable Object> inputs) {
         final var document = container.document();
-        if ("svg".equals(tag) || SVG.equals(parent.namespaceURI) && !"foreignObject".equals(parent.localName)) {
+        final var parent = null != physicalParent
+                ? physicalParent
+                : 9 == container.nodeType ? document.documentElement : Js.<@Nullable Element>uncheckedCast(container);
+        final var namespace = null == parent ? null : parent.namespaceURI;
+        if (null != parent
+                && null != namespace
+                && !HTML.equals(namespace)
+                && !(SVG.equals(namespace) && "foreignObject".equals(parent.localName))) {
+            return document.createElementNS(namespace, tag);
+        }
+        if ("svg".equals(tag)) {
             return document.createElementNS(SVG, tag);
         }
-        if ("math".equals(tag) || MATHML.equals(parent.namespaceURI)) {
+        if ("math".equals(tag)) {
             return document.createElementNS(MATHML, tag);
+        }
+        if ("script".equals(tag)) {
+            final var wrapper = document.createElement("div");
+            wrapper.innerHTML = "<script></script>";
+            return Js.uncheckedCast(wrapper.removeChild(Objects.requireNonNull(wrapper.firstChild)));
+        }
+        final var customName = inputs.get("is");
+        if ("string".equals(Js.typeof(customName))) {
+            return document.createElement(tag, JsPropertyMap.of("is", customName));
         }
         return document.createElement(tag);
     }
@@ -191,14 +227,26 @@ final class DomHost {
     static void update(
             final Element element,
             final Node boundary,
+            final Node rootContainer,
             @Nullable final Element logicalParent,
             @Nullable final JsPropertyMap<@Nullable Object> previous,
             final JsPropertyMap<@Nullable Object> next) {
-        DomEvents.update(element, boundary, logicalParent, next);
+        DomEvents.update(element, boundary, rootContainer, logicalParent, next);
+        final var tag = element.localName;
+        final boolean custom = tag.contains("-")
+                ? !RESERVED_HYPHENATED_TAGS.contains(tag)
+                : "string".equals(Js.typeof(next.get("is")));
+        if ("input".equals(element.localName) && null != previous && null == next.get("checked")) {
+            final var state = Objects.requireNonNull(DomEvents.state(element));
+            final var previousChecked = previous.get("checked");
+            if (null != previousChecked && !Js.isTripleEqual(previousChecked, state.initialChecked)) {
+                properties(element).set("checked", Js.isTruthy(state.initialChecked));
+            }
+        }
         if (null != previous) {
             previous.forEach(name -> {
                 if (!next.has(name)) {
-                    setProperty(element, name, previous.get(name), null);
+                    setProperty(element, name, previous.get(name), null, custom);
                 }
             });
         }
@@ -206,7 +254,7 @@ final class DomHost {
             final var oldValue = null == previous ? null : previous.get(name);
             final var newValue = next.get(name);
             if (!Js.isTripleEqual(oldValue, newValue)) {
-                setProperty(element, name, oldValue, newValue);
+                setProperty(element, name, oldValue, newValue, custom);
             }
         });
     }
@@ -225,7 +273,11 @@ final class DomHost {
     }
 
     private static void setProperty(
-            final Element element, final String name, @Nullable final Object previous, @Nullable final Object value) {
+            final Element element,
+            final String name,
+            @Nullable final Object previous,
+            @Nullable final Object value,
+            final boolean custom) {
         switch (name) {
             case "children",
                     "key",
@@ -243,18 +295,22 @@ final class DomHost {
             }
             case "checked", "multiple", "muted", "selected" -> {
                 if (!"checked".equals(name) || !"input".equals(element.localName)) {
-                    properties(element).set(name, Js.isTruthy(value));
+                    if (custom) {
+                        setCustomAttribute(element, name, value);
+                    } else {
+                        properties(element).set(name, Js.isTruthy(value));
+                    }
                 }
             }
             case "defaultValue", "defaultChecked" -> {}
             case "value" -> {
                 if (!CONTROLLED_TAGS.contains(element.localName)) {
-                    setAttribute(element, name, value);
+                    setAttribute(element, name, value, custom);
                 }
             }
             default -> {
-                if (!isEventProperty(name)) {
-                    setAttribute(element, name, value);
+                if (!isEventProperty(name) || custom && !DomEvents.isRegistered(name)) {
+                    setAttribute(element, name, value, custom);
                 }
             }
         }
@@ -266,7 +322,24 @@ final class DomHost {
                 && ('n' == name.charAt(1) || 'N' == name.charAt(1));
     }
 
-    private static void setAttribute(final Element element, final String name, @Nullable final Object value) {
+    private static void setCustomAttribute(final Element element, final String name, @Nullable final Object value) {
+        if (!ATTRIBUTE_NAME.test(name)) {
+            return;
+        }
+        final var type = Js.typeof(value);
+        if (null == value || "function".equals(type) || "symbol".equals(type)) {
+            element.removeAttribute(name);
+        } else {
+            element.setAttribute(name, stringify(value));
+        }
+    }
+
+    private static void setAttribute(
+            final Element element, final String name, @Nullable final Object value, final boolean custom) {
+        if (custom) {
+            setCustomAttribute(element, name, value);
+            return;
+        }
         final var html = HTML.equals(element.namespaceURI);
         final var attribute =
                 switch (name) {
@@ -293,10 +366,6 @@ final class DomHost {
         final var namespace = attribute.startsWith("xlink:") ? XLINK : attribute.startsWith("xml:") ? XML : null;
         final boolean booleanAttribute = BOOLEAN_ATTRIBUTES.contains(name);
         final boolean overloaded = "capture".equals(name) || "download".equals(name);
-        final boolean booleanString = BOOLEAN_STRINGS.contains(name)
-                || name.startsWith("aria-")
-                || name.startsWith("data-")
-                || element.localName.contains("-");
         final var type = Js.typeof(value);
         if (null == value
                 || "function".equals(type)
@@ -304,7 +373,13 @@ final class DomHost {
                 || POSITIVE_ATTRIBUTES.contains(name) && !(1 <= number(value))
                 || NUMERIC_ATTRIBUTES.contains(name) && Double.isNaN(number(value))
                 || booleanAttribute && !Js.isTruthy(value)
-                || "boolean".equals(type) && (overloaded ? !Js.isTruthy(value) : !booleanAttribute && !booleanString)) {
+                || "boolean".equals(type)
+                        && (overloaded
+                                ? !Js.isTruthy(value)
+                                : !booleanAttribute
+                                        && !BOOLEAN_STRINGS.contains(name)
+                                        && !name.regionMatches(true, 0, "aria-", 0, 5)
+                                        && !name.regionMatches(true, 0, "data-", 0, 5))) {
             if (null == namespace) {
                 element.removeAttribute(attribute);
             } else {
@@ -383,16 +458,23 @@ final class DomHost {
         return result.toString();
     }
 
+    static boolean isControlTag(final String tag) {
+        return CONTROLLED_TAGS.contains(tag);
+    }
+
     static void restoreControlled(final Element element) {
+        final var tag = element.localName;
+        if (!isControlTag(tag)) {
+            return;
+        }
         final var state = DomEvents.state(element);
-        if (null == state || !CONTROLLED_TAGS.contains(element.localName)) {
+        if (null == state) {
             return;
         }
         final var inputs = state.inputs;
         final var value = inputs.get("value");
         final var defaultValue = inputs.get("defaultValue");
         final var props = properties(element);
-        final var tag = element.localName;
         final boolean mounting = !state.controlInitialized;
         if (mounting && !"select".equals(tag)) {
             trackControl(element, state);
@@ -429,6 +511,9 @@ final class DomHost {
             final var type = inputs.get("type");
             final var checked = inputs.get("checked");
             final var defaultChecked = inputs.get("defaultChecked");
+            if (mounting) {
+                state.initialChecked = null != checked ? checked : defaultChecked;
+            }
             if (null != checked || mounting && null != defaultChecked) {
                 props.set("checked", Js.isTruthy(null != checked ? checked : defaultChecked));
             }
@@ -670,6 +755,13 @@ final class DomHost {
     @JsMethod(namespace = JsPackage.GLOBAL, name = "String")
     static native String stringify(@Nullable Object value);
 
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "RegExp")
+    private static class AttributeName {
+        AttributeName(final String pattern) {}
+
+        native boolean test(String value);
+    }
+
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Node")
     @SuppressWarnings("NullAway.Init")
     static class Node {
@@ -711,7 +803,10 @@ final class DomHost {
     @SuppressWarnings("NullAway.Init")
     static class Element extends Node {
         String localName;
+
+        @Nullable
         String namespaceURI;
+
         String innerHTML;
         Style style;
 
@@ -736,9 +831,14 @@ final class DomHost {
         @Nullable
         Element activeElement;
 
+        @Nullable
+        Element documentElement;
+
         native @Nullable JsPropertyMap<@Nullable Object> getSelection();
 
         native Element createElement(String name);
+
+        native Element createElement(String name, JsPropertyMap<@Nullable Object> options);
 
         native Element createElementNS(String namespace, String name);
 

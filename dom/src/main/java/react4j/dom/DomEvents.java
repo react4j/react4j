@@ -2,10 +2,13 @@ package react4j.dom;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
@@ -133,10 +136,11 @@ final class DomEvents {
             "toggle",
             "volumechange",
             "waiting");
+    private static final Set<String> REGISTERED_EVENTS = Set.of(EVENTS);
     private static final List<String> DOCUMENT_SELECTION_EVENTS =
             List.of("selectionchange", "mousedown", "mouseup", "contextmenu", "dragend");
     private static final Set<String> MOUSE_ON_DISABLED =
-            Set.of("Click", "DoubleClick", "MouseDown", "MouseMove", "MouseUp", "MouseEnter");
+            Set.of("Click", "DoubleClick", "MouseDown", "MouseMove", "MouseUp");
     private static final Set<String> DISABLABLE = Set.of("button", "input", "select", "textarea");
     private static final Set<String> TEXT_INPUT_TYPES = Set.of(
             "color",
@@ -192,65 +196,6 @@ final class DomEvents {
             Map.entry(144, "NumLock"),
             Map.entry(145, "ScrollLock"),
             Map.entry(224, "Meta"));
-    private static final String[] EVENT_PROPERTIES = {
-        "altKey",
-        "animationName",
-        "bubbles",
-        "button",
-        "buttons",
-        "cancelable",
-        "changedTouches",
-        "charCode",
-        "clientX",
-        "clientY",
-        "clipboardData",
-        "code",
-        "ctrlKey",
-        "data",
-        "dataTransfer",
-        "deltaMode",
-        "deltaX",
-        "deltaY",
-        "deltaZ",
-        "detail",
-        "elapsedTime",
-        "eventPhase",
-        "height",
-        "inputType",
-        "isComposing",
-        "isPrimary",
-        "isTrusted",
-        "key",
-        "keyCode",
-        "locale",
-        "location",
-        "metaKey",
-        "movementX",
-        "movementY",
-        "pageX",
-        "pageY",
-        "pointerId",
-        "pointerType",
-        "pressure",
-        "propertyName",
-        "pseudoElement",
-        "relatedTarget",
-        "repeat",
-        "screenX",
-        "screenY",
-        "shiftKey",
-        "targetTouches",
-        "tangentialPressure",
-        "tiltX",
-        "tiltY",
-        "timeStamp",
-        "touches",
-        "twist",
-        "view",
-        "which",
-        "width"
-    };
-
     private static final DomHost.WeakMap<DomHost.Node, Boundary> BOUNDARIES = new DomHost.WeakMap<>();
     private static final DomHost.WeakMap<DomHost.Node, State> STATES = new DomHost.WeakMap<>();
 
@@ -258,6 +203,21 @@ final class DomEvents {
     private static boolean spaceKeypress;
 
     private DomEvents() {}
+
+    static boolean isRegistered(final String property) {
+        if (!property.startsWith("on")) {
+            return false;
+        }
+        final var name = property.substring(2);
+        return switch (name) {
+            case "MouseEnter", "MouseLeave", "PointerEnter", "PointerLeave", "BeforeInput", "BeforeInputCapture" ->
+                true;
+            default -> {
+                final var event = name.endsWith("Capture") ? name.substring(0, name.length() - 7) : name;
+                yield !"TextInput".equals(event) && REGISTERED_EVENTS.contains(event);
+            }
+        };
+    }
 
     static void pause() {
         paused++;
@@ -270,6 +230,7 @@ final class DomEvents {
     static void update(
             final DomHost.Element element,
             final DomHost.Node container,
+            final DomHost.Node rootContainer,
             final DomHost.@Nullable Element logicalParent,
             final JsPropertyMap<@Nullable Object> inputs) {
         var state = STATES.get(element);
@@ -280,7 +241,7 @@ final class DomEvents {
                 BOUNDARIES.set(container, boundary);
             }
             boundary.hosts++;
-            state = new State(boundary, logicalParent, inputs);
+            state = new State(boundary, rootContainer, logicalParent, inputs);
             STATES.set(element, state);
         } else {
             state.logicalParent = logicalParent;
@@ -307,6 +268,8 @@ final class DomEvents {
             boundary.listeners.forEach(
                     (name, listener) -> boundary.node.removeEventListener(name, listener, NON_BUBBLING.contains(name)));
             final var document = boundary.node.document();
+            document.removeEventListener("mouseout", boundary.externalMovement, false);
+            document.removeEventListener("pointerout", boundary.externalMovement, false);
             for (final var event : DOCUMENT_SELECTION_EVENTS) {
                 document.removeEventListener(event, boundary.selectionListener, false);
             }
@@ -322,10 +285,59 @@ final class DomEvents {
         };
     }
 
-    private static void dispatch(final Boundary boundary, final String name, final NativeEvent nativeEvent) {
+    private static void dispatch(
+            final Boundary boundary, final String name, final NativeEvent nativeEvent, final boolean interactive) {
         if (0 != paused) {
             return;
         }
+        if (interactive) {
+            Renderer.interactiveUpdates(() -> dispatchBatched(boundary, name, nativeEvent));
+        } else {
+            dispatchBatched(boundary, name, nativeEvent);
+        }
+    }
+
+    private static boolean isInteractive(String name) {
+        return switch (name) {
+            case "Blur",
+                    "Cancel",
+                    "Click",
+                    "Close",
+                    "ContextMenu",
+                    "Copy",
+                    "Cut",
+                    "AuxClick",
+                    "DoubleClick",
+                    "DragEnd",
+                    "DragStart",
+                    "Drop",
+                    "Focus",
+                    "Input",
+                    "Invalid",
+                    "KeyDown",
+                    "KeyPress",
+                    "KeyUp",
+                    "MouseDown",
+                    "MouseUp",
+                    "Paste",
+                    "Pause",
+                    "Play",
+                    "PointerCancel",
+                    "PointerDown",
+                    "PointerUp",
+                    "RateChange",
+                    "Reset",
+                    "Seeked",
+                    "Submit",
+                    "TouchCancel",
+                    "TouchEnd",
+                    "TouchStart",
+                    "VolumeChange" -> true;
+            default -> false;
+        };
+    }
+
+    private static void dispatchBatched(final Boundary boundary, final String name, final NativeEvent nativeEvent) {
         final var target = nativeEvent.target;
         if (null == target) {
             return;
@@ -343,54 +355,121 @@ final class DomEvents {
                 return;
             }
             final var element = Js.<DomHost.Element>uncheckedCast(node);
-            final boolean change = isChange(name, element, state);
-            if ("Blur".equals(name)) {
-                DomHost.commitNumberOnBlur(element, state);
-            }
-            final var selected = boundary.selectTarget(name, element);
             final DomHost.Node actualTarget = eventTarget;
+            final var outerRoots = outerRoots(state);
+            if (outerRoots.isEmpty()) {
+                final boolean change = isChange(name, element, state);
+                try {
+                    ReactDOM.batchedUpdates(() -> dispatchAt(element, state, actualTarget, name, nativeEvent, change));
+                } finally {
+                    if (change) {
+                        Renderer.flushInteractive();
+                        DomHost.restoreAfterEvent(element);
+                    }
+                }
+                return;
+            }
+            final List<DomHost.Element> changedControls = new ArrayList<>();
             try {
                 ReactDOM.batchedUpdates(() -> {
-                    final var batch = new DispatchBatch();
-                    if (!"Change".equals(name)
-                            && !"TextInput".equals(name)
-                            && !("KeyPress".equals(name) && 0 == charCode(DomHost.properties(nativeEvent)))
-                            && !("Click".equals(name) && 2 == eventNumber(DomHost.properties(nativeEvent), "button"))) {
-                        collectHandlers(
-                                batch,
-                                element,
-                                actualTarget,
-                                name,
-                                nativeEvent,
-                                name.startsWith("Composition") ? customInputData(nativeEvent) : null);
+                    dispatchNested(element, state, actualTarget, name, nativeEvent, changedControls);
+                    for (final var outer : outerRoots) {
+                        dispatchNested(
+                                outer.element(), outer.state(), actualTarget, name, nativeEvent, changedControls);
                     }
-                    switch (name) {
-                        case "MouseOver", "MouseOut", "PointerOver", "PointerOut" ->
-                            collectEnterLeave(batch, element, name, nativeEvent);
-                        default -> {}
-                    }
-                    if (change) {
-                        collectHandlers(batch, element, actualTarget, "Change", nativeEvent, null);
-                    }
-                    if (null != selected) {
-                        collectHandlers(batch, selected, selected, "Select", nativeEvent, null);
-                    }
-                    final var beforeInput = beforeInputData(boundary, name, nativeEvent);
-                    if (Js.isTruthy(beforeInput)) {
-                        collectHandlers(batch, element, actualTarget, "BeforeInput", nativeEvent, beforeInput);
-                    }
-                    batch.run();
                 });
             } finally {
-                if (change) {
-                    DomHost.restoreAfterEvent(element);
+                if (!changedControls.isEmpty()) {
+                    Renderer.flushInteractive();
+                    changedControls.forEach(DomHost::restoreAfterEvent);
                 }
             }
             return;
         }
     }
 
+    private static List<Origin> outerRoots(final State inner) {
+        final var outer = closestManaged(inner.rootContainer);
+        if (null == outer) {
+            return List.of();
+        }
+        final List<Origin> roots = new ArrayList<>();
+        final Set<DomHost.Node> seen = new HashSet<>();
+        seen.add(inner.rootContainer);
+        for (var element = outer; null != element; ) {
+            final var state = STATES.get(element);
+            if (null == state || !seen.add(state.rootContainer)) {
+                break;
+            }
+            roots.add(new Origin(element, state));
+            element = closestManaged(state.rootContainer);
+        }
+        return roots;
+    }
+
+    private record Origin(DomHost.Element element, State state) {}
+
+    private static void dispatchNested(
+            final DomHost.Element element,
+            final State state,
+            final DomHost.Node target,
+            final String name,
+            final NativeEvent nativeEvent,
+            final List<DomHost.Element> changedControls) {
+        final boolean change = isChange(name, element, state);
+        if (change) {
+            changedControls.add(element);
+        }
+        dispatchAt(element, state, target, name, nativeEvent, change);
+    }
+
+    private static void dispatchAt(
+            final DomHost.Element element,
+            final State state,
+            final DomHost.Node target,
+            final String name,
+            final NativeEvent nativeEvent,
+            final boolean change) {
+        final var boundary = state.boundary;
+        if ("Blur".equals(name)) {
+            DomHost.commitNumberOnBlur(element, state);
+        }
+        final var selected = boundary.selectTarget(name, element);
+        final var batch = new DispatchBatch();
+        if (!"Change".equals(name)
+                && !"TextInput".equals(name)
+                && !("KeyPress".equals(name) && 0 == charCode(DomHost.properties(nativeEvent)))
+                && !("Click".equals(name) && 2 == eventNumber(DomHost.properties(nativeEvent), "button"))) {
+            collectHandlers(
+                    batch,
+                    element,
+                    target,
+                    name,
+                    nativeEvent,
+                    name.startsWith("Composition") ? customInputData(nativeEvent) : null);
+        }
+        switch (name) {
+            case "MouseOver", "MouseOut", "PointerOver", "PointerOut" ->
+                collectEnterLeave(batch, element, name, nativeEvent);
+            default -> {}
+        }
+        if (change) {
+            collectHandlers(batch, element, target, "Change", nativeEvent, null);
+        }
+        if (null != selected) {
+            collectHandlers(batch, selected, selected, "Select", nativeEvent, null);
+        }
+        final var beforeInput = beforeInputData(boundary, name, nativeEvent);
+        if (Js.isTruthy(beforeInput)) {
+            collectHandlers(batch, element, target, "BeforeInput", nativeEvent, beforeInput);
+        }
+        batch.run();
+    }
+
     private static boolean isChange(final String event, final DomHost.Element element, final State state) {
+        if (!"Click".equals(event) && !"Input".equals(event) && !"Change".equals(event)) {
+            return false;
+        }
         final var tag = element.localName;
         final var type = DomHost.properties(element).get("type");
         if ("select".equals(tag) || "input".equals(tag) && "file".equals(type)) {
@@ -466,17 +545,24 @@ final class DomEvents {
             final String name,
             final NativeEvent nativeEvent,
             @Nullable final Object data) {
-        final List<Invocation> captures = new ArrayList<>();
-        final List<Invocation> bubbles = new ArrayList<>();
+        List<Invocation> captures = null;
+        List<Invocation> bubbles = null;
         final var property = "on" + name;
+        final var captureProperty = property + "Capture";
+        final boolean checkDisabled = MOUSE_ON_DISABLED.contains(name);
         for (DomHost.Element element = origin; null != element; ) {
             final var state = STATES.get(element);
             if (null == state) {
                 break;
             }
-            if (!mouseDisabled(element, name)) {
-                addHandler(captures, element, state.inputs.get(property + "Capture"));
-                addHandler(bubbles, element, state.inputs.get(property));
+            final var capture = state.inputs.get(captureProperty);
+            final var bubble = state.inputs.get(property);
+            if ((null != capture || null != bubble)
+                    && !(checkDisabled
+                            && DISABLABLE.contains(element.localName)
+                            && Js.isTruthy(state.inputs.get("disabled")))) {
+                captures = appendHandler(captures, element, capture);
+                bubbles = appendHandler(bubbles, element, bubble);
             }
             element = state.logicalParent;
         }
@@ -486,15 +572,27 @@ final class DomEvents {
     private static void collectEnterLeave(
             final DispatchBatch batch, final DomHost.Element origin, final String name, final NativeEvent nativeEvent) {
         final boolean leaving = name.endsWith("Out");
-        final var source = DomHost.properties(nativeEvent);
-        final var related = source.get("relatedTarget");
-        final var relatedNode = Js.<DomHost.Node>uncheckedCast(
-                null != related ? related : source.get(leaving ? "toElement" : "fromElement"));
+        final var relatedNode = movementRelated(nativeEvent, leaving);
         if (!leaving && null != relatedNode) {
             return;
         }
         final var from = leaving ? origin : null;
         final var to = leaving ? closestManaged(relatedNode) : origin;
+        collectEnterLeave(batch, from, to, name, nativeEvent);
+    }
+
+    private static DomHost.@Nullable Node movementRelated(final NativeEvent nativeEvent, final boolean leaving) {
+        final var source = DomHost.properties(nativeEvent);
+        final var related = source.get("relatedTarget");
+        return Js.uncheckedCast(null != related ? related : source.get(leaving ? "toElement" : "fromElement"));
+    }
+
+    private static void collectEnterLeave(
+            final DispatchBatch batch,
+            final DomHost.@Nullable Element from,
+            final DomHost.@Nullable Element to,
+            final String name,
+            final NativeEvent nativeEvent) {
         if (from == to) {
             return;
         }
@@ -507,7 +605,8 @@ final class DomEvents {
             enterLength--;
         }
         final var prefix = name.startsWith("Pointer") ? "Pointer" : "Mouse";
-        final var window = DomHost.properties(origin.document()).get("defaultView");
+        final var document = (null != from ? from : Objects.requireNonNull(to)).document();
+        final var window = DomHost.properties(document).get("defaultView");
         if (null != from) {
             final var leaveName = prefix + "Leave";
             final var calls = pathHandlers(leavePath, leaveLength, leaveName);
@@ -549,17 +648,11 @@ final class DomEvents {
         for (int i = 0; i < length; i++) {
             final var element = path.get(i);
             final var state = STATES.get(element);
-            if (null != state && !mouseDisabled(element, name)) {
+            if (null != state) {
                 addHandler(calls, element, state.inputs.get(property));
             }
         }
         return calls;
-    }
-
-    private static boolean mouseDisabled(final DomHost.Element element, final String name) {
-        return MOUSE_ON_DISABLED.contains(name)
-                && DISABLABLE.contains(element.localName)
-                && Boolean.TRUE.equals(DomHost.properties(element).get("disabled"));
     }
 
     private static final class DispatchBatch {
@@ -572,16 +665,18 @@ final class DomEvents {
                 final NativeEvent nativeEvent,
                 @Nullable final Object relatedTarget,
                 @Nullable final Object data,
-                final List<Invocation> captures,
-                final List<Invocation> bubbles) {
-            if (captures.isEmpty() && bubbles.isEmpty()) {
+                @Nullable final List<Invocation> captures,
+                @Nullable final List<Invocation> bubbles) {
+            if ((null == captures || captures.isEmpty()) && (null == bubbles || bubbles.isEmpty())) {
                 return;
             }
-            final var pool = eventKind(name).pool;
+            final var kind = eventKind(name);
+            final var pool = kind.pool;
             final var available = pool.pollLast();
-            final var event = null == available ? new Dispatch() : available;
+            final var event = null == available ? new Dispatch(kind) : available;
             event.initialize(target, name, nativeEvent, relatedTarget, data);
-            events.add(new QueuedDispatch(event, pool, captures, bubbles));
+            events.add(new QueuedDispatch(
+                    event, pool, null == captures ? List.of() : captures, null == bubbles ? List.of() : bubbles));
         }
 
         void run() {
@@ -632,14 +727,28 @@ final class DomEvents {
         }
     }
 
+    private static @Nullable List<Invocation> appendHandler(
+            @Nullable final List<Invocation> calls, final DomHost.Element element, @Nullable final Object handler) {
+        if (!"function".equals(Js.typeof(handler))) {
+            return calls;
+        }
+        final var updated = null == calls ? new ArrayList<Invocation>() : calls;
+        updated.add(new Invocation(element, Js.uncheckedCast(handler)));
+        return updated;
+    }
+
     static final class State {
         final Boundary boundary;
+        final DomHost.Node rootContainer;
         DomHost.@Nullable Element logicalParent;
         JsPropertyMap<@Nullable Object> inputs;
         boolean controlInitialized;
         boolean wasMultiple;
         boolean controlledInput;
         String initialValue = "";
+
+        @Nullable
+        Object initialChecked;
 
         @Nullable
         String lastValue;
@@ -649,9 +758,11 @@ final class DomEvents {
 
         State(
                 final Boundary boundary,
+                final DomHost.Node rootContainer,
                 final DomHost.@Nullable Element logicalParent,
                 final JsPropertyMap<@Nullable Object> inputs) {
             this.boundary = boundary;
+            this.rootContainer = rootContainer;
             this.logicalParent = logicalParent;
             this.inputs = inputs;
         }
@@ -661,6 +772,7 @@ final class DomEvents {
         final DomHost.Node node;
         final Map<String, Listener> listeners = new HashMap<>();
         final Listener selectionListener;
+        final Listener externalMovement;
         private DomHost.@Nullable Element focused;
         private @Nullable Selection lastSelection;
         private boolean mouseDown;
@@ -673,7 +785,8 @@ final class DomEvents {
             hasTextInput = null != window && DomHost.properties(window).has("TextEvent");
             for (final var name : EVENTS) {
                 final var nativeName = nativeName(name);
-                final Listener listener = event -> dispatch(this, name, event);
+                final boolean interactive = isInteractive(name);
+                final Listener listener = event -> dispatch(this, name, event, interactive);
                 listeners.put(nativeName, listener);
                 node.addEventListener(nativeName, listener, NON_BUBBLING.contains(nativeName));
             }
@@ -696,6 +809,27 @@ final class DomEvents {
                 }
             };
             final var document = node.document();
+            externalMovement = event -> {
+                final var target = Js.<DomHost.@Nullable Node>uncheckedCast(event.target);
+                if (0 != paused || null != closestManaged(target)) {
+                    return;
+                }
+                final var to = closestManaged(movementRelated(event, true));
+                if (null == to) {
+                    return;
+                }
+                final var state = STATES.get(to);
+                if (null != state && state.boundary == this) {
+                    ReactDOM.batchedUpdates(() -> {
+                        final var batch = new DispatchBatch();
+                        collectEnterLeave(
+                                batch, null, to, "pointerout".equals(event.type) ? "PointerOut" : "MouseOut", event);
+                        batch.run();
+                    });
+                }
+            };
+            document.addEventListener("mouseout", externalMovement, false);
+            document.addEventListener("pointerout", externalMovement, false);
             for (final var event : DOCUMENT_SELECTION_EVENTS) {
                 document.addEventListener(event, selectionListener, false);
             }
@@ -821,22 +955,60 @@ final class DomEvents {
     }
 
     private enum EventKind {
-        ANIMATION,
-        INPUT,
-        FOCUS,
-        CLIPBOARD,
-        COMPOSITION,
-        DRAG,
-        KEYBOARD,
-        MOUSE,
-        POINTER,
-        UI,
-        TOUCH,
-        TRANSITION,
-        WHEEL,
-        EVENT;
+        EVENT("eventPhase", "bubbles", "cancelable", "isTrusted"),
+        UI(EVENT, "view", "detail"),
+        FOCUS(UI, "relatedTarget"),
+        MOUSE(
+                UI,
+                "screenX",
+                "screenY",
+                "clientX",
+                "clientY",
+                "pageX",
+                "pageY",
+                "ctrlKey",
+                "shiftKey",
+                "altKey",
+                "metaKey",
+                "button",
+                "buttons",
+                "relatedTarget",
+                "movementX",
+                "movementY"),
+        DRAG(MOUSE, "dataTransfer"),
+        POINTER(
+                MOUSE,
+                "pointerId",
+                "width",
+                "height",
+                "pressure",
+                "tangentialPressure",
+                "tiltX",
+                "tiltY",
+                "twist",
+                "pointerType",
+                "isPrimary"),
+        WHEEL(MOUSE, "deltaX", "deltaY", "deltaZ", "deltaMode"),
+        KEYBOARD(UI, "location", "ctrlKey", "shiftKey", "altKey", "metaKey", "repeat", "locale"),
+        TOUCH(UI, "touches", "targetTouches", "changedTouches", "altKey", "metaKey", "ctrlKey", "shiftKey"),
+        ANIMATION(EVENT, "animationName", "elapsedTime", "pseudoElement"),
+        TRANSITION(EVENT, "propertyName", "elapsedTime", "pseudoElement"),
+        CLIPBOARD(EVENT, "clipboardData"),
+        COMPOSITION(EVENT, "data"),
+        INPUT(EVENT, "data");
 
         final ArrayDeque<Dispatch> pool = new ArrayDeque<>();
+        final String[] properties;
+
+        EventKind(final String... properties) {
+            this.properties = properties;
+        }
+
+        EventKind(final EventKind base, final String... extra) {
+            final var count = base.properties.length;
+            properties = Arrays.copyOf(base.properties, count + extra.length);
+            System.arraycopy(extra, 0, properties, count, extra.length);
+        }
     }
 
     private static int eventNumber(final JsPropertyMap<@Nullable Object> event, final String name) {
@@ -872,11 +1044,17 @@ final class DomEvents {
     private record Invocation(DomHost.Element element, ReactEventHandler handler) {}
 
     private static final class Dispatch {
+        private final EventKind kind;
         private final JsPropertyMap<@Nullable Object> properties = JsPropertyMap.of();
         private final SyntheticEvent<?> event = Js.uncheckedCast(properties);
         private boolean stopped;
+        private boolean prevented;
         private boolean persistent;
         private boolean released;
+
+        Dispatch(final EventKind kind) {
+            this.kind = kind;
+        }
 
         void initialize(
                 final DomHost.Node target,
@@ -890,9 +1068,11 @@ final class DomEvents {
                 RELEASED_PROPERTIES.keySet().forEach(properties::delete);
             }
             final var source = DomHost.properties(nativeEvent);
-            for (final var property : EVENT_PROPERTIES) {
+            for (final var property : kind.properties) {
                 properties.set(property, source.get(property));
             }
+            final var timeStamp = source.get("timeStamp");
+            properties.set("timeStamp", Js.isTruthy(timeStamp) ? timeStamp : now());
             properties.set(
                     "type",
                     switch (name) {
@@ -903,13 +1083,33 @@ final class DomEvents {
                         case "MouseEnter", "MouseLeave", "PointerEnter", "PointerLeave" -> nativeName(name);
                         default -> nativeEvent.type;
                     });
-            if (EventKind.KEYBOARD == eventKind(name)) {
-                final boolean keyPress = "KeyPress".equals(name);
-                final int code = keyPress ? charCode(source) : eventNumber(source, "keyCode");
-                properties.set("key", eventKey(source, keyPress, code));
-                properties.set("charCode", keyPress ? code : 0);
-                properties.set("keyCode", keyPress ? 0 : code);
-                properties.set("which", code);
+            switch (kind) {
+                case KEYBOARD -> {
+                    final boolean keyPress = "KeyPress".equals(name);
+                    final int code = keyPress ? charCode(source) : eventNumber(source, "keyCode");
+                    properties.set("key", eventKey(source, keyPress, code));
+                    properties.set("charCode", keyPress ? code : 0);
+                    properties.set("keyCode", keyPress ? 0 : source.get("keyCode"));
+                    properties.set("which", keyPress ? code : source.get("keyCode"));
+                }
+                case CLIPBOARD -> {
+                    if (!source.has("clipboardData")) {
+                        properties.set("clipboardData", Js.global().get("clipboardData"));
+                    }
+                }
+                case MOUSE, DRAG, POINTER, WHEEL -> {
+                    final var related = source.get("relatedTarget");
+                    if (!Js.isTruthy(related)) {
+                        final var from = source.get("fromElement");
+                        properties.set(
+                                "relatedTarget",
+                                Js.isTripleEqual(from, source.get("srcElement")) ? source.get("toElement") : from);
+                    }
+                    if (EventKind.WHEEL == kind) {
+                        normalizeWheel(source);
+                    }
+                }
+                default -> {}
             }
             properties.set("target", target);
             if (null != relatedTarget) {
@@ -920,17 +1120,30 @@ final class DomEvents {
             }
             properties.set("currentTarget", null);
             properties.set("nativeEvent", nativeEvent);
-            properties.set("defaultPrevented", nativeEvent.defaultPrevented);
+            final var defaultPrevented = source.get("defaultPrevented");
+            properties.set("defaultPrevented", defaultPrevented);
+            prevented = null != defaultPrevented
+                    ? Js.isTruthy(defaultPrevented)
+                    : Js.isTripleEqual(false, source.get("returnValue"));
             properties.set("preventDefault", (Action) () -> {
-                nativeEvent.preventDefault();
                 properties.set("defaultPrevented", true);
+                if (Js.isTruthy(source.get("preventDefault"))) {
+                    nativeEvent.preventDefault();
+                } else {
+                    source.set("returnValue", false);
+                }
+                prevented = true;
             });
             properties.set("stopPropagation", (Action) () -> {
                 stopped = true;
-                nativeEvent.stopPropagation();
+                if (Js.isTruthy(source.get("stopPropagation"))) {
+                    nativeEvent.stopPropagation();
+                } else {
+                    source.set("cancelBubble", true);
+                }
             });
             properties.set("isPropagationStopped", (Flag) () -> stopped);
-            properties.set("isDefaultPrevented", (Flag) () -> Boolean.TRUE.equals(properties.get("defaultPrevented")));
+            properties.set("isDefaultPrevented", (Flag) () -> prevented);
             properties.set("getModifierState", (Modifier) key -> {
                 if ("function".equals(Js.typeof(source.get("getModifierState")))) {
                     return nativeEvent.getModifierState(key);
@@ -947,10 +1160,30 @@ final class DomEvents {
             properties.set("isPersistent", (Flag) () -> persistent);
         }
 
+        private void normalizeWheel(final JsPropertyMap<@Nullable Object> source) {
+            if (!source.has("deltaX")) {
+                properties.set("deltaX", source.has("wheelDeltaX") ? -Js.asDouble(source.get("wheelDeltaX")) : 0);
+            }
+            if (!source.has("deltaY")) {
+                properties.set(
+                        "deltaY",
+                        source.has("wheelDeltaY")
+                                ? -Js.asDouble(source.get("wheelDeltaY"))
+                                : source.has("wheelDelta") ? -Js.asDouble(source.get("wheelDelta")) : 0);
+            }
+        }
+
         void release() {
-            for (final var property : EVENT_PROPERTIES) {
+            for (final var property : kind.properties) {
                 releaseProperty(property, null);
             }
+            if (EventKind.KEYBOARD == kind) {
+                releaseProperty("key", null);
+                releaseProperty("charCode", null);
+                releaseProperty("keyCode", null);
+                releaseProperty("which", null);
+            }
+            releaseProperty("timeStamp", null);
             releaseProperty("type", null);
             releaseProperty("target", null);
             releaseProperty("currentTarget", null);
@@ -991,6 +1224,9 @@ final class DomEvents {
             }
         }
     }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Date.now")
+    private static native double now();
 
     private static void warnReleased(final String name, @Nullable final Object value, final boolean writing) {
         final var method = "function".equals(Js.typeof(value));
@@ -1037,7 +1273,6 @@ final class DomEvents {
     static class NativeEvent {
         DomHost.@Nullable Node target;
         String type;
-        boolean defaultPrevented;
 
         native void preventDefault();
 

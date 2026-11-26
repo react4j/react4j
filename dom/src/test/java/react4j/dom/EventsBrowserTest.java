@@ -21,6 +21,99 @@ public final class EventsBrowserTest {
     private EventsBrowserTest() {}
 
     @JsMethod
+    public static void runPayloads() {
+        final var root = Browser.append("div");
+        try {
+            checkPayload(
+                    root,
+                    "onClick",
+                    "click",
+                    "button buttons clientX clientY pageX pageY screenX screenY altKey ctrlKey metaKey shiftKey");
+            checkPayload(root, "onKeyDown", "keydown", "key location repeat locale altKey ctrlKey metaKey shiftKey");
+            checkPayload(root, "onFocus", "focus", "relatedTarget");
+            checkPayload(root, "onCopy", "copy", "clipboardData");
+            checkPayload(root, "onCompositionEnd", "compositionend", "data");
+            checkPayload(root, "onDragStart", "dragstart", "dataTransfer buttons screenX screenY detail view");
+            checkPayload(root, "onWheel", "wheel", "deltaX deltaY deltaZ deltaMode");
+            checkPayload(
+                    root,
+                    "onPointerDown",
+                    "pointerdown",
+                    "pointerId pointerType pressure tangentialPressure width height tiltX tiltY twist isPrimary");
+            checkPayload(root, "onTouchStart", "touchstart", "touches targetTouches changedTouches altKey view detail");
+            checkPayload(root, "onAnimationEnd", "animationend", "animationName elapsedTime pseudoElement");
+            checkPayload(root, "onTransitionEnd", "transitionend", "propertyName elapsedTime pseudoElement");
+            checkPayload(root, "onScroll", "scroll", "detail view");
+            final var legacyWheel = capturePayload(root, "onWheel", "legacyWheel");
+            check(Js.isTripleEqual(-12, Browser.property(legacyWheel, "deltaX")), "Legacy wheel X direction");
+            check(Js.isTripleEqual(34, Browser.property(legacyWheel, "deltaY")), "Legacy wheel Y direction");
+            final var legacyVerticalWheel = capturePayload(root, "onWheel", "legacyVerticalWheel");
+            check(
+                    Js.isTripleEqual(0, Browser.property(legacyVerticalWheel, "deltaX")),
+                    "Missing wheel X defaults to zero");
+            check(Js.isTripleEqual(-56, Browser.property(legacyVerticalWheel, "deltaY")), "Scalar legacy wheel delta");
+            final var legacyMouse = capturePayload(root, "onMouseMove", "legacyMouse");
+            check(
+                    legacyMouse.getTarget() == Browser.property(legacyMouse, "relatedTarget"),
+                    "Legacy related mouse target");
+            check(0 < legacyMouse.getTimeStamp(), "Zero native timestamp falls back to the current time");
+            final var legacyCopy = capturePayload(root, "onCopy", "legacyCopy");
+            check(
+                    null != Browser.property(legacyCopy, "clipboardData"),
+                    "Missing native clipboard data falls back to the window");
+            final var canceled = capturePayload(root, "onClick", "legacyCanceled");
+            check(canceled.isDefaultPrevented(), "Legacy canceled event uses the return value");
+            final var noKeyCode = capturePayload(root, "onKeyDown", "legacyMissingKeyCode");
+            check(Js.isTripleEqual(Js.undefined(), Browser.property(noKeyCode, "keyCode")), "Missing native key code");
+            check(Js.isTripleEqual(Js.undefined(), Browser.property(noKeyCode, "which")), "Missing legacy which");
+            capturePayload(root, "onClick", "legacyEventMethods");
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    private static void checkPayload(Browser.Element root, String name, String type, String properties) {
+        final var event = capturePayload(root, name, name);
+        check(type.equals(event.getType()), name + " event type");
+        check(Js.isTripleEqual(event.getTarget(), Browser.query(root, "button")), name + " event target");
+        final var source = event.getNativeEvent();
+        check(0 < event.getEventPhase(), name + " captures the native dispatch phase");
+        for (final var property : ("bubbles cancelable isTrusted timeStamp " + properties).split(" ")) {
+            check(
+                    Js.isTripleEqual(Browser.property(event, property), Browser.property(source, property)),
+                    name + " preserves native " + property);
+        }
+    }
+
+    private static SyntheticEvent<?> capturePayload(Browser.Element root, String name, String fixture) {
+        final SyntheticEvent<?>[] received = new SyntheticEvent<?>[1];
+        final ReactEventHandler handler = event -> {
+            check(null == received[0], name + " should be dispatched once");
+            check(Js.isTripleEqual(event.getCurrentTarget(), Browser.query(root, "button")), name + " current target");
+            if ("legacyEventMethods".equals(fixture)) {
+                event.preventDefault();
+                check(event.isDefaultPrevented(), "Legacy preventDefault marks the synthetic event");
+                check(
+                        Js.isTripleEqual(false, Browser.property(event.getNativeEvent(), "returnValue")),
+                        "Legacy preventDefault marks the native event");
+                event.stopPropagation();
+                check(event.isPropagationStopped(), "Legacy stopPropagation marks the synthetic event");
+                check(
+                        Js.isTripleEqual(true, Browser.property(event.getNativeEvent(), "cancelBubble")),
+                        "Legacy stopPropagation marks the native event");
+            }
+            event.persist();
+            received[0] = event;
+        };
+        ReactDOM.render(host("button", JsPropertyMap.of(name, handler)), root);
+        final Object source = dispatch(Browser.query(root, "button"), fixture);
+        final var event = Objects.requireNonNull(received[0], name + " was not dispatched");
+        check(event.getNativeEvent() == source, name + " native event identity");
+        return event;
+    }
+
+    @JsMethod
     public static void run() {
         var root = Browser.append("div");
         try {
@@ -118,6 +211,43 @@ public final class EventsBrowserTest {
                     Boolean.TRUE.equals(Browser.property(first, "checked")),
                     "Controlled radio previously selected is restored");
             check(Boolean.FALSE.equals(Browser.property(second, "checked")), "Controlled radio click is reverted");
+
+            final ReactEventHandler outerCapture = event -> {
+                check("BUTTON".equals(Browser.property(event.getTarget(), "tagName")), "Nested root event target");
+                trace.append("outer capture ");
+            };
+            final ReactEventHandler outerBubble = event -> {
+                check(
+                        "SECTION".equals(Browser.property(event.getCurrentTarget(), "tagName")),
+                        "Nested root current target");
+                trace.append("outer bubble");
+            };
+            ReactDOM.render(
+                    host(
+                            "section",
+                            JsPropertyMap.of(
+                                    "onClickCapture", outerCapture,
+                                    "onClick", outerBubble,
+                                    "children", host("div", JsPropertyMap.of()))),
+                    root);
+            final var nestedRoot = Browser.query(root, "div");
+            try {
+                final ReactEventHandler innerCapture = event -> trace.append("inner capture ");
+                final ReactEventHandler innerBubble = event -> {
+                    trace.append("inner bubble ");
+                    event.stopPropagation();
+                };
+                ReactDOM.render(
+                        host("button", JsPropertyMap.of("onClickCapture", innerCapture, "onClick", innerBubble)),
+                        nestedRoot);
+                trace.setLength(0);
+                Browser.query(nestedRoot, "button").click();
+                check(
+                        "inner capture inner bubble outer capture outer bubble".contentEquals(trace),
+                        "A nested root dispatches before its enclosing root");
+            } finally {
+                ReactDOM.unmountComponentAtNode(nestedRoot);
+            }
         } finally {
             ReactDOM.unmountComponentAtNode(root);
             root.remove();
@@ -207,6 +337,14 @@ public final class EventsBrowserTest {
             check(
                     "parent-in source-in source-out destination-in parent-out pen-in pen-out ".contentEquals(trace),
                     "Pointer over and out synthesize enter and leave");
+            trace.setLength(0);
+            movement(portal, "mouseout", source);
+            movement(source, "mouseover", portal);
+            movement(root, "pointerout", destination);
+            movement(destination, "pointerover", root);
+            check(
+                    "parent-in source-in pen-in ".contentEquals(trace),
+                    "Movement from unmanaged DOM enters the managed target exactly once");
         } finally {
             ReactDOM.unmountComponentAtNode(root);
             root.remove();
@@ -441,6 +579,7 @@ public final class EventsBrowserTest {
             final ReactEventHandler capture = event -> trace.append("capture ");
             final ReactEventHandler button = event -> trace.append("button ");
             final ReactEventHandler parent = event -> trace.append("parent ");
+            final ReactEventHandler enter = event -> trace.append("enter ");
             ReactDOM.render(
                     host(
                             "section",
@@ -452,7 +591,13 @@ public final class EventsBrowserTest {
                                     "children",
                                     host(
                                             "button",
-                                            JsPropertyMap.of("disabled", Browser.bool(true), "onClick", button)))),
+                                            JsPropertyMap.of(
+                                                    "disabled",
+                                                    Browser.bool(true),
+                                                    "onClick",
+                                                    button,
+                                                    "onMouseEnter",
+                                                    enter)))),
                     root);
             final var disabled = Browser.query(root, "button");
             mouseButton(disabled, 2);
@@ -461,6 +606,8 @@ public final class EventsBrowserTest {
             check(
                     "capture parent ".contentEquals(trace),
                     "Disabled buttons suppress their own click but preserve ancestors");
+            movement(disabled, "mouseover", null);
+            check("capture parent enter ".contentEquals(trace), "Disabled buttons still receive mouse enter");
 
             final ReactEventHandler stop = event -> {
                 trace.append("stop ");
@@ -677,6 +824,36 @@ public final class EventsBrowserTest {
             attribute(checkbox, "checked", null);
 
             ReactDOM.render(
+                    ReactElement.createHostElement(
+                            "input",
+                            "controlled",
+                            null,
+                            JsPropertyMap.of(
+                                    "type", "checkbox", "checked", Browser.bool(true), "readOnly", Browser.bool(true))),
+                    root);
+            final var transitioning = Browser.query(root, "input");
+            ReactDOM.render(
+                    ReactElement.createHostElement(
+                            "input",
+                            "controlled",
+                            null,
+                            JsPropertyMap.of(
+                                    "type",
+                                    "checkbox",
+                                    "checked",
+                                    Browser.bool(false),
+                                    "readOnly",
+                                    Browser.bool(true))),
+                    root);
+            check(Boolean.FALSE.equals(Browser.property(transitioning, "checked")), "Controlled checked updates");
+            ReactDOM.render(
+                    ReactElement.createHostElement("input", "controlled", null, JsPropertyMap.of("type", "checkbox")),
+                    root);
+            check(
+                    Boolean.TRUE.equals(Browser.property(transitioning, "checked")),
+                    "Removing checked restores the original checked value");
+
+            ReactDOM.render(
                     ReactNode.of(
                             host("input", JsPropertyMap.of("type", "submit", "defaultValue", "unused")),
                             host("input", JsPropertyMap.of("type", "reset", "value", "Reset project"))),
@@ -808,7 +985,13 @@ public final class EventsBrowserTest {
 
             ReactDOM.render(
                     ReactNode.of(
-                            host("math", JsPropertyMap.of("children", host("mi", JsPropertyMap.of("children", "x")))),
+                            host(
+                                    "math",
+                                    JsPropertyMap.of(
+                                            "children",
+                                            ReactNode.of(
+                                                    host("mi", JsPropertyMap.of("children", "x")),
+                                                    host("svg", JsPropertyMap.of("id", "inherited-namespace"))))),
                             host("a", JsPropertyMap.of("download", Browser.bool(true))),
                             host("img", JsPropertyMap.of("crossOrigin", "anonymous")),
                             host("input", JsPropertyMap.of("capture", "environment")),
@@ -824,6 +1007,10 @@ public final class EventsBrowserTest {
                     "http://www.w3.org/1998/Math/MathML"
                             .equals(Browser.property(Browser.query(root, "mi"), "namespaceURI")),
                     "MathML namespace");
+            check(
+                    "http://www.w3.org/1998/Math/MathML"
+                            .equals(Browser.property(Browser.query(root, "#inherited-namespace"), "namespaceURI")),
+                    "Nested names inherit the MathML namespace");
             attribute(Browser.query(root, "a"), "download", "");
             attribute(Browser.query(root, "img"), "crossorigin", "anonymous");
             attribute(Browser.query(root, "input"), "capture", "environment");
@@ -835,11 +1022,79 @@ public final class EventsBrowserTest {
             attribute(Browser.query(root, "textarea"), "cols", null);
             attribute(Browser.query(root, "textarea"), "rows", "3");
             attribute(Browser.query(root, "ol"), "start", null);
+
+            ReactDOM.render(
+                    host("script", JsPropertyMap.of("children", "document.currentScript.dataset.executed = 'yes'")),
+                    root);
+            attribute(Browser.query(root, "script"), "data-executed", null);
+
+            final var custom = JsPropertyMap.<@Nullable Object>of(
+                    "className", "sample", "hidden", Browser.bool(true), "oncustom", "value");
+            custom.set("selected", Browser.bool(true));
+            custom.set("onClick", (ReactEventHandler) event -> {});
+            custom.set("invalid name", "ignored");
+            ReactDOM.render(host("example-host", custom), root);
+            final var customElement = Browser.query(root, "example-host");
+            attribute(customElement, "class", null);
+            attribute(customElement, "classname", "sample");
+            attribute(customElement, "hidden", "true");
+            attribute(customElement, "selected", "true");
+            attribute(customElement, "oncustom", "value");
+            attribute(customElement, "onclick", null);
+
+            ReactDOM.render(host("example-host", JsPropertyMap.of("hidden", Browser.bool(false))), root);
+            attribute(customElement, "classname", null);
+            attribute(customElement, "hidden", "false");
+            attribute(customElement, "selected", null);
+            attribute(customElement, "oncustom", null);
+            ReactDOM.render(host("example-host", JsPropertyMap.of()), root);
+            attribute(customElement, "hidden", null);
+
+            ReactDOM.render(
+                    host(
+                            "svg",
+                            JsPropertyMap.of(
+                                    "children",
+                                    host(
+                                            "font-face",
+                                            JsPropertyMap.of(
+                                                    "fontFamily", "sans-serif", "hidden", Browser.bool(false))))),
+                    root);
+            final var fontFace = Browser.query(root, "font-face");
+            attribute(fontFace, "font-family", "sans-serif");
+            attribute(fontFace, "fontFamily", null);
+            attribute(fontFace, "hidden", null);
+
+            registerCustomizedButton();
+            final var clickTrace = new StringBuilder();
+            final ReactEventHandler customClick = event -> clickTrace.append("click");
+            ReactDOM.render(
+                    host(
+                            "button",
+                            JsPropertyMap.of(
+                                    "is",
+                                    "react4j-test-button",
+                                    "disabled",
+                                    Browser.bool(false),
+                                    "onClick",
+                                    customClick)),
+                    root);
+            final var customizedButton = Browser.query(root, "button");
+            attribute(customizedButton, "data-upgraded", "yes");
+            attribute(customizedButton, "disabled", "false");
+            check(
+                    Boolean.TRUE.equals(Browser.property(customizedButton, "disabled")),
+                    "The disabled attribute is present");
+            mouseButton(customizedButton, 0);
+            check("click".contentEquals(clickTrace), "Synthetic handlers use the rendered disabled value");
         } finally {
             ReactDOM.unmountComponentAtNode(root);
             root.remove();
         }
     }
+
+    @JsMethod
+    private static native void registerCustomizedButton();
 
     private static ReactElement host(final String tag, final JsPropertyMap<@Nullable Object> inputs) {
         return ReactElement.createHostElement(tag, null, null, inputs);
@@ -929,7 +1184,7 @@ public final class EventsBrowserTest {
     }
 
     @JsMethod
-    private static native void dispatch(Browser.Element target, String name);
+    private static native Object dispatch(Browser.Element target, String name);
 
     @JsMethod
     private static native Object[] eventOverlays(String name);

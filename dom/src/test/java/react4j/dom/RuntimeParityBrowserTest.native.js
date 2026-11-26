@@ -37,3 +37,18 @@ RuntimeParityBrowserTest.ordinaryComment = function() {
 RuntimeParityBrowserTest.rejectingPromise = function(callback) {
   return new Promise((resolve, reject) => callback(() => reject(new Error('Pending work rejected'))));
 };
+
+/** @param {function():void} task */
+RuntimeParityBrowserTest.nextBrowserTask = function(task) {
+  setTimeout(task, 0);
+};
+
+/** @return {number} */
+RuntimeParityBrowserTest.spendTime = function() {
+  const start = performance.now();
+  let elapsed = 0;
+  while (elapsed < 2) {
+    elapsed = performance.now() - start;
+  }
+  return elapsed;
+};

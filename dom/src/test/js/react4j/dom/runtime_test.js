@@ -13,6 +13,7 @@ async function run(production) {
   Events.runControlsAndEvents();
   Events.runUncontrolled();
   Events.runDomEventVariants();
+  Events.runPayloads();
   Events.runKeyboardVariants(production);
   Events.runHostProperties();
   await Parity.run(production);

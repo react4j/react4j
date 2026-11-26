@@ -11,8 +11,8 @@ tests=dom/src/test/java/react4j/dom
 suite=dom/src/test/js/react4j/dom/browser_test.js
 cp "$root/$tests"/{RuntimeBrowserTest.java,RuntimeParityBrowserTest.java,RuntimeParityBrowserTest.native.js,EventsBrowserTest.java,EventsBrowserTest.native.js} "$destination/$tests/"
 cp "$root/$suite" "$destination/$suite"
-cp "$root/$(dirname "$suite")/BUILD.bazel" "$destination/$(dirname "$suite")/"
 cd "$destination"
+sed -i '/^browser_test(/,/^)/s|deps = \["//dom/src/test/java/react4j/dom:runtime_coverage"\]|deps = ["//dom/src/test/java/react4j/dom:runtime_coverage", "//third_party:closure_testcase"]|' "$(dirname "$suite")/BUILD.bazel"
 sed -i '/"RuntimeBrowserTest.java",/a\        "RuntimeParityBrowserTest.java",\n        "RuntimeParityBrowserTest.native.js",' "$tests/BUILD.bazel"
 sed -i '/"\/\/third_party:jsinterop_annotations-j2cl",/a\        "//third_party:jsinterop_base-j2cl",' "$tests/BUILD.bazel"
 
@@ -42,5 +42,5 @@ BZL
 sed -i '/for (int i = 1; i <= 3; i++) {/i\                if (args[4].endsWith("/fallback_tests_runtime.js")) {\n                    output.write("delete window.TextEvent;\\n".getBytes(StandardCharsets.UTF_8));\n                }' tools/browser/src/main/java/react4j/browser/BrowserAssets.java
 
 for mode in fastbuild opt; do
-  bazel test -c "$mode" --test_env=CHROME_DEVEL_SANDBOX --test_output=errors //dom/src/test/js/react4j/dom:{browser_tests,fallback_tests}
+  bazel test -c "$mode" --test_env=CHROME_DEVEL_SANDBOX --test_output=errors //:browser_tests //dom/src/test/js/react4j/dom:fallback_tests
 done

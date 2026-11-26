@@ -30,11 +30,19 @@ import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.OnShouldComponentUpdate;
 
 final class Renderer {
+    private static final double RENDER_BUDGET_MS = 5;
+    private static final int NORMAL_EXPIRATION_MS = 5000;
+    private static final int INTERACTIVE_EXPIRATION_MS = 500;
     private static final boolean DEVELOPMENT = "development".equals(System.getProperty("react4j.environment"));
     private static final DomHost.WeakMap<Node, Root> ROOTS = new DomHost.WeakMap<>();
     private static final LinkedHashSet<Root> PENDING = new LinkedHashSet<>();
+    private static final LinkedHashSet<Root> INTERACTIVE = new LinkedHashSet<>();
+    private static final LinkedHashSet<Root> SYNCHRONOUS = new LinkedHashSet<>();
     private static int _batchDepth;
     private static boolean _flushing;
+    private static boolean _working;
+    private static boolean _interactive;
+    private static boolean _committing;
 
     private Renderer() {}
 
@@ -67,7 +75,7 @@ final class Renderer {
         root.node = node;
         final var target = root;
         final Task task = null == callback ? null : () -> invokeCallback(callback, target.publicInstance());
-        if (0 != _batchDepth && root._initialized) {
+        if (_working || 0 != _batchDepth && root._initialized) {
             root.enqueue(task);
         } else {
             root.commit(null == task ? List.of() : List.of(task));
@@ -96,20 +104,59 @@ final class Renderer {
         }
     }
 
+    static void interactiveUpdates(Runnable action) {
+        if (_interactive) {
+            action.run();
+            return;
+        }
+        if (0 == _batchDepth && !_working) {
+            flushInteractive();
+        }
+        _interactive = true;
+        try {
+            action.run();
+        } finally {
+            _interactive = false;
+        }
+    }
+
+    static void flushInteractive() {
+        if (!_working) {
+            flushPriority(INTERACTIVE);
+        }
+    }
+
+    private static void flushPriority(LinkedHashSet<Root> roots) {
+        while (!roots.isEmpty()) {
+            final var root = roots.iterator().next();
+            roots.remove(root);
+            root.runSlice(true);
+        }
+    }
+
     private static void flush() {
         if (0 != _batchDepth || _flushing) {
             return;
         }
         _flushing = true;
         try {
-            while (!PENDING.isEmpty()) {
-                final var root = PENDING.iterator().next();
-                PENDING.remove(root);
-                root.runScheduled();
+            while (!PENDING.isEmpty() || !SYNCHRONOUS.isEmpty()) {
+                flushPriority(SYNCHRONOUS);
+                if (!PENDING.isEmpty()) {
+                    final var root = PENDING.iterator().next();
+                    root.runScheduled();
+                }
             }
         } finally {
             _flushing = false;
         }
+    }
+
+    private static void rollback(List<Runnable> undo, int checkpoint) {
+        for (int i = undo.size() - 1; i >= checkpoint; i--) {
+            undo.get(i).run();
+        }
+        undo.subList(checkpoint, undo.size()).clear();
     }
 
     private static RuntimeException unchecked(Throwable error) {
@@ -128,7 +175,10 @@ final class Renderer {
     }
 
     @JsMethod(namespace = JsPackage.GLOBAL)
-    private static native void setTimeout(Task task, int delay);
+    private static native int setTimeout(Task task, int delay);
+
+    @JsMethod(namespace = JsPackage.GLOBAL)
+    private static native void clearTimeout(int handle);
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "performance.now")
     private static native double now();
@@ -171,7 +221,24 @@ final class Renderer {
         private @Nullable LegacySuspense _legacySuspense;
         private boolean _initialized;
         private boolean _scheduled;
-        private boolean _working;
+        private @Nullable Task _nextStep;
+        private List<Task> _activeCallbacks = List.of();
+        private List<Runnable> _activeUpdates = List.of();
+        private final List<Runnable> _updates = new ArrayList<>();
+        private final List<Runnable> _urgentUpdates = new ArrayList<>();
+        private final List<Task> _urgentCallbacks = new ArrayList<>();
+        private boolean _hasWork;
+        private boolean _hasUrgentWork;
+        private boolean _hasUrgentNode;
+        private boolean _activeUrgent;
+        private int _fallbackTimer;
+        private double _fallbackDeadline;
+        private double _renderStarted;
+        private @Nullable ReactNode _urgentNode;
+        private @Nullable ReactNode _activeNode;
+        private @Nullable ReactNode _committedNode;
+        private boolean _placementChanged;
+        private @Nullable RenderFailure _renderFailure;
         private boolean _profiling;
         private int _commitSequence;
         private @Nullable ReactNode node;
@@ -184,40 +251,192 @@ final class Renderer {
 
         @Override
         public void render(@Nullable ReactNode children, @Nullable PostRenderCallbackFn callback) {
-            node = children;
-            enqueue(null == callback ? null : callback::call);
+            enqueueRender(children, null == callback ? null : callback::call);
         }
 
         @Override
         public void unmount(@Nullable PostUnmountCallbackFn callback) {
-            node = null;
-            enqueue(null == callback ? null : callback::call);
+            enqueueRender(null, null == callback ? null : callback::call);
+        }
+
+        private void enqueueRender(@Nullable ReactNode children, @Nullable Task callback) {
+            node = children;
+            if (_interactive || _committing) {
+                _hasUrgentNode = true;
+                _urgentNode = children;
+                if (null != callback) {
+                    _urgentCallbacks.add(callback);
+                }
+                scheduleUrgent();
+            } else {
+                if (null != callback) {
+                    _callbacks.add(callback);
+                }
+                _hasWork = true;
+                scheduleSlice();
+            }
         }
 
         private void enqueue(@Nullable Task callback) {
             if (null != callback) {
                 _callbacks.add(callback);
             }
-            schedule();
+            PENDING.add(this);
+            flush();
         }
 
-        private void schedule() {
-            if (concurrent) {
-                if (!_scheduled) {
-                    _scheduled = true;
-                    setTimeout(this::runScheduled, 0);
-                }
-            } else {
-                PENDING.add(this);
-                flush();
+        private void scheduleUrgent() {
+            _hasUrgentWork = true;
+            (_committing ? SYNCHRONOUS : INTERACTIVE).add(this);
+            scheduleSlice();
+        }
+
+        private void scheduleSlice() {
+            if (!_scheduled) {
+                _scheduled = true;
+                setTimeout(this::runScheduled, 0);
             }
         }
 
         private void runScheduled() {
             _scheduled = false;
+            PENDING.remove(this);
+            if (concurrent) {
+                runSlice(false);
+                return;
+            }
             final var callbacks = List.copyOf(_callbacks);
             _callbacks.clear();
             commit(callbacks);
+        }
+
+        private void update(Runnable action) {
+            if (!concurrent) {
+                action.run();
+                enqueue(null);
+            } else if (_interactive || _committing) {
+                _urgentUpdates.add(action);
+                scheduleUrgent();
+            } else {
+                _updates.add(action);
+                _hasWork = true;
+                scheduleSlice();
+            }
+        }
+
+        private void runSlice(boolean synchronous) {
+            if (0 == _fallbackTimer && null == _nextStep && !_hasWork && !_hasUrgentWork) {
+                return;
+            }
+            _working = true;
+            _batchDepth++;
+            try {
+                if (0 != _fallbackTimer) {
+                    clearTimeout(_fallbackTimer);
+                    _fallbackTimer = 0;
+                    if (_hasWork || _hasUrgentWork) {
+                        abandonRender();
+                    } else {
+                        completeConcurrentRender(synchronous);
+                        return;
+                    }
+                } else if (_hasUrgentWork && !_activeUrgent && null != _nextStep) {
+                    abandonRender();
+                }
+                if (null == _nextStep) {
+                    beginConcurrentRender();
+                }
+                final var deadline = synchronous ? Double.POSITIVE_INFINITY : now() + RENDER_BUDGET_MS;
+                for (var step = _nextStep; null != step; step = _nextStep) {
+                    _nextStep = null;
+                    step.run();
+                    if (null != _nextStep && now() >= deadline) {
+                        scheduleSlice();
+                        return;
+                    }
+                }
+                completeConcurrentRender(synchronous);
+            } finally {
+                if (null == _nextStep && (_hasWork || _hasUrgentWork)) {
+                    scheduleSlice();
+                }
+                _batchDepth--;
+                _working = false;
+                flush();
+            }
+        }
+
+        private void abandonRender() {
+            rollback(Objects.requireNonNull(_renderUndo), 0);
+            if (_activeUrgent && _hasUrgentWork) {
+                _urgentCallbacks.addAll(0, _activeCallbacks);
+                _urgentUpdates.addAll(0, _activeUpdates);
+                if (!_hasUrgentNode) {
+                    _hasUrgentNode = true;
+                    _urgentNode = _activeNode;
+                }
+            } else {
+                _callbacks.addAll(0, _activeCallbacks);
+                _updates.addAll(0, _activeUpdates);
+                _hasWork = true;
+            }
+            _nextStep = null;
+            clearEffects();
+        }
+
+        private void completeConcurrentRender(boolean synchronous) {
+            if (_activeUrgent && !_hasUrgentWork) {
+                INTERACTIVE.remove(this);
+                SYNCHRONOUS.remove(this);
+            }
+            final var delay = _fallbackDeadline - now();
+            if (!synchronous && null == _renderFailure && 0 < delay) {
+                _fallbackTimer = setTimeout(() -> runSlice(false), (int) Math.ceil(delay));
+                return;
+            }
+            _renderUndo = null;
+            _committedNode = _activeNode;
+            try {
+                finishCommit(_activeCallbacks);
+                if (_activeUrgent && _heldFallbacks.isEmpty() && !_callbacks.isEmpty()) {
+                    _hasWork = true;
+                }
+            } finally {
+                _activeCallbacks = List.of();
+                _activeUpdates = List.of();
+                _activeNode = null;
+                _activeUrgent = false;
+                clearEffects();
+            }
+        }
+
+        private void beginConcurrentRender() {
+            _activeUrgent = _hasUrgentWork;
+            _renderStarted = now();
+            _fallbackDeadline = 0;
+            final List<Runnable> updates;
+            final List<Task> callbacks;
+            if (_activeUrgent) {
+                _hasUrgentWork = false;
+                _activeNode = _hasUrgentNode ? _urgentNode : _committedNode;
+                _hasUrgentNode = false;
+                _urgentNode = null;
+                updates = _urgentUpdates;
+                callbacks = _urgentCallbacks;
+            } else {
+                _hasWork = false;
+                _activeNode = node;
+                updates = _updates;
+                callbacks = _callbacks;
+            }
+            _activeUpdates = List.copyOf(updates);
+            updates.clear();
+            _activeCallbacks = List.copyOf(callbacks);
+            callbacks.clear();
+            _renderUndo = new ArrayList<>();
+            _renderUndo.add(fiber.checkpoint());
+            _activeUpdates.forEach(Runnable::run);
+            startRender(_activeNode);
         }
 
         private void remove() {
@@ -225,27 +444,49 @@ final class Renderer {
             if (_working) {
                 enqueue(this::unregister);
             } else {
-                unregister();
-                commit(List.of());
+                _callbacks.add(this::unregister);
+                runScheduled();
             }
         }
 
         private void unregister() {
             ROOTS.delete(container);
-            PENDING.remove(this);
         }
 
         private void commit(List<Task> callbacks) {
             _working = true;
             _batchDepth++;
             try {
-                initialize();
-                _profiling = DomDevTools.isActive();
-                _commitSequence++;
-                fiber._visitedCommit = _commitSequence;
-                fiber.actualStartTime = time();
-                fiber._dirty = false;
-                final var changed = fiber.reconcileChildren(node, null);
+                startRender(node);
+                finishCommit(callbacks);
+            } finally {
+                clearEffects();
+                _batchDepth--;
+                _working = false;
+                flush();
+            }
+        }
+
+        private void startRender(@Nullable ReactNode next) {
+            initialize();
+            _profiling = DomDevTools.isActive();
+            _commitSequence++;
+            fiber._visitedCommit = _commitSequence;
+            fiber.actualStartTime = time();
+            fiber._dirty = false;
+            fiber.reconcileChildren(next, null, (changed, failure) -> {
+                _placementChanged = changed;
+                _renderFailure = failure;
+            });
+        }
+
+        private void finishCommit(List<Task> callbacks) {
+            _committing = true;
+            try {
+                final var failure = _renderFailure;
+                if (null != failure) {
+                    throw failure;
+                }
                 final var focus = DomHost.Focus.read(container.document());
                 DomEvents.pause();
                 try {
@@ -254,7 +495,7 @@ final class Renderer {
                         _deletions.get(i).dispose();
                     }
                     runEffects(_mutations);
-                    if (changed) {
+                    if (_placementChanged) {
                         fiber.placeChildren(mountParent(container), 8 == container.nodeType ? container : null);
                     }
                     if (null != focus) {
@@ -276,6 +517,7 @@ final class Renderer {
                 deliverCommitFailures();
             } catch (RenderFailure failure) {
                 node = null;
+                _committedNode = null;
                 fiber.disposeChildren();
                 _deletions.forEach(Fiber::dispose);
                 for (final var disposal : _commitFailures) {
@@ -286,15 +528,17 @@ final class Renderer {
                 DomDevTools.onCommitRoot(this);
                 throw unchecked(failure.error);
             } finally {
-                _effects.clear();
-                _deletions.clear();
-                _mutations.clear();
-                _snapshots.clear();
-                _commitFailures.clear();
-                _batchDepth--;
-                _working = false;
-                flush();
+                _committing = false;
             }
+        }
+
+        private void clearEffects() {
+            _effects.clear();
+            _deletions.clear();
+            _mutations.clear();
+            _snapshots.clear();
+            _commitFailures.clear();
+            _renderFailure = null;
         }
 
         private double time() {
@@ -353,6 +597,7 @@ final class Renderer {
                     if (null == unhandled) {
                         unhandled = next.failure.error;
                         node = null;
+                        _committedNode = null;
                         fiber.disposeChildren();
                     }
                 } else if (boundary.alive && boundary.view instanceof OnComponentDidCatch catcher) {
@@ -444,101 +689,181 @@ final class Renderer {
             };
         }
 
-        private boolean reconcileChildren(@Nullable Object next, @Nullable Scope scope) {
+        private void reconcileChildren(@Nullable Object next, @Nullable Scope scope, Completion complete) {
             final var previous = children;
-            children = new ArrayList<>();
             final var content = unwrapFragment(next);
-            if (null != content && isArray(content)) {
-                return reconcileList(Js.uncheckedCast(content), previous, scope);
+            if (null == content || !isChild(content)) {
+                if (!previous.isEmpty()) {
+                    children = new ArrayList<>();
+                    root._deletions.addAll(previous);
+                }
+                complete.finish(!previous.isEmpty(), null);
+                return;
+            }
+            children = new ArrayList<>();
+            if (isArray(content)) {
+                new ChildList(Js.uncheckedCast(content), previous, scope, complete).advance();
+                return;
+            }
+            if (1 == previous.size() && matchesSlot(previous.get(0), content, 0)) {
+                reuse(previous.get(0), content, 0, scope, complete);
+                return;
+            }
+            final Descriptor descriptor;
+            try {
+                descriptor = Descriptor.of(content);
+            } catch (Throwable error) {
+                root._deletions.addAll(previous);
+                complete.finish(false, new RenderFailure(this, error));
+                return;
             }
             Fiber candidate = null;
-            try {
-                if (null != content && isChild(content)) {
-                    if (1 == previous.size() && matchesDescription(previous.get(0), content, 0)) {
-                        candidate = previous.get(0);
-                        return reuse(candidate, content, 0, scope);
-                    }
-                    final var descriptor = Descriptor.of(content);
-                    for (final var child : previous) {
-                        if (Objects.equals(descriptor.key, child.key)) {
-                            if (descriptor.matches(child)) {
-                                candidate = child;
-                            }
-                            break;
-                        }
-                    }
-                    final var changed = reconcileChild(content, descriptor, 0, candidate, previous, scope);
-                    return changed || 1 != previous.size();
+            if (Kind.TEXT == descriptor.kind) {
+                if (!previous.isEmpty() && descriptor.matches(previous.get(0))) {
+                    candidate = previous.get(0);
                 }
-                return !previous.isEmpty();
-            } finally {
+            } else {
                 for (final var child : previous) {
-                    if (child != candidate) {
-                        root._deletions.add(child);
+                    if (Objects.equals(descriptor.key, child.key)) {
+                        if (descriptor.matches(child)) {
+                            candidate = child;
+                        }
+                        break;
                     }
                 }
             }
+            for (final var child : previous) {
+                if (child != candidate) {
+                    root._deletions.add(child);
+                }
+            }
+            final var child = null != candidate
+                    ? candidate
+                    : new Fiber(root, this, descriptor.kind, descriptor.type, descriptor.key);
+            reuse(
+                    child,
+                    content,
+                    0,
+                    scope,
+                    null == candidate || 1 != previous.size()
+                            ? (changed, failure) -> complete.finish(true, failure)
+                            : complete);
         }
 
-        private boolean reconcileList(@Nullable Object[] values, List<Fiber> previous, @Nullable Scope scope) {
-            int cursor = 0;
-            LinkedHashMap<Object, Fiber> unmatched = null;
-            var changed = false;
-            try {
-                for (int i = 0; i < values.length; i++) {
-                    final var value = values[i];
+        private final class ChildList {
+            private final @Nullable Object[] _values;
+            private final List<Fiber> _previous;
+            private final @Nullable Scope _scope;
+            private final Completion _complete;
+            private final Completion _completeChild = this::completed;
+            private int _index;
+            private int _cursor;
+            private boolean _changed;
+            private @Nullable LinkedHashMap<Object, Fiber> _unmatched;
+            private @Nullable RenderFailure _failure;
+
+            private ChildList(
+                    @Nullable Object[] values, List<Fiber> previous, @Nullable Scope scope, Completion complete) {
+                _values = values;
+                _previous = previous;
+                _scope = scope;
+                _complete = complete;
+            }
+
+            private void advance() {
+                while (_index < _values.length && null == _failure) {
+                    final var index = _index++;
+                    final var value = _values[index];
                     if (null == value || !isChild(value)) {
                         continue;
                     }
-                    if (null == unmatched && cursor < previous.size()) {
-                        final var child = previous.get(cursor);
-                        if (matchesDescription(child, value, i)) {
-                            cursor++;
-                            changed |= reuse(child, value, i, scope);
-                            continue;
-                        }
+                    final Fiber child;
+                    try {
+                        child = match(value, index);
+                    } catch (Throwable error) {
+                        _failure = new RenderFailure(Fiber.this, error);
+                        break;
                     }
-                    final var descriptor = Descriptor.of(value);
-                    final var key = descriptor.reconciliationKey(i);
-                    Fiber candidate = null;
-                    if (null == unmatched && cursor < previous.size()) {
-                        final var child = previous.get(cursor);
-                        if (key.equals(child.reconciliationKey()) && descriptor.matches(child)) {
-                            candidate = child;
-                            cursor++;
-                        } else {
-                            unmatched = new LinkedHashMap<>();
-                            for (; cursor < previous.size(); cursor++) {
-                                final var leftover = previous.get(cursor);
-                                final var duplicate = unmatched.put(leftover.reconciliationKey(), leftover);
-                                if (null != duplicate) {
-                                    root._deletions.add(duplicate);
-                                }
-                            }
-                        }
+                    final var position = children.size();
+                    _changed |= position >= _previous.size() || _previous.get(position) != child;
+                    reuse(child, value, index, _scope, _completeChild);
+                    if (root.concurrent) {
+                        return;
                     }
-                    if (null != unmatched) {
-                        final var child = unmatched.get(key);
-                        if (null != child && descriptor.matches(child)) {
-                            candidate = unmatched.remove(key);
-                        }
-                    }
-                    changed |= reconcileChild(value, descriptor, i, candidate, previous, scope);
                 }
-                return changed || previous.size() != children.size();
-            } finally {
+                final var unmatched = _unmatched;
                 if (null != unmatched) {
                     root._deletions.addAll(unmatched.values());
                 } else {
-                    for (; cursor < previous.size(); cursor++) {
-                        root._deletions.add(previous.get(cursor));
+                    for (; _cursor < _previous.size(); _cursor++) {
+                        root._deletions.add(_previous.get(_cursor));
                     }
                 }
+                _complete.finish(_changed || _previous.size() != children.size(), _failure);
+            }
+
+            private void completed(boolean changed, @Nullable RenderFailure failure) {
+                _changed |= changed;
+                _failure = failure;
+                if (root.concurrent) {
+                    advance();
+                }
+            }
+
+            private Fiber match(Object value, int index) {
+                if (null == _unmatched && _cursor < _previous.size()) {
+                    final var child = _previous.get(_cursor);
+                    if (matchesSlot(child, value, index)) {
+                        _cursor++;
+                        return child;
+                    }
+                }
+                final var descriptor = Descriptor.of(value);
+                final var key = descriptor.reconciliationKey(index);
+                if (null == _unmatched && _cursor < _previous.size()) {
+                    final var child = _previous.get(_cursor);
+                    if (key.equals(child.reconciliationKey()) && descriptor.matches(child)) {
+                        _cursor++;
+                        return child;
+                    }
+                    final var unmatched = new LinkedHashMap<Object, Fiber>();
+                    for (; _cursor < _previous.size(); _cursor++) {
+                        final var leftover = _previous.get(_cursor);
+                        final var duplicate = unmatched.put(leftover.reconciliationKey(), leftover);
+                        if (null != duplicate) {
+                            root._deletions.add(duplicate);
+                        }
+                    }
+                    _unmatched = unmatched;
+                }
+                final var unmatched = _unmatched;
+                if (null != unmatched) {
+                    final var child = unmatched.get(key);
+                    if (null != child && descriptor.matches(child)) {
+                        unmatched.remove(key);
+                        return child;
+                    }
+                }
+                return new Fiber(root, Fiber.this, descriptor.kind, descriptor.type, descriptor.key);
             }
         }
 
         private static boolean matchesDescription(Fiber fiber, Object value, int index) {
             return (null != fiber.key || fiber._index == index) && Js.isTripleEqual(fiber._description, value);
+        }
+
+        private static boolean matchesSlot(Fiber fiber, Object value, int index) {
+            if (matchesDescription(fiber, value, index)) {
+                return true;
+            }
+            if (null == fiber.key && fiber._index != index) {
+                return false;
+            }
+            if (ReactElement.isElement(value)) {
+                final var element = Js.<ReactElement>uncheckedCast(value);
+                return Js.isTripleEqual(fiber.type, element.type()) && Objects.equals(fiber.key, element.key());
+            }
+            return false;
         }
 
         private Object reconciliationKey() {
@@ -559,47 +884,45 @@ final class Renderer {
             return value;
         }
 
-        private boolean reconcileChild(
-                Object next,
-                Descriptor descriptor,
-                int index,
-                @Nullable Fiber candidate,
-                List<Fiber> previous,
-                @Nullable Scope scope) {
-            if (null == candidate) {
-                reuse(new Fiber(root, this, descriptor.kind, descriptor.type, descriptor.key), next, index, scope);
-                return true;
-            }
-            final var position = children.size();
-            final var changed = reuse(candidate, next, index, scope);
-            return changed || position >= previous.size() || previous.get(position) != candidate;
-        }
-
-        private boolean reuse(Fiber child, Object next, int index, @Nullable Scope scope) {
+        private void reuse(Fiber child, Object next, int index, @Nullable Scope scope, Completion complete) {
             final var undo = root._renderUndo;
             if (null != undo) {
                 undo.add(child.checkpoint());
             }
             child._index = index;
             children.add(child);
-            return child.update(next, scope);
+            if (root.concurrent) {
+                root._nextStep = () -> child.update(next, scope, complete);
+            } else {
+                child.update(next, scope, complete);
+            }
         }
 
         private void invalidate() {
-            for (var fiber = this; null != fiber && !fiber._dirty; fiber = fiber.parent) {
-                fiber._dirty = true;
-            }
-            root.schedule();
+            root.update(this::markDirty);
         }
 
-        private boolean update(Object next, @Nullable Scope scope) {
+        private void markDirty() {
+            for (var fiber = this; null != fiber && !fiber._dirty; fiber = fiber.parent) {
+                final var undo = root._renderUndo;
+                if (null != undo) {
+                    final var clean = fiber;
+                    undo.add(() -> clean._dirty = false);
+                }
+                fiber._dirty = true;
+            }
+        }
+
+        private void update(Object next, @Nullable Scope scope, Completion complete) {
             if (_initialized
                     && !_dirty
                     && !_retrySuspendedView
                     && _scope == scope
                     && Js.isTripleEqual(_description, next)) {
-                return false;
+                complete.finish(false, null);
+                return;
             }
+            _selfDuration = 0;
             final var refreshChildren = _dirty || _scope != scope;
             _dirty = false;
             _description = next;
@@ -608,9 +931,14 @@ final class Renderer {
             actualStartTime = root.time();
             final var oldNode = node;
             final var mounting = !_initialized;
-            node = ReactElement.isElement(next) ? Js.uncheckedCast(next) : null;
-            double selfDuration = 0;
-            var changed = false;
+            node = switch (kind) {
+                case HOST, VIEW, PROVIDER, CONSUMER -> Js.uncheckedCast(next);
+                case FRAGMENT -> ReactElement.isElement(next) ? Js.uncheckedCast(next) : null;
+                default -> null;
+            };
+            final Completion finish = Kind.VIEW == kind
+                    ? complete
+                    : (changed, failure) -> finishUpdate(changed, failure, scope, complete);
             try {
                 switch (kind) {
                     case TEXT -> {
@@ -624,11 +952,11 @@ final class Renderer {
                     }
                     case HOST -> {
                         final var element = Objects.requireNonNull(node);
+                        final var inputs = element.inputs();
                         final var host = null == dom
-                                ? DomHost.createElement(boundary(), hostParent(false), Js.asString(type))
+                                ? DomHost.createElement(boundary(), hostParent(false), Js.asString(type), inputs)
                                 : Js.<Element>uncheckedCast(dom);
                         dom = host;
-                        final var inputs = element.inputs();
                         final var hasHtml = DomHost.hasHtml(inputs);
                         if (hasHtml) {
                             root._deletions.addAll(children);
@@ -641,36 +969,48 @@ final class Renderer {
                                     () -> DomHost.update(
                                             host,
                                             boundary(),
+                                            root.container,
                                             hostParent(true),
                                             null == oldNode ? null : oldNode.inputs(),
                                             inputs)));
                         }
-                        selfDuration = root.time() - actualStartTime;
-                        final var contentChanged = !hasHtml
-                                && !"textarea".equals(host.localName)
-                                && reconcileChildren(inputs.get("children"), scope);
-                        if (propsChanged || contentChanged) {
-                            root._mutations.add(new Effect(this, () -> {
-                                if (contentChanged) {
-                                    placeChildren(host, null);
+                        final var selfDuration = root.time() - actualStartTime;
+                        final Completion finishHost = (contentChanged, failure) -> {
+                            if (null == failure) {
+                                final boolean control = DomHost.isControlTag(host.localName);
+                                if (contentChanged || propsChanged && control) {
+                                    root._mutations.add(new Effect(this, () -> {
+                                        if (contentChanged) {
+                                            placeChildren(host, null);
+                                        }
+                                        if (control) {
+                                            DomHost.restoreControlled(host);
+                                        }
+                                    }));
                                 }
-                                DomHost.restoreControlled(host);
-                            }));
+                                if (mounting
+                                        && Boolean.TRUE.equals(inputs.get("autoFocus"))
+                                        && ("button".equals(host.localName)
+                                                || "input".equals(host.localName)
+                                                || "select".equals(host.localName)
+                                                || "textarea".equals(host.localName))) {
+                                    root._effects.add(new Effect(this, () -> host.focus(null)));
+                                }
+                                reconcileRef(element.ref(), host);
+                                recordDurations(mounting, selfDuration);
+                            }
+                            finish.finish(false, failure);
+                        };
+                        if (!hasHtml && !"textarea".equals(host.localName)) {
+                            reconcileChildren(inputs.get("children"), scope, finishHost);
+                        } else {
+                            finishHost.finish(false, null);
                         }
-                        if (mounting
-                                && Boolean.TRUE.equals(inputs.get("autoFocus"))
-                                && ("button".equals(host.localName)
-                                        || "input".equals(host.localName)
-                                        || "select".equals(host.localName)
-                                        || "textarea".equals(host.localName))) {
-                            root._effects.add(new Effect(this, () -> host.focus(null)));
-                        }
-                        reconcileRef(element.ref(), host);
+                        return;
                     }
                     case VIEW -> {
-                        final var result = updateView(Objects.requireNonNull(node), oldNode, scope, refreshChildren);
-                        selfDuration = result.duration;
-                        changed = result.changed;
+                        updateView(Objects.requireNonNull(node), oldNode, scope, refreshChildren, mounting, finish);
+                        return;
                     }
                     case PORTAL -> {
                         final var portal = Js.<ReactPortal>uncheckedCast(next);
@@ -678,21 +1018,26 @@ final class Renderer {
                         final var mount = mountParent(container);
                         final var last = lastDomChild();
                         final var anchor = 8 == container.nodeType ? container : null == last ? null : last.nextSibling;
-                        if (reconcileChildren(portal.children, scope)) {
-                            root._mutations.add(new Effect(
-                                    this,
-                                    () -> placeChildren(
-                                            mount, null != anchor && mount == anchor.parentNode ? anchor : null)));
-                        }
+                        reconcileChildren(portal.children, scope, (changed, failure) -> {
+                            if (null == failure && changed) {
+                                root._mutations.add(new Effect(
+                                        this,
+                                        () -> placeChildren(
+                                                mount, null != anchor && mount == anchor.parentNode ? anchor : null)));
+                            }
+                            finish.finish(false, failure);
+                        });
+                        return;
                     }
                     case FRAGMENT -> {
                         final var element = node;
                         if (React.Suspense == type && null != element) {
-                            changed = reconcileSuspense(element.inputs(), scope);
+                            reconcileSuspense(element.inputs(), scope, finish);
                         } else {
-                            changed = reconcileChildren(
-                                    null == element ? next : element.inputs().get("children"), scope);
+                            reconcileChildren(
+                                    null == element ? next : element.inputs().get("children"), scope, finish);
                         }
+                        return;
                     }
                     case PROVIDER -> {
                         final var element = Objects.requireNonNull(node);
@@ -704,7 +1049,8 @@ final class Renderer {
                             provided = new Scope(scope, provider.context(), value);
                             _providedScope = provided;
                         }
-                        changed = reconcileChildren(inputs.get("children"), provided);
+                        reconcileChildren(inputs.get("children"), provided, finish);
+                        return;
                     }
                     case CONSUMER -> {
                         final var element = Objects.requireNonNull(node);
@@ -716,18 +1062,30 @@ final class Renderer {
                                     Objects.requireNonNull(element.inputs().get("children")));
                             output = renderOwned(() -> Renderable.toReactNode(consumer.render(value)));
                         }
-                        selfDuration = root.time() - actualStartTime;
-                        changed = reconcileChildren(output, scope);
+                        recordDurations(mounting, root.time() - actualStartTime);
+                        reconcileChildren(output, scope, finish);
+                        return;
                     }
                     case ROOT -> throw new IllegalStateException("Cannot update the root as a child");
                 }
-            } catch (RenderFailure failure) {
-                throw failure;
             } catch (Throwable error) {
-                final var failure = new RenderFailure(this, error);
+                finishUpdate(
+                        false,
+                        error instanceof RenderFailure failure ? failure : new RenderFailure(this, error),
+                        scope,
+                        complete);
+                return;
+            }
+            finish.finish(false, null);
+        }
+
+        private void finishUpdate(
+                boolean changed, @Nullable RenderFailure failure, @Nullable Scope scope, Completion complete) {
+            if (null != failure) {
                 final var suspense = root._legacySuspense;
-                if (null == suspense || !failure.isSuspension()) {
-                    throw failure;
+                if (failure.source != this || null == suspense || !failure.isSuspension()) {
+                    complete.finish(false, failure);
+                    return;
                 }
                 suspense.failures.add(failure);
                 _renderedCommit = 0;
@@ -736,25 +1094,50 @@ final class Renderer {
                     view.detach();
                     view = null;
                 }
-                return reconcileChildren(null, scope);
+                reconcileChildren(null, scope, complete);
+                return;
             }
             _initialized = true;
-            if (mounting || 0 != selfDuration) {
-                selfBaseDuration = selfDuration;
-            }
-            updateDurations(selfDuration);
-            return changed;
+            updateDurations(_selfDuration);
+            complete.finish(changed, null);
         }
 
-        private ViewResult updateView(
-                ReactElement element, @Nullable ReactElement oldNode, @Nullable Scope scope, boolean refreshChildren) {
+        private double _selfDuration;
+
+        private void recordDurations(boolean mounting, double duration) {
+            _selfDuration = duration;
+            if (mounting || 0 != duration) {
+                selfBaseDuration = duration;
+            }
+        }
+
+        private void attachUpdater(final NativeView component) {
+            component.attach(action -> root.update(() -> {
+                if (alive && component == view) {
+                    final var undo = root._renderUndo;
+                    if (null != undo) {
+                        undo.add(component.checkpoint());
+                    }
+                    action.run();
+                    markDirty();
+                }
+            }));
+        }
+
+        private void updateView(
+                ReactElement element,
+                @Nullable ReactElement oldNode,
+                @Nullable Scope scope,
+                boolean refreshChildren,
+                boolean mounting,
+                Completion complete) {
             final var inputs = element.inputs();
             final var existing = view;
             final var component = null == existing ? NativeView.construct(type, inputs) : existing;
             view = component;
             final var previousInputs = component.inputs();
             if (null == existing) {
-                component.attach(this::invalidate);
+                attachUpdater(component);
             }
             final var previousState = component.state();
             final boolean force = component.consumeForceUpdate();
@@ -777,45 +1160,50 @@ final class Renderer {
                 if (DEVELOPMENT && strict) {
                     renderOwned(component::render);
                 }
+            } else if (_captured || !refreshChildren) {
+                reconcileRef(element.ref(), component);
+                finishUpdate(false, null, scope, complete);
+                return;
             }
             final var elapsed = root.time() - actualStartTime;
-            Task onError = null;
-            var changedOutput = false;
             final var snapshots = root._snapshots.size();
-            try {
-                if (!_captured && (render || refreshChildren)) {
-                    changedOutput = reconcileChildren(output, scope);
+            final Completion finish = (changedOutput, failure) -> {
+                Task onError = null;
+                if (null != failure) {
+                    if (component instanceof OnComponentDidCatch catcher && !failure.isSuspension()) {
+                        root._snapshots
+                                .subList(snapshots, root._snapshots.size())
+                                .clear();
+                        onError = capture(catcher, failure, false);
+                    } else {
+                        finishUpdate(false, failure, scope, complete);
+                        return;
+                    }
                 }
-            } catch (RenderFailure failure) {
-                if (component instanceof OnComponentDidCatch catcher && !failure.isSuspension()) {
-                    root._snapshots.subList(snapshots, root._snapshots.size()).clear();
-                    onError = capture(catcher, failure, false);
-                    changedOutput = true;
-                } else {
-                    throw failure;
+                if (render && null != existing && component instanceof OnGetSnapshotBeforeUpdate lifecycle) {
+                    root._snapshots.add(new Effect(
+                            this,
+                            () -> lifecycle.getSnapshotBeforeUpdate(
+                                    Objects.requireNonNull(previousInputs),
+                                    null == previousState ? JsPropertyMap.of() : previousState)));
                 }
-            }
-            if (render && null != existing && component instanceof OnGetSnapshotBeforeUpdate lifecycle) {
-                root._snapshots.add(new Effect(
-                        this,
-                        () -> lifecycle.getSnapshotBeforeUpdate(
-                                Objects.requireNonNull(previousInputs),
-                                null == previousState ? JsPropertyMap.of() : previousState)));
-            }
-            if (null == existing) {
-                root._mutations.add(new Effect(this, () -> _mounted = true));
-                if (component instanceof OnComponentDidMount lifecycle) {
-                    root._effects.add(new Effect(this, lifecycle::componentDidMount));
+                if (null == existing) {
+                    root._mutations.add(new Effect(this, () -> _mounted = true));
+                    if (component instanceof OnComponentDidMount lifecycle) {
+                        root._effects.add(new Effect(this, lifecycle::componentDidMount));
+                    }
+                } else if (render && component instanceof OnComponentDidUpdate lifecycle) {
+                    root._effects.add(new Effect(
+                            this, () -> lifecycle.componentDidUpdate(Objects.requireNonNull(previousInputs))));
                 }
-            } else if (render && component instanceof OnComponentDidUpdate lifecycle) {
-                root._effects.add(
-                        new Effect(this, () -> lifecycle.componentDidUpdate(Objects.requireNonNull(previousInputs))));
-            }
-            if (null != onError) {
-                root._effects.add(new Effect(this, onError));
-            }
-            reconcileRef(element.ref(), component);
-            return new ViewResult(render ? elapsed : 0, changedOutput);
+                if (null != onError) {
+                    root._effects.add(new Effect(this, onError));
+                }
+                reconcileRef(element.ref(), component);
+                recordDurations(mounting, render ? elapsed : 0);
+                finishUpdate(changedOutput || null != onError, null, scope, complete);
+            };
+            reconcileChildren(output, scope, finish);
         }
 
         private @Nullable Object renderOwned(Supplier<@Nullable Object> render) {
@@ -827,49 +1215,41 @@ final class Renderer {
             }
         }
 
-        private boolean reconcileSuspense(JsPropertyMap<@Nullable Object> inputs, @Nullable Scope scope) {
+        private void reconcileSuspense(
+                JsPropertyMap<@Nullable Object> inputs, @Nullable Scope scope, Completion complete) {
             if (!root.concurrent) {
-                return reconcileLegacySuspense(inputs, scope);
+                reconcileLegacySuspense(inputs, scope, complete);
+                return;
             }
             final var suspended = null != _suspension;
             final var previous = children;
             final var primary = suspended ? previous.subList(0, _primaryCount) : previous;
             final var fallback = suspended ? previous.subList(_primaryCount, previous.size()) : List.<Fiber>of();
-            final var outerUndo = root._renderUndo;
-            final var undo = null == outerUndo ? new ArrayList<Runnable>() : outerUndo;
-            root._renderUndo = undo;
+            final var undo = Objects.requireNonNull(root._renderUndo);
             final var checkpoint = undo.size();
+            final var deadline = root._fallbackDeadline;
             final var snapshots = root._snapshots.size();
             final var mutations = root._mutations.size();
             final var effects = root._effects.size();
             final var deletions = root._deletions.size();
             children = primary;
-            try {
-                final var changed = reconcileChildren(inputs.get("children"), scope);
-                completePrimary(fallback);
-                return changed || suspended;
-            } catch (RenderFailure failure) {
+            reconcileChildren(inputs.get("children"), scope, (changed, failure) -> {
+                if (null == failure) {
+                    completePrimary(fallback);
+                    complete.finish(changed || suspended, null);
+                    return;
+                }
                 if (!failure.isSuspension()) {
                     root._deletions.addAll(fallback);
-                    throw failure;
+                    complete.finish(false, failure);
+                    return;
                 }
-                for (int i = undo.size() - 1; i >= checkpoint; i--) {
-                    undo.get(i).run();
-                }
-                undo.subList(checkpoint, undo.size()).clear();
+                rollback(undo, checkpoint);
+                root._fallbackDeadline = deadline;
                 root._snapshots.subList(snapshots, root._snapshots.size()).clear();
                 root._mutations.subList(mutations, root._mutations.size()).clear();
                 root._effects.subList(effects, root._effects.size()).clear();
                 root._deletions.subList(deletions, root._deletions.size()).clear();
-                root._renderUndo = outerUndo;
-                final boolean changed;
-                if (suspended) {
-                    children = previous;
-                    root._mutations.add(new Effect(this, () -> root._heldFallbacks.add(this)));
-                    changed = false;
-                } else {
-                    changed = showFallback(inputs, scope, primary, fallback, false);
-                }
                 final var thrown = failure.thrown();
                 if (_suspension != thrown) {
                     _suspension = thrown;
@@ -878,15 +1258,43 @@ final class Renderer {
                             invalidate();
                         }
                     };
-                    Js.<Thenable>uncheckedCast(thrown).then(retry, retry);
+                    try {
+                        Js.<Thenable>uncheckedCast(thrown).then(retry, retry);
+                    } catch (Throwable error) {
+                        complete.finish(false, new RenderFailure(this, error));
+                        return;
+                    }
                 }
-                return changed;
-            } finally {
-                root._renderUndo = outerUndo;
+                if (suspended) {
+                    children = previous;
+                    root._mutations.add(new Effect(this, () -> root._heldFallbacks.add(this)));
+                    complete.finish(false, null);
+                } else {
+                    deferFallback();
+                    showFallback(inputs, scope, primary, fallback, false, complete);
+                }
+            });
+        }
+
+        private void deferFallback() {
+            final var expiration = root._activeUrgent ? INTERACTIVE_EXPIRATION_MS : NORMAL_EXPIRATION_MS;
+            double delay = expiration;
+            for (var boundary = this; null != boundary; boundary = boundary.parent) {
+                if (React.Suspense == boundary.type && null != boundary.node) {
+                    final var timeout = boundary.node.inputs().get("maxDuration");
+                    if (null != timeout && "number".equals(Js.typeof(timeout))) {
+                        final var duration = Js.asDouble(timeout) - (NORMAL_EXPIRATION_MS - expiration);
+                        delay = Math.min(delay, duration);
+                    }
+                }
+            }
+            if (0 < delay) {
+                root._fallbackDeadline = Math.max(root._fallbackDeadline, root._renderStarted + delay);
             }
         }
 
-        private boolean reconcileLegacySuspense(JsPropertyMap<@Nullable Object> inputs, @Nullable Scope scope) {
+        private void reconcileLegacySuspense(
+                JsPropertyMap<@Nullable Object> inputs, @Nullable Scope scope, Completion complete) {
             final var suspended = null != _suspension;
             final var previous = children;
             final var primary = suspended ? previous.subList(0, _primaryCount) : previous;
@@ -895,48 +1303,55 @@ final class Renderer {
             if (null != pending) {
                 _fallbackPending = null;
                 _suspension = pending;
-                return showFallback(inputs, scope, primary, fallback, suspended);
+                showFallback(inputs, scope, primary, fallback, suspended, complete);
+                return;
             }
 
             final var outer = root._legacySuspense;
             final var attempt = new LegacySuspense();
             root._legacySuspense = attempt;
             children = primary;
-            final boolean changed;
-            try {
-                changed = reconcileChildren(inputs.get("children"), scope);
-            } catch (RenderFailure failure) {
-                root._deletions.addAll(fallback);
-                throw failure;
-            } finally {
+            reconcileChildren(inputs.get("children"), scope, (changed, renderFailure) -> {
                 root._legacySuspense = outer;
-            }
+                if (null != renderFailure) {
+                    root._deletions.addAll(fallback);
+                    complete.finish(false, renderFailure);
+                    return;
+                }
+                if (attempt.failures.isEmpty()) {
+                    completePrimary(fallback);
+                    complete.finish(changed || suspended, null);
+                    return;
+                }
 
-            if (attempt.failures.isEmpty()) {
-                completePrimary(fallback);
-                return changed || suspended;
-            }
-
-            for (final var failure : attempt.failures) {
-                final var source = failure.source;
-                final Continuation retry = ignored -> {
-                    if (alive && source.alive && (_suspension == attempt || _fallbackPending == attempt)) {
-                        source.invalidate();
-                    }
-                };
-                Js.<Thenable>uncheckedCast(failure.thrown()).then(retry, retry);
-            }
-            if (suspended) {
-                _suspension = attempt;
-                final var hidden = children;
-                root._effects.add(new Effect(this, () -> setHidden(hidden, true)));
-                return showFallback(inputs, scope, hidden, fallback, true) || changed;
-            }
-            root._effects.add(new Effect(this, () -> {
-                _fallbackPending = attempt;
-                invalidate();
-            }));
-            return changed;
+                for (final var failure : attempt.failures) {
+                    final var source = failure.source;
+                    final Continuation retry = ignored -> {
+                        if (alive && source.alive && (_suspension == attempt || _fallbackPending == attempt)) {
+                            source.invalidate();
+                        }
+                    };
+                    Js.<Thenable>uncheckedCast(failure.thrown()).then(retry, retry);
+                }
+                if (suspended) {
+                    _suspension = attempt;
+                    final var hidden = children;
+                    root._effects.add(new Effect(this, () -> setHidden(hidden, true)));
+                    showFallback(
+                            inputs,
+                            scope,
+                            hidden,
+                            fallback,
+                            true,
+                            (fallbackChanged, failure) -> complete.finish(changed || fallbackChanged, failure));
+                } else {
+                    root._effects.add(new Effect(this, () -> {
+                        _fallbackPending = attempt;
+                        invalidate();
+                    }));
+                    complete.finish(changed, null);
+                }
+            });
         }
 
         private void completePrimary(List<Fiber> fallback) {
@@ -952,16 +1367,15 @@ final class Renderer {
             }
         }
 
-        private boolean showFallback(
+        private void showFallback(
                 JsPropertyMap<@Nullable Object> inputs,
                 @Nullable Scope scope,
                 List<Fiber> primary,
                 List<Fiber> fallback,
-                boolean suspended) {
+                boolean suspended,
+                Completion complete) {
             children = fallback;
-            try {
-                return reconcileChildren(inputs.get("fallback"), scope) || !suspended;
-            } finally {
+            reconcileChildren(inputs.get("fallback"), scope, (changed, failure) -> {
                 final var next = new ArrayList<>(primary);
                 next.addAll(children);
                 children = next;
@@ -969,7 +1383,8 @@ final class Renderer {
                 if (!suspended) {
                     root._effects.add(new Effect(this, () -> setHidden(primary, true)));
                 }
-            }
+                complete.finish(changed || !suspended, failure);
+            });
         }
 
         private Runnable checkpoint() {
@@ -1210,7 +1625,10 @@ final class Renderer {
         private final List<RenderFailure> failures = new ArrayList<>();
     }
 
-    private record ViewResult(double duration, boolean changed) {}
+    @FunctionalInterface
+    private interface Completion {
+        void finish(boolean changed, @Nullable RenderFailure failure);
+    }
 
     private record Descriptor(
             Kind kind, Object type, @Nullable String key) {
