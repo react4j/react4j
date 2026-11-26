@@ -25,6 +25,12 @@ EventsBrowserTest.registerCustomizedButton = function() {
   }
 };
 
+/** @param {!Object} prototype @return {!Object} */
+EventsBrowserTest.inheritedProps = function(prototype) { return Object.create(prototype); };
+
+/** @param {*} method @param {!Object} event */
+EventsBrowserTest.callSaved = function(method, event) { (/** @type {!Function} */ (method)).call(event); };
+
 /** @param {!Element} target @param {string} name @return {!Event} */
 EventsBrowserTest.dispatch = function(target, name) {
   const mouseOptions = {bubbles: true, cancelable: true, altKey: true, ctrlKey: false,
@@ -56,6 +62,7 @@ EventsBrowserTest.dispatch = function(target, name) {
     'onTransitionEnd': () => new TransitionEvent('transitionend', {bubbles: true, propertyName: 'opacity', elapsedTime: 0.25, pseudoElement: ''}),
     'onCancel': () => new Event('cancel'),
     'onClose': () => new Event('close'),
+    'onProgress': () => new Event('progress'),
     'onBlur': () => new FocusEvent('blur'),
     'onScroll': () => new window.UIEvent('scroll', {detail: 7, view: window}),
     'legacyWheel': () => Object.assign(new Event('wheel', {bubbles: true}), {'wheelDeltaX': 12, 'wheelDeltaY': -34}),

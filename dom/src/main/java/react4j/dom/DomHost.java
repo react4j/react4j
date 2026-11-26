@@ -224,39 +224,57 @@ final class DomHost {
         return container.document().createTextNode(value);
     }
 
-    static void update(
+    static boolean isHtml(final Element element) {
+        return HTML.equals(element.namespaceURI);
+    }
+
+    static void mount(
             final Element element,
+            final String tag,
             final Node boundary,
             final Node rootContainer,
             @Nullable final Element logicalParent,
+            final JsPropertyMap<@Nullable Object> inputs) {
+        final var state = DomEvents.mount(element, tag, boundary, rootContainer, logicalParent, inputs);
+        applyProperties(element, state, null, inputs);
+    }
+
+    static void update(final Element element, final JsPropertyMap<@Nullable Object> next) {
+        final var state = Objects.requireNonNull(DomEvents.state(element));
+        final var previous = state.inputs;
+        state.inputs = next;
+        applyProperties(element, state, previous, next);
+    }
+
+    private static void applyProperties(
+            final Element element,
+            final DomEvents.State state,
             @Nullable final JsPropertyMap<@Nullable Object> previous,
             final JsPropertyMap<@Nullable Object> next) {
-        DomEvents.update(element, boundary, rootContainer, logicalParent, next);
-        final var tag = element.localName;
+        final var tag = state.tag;
         final boolean custom = tag.contains("-")
                 ? !RESERVED_HYPHENATED_TAGS.contains(tag)
                 : "string".equals(Js.typeof(next.get("is")));
-        if ("input".equals(element.localName) && null != previous && null == next.get("checked")) {
-            final var state = Objects.requireNonNull(DomEvents.state(element));
+        if ("input".equals(tag) && null != previous && null == next.get("checked")) {
             final var previousChecked = previous.get("checked");
             if (null != previousChecked && !Js.isTripleEqual(previousChecked, state.initialChecked)) {
                 properties(element).set("checked", Js.isTruthy(state.initialChecked));
             }
         }
         if (null != previous) {
-            previous.forEach(name -> {
-                if (!next.has(name)) {
-                    setProperty(element, name, previous.get(name), null, custom);
+            for (final var name : ownKeys(previous)) {
+                if (!hasOwn(next, name)) {
+                    setProperty(element, state, name, previous.get(name), null, custom);
                 }
-            });
+            }
         }
-        next.forEach(name -> {
+        for (final var name : ownKeys(next)) {
             final var oldValue = null == previous ? null : previous.get(name);
             final var newValue = next.get(name);
             if (!Js.isTripleEqual(oldValue, newValue)) {
-                setProperty(element, name, oldValue, newValue, custom);
+                setProperty(element, state, name, oldValue, newValue, custom);
             }
-        });
+        }
     }
 
     static void clear(final Element element) {
@@ -274,6 +292,7 @@ final class DomHost {
 
     private static void setProperty(
             final Element element,
+            final DomEvents.State state,
             final String name,
             @Nullable final Object previous,
             @Nullable final Object value,
@@ -294,7 +313,7 @@ final class DomHost {
                 }
             }
             case "checked", "multiple", "muted", "selected" -> {
-                if (!"checked".equals(name) || !"input".equals(element.localName)) {
+                if (!"checked".equals(name) || !"input".equals(state.tag)) {
                     if (custom) {
                         setCustomAttribute(element, name, value);
                     } else {
@@ -304,14 +323,20 @@ final class DomHost {
             }
             case "defaultValue", "defaultChecked" -> {}
             case "value" -> {
-                if (!CONTROLLED_TAGS.contains(element.localName)) {
-                    setAttribute(element, name, value, custom);
+                if (!CONTROLLED_TAGS.contains(state.tag)) {
+                    setAttribute(element, name, value, custom, state.html);
                 }
             }
             default -> {
-                if (!isEventProperty(name) || custom && !DomEvents.isRegistered(name)) {
-                    setAttribute(element, name, value, custom);
+                if (isEventProperty(name)) {
+                    if (DomEvents.observeHandler(name, value)) {
+                        state.hasHandlers = true;
+                    }
+                    if (!custom || DomEvents.isRegistered(name)) {
+                        break;
+                    }
                 }
+                setAttribute(element, name, value, custom, state.html);
             }
         }
     }
@@ -335,12 +360,15 @@ final class DomHost {
     }
 
     private static void setAttribute(
-            final Element element, final String name, @Nullable final Object value, final boolean custom) {
+            final Element element,
+            final String name,
+            @Nullable final Object value,
+            final boolean custom,
+            final boolean html) {
         if (custom) {
             setCustomAttribute(element, name, value);
             return;
         }
-        final var html = HTML.equals(element.namespaceURI);
         final var attribute =
                 switch (name) {
                     case "className" -> "class";
@@ -400,14 +428,14 @@ final class DomHost {
         final var before = null == previous ? null : properties(previous);
         final var after = null == next ? null : properties(next);
         if (null != before) {
-            before.forEach(name -> {
-                if (null == after || !after.has(name)) {
+            for (final var name : ownKeys(before)) {
+                if (null == after || !hasOwn(after, name)) {
                     style.removeProperty(styleName(name));
                 }
-            });
+            }
         }
         if (null != after) {
-            after.forEach(name -> {
+            for (final var name : ownKeys(after)) {
                 final var value = after.get(name);
                 if (null == value || "boolean".equals(Js.typeof(value))) {
                     style.removeProperty(styleName(name));
@@ -418,7 +446,7 @@ final class DomHost {
                             && !UNITLESS_STYLES.contains(unprefixed(name));
                     style.setProperty(styleName(name), stringify(value).trim() + (pixels ? "px" : ""));
                 }
-            });
+            }
         }
     }
 
@@ -463,14 +491,14 @@ final class DomHost {
     }
 
     static void restoreControlled(final Element element) {
-        final var tag = element.localName;
-        if (!isControlTag(tag)) {
-            return;
-        }
         final var state = DomEvents.state(element);
-        if (null == state) {
-            return;
+        if (null != state) {
+            restoreControlled(element, state);
         }
+    }
+
+    private static void restoreControlled(final Element element, final DomEvents.State state) {
+        final var tag = state.tag;
         final var inputs = state.inputs;
         final var value = inputs.get("value");
         final var defaultValue = inputs.get("defaultValue");
@@ -524,7 +552,7 @@ final class DomHost {
             }
             final var initial = null != value ? value : defaultValue;
             if (mounting) {
-                state.controlledInput = null != (isCheckable(element) ? checked : value);
+                state.controlledInput = null != (isCheckableType(props.get("type")) ? checked : value);
                 state.initialValue = null == initial ? "" : stringify(initial);
             }
             if (null == value && ("submit".equals(type) || "reset".equals(type))) {
@@ -608,13 +636,14 @@ final class DomHost {
     }
 
     static void restoreAfterEvent(final Element element) {
-        restoreControlled(element);
+        final var state = DomEvents.state(element);
+        if (null == state) {
+            return;
+        }
+        restoreControlled(element, state);
         final var props = properties(element);
         final var name = props.get("name");
-        if (!"input".equals(element.localName)
-                || !"radio".equals(props.get("type"))
-                || null == name
-                || "".equals(name)) {
+        if (!"input".equals(state.tag) || !"radio".equals(props.get("type")) || null == name || "".equals(name)) {
             return;
         }
         Node tree = element;
@@ -631,15 +660,16 @@ final class DomHost {
                     && Js.isTripleEqual(form, radioProps.get("form"))) {
                 final var radioState = DomEvents.state(radio);
                 if (null != radioState) {
-                    radioState.lastValue = stringify(controlValue(radio));
-                    restoreControlled(radio);
+                    radioState.lastValue = stringify(controlValue(radio, true));
+                    restoreControlled(radio, radioState);
                 }
             }
         }
     }
 
     private static void trackControl(final Element element, final DomEvents.State state) {
-        final var property = isCheckable(element) ? "checked" : "value";
+        final var property =
+                "input".equals(state.tag) && isCheckableType(properties(element).get("type")) ? "checked" : "value";
         final var prototype = getPrototypeOf(element);
         final var descriptor = getOwnPropertyDescriptor(prototype, property);
         if (null != getOwnPropertyDescriptor(element, property) || null == descriptor) {
@@ -688,14 +718,13 @@ final class DomHost {
     @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.defineProperty")
     static native void defineProperty(Object value, String name, JsPropertyMap<@Nullable Object> descriptor);
 
-    static boolean isCheckable(final Element element) {
-        final var type = properties(element).get("type");
-        return "input".equals(element.localName) && ("checkbox".equals(type) || "radio".equals(type));
+    static boolean isCheckableType(@Nullable final Object type) {
+        return "checkbox".equals(type) || "radio".equals(type);
     }
 
     @Nullable
-    static Object controlValue(final Element element) {
-        return properties(element).get(isCheckable(element) ? "checked" : "value");
+    static Object controlValue(final Element element, final boolean checkable) {
+        return properties(element).get(checkable ? "checked" : "value");
     }
 
     private static void selectOptions(final Element element, final Object value, final boolean setDefault) {
@@ -745,6 +774,12 @@ final class DomHost {
     static JsPropertyMap<@Nullable Object> properties(final Object value) {
         return Js.uncheckedCast(value);
     }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.keys")
+    private static native String[] ownKeys(Object value);
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.prototype.hasOwnProperty.call")
+    private static native boolean hasOwn(Object value, String key);
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "Number")
     private static native double number(@Nullable Object value);

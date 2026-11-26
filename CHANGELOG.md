@@ -3,6 +3,7 @@
 ### Unreleased
 
 * Preserve React DevTools hook registration and commit notifications in Closure-optimized production builds.
+* Expose generated view props and state on the JavaScript instance, including constructor-assigned state. Error boundaries receive React 16.6 component frames and development owner names.
 * Concurrent roots yield during rendering and commit DOM changes and refs together. Interactive updates flush before the next interactive event, and a Suspense boundary can keep its previous content while loading.
 * Accept direct declarations inside supported nested CSS groups in shared stylesheets, `@GlobalCss` and `@Css`. Preserve declaration order and the enclosing selector's specificity and pseudo-element matching.
 * Reduce native utility compilation work by preparing each provider once per compiler invocation and binding only requested fragments. Reuse read-only provider syntax and name analysis, decoded source maps, indexed line starts, parsed CSS tokens and invariant hashes. Preserve generated Java/CSS, metadata, source maps, diagnostics and traces.

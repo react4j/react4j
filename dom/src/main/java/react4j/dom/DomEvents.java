@@ -137,6 +137,7 @@ final class DomEvents {
             "volumechange",
             "waiting");
     private static final Set<String> REGISTERED_EVENTS = Set.of(EVENTS);
+    private static final JsPropertyMap<Boolean> OBSERVED_HANDLERS = JsPropertyMap.of();
     private static final List<String> DOCUMENT_SELECTION_EVENTS =
             List.of("selectionchange", "mousedown", "mouseup", "contextmenu", "dragend");
     private static final Set<String> MOUSE_ON_DISABLED =
@@ -210,13 +211,33 @@ final class DomEvents {
         }
         final var name = property.substring(2);
         return switch (name) {
-            case "MouseEnter", "MouseLeave", "PointerEnter", "PointerLeave", "BeforeInput", "BeforeInputCapture" ->
-                true;
+            case "MouseEnter",
+                    "MouseLeave",
+                    "PointerEnter",
+                    "PointerLeave",
+                    "BeforeInput",
+                    "BeforeInputCapture",
+                    "Select",
+                    "SelectCapture" -> true;
             default -> {
                 final var event = name.endsWith("Capture") ? name.substring(0, name.length() - 7) : name;
                 yield !"TextInput".equals(event) && REGISTERED_EVENTS.contains(event);
             }
         };
+    }
+
+    static boolean observeHandler(final String name, @Nullable final Object value) {
+        if (null == value) {
+            return false;
+        }
+        if (OBSERVED_HANDLERS.has(name)) {
+            return true;
+        }
+        if ("function".equals(Js.typeof(value)) && isRegistered(name)) {
+            OBSERVED_HANDLERS.set(name, true);
+            return true;
+        }
+        return false;
     }
 
     static void pause() {
@@ -227,26 +248,22 @@ final class DomEvents {
         paused--;
     }
 
-    static void update(
+    static State mount(
             final DomHost.Element element,
+            final String tag,
             final DomHost.Node container,
             final DomHost.Node rootContainer,
             final DomHost.@Nullable Element logicalParent,
             final JsPropertyMap<@Nullable Object> inputs) {
-        var state = STATES.get(element);
-        if (null == state) {
-            var boundary = BOUNDARIES.get(container);
-            if (null == boundary) {
-                boundary = new Boundary(container);
-                BOUNDARIES.set(container, boundary);
-            }
-            boundary.hosts++;
-            state = new State(boundary, rootContainer, logicalParent, inputs);
-            STATES.set(element, state);
-        } else {
-            state.logicalParent = logicalParent;
-            state.inputs = inputs;
+        var boundary = BOUNDARIES.get(container);
+        if (null == boundary) {
+            boundary = new Boundary(container);
+            BOUNDARIES.set(container, boundary);
         }
+        boundary.hosts++;
+        final var state = new State(boundary, rootContainer, logicalParent, inputs, tag, DomHost.isHtml(element));
+        STATES.set(element, state);
+        return state;
     }
 
     @Nullable
@@ -434,7 +451,7 @@ final class DomEvents {
         if ("Blur".equals(name)) {
             DomHost.commitNumberOnBlur(element, state);
         }
-        final var selected = boundary.selectTarget(name, element);
+        final var selected = boundary.selectTarget(name, element, state.tag);
         final var batch = new DispatchBatch();
         if (!"Change".equals(name)
                 && !"TextInput".equals(name)
@@ -470,12 +487,12 @@ final class DomEvents {
         if (!"Click".equals(event) && !"Input".equals(event) && !"Change".equals(event)) {
             return false;
         }
-        final var tag = element.localName;
+        final var tag = state.tag;
         final var type = DomHost.properties(element).get("type");
         if ("select".equals(tag) || "input".equals(tag) && "file".equals(type)) {
             return "Change".equals(event);
         }
-        final boolean checkable = DomHost.isCheckable(element);
+        final boolean checkable = "input".equals(tag) && DomHost.isCheckableType(type);
         final boolean text = "textarea".equals(tag)
                 || "input".equals(tag) && null != type && TEXT_INPUT_TYPES.contains(DomHost.stringify(type));
         if (checkable ? !"Click".equals(event) : !text || !"Input".equals(event) && !"Change".equals(event)) {
@@ -484,7 +501,7 @@ final class DomEvents {
         if (null == state.trackedProperty) {
             return true;
         }
-        final var value = DomHost.stringify(DomHost.controlValue(element));
+        final var value = DomHost.stringify(DomHost.controlValue(element, checkable));
         if (value.equals(state.lastValue)) {
             return false;
         }
@@ -549,20 +566,27 @@ final class DomEvents {
         List<Invocation> bubbles = null;
         final var property = "on" + name;
         final var captureProperty = property + "Capture";
+        final boolean hasCapture = OBSERVED_HANDLERS.has(captureProperty);
+        final boolean hasBubble = OBSERVED_HANDLERS.has(property);
+        if (!hasCapture && !hasBubble) {
+            return;
+        }
         final boolean checkDisabled = MOUSE_ON_DISABLED.contains(name);
         for (DomHost.Element element = origin; null != element; ) {
             final var state = STATES.get(element);
             if (null == state) {
                 break;
             }
-            final var capture = state.inputs.get(captureProperty);
-            final var bubble = state.inputs.get(property);
-            if ((null != capture || null != bubble)
-                    && !(checkDisabled
-                            && DISABLABLE.contains(element.localName)
-                            && Js.isTruthy(state.inputs.get("disabled")))) {
-                captures = appendHandler(captures, element, capture);
-                bubbles = appendHandler(bubbles, element, bubble);
+            if (state.hasHandlers) {
+                final var capture = hasCapture ? state.inputs.get(captureProperty) : null;
+                final var bubble = hasBubble ? state.inputs.get(property) : null;
+                if ((null != capture || null != bubble)
+                        && !(checkDisabled
+                                && DISABLABLE.contains(state.tag)
+                                && Js.isTruthy(state.inputs.get("disabled")))) {
+                    captures = appendHandler(captures, element, capture);
+                    bubbles = appendHandler(bubbles, element, bubble);
+                }
             }
             element = state.logicalParent;
         }
@@ -740,8 +764,11 @@ final class DomEvents {
     static final class State {
         final Boundary boundary;
         final DomHost.Node rootContainer;
-        DomHost.@Nullable Element logicalParent;
+        final String tag;
+        final boolean html;
+        final DomHost.@Nullable Element logicalParent;
         JsPropertyMap<@Nullable Object> inputs;
+        boolean hasHandlers;
         boolean controlInitialized;
         boolean wasMultiple;
         boolean controlledInput;
@@ -760,9 +787,13 @@ final class DomEvents {
                 final Boundary boundary,
                 final DomHost.Node rootContainer,
                 final DomHost.@Nullable Element logicalParent,
-                final JsPropertyMap<@Nullable Object> inputs) {
+                final JsPropertyMap<@Nullable Object> inputs,
+                final String tag,
+                final boolean html) {
             this.boundary = boundary;
             this.rootContainer = rootContainer;
+            this.tag = tag;
+            this.html = html;
             this.logicalParent = logicalParent;
             this.inputs = inputs;
         }
@@ -835,13 +866,13 @@ final class DomEvents {
             }
         }
 
-        private DomHost.@Nullable Element selectTarget(final String name, final DomHost.Element element) {
+        private DomHost.@Nullable Element selectTarget(
+                final String name, final DomHost.Element element, final String tag) {
             switch (name) {
                 case "Focus" -> {
                     final var props = DomHost.properties(element);
-                    if ("textarea".equals(element.localName)
-                            || "input".equals(element.localName)
-                                    && TEXT_INPUT_TYPES.contains(DomHost.stringify(props.get("type")))
+                    if ("textarea".equals(tag)
+                            || "input".equals(tag) && TEXT_INPUT_TYPES.contains(DomHost.stringify(props.get("type")))
                             || "true".equals(props.get("contentEditable"))) {
                         focused = element;
                         lastSelection = null;
@@ -1044,11 +1075,18 @@ final class DomEvents {
     private record Invocation(DomHost.Element element, ReactEventHandler handler) {}
 
     private static final class Dispatch {
+        private static final Flag TRUE = () -> true;
+        private static final Flag FALSE = () -> false;
+        private static final Action NO_OP = () -> {};
+
         private final EventKind kind;
         private final JsPropertyMap<@Nullable Object> properties = JsPropertyMap.of();
         private final SyntheticEvent<?> event = Js.uncheckedCast(properties);
+        private final Action preventDefault = this::preventDefault;
+        private final Action stopPropagation = this::stopPropagation;
+        private final Modifier getModifierState = this::getModifierState;
+        private final Action persist = this::persist;
         private boolean stopped;
-        private boolean prevented;
         private boolean persistent;
         private boolean released;
 
@@ -1122,42 +1160,71 @@ final class DomEvents {
             properties.set("nativeEvent", nativeEvent);
             final var defaultPrevented = source.get("defaultPrevented");
             properties.set("defaultPrevented", defaultPrevented);
-            prevented = null != defaultPrevented
+            final boolean prevented = null != defaultPrevented
                     ? Js.isTruthy(defaultPrevented)
                     : Js.isTripleEqual(false, source.get("returnValue"));
-            properties.set("preventDefault", (Action) () -> {
-                properties.set("defaultPrevented", true);
+            properties.set("preventDefault", preventDefault);
+            properties.set("stopPropagation", stopPropagation);
+            properties.set("isPropagationStopped", FALSE);
+            properties.set("isDefaultPrevented", prevented ? TRUE : FALSE);
+            properties.set("getModifierState", getModifierState);
+            properties.set("persist", persist);
+            properties.set("isPersistent", FALSE);
+        }
+
+        private @Nullable NativeEvent nativeEvent() {
+            return Js.uncheckedCast(properties.get("nativeEvent"));
+        }
+
+        private void preventDefault() {
+            properties.set("defaultPrevented", true);
+            final var nativeEvent = nativeEvent();
+            if (null != nativeEvent) {
+                final var source = DomHost.properties(nativeEvent);
                 if (Js.isTruthy(source.get("preventDefault"))) {
                     nativeEvent.preventDefault();
                 } else {
                     source.set("returnValue", false);
                 }
-                prevented = true;
-            });
-            properties.set("stopPropagation", (Action) () -> {
-                stopped = true;
+                properties.set("isDefaultPrevented", TRUE);
+            }
+        }
+
+        private void stopPropagation() {
+            final var nativeEvent = nativeEvent();
+            if (null != nativeEvent) {
+                final var source = DomHost.properties(nativeEvent);
                 if (Js.isTruthy(source.get("stopPropagation"))) {
                     nativeEvent.stopPropagation();
                 } else {
                     source.set("cancelBubble", true);
                 }
-            });
-            properties.set("isPropagationStopped", (Flag) () -> stopped);
-            properties.set("isDefaultPrevented", (Flag) () -> prevented);
-            properties.set("getModifierState", (Modifier) key -> {
-                if ("function".equals(Js.typeof(source.get("getModifierState")))) {
-                    return nativeEvent.getModifierState(key);
-                }
-                return switch (key) {
-                    case "Alt" -> Js.isTruthy(source.get("altKey"));
-                    case "Control" -> Js.isTruthy(source.get("ctrlKey"));
-                    case "Meta" -> Js.isTruthy(source.get("metaKey"));
-                    case "Shift" -> Js.isTruthy(source.get("shiftKey"));
-                    default -> false;
-                };
-            });
-            properties.set("persist", (Action) () -> persistent = true);
-            properties.set("isPersistent", (Flag) () -> persistent);
+                stopped = true;
+                properties.set("isPropagationStopped", TRUE);
+            }
+        }
+
+        private boolean getModifierState(final String key) {
+            final var nativeEvent = nativeEvent();
+            if (null == nativeEvent) {
+                return false;
+            }
+            final var source = DomHost.properties(nativeEvent);
+            if ("function".equals(Js.typeof(source.get("getModifierState")))) {
+                return nativeEvent.getModifierState(key);
+            }
+            return switch (key) {
+                case "Alt" -> Js.isTruthy(source.get("altKey"));
+                case "Control" -> Js.isTruthy(source.get("ctrlKey"));
+                case "Meta" -> Js.isTruthy(source.get("metaKey"));
+                case "Shift" -> Js.isTruthy(source.get("shiftKey"));
+                default -> false;
+            };
+        }
+
+        private void persist() {
+            persistent = true;
+            properties.set("isPersistent", TRUE);
         }
 
         private void normalizeWheel(final JsPropertyMap<@Nullable Object> source) {
@@ -1189,10 +1256,10 @@ final class DomEvents {
             releaseProperty("currentTarget", null);
             releaseProperty("nativeEvent", null);
             releaseProperty("defaultPrevented", null);
-            releaseProperty("preventDefault", (Action) () -> {});
-            releaseProperty("stopPropagation", (Action) () -> {});
-            releaseProperty("isDefaultPrevented", (Flag) () -> false);
-            releaseProperty("isPropagationStopped", (Flag) () -> false);
+            releaseProperty("preventDefault", NO_OP);
+            releaseProperty("stopPropagation", NO_OP);
+            releaseProperty("isDefaultPrevented", FALSE);
+            releaseProperty("isPropagationStopped", FALSE);
             releaseProperty("getModifierState", null);
             released = true;
         }

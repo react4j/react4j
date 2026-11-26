@@ -63,6 +63,37 @@ public final class EventsBrowserTest {
                     "Missing native clipboard data falls back to the window");
             final var canceled = capturePayload(root, "onClick", "legacyCanceled");
             check(canceled.isDefaultPrevented(), "Legacy canceled event uses the return value");
+            final var click = capturePayload(root, "onClick", "onClick");
+            final var before = Js.<FlagProbe>uncheckedCast(Browser.property(click, "isDefaultPrevented"));
+            click.preventDefault();
+            check(click.isDefaultPrevented() && !before.read(), "Saved event flags describe their original state");
+
+            final SyntheticEvent<?>[] first = new SyntheticEvent<?>[1];
+            final Object[] prevent = new Object[1];
+            final ReactEventHandler save = event -> {
+                first[0] = event;
+                prevent[0] = Objects.requireNonNull(Browser.property(event, "preventDefault"));
+            };
+            ReactDOM.render(host("button", JsPropertyMap.of("onClick", save)), root);
+            final var button = Browser.query(root, "button");
+            final var original = dispatch(button, "onClick");
+            releasedWarnings(() -> callSaved(Objects.requireNonNull(prevent[0]), Objects.requireNonNull(first[0])));
+            check(
+                    Boolean.FALSE.equals(Browser.property(original, "defaultPrevented")),
+                    "Released action leaves native event alone");
+
+            final ReactEventHandler use = event -> {
+                check(event == first[0], "The next click reuses the synthetic event");
+                callSaved(Objects.requireNonNull(prevent[0]), event);
+            };
+            ReactDOM.render(host("button", JsPropertyMap.of("onClick", use)), root);
+            final var reused = dispatch(button, "onClick");
+            check(
+                    Boolean.TRUE.equals(Browser.property(reused, "defaultPrevented")),
+                    "Saved action uses the active native event");
+            check(
+                    Boolean.FALSE.equals(Browser.property(original, "defaultPrevented")),
+                    "Reused action leaves prior native event alone");
             final var noKeyCode = capturePayload(root, "onKeyDown", "legacyMissingKeyCode");
             check(Js.isTripleEqual(Js.undefined(), Browser.property(noKeyCode, "keyCode")), "Missing native key code");
             check(Js.isTripleEqual(Js.undefined(), Browser.property(noKeyCode, "which")), "Missing legacy which");
@@ -652,6 +683,27 @@ public final class EventsBrowserTest {
             textClick(Browser.query(root, "span"));
             check("capture stop text ".contentEquals(trace), "Clicks from text reach the host handler");
 
+            ReactDOM.render(host("button", JsPropertyMap.of()), root);
+            final var late = Browser.query(root, "button");
+            trace.setLength(0);
+            mouseButton(late, 0);
+            ReactDOM.render(host("button", JsPropertyMap.of("onClick", button)), root);
+            mouseButton(late, 0);
+            ReactDOM.render(host("button", JsPropertyMap.of()), root);
+            mouseButton(late, 0);
+            ReactDOM.render(host("button", JsPropertyMap.of("onClick", parent)), root);
+            mouseButton(late, 0);
+            check("button parent ".contentEquals(trace), "Handlers can be added, removed and added again");
+
+            final var audio = host("audio", JsPropertyMap.of());
+            ReactDOM.render(host("section", JsPropertyMap.of("children", audio)), root);
+            final var media = Browser.query(root, "audio");
+            trace.setLength(0);
+            dispatch(media, "onProgress");
+            ReactDOM.render(host("section", JsPropertyMap.of("children", audio, "onProgressCapture", parent)), root);
+            dispatch(media, "onProgress");
+            check("parent ".contentEquals(trace), "Late capture reaches an already mounted media element");
+
             final ReactEventHandler selected =
                     event -> trace.append(event.getType()).append(' ');
             final var editable =
@@ -763,6 +815,11 @@ public final class EventsBrowserTest {
     @JsFunction
     private interface Probe {
         void run();
+    }
+
+    @JsFunction
+    private interface FlagProbe {
+        boolean read();
     }
 
     @JsMethod
@@ -928,6 +985,16 @@ public final class EventsBrowserTest {
                     "Changed raw markup replaces its contents");
             ReactDOM.render(host("section", JsPropertyMap.of("children", ReactNode.of("child"))), root);
             check("child".equals(section.getTextContent()), "Children replace raw markup");
+
+            final var inherited = inheritedProps(JsPropertyMap.of("title", "inherited title", "id", "inherited"));
+            inherited.set("title", "own title");
+            inherited.set("style", inheritedProps(JsPropertyMap.of("width", "40px")));
+            ReactDOM.render(host("section", inherited), root);
+            attribute(section, "title", "own title");
+            attribute(section, "id", null);
+            check("".equals(styleProperty(section, "width")), "Inherited styles are ignored");
+            ReactDOM.render(host("section", inheritedProps(JsPropertyMap.of("title", "inherited title"))), root);
+            attribute(section, "title", null);
 
             final var svgUse = JsPropertyMap.<@Nullable Object>of(
                     "xlinkHref", "#shape", "strokeWidth", Browser.number(3), "xmlLang", "en");
@@ -1096,6 +1163,9 @@ public final class EventsBrowserTest {
     @JsMethod
     private static native void registerCustomizedButton();
 
+    @JsMethod
+    private static native JsPropertyMap<@Nullable Object> inheritedProps(JsPropertyMap<@Nullable Object> prototype);
+
     private static ReactElement host(final String tag, final JsPropertyMap<@Nullable Object> inputs) {
         return ReactElement.createHostElement(tag, null, null, inputs);
     }
@@ -1185,6 +1255,9 @@ public final class EventsBrowserTest {
 
     @JsMethod
     private static native Object dispatch(Browser.Element target, String name);
+
+    @JsMethod
+    private static native void callSaved(Object method, SyntheticEvent<?> event);
 
     @JsMethod
     private static native Object[] eventOverlays(String name);

@@ -6,6 +6,7 @@ import static react4j.webtesting.Checks.equal;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
@@ -45,10 +46,12 @@ public final class RuntimeParityBrowserTest {
         try {
             lifecycle(container);
             keyedList(container);
+            hostText(container);
             replaceRefs(container);
             portalContext(container, target);
             portalReplacement(container, target);
-            boundary(container);
+            boundary(container, production, true);
+            boundary(container, production, false);
             commitErrors(container);
             rootUpdates(container);
             nestedRoots(container, target);
@@ -181,6 +184,29 @@ public final class RuntimeParityBrowserTest {
         ReactDOM.unmountComponentAtNode(container);
     }
 
+    private static void hostText(Browser.Element container) {
+        final var host = ReactElement.createHostElement("span", null, null, JsPropertyMap.of("children", "first"));
+        ReactDOM.render(host, container);
+        final var element = container.getFirstElementChild();
+        final var direct = Objects.requireNonNull(Browser.property(element, "firstChild"));
+
+        ReactDOM.render(host.dup().input("children", ReactNode.of(2)), container);
+        equal("2", element.getTextContent());
+        check(Browser.same(direct, Browser.property(element, "firstChild")), "Updating direct text keeps its DOM node");
+
+        ReactDOM.render(host.dup().input("children", ReactNode.of(ReactNode.of("list"))), container);
+        final var list = Objects.requireNonNull(Browser.property(element, "firstChild"));
+        equal("list", element.getTextContent());
+        check(null == Browser.property(direct, "parentNode"), "Array children replace a direct text node");
+
+        ReactDOM.render(host.dup().input("children", "last"), container);
+        equal("last", element.getTextContent());
+        check(null == Browser.property(list, "parentNode"), "Direct text replaces array children");
+        ReactDOM.render(host.dup().input("children", ""), container);
+        check(null == Browser.property(element, "firstChild"), "Empty direct text produces no DOM child");
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
     private static ReactElement keyedInput(String key) {
         return ReactElement.createHostElement("input", key, null, JsPropertyMap.of("defaultValue", key));
     }
@@ -248,26 +274,43 @@ public final class RuntimeParityBrowserTest {
         }
     }
 
-    private static void boundary(Browser.Element container) {
-        final ViewConstructorFunction failing = Failure::new;
-        Js.<JsPropertyMap<String>>uncheckedCast(failing).set("displayName", "NamedFailure");
+    private static void boundary(Browser.Element container, boolean production, boolean useDisplayName) {
+        final var failing = namedFailure(Failure::new);
+        final var failureName = useDisplayName ? "NamedFailure" : "NativeFailure";
+        if (useDisplayName) {
+            Js.<JsPropertyMap<String>>uncheckedCast(failing).set("displayName", failureName);
+        }
         final ViewConstructorFunction boundary = Boundary::new;
+        Js.<JsPropertyMap<String>>uncheckedCast(boundary).set("displayName", "NamedBoundary");
         final ViewConstructorFunction probe = CommitProbe::new;
         final var trace = new StringBuilder();
+        final var owner = production ? "" : " (created by NamedBoundary)";
         final var element = ReactElement.createViewElement(boundary)
                 .input(
-                        "child",
-                        ReactElement.createSuspense(
+                        "stack",
+                        "\n    in " + failureName + owner + "\n    in article" + owner + "\n    in StrictMode" + owner
+                                + "\n    in NamedBoundary")
+                .input("child", (Supplier<ReactNode>) () ->
+                        ReactElement.createStrictMode(ReactElement.createHostElement(
+                                "article",
                                 null,
-                                ReactNode.of("waiting"),
-                                0,
-                                commitProbe(probe, trace, "interrupted", false, false),
-                                ReactElement.createViewElement(failing)));
+                                null,
+                                JsPropertyMap.of(
+                                        "children",
+                                        ReactElement.createSuspense(
+                                                null,
+                                                ReactNode.of("waiting"),
+                                                0,
+                                                commitProbe(probe, trace, "interrupted", false, false),
+                                                ReactElement.createViewElement(failing))))));
         ReactDOM.render(element, container);
         equal("fallback", container.getTextContent());
         equal("", trace.toString());
         check(ReactDOM.unmountComponentAtNode(container), "The error boundary unmounts");
     }
+
+    @JsMethod
+    private static native ViewConstructorFunction namedFailure(ViewConstructorFunction type);
 
     private static void commitErrors(Browser.Element container) {
         final var trace = new StringBuilder();
@@ -1189,16 +1232,13 @@ public final class RuntimeParityBrowserTest {
         @Override
         public ReactNode render() {
             final var state = state();
-            return null != state && state.has("caught")
-                    ? ReactNode.of("fallback")
-                    : (ReactNode) Objects.requireNonNull(requireInputs().get("child"));
+            final Supplier<ReactNode> child = Js.uncheckedCast(requireInputs().get("child"));
+            return null != state && state.has("caught") ? ReactNode.of("fallback") : child.get();
         }
 
         @Override
         public void componentDidCatch(JsError error, ReactErrorInfo info) {
-            check(
-                    info.componentStack.contains("NamedFailure"),
-                    "The error boundary receives the component display name");
+            equal((String) Objects.requireNonNull(requireInputs().get("stack")), info.componentStack);
             setState(JsPropertyMap.of("caught", true));
             forceUpdate();
         }

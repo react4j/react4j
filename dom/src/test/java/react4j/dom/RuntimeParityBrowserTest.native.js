@@ -11,6 +11,17 @@ RuntimeParityBrowserTest.constructible = function(type) {
   return function(inputs) { return type(inputs); };
 };
 
+/**
+ * @template View
+ * @param {function(!Object<string, *>): !View} type
+ * @return {function(!Object<string, *>): !View}
+ */
+RuntimeParityBrowserTest.namedFailure = function(type) {
+  const wrapper = function(inputs) { return type(inputs); };
+  Object.defineProperty(wrapper, 'name', {value: 'NativeFailure'});
+  return wrapper;
+};
+
 /** @param {!Element} host @return {!Comment} */
 RuntimeParityBrowserTest.mountPoint = function(host) {
   const marker = host.ownerDocument.createComment(' react-mount-point-unstable ');

@@ -213,7 +213,10 @@ final class Renderer {
         private final List<Task> _callbacks = new ArrayList<>();
         private final List<Effect> _effects = new ArrayList<>();
         private final List<Fiber> _deletions = new ArrayList<>();
-        private final List<Effect> _mutations = new ArrayList<>();
+        private final List<CommitEffect> _mutations = new ArrayList<>();
+        private final Completion _saveResult = this::saveResult;
+        private boolean _resultChanged;
+        private @Nullable RenderFailure _resultFailure;
         private final List<Effect> _snapshots = new ArrayList<>();
         private final List<CommitFailure> _commitFailures = new ArrayList<>();
         private final LinkedHashSet<Fiber> _heldFallbacks = new LinkedHashSet<>();
@@ -539,17 +542,28 @@ final class Renderer {
             _snapshots.clear();
             _commitFailures.clear();
             _renderFailure = null;
+            _resultFailure = null;
         }
 
         private double time() {
             return _profiling ? now() : 0;
         }
 
-        private void runEffects(List<Effect> effects) {
+        private void saveResult(boolean changed, @Nullable RenderFailure failure) {
+            _resultChanged = changed;
+            _resultFailure = failure;
+        }
+
+        private void runEffects(List<? extends CommitEffect> effects) {
             for (int i = 0; i < effects.size(); i++) {
                 final var effect = effects.get(i);
-                if (effect.fiber.alive) {
-                    runEffect(effect.fiber, effect.task);
+                final var source = effect.fiber();
+                if (source.alive) {
+                    try {
+                        effect.apply();
+                    } catch (Throwable error) {
+                        captureCommitFailure(source, error);
+                    }
                 }
             }
         }
@@ -629,13 +643,15 @@ final class Renderer {
         final Object type;
         final @Nullable String key;
         final boolean strict;
-        List<Fiber> children = new ArrayList<>();
+        List<Fiber> children = List.of();
 
         @Nullable
         ReactElement node;
 
         @Nullable
         NativeView view;
+
+        private @Nullable OnShouldComponentUpdate _viewPredicate;
 
         @Nullable
         Node dom;
@@ -644,6 +660,7 @@ final class Renderer {
         Object ref;
 
         private final @Nullable Object _portalState;
+        private @Nullable String _hostTag;
         private @Nullable Object output;
 
         double actualDuration;
@@ -661,6 +678,7 @@ final class Renderer {
         private boolean _retrySuspendedView;
         private int _primaryCount;
         private int _index;
+        private int _placementStart;
         private int _visitedCommit;
         private int _renderedCommit;
         private boolean _dirty;
@@ -691,28 +709,31 @@ final class Renderer {
 
         private void reconcileChildren(@Nullable Object next, @Nullable Scope scope, Completion complete) {
             final var previous = children;
+            _placementStart = 0;
             final var content = unwrapFragment(next);
             if (null == content || !isChild(content)) {
                 if (!previous.isEmpty()) {
-                    children = new ArrayList<>();
+                    children = List.of();
                     root._deletions.addAll(previous);
                 }
                 complete.finish(!previous.isEmpty(), null);
                 return;
             }
-            children = new ArrayList<>();
             if (isArray(content)) {
-                new ChildList(Js.uncheckedCast(content), previous, scope, complete).advance();
+                final @Nullable Object[] values = Js.uncheckedCast(content);
+                if (1 != values.length || !reuseSingle(values[0], scope, complete)) {
+                    new ChildList(values, previous, scope, complete).advance();
+                }
                 return;
             }
-            if (1 == previous.size() && matchesSlot(previous.get(0), content, 0)) {
-                reuse(previous.get(0), content, 0, scope, complete);
+            if (reuseSingle(content, scope, complete)) {
                 return;
             }
             final Descriptor descriptor;
             try {
                 descriptor = Descriptor.of(content);
             } catch (Throwable error) {
+                children = List.of();
                 root._deletions.addAll(previous);
                 complete.finish(false, new RenderFailure(this, error));
                 return;
@@ -740,14 +761,23 @@ final class Renderer {
             final var child = null != candidate
                     ? candidate
                     : new Fiber(root, this, descriptor.kind, descriptor.type, descriptor.key);
-            reuse(
-                    child,
-                    content,
-                    0,
-                    scope,
-                    null == candidate || 1 != previous.size()
-                            ? (changed, failure) -> complete.finish(true, failure)
-                            : complete);
+            final var replaced = null == candidate || 1 != previous.size();
+            if (replaced) {
+                children = List.of(child);
+            }
+            reuse(child, content, 0, scope, replaced ? withPlacement(complete) : complete);
+        }
+
+        private static Completion withPlacement(Completion complete) {
+            return (changed, failure) -> complete.finish(true, failure);
+        }
+
+        private boolean reuseSingle(@Nullable Object value, @Nullable Scope scope, Completion complete) {
+            if (1 == children.size() && null != value && matchesSlot(children.get(0), value, 0)) {
+                reuse(children.get(0), value, 0, scope, complete);
+                return true;
+            }
+            return false;
         }
 
         private final class ChildList {
@@ -755,9 +785,11 @@ final class Renderer {
             private final List<Fiber> _previous;
             private final @Nullable Scope _scope;
             private final Completion _complete;
-            private final Completion _completeChild = this::completed;
+            private final Completion _completeChild;
             private int _index;
             private int _cursor;
+            private int _position;
+            private int _stablePrefix;
             private boolean _changed;
             private @Nullable LinkedHashMap<Object, Fiber> _unmatched;
             private @Nullable RenderFailure _failure;
@@ -768,6 +800,7 @@ final class Renderer {
                 _previous = previous;
                 _scope = scope;
                 _complete = complete;
+                _completeChild = root.concurrent ? this::completed : root._saveResult;
             }
 
             private void advance() {
@@ -784,12 +817,19 @@ final class Renderer {
                         _failure = new RenderFailure(Fiber.this, error);
                         break;
                     }
-                    final var position = children.size();
-                    _changed |= position >= _previous.size() || _previous.get(position) != child;
+                    if (children != _previous) {
+                        children.add(child);
+                    } else if (_position >= _previous.size() || _previous.get(_position) != child) {
+                        children = copyPrefix();
+                        children.add(child);
+                        _changed = true;
+                    }
+                    _position++;
                     reuse(child, value, index, _scope, _completeChild);
                     if (root.concurrent) {
                         return;
                     }
+                    completed(root._resultChanged, root._resultFailure);
                 }
                 final var unmatched = _unmatched;
                 if (null != unmatched) {
@@ -799,11 +839,25 @@ final class Renderer {
                         root._deletions.add(_previous.get(_cursor));
                     }
                 }
-                _complete.finish(_changed || _previous.size() != children.size(), _failure);
+                if (children == _previous && _position < _previous.size()) {
+                    children = copyPrefix();
+                }
+                _placementStart = _stablePrefix;
+                _complete.finish(_changed || _previous.size() != _position, _failure);
+            }
+
+            private List<Fiber> copyPrefix() {
+                if (0 == _position) {
+                    return new ArrayList<>();
+                }
+                return new ArrayList<>(_position == _previous.size() ? _previous : _previous.subList(0, _position));
             }
 
             private void completed(boolean changed, @Nullable RenderFailure failure) {
                 _changed |= changed;
+                if (!_changed) {
+                    _stablePrefix++;
+                }
                 _failure = failure;
                 if (root.concurrent) {
                     advance();
@@ -890,12 +944,17 @@ final class Renderer {
                 undo.add(child.checkpoint());
             }
             child._index = index;
-            children.add(child);
             if (root.concurrent) {
-                root._nextStep = () -> child.update(next, scope, complete);
+                prepareChild(child, next, scope, complete);
+            } else if (child.canReuse(next, scope)) {
+                complete.finish(false, null);
             } else {
                 child.update(next, scope, complete);
             }
+        }
+
+        private void prepareChild(Fiber child, Object next, @Nullable Scope scope, Completion complete) {
+            root._nextStep = () -> child.update(next, scope, complete);
         }
 
         private void invalidate() {
@@ -913,160 +972,42 @@ final class Renderer {
             }
         }
 
-        private void update(Object next, @Nullable Scope scope, Completion complete) {
-            if (_initialized
+        private boolean canReuse(Object next, @Nullable Scope scope) {
+            return _initialized
                     && !_dirty
                     && !_retrySuspendedView
                     && _scope == scope
-                    && Js.isTripleEqual(_description, next)) {
+                    && Js.isTripleEqual(_description, next);
+        }
+
+        private void update(Object next, @Nullable Scope scope, Completion complete) {
+            if (root.concurrent && canReuse(next, scope)) {
                 complete.finish(false, null);
                 return;
             }
             _selfDuration = 0;
-            final var refreshChildren = _dirty || _scope != scope;
+            final var dirty = _dirty;
+            final var refreshChildren = dirty || _scope != scope;
             _dirty = false;
             _description = next;
             _scope = scope;
-            _visitedCommit = root._commitSequence;
-            actualStartTime = root.time();
+            if (root._profiling) {
+                _visitedCommit = root._commitSequence;
+                actualStartTime = root.time();
+            }
             final var oldNode = node;
             final var mounting = !_initialized;
-            node = switch (kind) {
-                case HOST, VIEW, PROVIDER, CONSUMER -> Js.uncheckedCast(next);
-                case FRAGMENT -> ReactElement.isElement(next) ? Js.uncheckedCast(next) : null;
-                default -> null;
-            };
-            final Completion finish = Kind.VIEW == kind
-                    ? complete
-                    : (changed, failure) -> finishUpdate(changed, failure, scope, complete);
             try {
-                switch (kind) {
-                    case TEXT -> {
-                        final var text = Js.asString(stringValue(next));
-                        if (null == dom) {
-                            dom = DomHost.createText(boundary(), text);
-                        } else if (!text.equals(dom.nodeValue)) {
-                            final var textNode = dom;
-                            root._mutations.add(new Effect(this, () -> textNode.nodeValue = text));
-                        }
-                    }
-                    case HOST -> {
-                        final var element = Objects.requireNonNull(node);
-                        final var inputs = element.inputs();
-                        final var host = null == dom
-                                ? DomHost.createElement(boundary(), hostParent(false), Js.asString(type), inputs)
-                                : Js.<Element>uncheckedCast(dom);
-                        dom = host;
-                        final var hasHtml = DomHost.hasHtml(inputs);
-                        if (hasHtml) {
-                            root._deletions.addAll(children);
-                            children = new ArrayList<>();
-                        }
-                        final var propsChanged = oldNode != element;
-                        if (propsChanged) {
-                            root._mutations.add(new Effect(
-                                    this,
-                                    () -> DomHost.update(
-                                            host,
-                                            boundary(),
-                                            root.container,
-                                            hostParent(true),
-                                            null == oldNode ? null : oldNode.inputs(),
-                                            inputs)));
-                        }
-                        final var selfDuration = root.time() - actualStartTime;
-                        final Completion finishHost = (contentChanged, failure) -> {
-                            if (null == failure) {
-                                final boolean control = DomHost.isControlTag(host.localName);
-                                if (contentChanged || propsChanged && control) {
-                                    root._mutations.add(new Effect(this, () -> {
-                                        if (contentChanged) {
-                                            placeChildren(host, null);
-                                        }
-                                        if (control) {
-                                            DomHost.restoreControlled(host);
-                                        }
-                                    }));
-                                }
-                                if (mounting
-                                        && Boolean.TRUE.equals(inputs.get("autoFocus"))
-                                        && ("button".equals(host.localName)
-                                                || "input".equals(host.localName)
-                                                || "select".equals(host.localName)
-                                                || "textarea".equals(host.localName))) {
-                                    root._effects.add(new Effect(this, () -> host.focus(null)));
-                                }
-                                reconcileRef(element.ref(), host);
-                                recordDurations(mounting, selfDuration);
-                            }
-                            finish.finish(false, failure);
-                        };
-                        if (!hasHtml && !"textarea".equals(host.localName)) {
-                            reconcileChildren(inputs.get("children"), scope, finishHost);
-                        } else {
-                            finishHost.finish(false, null);
-                        }
-                        return;
-                    }
-                    case VIEW -> {
-                        updateView(Objects.requireNonNull(node), oldNode, scope, refreshChildren, mounting, finish);
-                        return;
-                    }
-                    case PORTAL -> {
-                        final var portal = Js.<ReactPortal>uncheckedCast(next);
-                        final var container = Js.<Node>uncheckedCast(portal.containerInfo);
-                        final var mount = mountParent(container);
-                        final var last = lastDomChild();
-                        final var anchor = 8 == container.nodeType ? container : null == last ? null : last.nextSibling;
-                        reconcileChildren(portal.children, scope, (changed, failure) -> {
-                            if (null == failure && changed) {
-                                root._mutations.add(new Effect(
-                                        this,
-                                        () -> placeChildren(
-                                                mount, null != anchor && mount == anchor.parentNode ? anchor : null)));
-                            }
-                            finish.finish(false, failure);
-                        });
-                        return;
-                    }
-                    case FRAGMENT -> {
-                        final var element = node;
-                        if (React.Suspense == type && null != element) {
-                            reconcileSuspense(element.inputs(), scope, finish);
-                        } else {
-                            reconcileChildren(
-                                    null == element ? next : element.inputs().get("children"), scope, finish);
-                        }
-                        return;
-                    }
-                    case PROVIDER -> {
-                        final var element = Objects.requireNonNull(node);
-                        final var provider = (Context.Provider<?>) type;
-                        final var inputs = element.inputs();
-                        final var value = inputs.get("value");
-                        var provided = _providedScope;
-                        if (null == provided || provided.parent != scope || !sameContextValue(value, provided.value)) {
-                            provided = new Scope(scope, provider.context(), value);
-                            _providedScope = provided;
-                        }
-                        reconcileChildren(inputs.get("children"), provided, finish);
-                        return;
-                    }
-                    case CONSUMER -> {
-                        final var element = Objects.requireNonNull(node);
-                        final var context = ((Context.Consumer<?>) type).context();
-                        final var value = Scope.lookup(scope, context);
-                        if (oldNode != element || !sameContextValue(value, _contextValue)) {
-                            _contextValue = value;
-                            final var consumer = Js.<Context.ConsumerRenderFunction<@Nullable Object>>uncheckedCast(
-                                    Objects.requireNonNull(element.inputs().get("children")));
-                            output = renderOwned(() -> Renderable.toReactNode(consumer.render(value)));
-                        }
-                        recordDurations(mounting, root.time() - actualStartTime);
-                        reconcileChildren(output, scope, finish);
-                        return;
-                    }
-                    case ROOT -> throw new IllegalStateException("Cannot update the root as a child");
+                if (Kind.VIEW == kind) {
+                    final var element = Js.<ReactElement>uncheckedCast(next);
+                    node = element;
+                    updateView(element, oldNode, scope, dirty, refreshChildren, mounting, complete);
+                } else if (Kind.HOST == kind) {
+                    final var element = Js.<ReactElement>uncheckedCast(next);
+                    node = element;
+                    prepareHost(element, oldNode, scope, mounting, complete);
+                } else {
+                    updateOther(next, oldNode, scope, mounting, complete);
                 }
             } catch (Throwable error) {
                 finishUpdate(
@@ -1075,6 +1016,86 @@ final class Renderer {
                         scope,
                         complete);
                 return;
+            }
+        }
+
+        private void updateOther(
+                Object next,
+                @Nullable ReactElement oldNode,
+                @Nullable Scope scope,
+                boolean mounting,
+                Completion complete) {
+            node = switch (kind) {
+                case PROVIDER, CONSUMER -> Js.uncheckedCast(next);
+                case FRAGMENT -> ReactElement.isElement(next) ? Js.uncheckedCast(next) : null;
+                default -> null;
+            };
+            final Completion finish = (changed, failure) -> finishUpdate(changed, failure, scope, complete);
+            switch (kind) {
+                case TEXT -> {
+                    final var text = Js.asString(stringValue(next));
+                    if (null == dom) {
+                        dom = DomHost.createText(boundary(), text);
+                    } else if (!text.equals(dom.nodeValue)) {
+                        final var textNode = dom;
+                        root._mutations.add(new Effect(this, () -> textNode.nodeValue = text));
+                    }
+                }
+                case PORTAL -> {
+                    final var portal = Js.<ReactPortal>uncheckedCast(next);
+                    final var container = Js.<Node>uncheckedCast(portal.containerInfo);
+                    final var mount = mountParent(container);
+                    final var last = lastDomChild();
+                    final var anchor = 8 == container.nodeType ? container : null == last ? null : last.nextSibling;
+                    reconcileChildren(portal.children, scope, (changed, failure) -> {
+                        if (null == failure && changed) {
+                            root._mutations.add(new Effect(
+                                    this,
+                                    () -> placeChildren(
+                                            mount, null != anchor && mount == anchor.parentNode ? anchor : null)));
+                        }
+                        finish.finish(false, failure);
+                    });
+                    return;
+                }
+                case FRAGMENT -> {
+                    final var element = node;
+                    if (React.Suspense == type && null != element) {
+                        reconcileSuspense(element.inputs(), scope, finish);
+                    } else {
+                        reconcileChildren(
+                                null == element ? next : element.inputs().get("children"), scope, finish);
+                    }
+                    return;
+                }
+                case PROVIDER -> {
+                    final var element = Objects.requireNonNull(node);
+                    final var provider = (Context.Provider<?>) type;
+                    final var inputs = element.inputs();
+                    final var value = inputs.get("value");
+                    var provided = _providedScope;
+                    if (null == provided || provided.parent != scope || !sameContextValue(value, provided.value)) {
+                        provided = new Scope(scope, provider.context(), value);
+                        _providedScope = provided;
+                    }
+                    reconcileChildren(inputs.get("children"), provided, finish);
+                    return;
+                }
+                case CONSUMER -> {
+                    final var element = Objects.requireNonNull(node);
+                    final var context = ((Context.Consumer<?>) type).context();
+                    final var value = Scope.lookup(scope, context);
+                    if (oldNode != element || !sameContextValue(value, _contextValue)) {
+                        _contextValue = value;
+                        final var consumer = Js.<Context.ConsumerRenderFunction<@Nullable Object>>uncheckedCast(
+                                Objects.requireNonNull(element.inputs().get("children")));
+                        output = renderOwned(() -> Renderable.toReactNode(consumer.render(value)));
+                    }
+                    recordDurations(mounting, root.time() - actualStartTime);
+                    reconcileChildren(output, scope, finish);
+                    return;
+                }
+                case ROOT, VIEW, HOST -> throw new IllegalStateException("Unexpected fiber kind " + kind);
             }
             finish.finish(false, null);
         }
@@ -1093,6 +1114,7 @@ final class Renderer {
                 if (!_mounted && null != view) {
                     view.detach();
                     view = null;
+                    _viewPredicate = null;
                 }
                 reconcileChildren(null, scope, complete);
                 return;
@@ -1103,6 +1125,104 @@ final class Renderer {
         }
 
         private double _selfDuration;
+
+        private void prepareHost(
+                ReactElement element,
+                @Nullable ReactElement oldNode,
+                @Nullable Scope scope,
+                boolean mounting,
+                Completion complete) {
+            final var inputs = element.inputs();
+            final var host = null == dom
+                    ? DomHost.createElement(boundary(), hostParent(false), Js.asString(type), inputs)
+                    : Js.<Element>uncheckedCast(dom);
+            dom = host;
+            final var cachedTag = _hostTag;
+            final var tag = null == cachedTag ? (_hostTag = host.localName) : cachedTag;
+            final var hasHtml = DomHost.hasHtml(inputs);
+            final var content = inputs.get("children");
+            final var tracksChildren = !hasHtml && !"textarea".equals(tag);
+            final var directText = tracksChildren && isText(content);
+            if ((hasHtml || directText) && !children.isEmpty()) {
+                root._deletions.addAll(children);
+                children = List.of();
+            }
+            final var previous = null == oldNode ? null : oldNode.inputs();
+            if (!Js.isTripleEqual(previous, inputs)) {
+                String text = null;
+                if (tracksChildren) {
+                    final var oldContent = null == previous ? null : previous.get("children");
+                    if (directText && !Js.isTripleEqual(oldContent, content)) {
+                        text = Js.asString(stringValue(Objects.requireNonNull(content)));
+                    } else if (!directText && isText(oldContent)) {
+                        text = "";
+                    }
+                }
+                root._mutations.add(new HostProperties(this, null == previous, inputs, text));
+            }
+
+            final var duration = root.time() - actualStartTime;
+            final var restoreControl = DomHost.isControlTag(tag) && oldNode != element;
+            if (tracksChildren && !directText) {
+                if (root.concurrent) {
+                    prepareHostChildren(content, scope, element, mounting, restoreControl, duration, complete);
+                } else {
+                    reconcileChildren(content, scope, root._saveResult);
+                    finishHost(
+                            element,
+                            mounting,
+                            restoreControl,
+                            duration,
+                            scope,
+                            complete,
+                            root._resultChanged,
+                            root._resultFailure);
+                }
+            } else {
+                finishHost(element, mounting, restoreControl, duration, scope, complete, false, null);
+            }
+        }
+
+        private void prepareHostChildren(
+                @Nullable Object content,
+                @Nullable Scope scope,
+                ReactElement element,
+                boolean mounting,
+                boolean restoreControl,
+                double duration,
+                Completion complete) {
+            reconcileChildren(
+                    content,
+                    scope,
+                    (changed, failure) ->
+                            finishHost(element, mounting, restoreControl, duration, scope, complete, changed, failure));
+        }
+
+        private void finishHost(
+                ReactElement element,
+                boolean mounting,
+                boolean restoreControl,
+                double duration,
+                @Nullable Scope scope,
+                Completion complete,
+                boolean contentChanged,
+                @Nullable RenderFailure failure) {
+            if (null == failure) {
+                final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(dom));
+                final var tag = Objects.requireNonNull(_hostTag);
+                if (contentChanged || restoreControl) {
+                    root._mutations.add(new HostPlacement(this, contentChanged, restoreControl));
+                }
+                if (mounting
+                        && Boolean.TRUE.equals(element.inputs().get("autoFocus"))
+                        && ("button".equals(tag) || DomHost.isControlTag(tag))) {
+                    root._effects.add(new Effect(this, () -> host.focus(null)));
+                }
+                reconcileRef(element.ref(), host);
+                recordDurations(mounting, duration);
+            }
+            finishUpdate(false, failure, scope, complete);
+        }
 
         private void recordDurations(boolean mounting, double duration) {
             _selfDuration = duration;
@@ -1128,43 +1248,75 @@ final class Renderer {
                 ReactElement element,
                 @Nullable ReactElement oldNode,
                 @Nullable Scope scope,
+                boolean dirty,
                 boolean refreshChildren,
                 boolean mounting,
                 Completion complete) {
             final var inputs = element.inputs();
             final var existing = view;
             final var component = null == existing ? NativeView.construct(type, inputs) : existing;
-            view = component;
             final var previousInputs = component.inputs();
             if (null == existing) {
+                view = component;
+                _viewPredicate = component instanceof OnShouldComponentUpdate predicate ? predicate : null;
                 attachUpdater(component);
             }
-            final var previousState = component.state();
-            final boolean force = component.consumeForceUpdate();
+            final boolean force = dirty && component.consumeForceUpdate();
             final boolean retry = _retrySuspendedView;
             _retrySuspendedView = false;
+            final var predicate = _viewPredicate;
             final boolean changed =
-                    null == existing || oldNode != element || component.hasPendingUpdate() || force || retry;
+                    null == existing || oldNode != element || dirty && component.hasPendingUpdate() || force || retry;
             final boolean render = changed
                     && (null == existing
                             || force
                             || retry
-                            || !(component instanceof OnShouldComponentUpdate predicate)
+                            || null == predicate
                             || predicate.shouldComponentUpdate(inputs));
+            final var previousState =
+                    render && component instanceof OnGetSnapshotBeforeUpdate ? component.state() : null;
             component.updateInputs(inputs);
             component.applyPendingState();
             if (render) {
-                _renderedCommit = root._commitSequence;
-                _captured = false;
-                output = renderOwned(component::render);
-                if (DEVELOPMENT && strict) {
-                    renderOwned(component::render);
-                }
+                renderView(component);
             } else if (_captured || !refreshChildren) {
                 reconcileRef(element.ref(), component);
-                finishUpdate(false, null, scope, complete);
+                _initialized = true;
+                updateDurations(0);
+                complete.finish(false, null);
                 return;
             }
+            finishView(
+                    element,
+                    component,
+                    null == existing,
+                    render,
+                    previousInputs,
+                    previousState,
+                    scope,
+                    mounting,
+                    complete);
+        }
+
+        private void renderView(NativeView component) {
+            _renderedCommit = root._commitSequence;
+            _captured = false;
+            output = renderOwned(component::render);
+            if (DEVELOPMENT && strict) {
+                renderOwned(component::render);
+            }
+        }
+
+        private void finishView(
+                ReactElement element,
+                NativeView component,
+                boolean newView,
+                boolean render,
+                @Nullable JsPropertyMap<@Nullable Object> previousInputs,
+                @Nullable JsPropertyMap<@Nullable Object> previousState,
+                @Nullable Scope scope,
+                boolean mounting,
+                Completion complete) {
             final var elapsed = root.time() - actualStartTime;
             final var snapshots = root._snapshots.size();
             final Completion finish = (changedOutput, failure) -> {
@@ -1180,14 +1332,14 @@ final class Renderer {
                         return;
                     }
                 }
-                if (render && null != existing && component instanceof OnGetSnapshotBeforeUpdate lifecycle) {
+                if (render && !newView && component instanceof OnGetSnapshotBeforeUpdate lifecycle) {
                     root._snapshots.add(new Effect(
                             this,
                             () -> lifecycle.getSnapshotBeforeUpdate(
                                     Objects.requireNonNull(previousInputs),
                                     null == previousState ? JsPropertyMap.of() : previousState)));
                 }
-                if (null == existing) {
+                if (newView) {
                     root._mutations.add(new Effect(this, () -> _mounted = true));
                     if (component instanceof OnComponentDidMount lifecycle) {
                         root._effects.add(new Effect(this, lifecycle::componentDidMount));
@@ -1391,6 +1543,7 @@ final class Renderer {
             final var previousChildren = children;
             final var previousNode = node;
             final var previousView = view;
+            final var previousPredicate = _viewPredicate;
             final var previousDom = dom;
             final var previousRef = ref;
             final var previousOutput = output;
@@ -1420,6 +1573,7 @@ final class Renderer {
                 children = previousChildren;
                 node = previousNode;
                 view = previousView;
+                _viewPredicate = previousPredicate;
                 dom = previousDom;
                 ref = previousRef;
                 output = previousOutput;
@@ -1520,9 +1674,7 @@ final class Renderer {
         }
 
         private void placeChildren(Node container, @Nullable Node anchor) {
-            final var content = new ArrayList<Node>();
-            collectDom(content);
-            place(container, content, anchor);
+            placeChildrenFrom(container, anchor, _placementStart);
         }
 
         private @Nullable Node lastDomChild() {
@@ -1538,16 +1690,27 @@ final class Renderer {
             return null;
         }
 
-        private void collectDom(List<Node> nodes) {
-            for (final var child : children) {
+        private @Nullable Node placeChildrenFrom(Node container, @Nullable Node before, int start) {
+            var anchor = before;
+            for (int i = children.size() - 1; start <= i; i--) {
+                final var child = children.get(i);
                 if (Kind.PORTAL != child.kind) {
-                    if (null != child.dom) {
-                        nodes.add(child.dom);
+                    final var node = child.dom;
+                    if (null == node) {
+                        anchor = child.placeChildrenFrom(container, anchor, 0);
                     } else {
-                        child.collectDom(nodes);
+                        if (container != node.parentNode || anchor != node.nextSibling) {
+                            if (null == anchor) {
+                                container.appendChild(node);
+                            } else {
+                                container.insertBefore(node, anchor);
+                            }
+                        }
+                        anchor = node;
                     }
                 }
             }
+            return anchor;
         }
 
         double actualDuration() {
@@ -1625,8 +1788,10 @@ final class Renderer {
         private final List<RenderFailure> failures = new ArrayList<>();
     }
 
+    @JsFunction
     @FunctionalInterface
     private interface Completion {
+        @SuppressWarnings("unusable-by-js")
         void finish(boolean changed, @Nullable RenderFailure failure);
     }
 
@@ -1687,7 +1852,56 @@ final class Renderer {
         }
     }
 
-    private record Effect(Fiber fiber, Task task) {}
+    private interface CommitEffect {
+        Fiber fiber();
+
+        void apply();
+    }
+
+    private record Effect(Fiber fiber, Task task) implements CommitEffect {
+        @Override
+        public void apply() {
+            task.run();
+        }
+    }
+
+    private record HostProperties(
+            Fiber fiber,
+            boolean mounting,
+            JsPropertyMap<@Nullable Object> inputs,
+            @Nullable String text) implements CommitEffect {
+        @Override
+        public void apply() {
+            final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(fiber.dom));
+            if (mounting) {
+                DomHost.mount(
+                        host,
+                        Objects.requireNonNull(fiber._hostTag),
+                        fiber.boundary(),
+                        fiber.root.container,
+                        fiber.hostParent(true),
+                        inputs);
+            } else {
+                DomHost.update(host, inputs);
+            }
+            if (null != text) {
+                setTextContent(host, text);
+            }
+        }
+    }
+
+    private record HostPlacement(Fiber fiber, boolean place, boolean restoreControl) implements CommitEffect {
+        @Override
+        public void apply() {
+            final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(fiber.dom));
+            if (place) {
+                fiber.placeChildren(host, null);
+            }
+            if (restoreControl) {
+                DomHost.restoreControlled(host);
+            }
+        }
+    }
 
     private record CommitFailure(
             RenderFailure failure, @Nullable Fiber boundary) {}
@@ -1721,27 +1935,57 @@ final class Renderer {
         String stack() {
             final var stack = new StringBuilder();
             for (var fiber = source; null != fiber && Kind.ROOT != fiber.kind; fiber = fiber.parent) {
-                final var name = Kind.VIEW == fiber.kind
-                        ? Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(fiber.type)
-                                .get("displayName")
-                        : fiber.type;
-                stack.append("\n    at ").append(name instanceof String text ? text : fiber.kind.name());
+                if (Kind.VIEW == fiber.kind || Kind.HOST == fiber.kind || React.StrictMode == fiber.type) {
+                    final var name = frameName(fiber.type);
+                    stack.append("\n    in ").append(null == name ? "Unknown" : name);
+                    if (DEVELOPMENT && null != fiber.node && fiber.node.owner() instanceof Fiber owner) {
+                        final var ownerName = frameName(owner.type);
+                        if (null != ownerName) {
+                            stack.append(" (created by ").append(ownerName).append(')');
+                        }
+                    }
+                }
             }
             return stack.toString();
+        }
+
+        private static @Nullable String frameName(Object type) {
+            if (React.StrictMode == type) {
+                return "StrictMode";
+            }
+            if (type instanceof String name) {
+                return name;
+            }
+            if ("function".equals(Js.typeof(type))) {
+                final var function = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(type);
+                final var displayName = function.get("displayName");
+                if (displayName instanceof String name && !name.isEmpty()) {
+                    return name;
+                }
+                final var nativeName = function.get("name");
+                return nativeName instanceof String name && !name.isEmpty() ? name : null;
+            }
+            if (type instanceof Context.Consumer<?>) {
+                return "Context.Consumer";
+            }
+            return null;
         }
     }
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "String")
     private static native Object stringValue(Object value);
 
-    private static void place(Node parent, List<Node> nodes, @Nullable Node before) {
-        var anchor = before;
-        for (int i = nodes.size() - 1; i >= 0; i--) {
-            final var node = nodes.get(i);
-            if (parent != node.parentNode || anchor != node.nextSibling) {
-                parent.insertBefore(node, anchor);
-            }
-            anchor = node;
+    private static boolean isText(@Nullable Object value) {
+        final var type = Js.typeof(value);
+        return "string".equals(type) || "number".equals(type);
+    }
+
+    private static void setTextContent(Node node, String text) {
+        final var first = node.firstChild;
+        if (!text.isEmpty() && null != first && 3 == first.nodeType && null == first.nextSibling) {
+            first.nodeValue = text;
+        } else {
+            node.textContent = text;
         }
     }
 
