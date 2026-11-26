@@ -216,10 +216,8 @@ final class Renderer {
         final boolean concurrent;
         private final List<Task> _callbacks = new ArrayList<>();
         private final List<Effect> _effects = new ArrayList<>();
-        private final List<Fiber> _deletions = new ArrayList<>();
         private final List<CommitEffect> _mutations = new ArrayList<>();
         private final Completion _saveResult = this::saveResult;
-        private boolean _resultChanged;
         private @Nullable RenderFailure _resultFailure;
         private final List<Effect> _snapshots = new ArrayList<>();
         private final List<CommitFailure> _commitFailures = new ArrayList<>();
@@ -245,7 +243,6 @@ final class Renderer {
         private @Nullable ReactNode _urgentNode;
         private @Nullable ReactNode _activeNode;
         private @Nullable ReactNode _committedNode;
-        private boolean _placementChanged;
         private @Nullable RenderFailure _renderFailure;
         private boolean _profiling;
         private int _commitSequence;
@@ -489,10 +486,7 @@ final class Renderer {
             fiber._visitedCommit = _commitSequence;
             fiber.actualStartTime = time();
             fiber._dirty = false;
-            fiber.reconcileChildren(next, null, (changed, failure) -> {
-                _placementChanged = changed;
-                _renderFailure = failure;
-            });
+            fiber.reconcileChildren(next, null, failure -> _renderFailure = failure);
         }
 
         private void finishCommit(List<Task> callbacks) {
@@ -506,13 +500,7 @@ final class Renderer {
                 DomEvents.pause();
                 try {
                     runEffects(_snapshots);
-                    for (int i = 0; i < _deletions.size(); i++) {
-                        _deletions.get(i).dispose();
-                    }
                     runEffects(_mutations);
-                    if (_placementChanged) {
-                        fiber.placeChildren(mountParent(container), 8 == container.nodeType ? container : null);
-                    }
                     if (null != focus) {
                         focus.restore();
                     }
@@ -534,7 +522,11 @@ final class Renderer {
                 node = null;
                 _committedNode = null;
                 fiber.disposeChildren();
-                _deletions.forEach(Fiber::dispose);
+                for (final var mutation : _mutations) {
+                    if (mutation instanceof Deletion deletion) {
+                        deletion.fiber().dispose();
+                    }
+                }
                 for (final var disposal : _commitFailures) {
                     if (failure.error != disposal.failure.error) {
                         failure.error.addSuppressed(disposal.failure.error);
@@ -549,7 +541,6 @@ final class Renderer {
 
         private void clearEffects() {
             _effects.clear();
-            _deletions.clear();
             _mutations.clear();
             _snapshots.clear();
             _commitFailures.clear();
@@ -561,8 +552,7 @@ final class Renderer {
             return _profiling ? now() : 0;
         }
 
-        private void saveResult(boolean changed, @Nullable RenderFailure failure) {
-            _resultChanged = changed;
+        private void saveResult(@Nullable RenderFailure failure) {
             _resultFailure = failure;
         }
 
@@ -627,7 +617,7 @@ final class Renderer {
                         fiber.disposeChildren();
                     }
                 } else if (boundary.alive && boundary.view instanceof OnComponentDidCatch catcher) {
-                    runEffect(boundary, boundary.capture(catcher, next.failure, true));
+                    runEffect(boundary, boundary.capture(catcher, next.failure, true, 0));
                 }
             }
             if (null != unhandled) {
@@ -657,23 +647,24 @@ final class Renderer {
         final boolean strict;
         Fiber[] children = NO_CHILDREN;
 
+        // Initialize the reference slots before fibers specialize in a node kind.
         @Nullable
-        ReactElement node;
+        ReactElement node = Js.uncheckedCast(Js.undefined());
 
         @Nullable
-        NativeView view;
+        NativeView view = Js.uncheckedCast(Js.undefined());
 
-        private @Nullable OnShouldComponentUpdate _viewPredicate;
-
-        @Nullable
-        Node dom;
+        private @Nullable OnShouldComponentUpdate _viewPredicate = Js.uncheckedCast(Js.undefined());
 
         @Nullable
-        Object ref;
+        Node dom = Js.uncheckedCast(Js.undefined());
+
+        @Nullable
+        Object ref = Js.undefined();
 
         private final @Nullable Object _portalState;
-        private @Nullable String _childNamespace;
-        private @Nullable Object output;
+        private @Nullable String _childNamespace = Js.uncheckedCast(Js.undefined());
+        private @Nullable Object output = Js.undefined();
 
         double actualDuration;
         double actualStartTime;
@@ -682,21 +673,23 @@ final class Renderer {
         private boolean alive = true;
         private boolean _initialized;
         private boolean _mounted;
-        private @Nullable Object _attachedRef;
-        private @Nullable Object _contextValue;
+        private @Nullable Object _attachedRef = Js.undefined();
+        private @Nullable Object _contextValue = Js.undefined();
         private boolean _captured;
-        private @Nullable Object _suspension;
-        private @Nullable LegacySuspense _fallbackPending;
+        private @Nullable Object _suspension = Js.undefined();
+        private @Nullable LegacySuspense _fallbackPending = Js.uncheckedCast(Js.undefined());
         private boolean _retrySuspendedView;
         private int _primaryCount;
         private int _index;
-        private int _placementStart;
+        private int _position;
+        private int _placementCommit;
+        private int _resetCommit;
         private int _visitedCommit;
         private int _renderedCommit;
         private boolean _dirty;
-        private @Nullable Object _description;
-        private @Nullable Scope _scope;
-        private @Nullable Scope _providedScope;
+        private @Nullable Object _description = Js.undefined();
+        private @Nullable Scope _scope = Js.uncheckedCast(Js.undefined());
+        private @Nullable Scope _providedScope = Js.uncheckedCast(Js.undefined());
 
         Fiber(Root root, @Nullable Fiber parent, Kind kind, Object type, @Nullable String key) {
             this.root = root;
@@ -721,14 +714,13 @@ final class Renderer {
 
         private void reconcileChildren(@Nullable Object next, @Nullable Scope scope, Completion complete) {
             final var previous = children;
-            _placementStart = 0;
             final var content = unwrapFragment(next);
             if (null == content || !isChild(content)) {
                 if (0 != previous.length) {
                     children = NO_CHILDREN;
                     queueDeletions(previous);
                 }
-                complete.finish(0 != previous.length, null);
+                complete.finish(null);
                 return;
             }
             if (isArray(content)) {
@@ -747,7 +739,7 @@ final class Renderer {
             } catch (Throwable error) {
                 children = NO_CHILDREN;
                 queueDeletions(previous);
-                complete.finish(false, new RenderFailure(this, error));
+                complete.finish(new RenderFailure(this, error));
                 return;
             }
             Fiber candidate = null;
@@ -767,7 +759,7 @@ final class Renderer {
             }
             for (final var child : previous) {
                 if (child != candidate) {
-                    root._deletions.add(child);
+                    root._mutations.add(new Deletion(child));
                 }
             }
             final var child = null != candidate
@@ -777,16 +769,13 @@ final class Renderer {
             if (replaced) {
                 children = new Fiber[] {child};
             }
-            reuse(child, content, 0, scope, replaced ? withPlacement(complete) : complete);
-        }
-
-        private static Completion withPlacement(Completion complete) {
-            return (changed, failure) -> complete.finish(true, failure);
+            reuse(child, content, 0, 0, !child._initialized, scope, complete);
         }
 
         private boolean reuseSingle(@Nullable Object value, @Nullable Scope scope, Completion complete) {
             if (1 == children.length && null != value && matchesSlot(children[0], value, 0)) {
-                reuse(children[0], value, 0, scope, complete);
+                final var child = children[0];
+                reuse(child, value, 0, 0, !child._initialized, scope, complete);
                 return true;
             }
             return false;
@@ -802,8 +791,8 @@ final class Renderer {
             private int _index;
             private int _cursor;
             private int _position;
-            private int _stablePrefix;
-            private boolean _changed;
+            private int _lastPlacedIndex;
+            private int _deletionPosition = root._mutations.size();
             private @Nullable LinkedHashMap<Object, Fiber> _unmatched;
             private @Nullable RenderFailure _failure;
 
@@ -834,39 +823,46 @@ final class Renderer {
                         next = new Fiber[_values.length];
                         System.arraycopy(_previous, 0, next, 0, _position);
                         _next = next;
-                        _changed = true;
                     }
                     if (null != next) {
                         next[_position] = child;
                     }
-                    _position++;
-                    reuse(child, value, index, _scope, _completeChild);
+                    final boolean place;
+                    if (!child._initialized || child._index < _lastPlacedIndex) {
+                        place = true;
+                    } else {
+                        _lastPlacedIndex = child._index;
+                        place = false;
+                    }
+                    reuse(child, value, index, _position++, place, _scope, _completeChild);
                     if (root.concurrent) {
                         return;
                     }
-                    completed(root._resultChanged, root._resultFailure);
+                    completed(root._resultFailure);
                 }
                 final var unmatched = _unmatched;
                 if (null != unmatched) {
-                    root._deletions.addAll(unmatched.values());
+                    for (final var child : unmatched.values()) {
+                        queueDeletion(child);
+                    }
                 } else {
                     for (; _cursor < _previous.length; _cursor++) {
-                        root._deletions.add(_previous[_cursor]);
+                        queueDeletion(_previous[_cursor]);
                     }
                 }
                 final var next = _next;
                 if (null != next || _position != _previous.length) {
                     children = sliceChildren(null == next ? _previous : next, 0, _position);
                 }
-                _placementStart = _stablePrefix;
-                _complete.finish(_changed || _previous.length != _position, _failure);
+                _complete.finish(_failure);
             }
 
-            private void completed(boolean changed, @Nullable RenderFailure failure) {
-                _changed |= changed;
-                if (!_changed) {
-                    _stablePrefix++;
-                }
+            private void queueDeletion(Fiber child) {
+                // Complete matching before removing old children, but commit removals before this list's child effects.
+                root._mutations.add(_deletionPosition++, new Deletion(child));
+            }
+
+            private void completed(@Nullable RenderFailure failure) {
                 _failure = failure;
                 if (root.concurrent) {
                     advance();
@@ -894,7 +890,7 @@ final class Renderer {
                         final var leftover = _previous[_cursor];
                         final var duplicate = unmatched.put(leftover.reconciliationKey(), leftover);
                         if (null != duplicate) {
-                            root._deletions.add(duplicate);
+                            queueDeletion(duplicate);
                         }
                     }
                     _unmatched = unmatched;
@@ -947,16 +943,28 @@ final class Renderer {
             return value;
         }
 
-        private void reuse(Fiber child, Object next, int index, @Nullable Scope scope, Completion complete) {
+        private void reuse(
+                Fiber child,
+                Object next,
+                int index,
+                int position,
+                boolean place,
+                @Nullable Scope scope,
+                Completion complete) {
             final var undo = root._renderUndo;
             if (null != undo) {
                 undo.add(child.checkpoint());
             }
             child._index = index;
+            child._position = position;
+            if (place && (_initialized || Kind.ROOT == kind || Kind.PORTAL == kind)) {
+                child._placementCommit = root._commitSequence;
+            }
             if (root.concurrent) {
                 prepareChild(child, next, scope, complete);
             } else if (child.canReuse(next, scope)) {
-                complete.finish(false, null);
+                child.queuePlacement();
+                complete.finish(null);
             } else {
                 child.update(next, scope, complete);
             }
@@ -1002,9 +1010,6 @@ final class Renderer {
         }
 
         private void visitCommittedChildren(@Nullable Scope scope) {
-            _placementStart = 0;
-            int index = 0;
-            boolean changed = false;
             for (final var child : children) {
                 final var description = child._description;
                 if (!child.canReuse(description, scope)) {
@@ -1012,19 +1017,15 @@ final class Renderer {
                     if (null != root._resultFailure) {
                         return;
                     }
-                    if (!changed && root._resultChanged) {
-                        _placementStart = index;
-                        changed = true;
-                    }
                 }
-                index++;
             }
-            root.saveResult(changed, null);
+            root.saveResult(null);
         }
 
         private void update(Object next, @Nullable Scope scope, Completion complete) {
             if (root.concurrent && canReuse(next, scope)) {
-                complete.finish(false, null);
+                queuePlacement();
+                complete.finish(null);
                 return;
             }
             _selfDuration = 0;
@@ -1058,16 +1059,7 @@ final class Renderer {
                     node = element;
                     if (walkChildren) {
                         visitCommittedChildren(scope);
-                        finishHost(
-                                element,
-                                null,
-                                null,
-                                false,
-                                0,
-                                scope,
-                                complete,
-                                root._resultChanged,
-                                root._resultFailure);
+                        finishHost(element, null, null, false, false, 0, scope, complete, root._resultFailure);
                     } else {
                         prepareHost(element, oldNode, scope, mounting, complete);
                     }
@@ -1076,7 +1068,6 @@ final class Renderer {
                 }
             } catch (Throwable error) {
                 finishUpdate(
-                        false,
                         error instanceof RenderFailure failure ? failure : new RenderFailure(this, error),
                         scope,
                         complete);
@@ -1095,7 +1086,7 @@ final class Renderer {
                 case FRAGMENT -> ReactElement.isElement(next) ? Js.uncheckedCast(next) : null;
                 default -> null;
             };
-            final Completion finish = (changed, failure) -> finishUpdate(changed, failure, scope, complete);
+            final Completion finish = failure -> finishUpdate(failure, scope, complete);
             switch (kind) {
                 case TEXT -> {
                     final var text = Js.asString(stringValue(next));
@@ -1108,19 +1099,7 @@ final class Renderer {
                 }
                 case PORTAL -> {
                     final var portal = Js.<ReactPortal>uncheckedCast(next);
-                    final var container = Js.<Node>uncheckedCast(portal.containerInfo);
-                    final var mount = mountParent(container);
-                    final var last = lastDomChild();
-                    final var anchor = 8 == container.nodeType ? container : null == last ? null : last.nextSibling;
-                    reconcileChildren(portal.children, scope, (changed, failure) -> {
-                        if (null == failure && changed) {
-                            root._mutations.add(new Effect(
-                                    this,
-                                    () -> placeChildren(
-                                            mount, null != anchor && mount == anchor.parentNode ? anchor : null)));
-                        }
-                        finish.finish(false, failure);
-                    });
+                    reconcileChildren(portal.children, scope, finish);
                     return;
                 }
                 case FRAGMENT -> {
@@ -1167,15 +1146,14 @@ final class Renderer {
                 }
                 case ROOT, VIEW, HOST -> throw new IllegalStateException("Unexpected fiber kind " + kind);
             }
-            finish.finish(false, null);
+            finish.finish(null);
         }
 
-        private void finishUpdate(
-                boolean changed, @Nullable RenderFailure failure, @Nullable Scope scope, Completion complete) {
+        private void finishUpdate(@Nullable RenderFailure failure, @Nullable Scope scope, Completion complete) {
             if (null != failure) {
                 final var suspense = root._legacySuspense;
                 if (failure.source != this || null == suspense || !failure.isSuspension()) {
-                    complete.finish(false, failure);
+                    complete.finish(failure);
                     return;
                 }
                 suspense.failures.add(failure);
@@ -1189,9 +1167,12 @@ final class Renderer {
                 reconcileChildren(null, scope, complete);
                 return;
             }
+            if (Kind.HOST != kind) {
+                queuePlacement();
+            }
             _initialized = true;
             updateDurations(_selfDuration);
-            complete.finish(changed, null);
+            complete.finish(null);
         }
 
         private double _selfDuration;
@@ -1217,19 +1198,17 @@ final class Renderer {
                 children = NO_CHILDREN;
             }
             final var previous = null == oldNode ? null : oldNode.inputs();
-            final var initialText =
-                    mounting && directText ? Js.asString(stringValue(Objects.requireNonNull(content))) : null;
-            if (!mounting && !Js.isTripleEqual(previous, inputs)) {
-                String text = null;
-                if (tracksChildren) {
-                    final var oldContent = null == previous ? null : previous.get("children");
-                    if (directText && !Js.isTripleEqual(oldContent, content)) {
-                        text = Js.asString(stringValue(Objects.requireNonNull(content)));
-                    } else if (!directText && isText(oldContent)) {
-                        text = "";
-                    }
-                }
-                root._mutations.add(new HostProperties(this, inputs, text));
+            final var properties = !mounting && !Js.isTripleEqual(previous, inputs);
+            final var oldContent = null == previous ? null : previous.get("children");
+            final var text = directText && (mounting || !Js.isTripleEqual(oldContent, content))
+                    ? Js.asString(stringValue(Objects.requireNonNull(content)))
+                    : null;
+            if (properties
+                    && tracksChildren
+                    && !directText
+                    && null != previous
+                    && (isText(oldContent) || DomHost.hasHtml(previous))) {
+                _resetCommit = root._commitSequence;
             }
 
             final var duration = root.time() - actualStartTime;
@@ -1237,22 +1216,22 @@ final class Renderer {
             if (tracksChildren && !directText) {
                 if (root.concurrent) {
                     prepareHostChildren(
-                            content, scope, element, namespace, initialText, restoreControl, duration, complete);
+                            content, scope, element, namespace, text, properties, restoreControl, duration, complete);
                 } else {
                     reconcileChildren(content, scope, root._saveResult);
                     finishHost(
                             element,
                             namespace,
-                            initialText,
+                            text,
+                            properties,
                             restoreControl,
                             duration,
                             scope,
                             complete,
-                            root._resultChanged,
                             root._resultFailure);
                 }
             } else {
-                finishHost(element, namespace, initialText, restoreControl, duration, scope, complete, false, null);
+                finishHost(element, namespace, text, properties, restoreControl, duration, scope, complete, null);
             }
         }
 
@@ -1261,51 +1240,42 @@ final class Renderer {
                 @Nullable Scope scope,
                 ReactElement element,
                 @Nullable String namespace,
-                @Nullable String initialText,
+                @Nullable String text,
+                boolean properties,
                 boolean restoreControl,
                 double duration,
                 Completion complete) {
             reconcileChildren(
                     content,
                     scope,
-                    (changed, failure) -> finishHost(
-                            element,
-                            namespace,
-                            initialText,
-                            restoreControl,
-                            duration,
-                            scope,
-                            complete,
-                            changed,
-                            failure));
+                    failure -> finishHost(
+                            element, namespace, text, properties, restoreControl, duration, scope, complete, failure));
         }
 
         private void finishHost(
                 ReactElement element,
                 @Nullable String namespace,
-                @Nullable String initialText,
+                @Nullable String text,
+                boolean properties,
                 boolean restoreControl,
                 double duration,
                 @Nullable Scope scope,
                 Completion complete,
-                boolean contentChanged,
                 @Nullable RenderFailure failure) {
             if (null != failure) {
-                finishUpdate(false, failure, scope, complete);
+                finishUpdate(failure, scope, complete);
                 return;
             }
             final var mounting = null != namespace;
             if (null != namespace) {
                 final var started = root.time();
                 try {
-                    mountHost(element, namespace, initialText);
+                    mountHost(element, namespace, text);
                 } catch (Throwable error) {
-                    finishUpdate(false, new RenderFailure(this, error), scope, complete);
+                    finishUpdate(new RenderFailure(this, error), scope, complete);
                     return;
                 }
                 duration += root.time() - started;
-            } else if (contentChanged || restoreControl) {
-                root._mutations.add(new HostPlacement(this, contentChanged, restoreControl));
             }
             final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(dom));
             final var tag = Js.asString(type);
@@ -1314,9 +1284,21 @@ final class Renderer {
                     && ("button".equals(tag) || DomHost.isControlTag(tag))) {
                 autofocus(host);
             }
-            reconcileRef(element.ref(), host);
+            final var nextRef = element.ref();
+            final var detach = ref != nextRef && changeRef(nextRef, host);
+            if (properties || restoreControl || detach || _resetCommit == root._commitSequence) {
+                root._mutations.add(new HostUpdate(
+                        this,
+                        properties ? element.inputs() : null,
+                        text,
+                        restoreControl,
+                        detach,
+                        _placementCommit == root._commitSequence));
+            } else {
+                queuePlacement();
+            }
             recordDurations(mounting, duration);
-            finishUpdate(false, null, scope, complete);
+            finishUpdate(null, scope, complete);
         }
 
         private void mountHost(ReactElement element, String namespace, @Nullable String initialText) {
@@ -1400,9 +1382,10 @@ final class Renderer {
                 renderView(component);
             } else if (_captured || !refreshChildren) {
                 reconcileRef(element.ref(), component);
+                queuePlacement();
                 _initialized = true;
                 updateDurations(0);
-                complete.finish(false, null);
+                complete.finish(null);
                 return;
             }
             finishView(
@@ -1440,16 +1423,17 @@ final class Renderer {
                 Completion complete) {
             final var elapsed = root.time() - actualStartTime;
             final var snapshots = root._snapshots.size();
-            final Completion finish = (changedOutput, failure) -> {
+            final var mutations = root._mutations.size();
+            final Completion finish = failure -> {
                 Task onError = null;
                 if (null != failure) {
                     if (component instanceof OnComponentDidCatch catcher && !failure.isSuspension()) {
                         root._snapshots
                                 .subList(snapshots, root._snapshots.size())
                                 .clear();
-                        onError = capture(catcher, failure, false);
+                        onError = capture(catcher, failure, false, mutations);
                     } else {
-                        finishUpdate(false, failure, scope, complete);
+                        finishUpdate(failure, scope, complete);
                         return;
                     }
                 }
@@ -1474,11 +1458,11 @@ final class Renderer {
                 }
                 reconcileRef(element.ref(), component);
                 recordDurations(mounting, render ? elapsed : 0);
-                finishUpdate(changedOutput || null != onError, null, scope, complete);
+                finishUpdate(null, scope, complete);
             };
             if (walkChildren) {
                 visitCommittedChildren(scope);
-                finish.finish(root._resultChanged, root._resultFailure);
+                finish.finish(root._resultFailure);
             } else {
                 reconcileChildren(output, scope, finish);
             }
@@ -1509,17 +1493,16 @@ final class Renderer {
             final var snapshots = root._snapshots.size();
             final var mutations = root._mutations.size();
             final var effects = root._effects.size();
-            final var deletions = root._deletions.size();
             children = primary;
-            reconcileChildren(inputs.get("children"), scope, (changed, failure) -> {
+            reconcileChildren(inputs.get("children"), scope, failure -> {
                 if (null == failure) {
                     completePrimary(fallback);
-                    complete.finish(changed || suspended, null);
+                    complete.finish(null);
                     return;
                 }
                 if (!failure.isSuspension()) {
                     queueDeletions(fallback);
-                    complete.finish(false, failure);
+                    complete.finish(failure);
                     return;
                 }
                 rollback(undo, checkpoint);
@@ -1527,7 +1510,6 @@ final class Renderer {
                 root._snapshots.subList(snapshots, root._snapshots.size()).clear();
                 root._mutations.subList(mutations, root._mutations.size()).clear();
                 root._effects.subList(effects, root._effects.size()).clear();
-                root._deletions.subList(deletions, root._deletions.size()).clear();
                 final var thrown = failure.thrown();
                 if (_suspension != thrown) {
                     _suspension = thrown;
@@ -1539,14 +1521,14 @@ final class Renderer {
                     try {
                         Js.<Thenable>uncheckedCast(thrown).then(retry, retry);
                     } catch (Throwable error) {
-                        complete.finish(false, new RenderFailure(this, error));
+                        complete.finish(new RenderFailure(this, error));
                         return;
                     }
                 }
                 if (suspended) {
                     children = previous;
                     root._mutations.add(new Effect(this, () -> root._heldFallbacks.add(this)));
-                    complete.finish(false, null);
+                    complete.finish(null);
                 } else {
                     deferFallback();
                     showFallback(inputs, scope, primary, fallback, false, complete);
@@ -1589,16 +1571,16 @@ final class Renderer {
             final var attempt = new LegacySuspense();
             root._legacySuspense = attempt;
             children = primary;
-            reconcileChildren(inputs.get("children"), scope, (changed, renderFailure) -> {
+            reconcileChildren(inputs.get("children"), scope, renderFailure -> {
                 root._legacySuspense = outer;
                 if (null != renderFailure) {
                     queueDeletions(fallback);
-                    complete.finish(false, renderFailure);
+                    complete.finish(renderFailure);
                     return;
                 }
                 if (attempt.failures.isEmpty()) {
                     completePrimary(fallback);
-                    complete.finish(changed || suspended, null);
+                    complete.finish(null);
                     return;
                 }
 
@@ -1615,19 +1597,13 @@ final class Renderer {
                     _suspension = attempt;
                     final var hidden = children;
                     root._effects.add(new Effect(this, () -> setHidden(hidden, true)));
-                    showFallback(
-                            inputs,
-                            scope,
-                            hidden,
-                            fallback,
-                            true,
-                            (fallbackChanged, failure) -> complete.finish(changed || fallbackChanged, failure));
+                    showFallback(inputs, scope, hidden, fallback, true, complete);
                 } else {
                     root._effects.add(new Effect(this, () -> {
                         _fallbackPending = attempt;
                         invalidate();
                     }));
-                    complete.finish(changed, null);
+                    complete.finish(null);
                 }
             });
         }
@@ -1653,19 +1629,22 @@ final class Renderer {
                 boolean suspended,
                 Completion complete) {
             children = fallback;
-            reconcileChildren(inputs.get("fallback"), scope, (changed, failure) -> {
+            reconcileChildren(inputs.get("fallback"), scope, failure -> {
                 if (0 == children.length) {
                     children = primary;
                 } else if (0 != primary.length) {
                     final var next = Arrays.copyOf(primary, primary.length + children.length);
                     System.arraycopy(children, 0, next, primary.length, children.length);
+                    for (int i = primary.length; i < next.length; i++) {
+                        next[i]._position = i;
+                    }
                     children = next;
                 }
                 _primaryCount = primary.length;
                 if (!suspended) {
                     root._effects.add(new Effect(this, () -> setHidden(primary, true)));
                 }
-                complete.finish(changed || !suspended, failure);
+                complete.finish(failure);
             });
         }
 
@@ -1688,6 +1667,9 @@ final class Renderer {
             final var suspension = _suspension;
             final var primaryCount = _primaryCount;
             final var index = _index;
+            final var position = _position;
+            final var placementCommit = _placementCommit;
+            final var resetCommit = _resetCommit;
             final var visitedCommit = _visitedCommit;
             final var renderedCommit = _renderedCommit;
             final var dirty = _dirty;
@@ -1719,6 +1701,9 @@ final class Renderer {
                 _suspension = suspension;
                 _primaryCount = primaryCount;
                 _index = index;
+                _position = position;
+                _placementCommit = placementCommit;
+                _resetCommit = resetCommit;
                 _visitedCommit = visitedCommit;
                 _renderedCommit = renderedCommit;
                 _dirty = dirty;
@@ -1736,8 +1721,12 @@ final class Renderer {
         }
 
         private void queueDeletions(Fiber[] removed) {
+            queueDeletions(removed, root._mutations.size());
+        }
+
+        private void queueDeletions(Fiber[] removed, int position) {
             for (final var child : removed) {
-                root._deletions.add(child);
+                root._mutations.add(position++, new Deletion(child));
             }
         }
 
@@ -1770,13 +1759,14 @@ final class Renderer {
             }
         }
 
-        private Task capture(OnComponentDidCatch catcher, RenderFailure failure, boolean committing) {
+        private Task capture(
+                OnComponentDidCatch catcher, RenderFailure failure, boolean committing, int mutationPosition) {
             _captured = true;
             output = null;
             if (committing) {
                 disposeChildren();
             } else {
-                queueDeletions(children);
+                queueDeletions(children, mutationPosition);
                 children = NO_CHILDREN;
             }
             final var info = Js.<ReactErrorInfo>uncheckedCast(JsPropertyMap.of("componentStack", failure.stack()));
@@ -1784,16 +1774,13 @@ final class Renderer {
         }
 
         private void reconcileRef(@Nullable Object next, Object value) {
-            if (ref != next) {
-                changeRef(next, value);
+            if (ref != next && changeRef(next, value)) {
+                root._mutations.add(new Effect(this, this::detachRef));
             }
         }
 
-        private void changeRef(@Nullable Object next, Object value) {
+        private boolean changeRef(@Nullable Object next, Object value) {
             final var previous = ref;
-            if (null != previous && previous == _attachedRef) {
-                root._mutations.add(new Effect(this, this::detachRef));
-            }
             ref = next;
             if (null != next) {
                 root._effects.add(new Effect(this, () -> {
@@ -1803,6 +1790,7 @@ final class Renderer {
                     }
                 }));
             }
+            return null != previous && previous == _attachedRef;
         }
 
         private Node boundary() {
@@ -1848,44 +1836,85 @@ final class Renderer {
             }
         }
 
-        private void placeChildren(Node container, @Nullable Node anchor) {
-            placeChildrenFrom(container, anchor, _placementStart);
+        private void queuePlacement() {
+            if (Kind.PORTAL != kind && _placementCommit == root._commitSequence) {
+                root._mutations.add(new Placement(this));
+            }
         }
 
-        private @Nullable Node lastDomChild() {
-            for (int i = children.length - 1; 0 <= i; i--) {
-                final var child = children[i];
-                if (Kind.PORTAL != child.kind) {
-                    final var last = null != child.dom ? child.dom : child.lastDomChild();
-                    if (null != last) {
-                        return last;
+        private void place() {
+            var host = Objects.requireNonNull(parent);
+            while (Kind.HOST != host.kind && Kind.PORTAL != host.kind && Kind.ROOT != host.kind) {
+                host = Objects.requireNonNull(host.parent);
+            }
+            final Node container;
+            final Node anchor;
+            if (Kind.HOST == host.kind) {
+                container = Objects.requireNonNull(host.dom);
+                host.resetContent(container);
+                anchor = nextStableHost(host);
+            } else {
+                final var boundary = Js.<Node>uncheckedCast(host.type);
+                container = mountParent(boundary);
+                final var stable = nextStableHost(host);
+                anchor = null != stable ? stable : 8 == boundary.nodeType ? boundary : null;
+            }
+            insertHostNodes(container, anchor);
+            _placementCommit = 0;
+        }
+
+        private @Nullable Node nextStableHost(Fiber host) {
+            for (var branch = this; branch != host; ) {
+                final var parent = Objects.requireNonNull(branch.parent);
+                final var siblings = parent.children;
+                for (int i = branch._position + 1; i < siblings.length; i++) {
+                    final var sibling = siblings[i].firstStableHost();
+                    if (null != sibling) {
+                        return sibling;
                     }
+                }
+                branch = parent;
+            }
+            return null;
+        }
+
+        private @Nullable Node firstStableHost() {
+            if (Kind.PORTAL == kind || _placementCommit == root._commitSequence) {
+                return null;
+            }
+            if (null != dom) {
+                return dom;
+            }
+            for (final var child : children) {
+                final var node = child.firstStableHost();
+                if (null != node) {
+                    return node;
                 }
             }
             return null;
         }
 
-        private @Nullable Node placeChildrenFrom(Node container, @Nullable Node before, int start) {
-            var anchor = before;
-            for (int i = children.length - 1; start <= i; i--) {
-                final var child = children[i];
-                if (Kind.PORTAL != child.kind) {
-                    final var node = child.dom;
-                    if (null == node) {
-                        anchor = child.placeChildrenFrom(container, anchor, 0);
-                    } else {
-                        if (container != node.parentNode || anchor != node.nextSibling) {
-                            if (null == anchor) {
-                                container.appendChild(node);
-                            } else {
-                                container.insertBefore(node, anchor);
-                            }
-                        }
-                        anchor = node;
-                    }
-                }
+        private void insertHostNodes(Node container, @Nullable Node anchor) {
+            if (Kind.PORTAL == kind) {
+                return;
             }
-            return anchor;
+            final var node = dom;
+            if (null == node) {
+                for (final var child : children) {
+                    child.insertHostNodes(container, anchor);
+                }
+            } else if (null == anchor) {
+                container.appendChild(node);
+            } else {
+                container.insertBefore(node, anchor);
+            }
+        }
+
+        private void resetContent(Node host) {
+            if (_resetCommit == root._commitSequence) {
+                host.textContent = "";
+                _resetCommit = 0;
+            }
         }
 
         double actualDuration() {
@@ -1916,10 +1945,14 @@ final class Renderer {
         }
 
         private void disposeChildren() {
+            disposeChildren(true);
+        }
+
+        private void disposeChildren(boolean removeDom) {
             final var previous = children;
             children = NO_CHILDREN;
             for (final var child : previous) {
-                child.dispose();
+                child.dispose(removeDom);
             }
         }
 
@@ -1932,6 +1965,10 @@ final class Renderer {
         }
 
         private void dispose() {
+            dispose(true);
+        }
+
+        private void dispose(boolean removeDom) {
             if (!alive) {
                 return;
             }
@@ -1947,15 +1984,18 @@ final class Renderer {
                     root.runEffect(this, lifecycle::componentWillUnmount);
                 }
             }
-            disposeChildren();
             final var node = dom;
+            // A host's descendants stay in its detached DOM subtree. Portals start in a separate container.
+            disposeChildren(Kind.PORTAL == kind || removeDom && null == node);
             if (null != node) {
                 if (Kind.HOST == kind) {
                     DomHost.clear(Js.uncheckedCast(node));
                 }
-                final var container = node.parentNode;
-                if (null != container) {
-                    container.removeChild(node);
+                if (removeDom) {
+                    final var container = node.parentNode;
+                    if (null != container) {
+                        container.removeChild(node);
+                    }
                 }
             }
         }
@@ -1969,7 +2009,7 @@ final class Renderer {
     @FunctionalInterface
     private interface Completion {
         @SuppressWarnings("unusable-by-js")
-        void finish(boolean changed, @Nullable RenderFailure failure);
+        void finish(@Nullable RenderFailure failure);
     }
 
     private record Descriptor(
@@ -2050,29 +2090,46 @@ final class Renderer {
         }
     }
 
-    private record HostProperties(
-            Fiber fiber,
-            JsPropertyMap<@Nullable Object> inputs,
-            @Nullable String text) implements CommitEffect {
+    private record Placement(Fiber fiber) implements CommitEffect {
         @Override
         public void apply() {
-            final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(fiber.dom));
-            DomHost.update(host, inputs);
-            if (null != text) {
-                setTextContent(host, text);
-            }
+            fiber.place();
         }
     }
 
-    private record HostPlacement(Fiber fiber, boolean place, boolean restoreControl) implements CommitEffect {
+    private record Deletion(Fiber fiber) implements CommitEffect {
+        @Override
+        public void apply() {
+            fiber.dispose();
+        }
+    }
+
+    private record HostUpdate(
+            Fiber fiber,
+            @Nullable JsPropertyMap<@Nullable Object> inputs,
+            @Nullable String text,
+            boolean restoreControl,
+            boolean detach,
+            boolean place)
+            implements CommitEffect {
         @Override
         public void apply() {
             final var host = Js.<Element>uncheckedCast(Objects.requireNonNull(fiber.dom));
-            if (place) {
-                fiber.placeChildren(host, null);
+            fiber.resetContent(host);
+            if (detach) {
+                fiber.detachRef();
             }
-            if (restoreControl) {
-                DomHost.restoreControlled(host);
+            if (place) {
+                fiber.place();
+            }
+            if (null != inputs || restoreControl) {
+                final var state = Objects.requireNonNull(DomEvents.state(host));
+                if (null != inputs) {
+                    DomHost.update(host, state, inputs, text);
+                }
+                if (restoreControl) {
+                    DomHost.restoreControlled(host, state);
+                }
             }
         }
     }
@@ -2152,15 +2209,6 @@ final class Renderer {
     private static boolean isText(@Nullable Object value) {
         final var type = Js.typeof(value);
         return "string".equals(type) || "number".equals(type);
-    }
-
-    private static void setTextContent(Node node, String text) {
-        final var first = node.firstChild;
-        if (!text.isEmpty() && null != first && 3 == first.nodeType && null == first.nextSibling) {
-            first.nodeValue = text;
-        } else {
-            node.textContent = text;
-        }
     }
 
     @JsFunction

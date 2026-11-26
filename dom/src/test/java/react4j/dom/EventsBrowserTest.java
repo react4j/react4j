@@ -14,6 +14,7 @@ import react4j.ReactNode;
 import react4j.dom.events.KeyboardEvent;
 import react4j.dom.events.ReactEventHandler;
 import react4j.dom.events.SyntheticEvent;
+import react4j.dom.proptypes.html.RefConsumer;
 import react4j.webtesting.Browser;
 
 @NullMarked
@@ -1187,6 +1188,7 @@ public final class EventsBrowserTest {
                             .equals(mountProbeTrace()),
                     "New custom elements initialize after their detached descendants and connect during insertion");
 
+            hostUpdateOrder(root);
             registerCustomizedButton();
             final var clickTrace = new StringBuilder();
             final ReactEventHandler customClick = event -> clickTrace.append("click");
@@ -1214,6 +1216,159 @@ public final class EventsBrowserTest {
             root.remove();
         }
     }
+
+    private static void hostUpdateOrder(Browser.Element root) {
+        final var differences = new StringBuilder();
+        ReactDOM.render(probedParent("p0", probedChild("one", "c0", "kept")), root);
+        final var parent = Browser.query(root, "react4j-mount-parent");
+        final var child = Browser.query(root, "react4j-mount-child");
+
+        beginUpdateProbe();
+        ReactDOM.render(probedParent("p1", probedChild("one", "c1", "kept")), root);
+        checkUpdateTrace(
+                differences,
+                "Child attributes update before the parent's attributes",
+                "child:attribute:c1:p0:kept parent:attribute:p1:c1:kept");
+        check(Browser.same(parent, Browser.query(root, "react4j-mount-parent")), "Parent host was retained");
+        check(Browser.same(child, Browser.query(root, "react4j-mount-child")), "Child host was retained");
+
+        beginUpdateProbe();
+        ReactDOM.render(probedParent("p2", probedChild("two", "c2", "next")), root);
+        checkUpdateTrace(
+                differences,
+                "Child replacement precedes the parent's attributes",
+                "child:attribute:c2:-: child:disconnected:c1 child:connected:c2:p1:next parent:attribute:p2:c2:next");
+        check(!Browser.same(child, Browser.query(root, "react4j-mount-child")), "A new child key replaces its host");
+
+        ReactDOM.render(probedParent("p3", ReactNode.of("stale text")), root);
+        beginUpdateProbe();
+        ReactDOM.render(probedParent("p4", probedChild("three", "c3", "content")), root);
+        checkUpdateTrace(
+                differences,
+                "Direct text is cleared before child placement",
+                "child:attribute:c3:-: child:connected:c3:p3:content parent:attribute:p4:c3:content");
+
+        ReactDOM.render(
+                host(
+                        "react4j-mount-parent",
+                        JsPropertyMap.of(
+                                "data-probe",
+                                "p5",
+                                "dangerouslySetInnerHTML",
+                                JsPropertyMap.of("__html", "<em>stale HTML</em>"))),
+                root);
+        beginUpdateProbe();
+        ReactDOM.render(probedParent("p6", probedChild("four", "c4", "html-next")), root);
+        checkUpdateTrace(
+                differences,
+                "Raw HTML is cleared before child placement",
+                "child:attribute:c4:-: child:connected:c4:p5:html-next parent:attribute:p6:c4:html-next");
+        check(!Browser.exists(root, "em"), "Old raw HTML is gone");
+        check("html-next".equals(root.getTextContent()), "The new child remains after updating parent properties");
+
+        final var retainedDescription = probedChild("anchor", "anchor", "T");
+        ReactDOM.render(probedParent("p7", ReactNode.of(retainedDescription)), root);
+        final var retained = Browser.query(root, "react4j-mount-child");
+        beginUpdateProbe();
+        ReactDOM.render(
+                probedParent(
+                        "p7",
+                        ReactNode.of(retainedDescription, probedChild("a", "a", "A"), probedChild("b", "b", "B"))),
+                root);
+        checkUpdateTrace(
+                differences,
+                "New sibling hosts connect in forward placement order",
+                "child:attribute:a:-: child:attribute:b:-: child:connected:a:p7:TA child:connected:b:p7:TAB");
+        check(
+                Browser.same(retained, Browser.query(root, "react4j-mount-child")),
+                "The existing prefix host was retained");
+        check("TAB".equals(root.getTextContent()), "New siblings are in the requested DOM order");
+
+        final var a = probedChild("a", "a", "A");
+        final var b = probedChild("b", "b", "B");
+        final RefConsumer oldRef = node -> recordUpdate(null == node ? "ref:old:detach" : "ref:old:attach");
+        final var c = ReactElement.createHostElement(
+                "react4j-mount-child", "c", oldRef, JsPropertyMap.of("data-probe", "c", "children", "C"));
+        ReactDOM.render(probedParent("p8", ReactNode.of(a, b, c)), root);
+        final var previous = Browser.queryAll(root, "react4j-mount-child");
+        beginUpdateProbe();
+        ReactDOM.render(probedParent("p8", ReactNode.of(c, a, b)), root);
+        checkUpdateTrace(
+                differences,
+                "Keyed siblings move in forward placement order",
+                "child:disconnected:a child:connected:a:p8:BCA child:disconnected:b child:connected:b:p8:CAB");
+        final var next = Browser.queryAll(root, "react4j-mount-child");
+        check(
+                Browser.same(previous[2], next[0])
+                        && Browser.same(previous[0], next[1])
+                        && Browser.same(previous[1], next[2]),
+                "Moving keyed siblings retains every DOM node");
+
+        final RefConsumer newRef = node -> recordUpdate(null == node ? "ref:new:detach" : "ref:new:attach");
+        final var movedC = ReactElement.createHostElement(
+                "react4j-mount-child", "c", newRef, JsPropertyMap.of("children", "X", "data-probe", "c1"));
+        final var movedA = ReactElement.createHostElement(
+                "react4j-mount-child", "a", null, JsPropertyMap.of("children", "Y", "data-probe", "a1"));
+        beginUpdateProbe();
+        ReactDOM.render(probedParent("p9", ReactNode.of(b, movedC, movedA)), root);
+        checkUpdateTrace(
+                differences,
+                "Each keyed host moves before its own updates",
+                "ref:old:detach child:disconnected:c child:connected:c:p8:ABC child:attribute:c1:p8:X "
+                        + "child:disconnected:a child:connected:a:p8:BXA child:attribute:a1:p8:Y "
+                        + "parent:attribute:p9:b:BXY ref:new:attach");
+
+        ReactDOM.render(
+                host(
+                        "react4j-mount-parent",
+                        JsPropertyMap.of(
+                                "data-probe",
+                                "p10",
+                                "dangerouslySetInnerHTML",
+                                JsPropertyMap.of("__html", "raw text"))),
+                root);
+        final var text = Browser.property(parent, "firstChild");
+        beginUpdateProbe();
+        ReactDOM.render(
+                host("react4j-mount-parent", JsPropertyMap.of("children", "direct", "data-probe", "p11")), root);
+        checkUpdateTrace(
+                differences,
+                "Direct text updates occur at the children property position",
+                "parent:attribute:p11:-:direct");
+        check(
+                null != text && Browser.same(text, Browser.property(parent, "firstChild")),
+                "Replacing raw text with direct text preserves the lone text node");
+        check(0 == differences.length(), differences.toString());
+    }
+
+    private static ReactElement probedParent(String value, ReactNode children) {
+        return host("react4j-mount-parent", JsPropertyMap.of("data-probe", value, "children", children));
+    }
+
+    private static ReactElement probedChild(String key, String value, String text) {
+        return ReactElement.createHostElement(
+                "react4j-mount-child", key, null, JsPropertyMap.of("data-probe", value, "children", text));
+    }
+
+    private static void checkUpdateTrace(StringBuilder differences, String description, String expected) {
+        final var actual = endUpdateProbe();
+        if (!expected.equals(actual)) {
+            differences
+                    .append(description)
+                    .append(", observed [")
+                    .append(actual)
+                    .append("]\n");
+        }
+    }
+
+    @JsMethod
+    private static native void beginUpdateProbe();
+
+    @JsMethod
+    private static native void recordUpdate(String value);
+
+    @JsMethod
+    private static native String endUpdateProbe();
 
     @JsMethod
     private static native void beginMountProbe();

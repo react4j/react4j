@@ -12,6 +12,16 @@ const uIEvent = goog.require('react4j.dom.events.UIEvent.$Overlay');
 const wheelEvent = goog.require('react4j.dom.events.WheelEvent.$Overlay');
 
 let mountProbe = [];
+let updateProbe = null;
+
+EventsBrowserTest.beginUpdateProbe = function() { updateProbe = []; };
+/** @param {string} value */
+EventsBrowserTest.recordUpdate = function(value) { if (updateProbe) updateProbe.push(value); };
+EventsBrowserTest.endUpdateProbe = function() {
+  const trace = updateProbe ? updateProbe.join(' ') : '';
+  updateProbe = null;
+  return trace;
+};
 
 EventsBrowserTest.beginMountProbe = function() {
   mountProbe = [];
@@ -29,9 +39,24 @@ EventsBrowserTest.beginMountProbe = function() {
     Object.defineProperty(Observed, 'observedAttributes', {value: ['data-probe']});
     Observed.prototype['attributeChangedCallback'] = function() {
       mountProbe.push(role + ':attribute:' + this.childNodes.length + ':' + this.isConnected);
+      if (updateProbe) {
+        const peer = role === 'parent' ? this.querySelector('react4j-mount-child') : this.parentElement;
+        updateProbe.push(role + ':attribute:' + this.getAttribute('data-probe') + ':' +
+            (peer?.getAttribute('data-probe') ?? '-') + ':' + this.textContent);
+      }
     };
     Observed.prototype['connectedCallback'] = function() {
       mountProbe.push(role + ':connected:' + this.isConnected);
+      if (updateProbe && role === 'child') {
+        const parent = this.parentElement;
+        updateProbe.push('child:connected:' + this.getAttribute('data-probe') + ':' +
+            (parent?.getAttribute('data-probe') ?? '-') + ':' + (parent?.textContent ?? ''));
+      }
+    };
+    Observed.prototype['disconnectedCallback'] = function() {
+      if (updateProbe && role === 'child') {
+        updateProbe.push('child:disconnected:' + this.getAttribute('data-probe'));
+      }
     };
     customElements.define(name, Observed);
   }

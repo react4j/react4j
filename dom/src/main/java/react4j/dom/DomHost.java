@@ -248,6 +248,17 @@ final class DomHost {
         return container.document().createTextNode(value);
     }
 
+    static void setTextContent(final Node node, final String text) {
+        if (!text.isEmpty()) {
+            final var first = node.firstChild;
+            if (null != first && 3 == first.nodeType && null == first.nextSibling) {
+                first.nodeValue = text;
+                return;
+            }
+        }
+        node.textContent = text;
+    }
+
     static DomEvents.State prepareInitial(
             final Element element,
             final String tag,
@@ -270,11 +281,14 @@ final class DomHost {
         DomEvents.attach(element, state, boundary, rootContainer, logicalParent);
     }
 
-    static void update(final Element element, final JsPropertyMap<@Nullable Object> next) {
-        final var state = Objects.requireNonNull(DomEvents.state(element));
+    static void update(
+            final Element element,
+            final DomEvents.State state,
+            final JsPropertyMap<@Nullable Object> next,
+            @Nullable final String text) {
         final var previous = state.inputs;
         state.inputs = next;
-        applyProperties(element, state, previous, next, null);
+        applyProperties(element, state, previous, next, text);
     }
 
     private static void applyProperties(
@@ -282,7 +296,7 @@ final class DomHost {
             final DomEvents.State state,
             @Nullable final JsPropertyMap<@Nullable Object> previous,
             final JsPropertyMap<@Nullable Object> next,
-            @Nullable final String initialText) {
+            @Nullable final String text) {
         final var tag = state.tag;
         final boolean custom = tag.contains("-")
                 ? !RESERVED_HYPHENATED_TAGS.contains(tag)
@@ -301,8 +315,8 @@ final class DomHost {
             }
         }
         for (final var name : ownKeys(next)) {
-            if (null != initialText && "children".equals(name)) {
-                element.textContent = initialText;
+            if (null != text && "children".equals(name)) {
+                setTextContent(element, text);
                 continue;
             }
             final var oldValue = null == previous ? null : previous.get(name);
@@ -344,8 +358,8 @@ final class DomHost {
             case "style" -> setStyles(element, previous, value);
             case "dangerouslySetInnerHTML" -> {
                 final var html = rawHtml(value);
-                if (!Js.isTripleEqual(rawHtml(previous), html)) {
-                    element.innerHTML = null == html ? "" : stringify(html);
+                if (null != html && !Js.isTripleEqual(rawHtml(previous), html)) {
+                    element.innerHTML = stringify(html);
                 }
             }
             case "checked", "multiple", "muted", "selected" -> {
@@ -526,14 +540,7 @@ final class DomHost {
         return CONTROLLED_TAGS.contains(tag);
     }
 
-    static void restoreControlled(final Element element) {
-        final var state = DomEvents.state(element);
-        if (null != state) {
-            restoreControlled(element, state);
-        }
-    }
-
-    private static void restoreControlled(final Element element, final DomEvents.State state) {
+    static void restoreControlled(final Element element, final DomEvents.State state) {
         final var tag = state.tag;
         final var inputs = state.inputs;
         final var value = inputs.get("value");
@@ -649,14 +656,20 @@ final class DomHost {
             Document document,
             Element element,
             @Nullable Object selectionStart,
-            @Nullable Object selectionEnd) {
+            @Nullable Object selectionEnd,
+            @Nullable EditableSelection editableSelection) {
         static @Nullable Focus read(final Document document) {
             final var active = document.activeElement;
-            if (null == active || null == DomEvents.state(active)) {
+            if (null == active || active == document.body) {
                 return null;
             }
             final var props = properties(active);
-            return new Focus(document, active, props.get("selectionStart"), props.get("selectionEnd"));
+            final var start = props.get("selectionStart");
+            final var end = props.get("selectionEnd");
+            final var editable = null == start && "true".equals(props.get("contentEditable"))
+                    ? EditableSelection.read(document, active)
+                    : null;
+            return new Focus(document, active, start, end, editable);
         }
 
         void restore() {
@@ -666,8 +679,66 @@ final class DomHost {
             final var props = properties(element);
             if (null != selectionStart && null != selectionEnd && null != props.get("selectionStart")) {
                 element.setSelectionRange(Js.asInt(selectionStart), Js.asInt(selectionEnd));
+            } else if (null != editableSelection && "true".equals(props.get("contentEditable"))) {
+                editableSelection.restore(document, element);
             }
-            element.focus(JsPropertyMap.of("preventScroll", true));
+            if ("function".equals(Js.typeof(props.get("focus")))) {
+                element.focus(JsPropertyMap.of("preventScroll", true));
+            }
+        }
+    }
+
+    private record EditableSelection(int anchor, int focus) {
+        static @Nullable EditableSelection read(final Document document, final Element element) {
+            final var selection = Js.<@Nullable Selection>uncheckedCast(document.getSelection());
+            if (null == selection) {
+                return null;
+            }
+            final var anchorNode = selection.anchorNode;
+            final var focusNode = selection.focusNode;
+            if (null == anchorNode
+                    || null == focusNode
+                    || !element.contains(anchorNode)
+                    || !element.contains(focusNode)) {
+                return null;
+            }
+            final var range = document.createRange();
+            range.selectNodeContents(element);
+            range.setEnd(anchorNode, selection.anchorOffset);
+            final int anchor = stringify(range).length();
+            range.setEnd(focusNode, selection.focusOffset);
+            return new EditableSelection(anchor, stringify(range).length());
+        }
+
+        void restore(final Document document, final Element element) {
+            final var selection = Js.<@Nullable Selection>uncheckedCast(document.getSelection());
+            if (null == selection) {
+                return;
+            }
+            final int length = element.textContent.length();
+            final var anchorPoint = TextPoint.at(document, element, Math.min(anchor, length));
+            final var focusPoint = TextPoint.at(document, element, Math.min(focus, length));
+            if (null != anchorPoint && null != focusPoint) {
+                selection.setBaseAndExtent(
+                        anchorPoint.node(), anchorPoint.offset(), focusPoint.node(), focusPoint.offset());
+            }
+        }
+    }
+
+    private record TextPoint(Node node, int offset) {
+        private static final int SHOW_TEXT = 4;
+
+        static @Nullable TextPoint at(final Document document, final Element element, final int offset) {
+            final var walker = document.createTreeWalker(element, SHOW_TEXT);
+            int remaining = offset;
+            for (var text = walker.nextNode(); null != text; text = walker.nextNode()) {
+                final int length = text.nodeValue.length();
+                if (remaining <= length) {
+                    return new TextPoint(text, remaining);
+                }
+                remaining -= length;
+            }
+            return null;
         }
     }
 
@@ -858,6 +929,8 @@ final class DomHost {
 
         native Node removeChild(Node node);
 
+        native boolean contains(Node node);
+
         native NodeList querySelectorAll(String selectors);
 
         native void addEventListener(String type, DomEvents.Listener listener, boolean capture);
@@ -904,9 +977,16 @@ final class DomHost {
         Element activeElement;
 
         @Nullable
+        Element body;
+
+        @Nullable
         Element documentElement;
 
         native @Nullable JsPropertyMap<@Nullable Object> getSelection();
+
+        native Range createRange();
+
+        native TreeWalker createTreeWalker(Node root, int whatToShow);
 
         native Element createElement(String name);
 
@@ -915,6 +995,32 @@ final class DomHost {
         native Element createElementNS(String namespace, String name);
 
         native Node createTextNode(String text);
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Selection")
+    static class Selection {
+        @Nullable
+        Node anchorNode;
+
+        @Nullable
+        Node focusNode;
+
+        int anchorOffset;
+        int focusOffset;
+
+        native void setBaseAndExtent(Node anchorNode, int anchorOffset, Node focusNode, int focusOffset);
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Range")
+    static class Range {
+        native void selectNodeContents(Node node);
+
+        native void setEnd(Node node, int offset);
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "TreeWalker")
+    static class TreeWalker {
+        native @Nullable Node nextNode();
     }
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "CSSStyleDeclaration")

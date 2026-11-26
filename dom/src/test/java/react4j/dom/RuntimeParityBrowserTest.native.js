@@ -63,3 +63,38 @@ RuntimeParityBrowserTest.spendTime = function() {
   }
   return elapsed;
 };
+
+
+/** @param {!Element} target @param {boolean} editable */
+RuntimeParityBrowserTest.focusForMove = function(target, editable) {
+  (/** @type {!HTMLElement} */ (target)).focus();
+  if (editable) {
+    target.ownerDocument.getSelection().setBaseAndExtent(target.firstChild, 5, target.firstChild, 2);
+  } else {
+    /** @type {!HTMLInputElement} */ (target).setSelectionRange(2, 5);
+  }
+};
+
+/** @param {!Element} target @param {boolean} editable @return {boolean} */
+RuntimeParityBrowserTest.focusSelectionPreserved = function(target, editable) {
+  if (target.ownerDocument.activeElement !== target) return false;
+  if (editable) {
+    const selection = target.ownerDocument.getSelection();
+    return selection.anchorNode === target.firstChild && selection.anchorOffset === 5 &&
+        selection.focusNode === target.firstChild && selection.focusOffset === 2;
+  }
+  const input = /** @type {!HTMLInputElement} */ (target);
+  return input.selectionStart === 2 && input.selectionEnd === 5;
+};
+
+/** @param {!Element} container @param {!Element} ancestor @param {function():void} update @return {boolean} */
+RuntimeParityBrowserTest.observeMove = function(container, ancestor, update) {
+  const observer = new MutationObserver(() => {});
+  observer.observe(container, {childList: true});
+  try {
+    update();
+    return observer.takeRecords().some(record => Array.from(record.removedNodes).includes(ancestor));
+  } finally {
+    observer.disconnect();
+  }
+};

@@ -8,6 +8,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.dom.proptypes.html.RefConsumer;
 import react4j.webtesting.Browser;
 import react4j.webtesting.BrowserPromise;
 
@@ -24,6 +25,7 @@ public final class RuntimeBrowserTest {
         try {
             BuildableBrowserTest.run(container, target);
             keyedReconciliation(container);
+            deletionOrder(container);
             int[] rendered = {0};
             RuntimeCoverageExample.render(container, true, () -> rendered[0]++);
             check(1 == rendered[0], "Render callback");
@@ -87,6 +89,46 @@ public final class RuntimeBrowserTest {
         check(a == unkeyed.getNextElementSibling(), "Moved keyed sibling reuses the DOM node");
         ReactDOM.render(DOM.div(item("c")), container);
         check(!parent.contains(a) && !parent.contains(b) && !parent.contains(unkeyed), "Deleted children detach");
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
+    private static void deletionOrder(Browser.Element container) {
+        final var trace = new StringBuilder();
+        final RefConsumer oldRef = node -> {
+            if (null == node) {
+                trace.append("A detach:")
+                        .append(Browser.query(container, "article span").getTextContent())
+                        .append(',');
+            }
+        };
+        final RefConsumer newRef = node -> {
+            if (null != node) {
+                trace.append("A attach:")
+                        .append(Browser.query(container, "article span").getTextContent())
+                        .append(',');
+            }
+        };
+        final RefConsumer removedRef = node -> {
+            if (null == node) {
+                trace.append("B detach:")
+                        .append(Browser.query(container, "article span").getTextContent())
+                        .append(',');
+            }
+        };
+        final var removed = ReactElement.createHostElement(
+                "div", null, removedRef, JsPropertyMap.of("children", DOM.strong("removed")));
+        final var original = ReactElement.createHostElement("span", null, oldRef, JsPropertyMap.of("children", "old"));
+        ReactDOM.render(DOM.section(DOM.article(original), DOM.footer(removed)), container);
+        final var oldHost = Browser.query(container, "article span");
+        final var detachedHost = Browser.query(container, "footer div");
+        final var detachedChild = Browser.query(detachedHost, "strong");
+        final var changed = ReactElement.createHostElement("span", null, newRef, JsPropertyMap.of("children", "new"));
+        ReactDOM.render(DOM.section(DOM.article(changed), DOM.footer()), container);
+        check(oldHost == Browser.query(container, "article span"), "The earlier sibling host is reused");
+        check(!container.contains(detachedHost), "The later subtree is detached from its container");
+        trace.append("nested node retained:").append(detachedHost.contains(detachedChild));
+        final var expected = "A detach:old,B detach:new,A attach:new,nested node retained:true";
+        check(expected.contentEquals(trace), "Deletion order: expected " + expected + " but observed " + trace);
         ReactDOM.unmountComponentAtNode(container);
     }
 

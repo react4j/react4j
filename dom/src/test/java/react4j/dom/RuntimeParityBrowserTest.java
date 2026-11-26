@@ -46,6 +46,7 @@ public final class RuntimeParityBrowserTest {
         try {
             lifecycle(container);
             keyedList(container);
+            focusAfterKeyedMove(container);
             hostText(container);
             replaceRefs(container);
             portalContext(container, target);
@@ -170,6 +171,57 @@ public final class RuntimeParityBrowserTest {
         check(null == Browser.property(laterText, "parentNode"), "A single text child only reuses the first child");
         ReactDOM.unmountComponentAtNode(container);
     }
+
+    private static void focusAfterKeyedMove(Browser.Element container) {
+        final var failures = new StringBuilder();
+        for (final boolean editable : new boolean[] {true, false}) {
+            final var inputs = editable
+                    ? JsPropertyMap.<@Nullable Object>of(
+                            "children",
+                            ReactElement.createHostElement(
+                                    "div",
+                                    null,
+                                    null,
+                                    JsPropertyMap.of(
+                                            "contentEditable",
+                                            Browser.bool(true),
+                                            "suppressContentEditableWarning",
+                                            Browser.bool(true),
+                                            "children",
+                                            "abcdef")))
+                    : JsPropertyMap.<@Nullable Object>of(
+                            "dangerouslySetInnerHTML", JsPropertyMap.of("__html", "<input value='abcdef'>"));
+            final var a = ReactElement.createHostElement("section", "a", null, inputs);
+            final var b = ReactElement.createHostElement("section", "b", null, JsPropertyMap.of());
+            final var c = ReactElement.createHostElement("section", "c", null, JsPropertyMap.of());
+            ReactDOM.render(ReactNode.of(a, b, c), container);
+            final var ancestor = container.getFirstElementChild();
+            final var target = Browser.query(ancestor, editable ? "[contenteditable]" : "input");
+            focusForMove(target, editable);
+            check(focusSelectionPreserved(target, editable), "The initial focus and range are set");
+            final var moved = observeMove(container, ancestor, () -> ReactDOM.render(ReactNode.of(c, a, b), container))
+                    || observeMove(container, ancestor, () -> ReactDOM.render(ReactNode.of(c, b, a), container));
+            check(moved, "The keyed update physically moved the focused ancestor");
+            check(
+                    Browser.same(target, Browser.query(ancestor, editable ? "[contenteditable]" : "input")),
+                    "Moving the ancestor preserves the focused element's identity");
+            if (!focusSelectionPreserved(target, editable)) {
+                failures.append(editable ? "contentEditable " : "unmanaged input ");
+            }
+            ReactDOM.unmountComponentAtNode(container);
+        }
+        check(0 == failures.length(), "A keyed move preserves focus and selection for " + failures);
+    }
+
+    @JsMethod
+    private static native void focusForMove(Browser.Element target, boolean editable);
+
+    @JsMethod
+    private static native boolean focusSelectionPreserved(Browser.Element target, boolean editable);
+
+    @JsMethod
+    private static native boolean observeMove(
+            Browser.Element container, Browser.Element ancestor, BrowserPromise.Action update);
 
     private static void replaceRefs(Browser.Element container) {
         final var trace = new StringBuilder();
