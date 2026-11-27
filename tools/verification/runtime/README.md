@@ -62,6 +62,25 @@ This opens Chrome DevTools, inspects a generated component, checks the highlight
 
 ## Measured results
 
+### Production at `a66dd4212`
+
+Chrome 145.0.7632.117 ran 30 measured pairs per application and CPU configuration after the repository gate and upstream comparisons finished. Each cell gives stock React 16.6 followed by Java. All pairs agreed on row order, retained DOM nodes, input value and completed items. [Individual samples](measurements.csv)
+
+| CPUs | Application | Load (ms) | Add 50 (ms) | Toggle 25 (ms) | 1,000 keys (ms) | Heap (bytes) | JavaScript (bytes) | Gzip (bytes) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0-5 | Raw | 26.90 / 28.20 | 20.30 / 25.65 | 3.70 / 3.35 | 5.30 / 4.40 | 1,999,500 / 2,061,034 | 166,367 / 154,219 | 54,943 / 54,094 |
+| 0-5 | Arez | 34.00 / 34.30 | 213.40 / 215.85 | 7.55 / 6.90 | 10.45 / 9.25 | 2,587,386 / 2,642,476 | 184,824 / 174,490 | 59,922 / 59,424 |
+| 0-5 | Sting | 33.45 / 35.55 | 213.80 / 214.95 | 7.30 / 6.80 | 10.60 / 9.10 | 2,592,296 / 2,646,580 | 185,631 / 175,364 | 60,272 / 59,802 |
+| 0-15 | Raw | 24.95 / 24.70 | 17.15 / 19.95 | 3.50 / 3.20 | 5.25 / 4.25 | 1,994,624 / 2,057,764 | 166,367 / 154,219 | 54,943 / 54,094 |
+| 0-15 | Arez | 29.35 / 25.75 | 199.10 / 195.95 | 6.10 / 5.50 | 7.65 / 5.70 | 2,587,360 / 2,642,396 | 184,824 / 174,490 | 59,922 / 59,424 |
+| 0-15 | Sting | 28.50 / 29.30 | 199.50 / 201.15 | 6.20 / 6.35 | 7.70 / 7.85 | 2,592,302 / 2,646,486 | 185,631 / 175,364 | 60,272 / 59,802 |
+
+The Java applications met 40 of 42 budgets. Adding 50 Raw rows took 26% longer on performance cores and 16% longer with unrestricted scheduling. Arez and Sting met every budget. Retained heap was 2.1–3.2% higher across the three applications. All three optimized bundles were smaller than stock before and after gzip.
+
+A CPU profile of Raw insertion showed time spread over child reconciliation, host preparation and JavaScript compilation. An experiment reusing immutable DOM mount plans saved 0.10 ms at the median paired difference over ten pairs and increased median paired heap by 16 KB. The shipped renderer retains the original allocation strategy.
+
+React DevTools 8.0.0 inspected and highlighted a generated view and recorded 125 commits in each of stock development, Java development, ordinary Java production and named Java production. The respective counts with positive component durations were 103, 98, 60 and 65. Named production retained `TodoEntry` and `TodoItem.todo`. Chrome resolved all seven Java application source maps, which contained the exact reconciler, DOM renderer and TodoMVC view sources.
+
 ### Standalone reconciler at `1ce36e444`
 
 Chrome for Testing 145.0.7632.117 ran 30 measured pairs per application and CPU configuration. Each cell gives the stock median followed by the Java median. The final list, input value and retained node identities matched in every pair. Other verification jobs shared the host during this run. [Individual samples](measurements.csv)
