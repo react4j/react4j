@@ -153,10 +153,10 @@ function createRenderer(moduleFor, sourceReact) {
   }
 
   // The historical Babel class transform calls its superclass as a function.
-  // Construct the Java instance with the original fixture subclass's prototype.
+  // Older TypeScript constructors keep using their original receiver after calling super.
   const emptyRefs = Object.freeze({});
   function Component(props, context) {
-    const view = Reflect.construct(View, [props], this.constructor);
+    const view = Object.assign(this, new View(props));
     view.context = context;
     view.state = undefined;
     view.refs = emptyRefs;
