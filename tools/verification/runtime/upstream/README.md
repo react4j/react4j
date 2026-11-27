@@ -2,6 +2,39 @@
 
 Use this map to find the upstream assertion for a change to React4j, see how it ran against the Java renderer, and choose the corresponding Chromium regression. The reference is React v16.6.0 at `8b97a9c36f2ef7d2c570b25e988b8ca832d9b436`. [Upstream source](https://github.com/facebook/react/tree/8b97a9c36f2ef7d2c570b25e988b8ca832d9b436/packages)
 
+## Finding an assertion
+
+Start with the suite name in the [stock inventory](inventory.tsv). It covers all 181 suites. Stock passed 3,585 cases in development and 3,575 in production, with 26 skipped in each. The union contains 3,612 cases. A case may have a different ID or be absent in the other mode. The occurrence column distinguishes repeated titles within a suite.
+
+Each location is the original line and column of a direct `expect(...)` call reached by that case. A path identifies an assertion in a shared fixture file. The collector records a repeated assertion site once per case and build. An empty site list can mean that the case checks for successful completion, checks an invariant by throwing, or uses an assertion helper outside the test sources. Reading the case also reveals conditional assertions in paths the stock configuration did not enter.
+
+The assertion maps below link original checks to Java methods. **Ported** and **covered** identify direct checks, **adapted** names the fixture difference, and **related** marks a partial counterpart. Exclusions name the specific contract involved. A case in the stock inventory with no assertion map still needs review. The older Chromium case index identifies scenarios that can be reused for those ports.
+
+| Upstream behavior | Checked-in assertion map |
+| --- | --- |
+| Element creation, JSX records and cloning | [Elements](element-assertions.tsv) |
+| Derived and legacy error boundaries, lifecycle order and recovery | [Error boundaries](error-boundary-assertions.tsv) |
+| Event emitter and synthetic events | [Events](event-assertions.tsv) |
+| Input, select, option and textarea | [Forms](forms-assertions.tsv) |
+| Programmatic Profiler callbacks and timing | [Profiler](profiler-assertions.tsv) |
+
+The Java port covers client rendering, including ordinary batched updates, synchronous flushing and Profiler callbacks. The scope excludes hydration, server rendering, the experimental `root.createBatch()` manual commit API, scheduler tracing subscribers and the numeric element protocol used without `Symbol`. Mixed cases retain their applicable client assertions. Development diagnostics are compared by condition, affected component and diagnostic information, with exact text where the Java API promises it. The unmodified Jest suite can still fail an exact upstream wording check.
+
+To regenerate the stock inventory, run these commands from React4j with Node 10.24.1 and Yarn Classic 1.22.22 on `PATH` and the upstream checkout's locked dependencies installed. The collector instruments test sources before the stock compiler runs, including TypeScript and CoffeeScript. Both ordinary and instrumented stock runs passed the same cases and snapshots.
+
+```sh
+work=$(mktemp -d)
+for mode in development production; do
+  python3 tools/verification/runtime/upstream/inventory.py collect /tmp/react-16.6.0 "$work" --mode "$mode"
+done
+python3 tools/verification/runtime/upstream/inventory.py report "$work" > "$work/inventory.tsv"
+python3 tools/verification/runtime/upstream/inventory.py audit
+```
+
+The audit checks case IDs, Java fixture method references and the executed same-file assertion sites for individually mapped cases. Assertions in shared helpers and the meaning of each Java check also require review.
+
+## Running original cases against both runtimes
+
 [Individual upstream cases and both build modes](cases.tsv) identify each original Jasmine spec by suite, ID and full name. A paired assertion means both implementations passed, the fixture called the Java renderer, and Jest counted at least one effective assertion. A production `toWarnDev` runs its callback without checking a warning and contributes zero effective assertions. A smoke case reached Java with no effective assertion. A helper-only pass never entered the renderer. Mixed tests can also assert on upstream JSX, server rendering, or fixture helpers. Failures record an explicit adapter or runtime limit when known and indicate whether execution reached a Java renderer entry point. The failure columns show the first part of the Jest diagnostic. The call and assertion columns give the counts used to label each case. The run directory retains Jest’s full diagnostics. Line and branch coverage use the repository’s separate instrumented browser run.
 
 The shared Chromium case index maps original names to Java fixtures. Rows marked “related scenario” cover part of an upstream assertion set. ReactMultiChildReconcile has 27 array-applicable cases and two iterator-only cases. The shared Java fixture runs its array transitions on both renderers. [Chromium case index](chromium.tsv) · [License for upstream case names, diagnostic text and derived vectors](../../../../third_party/react/LICENSE)
