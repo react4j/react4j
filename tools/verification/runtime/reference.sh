@@ -9,11 +9,11 @@ git -C "$root" archive 18e896de70f9e7ebae0ac6be8e9f5506a1949997 -- . ':!etc/secr
 
 tests=dom/src/test/java/react4j/dom
 suite=dom/src/test/js/react4j/dom/browser_test.js
-cp "$root/$tests"/{RuntimeBrowserTest.java,RuntimeParityBrowserTest.java,RuntimeParityBrowserTest.native.js,EventsBrowserTest.java,EventsBrowserTest.native.js} "$destination/$tests/"
+cp "$root/$tests"/{ChildReconciliationTest.java,OriginalHostCasesBrowserTest.java,OriginalHostCasesBrowserTest.native.js,RuntimeBrowserTest.java,RuntimeParityBrowserTest.java,RuntimeParityBrowserTest.native.js,EventsBrowserTest.java,EventsBrowserTest.native.js} "$destination/$tests/"
 cp "$root/$suite" "$destination/$suite"
 cd "$destination"
 sed -i '/^browser_test(/,/^)/s|deps = \["//dom/src/test/java/react4j/dom:runtime_coverage"\]|deps = ["//dom/src/test/java/react4j/dom:runtime_coverage", "//third_party:closure_testcase"]|' "$(dirname "$suite")/BUILD.bazel"
-sed -i '/"RuntimeBrowserTest.java",/a\        "RuntimeParityBrowserTest.java",\n        "RuntimeParityBrowserTest.native.js",' "$tests/BUILD.bazel"
+sed -i '/"RuntimeBrowserTest.java",/a\        "RuntimeParityBrowserTest.java",\n        "RuntimeParityBrowserTest.native.js",\n        "ChildReconciliationTest.java",\n        "OriginalHostCasesBrowserTest.java",\n        "OriginalHostCasesBrowserTest.native.js",' "$tests/BUILD.bazel"
 sed -i '/"\/\/third_party:jsinterop_annotations-j2cl",/a\        "//third_party:jsinterop_base-j2cl",' "$tests/BUILD.bazel"
 
 # Expose the existing two-argument error callback to ADVANCED Closure test code.

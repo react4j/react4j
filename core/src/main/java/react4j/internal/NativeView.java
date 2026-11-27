@@ -95,7 +95,7 @@ public abstract class NativeView {
         return null;
     }
 
-    public final void applyState(final JsPropertyMap<@Nullable Object> state) {
+    public final void applyState(@Nullable final JsPropertyMap<@Nullable Object> state) {
         _state = state;
     }
 

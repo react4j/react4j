@@ -3,6 +3,7 @@ package react4j.dom;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -36,6 +37,7 @@ final class Renderer {
     private static final double RENDER_BUDGET_MS = 5;
     private static final int NORMAL_EXPIRATION_MS = 5000;
     private static final int INTERACTIVE_EXPIRATION_MS = 500;
+    private static final int NESTED_UPDATE_LIMIT = 50;
     private static final boolean DEVELOPMENT = "development".equals(System.getProperty("react4j.environment"));
     private static final DomHost.WeakMap<Node, Root> ROOTS = new DomHost.WeakMap<>();
     private static final ArrayDeque<Root> PENDING = new ArrayDeque<>();
@@ -46,16 +48,19 @@ final class Renderer {
     private static boolean _working;
     private static boolean _interactive;
     private static boolean _committing;
+    private static @Nullable Root _lastCommittedRoot;
+    private static int _nestedUpdateCount;
 
     private Renderer() {}
 
-    static Node requireContainer(Object value) {
-        final var node = Js.<Node>uncheckedCast(value);
-        if (1 != node.nodeType
-                && 9 != node.nodeType
-                && 11 != node.nodeType
-                && !(8 == node.nodeType && " react-mount-point-unstable ".equals(node.nodeValue))) {
-            throw new IllegalArgumentException("The target is not a DOM container");
+    static Node requireContainer(@Nullable Object value, String operation) {
+        final var node = Js.<@Nullable Node>uncheckedCast(value);
+        if (null == node
+                || 1 != node.nodeType
+                        && 9 != node.nodeType
+                        && 11 != node.nodeType
+                        && !(8 == node.nodeType && " react-mount-point-unstable ".equals(node.nodeValue))) {
+            throw new IllegalArgumentException(operation + "Target container is not a DOM element.");
         }
         return node;
     }
@@ -70,6 +75,9 @@ final class Renderer {
 
     static @Nullable Object render(
             @Nullable ReactNode node, Node container, ReactDOM.@Nullable RenderCallbackFn callback) {
+        if (DEVELOPMENT) {
+            DomNesting.checkBodyContainer(container);
+        }
         var root = ROOTS.get(container);
         if (null == root) {
             root = new Root(container, false);
@@ -153,6 +161,15 @@ final class Renderer {
             }
         } finally {
             _flushing = false;
+            _lastCommittedRoot = null;
+            _nestedUpdateCount = 0;
+        }
+    }
+
+    private static void checkNestedUpdates() {
+        if (_nestedUpdateCount > NESTED_UPDATE_LIMIT) {
+            _nestedUpdateCount = 0;
+            throw new IllegalStateException("Maximum update depth exceeded");
         }
     }
 
@@ -190,6 +207,9 @@ final class Renderer {
     @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.is")
     private static native boolean sameContextValue(@Nullable Object previous, @Nullable Object next);
 
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "console.error")
+    private static native void consoleError(@Nullable Object message);
+
     @JsMethod(namespace = JsPackage.GLOBAL, name = "Array.isArray")
     private static native boolean isArray(Object value);
 
@@ -224,6 +244,7 @@ final class Renderer {
         private final LinkedHashSet<Fiber> _heldFallbacks = new LinkedHashSet<>();
         private @Nullable List<Runnable> _renderUndo;
         private @Nullable LegacySuspense _legacySuspense;
+        private boolean _concurrentSuspense;
         private boolean _initialized;
         private boolean _scheduled;
         private boolean _queued;
@@ -244,6 +265,7 @@ final class Renderer {
         private @Nullable ReactNode _activeNode;
         private @Nullable ReactNode _committedNode;
         private @Nullable RenderFailure _renderFailure;
+        private boolean _renderErrored;
         private boolean _profiling;
         private int _commitSequence;
         private @Nullable ReactNode node;
@@ -290,6 +312,7 @@ final class Renderer {
                 PENDING.addLast(this);
                 _queued = true;
             }
+            checkNestedUpdates();
             flush();
         }
 
@@ -297,6 +320,7 @@ final class Renderer {
             _hasUrgentWork = true;
             (_committing ? SYNCHRONOUS : INTERACTIVE).add(this);
             scheduleSlice();
+            checkNestedUpdates();
         }
 
         private void scheduleSlice() {
@@ -355,11 +379,15 @@ final class Renderer {
                     beginConcurrentRender();
                 }
                 final var deadline = synchronous ? Double.POSITIVE_INFINITY : now() + RENDER_BUDGET_MS;
-                for (var step = _nextStep; null != step; step = _nextStep) {
-                    _nextStep = null;
-                    step.run();
-                    if (null != _nextStep && now() >= deadline) {
-                        scheduleSlice();
+                if (!advanceRender(deadline)) {
+                    scheduleSlice();
+                    return;
+                }
+                if (_renderErrored || null != _renderFailure) {
+                    final var hasLowerPriorityWork = _activeUrgent && _hasWork;
+                    if (hasLowerPriorityWork || !synchronous) {
+                        retryConcurrentRender(hasLowerPriorityWork);
+                        completeConcurrentRender(true);
                         return;
                     }
                 }
@@ -372,6 +400,35 @@ final class Renderer {
                 _working = false;
                 flush();
             }
+        }
+
+        private boolean advanceRender(double deadline) {
+            for (var step = _nextStep; null != step; step = _nextStep) {
+                _nextStep = null;
+                step.run();
+                if (null != _nextStep && now() >= deadline) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void retryConcurrentRender(boolean includeLowerPriorityWork) {
+            rollback(Objects.requireNonNull(_renderUndo), 0);
+            clearEffects();
+            _fallbackDeadline = 0;
+            if (includeLowerPriorityWork) {
+                _activeNode = node;
+                _updates.addAll(_activeUpdates);
+                _activeUpdates = List.copyOf(_updates);
+                _updates.clear();
+                _callbacks.addAll(0, _activeCallbacks);
+                _activeCallbacks = List.copyOf(_callbacks);
+                _callbacks.clear();
+                _hasWork = false;
+            }
+            renderActiveNode();
+            advanceRender(Double.POSITIVE_INFINITY);
         }
 
         private void abandonRender() {
@@ -441,6 +498,10 @@ final class Renderer {
             updates.clear();
             _activeCallbacks = List.copyOf(callbacks);
             callbacks.clear();
+            renderActiveNode();
+        }
+
+        private void renderActiveNode() {
             _renderUndo = new ArrayList<>();
             _renderUndo.add(fiber.checkpoint());
             _activeUpdates.forEach(Runnable::run);
@@ -490,6 +551,12 @@ final class Renderer {
         }
 
         private void finishCommit(List<Task> callbacks) {
+            if (_lastCommittedRoot == this) {
+                _nestedUpdateCount++;
+            } else {
+                _lastCommittedRoot = this;
+                _nestedUpdateCount = 0;
+            }
             _committing = true;
             try {
                 final var failure = _renderFailure;
@@ -527,8 +594,10 @@ final class Renderer {
                         deletion.fiber().dispose();
                     }
                 }
+                failure.logUnhandled();
                 for (final var disposal : _commitFailures) {
                     if (failure.error != disposal.failure.error) {
+                        disposal.failure.logUnhandled();
                         failure.error.addSuppressed(disposal.failure.error);
                     }
                 }
@@ -545,7 +614,9 @@ final class Renderer {
             _snapshots.clear();
             _commitFailures.clear();
             _renderFailure = null;
+            _renderErrored = false;
             _resultFailure = null;
+            _concurrentSuspense = false;
         }
 
         private double time() {
@@ -616,6 +687,7 @@ final class Renderer {
                         _committedNode = null;
                         fiber.disposeChildren();
                     }
+                    next.failure.logUnhandled();
                 } else if (boundary.alive && boundary.view instanceof OnComponentDidCatch catcher) {
                     runEffect(boundary, boundary.capture(catcher, next.failure, true, 0));
                 }
@@ -725,6 +797,9 @@ final class Renderer {
             }
             if (isArray(content)) {
                 final @Nullable Object[] values = Js.uncheckedCast(content);
+                if (DEVELOPMENT && 1 < values.length) {
+                    warnDuplicateKeys(values);
+                }
                 if (1 != values.length || !reuseSingle(values[0], scope, complete)) {
                     final var deletionPosition = root._mutations.size();
                     if (root.concurrent || null != root._legacySuspense || 0 == previous.length) {
@@ -775,6 +850,34 @@ final class Renderer {
                 children = new Fiber[] {child};
             }
             reuse(child, content, 0, 0, !child._initialized, scope, complete);
+        }
+
+        private void warnDuplicateKeys(@Nullable Object[] values) {
+            final var keys = new HashSet<String>();
+            String stack = null;
+            for (final var value : values) {
+                if (null == value) {
+                    continue;
+                }
+                final String key;
+                if (ReactElement.isElement(value)) {
+                    key = Js.<ReactElement>uncheckedCast(value).key();
+                } else if (ReactPortal.isPortal(value)) {
+                    key = Js.<ReactPortal>uncheckedCast(value).key;
+                } else {
+                    continue;
+                }
+                if ("string".equals(Js.typeof(key)) && !keys.add(Objects.requireNonNull(key))) {
+                    if (null == stack) {
+                        stack = RenderFailure.stackFrom(this);
+                    }
+                    consoleError("Warning: Encountered two children with the same key, `"
+                            + key
+                            + "`. Keys should be unique so that components maintain their identity across updates."
+                            + " Non-unique keys may cause children to be duplicated and/or omitted — the behavior is"
+                            + " unsupported and could change in a future version." + stack);
+                }
+            }
         }
 
         private boolean reuseSingle(@Nullable Object value, @Nullable Scope scope, Completion complete) {
@@ -864,7 +967,7 @@ final class Renderer {
             }
 
             private void advance() {
-                while (_index < _values.length && null == _failure) {
+                while (_index < _values.length && (null == _failure || !_failure.isSuspension())) {
                     final var index = _index++;
                     final var value = _values[index];
                     if (null == value || !isChild(value)) {
@@ -874,7 +977,7 @@ final class Renderer {
                     try {
                         child = match(value, index);
                     } catch (Throwable error) {
-                        _failure = new RenderFailure(Fiber.this, error);
+                        _failure = RenderFailure.combine(_failure, new RenderFailure(Fiber.this, error));
                         break;
                     }
                     var next = _next;
@@ -922,7 +1025,7 @@ final class Renderer {
             }
 
             private void completed(@Nullable RenderFailure failure) {
-                _failure = failure;
+                _failure = RenderFailure.combine(_failure, failure);
                 if (root.concurrent) {
                     advance();
                 }
@@ -1069,16 +1172,15 @@ final class Renderer {
         }
 
         private void visitCommittedChildren(@Nullable Scope scope) {
+            RenderFailure failure = null;
             for (final var child : children) {
                 final var description = child._description;
                 if (!child.canReuse(description, scope)) {
                     child.update(Objects.requireNonNull(description), scope, root._saveResult);
-                    if (null != root._resultFailure) {
-                        return;
-                    }
+                    failure = RenderFailure.combine(failure, root._resultFailure);
                 }
             }
-            root.saveResult(null);
+            root.saveResult(failure);
         }
 
         private void update(Object next, @Nullable Scope scope, Completion complete) {
@@ -1150,6 +1252,9 @@ final class Renderer {
                 case TEXT -> {
                     final var text = Js.asString(stringValue(next));
                     if (null == dom) {
+                        if (DEVELOPMENT) {
+                            DomNesting.checkText(this, text, () -> RenderFailure.stackFrom(this));
+                        }
                         dom = DomHost.createText(boundary(), text);
                     } else if (!text.equals(dom.nodeValue)) {
                         final var textNode = dom;
@@ -1210,9 +1315,25 @@ final class Renderer {
 
         private void finishUpdate(@Nullable RenderFailure failure, @Nullable Scope scope, Completion complete) {
             if (null != failure) {
-                final var suspense = root._legacySuspense;
-                if (failure.source != this || null == suspense || !failure.isSuspension()) {
+                if (failure.source != this) {
                     complete.finish(failure);
+                    return;
+                }
+                if (!failure.isSuspension()) {
+                    root._renderErrored = true;
+                    complete.finish(failure);
+                    return;
+                }
+                final var suspense = root._legacySuspense;
+                if (null == suspense) {
+                    root._renderErrored |= !root._concurrentSuspense;
+                    complete.finish(
+                            root._concurrentSuspense
+                                    ? failure
+                                    : new RenderFailure(
+                                            this,
+                                            new IllegalStateException(
+                                                    "An update was suspended, but no placeholder UI was provided.")));
                     return;
                 }
                 suspense.failures.add(failure);
@@ -1244,35 +1365,59 @@ final class Renderer {
                 Completion complete) {
             final var inputs = element.inputs();
             final var tag = Js.asString(type);
+            if (DEVELOPMENT) {
+                final var children = inputs.get("children");
+                final var previous = null == oldNode ? null : oldNode.inputs().get("children");
+                final var text =
+                        isText(children) && (mounting || !Js.typeof(children).equals(Js.typeof(previous)))
+                                ? Js.asString(stringValue(Objects.requireNonNull(children)))
+                                : null;
+                if (mounting || null != text) {
+                    DomNesting.checkHost(this, tag, mounting, text, () -> RenderFailure.stackFrom(this));
+                }
+                DomHost.warnProperties(
+                        tag,
+                        inputs,
+                        mounting ? null : dom,
+                        RenderFailure.ownerName(this, element),
+                        () -> RenderFailure.stackFrom(this));
+            }
+            DomHost.validate(tag, inputs, DEVELOPMENT ? () -> RenderFailure.stackFrom(this) : null);
             final var namespace = mounting ? DomHost.elementNamespace(parentNamespace(), tag) : null;
             if (null != namespace) {
                 _childNamespace = DomHost.childNamespace(namespace, tag);
             }
             final var hasHtml = DomHost.hasHtml(inputs);
             final var content = inputs.get("children");
+            final var option = "option".equals(tag);
             final var tracksChildren = !hasHtml && !"textarea".equals(tag);
-            final var directText = tracksChildren && isText(content);
-            if ((hasHtml || directText) && 0 != children.length) {
+            final var directText = tracksChildren && (option || isText(content));
+            final var reconcile = tracksChildren && !directText && !"noscript".equals(tag);
+            if (!reconcile && 0 != children.length) {
                 queueDeletions(children);
                 children = NO_CHILDREN;
             }
             final var previous = null == oldNode ? null : oldNode.inputs();
             final var properties = !mounting && !Js.isTripleEqual(previous, inputs);
             final var oldContent = null == previous ? null : previous.get("children");
-            final var text = directText && (mounting || !Js.isTripleEqual(oldContent, content))
-                    ? Js.asString(stringValue(Objects.requireNonNull(content)))
-                    : null;
-            if (properties
-                    && tracksChildren
-                    && !directText
-                    && null != previous
-                    && (isText(oldContent) || DomHost.hasHtml(previous))) {
+            final String text;
+            if (directText && (mounting || !Js.isTripleEqual(oldContent, content))) {
+                if (option) {
+                    final var nextText = DomHost.optionText(content);
+                    text = Js.isTripleEqual(DomHost.optionText(oldContent), nextText) ? null : nextText;
+                } else {
+                    text = Js.asString(stringValue(Objects.requireNonNull(content)));
+                }
+            } else {
+                text = null;
+            }
+            if (properties && reconcile && null != previous && (isText(oldContent) || DomHost.hasHtml(previous))) {
                 _resetCommit = root._commitSequence;
             }
 
             final var duration = root.time() - actualStartTime;
             final var restoreControl = !mounting && DomHost.isControlTag(tag) && oldNode != element;
-            if (tracksChildren && !directText) {
+            if (reconcile) {
                 if (root.concurrent) {
                     prepareHostChildren(
                             content, scope, element, namespace, text, properties, restoreControl, duration, complete);
@@ -1365,6 +1510,9 @@ final class Renderer {
             final var inputs = element.inputs();
             final var tag = Js.asString(type);
             final var host = DomHost.createElement(container, namespace, tag, inputs);
+            if (DEVELOPMENT) {
+                DomHost.warnTag(host, namespace, tag, inputs, () -> RenderFailure.stackFrom(this));
+            }
             appendInitialChildren(host);
             final var state = DomHost.prepareInitial(host, tag, inputs, initialText);
             dom = host;
@@ -1433,14 +1581,30 @@ final class Renderer {
                             || retry
                             || null == predicate
                             || predicate.shouldComponentUpdate(inputs));
-            final var previousState =
-                    render && component instanceof OnGetSnapshotBeforeUpdate ? component.state() : null;
+            final var previousState = component.state();
             component.updateInputs(inputs);
             if (null != pendingState) {
                 component.applyState(pendingState);
             }
             if (render) {
-                renderView(component);
+                final var replay = DEVELOPMENT ? component.checkpoint() : null;
+                try {
+                    renderView(component);
+                } catch (Throwable error) {
+                    final var failure = new RenderFailure(this, error);
+                    if (null != replay && !failure.isSuspension()) {
+                        replayFailedView(component, replay);
+                    }
+                    // A legacy suspension can retain the applied update for retry.
+                    if (null != existing
+                            && (!(root._concurrentSuspense || null != root._legacySuspense)
+                                    || !failure.isSuspension())) {
+                        component.updateInputs(Objects.requireNonNull(previousInputs));
+                        component.applyState(previousState);
+                    }
+                    finishUpdate(failure, scope, complete);
+                    return;
+                }
             } else if (_captured || !refreshChildren) {
                 reconcileRef(element.ref(), component);
                 queuePlacement();
@@ -1460,6 +1624,19 @@ final class Renderer {
                     scope,
                     mounting,
                     complete);
+        }
+
+        private void replayFailedView(NativeView component, Runnable checkpoint) {
+            final var previousOutput = output;
+            checkpoint.run();
+            try {
+                renderView(component);
+            } catch (Throwable ignored) {
+                // Boundary delivery reports the original failure.
+            } finally {
+                output = previousOutput;
+                checkpoint.run();
+            }
         }
 
         private void renderView(NativeView component) {
@@ -1540,6 +1717,23 @@ final class Renderer {
 
         private void reconcileSuspense(
                 JsPropertyMap<@Nullable Object> inputs, @Nullable Scope scope, Completion complete) {
+            if ("undefined".equals(Js.typeof(inputs.get("fallback")))) {
+                final var previous = children;
+                final var suspended = null != _suspension;
+                final var fallback = suspended ? sliceChildren(previous, _primaryCount, previous.length) : NO_CHILDREN;
+                if (suspended) {
+                    children = sliceChildren(previous, 0, _primaryCount);
+                }
+                reconcileChildren(inputs.get("children"), scope, failure -> {
+                    if (null == failure) {
+                        completePrimary(fallback);
+                    } else {
+                        queueDeletions(fallback);
+                    }
+                    complete.finish(failure);
+                });
+                return;
+            }
             if (!root.concurrent) {
                 reconcileLegacySuspense(inputs, scope, complete);
                 return;
@@ -1555,7 +1749,10 @@ final class Renderer {
             final var mutations = root._mutations.size();
             final var effects = root._effects.size();
             children = primary;
+            final var outer = root._concurrentSuspense;
+            root._concurrentSuspense = true;
             reconcileChildren(inputs.get("children"), scope, failure -> {
+                root._concurrentSuspense = outer;
                 if (null == failure) {
                     completePrimary(fallback);
                     complete.finish(null);
@@ -1830,8 +2027,7 @@ final class Renderer {
                 queueDeletions(children, mutationPosition);
                 children = NO_CHILDREN;
             }
-            final var info = Js.<ReactErrorInfo>uncheckedCast(JsPropertyMap.of("componentStack", failure.stack()));
-            return () -> catcher.componentDidCatch(Js.uncheckedCast(failure.thrown()), info);
+            return () -> failure.report(this, catcher);
         }
 
         private void reconcileRef(@Nullable Object next, Object value) {
@@ -1921,6 +2117,9 @@ final class Renderer {
                 anchor = null != stable ? stable : 8 == boundary.nodeType ? boundary : null;
             }
             insertHostNodes(container, anchor);
+            if (Kind.PORTAL == host.kind && null == ROOTS.get(Js.uncheckedCast(host.type))) {
+                DomHost.trapPortalClick(container);
+            }
             _placementCommit = 0;
         }
 
@@ -2201,11 +2400,80 @@ final class Renderer {
     private static final class RenderFailure extends RuntimeException {
         final Fiber source;
         final Throwable error;
+        private @Nullable List<RenderFailure> _siblings;
 
         RenderFailure(Fiber source, Throwable error) {
             super(error);
             this.source = source;
             this.error = error;
+        }
+
+        private static @Nullable RenderFailure combine(@Nullable RenderFailure first, @Nullable RenderFailure next) {
+            if (null == first) {
+                return next;
+            }
+            if (null != next && !next.isSuspension()) {
+                if (null == first._siblings) {
+                    first._siblings = new ArrayList<>();
+                }
+                first._siblings.add(next);
+            }
+            return first;
+        }
+
+        private void report(Fiber boundary, OnComponentDidCatch catcher) {
+            final var componentStack = stack();
+            final var thrown = thrown();
+            logError(boundary, componentStack, thrown);
+            final var info = Js.<ReactErrorInfo>uncheckedCast(JsPropertyMap.of("componentStack", componentStack));
+            catcher.componentDidCatch(Js.uncheckedCast(thrown), info);
+            if (null != _siblings) {
+                for (final var sibling : _siblings) {
+                    sibling.report(boundary, catcher);
+                }
+            }
+        }
+
+        private void logUnhandled() {
+            logError(null, null, thrown());
+            if (null != _siblings) {
+                for (final var sibling : _siblings) {
+                    sibling.logUnhandled();
+                }
+            }
+        }
+
+        private void logError(@Nullable Fiber boundary, @Nullable String componentStack, @Nullable Object thrown) {
+            try {
+                if (!DEVELOPMENT) {
+                    consoleError(thrown);
+                    return;
+                }
+                if (null != thrown && Js.isTruthy(DomHost.properties(thrown).get("_suppressLogging"))) {
+                    if (null != boundary) {
+                        return;
+                    }
+                    consoleError(thrown);
+                }
+                final var sourceName = frameName(source.type);
+                final var message = null == sourceName
+                        ? "The above error occurred in one of your React components:"
+                        : "The above error occurred in the <" + sourceName + "> component:";
+                final var boundaryName = null == boundary ? null : frameName(boundary.type);
+                final var recovery = null == boundaryName
+                        ? "Consider adding an error boundary to your tree to customize error handling behavior.\n"
+                                + "Visit https://fb.me/react-error-boundaries to learn more about error boundaries."
+                        : "React will try to recreate this component tree from scratch using the error boundary you"
+                                + " provided, "
+                                + boundaryName + ".";
+                consoleError(message + (null == componentStack ? stack() : componentStack) + "\n\n" + recovery);
+            } catch (Throwable loggingFailure) {
+                setTimeout(
+                        () -> {
+                            throw unchecked(loggingFailure);
+                        },
+                        0);
+            }
         }
 
         boolean isSuspension() {
@@ -2225,20 +2493,66 @@ final class Renderer {
         }
 
         String stack() {
+            return stackFrom(source);
+        }
+
+        private static String ownerName(final Fiber source, final ReactElement element) {
+            if (element.owner() instanceof Fiber owner) {
+                final var name = frameName(owner.type);
+                if (null != name) {
+                    return name;
+                }
+            }
+            for (var parent = source.parent; null != parent; parent = parent.parent) {
+                if (Kind.VIEW == parent.kind) {
+                    final var name = frameName(parent.type);
+                    if (null != name) {
+                        return name;
+                    }
+                }
+            }
+            return "A component";
+        }
+
+        private static String stackFrom(Fiber source) {
             final var stack = new StringBuilder();
             for (var fiber = source; null != fiber && Kind.ROOT != fiber.kind; fiber = fiber.parent) {
                 if (Kind.VIEW == fiber.kind || Kind.HOST == fiber.kind || React.StrictMode == fiber.type) {
                     final var name = frameName(fiber.type);
                     stack.append("\n    in ").append(null == name ? "Unknown" : name);
-                    if (DEVELOPMENT && null != fiber.node && fiber.node.owner() instanceof Fiber owner) {
-                        final var ownerName = frameName(owner.type);
-                        if (null != ownerName) {
-                            stack.append(" (created by ").append(ownerName).append(')');
+                    if (DEVELOPMENT && null != fiber.node) {
+                        final var location = sourceLocation(fiber.node);
+                        if (null != location) {
+                            stack.append(" (at ").append(location).append(')');
+                        } else if (fiber.node.owner() instanceof Fiber owner) {
+                            final var ownerName = frameName(owner.type);
+                            if (null != ownerName) {
+                                stack.append(" (created by ").append(ownerName).append(')');
+                            }
                         }
                     }
                 }
             }
             return stack.toString();
+        }
+
+        private static @Nullable String sourceLocation(final ReactElement element) {
+            final var source = DomHost.properties(element).get("_source");
+            if (null == source) {
+                return null;
+            }
+            final var location = DomHost.properties(source);
+            final var line = location.get("lineNumber");
+            if (!(location.get("fileName") instanceof String path) || !"number".equals(Js.typeof(line))) {
+                return null;
+            }
+            final var normalized = path.replace('\\', '/');
+            final int slash = normalized.lastIndexOf('/');
+            final var file = normalized.substring(slash + 1);
+            final var name = file.startsWith("index.") && 0 < slash
+                    ? normalized.substring(normalized.lastIndexOf('/', slash - 1) + 1)
+                    : file;
+            return name + ":" + Js.asString(stringValue(Objects.requireNonNull(line)));
         }
 
         private static @Nullable String frameName(Object type) {

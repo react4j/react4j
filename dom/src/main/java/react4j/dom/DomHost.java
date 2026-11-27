@@ -3,6 +3,7 @@ package react4j.dom;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.Supplier;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
@@ -11,6 +12,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
+import react4j.ReactElement;
 
 final class DomHost {
     private static final String SVG = "http://www.w3.org/2000/svg";
@@ -63,6 +65,24 @@ final class DomHost {
             "zIndex",
             "zoom");
     private static final Set<String> CONTROLLED_TAGS = Set.of("input", "select", "textarea");
+    private static final Set<String> VOID_TAGS = Set.of(
+            "area",
+            "base",
+            "br",
+            "col",
+            "embed",
+            "hr",
+            "img",
+            "input",
+            "keygen",
+            "link",
+            "menuitem",
+            "meta",
+            "param",
+            "source",
+            "track",
+            "wbr");
+    private static final DomEvents.Listener CLICK_TRAP = event -> {};
     private static final Set<String> RESERVED_HYPHENATED_TAGS = Set.of(
             "annotation-xml",
             "color-profile",
@@ -161,6 +181,35 @@ final class DomHost {
         node.textContent = text;
     }
 
+    static @Nullable String optionText(@Nullable final Object children) {
+        final var type = Js.typeof(children);
+        if ("string".equals(type) || "number".equals(type)) {
+            return stringify(children);
+        }
+        final var text = new StringBuilder();
+        appendOptionText(text, children);
+        return 0 == text.length() ? null : text.toString();
+    }
+
+    private static void appendOptionText(final StringBuilder text, @Nullable final Object child) {
+        if (null == child) {
+            return;
+        }
+        final var type = Js.typeof(child);
+        if ("string".equals(type)
+                || "number".equals(type)
+                || ReactElement.isElement(child)
+                || ReactPortal.isPortal(child)) {
+            text.append(stringify(child));
+        } else if (isArray(child)) {
+            for (final var entry : Js.<@Nullable Object[]>uncheckedCast(child)) {
+                appendOptionText(text, entry);
+            }
+        } else if ("object".equals(type)) {
+            throw new IllegalArgumentException("Objects are not valid as a React child");
+        }
+    }
+
     static DomEvents.State prepareInitial(
             final Element element,
             final String tag,
@@ -170,6 +219,11 @@ final class DomHost {
         applyProperties(element, state, null, inputs, text);
         if (isControlTag(tag)) {
             restoreControlled(element, state);
+        } else if ("option".equals(tag)) {
+            final var value = inputs.get("value");
+            if (null != value) {
+                element.setAttribute("value", formValue(value));
+            }
         }
         return state;
     }
@@ -191,6 +245,7 @@ final class DomHost {
         final var previous = state.inputs;
         state.inputs = next;
         applyProperties(element, state, previous, next, text);
+        DomEvents.updateDocumentSubscriptions(state);
     }
 
     private static void applyProperties(
@@ -200,13 +255,25 @@ final class DomHost {
             final JsPropertyMap<@Nullable Object> next,
             @Nullable final String text) {
         final var tag = state.tag;
-        final boolean custom = tag.contains("-")
-                ? !RESERVED_HYPHENATED_TAGS.contains(tag)
-                : "string".equals(Js.typeof(next.get("is")));
-        if ("input".equals(tag) && null != previous && null == next.get("checked")) {
-            final var previousChecked = previous.get("checked");
-            if (null != previousChecked && !Js.isTripleEqual(previousChecked, state.initialChecked)) {
-                properties(element).set("checked", Js.isTruthy(state.initialChecked));
+        if (!CONTROLLED_TAGS.contains(tag)
+                && !"option".equals(tag)
+                && "function".equals(Js.typeof(next.get("onClick")))
+                && (null == previous || !"function".equals(Js.typeof(previous.get("onClick"))))) {
+            properties(element).set("onclick", CLICK_TRAP);
+        }
+        final var custom = isCustom(tag, next);
+        if ("input".equals(tag) && null != previous) {
+            final var checked = next.get("checked");
+            if (null == checked) {
+                final var previousChecked = previous.get("checked");
+                if (null != previousChecked && !Js.isTripleEqual(previousChecked, state.initialChecked)) {
+                    properties(element).set("checked", Js.isTruthy(state.initialChecked));
+                }
+            } else if ("radio".equals(next.get("type"))
+                    && null != next.get("name")
+                    && !Js.isTripleEqual(previous.get("name"), next.get("name"))) {
+                // A checked radio entering its new group can clear another member's selection.
+                properties(element).set("checked", Js.isTruthy(checked));
             }
         }
         if (null != previous) {
@@ -233,8 +300,639 @@ final class DomHost {
         DomEvents.clear(element);
     }
 
+    static void trapPortalClick(final Node container) {
+        final var props = properties(container);
+        if (Js.isTripleEqual(null, props.get("onclick"))) {
+            props.set("onclick", CLICK_TRAP);
+        }
+    }
+
+    static void validate(
+            final String tag, final JsPropertyMap<@Nullable Object> inputs, @Nullable final Supplier<String> stack) {
+        final var children = inputs.get("children");
+        final var html = inputs.get("dangerouslySetInnerHTML");
+        if ((null != children || null != html) && VOID_TAGS.contains(tag)) {
+            throw new IllegalArgumentException(
+                    tag + " is a void element tag and must neither have `children` nor use `dangerouslySetInnerHTML`."
+                            + (null == stack ? "" : stack.get()));
+        }
+        if (null != html) {
+            if (null != children) {
+                throw new IllegalArgumentException(
+                        "Can only set one of `children` or `props.dangerouslySetInnerHTML`.");
+            }
+            if (!"object".equals(Js.typeof(html)) || !properties(html).has("__html")) {
+                throw new IllegalArgumentException(
+                        "`props.dangerouslySetInnerHTML` must be in the form `{__html: ...}`. Please visit"
+                                + " https://fb.me/react-invariant-dangerously-set-inner-html for more information.");
+            }
+        }
+        final var style = inputs.get("style");
+        if (null != style && !"object".equals(Js.typeof(style))) {
+            throw new IllegalArgumentException(
+                    "The `style` prop expects a mapping from style properties to values, not a string. "
+                            + "For example, style={{marginRight: spacing + 'em'}} when using JSX."
+                            + (null == stack ? "" : stack.get()));
+        }
+    }
+
+    private static final class PropertyWarnings {
+        private static final Set<String> WARNED = new HashSet<>();
+        private static final Set<String> INVALID_ATTRIBUTES = new HashSet<>();
+        private static final Set<String> UNKNOWN_TAGS = new HashSet<>(Set.of("time", "dialog"));
+        private static final Set<String> BOOLEAN_PROPERTIES = Set.of("checked", "multiple", "muted", "selected");
+        private static final Set<String> CAMEL_CASE = Set.of(
+                ("accessKey allowReorder attributeName attributeType autoCapitalize autoComplete autoCorrect autoFocus"
+                    + " autoSave baseFrequency baseProfile calcMode cellPadding cellSpacing charSet classID"
+                    + " clipPathUnits colSpan contentScriptType contentStyleType contextMenu controlsList crossOrigin"
+                    + " dateTime diffuseConstant edgeMode encType filterRes filterUnits formAction formEncType"
+                    + " formMethod formTarget frameBorder glyphRef gradientTransform gradientUnits hrefLang inputMode"
+                    + " itemID itemProp itemRef itemType kernelMatrix kernelUnitLength keyParams keyPoints keySplines"
+                    + " keyTimes keyType lengthAdjust limitingConeAngle marginHeight marginWidth markerHeight"
+                    + " markerUnits markerWidth maskContentUnits maskUnits maxLength mediaGroup minLength numOctaves"
+                    + " pathLength patternContentUnits patternTransform patternUnits pointsAtX pointsAtY pointsAtZ"
+                    + " preserveAspectRatio primitiveUnits radioGroup refX refY referrerPolicy repeatCount repeatDur"
+                    + " requiredExtensions requiredFeatures specularConstant specularExponent spreadMethod srcDoc"
+                    + " srcLang srcSet startOffset stdDeviation stitchTiles surfaceScale systemLanguage tableValues"
+                    + " targetX targetY textLength useMap viewBox viewTarget xChannelSelector yChannelSelector"
+                    + " zoomAndPan")
+                        .split(" "));
+        private static final JsPropertyMap<String> STANDARD_NAMES = standardNames();
+        private static boolean invalidOptionChild;
+        private static boolean selectedOption;
+
+        private static void warn(
+                final String tag, final JsPropertyMap<@Nullable Object> inputs, final Supplier<String> stack) {
+            final var invalid = new StringBuilder();
+            int count = 0;
+            for (final var name : ownKeys(inputs)) {
+                if (WARNED.contains(name) || AriaWarnings.applies(name)) {
+                    continue;
+                }
+                final var value = inputs.get(name);
+                final var type = Js.typeof(value);
+                final var info = ATTRIBUTES.get(name);
+                final var lower = name.toLowerCase(Locale.ROOT);
+                final var data = lower.startsWith("data-") || lower.startsWith("aria-");
+                final var standard = STANDARD_NAMES.get(lower);
+                String message = null;
+                if (isEventProperty(name)) {
+                    message = eventWarning(name, lower);
+                } else if ("innerhtml".equals(lower)) {
+                    message = "Directly setting property `innerHTML` is not permitted. For more information, lookup"
+                            + " documentation on `dangerouslySetInnerHTML`.";
+                } else if ("aria".equals(lower)) {
+                    message = "The `aria` attribute is reserved for future use in React. Pass individual `aria-`"
+                            + " attributes instead.";
+                } else if ("is".equals(lower) && null != value && !"string".equals(type)) {
+                    message = "Received a `" + type
+                            + "` for a string attribute `is`. If this is expected, cast the value to a string.";
+                } else if ("number".equals(type) && Double.isNaN(Js.asDouble(value))) {
+                    message = "Received NaN for the `" + name
+                            + "` attribute. If this is expected, cast the value to a string.";
+                } else if (null != standard && !name.equals(standard)) {
+                    message = "Invalid DOM property `" + name + "`. Did you mean `" + standard + "`?";
+                } else if (reserved(name)) {
+                    continue;
+                } else if (null == standard && !name.equals(lower)) {
+                    message = "React does not recognize the `" + name
+                            + "` prop on a DOM element. If you intentionally want"
+                            + " it to appear in the DOM as a custom attribute, spell it as lowercase `" + lower
+                            + "` instead. If you accidentally passed it from a parent component, remove it from the"
+                            + " DOM element.";
+                } else if ("boolean".equals(type)
+                        && !data
+                        && !BOOLEAN_PROPERTIES.contains(name)
+                        && (null == info
+                                || AttributeType.BOOLEAN != info.type()
+                                        && AttributeType.BOOLEAN_STRING != info.type()
+                                        && AttributeType.OVERLOADED_BOOLEAN != info.type())) {
+                    final var booleanValue = stringify(value);
+                    message = "Received `" + booleanValue + "` for a non-boolean attribute `" + name
+                            + "`.\n\nIf you want to write it to the DOM, pass a string instead: "
+                            + name + "=\"" + booleanValue + "\" or " + name + "={value.toString()}.";
+                    if ("false".equals(booleanValue)) {
+                        message += "\n\nIf you used to conditionally omit it with " + name
+                                + "={condition && value}, pass " + name + "={condition ? value : undefined} instead.";
+                    }
+                } else if ("function".equals(type) || "symbol".equals(type)) {
+                    WARNED.add(name);
+                    if (0 != count++) {
+                        invalid.append(", ");
+                    }
+                    invalid.append('`').append(name).append('`');
+                } else if ((BOOLEAN_PROPERTIES.contains(name) || null != info && AttributeType.BOOLEAN == info.type())
+                        && ("false".equals(value) || "true".equals(value))) {
+                    message = "Received the string `" + value + "` for the boolean attribute `" + name + "`. "
+                            + ("false".equals(value)
+                                    ? "The browser will interpret it as a truthy value."
+                                    : "Although this works, it will not work as expected if you pass the string"
+                                            + " \"false\".")
+                            + " Did you mean " + name + "={" + value + "}?";
+                }
+                if (null != message) {
+                    WARNED.add(name);
+                    reportHostWarning(message, stack);
+                }
+            }
+            if (0 != count) {
+                final var singular = 1 == count;
+                reportHostWarning(
+                        (singular ? "Invalid value for prop " : "Invalid values for props ") + invalid + " on <" + tag
+                                + "> tag. Either remove " + (singular ? "it" : "them")
+                                + " from the element, or pass a string or number value to keep "
+                                + (singular ? "it" : "them")
+                                + " in the DOM. For details, see https://fb.me/react-attribute-behavior",
+                        stack);
+            }
+        }
+
+        private static JsPropertyMap<String> standardNames() {
+            final JsPropertyMap<String> names = Js.uncheckedCast(newAttributeTable(null));
+            for (final var name : CAMEL_CASE) {
+                names.set(name.toLowerCase(Locale.ROOT), name);
+            }
+            for (final var name : new String[] {
+                "children",
+                "style",
+                "ref",
+                "key",
+                "autoFocus",
+                "defaultValue",
+                "defaultChecked",
+                "dangerouslySetInnerHTML",
+                "suppressContentEditableWarning",
+                "suppressHydrationWarning"
+            }) {
+                names.set(name.toLowerCase(Locale.ROOT), name);
+            }
+            ATTRIBUTES.forEach(name -> {
+                names.set(name.toLowerCase(Locale.ROOT), name);
+                final var info = ATTRIBUTES.get(name);
+                if (null != info) {
+                    names.set(info.name().toLowerCase(Locale.ROOT), name);
+                }
+            });
+            return names;
+        }
+
+        private static @Nullable String eventWarning(String name, String lower) {
+            if (DomEvents.isRegistered(name)) {
+                return null;
+            }
+            if ("onfocusin".equals(lower) || "onfocusout".equals(lower)) {
+                return "React uses onFocus and onBlur instead of onFocusIn and onFocusOut. All React events are"
+                        + " normalized to bubble, so onFocusIn and onFocusOut are not needed/supported by React.";
+            }
+            final var standard = DomEvents.standardHandler(lower);
+            if (null != standard) {
+                return "Invalid event handler property `" + name + "`. Did you mean `" + standard + "`?";
+            }
+            return name.startsWith("on") ? "Unknown event handler property `" + name + "`. It will be ignored." : null;
+        }
+
+        private static boolean reserved(String name) {
+            return switch (name) {
+                case "children",
+                        "dangerouslySetInnerHTML",
+                        "key",
+                        "ref",
+                        "style",
+                        "autoFocus",
+                        "defaultValue",
+                        "defaultChecked",
+                        "innerHTML",
+                        "suppressContentEditableWarning",
+                        "suppressHydrationWarning" -> true;
+                default -> false;
+            };
+        }
+
+        private static boolean hasHostChild(@Nullable Object child) {
+            if (ReactElement.isElement(child)) {
+                return "string"
+                        .equals(Js.typeof(Js.<ReactElement>uncheckedCast(child).type()));
+            }
+            if (null != child && isArray(child)) {
+                for (final var entry : Js.<@Nullable Object[]>uncheckedCast(child)) {
+                    if (hasHostChild(entry)) {
+                        return true;
+                    }
+                }
+            } else if (null != child && "object".equals(Js.typeof(child)) && !ReactPortal.isPortal(child)) {
+                throw new IllegalArgumentException("Objects are not valid as a React child");
+            }
+            return false;
+        }
+    }
+
+    private static final class AriaWarnings {
+        private static final Set<String> NAMES = Set.of(
+                ("current details disabled hidden invalid keyshortcuts label roledescription autocomplete checked"
+                    + " expanded haspopup level modal multiline multiselectable orientation placeholder pressed"
+                    + " readonly required selected sort valuemax valuemin valuenow valuetext atomic busy live relevant"
+                    + " dropeffect grabbed activedescendant colcount colindex colspan controls describedby"
+                    + " errormessage flowto labelledby owns posinset rowcount rowindex rowspan setsize")
+                        .split(" "));
+        private static final Set<String> WARNED = new HashSet<>();
+
+        private static boolean applies(String name) {
+            return (name.startsWith("aria-") || camelCase(name)) && ATTRIBUTE_NAME.test(name);
+        }
+
+        private static boolean camelCase(String name) {
+            return name.startsWith("aria") && upperCaseAt(name, 4);
+        }
+
+        private static void warn(String tag, JsPropertyMap<@Nullable Object> inputs, Supplier<String> stack) {
+            final var invalid = new StringBuilder();
+            int count = 0;
+            for (final var name : ownKeys(inputs)) {
+                if (WARNED.contains(name) || !applies(name)) {
+                    continue;
+                }
+                final var camel = camelCase(name);
+                final var suffix = name.substring(camel ? 4 : 5).toLowerCase(Locale.ROOT);
+                if (NAMES.contains(suffix)) {
+                    final var standard = "aria-" + suffix;
+                    if (!name.equals(standard)) {
+                        WARNED.add(name);
+                        reportHostWarning(
+                                (camel ? "Invalid" : "Unknown") + " ARIA attribute `" + name + "`. Did you mean `"
+                                        + standard + "`?",
+                                stack);
+                    }
+                } else {
+                    WARNED.add(name);
+                    if (camel) {
+                        reportHostWarning(
+                                "Invalid ARIA attribute `" + name
+                                        + "`. ARIA attributes follow the pattern aria-* and must be lowercase.",
+                                stack);
+                    } else {
+                        if (0 != count++) {
+                            invalid.append(", ");
+                        }
+                        invalid.append('`').append(name).append('`');
+                    }
+                }
+            }
+            if (0 != count) {
+                reportHostWarning(
+                        (1 == count ? "Invalid aria prop " : "Invalid aria props ") + invalid + " on <" + tag
+                                + "> tag. For details, see https://fb.me/invalid-aria-prop",
+                        stack);
+            }
+        }
+    }
+
+    private static boolean upperCaseAt(String name, int index) {
+        return name.length() > index && name.charAt(index) >= 'A' && name.charAt(index) <= 'Z';
+    }
+
+    private static final class StyleWarnings {
+        private static final Set<String> NAMES = new HashSet<>();
+        private static final Set<String> VALUES = new HashSet<>();
+        private static boolean nan;
+        private static boolean infinity;
+
+        private static void warn(@Nullable Object style, Supplier<String> stack) {
+            if (null == style || !"object".equals(Js.typeof(style))) {
+                return;
+            }
+            final var properties = properties(style);
+            for (final var name : ownKeys(properties)) {
+                if (name.startsWith("--")) {
+                    continue;
+                }
+                final var value = properties.get(name);
+                if (name.contains("-")) {
+                    if (NAMES.add(name)) {
+                        reportHostWarning(
+                                "Unsupported style property " + name + ". Did you mean " + camelize(name) + "?", stack);
+                    }
+                } else if (badPrefix(name)) {
+                    if (NAMES.add(name)) {
+                        reportHostWarning(
+                                "Unsupported vendor-prefixed style property " + name + ". Did you mean "
+                                        + Character.toUpperCase(name.charAt(0)) + name.substring(1) + "?",
+                                stack);
+                    }
+                } else if (value instanceof String text) {
+                    final var trimmed = text.stripTrailing();
+                    if (trimmed.endsWith(";") && VALUES.add(text)) {
+                        reportHostWarning(
+                                "Style property values shouldn't contain a semicolon. Try \"" + name + ": "
+                                        + trimmed.substring(0, trimmed.length() - 1) + "\" instead.",
+                                stack);
+                    }
+                }
+                if ("number".equals(Js.typeof(value))) {
+                    final var number = Js.asDouble(value);
+                    if (Double.isNaN(number) && !nan) {
+                        nan = true;
+                        reportHostWarning(
+                                "`NaN` is an invalid value for the `" + name + "` css style property.", stack);
+                    } else if (Double.isInfinite(number) && !infinity) {
+                        infinity = true;
+                        reportHostWarning(
+                                "`Infinity` is an invalid value for the `" + name + "` css style property.", stack);
+                    }
+                }
+            }
+        }
+
+        private static boolean badPrefix(String name) {
+            return name.startsWith("webkit") && upperCaseAt(name, 6)
+                    || name.startsWith("moz") && upperCaseAt(name, 3)
+                    || name.startsWith("o") && upperCaseAt(name, 1);
+        }
+
+        private static String camelize(String name) {
+            final var result = new StringBuilder();
+            for (int i = name.startsWith("-ms-") ? 1 : 0; i < name.length(); i++) {
+                final var ch = name.charAt(i);
+                result.append('-' == ch && i + 1 < name.length() ? Character.toUpperCase(name.charAt(++i)) : ch);
+            }
+            return result.toString();
+        }
+    }
+
+    static void warnProperties(
+            final String tag,
+            final JsPropertyMap<@Nullable Object> inputs,
+            @Nullable final Node host,
+            final String owner,
+            final Supplier<String> stack) {
+        if (!isCustom(tag, inputs)) {
+            AriaWarnings.warn(tag, inputs, stack);
+            PropertyWarnings.warn(tag, inputs, stack);
+        }
+        for (final var name : ownKeys(inputs)) {
+            if (!ATTRIBUTE_NAME.test(name) && PropertyWarnings.INVALID_ATTRIBUTES.add(name)) {
+                reportHostWarning("Invalid attribute name: `" + name + "`", stack);
+            }
+        }
+        final var style = inputs.get("style");
+        final var state = null == host ? null : DomEvents.state(Js.uncheckedCast(host));
+        if (null == state || !Js.isTripleEqual(state.inputs.get("style"), style)) {
+            StyleWarnings.warn(style, stack);
+            if (null != style && "object".equals(Js.typeof(style))) {
+                freezeStyle(style);
+            }
+        }
+        if (Js.isTruthy(inputs.get("contentEditable"))
+                && !Js.isTruthy(inputs.get("suppressContentEditableWarning"))
+                && null != inputs.get("children")) {
+            reportHostWarning(
+                    "A component is `contentEditable` and contains `children` managed by React. It is now your"
+                            + " responsibility to guarantee that none of those nodes are unexpectedly modified or"
+                            + " duplicated. This is probably not intentional.",
+                    stack);
+        }
+        warnEventProps(inputs, host, stack);
+        if (null == host && "option".equals(tag)) {
+            if (!PropertyWarnings.invalidOptionChild && PropertyWarnings.hasHostChild(inputs.get("children"))) {
+                PropertyWarnings.invalidOptionChild = true;
+                reportHostWarning("Only strings and numbers are supported as <option> children.", stack);
+            }
+            if (!PropertyWarnings.selectedOption && null != inputs.get("selected")) {
+                PropertyWarnings.selectedOption = true;
+                reportHostWarning(
+                        "Use the `defaultValue` or `value` props on <select> instead of setting `selected` on"
+                                + " <option>.",
+                        stack);
+            }
+        }
+        warnFormProps(tag, inputs, host, owner, stack);
+    }
+
+    static void warnTag(
+            Element host,
+            String namespace,
+            String tag,
+            JsPropertyMap<@Nullable Object> inputs,
+            Supplier<String> stack) {
+        if (!HTML.equals(namespace) || isCustom(tag, inputs)) {
+            return;
+        }
+        if (!tag.equals(tag.toLowerCase(Locale.ROOT))) {
+            reportHostWarning(
+                    "<" + tag + " /> is using incorrect casing. Use PascalCase for React components,"
+                            + " or lowercase for HTML elements.",
+                    stack);
+        }
+        if ("[object HTMLUnknownElement]".equals(objectTag(host)) && PropertyWarnings.UNKNOWN_TAGS.add(tag)) {
+            reportHostWarning(
+                    "The tag <" + tag + "> is unrecognized in this browser. If you meant to render a React"
+                            + " component, start its name with an uppercase letter.",
+                    stack);
+        }
+    }
+
+    private static boolean isCustom(String tag, JsPropertyMap<@Nullable Object> inputs) {
+        return tag.contains("-")
+                ? !RESERVED_HYPHENATED_TAGS.contains(tag)
+                : "string".equals(Js.typeof(inputs.get("is")));
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.freeze")
+    private static native void freezeStyle(Object style);
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.prototype.toString.call")
+    private static native String objectTag(Object value);
+
+    private static void warnEventProps(
+            final JsPropertyMap<@Nullable Object> inputs, final @Nullable Node host, final Supplier<String> stack) {
+        final var previous = null == host ? null : DomEvents.state(Js.uncheckedCast(host));
+        for (final var name : ownKeys(inputs)) {
+            if (!DomEvents.isRegistered(name)) {
+                continue;
+            }
+            final var handler = inputs.get(name);
+            final var type = Js.typeof(handler);
+            if (null != handler
+                    && !"function".equals(type)
+                    && (null == previous || !Js.isTripleEqual(previous.inputs.get(name), handler))) {
+                reportHostWarning(
+                        Js.isTripleEqual(false, handler)
+                                ? "Expected `" + name + "` listener to be a function, instead got `false`.\n\n"
+                                        + "If you used to conditionally omit it with " + name
+                                        + "={condition && value}, "
+                                        + "pass " + name + "={condition ? value : undefined} instead."
+                                : DomEvents.invalidListener(name, type),
+                        stack);
+            }
+        }
+    }
+
+    private static void reportHostWarning(final String message, final Supplier<String> stack) {
+        consoleError("Warning: " + message + stack.get());
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "console.error")
+    private static native void consoleError(String message);
+
     static boolean hasHtml(final JsPropertyMap<@Nullable Object> inputs) {
         return null != rawHtml(inputs.get("dangerouslySetInnerHTML"));
+    }
+
+    private static void warnFormProps(
+            final String tag,
+            final JsPropertyMap<@Nullable Object> inputs,
+            final @Nullable Node host,
+            final String owner,
+            final Supplier<String> stack) {
+        if (!isControlTag(tag)) {
+            return;
+        }
+        final var value = inputs.get("value");
+        final boolean multiple = "select".equals(tag) && Js.isTruthy(inputs.get("multiple"));
+        if (Js.isTripleEqual(null, value)) {
+            FormWarning.NULL_VALUE.report(
+                    "`value` prop on `" + tag + "` should not be null. Consider using "
+                            + (multiple ? "an empty array when `multiple` is set to `true`" : "an empty string")
+                            + " to clear the component or `undefined` for uncontrolled components.",
+                    stack);
+        }
+        final var type = inputs.get("type");
+        final var state = null == host ? null : DomEvents.state(Js.uncheckedCast(host));
+        if (null == state) {
+            final var checked = inputs.get("checked");
+            if (!Js.isTruthy(inputs.get("onChange"))
+                    && !Js.isTruthy(inputs.get("readOnly"))
+                    && !Js.isTruthy(inputs.get("disabled"))) {
+                if (null != value && !FormWarning.READ_ONLY_VALUE_TYPES.contains(stringify(type))) {
+                    FormWarning.MISSING_VALUE_HANDLER.missingHandler("value", "defaultValue", stack);
+                }
+                if (null != checked) {
+                    FormWarning.MISSING_CHECKED_HANDLER.missingHandler("checked", "defaultChecked", stack);
+                }
+            }
+            if (hasDefined(inputs, "value") && hasDefined(inputs, "defaultValue")) {
+                switch (tag) {
+                    case "input" ->
+                        FormWarning.INPUT_VALUE_DEFAULT.conflicting(
+                                owner + " contains an input of type " + stringify(type)
+                                        + " with both value and defaultValue props. ",
+                                "Input",
+                                "input",
+                                "value",
+                                "defaultValue",
+                                stack);
+                    case "textarea" ->
+                        FormWarning.TEXTAREA_VALUE_DEFAULT.conflicting(
+                                owner + " contains a textarea with both value and defaultValue props. ",
+                                "Textarea",
+                                "textarea",
+                                "value",
+                                "defaultValue",
+                                stack);
+                    default ->
+                        FormWarning.SELECT_VALUE_DEFAULT.conflicting(
+                                "", "Select", "select", "value", "defaultValue", stack);
+                }
+            }
+            if ("input".equals(tag) && hasDefined(inputs, "checked") && hasDefined(inputs, "defaultChecked")) {
+                FormWarning.INPUT_CHECKED_DEFAULT.conflicting(
+                        owner + " contains an input of type " + stringify(type)
+                                + " with both checked and defaultChecked props. ",
+                        "Input",
+                        "input",
+                        "checked",
+                        "defaultChecked",
+                        stack);
+            }
+            if ("select".equals(tag)) {
+                for (final var name : FormWarning.SELECT_VALUE_PROPS) {
+                    final var supplied = inputs.get(name);
+                    if (null != supplied && multiple != isArray(supplied)) {
+                        FormWarning.log(
+                                "The `" + name + "` prop supplied to <select> must be "
+                                        + (multiple
+                                                ? "an array if `multiple` is true."
+                                                : "a scalar value if `multiple` is false."),
+                                stack);
+                    }
+                }
+            }
+            if ("textarea".equals(tag) && null == value && null != inputs.get("children")) {
+                FormWarning.log(
+                        "Use the `defaultValue` or `value` props instead of setting children on <textarea>.", stack);
+            }
+        } else if ("input".equals(tag)) {
+            final boolean controlled = null != (isCheckableType(type) ? inputs.get("checked") : value);
+            if (controlled != state.controlledInput) {
+                final var before = controlled ? "uncontrolled" : "controlled";
+                final var after = controlled ? "controlled" : "uncontrolled";
+                (controlled ? FormWarning.UNCONTROLLED_TO_CONTROLLED : FormWarning.CONTROLLED_TO_UNCONTROLLED)
+                        .report(
+                                "A component is changing " + (controlled ? "an " : "a ") + before + " input of type "
+                                        + stringify(type) + " to be " + after
+                                        + ". Input elements should not switch from " + before + " to " + after
+                                        + " (or vice versa). Decide between using a controlled or uncontrolled input"
+                                        + " element for the lifetime of the component. More info:"
+                                        + " https://fb.me/react-controlled-components",
+                                stack);
+            }
+        }
+    }
+
+    private static boolean hasDefined(final JsPropertyMap<@Nullable Object> inputs, final String name) {
+        return !Js.isTripleEqual(Js.undefined(), inputs.get(name));
+    }
+
+    private enum FormWarning {
+        NULL_VALUE,
+        MISSING_VALUE_HANDLER,
+        MISSING_CHECKED_HANDLER,
+        INPUT_VALUE_DEFAULT,
+        INPUT_CHECKED_DEFAULT,
+        TEXTAREA_VALUE_DEFAULT,
+        SELECT_VALUE_DEFAULT,
+        CONTROLLED_TO_UNCONTROLLED,
+        UNCONTROLLED_TO_CONTROLLED;
+
+        private static final Set<String> READ_ONLY_VALUE_TYPES =
+                Set.of("button", "checkbox", "hidden", "image", "radio", "reset", "submit");
+        private static final String[] SELECT_VALUE_PROPS = {"value", "defaultValue"};
+        private boolean reported;
+
+        void report(final String message, final Supplier<String> stack) {
+            if (!reported) {
+                reported = true;
+                log(message, stack);
+            }
+        }
+
+        void missingHandler(final String prop, final String defaultProp, final Supplier<String> stack) {
+            report(
+                    "Failed prop type: You provided a `" + prop
+                            + "` prop to a form field without an `onChange` handler. "
+                            + "This will render a read-only field. If the field should be mutable use `" + defaultProp
+                            + "`. Otherwise, set either `onChange` or `readOnly`.",
+                    stack);
+        }
+
+        void conflicting(
+                final String prefix,
+                final String kind,
+                final String tag,
+                final String prop,
+                final String defaultProp,
+                final Supplier<String> stack) {
+            report(
+                    prefix + kind + " elements must be either controlled or uncontrolled (specify either the " + prop
+                            + " prop, or the " + defaultProp
+                            + " prop, but not both). Decide between using a controlled or uncontrolled "
+                            + tag + ("textarea".equals(tag) ? "" : " element")
+                            + " and remove one of these props. More info: https://fb.me/react-controlled-components",
+                    stack);
+        }
+
+        static void log(final String message, final Supplier<String> stack) {
+            reportHostWarning(message, stack);
+        }
     }
 
     @Nullable
@@ -625,12 +1323,18 @@ final class DomHost {
                     props.set("defaultValue", initial);
                 }
             } else {
-                if (null != value && !stringify(value).equals(props.get("value"))) {
-                    props.set("value", stringify(value));
+                if (null != value) {
+                    final var text = formValue(value);
+                    if (!text.equals(props.get("value"))) {
+                        props.set("value", text);
+                    }
                 }
                 final var text = null != defaultValue ? defaultValue : value;
-                if (null != text && !stringify(text).equals(props.get("defaultValue"))) {
-                    props.set("defaultValue", stringify(text));
+                if (null != text) {
+                    final var reset = formValue(text);
+                    if (!reset.equals(props.get("defaultValue"))) {
+                        props.set("defaultValue", reset);
+                    }
                 }
             }
         } else {
@@ -643,22 +1347,21 @@ final class DomHost {
             if (null != checked || mounting && null != defaultChecked) {
                 props.set("checked", Js.isTruthy(null != checked ? checked : defaultChecked));
             }
-            if (mounting && (null != checked || null != defaultChecked)) {
-                props.set("defaultChecked", Js.isTruthy(null != checked ? checked : defaultChecked));
-            } else if (null == checked && null != defaultChecked) {
+            if (!mounting && null == checked && null != defaultChecked) {
                 props.set("defaultChecked", Js.isTruthy(defaultChecked));
             }
             final var initial = null != value ? value : defaultValue;
             if (mounting) {
                 state.controlledInput = null != (isCheckableType(props.get("type")) ? checked : value);
-                state.initialValue = null == initial ? "" : stringify(initial);
+                state.initialValue = null == initial ? "" : formValue(initial);
             }
-            if (null == value && ("submit".equals(type) || "reset".equals(type))) {
+            final boolean button = "submit".equals(type) || "reset".equals(type);
+            if (null == value && button) {
                 element.removeAttribute("value");
             } else if (inputs.has("value") || inputs.has("defaultValue")) {
                 final var text = null == initial || !mounting && inputs.has("value") && null == value
                         ? state.initialValue
-                        : stringify(initial);
+                        : formValue(initial);
                 final var current = props.get("value");
                 final boolean sameNumber = !mounting
                         && "number".equals(type)
@@ -669,8 +1372,20 @@ final class DomHost {
                     props.set("value", text);
                 }
                 if ((!"number".equals(type) || element != element.document().activeElement)
-                        && !text.equals(props.get("defaultValue"))) {
+                        && (mounting || !text.equals(props.get("defaultValue")))) {
                     props.set("defaultValue", text);
+                }
+            }
+            if (mounting) {
+                final var name = props.get("name");
+                // Reflect checkedness only after value, without disturbing a named radio group.
+                if (Js.isTruthy(name)) {
+                    props.set("name", "");
+                }
+                props.set("defaultChecked", !Js.isTruthy(props.get("defaultChecked")));
+                props.set("defaultChecked", Js.isTruthy(state.initialChecked));
+                if (Js.isTruthy(name)) {
+                    props.set("name", name);
                 }
             }
         }
@@ -680,12 +1395,12 @@ final class DomHost {
     private static String textareaInitialValue(final JsPropertyMap<@Nullable Object> inputs) {
         final var value = inputs.get("value");
         if (null != value) {
-            return stringify(value);
+            return formValue(value);
         }
         final var defaultValue = inputs.get("defaultValue");
         var children = inputs.get("children");
         if (null == children) {
-            return null == defaultValue ? "" : stringify(defaultValue);
+            return null == defaultValue ? "" : formValue(defaultValue);
         }
         if (null != defaultValue) {
             throw new IllegalArgumentException("A textarea cannot have both defaultValue and children");
@@ -693,11 +1408,18 @@ final class DomHost {
         if (isArray(children)) {
             final var array = Js.<@Nullable Object[]>uncheckedCast(children);
             if (1 < array.length) {
-                throw new IllegalArgumentException("A textarea supports at most one child");
+                throw new IllegalArgumentException("<textarea> can only have at most one child");
             }
             children = 0 == array.length ? null : array[0];
         }
-        return null == children ? "" : stringify(children);
+        return null == children ? "" : formValue(children);
+    }
+
+    private static String formValue(final Object value) {
+        return switch (Js.typeof(value)) {
+            case "function", "symbol" -> "";
+            default -> stringify(value);
+        };
     }
 
     static void commitNumberOnBlur(final Element element, final DomEvents.State state) {
@@ -912,7 +1634,7 @@ final class DomHost {
                 }
             }
         } else {
-            final var desired = stringify(value);
+            final var desired = formValue(value);
             JsPropertyMap<@Nullable Object> fallback = null;
             for (int i = 0; i < options.length; i++) {
                 final var option = properties(options.item(i));
@@ -944,7 +1666,7 @@ final class DomHost {
     private static native boolean hasOwn(Object value, String key);
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "Number")
-    private static native double number(@Nullable Object value);
+    static native double number(@Nullable Object value);
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "Array.isArray")
     private static native boolean isArray(Object value);

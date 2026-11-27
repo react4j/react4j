@@ -11,6 +11,87 @@ RuntimeParityBrowserTest.constructible = function(type) {
   return function(inputs) { return type(inputs); };
 };
 
+/** @param {function(!Object):void} receive @return {function():void} */
+RuntimeParityBrowserTest.rootCallback = function(receive) {
+  return /** @this {!Object} */ function() { receive(this); };
+};
+
+/** @param {function():void} render @return {!Array<string>} */
+RuntimeParityBrowserTest.captureKeyWarnings = function(render) {
+  const previous = console.error;
+  const warnings = [];
+  console.error = function(format, ...values) {
+    if (String(format).includes('Encountered two children with the same key')) {
+      let index = 0;
+      warnings.push(values.length ? String(format).replace(/%s/g, () => String(values[index++])) : String(format));
+    } else {
+      previous.apply(console, arguments);
+    }
+  };
+  try {
+    render();
+    return warnings;
+  } finally {
+    console.error = previous;
+  }
+};
+
+/** @param {string} expected @param {function(*):void} log @return {function():void} */
+RuntimeParityBrowserTest.observeCaughtErrorLogs = function(expected, log) {
+  const report = console.error;
+  const onError = window.onerror;
+  console.error = function(message) {
+    if (('string' === typeof message && message.startsWith('The above error occurred')) ||
+        (message && typeof message.message === 'string' && message.message.endsWith(expected))) {
+      log(message);
+    } else {
+      report.apply(console, arguments);
+    }
+  };
+  window.onerror = function(message) {
+    // Keep React's development replay from reaching the test runner without
+    // canceling the event, which would suppress React's caught-error log.
+    if ('string' === typeof message && message.endsWith(expected)) return undefined;
+    return onError ? onError.apply(window, arguments) : undefined;
+  };
+  return () => {
+    console.error = report;
+    window.onerror = onError;
+  };
+};
+
+/** @param {function():void} action @return {*} */
+RuntimeParityBrowserTest.thrownBy = function(action) {
+  try {
+    action();
+    return null;
+  } catch (error) {
+    return error;
+  }
+};
+
+/** @param {string} message @return {!Promise<?>} */
+RuntimeParityBrowserTest.nextUncaughtError = function(message) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      window.removeEventListener('error', onError, true);
+      reject(new Error('Expected an uncaught error ending in ' + message));
+    }, 5000);
+    /** @param {!Event} event */
+    function onError(event) {
+      const detail = /** @type {!ErrorEvent} */ (event).message;
+      if ('string' === typeof detail && detail.endsWith(message)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        clearTimeout(timer);
+        window.removeEventListener('error', onError, true);
+        resolve();
+      }
+    }
+    window.addEventListener('error', onError, true);
+  });
+};
+
 /**
  * @template View
  * @param {function(!Object<string, *>): !View} type

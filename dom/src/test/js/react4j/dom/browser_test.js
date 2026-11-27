@@ -1,12 +1,17 @@
 goog.module('react4j.dom.BrowserTest');
+const Children = goog.require('react4j.dom.ChildReconciliationTest');
 const Events = goog.require('react4j.dom.EventsBrowserTest');
 const Mode = goog.require('react4j.browser.Mode');
+const OriginalHost = goog.require('react4j.dom.OriginalHostCasesBrowserTest');
 const Parity = goog.require('react4j.dom.RuntimeParityBrowserTest');
 const Runtime = goog.require('react4j.dom.RuntimeBrowserTest');
 const TestCase = goog.require('goog.testing.TestCase');
 const testSuite = goog.require('goog.testing.testSuite');
 testSuite({
+  testANestingDiagnostics() { Events.runNestingDiagnostics('production' === Mode.environment); },
+  testAFormDiagnostics() { Events.runFormDiagnostics('production' === Mode.environment); },
   testControlsAndEvents() { Events.runControlsAndEvents(); },
+  testOriginalHostCases() { OriginalHost.run(); },
   testHostProperties() { Events.runHostProperties(); },
   testBeforeInputFallback() { Events.runBeforeInputFallback(); },
   testBeforeInput() { Events.runBeforeInput(); },
@@ -14,6 +19,7 @@ testSuite({
   testUncontrolled() { Events.runUncontrolled(); },
   testKeyboardVariants() { Events.runKeyboardVariants('production' === Mode.environment); },
   testDomEventVariants() { Events.runDomEventVariants(); },
+  testInvalidListeners() { Events.runInvalidListeners('production' === Mode.environment); },
   testEvents() { Events.runBehavior(); },
   testEventPayloads() { Events.runPayloads(); },
   testParity() {
@@ -29,7 +35,8 @@ testSuite({
      * @return {boolean|undefined}
      */
     function onError(message, url, line, column, error) {
-      if ('string' === typeof message && (message.endsWith('A descendant failed') || message.endsWith(' parity failure'))) {
+      if ('string' === typeof message && (message.endsWith('A descendant failed') || message.endsWith(' parity failure') ||
+          message.includes('Maximum update depth exceeded'))) {
         return true;
       }
       if (previous) {
@@ -44,5 +51,6 @@ testSuite({
           window.onerror = previous;
         });
   },
+  testChildIdentity() { Children.run(); },
   testRuntime() { return Runtime.run(); },
 });

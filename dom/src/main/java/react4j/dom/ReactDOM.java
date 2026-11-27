@@ -39,7 +39,7 @@ public final class ReactDOM {
     }
 
     public static ReactRoot createRoot(final Object container) {
-        return Renderer.createRoot(Renderer.requireContainer(container));
+        return Renderer.createRoot(Renderer.requireContainer(container, "unstable_createRoot(...): "));
     }
 
     /**
@@ -58,7 +58,7 @@ public final class ReactDOM {
      * @return the new portal.
      */
     public static ReactPortal createPortal(final Renderable children, final Object container) {
-        return ReactPortal.create(Renderable.toReactNode(children), Renderer.requireContainer(container));
+        return ReactPortal.create(Renderable.toReactNode(children), Renderer.requireContainer(container, ""));
     }
 
     /**
@@ -80,7 +80,7 @@ public final class ReactDOM {
         final var actual = Renderable.toReactNode(node);
         return Renderer.render(
                 React.shouldCheckInvariants() ? ReactElement.createStrictMode(actual) : actual,
-                Renderer.requireContainer(container),
+                Renderer.requireContainer(container, ""),
                 onUpdate);
     }
 
@@ -108,7 +108,7 @@ public final class ReactDOM {
      * @return true if a component was unmounted and false if there was no component to unmount.
      */
     public static boolean unmountComponentAtNode(Object container) {
-        return Renderer.unmount(Renderer.requireContainer(container));
+        return Renderer.unmount(Renderer.requireContainer(container, "unmountComponentAtNode(...): "));
     }
 
     /**

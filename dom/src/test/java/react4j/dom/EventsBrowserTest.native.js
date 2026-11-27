@@ -115,6 +115,9 @@ EventsBrowserTest.dispatch = function(target, name) {
     'onTransitionEnd': () => new TransitionEvent('transitionend', {bubbles: true, propertyName: 'opacity', elapsedTime: 0.25, pseudoElement: ''}),
     'onCancel': () => new Event('cancel'),
     'onClose': () => new Event('close'),
+    'onInvalid': () => new Event('invalid'),
+    'onLoadStart': () => new ProgressEvent('loadstart'),
+    'onPlay': () => new Event('play'),
     'onProgress': () => new Event('progress'),
     'onBlur': () => new FocusEvent('blur'),
     'onScroll': () => new window.UIEvent('scroll', {detail: 7, view: window}),
@@ -185,6 +188,90 @@ EventsBrowserTest.writeValue = function(element, value) {
   element.dispatchEvent(new Event('input', {bubbles: true}));
 };
 
+/** @param {!Element} element @param {string} type */
+EventsBrowserTest.nativeInputEvent = function(element, type) {
+  element.dispatchEvent(new Event(type, {bubbles: true}));
+};
+
+/** @param {!Element} element @param {string} type */
+EventsBrowserTest.stopNativePropagation = function(element, type) {
+  element.addEventListener(type, event => event.stopPropagation());
+};
+
+/** @return {!Array<?>} */
+EventsBrowserTest.nonTextValues = function() {
+  return [function() {}, Symbol('fixture')];
+};
+
+/** @param {function():void} probe */
+EventsBrowserTest.withoutReportedErrors = function(probe) {
+  const onerror = window.onerror;
+  const report = console.error;
+  window.onerror = () => true;
+  console.error = () => {};
+  try {
+    probe();
+  } finally {
+    window.onerror = onerror;
+    console.error = report;
+  }
+};
+
+/** @param {!Element} root @param {function():void} probe @return {string} */
+EventsBrowserTest.observeDocumentListeners = function(root, probe) {
+  const document = root.ownerDocument;
+  const add = document.addEventListener;
+  const descriptor = Object.getOwnPropertyDescriptor(document, 'addEventListener');
+  const events = [];
+  Object.defineProperty(document, 'addEventListener', {
+    configurable: true,
+    value(type, listener, options) {
+      events.push(type);
+      add.call(document, type, listener, options);
+    },
+  });
+  try {
+    probe();
+    return events.join(' ');
+  } finally {
+    if (descriptor) {
+      Object.defineProperty(document, 'addEventListener', descriptor);
+    } else {
+      Reflect.deleteProperty(document, 'addEventListener');
+    }
+  }
+};
+
+/** @param {!Element} element @param {boolean} checked */
+EventsBrowserTest.setCheckedUntracked = function(element, checked) {
+  Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'checked').set.call(
+      /** @type {!HTMLInputElement} */ (element), checked);
+};
+
+/** @param {!Element} parent @param {!Element} child */
+EventsBrowserTest.appendExisting = function(parent, child) {
+  parent.appendChild(child);
+};
+
+/** @param {!Element} element @param {function():void} probe @return {number} */
+EventsBrowserTest.inputValueWrites = function(element, probe) {
+  const descriptor = Object.getOwnPropertyDescriptor(element, 'value');
+  let writes = 0;
+  Object.defineProperty(element, 'value', {
+    ...descriptor,
+    set(value) {
+      writes++;
+      descriptor.set.call(this, value);
+    },
+  });
+  try {
+    probe();
+    return writes;
+  } finally {
+    Object.defineProperty(element, 'value', descriptor);
+  }
+};
+
 /** @param {!Element} element @return {boolean} */
 EventsBrowserTest.isFocused = function(element) { return element.ownerDocument.activeElement === element; };
 
@@ -236,6 +323,40 @@ EventsBrowserTest.releasedWarnings = function(probe) {
   }
 };
 
+/** @param {function():void} probe @return {string} */
+EventsBrowserTest.captureWarnings = function(probe) {
+  const previous = console.error;
+  const warnings = [];
+  console.error = (...args) => {
+    let position = 1;
+    warnings.push(String(args[0]).replace(/%s/g, token =>
+      position < args.length ? String(args[position++]) : token));
+  };
+  try {
+    probe();
+    return warnings.join('\n');
+  } finally {
+    console.error = previous;
+  }
+};
+
+/** @param {!Element} target @return {string} */
+EventsBrowserTest.clickError = function(target) {
+  const view = target.ownerDocument.defaultView;
+  const previous = view.onerror;
+  const errors = [];
+  view.onerror = message => {
+    errors.push(String(message));
+    return true;
+  };
+  try {
+    target.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+    return errors.join('\n');
+  } finally {
+    view.onerror = previous;
+  }
+};
+
 /** @param {!Element} element @param {string} type @param {string} key @param {number} keyCode @param {number} charCode */
 EventsBrowserTest.keyboard = function(element, type, key, keyCode, charCode) {
   element.dispatchEvent(new KeyboardEvent(type, {bubbles: true, key, keyCode, charCode, shiftKey: true}));
@@ -252,6 +373,13 @@ EventsBrowserTest.legacyKey = function(element, type, keyCode) {
 /** @param {!Element} element @param {number} button */
 EventsBrowserTest.mouseButton = function(element, button) {
   element.dispatchEvent(new MouseEvent('click', {bubbles: true, button}));
+};
+
+/** @param {!Element} element @param {string} type @param {number} x @param {number} y */
+EventsBrowserTest.legacyMovement = function(element, type, x, y) {
+  const event = new Event(type, {bubbles: true});
+  Object.assign(event, {'screenX': x, 'screenY': y});
+  element.dispatchEvent(event);
 };
 
 /** @param {!Element} element */

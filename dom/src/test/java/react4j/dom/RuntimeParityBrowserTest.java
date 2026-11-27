@@ -3,6 +3,7 @@ package react4j.dom;
 import static react4j.webtesting.Checks.check;
 import static react4j.webtesting.Checks.equal;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -49,18 +50,28 @@ public final class RuntimeParityBrowserTest {
             lifecycle(container);
             statePayloads(container);
             keyedList(container);
+            keyedAndImplicitSlots(container);
+            fragmentIdentity(container);
+            duplicateKeyWarnings(container, production);
+            topLevelText(container);
             focusAfterKeyedMove(container);
             hostText(container);
             replaceRefs(container);
             portalContext(container, target);
+            contextThroughBailout(container);
+            contextValueEquality(container);
             portalReplacement(container, target);
             iframePortal(container);
             boundary(container, production, true);
             boundary(container, production, false);
+            abortedRefs(container);
             commitErrors(container);
+            rootIdentity(container);
             rootUpdates(container);
             nestedRoots(container, target);
+            mountWithinBatch(container, target);
             batchedRootState(container, target);
+            nestedUpdateLimit(container, target, production);
             skippedUpdates(container);
             committedChildren(container);
             alternateContainers();
@@ -75,6 +86,22 @@ public final class RuntimeParityBrowserTest {
             container.remove();
         }
         return suspense()
+                .then(ignored -> suspenseWithoutFallback(false))
+                .then(ignored -> suspenseWithoutFallback(true))
+                .then(ignored -> missingPlaceholder(false, production))
+                .then(ignored -> missingPlaceholder(true, production))
+                .then(ignored -> independentSuspenseSiblings())
+                .then(ignored -> renderFailureSiblings(false, production))
+                .then(ignored -> renderFailureSiblings(true, production))
+                .then(ignored -> failedRenderTeardown(false, production))
+                .then(ignored -> failedRenderTeardown(true, production))
+                .then(ignored -> errorLoggerRecovery(false, false))
+                .then(ignored -> errorLoggerRecovery(true, false))
+                .then(ignored -> errorLoggerRecovery(false, true))
+                .then(ignored -> errorLoggerRecovery(true, true))
+                .then(ignored -> concurrentRootErrorIsolation())
+                .then(ignored -> contextUnwindsOnRenderError())
+                .then(ignored -> concurrentErrorWithPendingState())
                 .then(ignored -> laterSuspense(false))
                 .then(ignored -> laterSuspense(true))
                 .then(ignored -> concurrentUpdates())
@@ -338,6 +365,161 @@ public final class RuntimeParityBrowserTest {
         return ReactElement.createHostElement("input", key, null, JsPropertyMap.of("defaultValue", key));
     }
 
+    private static void keyedAndImplicitSlots(Browser.Element container) {
+        final var implicit = ReactElement.createHostElement(
+                "input", null, null, JsPropertyMap.of("id", "implicit", "defaultValue", "implicit"));
+        final var explicit = keyedInput("0").input("id", "explicit");
+        ReactDOM.render(ReactElement.createFragment(null, implicit, explicit), container);
+        final var originalImplicit = Browser.query(container, "#implicit");
+        final var originalExplicit = Browser.query(container, "#explicit");
+        Browser.setValue(originalExplicit, "edited");
+
+        ReactDOM.render(ReactElement.createFragment(null, explicit, implicit), container);
+        check(
+                originalExplicit == Browser.query(container, "#explicit"),
+                "A string key survives a move to its numeric slot");
+        check(
+                originalImplicit != Browser.query(container, "#implicit"),
+                "An unkeyed child changes identity with its slot");
+        equal("edited", Browser.string(Browser.property(originalExplicit, "value")));
+
+        final var movedImplicit = Browser.query(container, "#implicit");
+        ReactDOM.render(ReactElement.createFragment(null, null, implicit), container);
+        check(movedImplicit == Browser.query(container, "#implicit"), "A null sibling leaves the implicit slot intact");
+        check(!Browser.exists(container, "#explicit"), "The omitted keyed child is removed");
+        ReactDOM.render(ReactElement.createFragment(null, explicit, implicit), container);
+        check(
+                movedImplicit == Browser.query(container, "#implicit"),
+                "Filling a sibling slot preserves the implicit child");
+        final var remountedExplicit = Browser.query(container, "#explicit");
+        check(originalExplicit != remountedExplicit, "A removed key mounts a fresh host when reinserted");
+        equal("0", Browser.string(Browser.property(remountedExplicit, "value")));
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
+    private static void fragmentIdentity(Browser.Element container) {
+        final var child = keyedInput("child");
+        final var fragment = ReactElement.createFragment(null, child);
+        final var keyed = ReactElement.createFragment("group", child);
+        final var nested = ReactElement.createFragment(null, fragment);
+        final var nestedArray = ReactNode.of(ReactNode.of(child));
+        final var sibling =
+                ReactElement.createHostElement("span", "sibling", null, JsPropertyMap.of("children", "sibling"));
+        final ReactNode[] outputs = {
+            child,
+            fragment,
+            ReactNode.of(child, sibling),
+            child,
+            nested,
+            nestedArray,
+            nested,
+            child,
+            keyed,
+            ReactElement.createFragment("other", child),
+            ReactNode.of(child)
+        };
+        final boolean[] preserved = {false, true, true, true, false, true, true, false, false, false, false};
+        final var outputType = constructible(OutputProbe::new);
+        Browser.Element previous = null;
+        for (int i = 0; i < outputs.length; i++) {
+            final var output = outputs[i];
+            ReactDOM.render(
+                    ReactElement.createViewElement(outputType).input("output", (Supplier<ReactNode>) () -> output),
+                    container);
+            final var host = Browser.query(container, "input");
+            check(preserved[i] == (host == previous), "Unexpected fragment child identity at transition " + i);
+            if (!preserved[i]) {
+                equal("child", Browser.string(Browser.property(host, "value")));
+                Browser.setValue(host, "edited");
+            }
+            equal("edited", Browser.string(Browser.property(host, "value")));
+            previous = host;
+        }
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
+    private static void duplicateKeyWarnings(Browser.Element container, boolean production) {
+        final ViewConstructorFunction parent = constructible(OutputProbe::new);
+        final ViewConstructorFunction list = constructible(OutputProbe::new);
+        Js.<JsPropertyMap<String>>uncheckedCast(parent).set("displayName", "KeysParent");
+        Js.<JsPropertyMap<String>>uncheckedCast(list).set("displayName", "KeysList");
+        final var rows = new ReactNode[][] {
+            {keyedInput("row"), keyedInput("row"), keyedInput("row")},
+            {
+                ReactElement.createFragment("group", keyedInput("independent")),
+                ReactElement.createFragment("group", keyedInput("independent"))
+            },
+            {
+                ReactElement.createFragment("left", keyedInput("scoped")),
+                ReactElement.createFragment("right", keyedInput("scoped"))
+            },
+        };
+        final var current = new int[1];
+        final Supplier<ReactNode> renderList = () -> {
+            final var node = ReactElement.createHostElement(
+                    "div", null, null, JsPropertyMap.of("children", ReactNode.of(rows[current[0]])));
+            sourceAt(node, 23);
+            return node;
+        };
+        final var tree = ReactElement.createViewElement(parent).input("output", (Supplier<ReactNode>)
+                () -> ReactElement.createViewElement(list).input("output", renderList));
+        final var warnings = captureKeyWarnings(() -> {
+            for (int i = 0; i < rows.length; i++) {
+                current[0] = i;
+                final var next = tree.dup();
+                sourceAt(next, 40);
+                ReactDOM.render(next, container);
+            }
+        });
+        check((production ? 0 : 3) == warnings.length, "One warning per repeated sibling key");
+        if (!production) {
+            final var stack = "\n    in div (at KeysFixture.java:23)"
+                    + "\n    in KeysList (created by KeysParent)"
+                    + "\n    in KeysParent (at KeysFixture.java:40)";
+            equal(duplicateKeyWarning("row", stack), warnings[0]);
+            equal(duplicateKeyWarning("row", stack), warnings[1]);
+            equal(duplicateKeyWarning("group", stack), warnings[2]);
+        }
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
+    private static void sourceAt(ReactElement element, int line) {
+        Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(element)
+                .set("_source", JsPropertyMap.of("fileName", "/fixtures/KeysFixture.java", "lineNumber", line));
+    }
+
+    private static String duplicateKeyWarning(String key, String stack) {
+        return "Warning: Encountered two children with the same key, `" + key
+                + "`. Keys should be unique so that components maintain their identity across updates."
+                + " Non-unique keys may cause children to be duplicated and/or omitted — the behavior is"
+                + " unsupported and could change in a future version." + stack;
+    }
+
+    @JsMethod
+    private static native String[] captureKeyWarnings(BrowserPromise.Action render);
+
+    private static void topLevelText(Browser.Element container) {
+        final var outputType = constructible(OutputProbe::new);
+        final var output = new ReactNode[] {ReactNode.of("word")};
+        final var view =
+                ReactElement.createViewElement(outputType).input("output", (Supplier<ReactNode>) () -> output[0]);
+        ReactDOM.render(view, container);
+        final var text = Browser.property(container, "firstChild");
+        equal("word", container.getTextContent());
+        output[0] = ReactNode.of(42);
+        ReactDOM.render(view.dup(), container);
+        equal("42", container.getTextContent());
+        check(Browser.same(text, Browser.property(container, "firstChild")), "A numeric child reuses the text node");
+        output[0] = ReactNode.of("");
+        ReactDOM.render(view.dup(), container);
+        equal("", container.getTextContent());
+        check(Browser.same(text, Browser.property(container, "firstChild")), "An empty string reuses the text node");
+        output[0] = ReactNode.of();
+        ReactDOM.render(view.dup(), container);
+        check(null == Browser.property(container, "firstChild"), "An empty array removes the text node");
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
     private static void portalContext(Browser.Element container, Browser.Element target) {
         Contexts.register(String.class, "parity", "default");
         final var context = Contexts.get(String.class, "parity");
@@ -374,6 +556,58 @@ public final class RuntimeParityBrowserTest {
         equal("null", target.getTextContent());
         check(ReactDOM.unmountComponentAtNode(container), "The portal tree unmounts");
         equal("", target.getTextContent());
+    }
+
+    private static void contextThroughBailout(Browser.Element container) {
+        final var context = Contexts.get(String.class, "parity");
+        final var renders = new int[2];
+        final var consumer = context.consumer().render(value -> {
+            renders[0]++;
+            return DOM.span(null == value ? "null" : value);
+        });
+        final var inner = context.provide("inner", context.consumer().render(value -> {
+            renders[1]++;
+            return DOM.strong(null == value ? "null" : value);
+        }));
+        final var middleType = constructible(BailoutProbe::new);
+        final var middle = ReactElement.createViewElement(middleType)
+                .input("child", ReactElement.createFragment(null, consumer, inner));
+        ReactDOM.render(context.provide("first", middle), container);
+        final var host = Browser.query(container, "span");
+        equal("firstinner", container.getTextContent());
+        ReactDOM.render(context.provide("second", middle.dup()), container);
+        equal("secondinner", container.getTextContent());
+        check(
+                host == Browser.query(container, "span"),
+                "Context propagation across a skipped parent preserves its host");
+        ReactDOM.render(context.provide("second", middle), container);
+        check(2 == renders[0], "An equal provider value leaves the consumer output cached");
+        check(1 == renders[1], "A nearer provider shields its consumer from an outer provider update");
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
+    private static void contextValueEquality(Browser.Element container) {
+        Contexts.register(Object.class, "parity-number", null);
+        final var context = Contexts.get(Object.class, "parity-number");
+        final var renders = new int[1];
+        final var consumer = context.consumer().render(value -> {
+            renders[0]++;
+            final var number = Js.asDouble(value);
+            if (Double.isNaN(number)) {
+                return ReactNode.of("NaN");
+            }
+            return ReactNode.of(0 < 1 / number ? "+0" : "-0");
+        });
+        ReactDOM.render(context.provide(ReactNode.of(Double.NaN), consumer), container);
+        ReactDOM.render(context.provide(ReactNode.of(Double.NaN), consumer), container);
+        equal("NaN", container.getTextContent());
+        check(1 == renders[0], "A repeated NaN does not invalidate the consumer");
+        ReactDOM.render(context.provide(ReactNode.of(0.0), consumer), container);
+        equal("+0", container.getTextContent());
+        ReactDOM.render(context.provide(ReactNode.of(-0.0), consumer), container);
+        equal("-0", container.getTextContent());
+        check(3 == renders[0], "Context distinguishes signed zeroes");
+        ReactDOM.unmountComponentAtNode(container);
     }
 
     private static void portalReplacement(Browser.Element container, Browser.Element target) {
@@ -498,6 +732,39 @@ public final class RuntimeParityBrowserTest {
     @JsMethod
     private static native ViewConstructorFunction namedFailure(ViewConstructorFunction type);
 
+    private static void abortedRefs(Browser.Element container) {
+        final ViewConstructorFunction failure = namedFailure(inputs -> {
+            throw new IllegalStateException("Constructor parity failure");
+        });
+        final var trace = new StringBuilder();
+        final RefConsumer childRef = node -> trace.append(null == node ? "child detached," : "child attached,");
+        final RefConsumer fallbackRef =
+                node -> trace.append(null == node ? "fallback detached," : "fallback attached,");
+        final var objectRef = JsPropertyMap.<@Nullable Object>of("current", null);
+        final var children = ReactElement.createFragment(
+                null,
+                ReactElement.createHostElement("span", null, childRef, JsPropertyMap.of()),
+                ReactElement.createHostElement("div", null, objectRef, JsPropertyMap.of()),
+                ReactElement.createViewElement(failure));
+        final var fallback =
+                ReactElement.createHostElement("span", null, fallbackRef, JsPropertyMap.of("children", "fallback"));
+        ReactDOM.render(
+                observedBoundary(children, fallback, error -> {
+                    final var message = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(error)
+                            .get("message");
+                    check(
+                            message instanceof String text && text.endsWith("Constructor parity failure"),
+                            "The boundary receives the constructor failure");
+                    trace.append("caught,");
+                }),
+                container);
+        equal("caught,fallback attached,", trace.toString());
+        equal("fallback", container.getTextContent());
+        check(null == objectRef.get("current"), "The abandoned object ref remains empty");
+        ReactDOM.unmountComponentAtNode(container);
+        equal("caught,fallback attached,fallback detached,", trace.toString());
+    }
+
     private static void commitErrors(Browser.Element container) {
         final var trace = new StringBuilder();
         final ViewConstructorFunction boundary = CommitBoundary::new;
@@ -602,6 +869,63 @@ public final class RuntimeParityBrowserTest {
                 .input("failUnmount", failUnmount);
     }
 
+    private static void rootIdentity(Browser.Element container) {
+        container.setTextContent("foreign");
+        final var foreign = Browser.property(container, "firstChild");
+        check(!ReactDOM.unmountComponentAtNode(container), "Unmount returns false for an unowned container");
+        check(
+                Browser.same(foreign, Browser.property(container, "firstChild")),
+                "Unmount leaves an unowned container intact");
+
+        final var callbacks = new int[1];
+        final var host = ReactElement.createHostElement("div", null, null, JsPropertyMap.of("children", "host"));
+        final var callback = rootCallback(receiver -> {
+            check(receiver == container.getFirstElementChild(), "The root callback receives the committed host");
+            callbacks[0]++;
+        });
+        final var firstHost = ReactDOM.render(host, container, callback);
+        check(firstHost == container.getFirstElementChild(), "A root host render returns the mounted element");
+        equal("host", container.getTextContent());
+        check(firstHost == ReactDOM.render(host, container, callback), "An identical root host is retained");
+        check(2 == callbacks[0], "An identical root render still calls its callback");
+        ReactDOM.batchedUpdates(() -> {
+            ReactDOM.render(DOM.span("other"), container, callback);
+            equal("host", container.getTextContent());
+        });
+        equal("other", container.getTextContent());
+        check(3 == callbacks[0], "The batched callback observes the replacement host");
+
+        final var trace = new StringBuilder();
+        final ViewConstructorFunction type = Counter::new;
+        final RefConsumer ref = value -> {};
+        final var first = counter(type, trace, container, ref, "first");
+        first.setKey("A");
+        final var firstView = ReactDOM.render(first, container);
+        check(firstView instanceof Counter, "A root view render returns the mounted instance");
+        final var firstViewHost = container.getFirstElementChild();
+        final var next = first.dup().input("label", "next");
+        next.setKey("B");
+        final var nextView = ReactDOM.render(next, container);
+        check(firstView != nextView, "A changed root key replaces the view");
+        check(firstViewHost != container.getFirstElementChild(), "A changed root key replaces the host");
+        check(
+                nextView == ReactDOM.render(next.dup().input("label", "last"), container),
+                "A retained key preserves the view");
+        equal(
+                "render:first0,mount:first0,render:next0,unmount:first0,mount:next0,render:last0,snapshot:next:next0,update:next:last0,",
+                trace.toString());
+        check(ReactDOM.unmountComponentAtNode(container), "Unmount returns true for an owned container");
+        equal("", container.getTextContent());
+    }
+
+    @JsFunction
+    private interface RootReceiver {
+        void accept(Object receiver);
+    }
+
+    @JsMethod
+    private static native ReactDOM.RenderCallbackFn rootCallback(RootReceiver receiver);
+
     private static void rootUpdates(Browser.Element container) {
         final var trace = new StringBuilder();
         ReactDOM.render(ReactNode.of("before"), container);
@@ -667,6 +991,25 @@ public final class RuntimeParityBrowserTest {
         ReactDOM.unmountComponentAtNode(container);
     }
 
+    private static void mountWithinBatch(Browser.Element container, Browser.Element target) {
+        final var trace = new StringBuilder();
+        final ViewConstructorFunction type = Counter::new;
+        final var element = counter(type, trace, target, value -> {}, "mount").input("countOnMount", 1);
+        ReactDOM.render(ReactNode.of("before"), container);
+        ReactDOM.batchedUpdates(() -> {
+            ReactDOM.render(ReactNode.of("after"), container);
+            ReactDOM.render(element, target);
+            equal("before", container.getTextContent());
+            equal("mount0", target.getTextContent());
+            equal("render:mount0,mount:mount0,", trace.toString());
+        });
+        equal("after", container.getTextContent());
+        equal("mount1", target.getTextContent());
+        equal("render:mount0,mount:mount0,render:mount1,snapshot:mount:mount0,update:mount:mount1,", trace.toString());
+        ReactDOM.unmountComponentAtNode(target);
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
     private static void batchedRootState(Browser.Element container, Browser.Element target) {
         final var trace = new StringBuilder();
         final ViewConstructorFunction type = Counter::new;
@@ -709,6 +1052,22 @@ public final class RuntimeParityBrowserTest {
         equal("unmount:B3,removed,render:A6,snapshot:A:A1,update:A:A6,", trace.toString());
         equal("A6", container.getTextContent());
         check(!ReactDOM.unmountComponentAtNode(target), "The second root was unregistered");
+        ReactDOM.unmountComponentAtNode(container);
+    }
+
+    private static void nestedUpdateLimit(Browser.Element container, Browser.Element target, boolean production) {
+        final var visits = new int[1];
+        final var type = constructible(NestedUpdateProbe::new);
+        final var initial = ReactElement.createViewElement(type).input("visits", visits);
+        ReactDOM.render(initial, container);
+        expectFailure(
+                production ? "" : "Maximum update depth exceeded", () -> ReactDOM.render(initial.dup(), container));
+        check(52 == visits[0], "Repeated commits stop at the nested update limit, got " + visits[0]);
+        ReactDOM.render(ReactNode.of("target"), target);
+        equal("target", target.getTextContent());
+        ReactDOM.render(ReactNode.of("recovered"), container);
+        equal("recovered", container.getTextContent());
+        ReactDOM.unmountComponentAtNode(target);
         ReactDOM.unmountComponentAtNode(container);
     }
 
@@ -833,6 +1192,12 @@ public final class RuntimeParityBrowserTest {
         final var container = Browser.append("div");
         final var trigger = Browser.append("div");
         final var root = ReactDOM.createRoot(container);
+        final var context = Contexts.get(String.class, "parity");
+        final var visitedScope = new String[1];
+        final var consumer = context.consumer().render(value -> {
+            visitedScope[0] = null == value ? "null" : value;
+            return ReactNode.of(visitedScope[0]);
+        });
         final var visits = new int[1];
         final var attached = new int[1];
         final var observed = new boolean[1];
@@ -845,7 +1210,7 @@ public final class RuntimeParityBrowserTest {
                         .append(','));
             } else {
                 root.render(
-                        ReactNode.of(result),
+                        context.provide(result, consumer),
                         () -> trace.append("replacement:")
                                 .append(container.getTextContent())
                                 .append(','));
@@ -857,14 +1222,18 @@ public final class RuntimeParityBrowserTest {
             observed[0] = 0 < visits[0]
                     && visits[0] < SLOW_CHILDREN
                     && 0 == attached[0]
+                    && "abandoned".equals(visitedScope[0])
                     && "committed".equals(container.getTextContent());
             Browser.query(trigger, "button").click();
         });
-        return Browser.callback(done -> root.render(ReactNode.of("committed"), done::run))
-                .then(ignored -> Browser.callback(done -> root.render(children, () -> {
-                    trace.append("render:").append(container.getTextContent()).append(',');
-                    done.run();
-                })))
+        return Browser.callback(done -> root.render(context.provide("committed", consumer), done::run))
+                .then(ignored ->
+                        Browser.callback(done -> root.render(context.provide("abandoned", consumer, children), () -> {
+                            trace.append("render:")
+                                    .append(container.getTextContent())
+                                    .append(',');
+                            done.run();
+                        })))
                 .then(ignored -> {
                     check(observed[0], "Interrupted preparation leaves the committed DOM visible");
                     check(SLOW_CHILDREN > visits[0], "Priority work supersedes preparation");
@@ -1077,6 +1446,405 @@ public final class RuntimeParityBrowserTest {
             remove(container);
             throw error;
         }
+    }
+
+    private static BrowserPromise suspenseWithoutFallback(boolean concurrent) {
+        final var container = Browser.append("div");
+        final var root = concurrent ? ReactDOM.createRoot(container) : null;
+        final boolean[] ready = {false};
+        final BrowserPromise.Action[] resolve = new BrowserPromise.Action[1];
+        final var pending = Browser.callback(callback -> resolve[0] = callback);
+        final var child = ReactElement.createViewElement(constructible(SuspendingView::new))
+                .input("ready", (BooleanSupplier) () -> ready[0])
+                .input("pending", pending);
+        final var inner = ReactElement.createSuspense(null, null, 0, child);
+        inner.inputs().delete("fallback");
+        final var outer = ReactElement.createSuspense(null, ReactNode.of("outer"), 0, inner)
+                .input("maxDuration", 0);
+        final Runnable cleanup = null == root ? () -> remove(container) : () -> root.unmount(container::remove);
+        try {
+            if (null == root) {
+                ReactDOM.render(outer, container);
+            } else {
+                root.render(outer);
+            }
+            return Browser.until(() -> "outer".equals(container.getTextContent()), 5000, 25, "Nearest defined fallback")
+                    .then(ignored -> {
+                        ready[0] = true;
+                        Objects.requireNonNull(resolve[0]).run();
+                        return Browser.until(
+                                () -> "ready".equals(container.getTextContent()), 5000, 25, "Nested primary retries");
+                    })
+                    .finallyDo(cleanup::run);
+        } catch (Throwable error) {
+            cleanup.run();
+            throw error;
+        }
+    }
+
+    private static BrowserPromise independentSuspenseSiblings() {
+        final var container = Browser.append("div");
+        final var root = ReactDOM.createRoot(container);
+        final boolean[] ready = {false, false};
+        final var resolve = new BrowserPromise.Action[2];
+        final var branches = new ReactElement[2];
+        final var childType = constructible(SuspendingView::new);
+        for (int i = 0; i < branches.length; i++) {
+            final var index = i;
+            final var pending = Browser.callback(callback -> resolve[index] = callback);
+            final var child = ReactElement.createViewElement(childType)
+                    .input("ready", (BooleanSupplier) () -> ready[index])
+                    .input("pending", pending);
+            branches[i] = ReactElement.createSuspense("branch-" + i, ReactNode.of("waiting-" + i), 0, child)
+                    .input("maxDuration", 0);
+        }
+        root.render(ReactElement.createFragment(null, branches));
+        return Browser.until(() -> "waiting-0waiting-1".equals(container.getTextContent()), 5000, 25, "Both fallbacks")
+                .then(ignored -> {
+                    final var firstFallback = Browser.property(container, "firstChild");
+                    ready[1] = true;
+                    Objects.requireNonNull(resolve[1]).run();
+                    return Browser.until(
+                                    () -> "waiting-0ready".equals(container.getTextContent()),
+                                    5000,
+                                    25,
+                                    "The second branch retries independently")
+                            .then(value -> {
+                                check(
+                                        Browser.same(firstFallback, Browser.property(container, "firstChild")),
+                                        "A sibling retry leaves the first fallback mounted");
+                                ready[0] = true;
+                                Objects.requireNonNull(resolve[0]).run();
+                                return Browser.until(
+                                        () -> "readyready".equals(container.getTextContent()),
+                                        5000,
+                                        25,
+                                        "The first branch retries independently");
+                            });
+                })
+                .finallyDo(() -> root.unmount(container::remove));
+    }
+
+    private static BrowserPromise missingPlaceholder(boolean concurrent, boolean production) {
+        final var container = Browser.append("div");
+        final var root = concurrent ? ReactDOM.createRoot(container) : null;
+        final var pending = Browser.callback(ignored -> {});
+        final var child = ReactElement.createViewElement(constructible(SuspendingView::new))
+                .input("ready", (BooleanSupplier) () -> false)
+                .input("pending", pending);
+        final var suspense = ReactElement.createSuspense(null, null, 0, child);
+        suspense.inputs().delete("fallback");
+        final var caught = new JsError[1];
+        final var boundary = observedBoundary(suspense, ReactNode.of("recovered"), error -> caught[0] = error);
+        final Runnable cleanup = null == root ? () -> remove(container) : () -> root.unmount(container::remove);
+        try {
+            if (null == root) {
+                ReactDOM.render(boundary, container);
+            } else {
+                root.render(boundary);
+            }
+            return Browser.until(
+                            () -> "recovered".equals(container.getTextContent()), 5000, 25, "Missing placeholder error")
+                    .then(ignored -> {
+                        final var error = Objects.requireNonNull(caught[0]);
+                        check(
+                                null == Browser.property(error, "then"),
+                                "The boundary receives an error instead of a thenable");
+                        if (!production) {
+                            check(
+                                    Browser.string(Browser.property(error, "message"))
+                                            .contains("no placeholder UI was provided"),
+                                    "The error explains the missing placeholder");
+                        }
+                        return null;
+                    })
+                    .finallyDo(cleanup::run);
+        } catch (Throwable error) {
+            cleanup.run();
+            throw error;
+        }
+    }
+
+    private static BrowserPromise renderFailureSiblings(boolean concurrent, boolean production) {
+        final var container = Browser.append("div");
+        final var root = concurrent ? ReactDOM.createRoot(container) : null;
+        final var oldSpan = ReactElement.createHostElement("span", "host", null, JsPropertyMap.of("children", "old"));
+        final var replacement = oldSpan.dup().input("children", "recovered");
+        final var siblingVisits = new int[1];
+        final var logged = new int[1];
+        final var catchTrace = new StringBuilder();
+        final var initial = observedBoundary(oldSpan, replacement, error -> {});
+        final var type = constructible(OutputProbe::new);
+        final var first = ReactElement.createViewElement(type).input("output", (Supplier<ReactNode>) () -> {
+            throw new IllegalStateException("first sibling parity failure");
+        });
+        final var second = ReactElement.createViewElement(type).input("output", (Supplier<ReactNode>) () -> {
+            throw new IllegalStateException("second sibling parity failure");
+        });
+        final var sibling = ReactElement.createViewElement(type).input("output", (Supplier<ReactNode>) () -> {
+            siblingVisits[0]++;
+            return ReactNode.of("uncommitted");
+        });
+        final var failing = initial.dup()
+                .input("child", ReactNode.of(first, oldSpan, sibling, second))
+                .input("onError", (Consumer<JsError>) error -> {
+                    final var message = Browser.string(Browser.property(error, "message"));
+                    catchTrace.append(message.endsWith("first sibling parity failure") ? "first," : "second,");
+                });
+        final Runnable cleanup = null == root ? () -> remove(container) : () -> root.unmount(container::remove);
+        final var restore = observeCaughtErrorLogs("sibling parity failure", ignored -> logged[0]++);
+        try {
+            if (null == root) {
+                ReactDOM.render(initial, container);
+            } else {
+                root.render(initial);
+            }
+            return Browser.until(() -> "old".equals(container.getTextContent()), 5000, 25, "Boundary initial content")
+                    .then(ignored -> {
+                        final var oldHost = Browser.query(container, "span");
+                        if (null == root) {
+                            ReactDOM.render(failing, container);
+                        } else {
+                            root.render(failing);
+                        }
+                        return Browser.until(
+                                        () -> "recovered".equals(container.getTextContent()),
+                                        5000,
+                                        25,
+                                        "Sibling errors recover")
+                                .then(value -> {
+                                    equal("first,second,", catchTrace.toString());
+                                    check(2 == logged[0], "Each committed sibling error is logged once");
+                                    check(
+                                            (concurrent ? 2 : 1) * (production ? 1 : 2) == siblingVisits[0],
+                                            "The healthy sibling is visited in every render attempt, got "
+                                                    + siblingVisits[0]);
+                                    check(
+                                            oldHost != Browser.query(container, "span"),
+                                            "Recovery remounts the same host type and key");
+                                    return null;
+                                });
+                    })
+                    .finallyDo(() -> {
+                        restore.run();
+                        cleanup.run();
+                    });
+        } catch (Throwable error) {
+            restore.run();
+            cleanup.run();
+            throw error;
+        }
+    }
+
+    private static final ViewConstructorFunction OBSERVED_BOUNDARY = constructible(ObservedBoundary::new);
+
+    private static BrowserPromise failedRenderTeardown(boolean concurrent, boolean production) {
+        final var container = Browser.append("div");
+        final var root = concurrent ? ReactDOM.createRoot(container) : null;
+        final var trace = new StringBuilder();
+        final var childType = constructible(FailedStateProbe::new);
+        Js.<JsPropertyMap<String>>uncheckedCast(childType).set("displayName", "FailedStateProbe");
+        Js.<JsPropertyMap<String>>uncheckedCast(OBSERVED_BOUNDARY).set("displayName", "TeardownBoundary");
+        final var child = ReactElement.createViewElement(childType).input("trace", trace);
+        final var caught = new JsError[1];
+        final var boundary = observedBoundary(child, ReactNode.of("recovered"), error -> caught[0] = error);
+        final Runnable cleanup = null == root ? () -> remove(container) : () -> root.unmount(container::remove);
+        final var logs = new ArrayList<@Nullable Object>();
+        final var restore = observeCaughtErrorLogs("Failed state teardown parity failure", logs::add);
+        try {
+            if (null == root) {
+                ReactDOM.render(boundary, container);
+            } else {
+                root.render(boundary);
+            }
+            return Browser.until(
+                            () -> "recovered".equals(container.getTextContent()), 5000, 25, "Failed state recovery")
+                    .then(ignored -> {
+                        equal(production ? "attempted,unmount:0," : "attempted,attempted,unmount:0,", trace.toString());
+                        check(1 == logs.size(), "One caught error is logged after recovery");
+                        final var error = Objects.requireNonNull(caught[0]);
+                        if (production) {
+                            check(Browser.same(error, logs.get(0)), "Production logs the caught Error object");
+                        } else {
+                            equal(
+                                    "The above error occurred in the <FailedStateProbe> component:"
+                                            + "\n    in FailedStateProbe\n    in TeardownBoundary"
+                                            + (concurrent ? "" : "\n    in StrictMode")
+                                            + "\n\nReact will try to recreate this component tree from scratch"
+                                            + " using the error boundary you provided, TeardownBoundary.",
+                                    Browser.string(logs.get(0)));
+                        }
+                        return null;
+                    })
+                    .finallyDo(() -> {
+                        restore.run();
+                        cleanup.run();
+                    });
+        } catch (Throwable error) {
+            restore.run();
+            cleanup.run();
+            throw error;
+        }
+    }
+
+    @JsFunction
+    private interface ErrorLog {
+        void log(@Nullable Object message);
+    }
+
+    @JsMethod
+    private static native BrowserPromise.Action observeCaughtErrorLogs(String name, ErrorLog log);
+
+    private static BrowserPromise errorLoggerRecovery(boolean commit, boolean caught) {
+        final var container = Browser.append("div");
+        final var original = new IllegalStateException("Original logger test parity failure");
+        final BrowserPromise.Action fail = () -> {
+            throw original;
+        };
+        final var expected = thrownBy(fail);
+        final var child = ReactElement.createViewElement(constructible(LoggingFailureProbe::new));
+        final var broken = child.dup().input(commit ? "failUpdate" : "failRender", fail);
+        final var received = new JsError[1];
+        final var initial =
+                caught ? observedBoundary(child, ReactNode.of("handled"), error -> received[0] = error) : child;
+        final var changed = caught ? initial.dup().input("child", broken) : broken;
+        ReactDOM.render(initial, container);
+        equal("before", container.getTextContent());
+        final var loggerFailure = nextUncaughtError("Broken console parity failure");
+        final var logged = new int[1];
+        final var restore = observeCaughtErrorLogs("Original logger test parity failure", ignored -> {
+            logged[0]++;
+            throw new IllegalStateException("Broken console parity failure");
+        });
+        try {
+            if (caught) {
+                ReactDOM.render(changed, container);
+                check(Browser.same(expected, received[0]), "The boundary receives the original error");
+                equal("handled", container.getTextContent());
+            } else {
+                final var uncaught = thrownBy(() -> ReactDOM.render(changed, container));
+                check(Browser.same(expected, uncaught), "The root throws the original error");
+                equal("", container.getTextContent());
+            }
+            check(1 == logged[0], "The logger ran once for the original failure");
+            ReactDOM.render(ReactNode.of("reused"), container);
+            equal("reused", container.getTextContent());
+            return loggerFailure.finallyDo(() -> {
+                restore.run();
+                remove(container);
+            });
+        } catch (Throwable error) {
+            restore.run();
+            remove(container);
+            throw error;
+        }
+    }
+
+    @JsMethod
+    private static native @Nullable Object thrownBy(BrowserPromise.Action action);
+
+    private static BrowserPromise concurrentRootErrorIsolation() {
+        final var failed = Browser.append("div");
+        final var sibling = Browser.append("div");
+        final var first = ReactDOM.createRoot(failed);
+        final var second = ReactDOM.createRoot(sibling);
+        final var message = "Concurrent root isolation parity failure";
+        final var broken = ReactElement.createViewElement(constructible(OutputProbe::new))
+                .input("output", (Supplier<ReactNode>) () -> {
+                    throw new IllegalStateException(message);
+                });
+        return Browser.callback(done -> first.render(ReactNode.of("old"), done::run))
+                .then(ignored -> {
+                    final var error = nextUncaughtError(message);
+                    first.render(broken);
+                    second.render(DOM.span("unaffected"));
+                    return error;
+                })
+                .then(ignored -> Browser.until(
+                        () -> failed.getTextContent().isEmpty() && "unaffected".equals(sibling.getTextContent()),
+                        5000,
+                        25,
+                        "Only the failing root clears"))
+                .then(ignored -> {
+                    final var host = Browser.query(sibling, "span");
+                    return Browser.callback(done -> first.render(ReactNode.of("recovered"), done::run))
+                            .then(value -> {
+                                equal("recovered", failed.getTextContent());
+                                check(host == Browser.query(sibling, "span"), "The unrelated root retains its host");
+                                return null;
+                            });
+                })
+                .finallyDo(() -> {
+                    first.unmount(failed::remove);
+                    second.unmount(sibling::remove);
+                });
+    }
+
+    @JsMethod
+    private static native BrowserPromise nextUncaughtError(String message);
+
+    private static BrowserPromise contextUnwindsOnRenderError() {
+        final var container = Browser.append("div");
+        final var root = ReactDOM.createRoot(container);
+        final var context = Contexts.get(String.class, "parity");
+        final var consumer = context.consumer().render(value -> ReactNode.of(null == value ? "null" : value));
+        final var broken = ReactElement.createViewElement(constructible(Failure::new));
+        final var scopedFailure = context.provide("inner", broken);
+        final var boundary = observedBoundary(scopedFailure, consumer, error -> {});
+        root.render(context.provide("outer", boundary, consumer));
+        return Browser.until(
+                        () -> "outerouter".equals(container.getTextContent()),
+                        5000,
+                        25,
+                        "Failed provider scope unwinds")
+                .finallyDo(() -> root.unmount(container::remove));
+    }
+
+    private static BrowserPromise concurrentErrorWithPendingState() {
+        final var container = Browser.append("div");
+        final var trigger = Browser.append("div");
+        final var root = ReactDOM.createRoot(container);
+        final var parent = new PriorityParent[1];
+        final var attempts = new int[1];
+        final var failure = ReactElement.createViewElement(constructible(OutputProbe::new))
+                .input("output", (Supplier<ReactNode>) () -> {
+                    attempts[0]++;
+                    throw new IllegalStateException("Synchronous priority retry parity failure");
+                });
+        final var type = constructible(inputs -> {
+            final var instance = new PriorityParent(inputs);
+            parent[0] = instance;
+            return instance;
+        });
+        final var initial = ReactElement.createViewElement(type).input("child", ReactNode.of("before"));
+        final ReactEventHandler onClick = event -> root.render(initial.dup().input("child", failure));
+        ReactDOM.render(
+                ReactElement.createHostElement("button", null, null, JsPropertyMap.of("onClick", onClick)), trigger);
+        return Browser.callback(done -> root.render(initial, done::run))
+                .then(ignored -> {
+                    Objects.requireNonNull(parent[0]).setState(JsPropertyMap.of("hide", true));
+                    Browser.query(trigger, "button").click();
+                    return Browser.until(
+                            () -> "hidden".equals(container.getTextContent()), 5000, 25, "Lower priority recovery");
+                })
+                .then(ignored -> {
+                    check(
+                            0 < attempts[0],
+                            "The urgent render attempts the failing child before replaying pending state");
+                    return null;
+                })
+                .finallyDo(() -> {
+                    ReactDOM.unmountComponentAtNode(trigger);
+                    trigger.remove();
+                    root.unmount(container::remove);
+                });
+    }
+
+    private static ReactElement observedBoundary(ReactNode child, ReactNode fallback, Consumer<JsError> onError) {
+        return ReactElement.createViewElement(OBSERVED_BOUNDARY)
+                .input("child", child)
+                .input("fallback", fallback)
+                .input("onError", onError);
     }
 
     private static BrowserPromise laterSuspense(boolean concurrent) {
@@ -1488,6 +2256,10 @@ public final class RuntimeParityBrowserTest {
         @Override
         public void componentDidMount() {
             trace().append("mount:").append(text()).append(',');
+            final var count = requireInputs().get("countOnMount");
+            if (null != count) {
+                setState(JsPropertyMap.of("count", count));
+            }
         }
 
         @Override
@@ -1575,6 +2347,98 @@ public final class RuntimeParityBrowserTest {
         }
     }
 
+    private static final class ObservedBoundary extends NativeView implements OnComponentDidCatch {
+        @JsConstructor
+        ObservedBoundary(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            return (ReactNode) Objects.requireNonNull(requireInputs().get(null == state() ? "child" : "fallback"));
+        }
+
+        @Override
+        public void componentDidCatch(JsError error, ReactErrorInfo info) {
+            final var report = Js.<Consumer<JsError>>uncheckedCast(
+                    Objects.requireNonNull(requireInputs().get("onError")));
+            report.accept(error);
+            setState(JsPropertyMap.of("caught", true));
+        }
+    }
+
+    private static final class LoggingFailureProbe extends NativeView implements OnComponentDidUpdate {
+        @JsConstructor
+        LoggingFailureProbe(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final var failure = requireInputs().get("failRender");
+            if (null != failure) {
+                Js.<BrowserPromise.Action>uncheckedCast(failure).run();
+            }
+            return ReactNode.of("before");
+        }
+
+        @Override
+        public void componentDidUpdate(JsPropertyMap<@Nullable Object> previousInputs) {
+            final var failure = requireInputs().get("failUpdate");
+            if (null != failure) {
+                Js.<BrowserPromise.Action>uncheckedCast(failure).run();
+            }
+        }
+    }
+
+    private static final class FailedStateProbe extends NativeView
+            implements OnComponentDidMount, OnComponentWillUnmount {
+        @JsConstructor
+        FailedStateProbe(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            if (null != state()) {
+                trace().append("attempted,");
+                throw new IllegalStateException("Failed state teardown parity failure");
+            }
+            return ReactNode.of("initial");
+        }
+
+        @Override
+        public void componentDidMount() {
+            setState(JsPropertyMap.of("step", 1));
+        }
+
+        @Override
+        public void componentWillUnmount() {
+            final var state = state();
+            trace().append("unmount:")
+                    .append(null == state ? "0" : String.valueOf(state.get("step")))
+                    .append(',');
+        }
+
+        private StringBuilder trace() {
+            return (StringBuilder) Objects.requireNonNull(requireInputs().get("trace"));
+        }
+    }
+
+    private static final class PriorityParent extends NativeView {
+        @JsConstructor
+        PriorityParent(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            return null != state()
+                    ? ReactNode.of("hidden")
+                    : (ReactNode) Objects.requireNonNull(requireInputs().get("child"));
+        }
+    }
+
     private static final class CommitProbe extends NativeView
             implements OnComponentDidMount, OnGetSnapshotBeforeUpdate, OnComponentDidUpdate, OnComponentWillUnmount {
         @JsConstructor
@@ -1633,6 +2497,27 @@ public final class RuntimeParityBrowserTest {
         }
     }
 
+    private static final class NestedUpdateProbe extends NativeView implements OnComponentDidUpdate {
+        @JsConstructor
+        NestedUpdateProbe(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final var state = state();
+            return ReactNode.of(null == state ? "initial" : String.valueOf(state.get("count")));
+        }
+
+        @Override
+        public void componentDidUpdate(JsPropertyMap<@Nullable Object> previousInputs) {
+            final var visits = (int[]) Objects.requireNonNull(requireInputs().get("visits"));
+            if (60 > ++visits[0]) {
+                setState(JsPropertyMap.of("count", visits[0]));
+            }
+        }
+    }
+
     private static final class PredicateProbe extends NativeView implements OnShouldComponentUpdate {
         @JsConstructor
         PredicateProbe(@Nullable JsPropertyMap<@Nullable Object> inputs) {
@@ -1655,6 +2540,23 @@ public final class RuntimeParityBrowserTest {
 
         private StringBuilder trace() {
             return (StringBuilder) Objects.requireNonNull(requireInputs().get("trace"));
+        }
+    }
+
+    private static final class BailoutProbe extends NativeView implements OnShouldComponentUpdate {
+        @JsConstructor
+        BailoutProbe(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            return (ReactNode) Objects.requireNonNull(requireInputs().get("child"));
+        }
+
+        @Override
+        public boolean shouldComponentUpdate(JsPropertyMap<@Nullable Object> nextInputs) {
+            return false;
         }
     }
 

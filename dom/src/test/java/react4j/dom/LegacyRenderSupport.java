@@ -9,6 +9,6 @@ public final class LegacyRenderSupport {
     private LegacyRenderSupport() {}
 
     public static void render(@Nullable ReactNode node, Object container) {
-        Renderer.render(node, Renderer.requireContainer(container), null);
+        Renderer.render(node, Renderer.requireContainer(container, ""), null);
     }
 }

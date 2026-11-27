@@ -14,7 +14,11 @@ import react4j.ReactNode;
 import react4j.dom.events.KeyboardEvent;
 import react4j.dom.events.ReactEventHandler;
 import react4j.dom.events.SyntheticEvent;
+import react4j.dom.proptypes.html.InputProps;
 import react4j.dom.proptypes.html.RefConsumer;
+import react4j.dom.proptypes.html.SelectProps;
+import react4j.dom.proptypes.html.TextAreaProps;
+import react4j.dom.proptypes.html.attributeTypes.InputType;
 import react4j.webtesting.Browser;
 
 @NullMarked
@@ -99,6 +103,17 @@ public final class EventsBrowserTest {
             check(Js.isTripleEqual(Js.undefined(), Browser.property(noKeyCode, "keyCode")), "Missing native key code");
             check(Js.isTripleEqual(Js.undefined(), Browser.property(noKeyCode, "which")), "Missing legacy which");
             capturePayload(root, "onClick", "legacyEventMethods");
+            final var movement = new StringBuilder();
+            final ReactEventHandler measure = event -> movement.append(Browser.property(event, "movementX"))
+                    .append('/')
+                    .append(Browser.property(event, "movementY"))
+                    .append(' ');
+            ReactDOM.render(host("button", JsPropertyMap.of("onMouseMove", measure, "onMouseDown", measure)), root);
+            final var mouse = Browser.query(root, "button");
+            legacyMovement(mouse, "mousedown", 2, 3);
+            legacyMovement(mouse, "mousemove", 8, 11);
+            legacyMovement(mouse, "mousedown", 25, 65);
+            check("0/0 6/8 0/0 ".contentEquals(movement), "Mouse movement falls back to screen coordinate deltas");
         } finally {
             ReactDOM.unmountComponentAtNode(root);
             root.remove();
@@ -217,7 +232,15 @@ public final class EventsBrowserTest {
                                     "onClick", bubble,
                                     "children", ReactDOM.createPortal(button, portal))),
                     root);
-            Browser.query(portal, "button").click();
+            final var portalButton = Browser.query(portal, "button");
+            check(
+                    "function".equals(Js.typeof(Browser.property(portalButton, "onclick"))),
+                    "A click handler traps native taps");
+            check(
+                    "function".equals(Js.typeof(Browser.property(portal, "onclick"))),
+                    "A portal container traps native taps");
+            check(null == Browser.property(root, "onclick"), "The React root has no native click trap");
+            portalButton.click();
             check("capture child bubble".contentEquals(trace), "Portal capture and bubble order");
             check("after click".equals(root.getTextContent()), "Event batch commits after dispatch");
 
@@ -235,14 +258,7 @@ public final class EventsBrowserTest {
             check("edited".contentEquals(trace), "Change handler reads the edited value");
             check("committed".equals(input.getValue()), "Controlled value is restored after the handler");
 
-            ReactDOM.render(ReactElement.createFragment(null, radio("first", true), radio("second", false)), root);
-            final var first = Browser.query(root, "#first");
-            final var second = Browser.query(root, "#second");
-            second.click();
-            check(
-                    Boolean.TRUE.equals(Browser.property(first, "checked")),
-                    "Controlled radio previously selected is restored");
-            check(Boolean.FALSE.equals(Browser.property(second, "checked")), "Controlled radio click is reverted");
+            radioGroups(root);
 
             final ReactEventHandler outerCapture = event -> {
                 check("BUTTON".equals(Browser.property(event.getTarget(), "tagName")), "Nested root event target");
@@ -268,15 +284,21 @@ public final class EventsBrowserTest {
                 final ReactEventHandler innerBubble = event -> {
                     trace.append("inner bubble ");
                     event.stopPropagation();
+                    ReactDOM.render(host("span", JsPropertyMap.of("children", "clicked")), nestedRoot);
                 };
                 ReactDOM.render(
                         host("button", JsPropertyMap.of("onClickCapture", innerCapture, "onClick", innerBubble)),
                         nestedRoot);
                 trace.setLength(0);
-                Browser.query(nestedRoot, "button").click();
+                final var disappearing = Browser.query(nestedRoot, "button");
+                disappearing.click();
                 check(
                         "inner capture inner bubble outer capture outer bubble".contentEquals(trace),
                         "A nested root dispatches before its enclosing root");
+                check(!nestedRoot.contains(disappearing), "The original event target leaves the tree after dispatch");
+                check(
+                        "clicked".equals(Browser.query(nestedRoot, "span").getTextContent()),
+                        "The click commits a replacement host");
             } finally {
                 ReactDOM.unmountComponentAtNode(nestedRoot);
             }
@@ -287,11 +309,89 @@ public final class EventsBrowserTest {
         }
     }
 
+    private static void radioGroups(final Browser.Element root) {
+        final ReactEventHandler ignore = event -> {};
+        final var otherForm = host("form", JsPropertyMap.of("children", radio("other", "fruit", true)));
+        ReactDOM.render(
+                ReactElement.createFragment(
+                        null, radio("first", "fruit", true), radio("second", "fruit", false), otherForm),
+                root);
+        final var first = Browser.query(root, "#first");
+        final var second = Browser.query(root, "#second");
+        final var other = Browser.query(root, "#other");
+        second.click();
+        check(
+                Boolean.TRUE.equals(Browser.property(first, "checked")),
+                "Controlled radio is restored after a peer click");
+        check(Boolean.FALSE.equals(Browser.property(second, "checked")), "Controlled radio peer is reverted");
+        check(Boolean.TRUE.equals(Browser.property(other, "checked")), "A different form retains its checked radio");
+        attribute(first, "checked", "");
+        attribute(second, "checked", null);
+
+        final ReactEventHandler rename = event -> ReactDOM.render(
+                ReactElement.createFragment(
+                        null,
+                        host("button", JsPropertyMap.of("onClick", ignore)),
+                        radio("first", "new-name", true),
+                        radio("second", "new-name", false)),
+                root);
+        ReactDOM.render(
+                ReactElement.createFragment(
+                        null,
+                        host("button", JsPropertyMap.of("onClick", rename)),
+                        radio("first", "old-name", false),
+                        radio("second", "old-name", true)),
+                root);
+        final var renamedFirst = Browser.query(root, "#first");
+        final var renamedSecond = Browser.query(root, "#second");
+        check(Boolean.FALSE.equals(Browser.property(renamedFirst, "checked")), "The first radio starts unchecked");
+        Browser.query(root, "button").click();
+        attribute(renamedFirst, "name", "new-name");
+        attribute(renamedSecond, "name", "new-name");
+        check(
+                Boolean.TRUE.equals(Browser.property(renamedFirst, "checked")),
+                "Renaming the group retains the new selection");
+        check(Boolean.FALSE.equals(Browser.property(renamedSecond, "checked")), "The prior selection is cleared");
+
+        final var detached = Browser.append("div");
+        detached.remove();
+        try {
+            ReactDOM.render(radio("detached-radio", "fruit", true), detached);
+            final var detachedRadio = Browser.query(detached, "input");
+            final var source = JsPropertyMap.<@Nullable Object>of(
+                    "type", "radio", "name", "fruit", "checked", Browser.bool(false));
+            final ReactEventHandler attach =
+                    event -> ReactDOM.render(host("input", source), root, () -> appendExisting(root, detached));
+            source.set("onChange", attach);
+            ReactDOM.render(host("input", source), root);
+            final var edited = Browser.query(root, "input");
+            setCheckedUntracked(edited, true);
+            setCheckedUntracked(detachedRadio, false);
+            nativeInputEvent(edited, "click");
+            check(root.contains(detached), "The change commit joins two radio groups");
+            check(Boolean.FALSE.equals(Browser.property(edited, "checked")), "The edited radio is restored");
+            check(
+                    Boolean.TRUE.equals(Browser.property(detachedRadio, "checked")),
+                    "A radio that joined during the update is restored");
+        } finally {
+            ReactDOM.unmountComponentAtNode(detached);
+            detached.remove();
+        }
+    }
+
     @JsMethod
     public static void runEnterLeave() {
         final var root = Browser.append("div");
         final var portal = Browser.append("div");
         try {
+            final var child = ReactDOM.createPortal(host("button", JsPropertyMap.of()), portal);
+            ReactDOM.render(host("section", JsPropertyMap.of("children", child)), root);
+            final var entered = new StringBuilder();
+            final ReactEventHandler lateEnter = event -> entered.append(event.getType());
+            ReactDOM.render(host("section", JsPropertyMap.of("children", child, "onMouseEnter", lateEnter)), root);
+            movement(root, "mouseout", Browser.query(portal, "button"));
+            check("mouseenter".contentEquals(entered), "A late ancestor subscription receives portal entry");
+            ReactDOM.unmountComponentAtNode(root);
             final var trace = new StringBuilder();
             final ReactEventHandler parentEnter = event -> trace.append("parent-in ");
             final ReactEventHandler parentLeave = event -> trace.append("parent-out ");
@@ -472,6 +572,170 @@ public final class EventsBrowserTest {
             Browser.Element input, int which, boolean ctrl, boolean alt, boolean meta, @Nullable String chars);
 
     @JsMethod
+    public static void runNestingDiagnostics(final boolean production) {
+        final var root = Browser.append("div");
+        final var portal = Browser.append("div");
+        try {
+            final var allowed = captureWarnings(() -> {
+                ReactDOM.render(nestedHosts("table", "tbody", "tr", "td", "b"), root);
+                ReactDOM.render(nestedHosts("a", "object", "a"), root);
+                ReactDOM.render(nestedHosts("p", "button", "p"), root);
+                ReactDOM.render(nestedHosts("p", "svg", "foreignObject", "p"), root);
+                ReactDOM.render(nestedHosts("ul", "ul", "li"), root);
+                ReactDOM.render(nestedHosts("ul", "li", "section", "li"), root);
+                ReactDOM.render(nestedHosts("ul", "li", "dd", "li"), root);
+                ReactDOM.render(nestedHosts("label", "div"), root);
+                ReactDOM.render(
+                        host("p", JsPropertyMap.of("children", ReactDOM.createPortal(nestedHosts("p"), portal))), root);
+                ReactDOM.render(host("span", JsPropertyMap.of("children", "inline text")), root);
+            });
+            check(allowed.isEmpty(), "Nesting diagnostics preserve the allowed parser structures: " + allowed);
+
+            final var warnings = captureWarnings(() -> {
+                ReactDOM.render(nestedHosts("table", "tr"), root);
+                ReactDOM.unmountComponentAtNode(root);
+                ReactDOM.render(nestedHosts("table", "tr"), root);
+                ReactDOM.render(nestedHosts("p", "div", "p"), root);
+                ReactDOM.render(nestedHosts("ul", "li", "div", "li"), root);
+                ReactDOM.render(nestedHosts("form", "form"), root);
+                ReactDOM.render(host("table", JsPropertyMap.of("children", "fostered")), root);
+                ReactDOM.render(
+                        host("table", JsPropertyMap.of("children", host("tbody", JsPropertyMap.of("children", " ")))),
+                        root);
+                ReactDOM.render(
+                        host(
+                                "table",
+                                JsPropertyMap.of(
+                                        "children",
+                                        host(
+                                                "thead",
+                                                JsPropertyMap.of(
+                                                        "children",
+                                                        ReactNode.of(
+                                                                ReactNode.of("separate text"),
+                                                                nestedHosts("tr", "th")))))),
+                        root);
+            });
+            if (production) {
+                check(warnings.isEmpty(), "Optimized rendering omits nesting diagnostics");
+            } else {
+                for (final var expected : new String[] {
+                    "<tr> cannot appear as a child of <table>. Add a <tbody>",
+                    "<div> cannot appear as a descendant of <p>",
+                    "<li> cannot appear as a descendant of <li>",
+                    "<form> cannot appear as a descendant of <form>",
+                    "Text nodes cannot appear as a child of <table>",
+                    "Whitespace text nodes cannot appear as a child of <tbody>",
+                    "Text nodes cannot appear as a child of <thead>"
+                }) {
+                    final int first = warnings.indexOf(expected);
+                    check(
+                            0 <= first && first == warnings.lastIndexOf(expected),
+                            "Expected one nesting warning: " + expected + "\nObserved:\n" + warnings);
+                }
+            }
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+            portal.remove();
+        }
+    }
+
+    private static ReactElement nestedHosts(final String... tags) {
+        var host = host(tags[tags.length - 1], JsPropertyMap.of());
+        for (int i = tags.length - 2; 0 <= i; i--) {
+            host = host(tags[i], JsPropertyMap.of("children", host));
+        }
+        return host;
+    }
+
+    @JsMethod
+    public static void runFormDiagnostics(final boolean production) {
+        final var root = Browser.append("div");
+        try {
+            final var ignoring = captureWarnings(() -> {
+                ReactDOM.render(DOM.input(new InputProps().value("readonly").readonly()), root);
+                ReactDOM.unmountComponentAtNode(root);
+                ReactDOM.render(
+                        DOM.textarea(new TextAreaProps().value("disabled").disabled()), root);
+                ReactDOM.unmountComponentAtNode(root);
+                ReactDOM.render(DOM.input(new InputProps().type(InputType.radio).value("radio")), root);
+                ReactDOM.unmountComponentAtNode(root);
+            });
+            check(ignoring.isEmpty(), "Readonly and disabled controls can omit onChange");
+
+            final var warnings = captureWarnings(() -> {
+                ReactDOM.render(DOM.input(new InputProps().type(InputType.text).value("")), root);
+                ReactDOM.unmountComponentAtNode(root);
+                ReactDOM.render(DOM.input(new InputProps().type(InputType.text).value("another")), root);
+                ReactDOM.render(DOM.input(new InputProps().type(InputType.text).defaultValue("reset")), root);
+                ReactDOM.unmountComponentAtNode(root);
+                ReactDOM.render(DOM.input(new InputProps().type(InputType.text).defaultValue("reset")), root);
+                ReactDOM.render(
+                        DOM.input(new InputProps()
+                                .type(InputType.text)
+                                .value("controlled")
+                                .readonly()),
+                        root);
+                ReactDOM.unmountComponentAtNode(root);
+                ReactDOM.render(DOM.input(new InputProps().type(InputType.radio).checked(false)), root);
+                ReactDOM.unmountComponentAtNode(root);
+                ReactDOM.render(
+                        DOM.input(new InputProps()
+                                .type(InputType.radio)
+                                .checked()
+                                .defaultChecked()
+                                .readonly()),
+                        root);
+                ReactDOM.unmountComponentAtNode(root);
+                ReactDOM.render(
+                        DOM.input(new InputProps()
+                                .type(InputType.text)
+                                .value("value")
+                                .defaultValue("default")
+                                .readonly()),
+                        root);
+                ReactDOM.render(
+                        DOM.textarea(new TextAreaProps()
+                                .value("value")
+                                .defaultValue("default")
+                                .readonly()),
+                        root);
+                ReactDOM.render(
+                        DOM.select(new SelectProps()
+                                .value("value")
+                                .defaultValue("default")
+                                .disabled()),
+                        root);
+                ReactDOM.render(DOM.input(new InputProps().value(null)), root);
+            });
+            if (production) {
+                check(warnings.isEmpty(), "Optimized form controls omit development warnings");
+            } else {
+                for (final var expected : new String[] {
+                    "You provided a `value` prop to a form field without an `onChange` handler",
+                    "You provided a `checked` prop to a form field without an `onChange` handler",
+                    "changing a controlled input of type text to be uncontrolled",
+                    "changing an uncontrolled input of type text to be controlled",
+                    "with both checked and defaultChecked props",
+                    "an input of type text with both value and defaultValue props",
+                    "Textarea elements must be either controlled or uncontrolled",
+                    "Select elements must be either controlled or uncontrolled",
+                    "`value` prop on `input` should not be null"
+                }) {
+                    final int first = warnings.indexOf(expected);
+                    check(
+                            0 <= first && first == warnings.lastIndexOf(expected),
+                            "Expected one form warning: " + expected + "\nObserved:\n" + warnings);
+                }
+            }
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
     public static void runControlsAndEvents() {
         final var root = Browser.append("div");
         try {
@@ -488,6 +752,16 @@ public final class EventsBrowserTest {
             Browser.setValue(textarea, "user");
             check("user".contentEquals(trace), "A native edit synthesizes change");
             check("committed".equals(textarea.getValue()), "Controlled textarea restores its value");
+            attribute(textarea, "value", null);
+
+            ReactDOM.render(host("input", JsPropertyMap.of("onChange", change, "defaultValue", "initial")), root);
+            final var deduplicated = Browser.query(root, "input");
+            trace.setLength(0);
+            nativeInputEvent(deduplicated, "change");
+            check(0 == trace.length(), "A change event for the initial input value stays quiet");
+            Browser.setValue(deduplicated, "edited");
+            nativeInputEvent(deduplicated, "change");
+            check("edited".contentEquals(trace), "An input event and a change event report the same edit once");
 
             ReactDOM.render(select("b", null, false, change), root);
             final var select = Browser.query(root, "select");
@@ -496,6 +770,20 @@ public final class EventsBrowserTest {
             Browser.setValue(select, "a");
             check("a".contentEquals(trace), "Select change reads the selected option");
             check("b".equals(select.getValue()), "Controlled select restores the selected option");
+            writeValue(select, "a");
+            check("a".equals(select.getValue()), "Changing selected options without a change event remains visible");
+            ReactDOM.render(select("b", null, false, change), root);
+            check("b".equals(select.getValue()), "Rerendering a controlled select reasserts its value");
+            ReactDOM.render(select(null, null, false, change), root);
+            check("b".equals(select.getValue()), "A select keeps its value when becoming uncontrolled");
+            Browser.setValue(select, "a");
+            ReactDOM.render(select(null, "b", false, change), root);
+            check("a".equals(select.getValue()), "Updating an uncontrolled select default preserves a new selection");
+            ReactDOM.render(host("select", JsPropertyMap.of("children", ReactNode.of(option("a"), option("b")))), root);
+            trace.setLength(0);
+            Browser.setValue(select, "b");
+            check("b".equals(select.getValue()), "Native change remains usable after removing onChange");
+            check(0 == trace.length(), "The removed select listener does not fire");
 
             ReactDOM.render(select(null, new String[] {"b"}, true, change), root);
             ReactDOM.render(select(null, "a", false, change), root);
@@ -564,6 +852,11 @@ public final class EventsBrowserTest {
             check("select select ".contentEquals(trace), "Selection changes are held while dragging");
             Browser.mouse(root, "mouseup", false);
             check("select select select ".contentEquals(trace), "Releasing outside the managed input emits select");
+            Browser.mouse(selectable, "mousedown", false);
+            setSelection(selectable, 1, 2);
+            check("select select select ".contentEquals(trace), "Selection remains deferred during the next drag");
+            nativeInputEvent(selectable, "dragend");
+            check("select select select select ".contentEquals(trace), "Drag end releases a pending selection");
 
             final var keyed = ReactElement.createHostElement(
                     "input",
@@ -596,7 +889,256 @@ public final class EventsBrowserTest {
             check("1".equals(numeric.getAttribute("value")), "Focused number edits defer the value attribute");
             blur(numeric);
             check("1.0".equals(numeric.getAttribute("value")), "Blurring syncs the number value attribute");
+            reentrantChanges(root);
+            inputValueVariants(root);
+            rawFormValues(root);
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
 
+    private static void rawFormValues(final Browser.Element root) {
+        final ReactEventHandler ignore = event -> {};
+        for (final var value : nonTextValues()) {
+            for (final var tag : new String[] {"input", "textarea", "select"}) {
+                final var props = JsPropertyMap.<@Nullable Object>of("value", "ordinary", "onChange", ignore);
+                if ("select".equals(tag)) {
+                    final var other = host("option", JsPropertyMap.of("value", value, "children", "other"));
+                    props.set("children", ReactNode.of(option("ordinary"), other));
+                }
+                ReactDOM.render(host(tag, props), root);
+                final var control = Browser.query(root, tag);
+                check("ordinary".equals(control.getValue()), tag + " starts with the controlled text value");
+                final var next = JsPropertyMap.<@Nullable Object>of("value", value, "onChange", ignore);
+                if ("select".equals(tag)) {
+                    next.set("children", props.get("children"));
+                }
+                ReactDOM.render(host(tag, next), root);
+                check("".equals(control.getValue()), tag + " normalizes a non-text scalar to an empty value");
+                if ("select".equals(tag)) {
+                    attribute(Browser.query(control, "option:last-child"), "value", "");
+                }
+            }
+        }
+    }
+
+    private static void reentrantChanges(final Browser.Element root) {
+        final ReactEventHandler ignore = event -> {};
+        ReactDOM.render(host("input", JsPropertyMap.of("value", "lion", "readOnly", Browser.bool(true))), root);
+        final var readOnly = Browser.query(root, "input");
+        Browser.setValue(readOnly, "giraffe");
+        check("lion".equals(readOnly.getValue()), "Controlled values restore even without a change handler");
+
+        final var trace = new StringBuilder();
+        final ReactEventHandler blur = event ->
+                trace.append(Browser.property(event.getTarget(), "value")).append(' ');
+        final var destination = host("input", JsPropertyMap.of("id", "destination"));
+        final ReactEventHandler change = event -> {
+            final var first = Browser.query(root, "#editing");
+            final var edited = first.getValue();
+            ReactDOM.render(
+                    ReactNode.of(
+                            host("input", JsPropertyMap.of("id", "editing", "value", edited, "onChange", ignore)),
+                            destination),
+                    root);
+            nativeInputEvent(first, "input");
+            focus(Browser.query(root, "#destination"));
+        };
+        final var editing = JsPropertyMap.<@Nullable Object>of("id", "editing", "value", "lion", "onChange", change);
+        editing.set("onBlur", blur);
+        ReactDOM.render(ReactNode.of(host("input", editing), destination), root);
+        final var first = Browser.query(root, "#editing");
+        focus(first);
+        Browser.setValue(first, "giraffe");
+        check("giraffe ".contentEquals(trace), "Reentrant blur sees the live value before restoration");
+        check("giraffe".equals(first.getValue()), "A batched controlled update commits the edited value");
+        check(isFocused(Browser.query(root, "#destination")), "Reentrant change moves focus to the other input");
+
+        trace.setLength(0);
+        final ReactEventHandler checkboxChange = event -> trace.append(Browser.property(event.getTarget(), "checked"));
+        final ReactEventHandler nested = event -> {
+            final var checkbox = Browser.query(root, "#other");
+            checkbox.click();
+            trace.append('/').append(Browser.property(checkbox, "checked"));
+        };
+        final var checkbox =
+                JsPropertyMap.<@Nullable Object>of("id", "other", "type", "checkbox", "checked", Browser.bool(true));
+        checkbox.set("onChange", checkboxChange);
+        ReactDOM.render(
+                ReactNode.of(
+                        host("input", JsPropertyMap.of("value", "lion", "onChange", nested)), host("input", checkbox)),
+                root);
+        final var changed = Browser.query(root, "input");
+        Browser.setValue(changed, "giraffe");
+        check("false/false".contentEquals(trace), "Nested changes stay visible until the enclosing handler finishes");
+        check("lion".equals(changed.getValue()), "The outer controlled input is restored");
+        check(
+                Boolean.TRUE.equals(Browser.property(Browser.query(root, "#other"), "checked")),
+                "The nested controlled checkbox is restored");
+    }
+
+    private static void inputValueVariants(final Browser.Element root) {
+        final ReactEventHandler ignore = event -> {};
+        for (final var type : new String[] {"text", "number", "checkbox", "radio"}) {
+            ReactDOM.render(
+                    ReactElement.createHostElement(
+                            "input", type, null, JsPropertyMap.of("type", type, "value", "", "onChange", ignore)),
+                    root);
+            final var input = Browser.query(root, "input");
+            check("".equals(input.getValue()), type + " begins with an empty value");
+            attribute(input, "value", "");
+            ReactDOM.render(
+                    ReactElement.createHostElement(
+                            "input",
+                            type,
+                            null,
+                            JsPropertyMap.of("type", type, "value", Browser.number(0), "onChange", ignore)),
+                    root);
+            check("0".equals(input.getValue()), type + " accepts numeric zero after an empty value");
+            attribute(input, "value", "0");
+            if ("number".equals(type) || "text".equals(type)) {
+                focus(input);
+                Browser.setValue(input, "0.0");
+                check(
+                        ("number".equals(type) ? "0.0" : "0").equals(input.getValue()),
+                        type + " handles a decimal zero edit");
+                blur(input);
+                ReactDOM.render(
+                        ReactElement.createHostElement(
+                                "input", type, null, JsPropertyMap.of("type", type, "value", "", "onChange", ignore)),
+                        root);
+                check("".equals(input.getValue()), type + " accepts an empty value after zero");
+            }
+        }
+
+        final String[] decimals = {".98", "0.98", "3.0000", "3"};
+        for (final var decimal : decimals) {
+            ReactDOM.render(
+                    host("input", JsPropertyMap.of("type", "number", "value", decimal, "onChange", ignore)), root);
+            check(
+                    decimal.equals(Browser.query(root, "input").getValue()),
+                    "Number preserves the precision of " + decimal);
+        }
+
+        ReactDOM.render(
+                ReactElement.createHostElement("input", "empty-default", null, JsPropertyMap.of("defaultValue", "")),
+                root);
+        attribute(Browser.query(root, "input"), "value", "");
+
+        final var writable = JsPropertyMap.<@Nullable Object>of("onChange", ignore, "value", "0");
+        ReactDOM.render(host("input", writable), root);
+        final var input = Browser.query(root, "input");
+        final int writes = inputValueWrites(input, () -> {
+            ReactDOM.render(host("input", JsPropertyMap.of("onChange", ignore, "value", Browser.number(0))), root);
+            ReactDOM.render(host("input", JsPropertyMap.of("onChange", ignore, "value", "true")), root);
+            ReactDOM.render(host("input", JsPropertyMap.of("onChange", ignore, "value", Browser.bool(true))), root);
+        });
+        check(1 == writes, "Only serialized value changes write the input value property");
+    }
+
+    private static void formDefaults(final Browser.Element root) {
+        for (final var tag : new String[] {"input", "textarea"}) {
+            final ReactEventHandler ignore = event -> {};
+            ReactDOM.render(host(tag, JsPropertyMap.of("value", "controlled", "onChange", ignore)), root);
+            final var control = Browser.query(root, tag);
+            ReactDOM.render(host(tag, JsPropertyMap.of("defaultValue", "reset")), root);
+            check("controlled".equals(control.getValue()), tag + " keeps its live value when becoming uncontrolled");
+            Browser.setValue(control, "edit");
+            ReactDOM.render(host(tag, JsPropertyMap.of("defaultValue", "")), root);
+            check("edit".equals(control.getValue()), tag + " preserves edits across default changes");
+            check("".equals(Browser.property(control, "defaultValue")), tag + " can reset to an empty default");
+        }
+
+        ReactDOM.render(
+                host(
+                        "form",
+                        JsPropertyMap.of(
+                                "children",
+                                ReactNode.of(
+                                        host("input", JsPropertyMap.of("defaultValue", "initial")),
+                                        host("input", JsPropertyMap.of("type", "reset"))))),
+                root);
+        final var form = Browser.query(root, "form");
+        final var control = Browser.query(form, "input");
+        Browser.setValue(control, "edit");
+        ReactDOM.render(
+                host(
+                        "form",
+                        JsPropertyMap.of(
+                                "children",
+                                ReactNode.of(
+                                        host("input", JsPropertyMap.of("defaultValue", "next")),
+                                        host("input", JsPropertyMap.of("type", "reset"))))),
+                root);
+        check("edit".equals(control.getValue()), "Updating the default preserves a user edit before form reset");
+        Browser.query(form, "[type=reset]").click();
+        check("next".equals(control.getValue()), "Form reset uses the latest input default");
+    }
+
+    @JsMethod
+    public static void runInvalidListeners(final boolean production) {
+        final var root = Browser.append("div");
+        final var invalid = "Expected `onClick` listener to be a function, instead got a value of `string` type.";
+        try {
+            final var warning =
+                    captureWarnings(() -> ReactDOM.render(host("div", JsPropertyMap.of("onClick", "invalid")), root));
+            check(production ? warning.isEmpty() : warning.contains(invalid), "Invalid listener render warning");
+            final var error = clickError(Browser.query(root, "div"));
+            check(
+                    production ? !error.isEmpty() : error.contains(invalid),
+                    "Dispatch rejects a truthy invalid listener");
+
+            final var quiet =
+                    captureWarnings(() -> ReactDOM.render(host("div", JsPropertyMap.of("onClick", null)), root));
+            check(quiet.isEmpty(), "A null listener does not warn");
+            check(clickError(Browser.query(root, "div")).isEmpty(), "Dispatch accepts a null listener");
+            final var falseWarning = captureWarnings(() ->
+                    ReactDOM.render(host("div", JsPropertyMap.of("onClick", Browser.bool(false))), root));
+            check(
+                    production ? falseWarning.isEmpty() : falseWarning.contains("instead got `false`"),
+                    "A false listener receives the conditional-listener guidance");
+            check(clickError(Browser.query(root, "div")).isEmpty(), "Dispatch ignores a false listener");
+
+            final var trace = new StringBuilder();
+            final ReactEventHandler parent = event -> trace.append("parent ");
+            captureWarnings(() -> ReactDOM.render(
+                    host("input", JsPropertyMap.of("type", "checkbox", "onClick", parent, "onChange", "invalid")),
+                    root));
+            check(!clickError(Browser.query(root, "input")).isEmpty(), "Invalid change extraction rejects the click");
+            check(0 == trace.length(), "Extraction failure discards the already collected click");
+            captureWarnings(() -> ReactDOM.render(
+                    host(
+                            "section",
+                            JsPropertyMap.of(
+                                    "onClick",
+                                    parent,
+                                    "children",
+                                    host(
+                                            "button",
+                                            JsPropertyMap.of("disabled", Browser.bool(true), "onClick", "invalid")))),
+                    root));
+            check(
+                    clickError(Browser.query(root, "button")).isEmpty(),
+                    "Disabled controls suppress the invalid listener");
+            check("parent ".contentEquals(trace), "Disabled controls still dispatch to ancestors");
+
+            final ReactEventHandler replacement = event -> {
+                trace.append("replacement ");
+                ReactDOM.render(ReactNode.of("committed"), root);
+            };
+            ReactDOM.render(
+                    host(
+                            "section",
+                            JsPropertyMap.of(
+                                    "onClick",
+                                    parent,
+                                    "children",
+                                    host("button", JsPropertyMap.of("onClick", replacement)))),
+                    root);
+            check(clickError(Browser.query(root, "button")).isEmpty(), "A valid replacement handler dispatches");
+            check("parent replacement parent ".contentEquals(trace), "The next dispatch completes both handlers");
+            check("committed".equals(root.getTextContent()), "The next event batch commits");
         } finally {
             ReactDOM.unmountComponentAtNode(root);
             root.remove();
@@ -605,6 +1147,7 @@ public final class EventsBrowserTest {
 
     @JsMethod
     public static void runDomEventVariants() {
+        mediaOnlyDocumentListeners();
         final var root = Browser.append("div");
         try {
             final var trace = new StringBuilder();
@@ -704,6 +1247,7 @@ public final class EventsBrowserTest {
             ReactDOM.render(host("section", JsPropertyMap.of("children", audio, "onProgressCapture", parent)), root);
             dispatch(media, "onProgress");
             check("parent ".contentEquals(trace), "Late capture reaches an already mounted media element");
+            formAndMediaEvents(root);
 
             final ReactEventHandler selected =
                     event -> trace.append(event.getType()).append(' ');
@@ -744,8 +1288,74 @@ public final class EventsBrowserTest {
         }
     }
 
+    private static void mediaOnlyDocumentListeners() {
+        final var root = Browser.append("div");
+        try {
+            final var trace = new StringBuilder();
+            final ReactEventHandler record = event -> trace.append(event.getType());
+            final var media =
+                    JsPropertyMap.<@Nullable Object>of("onPlay", record, "onPause", record, "onProgress", record);
+            final var events = observeDocumentListeners(root, () -> {
+                ReactDOM.render(
+                        ReactNode.of(
+                                host("video", media),
+                                host("audio", media),
+                                host("form", JsPropertyMap.of("onReset", record, "onSubmit", record))),
+                        root);
+                dispatch(Browser.query(root, "video"), "onPlay");
+            });
+            check("".equals(events), "A media-only tree avoids document listeners, saw " + events);
+            check("play".contentEquals(trace), "The media host receives its native event");
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    private static void formAndMediaEvents(final Browser.Element root) {
+        final var trace = new StringBuilder();
+        final ReactEventHandler record = event -> trace.append(event.getType()).append(' ');
+        ReactDOM.render(
+                host(
+                        "section",
+                        JsPropertyMap.of(
+                                "children",
+                                host(
+                                        "form",
+                                        JsPropertyMap.of(
+                                                "onSubmit", record,
+                                                "onReset", record,
+                                                "children", host("input", JsPropertyMap.of("onInvalid", record)))))),
+                root);
+        final var intermediate = Browser.query(root, "section");
+        stopNativePropagation(intermediate, "submit");
+        stopNativePropagation(intermediate, "reset");
+        dispatch(Browser.query(root, "input"), "onInvalid");
+        final var form = Browser.query(root, "form");
+        nativeInputEvent(form, "reset");
+        nativeInputEvent(form, "submit");
+        nativeInputEvent(form, "submit");
+        check(
+                "invalid reset submit submit ".contentEquals(trace),
+                "Each form event dispatches once at the form or input");
+
+        trace.setLength(0);
+        ReactDOM.render(
+                ReactNode.of(
+                        host("img", JsPropertyMap.of("onLoadStart", record)),
+                        host("video", JsPropertyMap.of("onLoadStart", record))),
+                root);
+        dispatch(Browser.query(root, "img"), "onLoadStart");
+        check(0 == trace.length(), "An image does not trap loadstart");
+        dispatch(Browser.query(root, "video"), "onLoadStart");
+        check("loadstart ".contentEquals(trace), "A video traps its non-bubbling loadstart event");
+    }
+
     @JsMethod
     private static native void mouseButton(Browser.Element element, int button);
+
+    @JsMethod
+    private static native void legacyMovement(Browser.Element element, String type, int x, int y);
 
     @JsMethod
     private static native void textClick(Browser.Element element);
@@ -778,6 +1388,14 @@ public final class EventsBrowserTest {
                         check(key.getModifierState(modifier), "Fallback modifier " + modifier);
                     }
                     check(!key.getModifierState("CapsLock"), "Fallback ignores lock modifiers");
+                }
+                if ("keypress".equals(key.getType())) {
+                    check(
+                            Js.isTripleEqual(Browser.number(0), Browser.property(key, "keyCode")),
+                            "Keypress keyCode is the JavaScript number zero");
+                    check(
+                            Js.isTripleEqual(Browser.number(key.getCharCode()), Browser.property(key, "which")),
+                            "Keypress which is the JavaScript character code");
                 }
                 released[0] = event;
             };
@@ -827,6 +1445,15 @@ public final class EventsBrowserTest {
     private static native int releasedWarnings(Probe probe);
 
     @JsMethod
+    private static native String captureWarnings(Probe probe);
+
+    @JsMethod
+    private static native String clickError(Browser.Element target);
+
+    @JsMethod
+    private static native int inputValueWrites(Browser.Element element, Probe probe);
+
+    @JsMethod
     private static native void keyboard(Browser.Element element, String type, String key, int keyCode, int charCode);
 
     @JsMethod
@@ -836,6 +1463,7 @@ public final class EventsBrowserTest {
     public static void runUncontrolled() {
         final var root = Browser.append("div");
         try {
+            formDefaults(root);
             ReactDOM.render(host("input", JsPropertyMap.of("defaultValue", "baseline")), root);
             final var input = Browser.query(root, "input");
             check("baseline".equals(input.getValue()), "Default input value initializes the live value");
@@ -911,13 +1539,28 @@ public final class EventsBrowserTest {
                     Boolean.TRUE.equals(Browser.property(transitioning, "checked")),
                     "Removing checked restores the original checked value");
 
-            ReactDOM.render(
-                    ReactNode.of(
-                            host("input", JsPropertyMap.of("type", "submit", "defaultValue", "unused")),
-                            host("input", JsPropertyMap.of("type", "reset", "value", "Reset project"))),
-                    root);
-            attribute(Browser.query(root, "[type=submit]"), "value", null);
-            attribute(Browser.query(root, "[type=reset]"), "value", "Reset project");
+            final ReactEventHandler ignore = event -> {};
+            for (final var type : new String[] {"submit", "reset"}) {
+                ReactDOM.render(
+                        ReactElement.createHostElement(
+                                "input", type, null, JsPropertyMap.of("type", type, "value", "", "onChange", ignore)),
+                        root);
+                final var button = Browser.query(root, "input");
+                attribute(button, "value", "");
+                ReactDOM.render(
+                        ReactElement.createHostElement(
+                                "input",
+                                type,
+                                null,
+                                JsPropertyMap.of("type", type, "value", "Custom", "onChange", ignore)),
+                        root);
+                attribute(button, "value", "Custom");
+                ReactDOM.render(
+                        ReactElement.createHostElement(
+                                "input", type, null, JsPropertyMap.of("type", type, "defaultValue", "unused")),
+                        root);
+                attribute(button, "value", null);
+            }
 
             ReactDOM.render(select(null, "b", false, changed), root);
             final var select = Browser.query(root, "select");
@@ -926,6 +1569,33 @@ public final class EventsBrowserTest {
             check("".equals(select.getValue()), "Enabling multiple clears an uncontrolled select without a default");
             ReactDOM.render(select(null, null, false, changed), root);
             check("a".equals(select.getValue()), "Disabling multiple selects the first available option");
+
+            final var disabled = host(
+                    "option",
+                    JsPropertyMap.of("value", "disabled", "disabled", Browser.bool(true), "children", "disabled"));
+            final var grouped = host("optgroup", JsPropertyMap.of("label", "group", "children", option("__proto__")));
+            ReactDOM.render(
+                    host(
+                            "select",
+                            JsPropertyMap.of(
+                                    "value",
+                                    "missing",
+                                    "onChange",
+                                    ignore,
+                                    "children",
+                                    ReactNode.of(disabled, grouped))),
+                    root);
+            check("__proto__".equals(select.getValue()), "A missing value falls back to the first enabled option");
+            final var multiple = JsPropertyMap.<@Nullable Object>of(
+                    "multiple", Browser.bool(true), "value", new String[] {"__proto__"}, "onChange", ignore);
+            multiple.set("children", ReactNode.of(option("constructor"), grouped));
+            ReactDOM.render(host("select", multiple), root);
+            check(
+                    "__proto__".equals(select.getValue()),
+                    "Multiple select matches only the requested prototype-like value");
+            check(
+                    Boolean.FALSE.equals(Browser.property(Browser.query(select, "[value=constructor]"), "selected")),
+                    "Multiple select leaves other prototype-like values unselected");
         } finally {
             ReactDOM.unmountComponentAtNode(root);
             root.remove();
@@ -936,6 +1606,7 @@ public final class EventsBrowserTest {
     public static void runHostProperties() {
         final var root = Browser.append("div");
         try {
+            withoutReportedErrors(() -> invalidHostProps(root));
             final var html = JsPropertyMap.<@Nullable Object>of(
                     "id", "property-fixture", "className", "before", "contentEditable", Browser.bool(false));
             html.set("hidden", Browser.bool(true));
@@ -1250,6 +1921,32 @@ public final class EventsBrowserTest {
         }
     }
 
+    private static void invalidHostProps(final Browser.Element root) {
+        final var rawHtml = JsPropertyMap.of("__html", "<em>markup</em>");
+        checkRejected(() -> ReactDOM.render(host("input", JsPropertyMap.of("children", "text")), root));
+        checkRejected(
+                () -> ReactDOM.render(host("menuitem", JsPropertyMap.of("dangerouslySetInnerHTML", rawHtml)), root));
+        checkRejected(() -> ReactDOM.render(host("div", JsPropertyMap.of("dangerouslySetInnerHTML", "markup")), root));
+        ReactDOM.render(host("div", JsPropertyMap.of("children", "before")), root);
+        checkRejected(() -> ReactDOM.render(
+                host("div", JsPropertyMap.of("children", "text", "dangerouslySetInnerHTML", rawHtml)), root));
+        ReactDOM.render(host("div", JsPropertyMap.of("children", "again")), root);
+        checkRejected(() -> ReactDOM.render(host("div", JsPropertyMap.of("style", "display:none")), root));
+        ReactDOM.render(
+                host("div", JsPropertyMap.of("dangerouslySetInnerHTML", JsPropertyMap.of("__html", null))), root);
+        check("".equals(root.getTextContent()), "An explicit null HTML value is valid");
+    }
+
+    private static void checkRejected(final Probe render) {
+        boolean rejected = false;
+        try {
+            render.run();
+        } catch (final Throwable error) {
+            rejected = true;
+        }
+        check(rejected, "Invalid host properties are rejected");
+    }
+
     private static void hostUpdateOrder(Browser.Element root) {
         final var differences = new StringBuilder();
         ReactDOM.render(probedParent("p0", probedChild("one", "c0", "kept")), root);
@@ -1454,6 +2151,21 @@ public final class EventsBrowserTest {
     private static native void writeValue(Browser.Element element, String value);
 
     @JsMethod
+    private static native void nativeInputEvent(Browser.Element element, String type);
+
+    @JsMethod
+    private static native void stopNativePropagation(Browser.Element element, String type);
+
+    @JsMethod
+    private static native Object[] nonTextValues();
+
+    @JsMethod
+    private static native void withoutReportedErrors(Probe probe);
+
+    @JsMethod
+    private static native String observeDocumentListeners(Browser.Element root, Probe probe);
+
+    @JsMethod
     private static native void setSelection(Browser.Element input, int start, int end);
 
     @JsMethod
@@ -1465,11 +2177,17 @@ public final class EventsBrowserTest {
     @JsMethod
     private static native boolean isFocused(Browser.Element element);
 
-    private static ReactElement radio(final String id, final boolean checked) {
-        final var props = JsPropertyMap.<@Nullable Object>of("type", "radio", "name", "group", "id", id);
+    private static ReactElement radio(final String id, final String name, final boolean checked) {
+        final var props = JsPropertyMap.<@Nullable Object>of("type", "radio", "name", name, "id", id);
         props.set("checked", Browser.bool(checked));
-        return ReactElement.createHostElement("input", null, null, props);
+        return ReactElement.createHostElement("input", id, null, props);
     }
+
+    @JsMethod
+    private static native void setCheckedUntracked(Browser.Element element, boolean checked);
+
+    @JsMethod
+    private static native void appendExisting(Browser.Element parent, Browser.Element child);
 
     private static void getters(Object overlay, Object value) {
         int count = 0;

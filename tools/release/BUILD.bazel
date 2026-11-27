@@ -105,8 +105,14 @@ release_jar(
     name = "dom_jar",
     out = "react4j-dom.jar",
     java_targets = ["//dom/src/main/java/react4j/dom"],
-    resource_entries = ["META-INF/LICENSE"],
-    resource_files = ["//:LICENSE"],
+    resource_entries = [
+        "META-INF/LICENSE",
+        "META-INF/LICENSE.react",
+    ],
+    resource_files = [
+        "//:LICENSE",
+        "//third_party:react/LICENSE",
+    ],
 )
 
 release_source_jar(
@@ -115,10 +121,12 @@ release_source_jar(
     java_targets = ["//dom/src/main/java/react4j/dom"],
     resource_entries = [
         "META-INF/LICENSE",
+        "META-INF/LICENSE.react",
         "react4j/dom/Renderer.native.js",
     ],
     resource_files = [
         "//:LICENSE",
+        "//third_party:react/LICENSE",
         "//dom/src/main/java/react4j/dom:Renderer.native.js",
     ],
 )

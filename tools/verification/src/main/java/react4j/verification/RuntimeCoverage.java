@@ -523,7 +523,7 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
             var assets = Map.of(
                     "/index.html",
                     "<!doctype html><body><script>var CLOSURE_DEFINES=" + defines
-                            + ";window.coverageError=null;window.addEventListener('error',e=>window.coverageError=String(e.error||e.message));</script><script"
+                            + ";window.coverageError=null;window.addEventListener('error',e=>queueMicrotask(()=>{if(!e.defaultPrevented)window.coverageError=String(e.error||e.message)}));</script><script"
                             + " src='/runtime.js'></script>",
                     "/runtime.js",
                     instrumentation.javascript()

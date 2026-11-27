@@ -104,21 +104,15 @@ final class DomEvents {
         "Waiting",
         "Wheel"
     };
-    private static final Set<String> NON_BUBBLING = Set.of(
+    private static final Set<String> MEDIA_EVENTS = Set.of(
             "abort",
             "canplay",
             "canplaythrough",
-            "cancel",
-            "close",
-            "blur",
             "durationchange",
             "emptied",
             "encrypted",
             "ended",
             "error",
-            "focus",
-            "invalid",
-            "load",
             "loadeddata",
             "loadedmetadata",
             "loadstart",
@@ -127,15 +121,18 @@ final class DomEvents {
             "playing",
             "progress",
             "ratechange",
-            "scroll",
             "seeked",
             "seeking",
             "stalled",
             "suspend",
             "timeupdate",
-            "toggle",
             "volumechange",
             "waiting");
+    private static final Set<String> FORM_EVENTS = Set.of("reset", "submit");
+    private static final Set<String> INVALID_EVENT = Set.of("invalid");
+    private static final Set<String> ERROR_EVENT = Set.of("error");
+    private static final Set<String> NON_BUBBLING =
+            Set.of("blur", "cancel", "close", "focus", "load", "scroll", "toggle");
     private static final Set<String> REGISTERED_EVENTS = Set.of(EVENTS);
     private static final JsPropertyMap<Boolean> OBSERVED_HANDLERS = JsPropertyMap.of();
     private static final List<String> DOCUMENT_SELECTION_EVENTS =
@@ -199,9 +196,18 @@ final class DomEvents {
             Map.entry(224, "Meta"));
     private static final DomHost.WeakMap<DomHost.Node, Boundary> BOUNDARIES = new DomHost.WeakMap<>();
     private static final DomHost.WeakMap<DomHost.Node, State> STATES = new DomHost.WeakMap<>();
+    private static final DomHost.WeakMap<DomHost.Node, DocumentSubscriptions> DOCUMENT_SUBSCRIPTIONS =
+            new DomHost.WeakMap<>();
+    private static final LegacyMovement MOVEMENT_X = new LegacyMovement();
+    private static final LegacyMovement MOVEMENT_Y = new LegacyMovement();
+    private static final int EXTERNAL_MOUSE = 1;
+    private static final int EXTERNAL_POINTER = 2;
+    private static final int DOCUMENT_SELECTION = 4;
 
     private static int paused;
     private static boolean spaceKeypress;
+    private static boolean dispatching;
+    private static @Nullable List<DomHost.Element> changedControls;
 
     private DomEvents() {}
 
@@ -226,6 +232,28 @@ final class DomEvents {
         };
     }
 
+    static @Nullable String standardHandler(final String lower) {
+        if ("ondblclick".equals(lower)) {
+            return "onDoubleClick";
+        }
+        final var capture = lower.endsWith("capture");
+        final var suffix = capture ? "Capture" : "";
+        final var base = capture ? lower.substring(0, lower.length() - 7) : lower;
+        for (final var event : EVENTS) {
+            if (base.equalsIgnoreCase("on" + event) && isRegistered("on" + event + suffix)) {
+                return "on" + event + suffix;
+            }
+        }
+        for (final var event :
+                new String[] {"MouseEnter", "MouseLeave", "PointerEnter", "PointerLeave", "BeforeInput", "Select"}) {
+            final var handler = "on" + event + suffix;
+            if (lower.equalsIgnoreCase(handler) && isRegistered(handler)) {
+                return handler;
+            }
+        }
+        return null;
+    }
+
     static boolean observeHandler(final String name, @Nullable final Object value) {
         if (null == value) {
             return false;
@@ -233,11 +261,15 @@ final class DomEvents {
         if (OBSERVED_HANDLERS.has(name)) {
             return true;
         }
-        if ("function".equals(Js.typeof(value)) && isRegistered(name)) {
+        if (isRegistered(name)) {
             OBSERVED_HANDLERS.set(name, true);
             return true;
         }
         return false;
+    }
+
+    static String invalidListener(final String property, final String type) {
+        return "Expected `" + property + "` listener to be a function, instead got a value of `" + type + "` type.";
     }
 
     static void pause() {
@@ -264,11 +296,26 @@ final class DomEvents {
         state.rootContainer = rootContainer;
         state.logicalParent = logicalParent;
         STATES.set(element, state);
+        var subscriptions = DOCUMENT_SUBSCRIPTIONS.get(rootContainer);
+        if (null == subscriptions) {
+            subscriptions = new DocumentSubscriptions();
+            DOCUMENT_SUBSCRIPTIONS.set(rootContainer, subscriptions);
+        }
+        subscriptions.attach(boundary);
+        subscriptions.observe(state.inputs);
+        for (final var event : localEvents(state.tag)) {
+            element.addEventListener(event, Objects.requireNonNull(boundary.listeners.get(event)), false);
+        }
     }
 
     @Nullable
     static State state(final DomHost.Element element) {
         return STATES.get(element);
+    }
+
+    static void updateDocumentSubscriptions(final State state) {
+        final var subscriptions = DOCUMENT_SUBSCRIPTIONS.get(Objects.requireNonNull(state.rootContainer));
+        Objects.requireNonNull(subscriptions).observe(state.inputs);
     }
 
     static void clear(final DomHost.Element element) {
@@ -281,17 +328,37 @@ final class DomEvents {
             DomHost.properties(element).delete(state.trackedProperty);
         }
         final var boundary = Objects.requireNonNull(state.boundary);
+        final var root = Objects.requireNonNull(state.rootContainer);
+        final var subscriptions = Objects.requireNonNull(DOCUMENT_SUBSCRIPTIONS.get(root));
+        if (subscriptions.detach(boundary)) {
+            DOCUMENT_SUBSCRIPTIONS.delete(root);
+        }
+        for (final var event : localEvents(state.tag)) {
+            element.removeEventListener(event, Objects.requireNonNull(boundary.listeners.get(event)), false);
+        }
         if (0 == --boundary.hosts) {
-            boundary.listeners.forEach(
-                    (name, listener) -> boundary.node.removeEventListener(name, listener, NON_BUBBLING.contains(name)));
-            final var document = boundary.node.document();
-            document.removeEventListener("mouseout", boundary.externalMovement, false);
-            document.removeEventListener("pointerout", boundary.externalMovement, false);
-            for (final var event : DOCUMENT_SELECTION_EVENTS) {
-                document.removeEventListener(event, boundary.selectionListener, false);
-            }
+            boundary.listeners.forEach((name, listener) -> {
+                if (isDelegated(name)) {
+                    boundary.node.removeEventListener(name, listener, NON_BUBBLING.contains(name));
+                }
+            });
+            boundary.clearDocumentListeners();
             BOUNDARIES.delete(boundary.node);
         }
+    }
+
+    private static boolean isDelegated(final String event) {
+        return !MEDIA_EVENTS.contains(event) && !FORM_EVENTS.contains(event) && !INVALID_EVENT.contains(event);
+    }
+
+    private static Set<String> localEvents(final String tag) {
+        return switch (tag) {
+            case "audio", "video" -> MEDIA_EVENTS;
+            case "form" -> FORM_EVENTS;
+            case "input", "select", "textarea" -> INVALID_EVENT;
+            case "image", "img", "link", "source" -> ERROR_EVENT;
+            default -> Set.of();
+        };
     }
 
     private static String nativeName(final String name) {
@@ -374,37 +441,34 @@ final class DomEvents {
             final var element = Js.<DomHost.Element>uncheckedCast(node);
             final DomHost.Node actualTarget = eventTarget;
             final var outerRoots = outerRoots(state);
-            if (outerRoots.isEmpty()) {
-                final boolean change = isChange(name, element, state);
-                try {
-                    ReactDOM.batchedUpdates(() -> dispatchAt(element, state, actualTarget, name, nativeEvent, change));
-                } finally {
-                    if (change) {
-                        Renderer.flushInteractive();
-                        DomHost.restoreAfterEvent(element);
-                    }
+            batchDispatch(() -> {
+                dispatchAt(element, state, actualTarget, name, nativeEvent);
+                for (final var outer : outerRoots) {
+                    dispatchAt(outer.element(), outer.state(), actualTarget, name, nativeEvent);
                 }
-                return;
-            }
-            final List<DomHost.Element> changedControls = new ArrayList<>();
-            try {
-                ReactDOM.batchedUpdates(() -> {
-                    dispatchNested(element, state, actualTarget, name, nativeEvent, changedControls);
-                    for (final var outer : outerRoots) {
-                        dispatchNested(
-                                outer.element(), outer.state(), actualTarget, name, nativeEvent, changedControls);
-                    }
-                });
-            } finally {
-                if (!changedControls.isEmpty()) {
-                    Renderer.flushInteractive();
-                    final List<?> controls = changedControls;
-                    for (int i = 0; i < controls.size(); i++) {
-                        DomHost.restoreAfterEvent(Js.uncheckedCast(controls.get(i)));
-                    }
-                }
-            }
+            });
             return;
+        }
+    }
+
+    private static void batchDispatch(final Runnable action) {
+        if (dispatching) {
+            action.run();
+            return;
+        }
+        dispatching = true;
+        try {
+            ReactDOM.batchedUpdates(action::run);
+        } finally {
+            dispatching = false;
+            final List<?> controls = changedControls;
+            changedControls = null;
+            if (null != controls) {
+                Renderer.flushInteractive();
+                for (final var control : controls) {
+                    DomHost.restoreAfterEvent(Js.uncheckedCast(control));
+                }
+            }
         }
     }
 
@@ -434,59 +498,56 @@ final class DomEvents {
 
     private record Origin(DomHost.Element element, State state) {}
 
-    private static void dispatchNested(
-            final DomHost.Element element,
-            final State state,
-            final DomHost.Node target,
-            final String name,
-            final NativeEvent nativeEvent,
-            final List<DomHost.Element> changedControls) {
-        final boolean change = isChange(name, element, state);
-        if (change) {
-            changedControls.add(element);
-        }
-        dispatchAt(element, state, target, name, nativeEvent, change);
-    }
-
     private static void dispatchAt(
             final DomHost.Element element,
             final State state,
             final DomHost.Node target,
             final String name,
-            final NativeEvent nativeEvent,
-            final boolean change) {
+            final NativeEvent nativeEvent) {
+        final boolean change = isChange(name, element, state);
+        if (change) {
+            if (null == changedControls) {
+                changedControls = new ArrayList<>();
+            }
+            changedControls.add(element);
+        }
         final var boundary = Objects.requireNonNull(state.boundary);
         if ("Blur".equals(name)) {
             DomHost.commitNumberOnBlur(element, state);
         }
         final var selected = boundary.selectTarget(name, element);
         final var batch = new DispatchBatch();
-        if (!"Change".equals(name)
-                && !"TextInput".equals(name)
-                && !("KeyPress".equals(name) && 0 == charCode(DomHost.properties(nativeEvent)))
-                && !("Click".equals(name) && 2 == eventNumber(DomHost.properties(nativeEvent), "button"))) {
-            collectHandlers(
-                    batch,
-                    element,
-                    target,
-                    name,
-                    nativeEvent,
-                    name.startsWith("Composition") ? customInputData(nativeEvent) : null);
-        }
-        switch (name) {
-            case "MouseOver", "MouseOut", "PointerOver", "PointerOut" ->
-                collectEnterLeave(batch, element, name, nativeEvent);
-            default -> {}
-        }
-        if (change) {
-            collectHandlers(batch, element, target, "Change", nativeEvent, null);
-        }
-        if (null != selected) {
-            collectHandlers(batch, selected, selected, "Select", nativeEvent, null);
-        }
-        final var beforeInput = beforeInputData(boundary, name, nativeEvent);
-        if (Js.isTruthy(beforeInput)) {
-            collectHandlers(batch, element, target, "BeforeInput", nativeEvent, beforeInput);
+        try {
+            if (!"Change".equals(name)
+                    && !"TextInput".equals(name)
+                    && !("KeyPress".equals(name) && 0 == charCode(DomHost.properties(nativeEvent)))
+                    && !("Click".equals(name) && 2 == eventNumber(DomHost.properties(nativeEvent), "button"))) {
+                collectHandlers(
+                        batch,
+                        element,
+                        target,
+                        name,
+                        nativeEvent,
+                        name.startsWith("Composition") ? customInputData(nativeEvent) : null);
+            }
+            switch (name) {
+                case "MouseOver", "MouseOut", "PointerOver", "PointerOut" ->
+                    collectEnterLeave(batch, element, name, nativeEvent);
+                default -> {}
+            }
+            if (change) {
+                collectHandlers(batch, element, target, "Change", nativeEvent, null);
+            }
+            if (null != selected) {
+                collectHandlers(batch, selected, selected, "Select", nativeEvent, null);
+            }
+            final var beforeInput = beforeInputData(boundary, name, nativeEvent);
+            if (Js.isTruthy(beforeInput)) {
+                collectHandlers(batch, element, target, "BeforeInput", nativeEvent, beforeInput);
+            }
+        } catch (RuntimeException | Error error) {
+            batch.discard();
+            throw error;
         }
         batch.run();
     }
@@ -592,8 +653,8 @@ final class DomEvents {
                         && !(checkDisabled
                                 && DISABLABLE.contains(state.tag)
                                 && Js.isTruthy(state.inputs.get("disabled")))) {
-                    captures = appendHandler(captures, element, capture);
-                    bubbles = appendHandler(bubbles, element, bubble);
+                    captures = appendHandler(captures, element, captureProperty, capture);
+                    bubbles = appendHandler(bubbles, element, property, bubble);
                 }
             }
             element = state.logicalParent;
@@ -721,19 +782,28 @@ final class DomEvents {
                 for (int i = 0; i < bubbles.size() && !event.stopped; i++) {
                     call(event, bubbles.get(i));
                 }
-                if (!event.persistent) {
-                    event.release();
-                    final var pool = entry.pool();
-                    if (pool.size() < 10) {
-                        pool.addLast(event);
-                    }
-                }
+                release(entry);
             }
             if (failure instanceof RuntimeException exception) {
                 throw exception;
             }
             if (failure instanceof Error error) {
                 throw error;
+            }
+        }
+
+        void discard() {
+            events.forEach(DispatchBatch::release);
+        }
+
+        private static void release(final QueuedDispatch entry) {
+            final var event = entry.event();
+            if (!event.persistent) {
+                event.release();
+                final var pool = entry.pool();
+                if (pool.size() < 10) {
+                    pool.addLast(event);
+                }
             }
         }
 
@@ -759,9 +829,16 @@ final class DomEvents {
     }
 
     private static @Nullable List<Invocation> appendHandler(
-            @Nullable final List<Invocation> calls, final DomHost.Element element, @Nullable final Object handler) {
-        if (!"function".equals(Js.typeof(handler))) {
+            @Nullable final List<Invocation> calls,
+            final DomHost.Element element,
+            final String property,
+            @Nullable final Object handler) {
+        if (!Js.isTruthy(handler)) {
             return calls;
+        }
+        final var type = Js.typeof(handler);
+        if (!"function".equals(type)) {
+            throw new IllegalArgumentException(invalidListener(property, type));
         }
         final var updated = null == calls ? new ArrayList<Invocation>() : calls;
         updated.add(new Invocation(element, Js.uncheckedCast(handler)));
@@ -795,6 +872,47 @@ final class DomEvents {
         }
     }
 
+    private static final class DocumentSubscriptions {
+        private final Map<Boundary, Integer> boundaries = new HashMap<>();
+        private int events;
+
+        void attach(final Boundary boundary) {
+            final var count = boundaries.get(boundary);
+            boundaries.put(boundary, null == count ? 1 : count + 1);
+            if (null == count && 0 != events) {
+                boundary.listenToDocument(events);
+            }
+        }
+
+        void observe(final JsPropertyMap<@Nullable Object> inputs) {
+            int observed = 0;
+            if (Js.isTruthy(inputs.get("onMouseEnter")) || Js.isTruthy(inputs.get("onMouseLeave"))) {
+                observed |= EXTERNAL_MOUSE;
+            }
+            if (Js.isTruthy(inputs.get("onPointerEnter")) || Js.isTruthy(inputs.get("onPointerLeave"))) {
+                observed |= EXTERNAL_POINTER;
+            }
+            if (Js.isTruthy(inputs.get("onSelect")) || Js.isTruthy(inputs.get("onSelectCapture"))) {
+                observed |= DOCUMENT_SELECTION;
+            }
+            final int added = observed & ~events;
+            if (0 != added) {
+                events |= added;
+                boundaries.keySet().forEach(boundary -> boundary.listenToDocument(added));
+            }
+        }
+
+        boolean detach(final Boundary boundary) {
+            final int count = Objects.requireNonNull(boundaries.get(boundary));
+            if (1 == count) {
+                boundaries.remove(boundary);
+            } else {
+                boundaries.put(boundary, count - 1);
+            }
+            return boundaries.isEmpty();
+        }
+    }
+
     private static final class Boundary {
         final DomHost.Node node;
         final Map<String, Listener> listeners = new HashMap<>();
@@ -804,6 +922,7 @@ final class DomEvents {
         private @Nullable Selection lastSelection;
         private boolean mouseDown;
         private final boolean hasTextInput;
+        private int documentEvents;
         int hosts;
 
         Boundary(final DomHost.Node node) {
@@ -815,7 +934,9 @@ final class DomEvents {
                 final boolean interactive = isInteractive(name);
                 final Listener listener = event -> dispatch(this, name, event, interactive);
                 listeners.put(nativeName, listener);
-                node.addEventListener(nativeName, listener, NON_BUBBLING.contains(nativeName));
+                if (isDelegated(nativeName)) {
+                    node.addEventListener(nativeName, listener, NON_BUBBLING.contains(nativeName));
+                }
             }
             selectionListener = event -> {
                 switch (event.type) {
@@ -835,7 +956,6 @@ final class DomEvents {
                     });
                 }
             };
-            final var document = node.document();
             externalMovement = event -> {
                 final var target = Js.<DomHost.@Nullable Node>uncheckedCast(event.target);
                 if (0 != paused || null != closestManaged(target)) {
@@ -855,10 +975,37 @@ final class DomEvents {
                     });
                 }
             };
-            document.addEventListener("mouseout", externalMovement, false);
-            document.addEventListener("pointerout", externalMovement, false);
-            for (final var event : DOCUMENT_SELECTION_EVENTS) {
-                document.addEventListener(event, selectionListener, false);
+        }
+
+        private void listenToDocument(final int requested) {
+            final int added = requested & ~documentEvents;
+            documentEvents |= added;
+            final var document = node.document();
+            if (0 != (added & EXTERNAL_MOUSE)) {
+                document.addEventListener("mouseout", externalMovement, false);
+            }
+            if (0 != (added & EXTERNAL_POINTER)) {
+                document.addEventListener("pointerout", externalMovement, false);
+            }
+            if (0 != (added & DOCUMENT_SELECTION)) {
+                for (final var event : DOCUMENT_SELECTION_EVENTS) {
+                    document.addEventListener(event, selectionListener, false);
+                }
+            }
+        }
+
+        private void clearDocumentListeners() {
+            final var document = node.document();
+            if (0 != (documentEvents & EXTERNAL_MOUSE)) {
+                document.removeEventListener("mouseout", externalMovement, false);
+            }
+            if (0 != (documentEvents & EXTERNAL_POINTER)) {
+                document.removeEventListener("pointerout", externalMovement, false);
+            }
+            if (0 != (documentEvents & DOCUMENT_SELECTION)) {
+                for (final var event : DOCUMENT_SELECTION_EVENTS) {
+                    document.removeEventListener(event, selectionListener, false);
+                }
             }
         }
 
@@ -1070,6 +1217,17 @@ final class DomEvents {
 
     private record Invocation(DomHost.Element element, ReactEventHandler handler) {}
 
+    private static final class LegacyMovement {
+        private @Nullable Double previous;
+
+        double read(final @Nullable Object position, final boolean moving) {
+            final var before = previous;
+            final double current = DomHost.number(position);
+            previous = current;
+            return moving && null != before ? current - before : 0;
+        }
+    }
+
     private static final class Dispatch {
         private static final Flag TRUE = () -> true;
         private static final Flag FALSE = () -> false;
@@ -1123,8 +1281,13 @@ final class DomEvents {
                     final int code = keyPress ? charCode(source) : eventNumber(source, "keyCode");
                     properties.set("key", eventKey(source, keyPress, code));
                     properties.set("charCode", keyPress ? code : 0);
-                    properties.set("keyCode", keyPress ? 0 : source.get("keyCode"));
-                    properties.set("which", keyPress ? code : source.get("keyCode"));
+                    if (keyPress) {
+                        properties.set("keyCode", 0);
+                        properties.set("which", code);
+                    } else {
+                        properties.set("keyCode", source.get("keyCode"));
+                        properties.set("which", source.get("keyCode"));
+                    }
                 }
                 case CLIPBOARD -> {
                     if (!source.has("clipboardData")) {
@@ -1132,6 +1295,13 @@ final class DomEvents {
                     }
                 }
                 case MOUSE, DRAG, POINTER, WHEEL -> {
+                    final boolean moving = "mousemove".equals(nativeEvent.type);
+                    if (!source.has("movementX")) {
+                        properties.set("movementX", MOVEMENT_X.read(source.get("screenX"), moving));
+                    }
+                    if (!source.has("movementY")) {
+                        properties.set("movementY", MOVEMENT_Y.read(source.get("screenY"), moving));
+                    }
                     final var related = source.get("relatedTarget");
                     if (!Js.isTruthy(related)) {
                         final var from = source.get("fromElement");

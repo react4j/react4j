@@ -10,9 +10,13 @@ j2cl_library(
     testonly = True,
     srcs = [
         "BuildableBrowserTest.java",
+        "ChildReconciliationTest.java",
         "DevToolsHookTest.java",
         "EventsBrowserTest.java",
         "EventsBrowserTest.native.js",
+        "FiberReconciliationTest.java",
+        "OriginalHostCasesBrowserTest.java",
+        "OriginalHostCasesBrowserTest.native.js",
         "PropertiesBrowserTest.java",
         "PropertiesBrowserTest.native.js",
         "RuntimeBrowserTest.java",
