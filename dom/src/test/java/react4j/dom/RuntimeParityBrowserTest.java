@@ -91,6 +91,7 @@ public final class RuntimeParityBrowserTest {
                 .then(ignored -> missingPlaceholder(false, production))
                 .then(ignored -> missingPlaceholder(true, production))
                 .then(ignored -> independentSuspenseSiblings())
+                .then(ignored -> suspendedListVisitsSiblings())
                 .then(ignored -> renderFailureSiblings(false, production))
                 .then(ignored -> renderFailureSiblings(true, production))
                 .then(ignored -> failedRenderTeardown(false, production))
@@ -1424,15 +1425,30 @@ public final class RuntimeParityBrowserTest {
     private static BrowserPromise suspense() {
         final var container = Browser.append("div");
         final boolean[] ready = {false};
+        final int[] attempts = {0};
         final BrowserPromise.Action[] resolve = new BrowserPromise.Action[1];
         final var pending = Browser.callback(callback -> resolve[0] = callback);
         final var child = ReactElement.createViewElement(constructible(SuspendingView::new))
-                .input("ready", (BooleanSupplier) () -> ready[0])
+                .input("ready", (BooleanSupplier) () -> {
+                    attempts[0]++;
+                    return ready[0];
+                })
                 .input("pending", pending);
+        final var mounted = new Counter[1];
+        final var fallback = counter(
+                inputs -> mounted[0] = new Counter(inputs), new StringBuilder(), container, ignored -> {}, "waiting");
         try {
-            ReactDOM.render(ReactElement.createSuspense(null, ReactNode.of("waiting"), 0, child), container);
-            return Browser.until(() -> "waiting".equals(container.getTextContent()), 5000, 25, "Suspense fallback")
+            ReactDOM.render(ReactElement.createSuspense(null, fallback, 0, child), container);
+            return Browser.until(() -> "waiting0".equals(container.getTextContent()), 5000, 25, "Suspense fallback")
                     .then(ignored -> {
+                        final var instance = Objects.requireNonNull(mounted[0]);
+                        final var host = Browser.query(container, "span");
+                        final var renders = attempts[0];
+                        instance.setState(JsPropertyMap.of("count", 1));
+                        equal("waiting1", container.getTextContent());
+                        check(instance == mounted[0], "Fallback state update keeps its view");
+                        check(host == Browser.query(container, "span"), "Fallback state update keeps its host node");
+                        check(renders == attempts[0], "Fallback state update skips the suspended primary");
                         ready[0] = true;
                         Objects.requireNonNull(resolve[0]).run();
                         return Browser.until(
@@ -1524,6 +1540,71 @@ public final class RuntimeParityBrowserTest {
                 })
                 .finallyDo(() -> root.unmount(container::remove));
     }
+
+    private static BrowserPromise suspendedListVisitsSiblings() {
+        final var container = Browser.append("div");
+        final var root = ReactDOM.createRoot(container);
+        final var type = constructible(OutputProbe::new);
+        final var subscriptions = new int[2];
+        final var resolve = new BrowserPromise.Action[2];
+        final var ready = new boolean[2];
+        final var visitedReady = new boolean[2];
+        final var pendingChildren = new ReactElement[2];
+        for (int i = 0; i < pendingChildren.length; i++) {
+            final var index = i;
+            final var pending = observeSubscriptions(
+                    Browser.callback(callback -> resolve[index] = callback), () -> subscriptions[index]++);
+            final var child = ReactElement.createViewElement(type).input("output", (Supplier<ReactNode>) () -> {
+                if (!ready[index]) {
+                    return throwPending(pending);
+                }
+                visitedReady[index] = true;
+                return ReactNode.of("ready-" + index);
+            });
+            child.setKey("pending-" + index);
+            pendingChildren[i] = child;
+        }
+        final var middleRendered = new boolean[1];
+        final var middleAttached = new boolean[1];
+        final RefConsumer ref = value -> middleAttached[0] = null != value;
+        final var host = ReactElement.createHostElement("span", null, ref, JsPropertyMap.of("children", "middle"));
+        final var middle = ReactElement.createViewElement(type).input("output", (Supplier<ReactNode>) () -> {
+            middleRendered[0] = true;
+            return host;
+        });
+        middle.setKey("middle");
+        root.render(ReactElement.createSuspense(
+                        null, ReactNode.of("waiting"), 0, pendingChildren[0], middle, pendingChildren[1])
+                .input("maxDuration", 0));
+        return Browser.until(() -> "waiting".equals(container.getTextContent()), 5000, 25, "Shared fallback")
+                .then(ignored -> {
+                    check(middleRendered[0], "A healthy sibling renders after suspension");
+                    check(!middleAttached[0], "Incomplete primary children cannot attach refs");
+                    check(0 < subscriptions[0] && 0 < subscriptions[1], "Both pending siblings are subscribed");
+                    ready[1] = true;
+                    Objects.requireNonNull(resolve[1]).run();
+                    return Browser.until(() -> visitedReady[1], 5000, 25, "The later thenable can trigger a retry");
+                })
+                .then(ignored -> {
+                    equal("waiting", container.getTextContent());
+                    check(!middleAttached[0], "The unresolved first sibling still holds the primary");
+                    ready[0] = true;
+                    Objects.requireNonNull(resolve[0]).run();
+                    return Browser.until(
+                            () -> "ready-0middleready-1".equals(container.getTextContent()),
+                            5000,
+                            25,
+                            "Shared primary retries once both siblings are ready");
+                })
+                .then(ignored -> {
+                    check(middleAttached[0], "Primary refs attach when the ready list commits");
+                    return null;
+                })
+                .finallyDo(() -> root.unmount(container::remove));
+    }
+
+    @JsMethod
+    private static native BrowserPromise observeSubscriptions(BrowserPromise pending, BrowserPromise.Action subscribe);
 
     private static BrowserPromise missingPlaceholder(boolean concurrent, boolean production) {
         final var container = Browser.append("div");

@@ -12,6 +12,10 @@ suite=dom/src/test/js/react4j/dom/browser_test.js
 cp "$root/$tests"/{ChildReconciliationTest.java,OriginalHostCasesBrowserTest.java,OriginalHostCasesBrowserTest.native.js,RuntimeBrowserTest.java,RuntimeParityBrowserTest.java,RuntimeParityBrowserTest.native.js,EventsBrowserTest.java,EventsBrowserTest.native.js} "$destination/$tests/"
 cp "$root/$suite" "$destination/$suite"
 cd "$destination"
+core_tests=core/src/test/java/react4j
+cp "$root/$core_tests/ElementBrowserTest.java" "$core_tests/"
+sed -i '/"RuntimeBrowserTest.java",/a\        "ElementBrowserTest.java",' "$core_tests/BUILD.bazel"
+sed -i '/ContextsTest.run(root);/a\            ElementBrowserTest.run(root);' "$core_tests/RuntimeBrowserTest.java"
 sed -i '/^browser_test(/,/^)/s|deps = \["//dom/src/test/java/react4j/dom:runtime_coverage"\]|deps = ["//dom/src/test/java/react4j/dom:runtime_coverage", "//third_party:closure_testcase"]|' "$(dirname "$suite")/BUILD.bazel"
 sed -i '/"RuntimeBrowserTest.java",/a\        "RuntimeParityBrowserTest.java",\n        "RuntimeParityBrowserTest.native.js",\n        "ChildReconciliationTest.java",\n        "OriginalHostCasesBrowserTest.java",\n        "OriginalHostCasesBrowserTest.native.js",' "$tests/BUILD.bazel"
 sed -i '/"\/\/third_party:jsinterop_annotations-j2cl",/a\        "//third_party:jsinterop_base-j2cl",' "$tests/BUILD.bazel"

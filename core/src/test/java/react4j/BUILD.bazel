@@ -14,6 +14,7 @@ j2cl_library(
         "ArrayKeyBrowserTest.java",
         "BuildableBrowserTest.java",
         "ContextsTest.java",
+        "ElementBrowserTest.java",
         "GeneratedBuildableBrowserTest.java",
         "InputEnhancerBrowserTest.java",
         "InputEqualityBrowserTest.java",

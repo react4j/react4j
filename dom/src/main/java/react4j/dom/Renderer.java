@@ -967,7 +967,7 @@ final class Renderer {
             }
 
             private void advance() {
-                while (_index < _values.length && (null == _failure || !_failure.isSuspension())) {
+                while (_index < _values.length) {
                     final var index = _index++;
                     final var value = _values[index];
                     if (null == value || !isChild(value)) {
@@ -1225,7 +1225,7 @@ final class Renderer {
                         prepareHost(element, oldNode, scope, mounting, complete);
                     }
                 } else {
-                    updateOther(next, oldNode, scope, mounting, complete);
+                    updateOther(next, oldNode, scope, sameScope, mounting, complete);
                 }
             } catch (Throwable error) {
                 finishUpdate(
@@ -1240,6 +1240,7 @@ final class Renderer {
                 Object next,
                 @Nullable ReactElement oldNode,
                 @Nullable Scope scope,
+                boolean sameScope,
                 boolean mounting,
                 Completion complete) {
             node = switch (kind) {
@@ -1269,7 +1270,7 @@ final class Renderer {
                 case FRAGMENT -> {
                     final var element = node;
                     if (React.Suspense == type && null != element) {
-                        reconcileSuspense(element.inputs(), scope, finish);
+                        reconcileSuspense(element.inputs(), scope, sameScope && oldNode == element, finish);
                     } else {
                         reconcileChildren(
                                 null == element ? next : element.inputs().get("children"), scope, finish);
@@ -1365,12 +1366,12 @@ final class Renderer {
                 Completion complete) {
             final var inputs = element.inputs();
             final var tag = Js.asString(type);
+            final var content = inputs.get("children");
             if (DEVELOPMENT) {
-                final var children = inputs.get("children");
                 final var previous = null == oldNode ? null : oldNode.inputs().get("children");
                 final var text =
-                        isText(children) && (mounting || !Js.typeof(children).equals(Js.typeof(previous)))
-                                ? Js.asString(stringValue(Objects.requireNonNull(children)))
+                        isText(content) && (mounting || !Js.typeof(content).equals(Js.typeof(previous)))
+                                ? Js.asString(stringValue(Objects.requireNonNull(content)))
                                 : null;
                 if (mounting || null != text) {
                     DomNesting.checkHost(this, tag, mounting, text, () -> RenderFailure.stackFrom(this));
@@ -1382,13 +1383,12 @@ final class Renderer {
                         RenderFailure.ownerName(this, element),
                         () -> RenderFailure.stackFrom(this));
             }
-            DomHost.validate(tag, inputs, DEVELOPMENT ? () -> RenderFailure.stackFrom(this) : null);
+            final var hasHtml = DomHost.validateAndHasHtml(
+                    tag, inputs, content, DEVELOPMENT ? () -> RenderFailure.stackFrom(this) : null);
             final var namespace = mounting ? DomHost.elementNamespace(parentNamespace(), tag) : null;
             if (null != namespace) {
                 _childNamespace = DomHost.childNamespace(namespace, tag);
             }
-            final var hasHtml = DomHost.hasHtml(inputs);
-            final var content = inputs.get("children");
             final var option = "option".equals(tag);
             final var tracksChildren = !hasHtml && !"textarea".equals(tag);
             final var directText = tracksChildren && (option || isText(content));
@@ -1716,7 +1716,10 @@ final class Renderer {
         }
 
         private void reconcileSuspense(
-                JsPropertyMap<@Nullable Object> inputs, @Nullable Scope scope, Completion complete) {
+                JsPropertyMap<@Nullable Object> inputs,
+                @Nullable Scope scope,
+                boolean sameInputsAndScope,
+                Completion complete) {
             if ("undefined".equals(Js.typeof(inputs.get("fallback")))) {
                 final var previous = children;
                 final var suspended = null != _suspension;
@@ -1735,7 +1738,7 @@ final class Renderer {
                 return;
             }
             if (!root.concurrent) {
-                reconcileLegacySuspense(inputs, scope, complete);
+                reconcileLegacySuspense(inputs, scope, sameInputsAndScope, complete);
                 return;
             }
             final var suspended = null != _suspension;
@@ -1768,16 +1771,19 @@ final class Renderer {
                 root._snapshots.subList(snapshots, root._snapshots.size()).clear();
                 root._mutations.subList(mutations, root._mutations.size()).clear();
                 root._effects.subList(effects, root._effects.size()).clear();
-                final var thrown = failure.thrown();
-                if (_suspension != thrown) {
-                    _suspension = thrown;
+                final var thenables = new LinkedHashSet<Object>();
+                failure.collectThenables(thenables);
+                if (!thenables.equals(_suspension)) {
+                    _suspension = thenables;
                     final Continuation retry = ignored -> {
-                        if (alive && _suspension == thrown) {
+                        if (alive && _suspension == thenables) {
                             invalidate();
                         }
                     };
                     try {
-                        Js.<Thenable>uncheckedCast(thrown).then(retry, retry);
+                        for (final var pending : thenables) {
+                            Js.<Thenable>uncheckedCast(pending).then(retry, retry);
+                        }
                     } catch (Throwable error) {
                         complete.finish(new RenderFailure(this, error));
                         return;
@@ -1812,7 +1818,10 @@ final class Renderer {
         }
 
         private void reconcileLegacySuspense(
-                JsPropertyMap<@Nullable Object> inputs, @Nullable Scope scope, Completion complete) {
+                JsPropertyMap<@Nullable Object> inputs,
+                @Nullable Scope scope,
+                boolean sameInputsAndScope,
+                Completion complete) {
             final var suspended = null != _suspension;
             final var previous = children;
             final var primary = suspended ? sliceChildren(previous, 0, _primaryCount) : previous;
@@ -1823,6 +1832,20 @@ final class Renderer {
                 _suspension = pending;
                 showFallback(inputs, scope, primary, fallback, suspended, complete);
                 return;
+            }
+
+            if (suspended && sameInputsAndScope) {
+                boolean primaryDirty = false;
+                for (final var child : primary) {
+                    if (child._dirty) {
+                        primaryDirty = true;
+                        break;
+                    }
+                }
+                if (!primaryDirty) {
+                    showFallback(inputs, scope, primary, fallback, true, complete);
+                    return;
+                }
             }
 
             final var outer = root._legacySuspense;
@@ -2412,13 +2435,26 @@ final class Renderer {
             if (null == first) {
                 return next;
             }
-            if (null != next && !next.isSuspension()) {
+            if (null != next) {
+                final var firstSuspends = first.isSuspension();
+                if (firstSuspends != next.isSuspension()) {
+                    return firstSuspends ? next : first;
+                }
                 if (null == first._siblings) {
                     first._siblings = new ArrayList<>();
                 }
                 first._siblings.add(next);
             }
             return first;
+        }
+
+        private void collectThenables(LinkedHashSet<Object> thenables) {
+            thenables.add(thrown());
+            if (null != _siblings) {
+                for (final var sibling : _siblings) {
+                    sibling.collectThenables(thenables);
+                }
+            }
         }
 
         private void report(Fiber boundary, OnComponentDidCatch catcher) {

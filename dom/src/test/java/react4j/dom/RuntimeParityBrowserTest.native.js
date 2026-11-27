@@ -1,6 +1,16 @@
 /** @param {!Promise<?>} pending @return {*} */
 RuntimeParityBrowserTest.throwPending = function(pending) { throw pending; };
 
+/** @param {!Promise<?>} pending @param {function():void} subscribe @return {!Promise<?>} */
+RuntimeParityBrowserTest.observeSubscriptions = function(pending, subscribe) {
+  const then = pending.then;
+  pending.then = function(resolve, reject) {
+    subscribe();
+    return then.call(pending, resolve, reject);
+  };
+  return pending;
+};
+
 // React 16 retries an interrupted class mount using its type as a constructor.
 /**
  * @template View

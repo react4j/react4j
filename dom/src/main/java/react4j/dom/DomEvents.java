@@ -272,6 +272,23 @@ final class DomEvents {
         return "Expected `" + property + "` listener to be a function, instead got a value of `" + type + "` type.";
     }
 
+    static void observeDocumentEvent(final State state, final String name, @Nullable final Object handler) {
+        final int event =
+                switch (name) {
+                    case "onMouseEnter", "onMouseLeave" -> EXTERNAL_MOUSE;
+                    case "onPointerEnter", "onPointerLeave" -> EXTERNAL_POINTER;
+                    case "onSelect", "onSelectCapture" -> DOCUMENT_SELECTION;
+                    default -> 0;
+                };
+        if (0 != event && 0 == (state.documentEvents & event) && Js.isTruthy(handler)) {
+            state.documentEvents |= event;
+            final var root = state.rootContainer;
+            if (null != root) {
+                Objects.requireNonNull(DOCUMENT_SUBSCRIPTIONS.get(root)).observe(event);
+            }
+        }
+    }
+
     static void pause() {
         paused++;
     }
@@ -302,20 +319,18 @@ final class DomEvents {
             DOCUMENT_SUBSCRIPTIONS.set(rootContainer, subscriptions);
         }
         subscriptions.attach(boundary);
-        subscriptions.observe(state.inputs);
-        for (final var event : localEvents(state.tag)) {
-            element.addEventListener(event, Objects.requireNonNull(boundary.listeners.get(event)), false);
+        subscriptions.observe(state.documentEvents);
+        final var events = localEvents(state.tag);
+        if (null != events) {
+            for (final var event : events) {
+                element.addEventListener(event, Objects.requireNonNull(boundary.listeners.get(event)), false);
+            }
         }
     }
 
     @Nullable
     static State state(final DomHost.Element element) {
         return STATES.get(element);
-    }
-
-    static void updateDocumentSubscriptions(final State state) {
-        final var subscriptions = DOCUMENT_SUBSCRIPTIONS.get(Objects.requireNonNull(state.rootContainer));
-        Objects.requireNonNull(subscriptions).observe(state.inputs);
     }
 
     static void clear(final DomHost.Element element) {
@@ -333,8 +348,11 @@ final class DomEvents {
         if (subscriptions.detach(boundary)) {
             DOCUMENT_SUBSCRIPTIONS.delete(root);
         }
-        for (final var event : localEvents(state.tag)) {
-            element.removeEventListener(event, Objects.requireNonNull(boundary.listeners.get(event)), false);
+        final var events = localEvents(state.tag);
+        if (null != events) {
+            for (final var event : events) {
+                element.removeEventListener(event, Objects.requireNonNull(boundary.listeners.get(event)), false);
+            }
         }
         if (0 == --boundary.hosts) {
             boundary.listeners.forEach((name, listener) -> {
@@ -351,13 +369,13 @@ final class DomEvents {
         return !MEDIA_EVENTS.contains(event) && !FORM_EVENTS.contains(event) && !INVALID_EVENT.contains(event);
     }
 
-    private static Set<String> localEvents(final String tag) {
+    private static @Nullable Set<String> localEvents(final String tag) {
         return switch (tag) {
             case "audio", "video" -> MEDIA_EVENTS;
             case "form" -> FORM_EVENTS;
             case "input", "select", "textarea" -> INVALID_EVENT;
             case "image", "img", "link", "source" -> ERROR_EVENT;
-            default -> Set.of();
+            default -> null;
         };
     }
 
@@ -852,6 +870,7 @@ final class DomEvents {
         private DomHost.@Nullable Element logicalParent;
         JsPropertyMap<@Nullable Object> inputs;
         boolean hasHandlers;
+        private int documentEvents;
         boolean controlInitialized;
         boolean wasMultiple;
         boolean controlledInput;
@@ -873,43 +892,62 @@ final class DomEvents {
     }
 
     private static final class DocumentSubscriptions {
-        private final Map<Boundary, Integer> boundaries = new HashMap<>();
+        private @Nullable Boundary first;
+        private int firstHosts;
+        private @Nullable Map<Boundary, Integer> others;
         private int events;
 
         void attach(final Boundary boundary) {
-            final var count = boundaries.get(boundary);
-            boundaries.put(boundary, null == count ? 1 : count + 1);
-            if (null == count && 0 != events) {
+            if (boundary == first) {
+                firstHosts++;
+                return;
+            }
+            if (null == first && null == others) {
+                first = boundary;
+                firstHosts = 1;
+            } else {
+                if (null == others) {
+                    others = new HashMap<>();
+                }
+                final var count = others.get(boundary);
+                others.put(boundary, null == count ? 1 : count + 1);
+            }
+            if (0 != events) {
                 boundary.listenToDocument(events);
             }
         }
 
-        void observe(final JsPropertyMap<@Nullable Object> inputs) {
-            int observed = 0;
-            if (Js.isTruthy(inputs.get("onMouseEnter")) || Js.isTruthy(inputs.get("onMouseLeave"))) {
-                observed |= EXTERNAL_MOUSE;
-            }
-            if (Js.isTruthy(inputs.get("onPointerEnter")) || Js.isTruthy(inputs.get("onPointerLeave"))) {
-                observed |= EXTERNAL_POINTER;
-            }
-            if (Js.isTruthy(inputs.get("onSelect")) || Js.isTruthy(inputs.get("onSelectCapture"))) {
-                observed |= DOCUMENT_SELECTION;
-            }
+        void observe(final int observed) {
             final int added = observed & ~events;
             if (0 != added) {
                 events |= added;
-                boundaries.keySet().forEach(boundary -> boundary.listenToDocument(added));
+                if (null != first) {
+                    first.listenToDocument(added);
+                }
+                if (null != others) {
+                    others.keySet().forEach(boundary -> boundary.listenToDocument(added));
+                }
             }
         }
 
         boolean detach(final Boundary boundary) {
-            final int count = Objects.requireNonNull(boundaries.get(boundary));
-            if (1 == count) {
-                boundaries.remove(boundary);
+            if (boundary == first) {
+                if (0 == --firstHosts) {
+                    first = null;
+                }
             } else {
-                boundaries.put(boundary, count - 1);
+                final var boundaries = Objects.requireNonNull(others);
+                final int count = Objects.requireNonNull(boundaries.get(boundary));
+                if (1 == count) {
+                    boundaries.remove(boundary);
+                    if (boundaries.isEmpty()) {
+                        others = null;
+                    }
+                } else {
+                    boundaries.put(boundary, count - 1);
+                }
             }
-            return boundaries.isEmpty();
+            return null == first && null == others;
         }
     }
 

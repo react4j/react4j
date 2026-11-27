@@ -64,24 +64,6 @@ final class DomHost {
             "widows",
             "zIndex",
             "zoom");
-    private static final Set<String> CONTROLLED_TAGS = Set.of("input", "select", "textarea");
-    private static final Set<String> VOID_TAGS = Set.of(
-            "area",
-            "base",
-            "br",
-            "col",
-            "embed",
-            "hr",
-            "img",
-            "input",
-            "keygen",
-            "link",
-            "menuitem",
-            "meta",
-            "param",
-            "source",
-            "track",
-            "wbr");
     private static final DomEvents.Listener CLICK_TRAP = event -> {};
     private static final Set<String> RESERVED_HYPHENATED_TAGS = Set.of(
             "annotation-xml",
@@ -245,7 +227,6 @@ final class DomHost {
         final var previous = state.inputs;
         state.inputs = next;
         applyProperties(element, state, previous, next, text);
-        DomEvents.updateDocumentSubscriptions(state);
     }
 
     private static void applyProperties(
@@ -255,7 +236,8 @@ final class DomHost {
             final JsPropertyMap<@Nullable Object> next,
             @Nullable final String text) {
         final var tag = state.tag;
-        if (!CONTROLLED_TAGS.contains(tag)
+        if (next.has("onClick")
+                && !isControlTag(tag)
                 && !"option".equals(tag)
                 && "function".equals(Js.typeof(next.get("onClick")))
                 && (null == previous || !"function".equals(Js.typeof(previous.get("onClick"))))) {
@@ -307,11 +289,13 @@ final class DomHost {
         }
     }
 
-    static void validate(
-            final String tag, final JsPropertyMap<@Nullable Object> inputs, @Nullable final Supplier<String> stack) {
-        final var children = inputs.get("children");
+    static boolean validateAndHasHtml(
+            final String tag,
+            final JsPropertyMap<@Nullable Object> inputs,
+            final @Nullable Object children,
+            final @Nullable Supplier<String> stack) {
         final var html = inputs.get("dangerouslySetInnerHTML");
-        if ((null != children || null != html) && VOID_TAGS.contains(tag)) {
+        if ((null != children || null != html) && isVoidTag(tag)) {
             throw new IllegalArgumentException(
                     tag + " is a void element tag and must neither have `children` nor use `dangerouslySetInnerHTML`."
                             + (null == stack ? "" : stack.get()));
@@ -334,6 +318,29 @@ final class DomHost {
                             + "For example, style={{marginRight: spacing + 'em'}} when using JSX."
                             + (null == stack ? "" : stack.get()));
         }
+        return null != rawHtml(html);
+    }
+
+    private static boolean isVoidTag(final String tag) {
+        return switch (tag) {
+            case "area",
+                    "base",
+                    "br",
+                    "col",
+                    "embed",
+                    "hr",
+                    "img",
+                    "input",
+                    "keygen",
+                    "link",
+                    "menuitem",
+                    "meta",
+                    "param",
+                    "source",
+                    "track",
+                    "wbr" -> true;
+            default -> false;
+        };
     }
 
     private static final class PropertyWarnings {
@@ -973,7 +980,7 @@ final class DomHost {
             }
             case "defaultValue", "defaultChecked" -> {}
             case "value" -> {
-                if (!CONTROLLED_TAGS.contains(state.tag)) {
+                if (!isControlTag(state.tag)) {
                     setAttribute(element, name, value, custom);
                 }
             }
@@ -981,6 +988,7 @@ final class DomHost {
                 if (isEventProperty(name)) {
                     if (DomEvents.observeHandler(name, value)) {
                         state.hasHandlers = true;
+                        DomEvents.observeDocumentEvent(state, name, value);
                     }
                     if (!custom || DomEvents.isRegistered(name)) {
                         break;
@@ -1290,7 +1298,7 @@ final class DomHost {
     }
 
     static boolean isControlTag(final String tag) {
-        return CONTROLLED_TAGS.contains(tag);
+        return "input".equals(tag) || "select".equals(tag) || "textarea".equals(tag);
     }
 
     static void restoreControlled(final Element element, final DomEvents.State state) {
