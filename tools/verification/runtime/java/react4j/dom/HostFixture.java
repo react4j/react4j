@@ -138,12 +138,12 @@ public final class HostFixture {
             final var context = parentContext(fiber);
             final var childContext = _callbacks.getChildHostContext(context, type, _container);
             final var directText = _callbacks.shouldSetTextContent(type, element.inputs());
-            return new HostPlan(!directText, false, childContext, context, null, false);
+            return new TestHostPlan(!directText, false, childContext, context, null, false);
         }
 
         @Override
         public Object createElement(Reconciler.Fiber fiber, Object container, ReactElement element, HostPlan plan) {
-            final var context = plan.initialValue();
+            final var context = ((TestHostPlan) plan).initialValue();
             final var value = _callbacks.createInstance(element.type(), element.inputs(), _container, context, fiber);
             return new Instance(value);
         }
@@ -152,7 +152,7 @@ public final class HostFixture {
         public @Nullable Object initializeElement(Object instance, ReactElement element, HostPlan plan) {
             final var host = (Instance) instance;
             final var mount = _callbacks.finalizeInitialChildren(
-                    host.value, element.type(), element.inputs(), _container, plan.initialValue());
+                    host.value, element.type(), element.inputs(), _container, ((TestHostPlan) plan).initialValue());
             if (Boolean.TRUE.equals(mount)) {
                 throw unsupported();
             }

@@ -4,13 +4,19 @@ import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 
 interface ReconcilerHost {
-    record HostPlan(
-            boolean reconcileChildren,
-            boolean resetContent,
-            @Nullable Object childContext,
-            @Nullable Object initialValue,
-            @Nullable Object update,
-            boolean needsMountEffect) {}
+    interface HostPlan {
+        boolean reconcileChildren();
+
+        boolean resetContent();
+
+        @Nullable
+        Object childContext();
+
+        @Nullable
+        Object update();
+
+        boolean needsMountEffect();
+    }
 
     HostPlan planHost(Reconciler.Fiber fiber, ReactElement element, @Nullable ReactElement previous, boolean mounting);
 

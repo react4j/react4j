@@ -153,7 +153,7 @@ public final class MemoryRenderer {
             } else {
                 update = null;
             }
-            return new HostPlan(!directText, reset, null, directText ? stringValue(content) : null, update, false);
+            return new TestHostPlan(!directText, reset, null, directText ? stringValue(content) : null, update, false);
         }
 
         @Override
@@ -163,7 +163,7 @@ public final class MemoryRenderer {
             instance.set("type", element.type());
             instance.set("children", new Children());
             defineHiddenProperty(instance, "props", null);
-            defineHiddenProperty(instance, "text", plan.initialValue());
+            defineHiddenProperty(instance, "text", ((TestHostPlan) plan).initialValue());
             writeProps(instance, element);
             return instance;
         }

@@ -740,9 +740,6 @@ final class Reconciler {
     }
 
     static final class Fiber {
-        private static final ReconcilerHost.HostPlan NO_HOST_CHANGES =
-                new ReconcilerHost.HostPlan(false, false, null, null, null, false);
-
         final Root root;
         final @Nullable Fiber parent;
         final Kind kind;
@@ -1361,7 +1358,7 @@ final class Reconciler {
                     node = element;
                     if (walkChildren) {
                         visitCommittedChildren(scope);
-                        finishHost(element, NO_HOST_CHANGES, false, 0, scope, complete, root._resultFailure);
+                        finishHost(element, null, false, 0, scope, complete, root._resultFailure);
                     } else {
                         prepareHost(element, oldNode, scope, mounting, complete);
                     }
@@ -1546,7 +1543,7 @@ final class Reconciler {
 
         private void finishHost(
                 ReactElement element,
-                ReconcilerHost.HostPlan plan,
+                ReconcilerHost.@Nullable HostPlan plan,
                 boolean mounting,
                 double duration,
                 @Nullable Scope scope,
@@ -1559,7 +1556,7 @@ final class Reconciler {
             if (mounting) {
                 final var started = root.time();
                 try {
-                    mountHost(element, plan);
+                    mountHost(element, Js.uncheckedCast(plan));
                 } catch (Throwable error) {
                     finishUpdate(new RenderFailure(this, error), scope, complete);
                     return;
@@ -1567,14 +1564,14 @@ final class Reconciler {
                 duration += root.time() - started;
             }
             final var instance = Objects.requireNonNull(hostInstance);
-            if (plan.needsMountEffect()) {
+            if (null != plan && plan.needsMountEffect()) {
                 root._effects.add(new Effect(this, () -> root.host.commitMount(instance)));
             }
             final var nextRef = element.ref();
             final var detach = ref != nextRef && changeRef(nextRef, instance);
-            if (null != plan.update() || detach || _resetCommit == root._commitSequence) {
-                root._mutations.add(
-                        new HostUpdate(this, plan.update(), detach, _placementCommit == root._commitSequence));
+            final var update = null == plan ? null : plan.update();
+            if (null != update || detach || _resetCommit == root._commitSequence) {
+                root._mutations.add(new HostUpdate(this, update, detach, _placementCommit == root._commitSequence));
             } else {
                 queuePlacement();
             }

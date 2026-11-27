@@ -6,6 +6,7 @@ j2cl_library(
     srcs = [
         "HostFixture.java",
         "MemoryRenderer.java",
+        "TestHostPlan.java",
     ],
     visibility = [
         "//:__pkg__",

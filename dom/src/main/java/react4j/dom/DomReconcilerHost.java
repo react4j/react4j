@@ -59,25 +59,29 @@ final class DomReconcilerHost implements ReconcilerHost {
         }
         final var reset =
                 properties && reconcile && null != previous && (isText(oldContent) || DomHost.hasHtml(previous));
-        final var control = DomHost.isControlTag(tag);
-        final var restoreControl = !mounting && control && previousElement != element;
-        final var autofocus =
-                mounting && Boolean.TRUE.equals(inputs.get("autoFocus")) && ("button".equals(tag) || control);
-        return new HostPlan(
-                reconcile,
-                reset,
-                childContext,
-                mounting ? new Initial(Objects.requireNonNull(namespace), text) : null,
-                properties || restoreControl ? new Update(properties ? inputs : null, text, restoreControl) : null,
-                autofocus);
+        final var restoreControl = !mounting && previousElement != element && DomHost.isControlTag(tag);
+        final var autofocus = mounting
+                && Boolean.TRUE.equals(inputs.get("autoFocus"))
+                && ("button".equals(tag) || DomHost.isControlTag(tag));
+        return new DomPlan(
+                reconcile, reset, childContext, namespace, text, properties ? inputs : null, restoreControl, autofocus);
     }
 
-    private record Initial(String namespace, @Nullable String text) {}
-
-    private record Update(
-            @Nullable JsPropertyMap<@Nullable Object> inputs,
+    private record DomPlan(
+            boolean reconcileChildren,
+            boolean resetContent,
+            @Nullable String childContext,
+            @Nullable String namespace,
             @Nullable String text,
-            boolean restoreControl) {}
+            @Nullable JsPropertyMap<@Nullable Object> inputs,
+            boolean restoreControl,
+            boolean needsMountEffect)
+            implements HostPlan {
+        @Override
+        public @Nullable Object update() {
+            return null != inputs || restoreControl ? this : null;
+        }
+    }
 
     private String parentNamespace(Reconciler.Fiber fiber) {
         for (var current = fiber.parent; null != current; current = current.parent) {
@@ -93,19 +97,20 @@ final class DomReconcilerHost implements ReconcilerHost {
 
     @Override
     public Object createElement(Reconciler.Fiber fiber, Object container, ReactElement element, HostPlan plan) {
-        final var initial = (Initial) Objects.requireNonNull(plan.initialValue());
+        final var initial = Js.<DomPlan>uncheckedCast(plan);
         final var tag = Js.asString(fiber.type);
         final var inputs = element.inputs();
-        final var host = DomHost.createElement(Js.uncheckedCast(container), initial.namespace(), tag, inputs);
+        final var namespace = Js.<String>uncheckedCast(initial.namespace());
+        final var host = DomHost.createElement(Js.uncheckedCast(container), namespace, tag, inputs);
         if (DEVELOPMENT) {
-            DomHost.warnTag(host, initial.namespace(), tag, inputs, fiber::hostStack);
+            DomHost.warnTag(host, namespace, tag, inputs, fiber::hostStack);
         }
         return host;
     }
 
     @Override
     public Object initializeElement(Object instance, ReactElement element, HostPlan plan) {
-        final var initial = (Initial) Objects.requireNonNull(plan.initialValue());
+        final var initial = Js.<DomPlan>uncheckedCast(plan);
         final var host = Js.<Element>uncheckedCast(instance);
         return DomHost.prepareInitial(host, Js.asString(element.type()), element.inputs(), initial.text());
     }
@@ -114,7 +119,7 @@ final class DomReconcilerHost implements ReconcilerHost {
     public void updateElement(Object instance, @Nullable Object state, Object update) {
         final var host = Js.<Element>uncheckedCast(instance);
         final var hostState = Js.<DomEvents.State>uncheckedCast(Objects.requireNonNull(state));
-        final var change = (Update) update;
+        final var change = Js.<DomPlan>uncheckedCast(update);
         if (null != change.inputs()) {
             DomHost.update(host, hostState, change.inputs(), change.text());
         }

@@ -440,7 +440,7 @@ final class DomEvents {
         }
         dispatching = true;
         try {
-            ReactDOM.batchedUpdates(action::run);
+            Reconciler.batchedUpdates(action::run);
         } finally {
             dispatching = false;
             final var control = changedControl;
@@ -964,7 +964,7 @@ final class DomEvents {
                 }
                 final var selected = changedSelection();
                 if (null != selected) {
-                    ReactDOM.batchedUpdates(() -> {
+                    Reconciler.batchedUpdates(() -> {
                         final var batch = new DispatchBatch();
                         collectHandlers(batch, STATES.get(selected), selected, "Select", event, null);
                         batch.run();
@@ -982,7 +982,7 @@ final class DomEvents {
                 }
                 final var state = STATES.get(to);
                 if (null != state && state.boundary == this) {
-                    ReactDOM.batchedUpdates(() -> {
+                    Reconciler.batchedUpdates(() -> {
                         final var batch = new DispatchBatch();
                         collectEnterLeave(
                                 batch, null, to, "pointerout".equals(event.type) ? "PointerOut" : "MouseOut", event);
