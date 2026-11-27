@@ -115,7 +115,7 @@ public final class ComponentLifecycleBrowserTest {
             final var element =
                     ReactElement.createViewElement(type).input("phases", phases).input("nullOutput", nullOutput);
             final var first = (MountedView) Objects.requireNonNull(render(element, host));
-            check(first._fiber.isMountedView(first), "The mounted class is discoverable even when it returns null");
+            check(first.mounted(), "The mounted class is discoverable even when it returns null");
             equal(nullOutput ? "" : "mounted", host.getTextContent());
             check(
                     phases.equals(List.of("constructor:false", "willMount:false", "render:false", "didMount:true")),
@@ -124,7 +124,7 @@ public final class ComponentLifecycleBrowserTest {
             check(phases.get(phases.size() - 1).equals("render:true"), "A later render sees the earlier mount");
             ReactDOM.unmountComponentAtNode(host);
             check(phases.get(phases.size() - 1).equals("willUnmount:true"), "Unmount hooks see the committed class");
-            check(!first._fiber.isMountedView(first), "The disposed class is no longer mounted");
+            check(!first.mounted(), "The disposed class is no longer mounted");
             final var remounted = render(element, host);
             check(remounted != first, "Mounting the same element after disposal creates a new instance");
             ReactDOM.unmountComponentAtNode(host);
@@ -145,12 +145,12 @@ public final class ComponentLifecycleBrowserTest {
                         "didMount:true:3",
                         "laterRender:true:7")),
                 "Mount phase state and mounted status are committed in order: " + log);
-        check(instance._fiber.isMountedView(instance), "The lifecycle class remains mounted after its mount update");
+        check(instance.mounted(), "The lifecycle class remains mounted after its mount update");
         instance.forceUpdate();
         equal("laterRender:true:7", log.get(log.size() - 1));
         ReactDOM.unmountComponentAtNode(host);
         equal("willUnmount:true:7", log.get(log.size() - 1));
-        check(!instance._fiber.isMountedView(instance), "The disposed lifecycle class is unmounted");
+        check(!instance.mounted(), "The disposed lifecycle class is unmounted");
         check(15 == instance.flags(), "The unmount lifecycle preserves the final state");
     }
 

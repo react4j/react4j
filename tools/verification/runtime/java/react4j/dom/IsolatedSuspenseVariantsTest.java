@@ -408,7 +408,8 @@ public final class IsolatedSuspenseVariantsTest {
     private static void constructor(Scenario s) {
         final ViewConstructorFunction type = ConstructorText::new;
         final var context = new Context<String>();
-        final var text = ReactElement.createViewElement(type).input("scenario", s).input("context", context);
+        final var text =
+                ReactElement.createViewElement(type).input("scenario", s).input("context", context);
         s.render(s.boundary(5000, "Loading...", context.provide("Hi", text)));
         s.yields("constructor", "Suspend! [Hi]", "Loading...");
         s.output("Loading...");
