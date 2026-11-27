@@ -1077,22 +1077,48 @@ public final class RuntimeParityBrowserTest {
 
     private static void skippedUpdates(Browser.Element container) {
         final var trace = new StringBuilder();
+        final var refTrace = new StringBuilder();
+        final RefConsumer firstRef = node -> refTrace.append(null == node ? "detach:first," : "attach:first,");
+        final RefConsumer secondRef = node -> refTrace.append(null == node ? "detach:second," : "attach:second,");
         final var mounted = new PredicateProbe[1];
         final ViewConstructorFunction view = inputs -> {
             final var probe = new PredicateProbe(inputs);
             mounted[0] = probe;
             return probe;
         };
-        final var child =
-                ReactElement.createViewElement(view).input("trace", trace).input("text", "first");
-        ReactDOM.render(child, container);
-        ReactDOM.render(child.dup().input("text", "second"), container);
+        final Runnable firstHandler = () -> trace.append("first");
+        final Runnable secondHandler = () -> trace.append("second");
+        final var child = ReactElement.createViewElement(view)
+                .input("trace", trace)
+                .input("text", "first")
+                .input("handler", firstHandler);
+        child.setKey("view");
+        Js.<JsPropertyMap<Object>>uncheckedCast(child).set("ref", firstRef);
+        final var sibling = ReactElement.createHostElement("span", "sibling", null, JsPropertyMap.of());
+        ReactDOM.render(ReactNode.of(child, sibling), container);
+        final var host = container.getFirstElementChild();
+        final var next = child.dup().input("text", "second").input("handler", secondHandler);
+        Js.<JsPropertyMap<Object>>uncheckedCast(next).set("ref", secondRef);
+        ReactDOM.render(ReactNode.of(next, sibling), container);
         final var probe = Objects.requireNonNull(mounted[0]);
+        check(
+                Js.isTripleEqual(secondHandler, probe.requireInputs().get("handler")),
+                "A skipped view receives new inputs");
+        equal("attach:first,detach:first,attach:second,", refTrace.toString());
         probe.setState(JsPropertyMap.of("count", 2));
         equal("first:0", container.getTextContent());
         probe.forceUpdate();
         equal("second:2", container.getTextContent());
         equal("render,predicate,predicate,render,", trace.toString());
+
+        final var approved = next.dup().input("text", "third").input("render", true);
+        ReactDOM.render(ReactNode.of(approved, sibling), container);
+        equal("third:2", container.getTextContent());
+        equal("render,predicate,predicate,render,predicate,render,", trace.toString());
+        ReactDOM.render(ReactNode.of(sibling, approved.dup().input("render", false)), container);
+        check(host == container.getFirstElementChild(), "Moving a sibling keeps its host node");
+        equal("third:2", container.getTextContent());
+        equal("attach:first,detach:first,attach:second,", refTrace.toString());
         ReactDOM.unmountComponentAtNode(container);
     }
 
@@ -2801,7 +2827,7 @@ public final class RuntimeParityBrowserTest {
         @Override
         public boolean shouldComponentUpdate(JsPropertyMap<@Nullable Object> nextInputs) {
             trace().append("predicate,");
-            return false;
+            return Boolean.TRUE.equals(nextInputs.get("render"));
         }
 
         private StringBuilder trace() {

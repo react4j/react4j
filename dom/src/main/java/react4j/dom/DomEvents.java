@@ -750,7 +750,7 @@ final class DomEvents {
                 return;
             }
             final var kind = eventKind(name);
-            final var available = kind.pool.pollLast();
+            final var available = kind.pool().pollLast();
             final var event = null == available ? new Dispatch(kind) : available;
             event.initialize(target, name, nativeEvent, relatedTarget, data);
             event.captures = captures;
@@ -790,7 +790,7 @@ final class DomEvents {
             event.bubbles = null;
             if (!event.persistent) {
                 event.release();
-                final var pool = event.kind.pool;
+                final var pool = event.kind.pool();
                 if (pool.size() < 10) {
                     pool.addLast(event);
                 }
@@ -1186,17 +1186,38 @@ final class DomEvents {
         COMPOSITION(EVENT, "data"),
         INPUT(EVENT, "data");
 
-        final ArrayDeque<Dispatch> pool = new ArrayDeque<>();
-        final String[] properties;
+        private final @Nullable EventKind base;
+        private final String[] ownProperties;
+        private @Nullable ArrayDeque<Dispatch> pool;
+        private String @Nullable [] allProperties;
 
         EventKind(final String... properties) {
-            this.properties = properties;
+            this(null, properties);
         }
 
-        EventKind(final EventKind base, final String... extra) {
-            final var count = base.properties.length;
-            properties = Arrays.copyOf(base.properties, count + extra.length);
-            System.arraycopy(extra, 0, properties, count, extra.length);
+        EventKind(@Nullable final EventKind base, final String... properties) {
+            this.base = base;
+            ownProperties = properties;
+        }
+
+        ArrayDeque<Dispatch> pool() {
+            if (null == pool) {
+                pool = new ArrayDeque<>();
+            }
+            return pool;
+        }
+
+        String[] properties() {
+            if (null == base) {
+                return ownProperties;
+            }
+            if (null == allProperties) {
+                final var inherited = base.properties();
+                final var count = inherited.length;
+                allProperties = Arrays.copyOf(inherited, count + ownProperties.length);
+                System.arraycopy(ownProperties, 0, allProperties, count, ownProperties.length);
+            }
+            return allProperties;
         }
     }
 
@@ -1311,6 +1332,7 @@ final class DomEvents {
         private static final Action NO_OP = () -> {};
 
         private final EventKind kind;
+        private final String[] fields;
         private final JsPropertyMap<@Nullable Object> properties = JsPropertyMap.of();
         private final SyntheticEvent<?> event = Js.uncheckedCast(properties);
         private final Action preventDefault = this::preventDefault;
@@ -1326,6 +1348,7 @@ final class DomEvents {
 
         Dispatch(final EventKind kind) {
             this.kind = kind;
+            fields = kind.properties();
         }
 
         void initialize(
@@ -1340,7 +1363,7 @@ final class DomEvents {
                 RELEASED_PROPERTIES.keySet().forEach(properties::delete);
             }
             final var source = DomHost.properties(nativeEvent);
-            for (final var property : kind.properties) {
+            for (final var property : fields) {
                 properties.set(property, source.get(property));
             }
             final var timeStamp = source.get("timeStamp");
@@ -1487,7 +1510,7 @@ final class DomEvents {
         }
 
         void release() {
-            for (final var property : kind.properties) {
+            for (final var property : fields) {
                 releaseProperty(property, null);
             }
             if (EventKind.KEYBOARD == kind) {

@@ -822,24 +822,32 @@ final class Renderer {
             if (reuseSingle(content, scope, complete)) {
                 return;
             }
-            final Descriptor descriptor;
+            final Fiber child;
             try {
-                descriptor = Descriptor.of(content);
+                child = matchChild(content, 0, null);
             } catch (Throwable error) {
                 children = NO_CHILDREN;
                 queueDeletions(previous);
                 complete.finish(new RenderFailure(this, error));
                 return;
             }
+            if (1 != previous.length || previous[0] != child) {
+                children = new Fiber[] {child};
+            }
+            reuse(child, content, 0, 0, !child._initialized, scope, complete);
+        }
+
+        private Fiber matchSingle(Kind kind, Object type, @Nullable String key) {
+            final var previous = children;
             Fiber candidate = null;
-            if (Kind.TEXT == descriptor.kind) {
-                if (0 != previous.length && descriptor.matches(previous[0])) {
+            if (Kind.TEXT == kind) {
+                if (0 != previous.length && matchesKindAndType(previous[0], kind, type)) {
                     candidate = previous[0];
                 }
             } else {
                 for (final var child : previous) {
-                    if (sameKey(descriptor.key, child.key)) {
-                        if (descriptor.matches(child)) {
+                    if (sameKey(key, child.key)) {
+                        if (matchesKindAndType(child, kind, type)) {
                             candidate = child;
                         }
                         break;
@@ -851,14 +859,7 @@ final class Renderer {
                     root._mutations.add(new Deletion(child));
                 }
             }
-            final var child = null != candidate
-                    ? candidate
-                    : new Fiber(root, this, descriptor.kind, descriptor.type, descriptor.key);
-            final var replaced = null == candidate || 1 != previous.length;
-            if (replaced) {
-                children = new Fiber[] {child};
-            }
-            reuse(child, content, 0, 0, !child._initialized, scope, complete);
+            return null != candidate ? candidate : new Fiber(root, this, kind, type, key);
         }
 
         private void warnDuplicateKeys(@Nullable Object[] values) {
@@ -1048,11 +1049,17 @@ final class Renderer {
                         return child;
                     }
                 }
-                final var descriptor = Descriptor.of(value);
-                final var key = descriptor.reconciliationKey(index);
-                if (null == _unmatched && _cursor < _previous.length) {
+                return matchChild(value, index, this);
+            }
+
+            private Fiber match(Kind kind, Object type, @Nullable String key, int index) {
+                if (null == _unmatched && _cursor == _previous.length) {
+                    return new Fiber(root, Fiber.this, kind, type, key);
+                }
+                final Object lookupKey = null == key ? index : key;
+                if (null == _unmatched) {
                     final var child = _previous[_cursor];
-                    if (key.equals(child.reconciliationKey()) && descriptor.matches(child)) {
+                    if (lookupKey.equals(child.reconciliationKey()) && matchesKindAndType(child, kind, type)) {
                         _cursor++;
                         return child;
                     }
@@ -1066,16 +1073,58 @@ final class Renderer {
                     }
                     _unmatched = unmatched;
                 }
-                final var unmatched = _unmatched;
-                if (null != unmatched) {
-                    final var child = unmatched.get(key);
-                    if (null != child && descriptor.matches(child)) {
-                        unmatched.remove(key);
-                        return child;
-                    }
+                final var unmatched = Objects.requireNonNull(_unmatched);
+                final var child = unmatched.get(lookupKey);
+                if (null != child && matchesKindAndType(child, kind, type)) {
+                    unmatched.remove(lookupKey);
+                    return child;
                 }
-                return new Fiber(root, Fiber.this, descriptor.kind, descriptor.type, descriptor.key);
+                return new Fiber(root, Fiber.this, kind, type, key);
             }
+        }
+
+        private Fiber matchChild(Object next, int index, @Nullable ChildList list) {
+            final Kind kind;
+            final Object type;
+            final String key;
+            if (ReactElement.isElement(next)) {
+                final var element = Js.<ReactElement>uncheckedCast(next);
+                type = element.type();
+                if ("string".equals(Js.typeof(type))) {
+                    kind = Kind.HOST;
+                } else if (React.Fragment == type || React.StrictMode == type || React.Suspense == type) {
+                    kind = Kind.FRAGMENT;
+                } else if (type instanceof Context.Provider<?>) {
+                    kind = Kind.PROVIDER;
+                } else if (type instanceof Context.Consumer<?>) {
+                    kind = Kind.CONSUMER;
+                } else {
+                    kind = Kind.VIEW;
+                }
+                key = element.key();
+            } else if (ReactPortal.isPortal(next)) {
+                final var portal = Js.<ReactPortal>uncheckedCast(next);
+                kind = Kind.PORTAL;
+                type = portal.containerInfo;
+                key = portal.key;
+            } else if (isArray(next)) {
+                kind = Kind.FRAGMENT;
+                type = React.Fragment;
+                key = null;
+            } else {
+                final var valueType = Js.typeof(next);
+                if (!"string".equals(valueType) && !"number".equals(valueType)) {
+                    throw new IllegalArgumentException("Cannot render node of type " + valueType);
+                }
+                kind = Kind.TEXT;
+                type = Kind.TEXT;
+                key = null;
+            }
+            return null == list ? matchSingle(kind, type, key) : list.match(kind, type, key, index);
+        }
+
+        private static boolean matchesKindAndType(Fiber fiber, Kind kind, Object type) {
+            return kind == fiber.kind && Js.isTripleEqual(type, fiber.type);
         }
 
         private static boolean matchesDescription(Fiber fiber, Object value, int index) {
@@ -2383,49 +2432,6 @@ final class Renderer {
     private interface Completion {
         @SuppressWarnings("unusable-by-js")
         void finish(@Nullable RenderFailure failure);
-    }
-
-    private record Descriptor(
-            Kind kind, Object type, @Nullable String key) {
-        private boolean matches(Fiber fiber) {
-            return kind == fiber.kind && Js.isTripleEqual(type, fiber.type);
-        }
-
-        private Object reconciliationKey(int index) {
-            return null == key ? index : key;
-        }
-
-        private static Descriptor of(Object next) {
-            if (ReactElement.isElement(next)) {
-                final var element = Js.<ReactElement>uncheckedCast(next);
-                final var type = element.type();
-                final Kind kind;
-                if ("string".equals(Js.typeof(type))) {
-                    kind = Kind.HOST;
-                } else if (React.Fragment == type || React.StrictMode == type || React.Suspense == type) {
-                    kind = Kind.FRAGMENT;
-                } else if (type instanceof Context.Provider<?>) {
-                    kind = Kind.PROVIDER;
-                } else if (type instanceof Context.Consumer<?>) {
-                    kind = Kind.CONSUMER;
-                } else {
-                    kind = Kind.VIEW;
-                }
-                return new Descriptor(kind, type, element.key());
-            }
-            if (ReactPortal.isPortal(next)) {
-                final var portal = Js.<ReactPortal>uncheckedCast(next);
-                return new Descriptor(Kind.PORTAL, portal.containerInfo, portal.key);
-            }
-            if (isArray(next)) {
-                return new Descriptor(Kind.FRAGMENT, React.Fragment, null);
-            }
-            final var type = Js.typeof(next);
-            if ("string".equals(type) || "number".equals(type)) {
-                return new Descriptor(Kind.TEXT, Kind.TEXT, null);
-            }
-            throw new IllegalArgumentException("Cannot render node of type " + type);
-        }
     }
 
     private record Scope(
