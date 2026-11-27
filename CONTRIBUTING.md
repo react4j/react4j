@@ -44,7 +44,7 @@ Examples use native `j2cl_library` with explicit checker settings from `examples
 
 Browser applications compile the Java renderer into `app.js`. Development uses BUNDLE with runtime Closure defines. `-c opt` selects ADVANCED production. Both modes exercise generated inputs, context and runtime configuration.
 
-For renderer changes, compare the DOM scenarios, TodoMVC workloads and React DevTools behavior with the [pinned React 16.6 reference](tools/verification/runtime/README.md).
+Child matching, Fiber state, and commit ordering live in the [reconciler](dom/src/main/java/react4j/dom/Reconciler.java). Platform renderers supply host operations and a scheduler. The in-memory host builds without ReactDOM and runs the [original React 16.6 reconciler suites](tools/verification/runtime/upstream/README.md) in Node. For browser changes, also compare the DOM scenarios, TodoMVC workloads and React DevTools behavior with the [pinned React 16.6 reference](tools/verification/runtime/README.md).
 
 Write browser scenarios and assertions in checked Java/J2CL, called by thin Closure test-suite modules. Keep native JavaScript for browser/service instrumentation, generated-overlay discovery and interop fixtures. Compare observations in Java using explicit assertion failures that remain active in optimized builds.
 
