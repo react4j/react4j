@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
@@ -1491,7 +1490,15 @@ final class Reconciler {
 
         private void reconcileChildren(@Nullable Object next, @Nullable Scope scope, Completion complete) {
             final var previous = children;
-            final var content = unwrapFragment(next);
+            var content = next;
+            var element = ReactElement.isElement(content);
+            if (element) {
+                final var fragment = Js.<ReactElement>uncheckedCast(content);
+                if (React.Fragment == fragment.type() && null == fragment.key()) {
+                    content = fragment.inputs().get("children");
+                    element = ReactElement.isElement(content);
+                }
+            }
             if (null == content || !isChild(content)) {
                 if (0 != previous.length) {
                     children = NO_CHILDREN;
@@ -1504,6 +1511,8 @@ final class Reconciler {
             try {
                 if (isArray(content)) {
                     values = Js.uncheckedCast(content);
+                } else if (element || ReactPortal.isPortal(content)) {
+                    values = null;
                 } else {
                     final var iterator = childIterator(content);
                     values = null == iterator ? null : iterateChildren(content, iterator);
@@ -1905,16 +1914,6 @@ final class Reconciler {
 
         private static final HashSet<String> FUNCTION_CHILD_WARNINGS = new HashSet<>();
 
-        private static @Nullable Object unwrapFragment(@Nullable Object value) {
-            if (null != value && ReactElement.isElement(value)) {
-                final var element = Js.<ReactElement>uncheckedCast(value);
-                if (React.Fragment == element.type() && null == element.key()) {
-                    return element.inputs().get("children");
-                }
-            }
-            return value;
-        }
-
         private void reuse(
                 Fiber child,
                 Object next,
@@ -2140,7 +2139,7 @@ final class Reconciler {
                     node = element;
                     if ("function".equals(Js.typeof(type))) {
                         if (mounting || oldNode != element) {
-                            startTiming(timingName(), mounting);
+                            startViewTiming(mounting);
                         }
                         updateView(
                                 element,
@@ -2436,6 +2435,12 @@ final class Reconciler {
             return null == name ? "Unknown" : name;
         }
 
+        private void startViewTiming(boolean mounting) {
+            if (null != root.timing) {
+                startTiming(timingName(), mounting);
+            }
+        }
+
         private void startTiming(String name, boolean mounting) {
             final var timing = root.timing;
             if (null != timing && (null == _timingWork || !_timingWork.active())) {
@@ -2474,6 +2479,9 @@ final class Reconciler {
         }
 
         private boolean shouldUpdate(OnShouldComponentUpdate predicate, JsPropertyMap<@Nullable Object> inputs) {
+            if (null == root.timing) {
+                return predicate.shouldComponentUpdate(inputs);
+            }
             final var phase = startPhase("shouldComponentUpdate");
             try {
                 return predicate.shouldComponentUpdate(inputs);
@@ -2759,7 +2767,7 @@ final class Reconciler {
                 pendingState = ClassComponent.derive(derive, classType, inputs, pendingState, false);
             }
             if (changed) {
-                startTiming(timingName(), mounting);
+                startViewTiming(mounting);
             }
             final var shouldUpdate =
                     null == classType ? null : ClassComponent.method(component, "shouldComponentUpdate");
@@ -2884,39 +2892,19 @@ final class Reconciler {
             final var snapshots = root._snapshots.size();
             final var mutations = root._mutations.size();
             final var effects = root._effects.size();
-            final Consumer<@Nullable Task> commit = onError -> {
-                if (render && !newView && component instanceof OnGetSnapshotBeforeUpdate lifecycle) {
-                    root._snapshots.add(new Effect(
-                            this,
-                            () -> runPhase(
-                                    "getSnapshotBeforeUpdate",
-                                    () -> lifecycle.getSnapshotBeforeUpdate(
-                                            Objects.requireNonNull(previousInputs),
-                                            null == previousState ? JsPropertyMap.of() : previousState))));
-                }
-                if (newView) {
-                    root._mutations.add(new Effect(this, () -> _mounted = true));
-                    if (component instanceof OnComponentDidMount lifecycle) {
-                        root._effects.add(
-                                new Effect(this, () -> runPhase("componentDidMount", lifecycle::componentDidMount)));
-                    }
-                } else if (render && component instanceof OnComponentDidUpdate lifecycle) {
-                    root._effects.add(new Effect(
-                            this,
-                            () -> runPhase(
-                                    "componentDidUpdate",
-                                    () -> lifecycle.componentDidUpdate(Objects.requireNonNull(previousInputs)))));
-                }
-                if (null != onError) {
-                    root._effects.add(new Effect(this, onError));
-                }
-                queueStateCallbacks(callbacks);
-                reconcileRef(elementRef(element), component);
-                finishUpdate(null, scope, complete);
-            };
             final Completion finish = failure -> {
                 if (null == failure) {
-                    commit.accept(null);
+                    completeView(
+                            element,
+                            component,
+                            newView,
+                            render,
+                            previousInputs,
+                            previousState,
+                            scope,
+                            callbacks,
+                            complete,
+                            null);
                     return;
                 }
                 final var derived = errorHandler();
@@ -2926,7 +2914,7 @@ final class Reconciler {
                     return;
                 }
                 finishTiming("An error was thrown inside this error boundary");
-                startTiming(timingName(), mounting);
+                startViewTiming(mounting);
                 root._snapshots.subList(snapshots, root._snapshots.size()).clear();
                 root._effects.subList(effects, root._effects.size()).clear();
                 if (profiling()) {
@@ -2936,7 +2924,17 @@ final class Reconciler {
                 }
                 final var report = capture(catcher, failure, false, mutations);
                 if (null == derived) {
-                    commit.accept(report);
+                    completeView(
+                            element,
+                            component,
+                            newView,
+                            render,
+                            previousInputs,
+                            previousState,
+                            scope,
+                            callbacks,
+                            complete,
+                            report);
                     return;
                 }
                 try {
@@ -2947,7 +2945,17 @@ final class Reconciler {
                     recordDurations(mounting, profileTime() - recoveryStart);
                     reconcileChildren(output, scope, fallbackFailure -> {
                         if (null == fallbackFailure) {
-                            commit.accept(report);
+                            completeView(
+                                    element,
+                                    component,
+                                    newView,
+                                    render,
+                                    previousInputs,
+                                    previousState,
+                                    scope,
+                                    callbacks,
+                                    complete,
+                                    report);
                         } else {
                             finishUpdate(fallbackFailure, scope, complete);
                         }
@@ -2962,6 +2970,47 @@ final class Reconciler {
             } else {
                 reconcileChildren(output, scope, finish);
             }
+        }
+
+        private void completeView(
+                ReactElement element,
+                NativeView component,
+                boolean newView,
+                boolean render,
+                @Nullable JsPropertyMap<@Nullable Object> previousInputs,
+                @Nullable JsPropertyMap<@Nullable Object> previousState,
+                @Nullable Scope scope,
+                @Nullable List<NativeView.StateCallback> callbacks,
+                Completion complete,
+                @Nullable Task onError) {
+            if (render && !newView && component instanceof OnGetSnapshotBeforeUpdate lifecycle) {
+                root._snapshots.add(new Effect(
+                        this,
+                        () -> runPhase(
+                                "getSnapshotBeforeUpdate",
+                                () -> lifecycle.getSnapshotBeforeUpdate(
+                                        Objects.requireNonNull(previousInputs),
+                                        null == previousState ? JsPropertyMap.of() : previousState))));
+            }
+            if (newView) {
+                root._mutations.add(new Effect(this, () -> _mounted = true));
+                if (component instanceof OnComponentDidMount lifecycle) {
+                    root._effects.add(
+                            new Effect(this, () -> runPhase("componentDidMount", lifecycle::componentDidMount)));
+                }
+            } else if (render && component instanceof OnComponentDidUpdate lifecycle) {
+                root._effects.add(new Effect(
+                        this,
+                        () -> runPhase(
+                                "componentDidUpdate",
+                                () -> lifecycle.componentDidUpdate(Objects.requireNonNull(previousInputs)))));
+            }
+            if (null != onError) {
+                root._effects.add(new Effect(this, onError));
+            }
+            queueStateCallbacks(callbacks);
+            reconcileRef(elementRef(element), component);
+            finishUpdate(null, scope, complete);
         }
 
         private @Nullable ReactNode renderOwned(NativeView component) {
