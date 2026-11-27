@@ -3,6 +3,7 @@ package react4j;
 import static react4j.webtesting.Checks.check;
 import static react4j.webtesting.Checks.equal;
 
+import java.util.Objects;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
@@ -23,11 +24,11 @@ import react4j.webtesting.Browser;
 final class ElementBrowserTest {
     private ElementBrowserTest() {}
 
-    static void run(Browser.Element root) {
+    static void run(Browser.Element root, ElementCheck isElement) {
         elementAndCopy(root);
         renderOwner(root);
         elementRecords();
-        validElements();
+        validElements(isElement);
         childrenInputs(root);
         compositeCopy(root);
         copiedChildrenAndRefs(root);
@@ -39,12 +40,12 @@ final class ElementBrowserTest {
     private static void elementRecords() {
         final ViewConstructorFunction constructor = InputView::new;
         final var empty = ReactElement.createViewElement(constructor);
-        check(Browser.same(constructor, empty.type()), "The view element retains its constructor");
-        check(null == empty.key() && null == empty.ref(), "The view key and ref default to null");
+        check(Browser.same(constructor, record(empty).get("type")), "The view element retains its constructor");
+        check(null == empty.key() && null == record(empty).get("ref"), "The view key and ref default to null");
         equal("{}", Browser.json(empty.inputs()));
         final var host = ReactElement.createHostElement("div", null, null, JsPropertyMap.of());
-        equal("div", (String) host.type());
-        check(null == host.key() && null == host.ref(), "The host key and ref default to null");
+        equal("div", (String) record(host).get("type"));
+        check(null == host.key() && null == record(host).get("ref"), "The host key and ref default to null");
         equal("{}", Browser.json(host.inputs()));
         check(
                 Browser.same(
@@ -58,11 +59,11 @@ final class ElementBrowserTest {
         final var keyed = ReactElement.createHostElement("div", "12", reference, inputs);
         equal("56", (String) keyed.inputs().get("foo"));
         equal("12", keyed.key());
-        check(Browser.same(reference, keyed.ref()), "The callback ref remains separate from host inputs");
+        check(Browser.same(reference, record(keyed).get("ref")), "The callback ref remains separate from host inputs");
         equal("{\"foo\":\"56\"}", Browser.json(keyed.inputs()));
         final var copy = keyed.dup();
         equal("12", copy.key());
-        check(Browser.same(reference, copy.ref()), "Duplication preserves the callback ref");
+        check(Browser.same(reference, record(copy).get("ref")), "Duplication preserves the callback ref");
         equal("{\"foo\":\"56\"}", Browser.json(copy.inputs()));
         inputs.set("foo", "updated");
         equal("56", (String) copy.inputs().get("foo"));
@@ -73,23 +74,25 @@ final class ElementBrowserTest {
         equal("new", copy.key());
         equal("12", keyed.key());
         final var noMetadata = ReactElement.createHostElement("div", null, null, keyed.inputs());
-        check(null == noMetadata.key() && null == noMetadata.ref(), "Reusing inputs does not copy element metadata");
+        check(
+                null == noMetadata.key() && null == record(noMetadata).get("ref"),
+                "Reusing inputs does not copy element metadata");
     }
 
-    private static void validElements() {
+    private static void validElements(ElementCheck isElement) {
         final ViewConstructorFunction constructor = InputView::new;
         final var host = ReactElement.createHostElement("div", null, null, JsPropertyMap.of());
-        check(ReactElement.isElement(host), "A host record is an element");
-        check(ReactElement.isElement(ReactElement.createViewElement(constructor)), "A view record is an element");
-        check(!ReactElement.isElement(null), "Null is not an element");
-        check(!ReactElement.isElement(true), "A boolean is not an element");
-        check(!ReactElement.isElement(JsPropertyMap.of()), "An empty object is not an element");
-        check(!ReactElement.isElement("string"), "A string is not an element");
-        check(!ReactElement.isElement(constructor), "A constructor is not an element");
+        check(isElement.test(host), "A host record is an element");
+        check(isElement.test(ReactElement.createViewElement(constructor)), "A view record is an element");
+        check(!isElement.test(null), "Null is not an element");
+        check(!isElement.test(true), "A boolean is not an element");
+        check(!isElement.test(JsPropertyMap.of()), "An empty object is not an element");
+        check(!isElement.test("string"), "A string is not an element");
+        check(!isElement.test(constructor), "A constructor is not an element");
         check(
-                !ReactElement.isElement(JsPropertyMap.of("type", "div", "props", JsPropertyMap.of())),
+                !isElement.test(JsPropertyMap.of("type", "div", "props", JsPropertyMap.of())),
                 "An element-shaped object without the marker is not an element");
-        check(!ReactElement.isElement(parseJson(Browser.json(host))), "JSON loses the native Symbol marker");
+        check(!isElement.test(parseJson(Browser.json(host))), "JSON loses the native Symbol marker");
     }
 
     private static void childrenInputs(Browser.Element root) {
@@ -122,7 +125,7 @@ final class ElementBrowserTest {
         final var original =
                 ReactElement.createViewElement(type).input("className", "old").input("children", "xyz");
         final var copy = original.dup().input("className", "xyz");
-        check(Browser.same(type, copy.type()), "A copied view retains its constructor");
+        check(Browser.same(type, record(copy).get("type")), "A copied view retains its constructor");
         equal("xyz", (String) copy.inputs().get("children"));
         RuntimeBrowserTest.render(copy, root);
         equal("xyz", root.getFirstElementChild().getAttribute("class"));
@@ -206,6 +209,16 @@ final class ElementBrowserTest {
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.create")
     private static native JsPropertyMap<@Nullable Object> newNullPrototypeInputs(@Nullable Object prototype);
+
+    @JsFunction
+    interface ElementCheck {
+        boolean test(@Nullable Object value);
+    }
+
+    static boolean stockIsElement(@Nullable Object value) {
+        final var react = record(Objects.requireNonNull(Js.global().get("React")));
+        return Js.<ElementCheck>uncheckedCast(react.get("isValidElement")).test(value);
+    }
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "JSON.parse")
     private static native Object parseJson(String json);

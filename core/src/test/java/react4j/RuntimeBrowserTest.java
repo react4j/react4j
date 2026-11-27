@@ -38,7 +38,7 @@ public final class RuntimeBrowserTest {
         try {
             InputEnhancerBrowserTest.run(root);
             ContextsTest.run(root);
-            ElementBrowserTest.run(root);
+            ElementBrowserTest.run(root, ReactElement::isElement);
             BuildableBrowserTest.run(root);
             GeneratedBuildableBrowserTest.run(root);
             InputSemanticsBrowserTest.run(root);

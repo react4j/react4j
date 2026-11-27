@@ -9,6 +9,21 @@ FormsBrowserTest.focus = function(element) { element.focus(); };
 /** @param {!Element} element */
 FormsBrowserTest.blur = function(element) { element.blur(); };
 
+/** @param {string} message @param {string} minified @param {function():void} action */
+FormsBrowserTest.withoutExpectedWindowError = function(message, minified, action) {
+  // React's development render replay also reports the expected exception to the browser.
+  const previous = window.onerror;
+  window.onerror = function(text, url, line, column, error) {
+    if (String(text).includes(message) || String(text).includes(minified)) return true;
+    return previous ? previous.call(window, text, url, line, column, error) : false;
+  };
+  try {
+    action();
+  } finally {
+    window.onerror = previous;
+  }
+};
+
 /** @param {!Element} parent @param {!Element} child */
 FormsBrowserTest.append = function(parent, child) { parent.appendChild(child); };
 

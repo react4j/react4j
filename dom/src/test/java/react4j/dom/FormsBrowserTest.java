@@ -57,7 +57,12 @@ public final class FormsBrowserTest {
                 new Object[] {object, DOM.span()},
                 new Object[] {"1", object, Browser.number(2)}
             }) {
-                fails(root, host("option", "children", invalid), "Objects are not valid as a React child");
+                fails(
+                        root,
+                        host("option", "children", invalid),
+                        "Objects are not valid as a React child",
+                        31,
+                        production);
             }
 
             final var shaped = Js.<ReactElement>uncheckedCast(JsPropertyMap.of(
@@ -374,7 +379,12 @@ public final class FormsBrowserTest {
                 equal(stringValue(value), node(root).getValue());
             }
             reset(root);
-            fails(root, host("textarea", "children", new String[] {"hello", "there"}), "at most one child");
+            fails(
+                    root,
+                    host("textarea", "children", new String[] {"hello", "there"}),
+                    "at most one child",
+                    93,
+                    production);
             ReactDOM.render(host("textarea", "value", Js.undefined()), root);
             check(ReactDOM.unmountComponentAtNode(root), "Textarea unmount succeeds");
             check(null == Browser.property(root, "firstElementChild"), "Textarea is removed from the container");
@@ -639,9 +649,13 @@ public final class FormsBrowserTest {
         final var root = Browser.append("div");
         try {
             final var range = control("input", "value", "0")
-                    .input("type", "range").input("min", "0").input("max", "100").input("step", "1");
+                    .input("type", "range")
+                    .input("min", "0")
+                    .input("max", "100")
+                    .input("step", "1");
             final var writes = inputWriteTrace(() -> ReactDOM.render(range, root));
-            check(writes.startsWith("type,min,max,step,write:0,"),
+            check(
+                    writes.startsWith("type,min,max,step,write:0,"),
                     "Input type and constraints must be assigned before value: " + writes);
             check(writes.contains(",value,"), "The controlled value is also reflected as an attribute");
             equal("0", node(root).getValue());
@@ -659,7 +673,8 @@ public final class FormsBrowserTest {
 
             final var date = input("date", "defaultValue", "1980-01-01");
             final var dateWrites = inputWriteTrace(() -> ReactDOM.render(date, root));
-            check(dateWrites.startsWith("type,write:1980-01-01,value,"),
+            check(
+                    dateWrites.startsWith("type,write:1980-01-01,value,"),
                     "Date initialization writes the live value before reflecting the default: " + dateWrites);
             equal("1980-01-01", node(root).getValue());
             attribute(node(root), "value", "1980-01-01");
@@ -1020,18 +1035,29 @@ public final class FormsBrowserTest {
                 .input("onChange", IGNORE);
     }
 
-    private static void fails(Browser.Element root, ReactNode element, String expected) {
-        captureWarnings(() -> {
-            try {
-                ReactDOM.render(element, root);
-            } catch (Throwable failure) {
-                final var message = failure.getMessage();
-                check(null != message && message.contains(expected), "Unexpected form error: " + message);
-                return;
-            }
-            throw new AssertionError("Expected form error: " + expected);
-        });
+    private static void fails(
+            Browser.Element root, ReactNode element, String expected, int stockCode, boolean production) {
+        final var minified = "Minified React error #" + stockCode + ";";
+        withoutExpectedWindowError(
+                expected,
+                minified,
+                () -> captureWarnings(() -> {
+                    try {
+                        ReactDOM.render(element, root);
+                    } catch (Throwable failure) {
+                        final var message = failure.getMessage();
+                        check(
+                                null != message
+                                        && (message.contains(expected) || production && message.contains(minified)),
+                                "Unexpected form error: " + message);
+                        return;
+                    }
+                    throw new AssertionError("Expected form error: " + expected);
+                }));
     }
+
+    @JsMethod
+    private static native void withoutExpectedWindowError(String message, String minified, Probe action);
 
     private static void hasWarning(String[] warnings, String expected) {
         check(String.join("\n", warnings).contains(expected), "Missing form diagnostic: " + expected);
