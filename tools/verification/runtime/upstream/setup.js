@@ -3,6 +3,7 @@
 const fs = require('fs');
 const counters = require('./reporter');
 const adaptations = counters.adaptations;
+const HostSymbol = global.Symbol;
 
 installJavaRenderer();
 
@@ -33,7 +34,14 @@ function installJavaRenderer() {
       };
     }
     scope.goog = {};
-    return createRenderer(load(scope).call(scope, scope.goog), require.requireActual('react'));
+    const initialize = () => createRenderer(load(scope).call(scope, scope.goog), require.requireActual('react'));
+    if (global.Symbol !== undefined) return initialize();
+    // ReactElement's beforeEach removes Symbol even for unrelated element tests.
+    // Give the Java host and the JSX records it consumes the same modern protocol.
+    adaptations.add('J2CL and JSX use the modern Symbol element protocol');
+    Object.defineProperty(scope, 'Symbol', {value: HostSymbol});
+    global.Symbol = HostSymbol;
+    try { return initialize(); } finally { global.Symbol = undefined; }
   }, {virtual: true});
   jest.doMock('react', () => fixture().react);
   jest.doMock('react-dom', () => {
@@ -252,9 +260,9 @@ function createRenderer(moduleFor, sourceReact) {
       instance[member(iface.prototype, 'm_' + hook + '__')] = instance[hook];
     }
   }
-  const lazyType = typeof Symbol === 'function' && Symbol.for ? Symbol.for('react.lazy') : 0xead4;
-  const memoType = typeof Symbol === 'function' && Symbol.for ? Symbol.for('react.memo') : 0xead3;
-  const forwardRefType = typeof Symbol === 'function' && Symbol.for ? Symbol.for('react.forward_ref') : 0xead0;
+  const lazyType = HostSymbol.for('react.lazy');
+  const memoType = HostSymbol.for('react.memo');
+  const forwardRefType = HostSymbol.for('react.forward_ref');
   function factory(type) {
     if (constructors.has(type)) return constructors.get(type);
     if (type?.$$typeof === lazyType) {
@@ -331,7 +339,7 @@ function createRenderer(moduleFor, sourceReact) {
   const react = Object.assign({}, sourceReact, {
     Component, PureComponent,
     createElement(type, props, ...children) {
-      if (type?.$$typeof === Symbol.for('react.context') && typeof children[0] === 'function') {
+      if (type?.$$typeof === HostSymbol.for('react.context') && typeof children[0] === 'function') {
         const render = children[0];
         children[0] = value => renderFixture(undefined, render, [value]);
       }
