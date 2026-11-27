@@ -52,7 +52,6 @@ public final class SpeechBrowserTest {
         if (null != engine) {
             engine.cancel();
         }
-        unmount(_frame);
         _frame.remove();
     }
 
@@ -285,9 +284,6 @@ public final class SpeechBrowserTest {
 
     @JsMethod
     private static native boolean paused(Browser.Frame frame);
-
-    @JsMethod
-    private static native void unmount(Browser.Frame frame);
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     private static final class Observation {

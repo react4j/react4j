@@ -1,13 +1,12 @@
 package react4j;
 
-import java.util.Objects;
 import jsinterop.annotations.JsFunction;
-import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
+import react4j.internal.CurrentOwner;
 
 /**
  * Context is designed to share data that can be considered "global" for a tree of views.
@@ -16,14 +15,105 @@ import org.jspecify.annotations.Nullable;
  * many views within an application. Context provides a way to share values like this between
  * views without having to explicitly pass a input through every level of the tree.
  */
-@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public final class Context<T extends @Nullable Object> {
+    private static final boolean DEVELOPMENT = "development".equals(System.getProperty("react4j.environment"));
+    private static final Object CONTEXT_TYPE = symbol("react.context");
+    private static final Object PROVIDER_TYPE = symbol("react.provider");
+
+    private final @Nullable T _defaultValue;
+    private final Provider<T> _provider = new Provider<>(this);
+    private final Consumer<T> _consumer = new Consumer<>(this);
+
+    public Context() {
+        this(null);
+    }
+
+    Context(@Nullable final T defaultValue) {
+        _defaultValue = defaultValue;
+        final var record = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(this);
+        record.set("$$typeof", CONTEXT_TYPE);
+        record.set("_currentValue", defaultValue);
+        record.set("Provider", _provider);
+        record.set("Consumer", DEVELOPMENT ? _consumer : this);
+        if (DEVELOPMENT) {
+            legacyAccessor("Consumer", _consumer);
+            legacyAccessor("Provider", _provider);
+        }
+    }
+
+    private void legacyAccessor(String name, Object target) {
+        final boolean[] warned = {false};
+        final Accessor getter = () -> {
+            if (!warned[0]) {
+                warned[0] = true;
+                final var owner = CurrentOwner.get();
+                final var stack =
+                        owner instanceof CurrentOwner.ComponentStack provider ? provider.componentStack() : "";
+                consoleError("Warning: Rendering <Context.Consumer." + name
+                        + "> is not supported and will be removed in a future major release. "
+                        + "Did you mean to render <Context." + name + "> instead?" + stack);
+            }
+            return target;
+        };
+        defineProperty(_consumer, name, JsPropertyMap.of("get", getter));
+    }
+
+    @JsFunction
+    private interface Accessor {
+        Object read();
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.defineProperty")
+    private static native void defineProperty(Object object, String name, Object descriptor);
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "console.error")
+    private static native void consoleError(String message);
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Symbol.for")
+    private static native Object symbol(String name);
+
+    private static void describe(final Object descriptor, final Object marker, final Context<?> context) {
+        // The React DevTools backend reads these properties by name outside the compiled application.
+        final var record = Js.<JsPropertyMap<Object>>uncheckedCast(descriptor);
+        record.set("$$typeof", marker);
+        record.set("_context", context);
+    }
+
+    public @Nullable T defaultValue() {
+        return _defaultValue;
+    }
+
+    public static final class Provider<T extends @Nullable Object> {
+        private final Context<T> _context;
+
+        private Provider(final Context<T> context) {
+            _context = context;
+            describe(this, PROVIDER_TYPE, context);
+        }
+
+        public Context<T> context() {
+            return _context;
+        }
+    }
+
+    public static final class Consumer<T extends @Nullable Object> {
+        private final Context<T> _context;
+
+        private Consumer(final Context<T> context) {
+            _context = context;
+            describe(this, CONTEXT_TYPE, context);
+        }
+
+        public Context<T> context() {
+            return _context;
+        }
+    }
+
     /**
      * Create a builder for the Provider component.
      *
      * @return a builder for the Provider component.
      */
-    @JsOverlay
     public ProviderBuilder<T> provider() {
         return new ProviderBuilder<>(this);
     }
@@ -35,7 +125,6 @@ public final class Context<T extends @Nullable Object> {
      * @param children the child elements.
      * @return the element.
      */
-    @JsOverlay
     public ReactNode provide(@Nullable final T value, final @Nullable Renderable @Nullable ... children) {
         return provider().value(value).children(children);
     }
@@ -45,7 +134,6 @@ public final class Context<T extends @Nullable Object> {
      *
      * @return a builder for the Consumer component.
      */
-    @JsOverlay
     public ConsumerBuilder<T> consumer() {
         return new ConsumerBuilder<>(this);
     }
@@ -59,8 +147,7 @@ public final class Context<T extends @Nullable Object> {
         private final ReactElement _element;
 
         private ProviderBuilder(final Context<ST> context) {
-            _element = ReactElement.createContextElement(Objects.requireNonNull(
-                    Js.<JsPropertyMap<@Nullable Object>>cast(context).get("Provider")));
+            _element = ReactElement.createContextElement(context._provider);
         }
 
         /**
@@ -115,8 +202,7 @@ public final class Context<T extends @Nullable Object> {
         private final ReactElement _element;
 
         private ConsumerBuilder(final Context<ST> context) {
-            _element = ReactElement.createContextElement(Objects.requireNonNull(
-                    Js.<JsPropertyMap<@Nullable Object>>cast(context).get("Consumer")));
+            _element = ReactElement.createContextElement(context._consumer);
         }
 
         /**

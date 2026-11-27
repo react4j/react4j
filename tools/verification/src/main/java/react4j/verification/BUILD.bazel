@@ -95,8 +95,6 @@ java_binary(
     testonly = True,
     args = [
         "$(rootpath //tools/verification/src/test/js/react4j/verification:runtime.js)",
-        "$(rootpath //tools/generation:react_dev)",
-        "$(rootpath //tools/generation:react_dom_dev)",
         "$(rootpath //tools/webtesting:chromium.json)",
         "$(rootpath //tools/release:core_sources)",
         "$(rootpath //tools/release:dom_sources)",
@@ -107,8 +105,6 @@ java_binary(
         "$(rootpath //tools/release:dom_jar)",
     ],
     data = [
-        "//tools/generation:react_dev",
-        "//tools/generation:react_dom_dev",
         "//tools/release:core_jar",
         "//tools/release:core_sources",
         "//tools/release:dom_jar",

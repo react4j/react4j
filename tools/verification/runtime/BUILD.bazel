@@ -1,0 +1,77 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
+load("//:defs.bzl", "browser_application", "css_bundle")
+load("//tools/browser:rules.bzl", "browser_test")
+
+css_bundle(
+    name = "styles",
+    testonly = True,
+    css = "index.css",
+    root = ":named_production_bundle",
+    source_map = "index.css.map",
+)
+
+browser_application(
+    name = "named_production",
+    testonly = True,
+    compilation_level = "ADVANCED",
+    defs = [
+        "--define=react4j.enable_view_names='true'",
+        "--define=react4j.minimize_input_keys='false'",
+    ],
+    entry_point = "react4j.todomvc.raw.AppEntry",
+    html = "//examples/todomvc:public/index.html",
+    runtime_mode = "production",
+    styles = {":styles": "css/index.css"},
+    deps = ["//examples/todomvc/raw:entry"],
+)
+
+closure_js_binary(
+    name = "upstream_renderer",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    dependency_mode = "SORT_ONLY",
+    deps = [
+        "//:dom",
+        "//tools/verification/runtime/java/react4j/dom:foreign_root_assertions",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_memory_renderer",
+    ],
+)
+
+closure_js_binary(
+    name = "upstream_memory_renderer",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    dependency_mode = "SORT_ONLY",
+    deps = ["//tools/verification/runtime/java/react4j/reconciler:memory_renderer"],
+)
+
+closure_js_binary(
+    name = "isolated_reconciler_tests",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    dependency_mode = "SORT_ONLY",
+    deps = [":isolated_cases"],
+)
+
+closure_js_library(
+    name = "isolated_cases",
+    testonly = True,
+    srcs = ["isolated_cases.js"],
+    deps = ["//tools/verification/runtime/java/react4j/reconciler:isolated_reconciler_tests"],
+)
+
+closure_js_library(
+    name = "reconciler_coverage",
+    testonly = True,
+    srcs = ["isolated_cases.js"],
+    visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
+    deps = ["//tools/verification/runtime/java/react4j/reconciler:browser_reconciler_coverage"],
+)
+
+browser_test(
+    name = "isolated_cases_test",
+    srcs = ["isolated_cases_test.js"],
+    entry_point = "react4j.testing.IsolatedCasesTest",
+    visibility = ["//:__pkg__"],
+    deps = [":isolated_cases"],
+)

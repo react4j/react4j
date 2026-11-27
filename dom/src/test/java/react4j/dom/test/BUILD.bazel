@@ -7,9 +7,9 @@ java_testng(
         "DomJDependTest.java",
         "package-info.java",
     ],
-    data = ["//dom/src/main/java/react4j/dom"],
+    data = ["//tools/release:dom_jar"],
     jvm_flags = [
-        "-Dreact4j.dom.compile_target=$(rootpath //dom/src/main/java/react4j/dom)",
+        "-Dreact4j.dom.compile_target=$(rootpath //tools/release:dom_jar)",
     ],
     test_class = "react4j.dom.test.DomJDependTest",
     visibility = ["//:__subpackages__"],

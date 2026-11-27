@@ -30,6 +30,7 @@ paths=(
   tools/site/src/test/java
   tools/browser/src/main/java
   tools/browser/src/test/java
+  tools/verification/runtime/java
   tools/verification/src/main/java
   tools/verification/src/test/java
   tools/release/src/main/java
@@ -38,6 +39,7 @@ paths=(
   tools/testing/src/main/java
   core/src/main/java
   core/src/test/java
+  reconciler/src/main/java
   dom/src/main/java
   dom/src/test/java
   processor/src/main/java

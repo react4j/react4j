@@ -2,6 +2,18 @@
 
 ### Unreleased
 
+* Support React 16.6 lazy, memo and forwarded-ref elements, observed context bits, class error recovery and synchronous updates in the Java reconciler. Apply queued state updates in priority order and run their callbacks after commit.
+* Preserve mount and update lifecycle order when an error boundary retries a failed render. Deliver errors from commit and cleanup to the next eligible boundary.
+* Pass the pre-mutation snapshot and previous state to JavaScript class update hooks. Report incompatible lifecycle methods and invalid derived state or snapshot results during development.
+* Deliver static `contextType` values to JavaScript classes and their lifecycle hooks, including when the class would ordinarily skip an update.
+* Apply state assignments in legacy mount and prop-receive hooks as queued replacements. Initialize module-style component state before running its derived-state hooks.
+* Validate JavaScript PropTypes on class props, inherited and provided context, and Context.Provider values in development.
+* Warn in development when a component schedules a state update during render.
+* Honor a synthetic event's current `isPropagationStopped()` result before invoking the next listener.
+* Unmount event handlers in iframe documents and diagnose attempts to replace or unmount managed children through the wrong DOM container.
+* Inspect and highlight generated views and record component render timings with React Developer Tools in development and optimized production builds.
+* Expose generated view props and state on the JavaScript instance, including constructor-assigned state. Error boundaries receive React 16.6 component frames and development owner names.
+* Concurrent roots yield during rendering and commit DOM changes and refs together. Interactive updates flush before the next interactive event, and a Suspense boundary can keep its previous content while loading. When its promise resolves during a paused render, the root retries before rendering the remaining siblings or fallback.
 * Accept direct declarations inside supported nested CSS groups in shared stylesheets, `@GlobalCss` and `@Css`. Preserve declaration order and the enclosing selector's specificity and pseudo-element matching.
 * Reduce native utility compilation work by preparing each provider once per compiler invocation and binding only requested fragments. Reuse read-only provider syntax and name analysis, decoded source maps, indexed line starts, parsed CSS tokens and invariant hashes. Preserve generated Java/CSS, metadata, source maps, diagnostics and traces.
 * Expose `browser_files` through `@react4j//:defs.bzl` to share declared browser runfiles and executable-path variables between Closure and JVM tests. Reject empty dependency lists and conflicting named files; applications retain browser-version and capability selection.
@@ -25,7 +37,7 @@
 * Preserve final-round visitor generation so types created by other annotation processors remain visible, accepting the compiler warnings.
 * Simplify release validation by removing standalone artifact checks, isolated consumer compilation tests, and the separate reproducibility build.
 * Remove the downstream Bazel configuration exporter and external consumer check; applications own their dependency configuration.
-* Expose the existing patched React and ReactDOM runtime scripts through `@react4j//third_party:react_runtime_assets` for downstream deployment packaging.
+* Compile the React4j renderer into the application with J2CL. Remove the `react.js` and `react-dom.js` script tags from deployment templates.
 * Update the Bazel Braincheck, Arez, and Zemeckis source pins for Java/J2CL-only Braincheck and consume the public library targets.
 * Add experimental CSS-in-Java and checked web assets in `react4j.css`: colocate styles, animations, fonts and file references with Java components, using typed bindings, interface contracts and checked imports. JVM processing derives names from Java owners, validates declarations, removes unused CSS and assets, compresses CSS names in optimized builds and preserves source maps back to Java. Retained files use content-addressed URLs and a build-only manifest for downstream deployment tooling; asset byte changes preserve compilation caches. Load the Bazel build integration from `@react4j//:defs.bzl`, with independent React runtime, Closure optimization and source-map publication settings.
 * Restore Delete-button hover visibility in all three TodoMVC examples.
@@ -40,7 +52,7 @@
 * Import Web Speech Demo under `examples/webspeechdemo` with checked Bazel/J2CL builds, development and production browser tests, preview commands, and site integration at `/webspeechdemo/` and `/webspeechdemo_dev/`.
 * Import Drumloop under `examples/drumloop`, with checked Bazel/J2CL builds, local audio/font assets, browser tests in both modes, and site integration at its established URLs. Correct sequencer tempo calculation and resume suspended audio on Play.
 * Replace project builds, tests, DOM generation, asset preparation, documentation and release tooling with pinned Bazel and Java/Bash tools. Add the shared local/CI gate, buildifier and Ahab checks.
-* Breaking: use J2CL for browser compilation and remove legacy compiler modules, entrypoints and support infrastructure. Keep React/ReactDOM 16.6.0 and verify development and optimized production behavior with pinned Chromium. Configure the runtime with Closure defines; JVM system-property configuration is no longer supported.
+* Breaking: use J2CL for browser compilation and remove legacy compiler modules, entrypoints and support infrastructure. Verify development and optimized production behavior with pinned Chromium. Configure the runtime with Closure defines; JVM system-property configuration is no longer supported.
 * Breaking: require JSpecify nullness contracts. Ignore legacy nullness annotations; diagnose unspecified or invalid generated input contracts. Nullable AUTODETECT inputs remain optional, while explicitly required nullable inputs require a builder call and accept null.
 * Upgrade to the migrated Proton revision and run annotation processing on Java 21+. Preserve effective source/compiled generic nullness, nested types, wildcards and array qualifiers in generated APIs.
 * Check complete formatted/unformatted processor goldens and compile all emitted bodies under the full checker policy. Retain classpath and formatter regressions and deliberate generated-nullness failure detection.

@@ -19,7 +19,7 @@
       props.forEach( p -> {
         // In future we can probably remove this check when/if components are creating elements directly
         // and can thus guarantee that these keys are not part of props.
-        if ( !p.equals( "key" ) && !p.equals( "ref" ) )
+        if ( !Js.isTripleEqual( "key", p ) && !Js.isTripleEqual( "ref", p ) )
         {
           actual.set( p, props.get( p ) );
         }

@@ -7,5 +7,5 @@ import react4j.ReactNode;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "?")
 interface NativeReactRoot {
-    void render(ReactNode children, ReactRoot.@Nullable PostRenderCallbackFn callback);
+    void render(@Nullable ReactNode children, ReactRoot.@Nullable PostRenderCallbackFn callback);
 }

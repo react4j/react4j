@@ -10,6 +10,21 @@ Owned nullness contracts use JSpecify `@NullMarked`, `@NullUnmarked`, `@NonNull`
 
 The Bazel build pins migrated Arez, Proton and Sting revisions. Maven consumption requires a compatible published Arez release containing the pinned changes, including Java 21 support; existing older releases do not acquire the new contents merely by choosing their version number. The snapshot below is the local build default, not a claim that migrated artifacts have been published to Central. Replace it with the migrated React4j release you intend to use.
 
+## Inspect and profile components
+
+Open the Components or Profiler panel in the React Developer Tools browser extension. Both development and optimized production builds support component inspection, host-element highlighting and render timings.
+
+Development builds show the generated view names and input keys. To keep these names in a production profile, add these flags to your `browser_application` target.
+
+```starlark
+defs = [
+    "--define=react4j.enable_view_names='true'",
+    "--define=react4j.minimize_input_keys='false'",
+],
+```
+
+`browser_application` includes `app.js.map` by default. Serve it alongside `app.js` to see Java source locations in browser debugging tools.
+
 ## Configure Bazel browser tests
 
 Load `browser_files` from `@react4j//:defs.bzl` to combine declared browser inputs

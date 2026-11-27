@@ -34,6 +34,7 @@ closure_js_library(
         "//dom/src/test/js/react4j/dom:properties_test",
         "//dom/src/test/js/react4j/dom:runtime_test",
         "//tools/browser:mode",
+        "//tools/verification/runtime:reconciler_coverage",
     ],
 )
 

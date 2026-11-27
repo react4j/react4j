@@ -47,7 +47,8 @@ public record BindingSourceMap(SourceMapConsumerV3 mapping, SourceMapInput input
                             .resolve(name.getAsString())
                             .normalize();
                     if (!java.startsWith(tree.toAbsolutePath().normalize())
-                            || !java.toString().endsWith(".java")) {
+                            || !(java.toString().endsWith(".java")
+                                    || java.toString().endsWith(".native_js"))) {
                         throw new IllegalArgumentException(
                                 "Generated Java source is outside its J2CL tree: " + name.getAsString());
                     }

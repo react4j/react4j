@@ -10,12 +10,36 @@ j2cl_library(
     testonly = True,
     srcs = [
         "BuildableBrowserTest.java",
+        "ChildReconciliationTest.java",
+        "ClassLifecycleBrowserTest.java",
+        "CleanClientElementsBrowserTest.java",
+        "CleanClientElementsBrowserTest.native.js",
+        "DevToolsHookTest.java",
+        "DomPortalBrowserTest.java",
+        "DomPortalBrowserTest.native.js",
+        "DomRefsBrowserTest.java",
+        "DomRootBrowserTest.java",
+        "DomRootBrowserTest.native.js",
         "EventsBrowserTest.java",
         "EventsBrowserTest.native.js",
+        "FiberReconciliationTest.java",
+        "MemoryBrowserTest.java",
+        "OriginalHostCasesBrowserTest.java",
+        "OriginalHostCasesBrowserTest.native.js",
+        "OtherHostBrowserTest.java",
+        "OtherHostBrowserTest.native.js",
+        "ProfilerBrowserTest.java",
+        "ProfilerBrowserTest.native.js",
         "PropertiesBrowserTest.java",
         "PropertiesBrowserTest.native.js",
+        "ReconcilerDiagnosticsBrowserTest.java",
         "RuntimeBrowserTest.java",
         "RuntimeCoverageExample.java",
+        "RuntimeParityBrowserTest.java",
+        "RuntimeParityBrowserTest.native.js",
+        "SubscriptionBrowserTest.java",
+        "SubscriptionBrowserTest.native.js",
+        "WrappedViewsBrowserTest.java",
     ],
     deps = [
         "//:core",
@@ -23,6 +47,140 @@ j2cl_library(
         "//examples/testing/src/main/java/react4j/webtesting:browser",
         "//third_party:arez_core-j2cl",
         "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
         "//third_party:jspecify-j2cl",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_fiber_test_access",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_memory_renderer",
+    ],
+)
+
+j2cl_library(
+    name = "component_lifecycle_scenarios",
+    testonly = True,
+    srcs = [
+        "ClassStateBrowserTest.java",
+        "ComponentLifecycleBrowserTest.java",
+        "ComponentLifecycleBrowserTest.native.js",
+        "CompositeDiagnosticsBrowserTest.java",
+        "CompositeDiagnosticsBrowserTest.native.js",
+        "FunctionComponentBrowserTest.java",
+        "PropTypeValidatorBrowserTest.java",
+        "ReactComponentRecordsBrowserTest.java",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_fiber_test_access",
+    ],
+)
+
+j2cl_library(
+    name = "update_scheduling_scenarios",
+    testonly = True,
+    srcs = [
+        "UpdateSchedulingBrowserTest.java",
+        "UpdateSchedulingBrowserTest.native.js",
+    ],
+    plugins = [
+        "//:processor",
+        "//third_party:arez_processor_plugin",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:arez_core-j2cl",
+        "//third_party:braincheck_core-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_fiber_test_access",
+    ],
+)
+
+j2cl_library(
+    name = "emitter_registration",
+    testonly = True,
+    srcs = [
+        "ConcurrentEventBrowserTest.java",
+        "ConcurrentEventBrowserTest.native.js",
+        "EmitterRegistrationBrowserTest.java",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "host_scenarios",
+    testonly = True,
+    srcs = [
+        "DomHostBrowserTest.java",
+        "DomHostBrowserTest.native.js",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "forms_scenarios",
+    testonly = True,
+    srcs = [
+        "FormsBrowserTest.java",
+        "FormsBrowserTest.native.js",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "legacy_render_support",
+    testonly = True,
+    srcs = ["LegacyRenderSupport.java"],
+    visibility = ["//core/src/test/java/react4j:__pkg__"],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "error_boundary_test",
+    testonly = True,
+    srcs = [
+        "ErrorBoundariesBrowserTest.java",
+        "ErrorBoundariesBrowserTest.native.js",
+        "ErrorBoundaryTraces.java",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_fiber_test_access",
     ],
 )

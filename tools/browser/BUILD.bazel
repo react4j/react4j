@@ -32,11 +32,6 @@ java_binary(
     runtime_deps = ["//tools/browser/src/main/java/react4j/browser:preview"],
 )
 
-alias(
-    name = "assets",
-    actual = "//tools/browser/src/main/java/react4j/browser:assets",
-)
-
 test_suite(
     name = "tests",
     tests = ["//tools/browser/src/test/java/react4j/browser:tests"],

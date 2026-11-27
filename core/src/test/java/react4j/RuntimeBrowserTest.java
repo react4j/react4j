@@ -3,10 +3,15 @@ package react4j;
 import static react4j.webtesting.Checks.check;
 
 import arez.Arez;
+import java.util.Objects;
+import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsMethod;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.dom.LegacyRenderSupport;
+import react4j.dom.ReactDOM;
 import react4j.internal.NativeView;
 import react4j.webtesting.Browser;
 import react4j.webtesting.BrowserPromise;
@@ -33,31 +38,59 @@ public final class RuntimeBrowserTest {
         try {
             InputEnhancerBrowserTest.run(root);
             ContextsTest.run(root);
+            ElementBrowserTest.run(root, ReactElement::isElement);
             BuildableBrowserTest.run(root);
             GeneratedBuildableBrowserTest.run(root);
             InputSemanticsBrowserTest.run(root);
             ArrayKeyBrowserTest.run(root);
             InputEqualityBrowserTest.run(root);
-            var element = RuntimeCoverageExample.element(component());
+            final StateView[] mounted = new StateView[1];
+            var element = RuntimeCoverageExample.element(inputs -> {
+                final var view = new StateView(inputs);
+                mounted[0] = view;
+                return view;
+            });
             check(
                     "copy-key".equals(element.key())
                             && "copy".equals(element.inputs().get("label")),
                     "Element inputs/key");
             render(element, root);
             check("copy:1".equals(root.getTextContent()), "View element rendering");
-            var view = view();
+            var view = Objects.requireNonNull(mounted[0]);
             check(
-                    RuntimeCoverageExample.inputs(view) == props(view)
-                            && RuntimeCoverageExample.requireInputs(view) == props(view),
+                    RuntimeCoverageExample.inputs(view) == element.inputs()
+                            && RuntimeCoverageExample.requireInputs(view) == element.inputs(),
                     "Native inputs");
-            check(RuntimeCoverageExample.state(view) == state(view), "Native state");
+            check(
+                    RuntimeCoverageExample.inputs(view) == viewProperties(view).get("props"),
+                    "Java and JS props identity");
+            check(RuntimeCoverageExample.state(view) == view._initialState, "Constructor-assigned initial state");
+            check(
+                    RuntimeCoverageExample.state(view) == viewProperties(view).get("state"),
+                    "Java and JS state identity");
+            for (final var method : new String[] {"render", "setState", "forceUpdate"}) {
+                check("function".equals(Js.typeof(viewProperties(view).get(method))), "JS view method " + method);
+            }
             RuntimeCoverageExample.updateState(view, JsPropertyMap.of("count", 2));
             check("copy:2".equals(root.getTextContent()), "Native state update");
-            var empty = emptyView();
+            check(RuntimeCoverageExample.state(view) == viewProperties(view).get("state"), "Updated JS state identity");
+            ReactDOM.batchedUpdates(() -> {
+                view.setState(JsPropertyMap.of("other", "kept"));
+                view.setState(JsPropertyMap.of("count", 3));
+                check("copy:2".equals(root.getTextContent()), "Batched state does not render early");
+            });
+            check("copy:3".equals(root.getTextContent()), "Batched state renders at completion");
+            check("kept".equals(Objects.requireNonNull(view.state()).get("other")), "State updates merge");
+            var empty = new StateView(null);
             check(null == RuntimeCoverageExample.inputs(empty), "Nullable native inputs");
             check(RuntimeCoverageExample.rejectsNullInputs(empty), "Required native inputs reject null");
             render(RuntimeCoverageExample.contextTree("provided"), root);
             check("provided".equals(root.getTextContent()), "Context provider/consumer");
+            view.setState(JsPropertyMap.of("count", 4));
+            view.forceUpdate();
+            check("provided".equals(root.getTextContent()), "Unmounted state updates leave the tree intact");
+            final var state = Objects.requireNonNull(view.state());
+            check(3 == Objects.requireNonNull(state.getAsAny("count")).asInt(), "Unmounted state");
             render(RuntimeCoverageExample.contextTree(null), root);
             check("empty".equals(root.getTextContent()), "Null context update");
             RuntimeCoverageExample.pauseScheduler();
@@ -82,28 +115,31 @@ public final class RuntimeBrowserTest {
     }
 
     private static void cleanup(Browser.Element root) {
-        unmount(root);
+        ReactDOM.unmountComponentAtNode(root);
         root.remove();
     }
 
-    @JsMethod
-    private static native Object component();
+    static void render(@Nullable ReactNode element, Browser.Element root) {
+        LegacyRenderSupport.render(element, root);
+    }
 
-    @JsMethod
-    private static native NativeView view();
+    private static JsPropertyMap<@Nullable Object> viewProperties(NativeView view) {
+        return Js.uncheckedCast(view);
+    }
 
-    @JsMethod
-    private static native NativeView emptyView();
+    private static final class StateView extends NativeView {
+        private final JsPropertyMap<@Nullable Object> _initialState = JsPropertyMap.of("count", 1);
 
-    @JsMethod
-    private static native JsPropertyMap<@Nullable Object> props(NativeView view);
+        @JsConstructor
+        StateView(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+            viewProperties(this).set("state", _initialState);
+        }
 
-    @JsMethod
-    private static native JsPropertyMap<@Nullable Object> state(NativeView view);
-
-    @JsMethod
-    static native void render(@Nullable ReactNode element, Browser.Element root);
-
-    @JsMethod
-    private static native void unmount(Browser.Element root);
+        @Override
+        public ReactNode render() {
+            final var state = Objects.requireNonNull(state());
+            return ReactNode.of(requireInputs().get("label") + ":" + state.get("count"));
+        }
+    }
 }

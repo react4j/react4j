@@ -37,6 +37,7 @@ source_inventory(
     libraries = [
         "//core/src/main/java/react4j",
         "//dom/src/main/java/react4j/dom",
+        "//reconciler/src/main/java/react4j/reconciler",
     ],
     visibility = [
         "//tools/verification/src/main/java/react4j/verification:__pkg__",

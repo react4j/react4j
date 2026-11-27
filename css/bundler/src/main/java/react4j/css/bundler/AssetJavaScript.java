@@ -302,6 +302,10 @@ final class AssetJavaScript {
         return new JsonPrimitive(value).toString();
     }
 
+    private static final Pattern BUNDLED_MODULE = Pattern.compile(
+            "^//([^\\r\\n]+\\.impl\\.java\\.js)\\Rgoog\\.loadModule\\(function\\(exports\\) \\{'use strict';",
+            Pattern.MULTILINE);
+
     private record Input(int start, String code, JsonObject map, boolean assets) {}
 
     static MappedText finalizeBundle(
@@ -414,33 +418,54 @@ final class AssetJavaScript {
             if (javascript.indexOf(code, start + code.length()) >= 0) {
                 throw new IllegalArgumentException("Generated binding occurs twice in BUNDLE output: " + name);
             }
-            var document = BindingSourceMap.read(input, Objects.requireNonNull(tree))
-                    .document()
-                    .deepCopy();
-            String root =
-                    document.has("sourceRoot") ? document.get("sourceRoot").getAsString() : "";
-            var sources = new JsonArray();
-            for (var item : document.getAsJsonArray("sources")) {
-                var java = Objects.requireNonNull(input.toAbsolutePath().getParent())
-                        .resolve(root)
-                        .resolve(item.getAsString())
-                        .normalize();
-                if (!java.startsWith(tree.toAbsolutePath().normalize())) {
-                    throw new IllegalArgumentException("Generated binding map leaves its declared tree: " + item);
-                }
-                sources.add(tree.toAbsolutePath()
-                        .normalize()
-                        .relativize(java)
-                        .toString()
-                        .replace('\\', '/'));
-            }
-            document.add("sources", sources);
-            document.remove("sourceRoot");
             boolean assets =
                     link.assets().stream().anyMatch(asset -> asset.source().equals(name));
-            sections.put(start, new Input(start, code, document, assets));
+            sections.put(start, new Input(start, code, moduleMap(input, Objects.requireNonNull(tree)), assets));
+        }
+        // Closure prefixes each J2CL module with its input path and inline module wrapper.
+        final var matcher = BUNDLED_MODULE.matcher(javascript);
+        while (matcher.find()) {
+            final int start = matcher.end();
+            if (sections.containsKey(start)) {
+                continue;
+            }
+            final var path = Path.of(matcher.group(1)).normalize();
+            for (var tree : trees) {
+                if (path.startsWith(tree)
+                        && Files.isRegularFile(path.resolveSibling(
+                                path.getFileName().toString().replace(".impl.java.js", ".js.map")))) {
+                    final var code = Files.readString(path);
+                    if (javascript.startsWith(code, start)) {
+                        sections.put(start, new Input(start, code, moduleMap(path, tree), false));
+                    }
+                    break;
+                }
+            }
         }
         return sections;
+    }
+
+    private static JsonObject moduleMap(Path input, Path tree) {
+        var document = BindingSourceMap.read(input, tree).document().deepCopy();
+        String root = document.has("sourceRoot") ? document.get("sourceRoot").getAsString() : "";
+        var sources = new JsonArray();
+        for (var item : document.getAsJsonArray("sources")) {
+            var java = Objects.requireNonNull(input.toAbsolutePath().getParent())
+                    .resolve(root)
+                    .resolve(item.getAsString())
+                    .normalize();
+            if (!java.startsWith(tree.toAbsolutePath().normalize())) {
+                throw new IllegalArgumentException("Generated binding map leaves its declared tree: " + item);
+            }
+            sources.add(tree.toAbsolutePath()
+                    .normalize()
+                    .relativize(java)
+                    .toString()
+                    .replace('\\', '/'));
+        }
+        document.add("sources", sources);
+        document.remove("sourceRoot");
+        return document;
     }
 
     private static JsonObject document(JsonArray sections) {
