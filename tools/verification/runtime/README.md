@@ -62,6 +62,21 @@ This opens Chrome DevTools, inspects a generated component, checks the highlight
 
 ## Measured results
 
+### Extracted reconciler at `f58188962`
+
+Each cell gives stock React 16.6 followed by React4j. The production applications ran 30 measured pairs on CPUs 0–5 and 120 on CPUs 0–15 with the same Chrome, hardware and workload as the previous comparison. All 42 measurements met their budgets. [Individual samples](measurements.csv)
+
+| CPUs | Application | Load (ms) | Add 50 (ms) | Toggle 25 (ms) | 1,000 keys (ms) | Heap (bytes) | JavaScript (bytes) | Gzip (bytes) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0-5 | Raw | 29.25 / 28.55 | 22.75 / 24.70 | 3.45 / 3.00 | 5.30 / 4.20 | 1,997,538 / 1,949,710 | 166,367 / 130,068 | 54,943 / 44,877 |
+| 0-5 | Arez | 32.05 / 32.60 | 214.10 / 215.00 | 7.50 / 6.60 | 10.30 / 8.15 | 2,587,328 / 2,548,808 | 184,824 / 150,283 | 59,922 / 50,212 |
+| 0-5 | Sting | 32.70 / 33.95 | 213.10 / 214.55 | 7.45 / 6.50 | 10.40 / 8.55 | 2,592,254 / 2,554,588 | 185,631 / 151,158 | 60,272 / 50,510 |
+| 0-15 | Raw | 26.45 / 23.40 | 17.70 / 19.10 | 3.80 / 3.20 | 5.40 / 4.60 | 1,994,412 / 1,947,050 | 166,367 / 130,068 | 54,943 / 44,877 |
+| 0-15 | Arez | 28.65 / 28.05 | 203.80 / 207.15 | 6.90 / 6.20 | 9.10 / 7.50 | 2,587,326 / 2,548,208 | 184,824 / 150,283 | 59,922 / 50,212 |
+| 0-15 | Sting | 26.90 / 27.30 | 202.50 / 207.05 | 6.95 / 6.20 | 9.15 / 7.30 | 2,592,248 / 2,554,232 | 185,631 / 151,158 | 60,272 / 50,510 |
+
+React Developer Tools 8.0.0 inspected and highlighted the Raw application's input component and recorded 125 commits in each of stock development, Java development, Java production, and Java production with names. In default production, 78 commits had a positive component duration, including 14 timed updates to the input component. The named build exposed `TodoEntry` and `TodoItem.todo`. Chrome resolved the source maps in all seven Java application builds. The maps contained the exact Java sources of the reconciler, DOM host and the application's `TodoEntry` and `TodoItem` views.
+
 ### Production at `d92506b6c`
 
 Linux x86-64, Intel Core Ultra 7 255H, Chrome for Testing 145.0.7632.117 and Node 26.12.1. Each application ran 30 measured pairs on CPUs 0–5 and 120 pairs with unrestricted scheduling across CPUs 0–15. Each cell gives the stock React 16.6 value followed by the Java renderer value. The sample labels contain `d92506b6c` and the pair count. Run zero is the discarded warm-up. [Individual samples](measurements.csv)
