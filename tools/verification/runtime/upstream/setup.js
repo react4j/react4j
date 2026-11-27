@@ -1,45 +1,10 @@
 // Jest 23 loads this file in each test realm of the upstream source checkout.
 'use strict';
 const fs = require('fs');
-const path = require('path');
-require(path.join(process.cwd(), 'scripts/jest/setupTests.js'));
+const counters = require('./reporter');
+const adaptations = counters.adaptations;
 
-let calls = 0;
-let assertions = 0;
-let uncheckedWarnings = 0;
-if (process.env.NODE_ENV === 'production') {
-  const matchers = require(path.join(process.cwd(), 'scripts/jest/matchers/toWarnDev'));
-  for (const [name, matcher] of Object.entries(matchers)) {
-    expect.extend({[name](...args) {
-      const result = matcher.apply(this, args);
-      uncheckedWarnings++;
-      return result;
-    }});
-  }
-}
-const adaptations = new Set();
-afterEach(() => { assertions = expect.getState().assertionCalls - uncheckedWarnings; });
-function record(event) {
-  fs.appendFileSync(process.env.REACT4J_CASE_LOG, JSON.stringify(event) + '\n');
-}
-jasmine.getEnv().addReporter({
-  specStarted(result) {
-    calls = 0;
-    adaptations.clear();
-    assertions = 0;
-    uncheckedWarnings = 0;
-    record({start:result.fullName, id:result.id});
-  },
-  specDone(result) {
-    record({id:result.id, name:result.fullName, status:result.status, calls,
-      assertions, adaptations:Array.from(adaptations),
-      failure:result.failedExpectations.map(f => f.message).join('\n').slice(0, 2000)});
-  },
-});
-
-if (process.env.REACT4J_CASE_RUNTIME === 'java') {
-  installJavaRenderer();
-}
+installJavaRenderer();
 
 function unsupported(operation) {
   throw new Error('Outside the React4j test adapter: ' + operation);
@@ -408,7 +373,7 @@ function createRenderer(moduleFor, sourceReact) {
       return require('shared/ReactFeatureFlags').enableSchedulerTracing
         ? require('scheduler/tracing').unstable_getCurrent() : null;
     },
-    observe() { calls++; },
+    observe() { counters.calls++; },
   };
   function createHostFixture(config) {
     const HostFixture = moduleFor('react4j.testing.HostFixture');
@@ -417,7 +382,7 @@ function createRenderer(moduleFor, sourceReact) {
       createContainer: container => host.createContainer(container),
       updateContainer(element, container, parent, callback) {
         if (parent != null) unsupported('custom host subtree mounting');
-        calls++;
+        counters.calls++;
         return host.updateContainer(element, container, callback ?? null);
       },
     };
@@ -497,7 +462,7 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, registerRefl
       }
     },
     render(element, container, callback) {
-      calls++;
+      counters.calls++;
       containers.add(container);
       const instance = dom[render](element, container, callback || null);
       const root = committedRoot(container);
@@ -507,31 +472,31 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, registerRefl
       });
       return instance;
     },
-    unmountComponentAtNode(container) { calls++; return dom[unmount](container); },
+    unmountComponentAtNode(container) { counters.calls++; return dom[unmount](container); },
     unstable_batchedUpdates(action, ...args) {
-      calls++;
+      counters.calls++;
       let result;
       dom[batch](() => { result = action(...args); });
       return result;
     },
     flushSync(action, ...args) {
-      calls++;
+      counters.calls++;
       let result;
       dom[member(dom, 'm_flushSync__')](() => { result = action(...args); });
       return result;
     },
     unstable_flushControlled(action, ...args) {
-      calls++;
+      counters.calls++;
       dom[member(dom, 'm_flushControlled__')](() => action(...args));
     },
     createPortal(children, container, key) {
       if (key != null) unsupported('keyed portal');
-      calls++;
+      counters.calls++;
       return dom[portal](children, container);
     },
     unstable_createRoot(container, options) {
       if (options && options.hydrate) unsupported('hydration');
-      calls++;
+      counters.calls++;
       const root = dom[member(dom, 'm_createRoot__')](container);
       // React4j exposes its completion callback as an argument. Only forward real commits.
       function work(submit) {

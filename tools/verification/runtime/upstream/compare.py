@@ -33,26 +33,55 @@ def specs(checkout):
         yield path.relative_to(checkout)
 
 
+def additional_specs():
+    groups = {
+        "react": ["ReactCoffeeScriptClass-test.coffee", "ReactCreateRef-test.js", "ReactProfiler-test.internal.js",
+                  "ReactProfilerDevToolsIntegration-test.internal.js", "ReactStrictMode-test.internal.js",
+                  "forwardRef-test.js"],
+        "react-dom": ["ReactDOMserverIntegrationProgress-test.js", "ReactTestUtils-test.js", "findDOMNode-test.js",
+                      "multiple-copies-of-react-test.js", "renderSubtreeIntoContainer-test.js"],
+        "react-cache": ["ReactCache-test.internal.js"],
+        "create-subscription": ["createSubscription-test.internal.js"],
+        "react-test-renderer": ["ReactTestRenderer-test.internal.js", "ReactTestRendererAsync-test.js",
+                                "ReactTestRendererTraversal-test.js"],
+    }
+    for package, names in groups.items():
+        for name in names:
+            yield Path("packages", package, "src", "__tests__", name)
+    yield Path("packages/shared/__tests__/describeComponentFrame-test.js")
+
+
+def requires_reconciler_parity(spec):
+    return spec.parts[:2] == ("packages", "react-reconciler") or spec.name == "forwardRef-test.internal.js"
+
+
 def is_reconciler_spec(spec):
-    return spec.parts[:2] == ("packages", "react-reconciler") or spec.name in {
-        "forwardRef-test.internal.js", "ReactProfiler-test.internal.js"}
+    return (requires_reconciler_parity(spec)
+            or spec.parts[1] in {"create-subscription", "react-cache", "react-test-renderer"}
+            or spec.name in {"ReactCreateRef-test.js", "ReactProfiler-test.internal.js",
+                             "ReactProfilerDevToolsIntegration-test.internal.js", "ReactStrictMode-test.internal.js",
+                             "forwardRef-test.js"})
 
 
-def run_suite(checkout, config, bundle, output, spec, runtime, mode):
+def uses_server_integration_variants(spec):
+    return spec.name.lower().startswith("reactdomserverintegration")
+
+
+def run_suite(checkout, config, bundle, output, spec, runtime, mode, node):
     directory = output / runtime / spec.parent
     directory.mkdir(parents=True, exist_ok=True)
     events = directory / (spec.name + ".jsonl")
     log = directory / (spec.name + ".log")
-    env = dict(os.environ, CI="true", NODE_ENV=mode, REACT4J_CASE_RUNTIME=runtime,
+    env = dict(os.environ, CI="true", NODE_ENV=mode,
                REACT4J_CASE_LOG=str(events), REACT4J_BUNDLE=str(bundle))
     memory_case = is_reconciler_spec(spec)
     if memory_case:
         env["REACT4J_RECONCILER_CASE"] = spec.name
-    command = ["node", "node_modules/jest/bin/jest.js", "--config", str(config), "--runInBand",
+    command = [node, "node_modules/jest/bin/jest.js", "--config", str(config), "--runInBand",
                "--runTestsByPath", str(spec)]
     if memory_case and runtime == "java":
         command += ["--env", "node"]
-    if spec.name.startswith("ReactDOMServerIntegration"):
+    if uses_server_integration_variants(spec):
         command += ["--testNamePattern", "with clean client render"]
     with log.open("w") as transcript:
         result = subprocess.run(command, cwd=checkout, env=env, stdout=transcript,
@@ -79,13 +108,18 @@ def main():
     parser.add_argument("output", type=Path)
     parser.add_argument("--reconciler-bundle", type=Path, help="Use a separate J2CL memory-host bundle for reconciler suites")
     parser.add_argument("--mode", choices=("development", "production"), default="production")
-    parser.add_argument("--suite", action="append", type=Path, help="Relative upstream suite path; may repeat")
+    parser.add_argument("--stock-node", default="node",
+                        help="Node executable for stock fixtures (use Node 10.24.1 for historical V8 diagnostics)")
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--suite", action="append", type=Path, help="Relative upstream suite path; may repeat")
+    selection.add_argument("--additional", action="store_true",
+                           help="Run additional original core, profiling, test renderer and integration suites")
     args = parser.parse_args()
     checkout = args.checkout.resolve()
     bundle = args.bundle.resolve(strict=True)
     if json.loads((checkout / "package.json").read_text())["version"] != "16.6.0":
         raise ValueError("Expected a React 16.6.0 source checkout")
-    selected = args.suite or list(specs(checkout))
+    selected = args.suite or list(additional_specs() if args.additional else specs(checkout))
     reconciler_bundle = None
     if any(map(is_reconciler_spec, selected)):
         if args.reconciler_bundle is None:
@@ -98,16 +132,20 @@ def main():
     pairs = {}
     with tempfile.TemporaryDirectory(dir=checkout / "scripts/jest") as temp:
         folder = Path(temp)
-        shutil.copyfile(Path(__file__).with_name("setup.js"), folder / "setup.js")
-        shutil.copyfile(Path(__file__).with_name("noop.js"), folder / "noop.js")
-        config = folder / "config.js"
-        config.write_text("module.exports = Object.assign({}, require('../config.source'), "
-                          "{setupTestFrameworkScriptFile:require.resolve('./setup'), "
-                          "transformIgnorePatterns:['/node_modules/',require.resolve('./setup'),require.resolve('./noop')]});\n")
+        for name in ("setup.js", "noop.js", "reporter.js"):
+            shutil.copyfile(Path(__file__).with_name(name), folder / name)
+        configs = {}
+        for runtime, setup in (("stock", "reporter"), ("java", "setup")):
+            config = folder / (runtime + ".js")
+            config.write_text("module.exports = Object.assign({}, require('../config.source'), "
+                              "{setupTestFrameworkScriptFile:require.resolve('./" + setup + "'), "
+                              "transformIgnorePatterns:['/node_modules/',require.resolve('./setup'),"
+                              "require.resolve('./noop'),require.resolve('./reporter')]});\n")
+            configs[runtime] = config
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
-            jobs = [pool.submit(run_suite, checkout, config,
+            jobs = [pool.submit(run_suite, checkout, configs[runtime],
                                 reconciler_bundle if is_reconciler_spec(spec) else bundle,
-                                output, spec, runtime, args.mode)
+                                output, spec, runtime, args.mode, args.stock_node if runtime == "stock" else "node")
                     for spec in selected for runtime in ("stock", "java")]
             for job in concurrent.futures.as_completed(jobs):
                 spec, runtime, cases = job.result()
@@ -122,13 +160,13 @@ def main():
             java = both["java"][test_id]
             if name != java["name"]:
                 raise RuntimeError(f"Case {test_id} changed name between runtimes in {spec}")
-            if Path(spec).name.startswith("ReactDOMServerIntegration") and "with clean client render" not in name:
+            if uses_server_integration_variants(Path(spec)) and "with clean client render" not in name:
                 continue
             rows.append(dict(suite=spec, id=test_id, case=name, stock=stock["status"], java=java["status"],
                              calls=java.get("calls", 0), assertions=java.get("assertions", 0),
                              adaptations=java.get("adaptations", []), failure=java.get("failure", "")))
     (output / "cases.json").write_text(json.dumps(rows, indent=2) + "\n")
-    mismatches = [row for row in rows if is_reconciler_spec(Path(row["suite"]))
+    mismatches = [row for row in rows if requires_reconciler_parity(Path(row["suite"]))
                   and (row["stock"] not in ("passed", "pending") or row["java"] != row["stock"])]
     if mismatches:
         for row in mismatches:
