@@ -105,6 +105,7 @@ public final class RuntimeParityBrowserTest {
                 .then(ignored -> concurrentErrorWithPendingState())
                 .then(ignored -> laterSuspense(false))
                 .then(ignored -> laterSuspense(true))
+                .then(ignored -> updateDuringConcurrentFallback())
                 .then(ignored -> hiddenPrimaryUpdates(false, false, production))
                 .then(ignored -> hiddenPrimaryUpdates(true, false, production))
                 .then(ignored -> hiddenPrimaryUpdates(true, true, production))
@@ -1502,10 +1503,9 @@ public final class RuntimeParityBrowserTest {
         final var child = ReactElement.createViewElement(constructible(SuspendingView::new))
                 .input("ready", (BooleanSupplier) () -> ready[0])
                 .input("pending", pending);
-        final var inner = ReactElement.createSuspense(null, null, 0, child);
+        final var inner = ReactElement.createSuspense(null, null, 100, child).input("maxDuration", 100);
         inner.inputs().delete("fallback");
-        final var outer = ReactElement.createSuspense(null, ReactNode.of("outer"), 0, inner)
-                .input("maxDuration", 0);
+        final var outer = ReactElement.createSuspense(null, ReactNode.of("outer"), 0, inner);
         final Runnable cleanup = null == root ? () -> remove(container) : () -> root.unmount(container::remove);
         try {
             if (null == root) {
@@ -1513,7 +1513,8 @@ public final class RuntimeParityBrowserTest {
             } else {
                 root.render(outer);
             }
-            return Browser.until(() -> "outer".equals(container.getTextContent()), 5000, 25, "Nearest defined fallback")
+            return Browser.until(
+                            () -> "outer".equals(container.getTextContent()), 2000, 25, "Fallback uses inner deadline")
                     .then(ignored -> {
                         ready[0] = true;
                         Objects.requireNonNull(resolve[0]).run();
@@ -2064,6 +2065,71 @@ public final class RuntimeParityBrowserTest {
             cleanup.run();
             throw error;
         }
+    }
+
+    private static BrowserPromise updateDuringConcurrentFallback() {
+        final var container = Browser.append("div");
+        final var root = ReactDOM.createRoot(container);
+        final var mounted = new OutputProbe[1];
+        final var resolve = new BrowserPromise.Action[2];
+        final var second = Browser.callback(done -> resolve[0] = done);
+        final var third = Browser.callback(done -> resolve[1] = done);
+        final var thirdReady = new boolean[1];
+        final var thirdAttempts = new int[1];
+        final var type = constructible(inputs -> {
+            final var instance = new OutputProbe(inputs);
+            mounted[0] = instance;
+            return instance;
+        });
+        final var child = ReactElement.createViewElement(type).input("output", (Supplier<ReactNode>) () -> {
+            final var state = Objects.requireNonNull(mounted[0]).state();
+            final var value = null == state ? null : state.get("step");
+            final int step = null == value ? 1 : Js.asInt(value);
+            if (2 == step) {
+                return throwPending(second);
+            }
+            if (3 == step && !thirdReady[0]) {
+                thirdAttempts[0]++;
+                return throwPending(third);
+            }
+            return DOM.span("step:" + step);
+        });
+        root.render(ReactElement.createSuspense(null, DOM.strong("waiting"), 0, child)
+                .input("maxDuration", 0));
+        return Browser.until(() -> "step:1".equals(container.getTextContent()), 5000, 25, "Primary mounts")
+                .then(ignored -> {
+                    Objects.requireNonNull(mounted[0]).setState(JsPropertyMap.of("step", 2));
+                    return Browser.until(
+                            () -> Browser.exists(container, "strong"), 5000, 25, "Concurrent fallback mounts");
+                })
+                .then(ignored -> {
+                    final var view = Objects.requireNonNull(mounted[0]);
+                    final var host = Browser.query(container, "span");
+                    final var fallback = Browser.query(container, "strong");
+                    view.setState(JsPropertyMap.of("step", 3));
+                    return Browser.until(() -> 0 < thirdAttempts[0], 5000, 25, "Update retries the hidden primary")
+                            .then(value -> {
+                                check(
+                                        fallback == Browser.query(container, "strong"),
+                                        "The pending update keeps the fallback");
+                                equal("none", Browser.inlineStyle(host, "display"));
+                                Objects.requireNonNull(resolve[0]).run();
+                                thirdReady[0] = true;
+                                Objects.requireNonNull(resolve[1]).run();
+                                return Browser.until(
+                                        () -> "step:3".equals(container.getTextContent()),
+                                        5000,
+                                        25,
+                                        "The latest pending state commits");
+                            })
+                            .then(value -> {
+                                check(view == mounted[0], "Suspense retains the view instance");
+                                check(host == Browser.query(container, "span"), "Suspense retains the primary host");
+                                equal("", Browser.inlineStyle(host, "display"));
+                                return null;
+                            });
+                })
+                .finallyDo(() -> root.unmount(container::remove));
     }
 
     private static BrowserPromise hiddenPrimaryUpdates(boolean initiallySuspended, boolean nested, boolean production) {

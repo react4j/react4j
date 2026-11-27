@@ -1254,11 +1254,18 @@ final class Renderer {
 
         private void markDirty() {
             final var undo = root._renderUndo;
-            for (var fiber = this; null != fiber && !fiber._dirty; fiber = fiber.parent) {
-                if (null != undo) {
-                    fiber.rememberClean(undo);
+            if (null == undo) {
+                for (var fiber = this; null != fiber && !fiber._dirty; fiber = fiber.parent) {
+                    fiber._dirty = true;
                 }
-                fiber._dirty = true;
+            } else {
+                // Suspense rollback can restore a dirty descendant beneath a clean boundary.
+                for (var fiber = this; null != fiber; fiber = fiber.parent) {
+                    if (!fiber._dirty) {
+                        fiber.rememberClean(undo);
+                        fiber._dirty = true;
+                    }
+                }
             }
         }
 
@@ -1863,7 +1870,8 @@ final class Renderer {
                 reconcileLegacySuspense(inputs, scope, sameInputsAndScope, complete);
                 return;
             }
-            final var suspended = null != _suspension;
+            final var previousSuspension = null == _suspension ? null : (ConcurrentSuspense) _suspension;
+            final var suspended = null != previousSuspension;
             final var previous = children;
             final var primary = suspended ? sliceChildren(previous, 0, _primaryCount) : previous;
             final var fallback = suspended ? sliceChildren(previous, _primaryCount, previous.length) : NO_CHILDREN;
@@ -1888,17 +1896,21 @@ final class Renderer {
                     complete.finish(failure);
                     return;
                 }
+                // Rollback can discard the nodes of inner boundaries that do not provide a fallback.
+                final var nextDeadline = suspended ? deadline : Math.max(deadline, fallbackDeadline(failure));
                 rollback(undo, checkpoint);
-                root._fallbackDeadline = deadline;
+                root._fallbackDeadline = nextDeadline;
                 root._snapshots.subList(snapshots, root._snapshots.size()).clear();
                 root._mutations.subList(mutations, root._mutations.size()).clear();
                 root._effects.subList(effects, root._effects.size()).clear();
                 final var thenables = new LinkedHashSet<Object>();
                 failure.collectThenables(thenables);
-                if (!thenables.equals(_suspension)) {
-                    _suspension = thenables;
+                if (null == previousSuspension || !thenables.equals(previousSuspension.thenables)) {
+                    final var suspension = new ConcurrentSuspense(
+                            thenables, null == previousSuspension ? -1 : previousSuspension.committedAt);
+                    _suspension = suspension;
                     final Continuation retry = ignored -> {
-                        if (alive && _suspension == thenables) {
+                        if (alive && _suspension == suspension) {
                             invalidate();
                         }
                     };
@@ -1916,27 +1928,38 @@ final class Renderer {
                     root._mutations.add(new Effect(this, () -> root._heldFallbacks.add(this)));
                     complete.finish(null);
                 } else {
-                    deferFallback();
                     showFallback(inputs, scope, primary, fallback, false, complete);
                 }
             });
         }
 
-        private void deferFallback() {
+        private double fallbackDeadline(RenderFailure failure) {
             final var expiration = root._activeUrgent ? INTERACTIVE_EXPIRATION_MS : NORMAL_EXPIRATION_MS;
-            double delay = expiration;
-            for (var boundary = this; null != boundary; boundary = boundary.parent) {
+            final var expiresAt = root._renderStarted + expiration;
+            var delay = Double.POSITIVE_INFINITY;
+            var start = root._renderStarted - (NORMAL_EXPIRATION_MS - expiration);
+            for (var boundary = failure.source.parent; null != boundary; boundary = boundary.parent) {
                 if (React.Suspense == boundary.type && null != boundary.node) {
+                    if (boundary._suspension instanceof ConcurrentSuspense suspense && 0 <= suspense.committedAt) {
+                        start = suspense.committedAt;
+                        break;
+                    }
                     final var timeout = boundary.node.inputs().get("maxDuration");
                     if (null != timeout && "number".equals(Js.typeof(timeout))) {
-                        final var duration = Js.asDouble(timeout) - (NORMAL_EXPIRATION_MS - expiration);
-                        delay = Math.min(delay, duration);
+                        delay = Math.min(delay, Js.asDouble(timeout));
                     }
                 }
             }
-            if (0 < delay) {
-                root._fallbackDeadline = Math.max(root._fallbackDeadline, root._renderStarted + delay);
+            var deadline = Math.min(expiresAt, start + delay);
+            if (Double.isNaN(deadline)) {
+                deadline = 0;
             }
+            if (null != failure._siblings) {
+                for (final var sibling : failure._siblings) {
+                    deadline = Math.max(deadline, fallbackDeadline(sibling));
+                }
+            }
+            return deadline;
         }
 
         private void reconcileLegacySuspense(
@@ -2070,7 +2093,12 @@ final class Renderer {
                 }
                 _primaryCount = primary.length;
                 if (!suspended) {
-                    root._effects.add(new Effect(this, () -> setHidden(primary, true)));
+                    root._effects.add(new Effect(this, () -> {
+                        if (_suspension instanceof ConcurrentSuspense suspension) {
+                            suspension.committedAt = now();
+                        }
+                        setHidden(primary, true);
+                    }));
                 }
                 complete.finish(failure);
             });
@@ -2426,6 +2454,16 @@ final class Renderer {
 
     private static final class LegacySuspense {
         private final List<RenderFailure> failures = new ArrayList<>();
+    }
+
+    private static final class ConcurrentSuspense {
+        private final LinkedHashSet<Object> thenables;
+        private double committedAt;
+
+        private ConcurrentSuspense(LinkedHashSet<Object> thenables, double committedAt) {
+            this.thenables = thenables;
+            this.committedAt = committedAt;
+        }
     }
 
     // Legacy class instances schedule through the fiber copy on which they mounted.
