@@ -100,6 +100,8 @@ def scope(suite, name):
         return "review separately: assertions following hydration"
     if file == "ReactDOMServerIntegrationRefs-test.js":
         return "review separately: ref assertions with server markup"
+    if file == "onlyChild-test.js" or (file == "ReactChildren-test.js" and "with fragments enabled" not in name):
+        return "excluded: React.Children traversal API"
     if file.startswith("ReactProfiler"):
         return "review separately: client profiling and tracing"
     if suite.startswith(("packages/react-dom/", "packages/react-reconciler/", "packages/react/")):
