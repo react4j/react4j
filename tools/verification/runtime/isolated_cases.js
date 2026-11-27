@@ -2,6 +2,7 @@ goog.module('react4j.testing.IsolatedCases');
 const Context = goog.require('react4j.testing.IsolatedContextTest');
 const ErrorHandling = goog.require('react4j.testing.IsolatedErrorHandlingTest');
 const ErrorLogging = goog.require('react4j.testing.IsolatedErrorLoggingTest');
+const ForwardRef = goog.require('react4j.testing.IsolatedForwardRefTest');
 const Incremental = goog.require('react4j.testing.IsolatedIncrementalTest');
 const LegacyContext = goog.require('react4j.testing.IsolatedLegacyContextTest');
 const ProfilerDevTools = goog.require('react4j.testing.IsolatedProfilerDevToolsTest');
@@ -107,6 +108,12 @@ exports.run = function(mode) {
   }
   for (let i = 0; i < 20; i++) {
     run('ReactIncrementalPerf spec' + i, () => Timing.cases(i, mode === 'development'));
+  }
+  for (let i = 0; i < 6; i++) {
+    run('forwardRef protected spec' + i, () => ForwardRef.protectedCases(i));
+  }
+  for (let i = 0; i < 15; i++) {
+    if (i < 4 || i >= 11) run('forwardRef public spec' + i, () => ForwardRef.publicCases(i, mode === 'development'));
   }
   return count;
 };

@@ -480,6 +480,7 @@ public final class IsolatedReconcilerTest {
         private double _timerNow;
         private BooleanSupplier _shouldYield = () -> false;
         private final boolean _timing;
+        private final boolean _strictReplay;
         final MemoryRenderer memory;
 
         Harness() {
@@ -487,7 +488,12 @@ public final class IsolatedReconcilerTest {
         }
 
         Harness(boolean timing) {
+            this(timing, false);
+        }
+
+        Harness(boolean timing, boolean strictReplay) {
             _timing = timing;
+            _strictReplay = strictReplay;
             memory = new MemoryRenderer(this);
         }
 
@@ -560,7 +566,7 @@ public final class IsolatedReconcilerTest {
 
         @Override
         public boolean strictReplay() {
-            return false;
+            return _strictReplay;
         }
 
         @Override

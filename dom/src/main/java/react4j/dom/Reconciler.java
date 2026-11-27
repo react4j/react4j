@@ -149,13 +149,17 @@ final class Reconciler {
             ReactElement element, Object target, JsPropertyMap<@Nullable Object> inputs);
 
     private static ReactElement retarget(ReactElement element, Object target) {
-        final var inputs = element.inputs();
+        return retarget(element, target, withDefaultProps(element.inputs(), target));
+    }
+
+    private static JsPropertyMap<@Nullable Object> withDefaultProps(
+            JsPropertyMap<@Nullable Object> inputs, Object target) {
         final var defaults =
                 Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(target).get("defaultProps");
         if (null == defaults) {
-            return retarget(element, target, inputs);
+            return inputs;
         }
-        final var resolved = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(JsPropertyMap.of());
+        final var resolved = JsPropertyMap.<@Nullable Object>of();
         inputs.forEach(key -> resolved.set(key, inputs.get(key)));
         final var defaultInputs = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(defaults);
         defaultInputs.forEach(key -> {
@@ -163,7 +167,15 @@ final class Reconciler {
                 resolved.set(key, defaultInputs.get(key));
             }
         });
-        return retarget(element, target, resolved);
+        return resolved;
+    }
+
+    static void checkForwardRefProps(
+            ReactElement element, Object type, JsPropertyMap<@Nullable Object> inputs, PropTypeValidator.Stack stack) {
+        if (DEVELOPMENT) {
+            final var name = Objects.requireNonNullElse(RenderFailure.frameName(type), "ForwardRef");
+            PropTypeValidator.checkWrappedElement(element, type, inputs, name, stack);
+        }
     }
 
     private static final int LAZY_UNINITIALIZED = -1;
@@ -2445,15 +2457,17 @@ final class Reconciler {
                     final var renderName = RenderFailure.frameName(renderType);
                     startTiming(null == renderName ? "ForwardRef" : "ForwardRef(" + renderName + ")", mounting);
                     final var render = Js.<RefRender>uncheckedCast(renderType);
+                    final var target = Objects.requireNonNull(type);
+                    final var inputs = withDefaultProps(element.inputs(), target);
+                    if (DEVELOPMENT) {
+                        checkForwardRefProps(element, target, inputs, () -> RenderFailure.stackFrom(this));
+                    }
                     final var owner = CurrentOwner.swap(this);
                     final var previousPhase = swapRenderPhase(true);
                     try {
                         _renderedCommit = root._commitSequence;
                         _contextReads = null;
-                        output = render.render(element.inputs(), element.ref());
-                        if (strict && root.host.strictReplay()) {
-                            render.render(element.inputs(), element.ref());
-                        }
+                        output = render.render(inputs, element.ref());
                     } finally {
                         swapRenderPhase(previousPhase);
                         CurrentOwner.swap(owner);

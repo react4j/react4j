@@ -6,6 +6,7 @@ import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
 import react4j.JsError;
 import react4j.ReactElement;
@@ -57,6 +58,14 @@ final class PropTypeValidator {
                 warn("Warning: getDefaultProps is only used on classic React.createClass definitions. "
                         + "Use a static property named `defaultProps` instead.");
             }
+        }
+    }
+
+    static void checkWrappedElement(
+            ReactElement element, Object type, JsPropertyMap<@Nullable Object> inputs, String name, Stack stack) {
+        if (DEVELOPMENT && null == CHECKED.get(element)) {
+            CHECKED.set(element, true);
+            check(ClassComponent.properties(type).get("propTypes"), inputs, "prop", name, stack);
         }
     }
 
