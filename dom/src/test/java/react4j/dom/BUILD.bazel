@@ -26,6 +26,8 @@ j2cl_library(
         "MemoryBrowserTest.java",
         "OriginalHostCasesBrowserTest.java",
         "OriginalHostCasesBrowserTest.native.js",
+        "OtherHostBrowserTest.java",
+        "OtherHostBrowserTest.native.js",
         "ProfilerBrowserTest.java",
         "ProfilerBrowserTest.native.js",
         "PropertiesBrowserTest.java",
