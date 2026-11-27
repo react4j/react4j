@@ -104,6 +104,26 @@ def scope(suite, name):
         return "excluded: React.Children traversal API"
     if file.startswith("ReactProfiler"):
         return "review separately: client profiling and tracing"
+    if suite.startswith("packages/scheduler/"):
+        return "excluded: standalone JavaScript scheduler API"
+    if file in {"EventPluginRegistry-test.internal.js", "accumulateInto-test.internal.js"}:
+        return "excluded: private event plugin registry or accumulation helper"
+    if file == "ResponderEventPlugin-test.internal.js":
+        return "excluded: native responder plugin"
+    if file == "ReactErrorUtils-test.internal.js":
+        return "excluded: private JavaScript guarded callback API"
+    if file == "reactProdInvariant-test.internal.js":
+        return "excluded: upstream production error decoder URL"
+    if file == "ReactNativeAttributePayload-test.js":
+        return "excluded: native view attribute payload"
+    if suite.startswith(("packages/react-art/", "packages/react-native-renderer/")):
+        return "review separately: other host and shared component behavior"
+    if file == "ReactShallowRenderer-test.js":
+        return "review separately: shallow rendering and shared component behavior"
+    if suite.startswith(("packages/react-test-renderer/", "packages/create-subscription/", "packages/react-cache/",
+                         "packages/react-is/")) or file in {
+            "ReactDOMFrameScheduling-test.js", "describeComponentFrame-test.js", "ReactSymbols-test.internal.js"}:
+        return "review separately: client interoperation"
     if suite.startswith(("packages/react-dom/", "packages/react-reconciler/", "packages/react/")):
         return "client candidate"
     return "review separately: other package or renderer"
