@@ -13,12 +13,14 @@ The assertion maps below link original checks to Java methods. **Ported** and **
 | Upstream behavior | Checked-in assertion map |
 | --- | --- |
 | Element creation, JSX records and cloning | [Elements](element-assertions.tsv) |
-| Class lifecycle, snapshots and state updates | [Class lifecycle](component-lifecycle-assertions.tsv) |
+| Class lifecycle, snapshots, context and state updates | [Class lifecycle](component-lifecycle-assertions.tsv), [class context](class-context-assertions.tsv), [batched and synchronous updates](update-scheduling-assertions.tsv) |
 | Derived and legacy error boundaries, lifecycle order and recovery | [Error boundaries](error-boundary-assertions.tsv) |
 | Event emitter and synthetic events | [Events](event-assertions.tsv) |
+| DOM attributes, SVG, styles, text and raw HTML | [DOM host](host-assertions.tsv) |
 | Input, select, option and textarea | [Forms](forms-assertions.tsv) |
 | Programmatic Profiler callbacks and timing | [Profiler](profiler-assertions.tsv) |
-| In-memory reconciliation | [Fragments and boundaries](reconciler-fragment-assertions.tsv), [persistence](reconciler-persistence-assertions.tsv), [scheduling](reconciler-scheduling-assertions.tsv), [state queues](reconciler-updates-assertions.tsv), [lazy and memo](reconciler-wrapped-assertions.tsv), [Suspense](reconciler-suspense-assertions.tsv) |
+| In-memory reconciliation | [Fragments and boundaries](reconciler-fragment-assertions.tsv), [persistence](reconciler-persistence-assertions.tsv), [scheduling](reconciler-scheduling-assertions.tsv), [state queues](reconciler-updates-assertions.tsv), [lazy and memo](reconciler-wrapped-assertions.tsv), [Suspense](reconciler-suspense-assertions.tsv), [no-op host Suspense](reconciler-suspense-noop-assertions.tsv) |
+| In-memory commits and interrupted work | [Reflection](reconciler-reflection-assertions.tsv), [error logging and replay](reconciler-error-logging-assertions.tsv), [triangle workloads](reconciler-triangle-assertions.tsv), [side effects](reconciler-side-effects-assertions.tsv) |
 
 The Java port covers client rendering, including ordinary batched updates, synchronous flushing and Profiler callbacks. The scope excludes hydration, server rendering, the experimental `root.createBatch()` manual commit API, scheduler tracing subscribers and the numeric element protocol used without `Symbol`. Mixed cases retain their applicable client assertions. Development diagnostics are compared by condition, affected component and diagnostic information, with exact text where the Java API promises it. The unmodified Jest suite can still fail an exact upstream wording check.
 
@@ -33,7 +35,7 @@ python3 tools/verification/runtime/upstream/inventory.py report "$work" > "$work
 python3 tools/verification/runtime/upstream/inventory.py audit
 ```
 
-The audit checks case IDs, Java fixture method references and the executed same-file assertion sites for individually mapped cases. Assertions in shared helpers and the meaning of each Java check also require review.
+The audit verifies case IDs, Java fixture method references and stock assertion locations for each individually mapped case, including assertions in shared helpers. It counts cases whose mapped applicable assertions have Java counterparts, cases with partial or pending assertions, and cases with only exclusions or upstream skips. It also reports how much of the stock inventory has no individual map. The meaning of each Java assertion and its exclusion rationale require source review.
 
 ## Running original cases against both runtimes
 
@@ -64,7 +66,7 @@ All 198 cases in the input, select, option and textarea suites passed on both si
 
 All 324 enabled cases in the 27 upstream reconciler suites passed against both runtimes in both modes. Both runtimes skipped the same 17 upstream cases. In development, 307 passes entered Java and made an effective assertion, 13 entered Java without one, and four exercised helpers. The production counts were 301, 19 and four. The matrix includes every original Suspense, work expiration, persistence and User Timing case. The six additional forwardRef cases also passed in both modes.
 
-A [second matrix](additional-cases.tsv) exercises 17 more suites, including the public JSX Profiler, StrictMode, refs, react-cache, create-subscription and the test renderer. Stock passed all 245 development cases and all 243 production cases. Java passed 139 and 164 respectively. All 19 react-cache and create-subscription cases passed in both modes, including four helper-only passes. The six traversal cases try to read the test renderer's private fixture tree through its public `root.find*` API. The adapter does not expose that tree. Three other cases install a mock DevTools hook on the in-memory test renderer. The actual DOM renderer's browser-extension results are recorded separately.
+A [second matrix](additional-cases.tsv) exercises 17 more suites, including the public JSX Profiler, StrictMode, refs, react-cache, create-subscription and the test renderer. Stock passed all 245 development cases and all 243 production cases. Java passed 139 and 164 respectively. All 19 react-cache and create-subscription cases passed in both modes, including four helper-only passes. The six traversal cases try to use the test renderer's `root`, `find` and `findAll` APIs. The adapter does not expose that tree. Three other cases install a mock DevTools hook on the in-memory test renderer. The actual DOM renderer's browser-extension results are recorded separately.
 
 ## Which tests exercise which contract?
 

@@ -122,6 +122,7 @@ def audit():
     ids = {(case["suite"], mode, case[mode + " id"]): i for i, case in enumerate(cases)
            for mode in MODES if case[mode + " id"]}
     reviewed = {}
+    dispositions = {}
     tests = {}
     for table in sorted(directory.glob("*-assertions.tsv")):
         with table.open() as source:
@@ -139,12 +140,25 @@ def audit():
                 if len(indices) != 1:
                     raise ValueError(f"{where}: mode-specific IDs refer to different cases")
                 index = indices.pop()
-                source_line = re.match(r"L(\d+)(?::(\d+))?:", row["assertion"])
-                location = (int(source_line[1]), int(source_line[2] or 0)) if source_line else None
-                reviewed.setdefault(index, set()).add(location)
+                source_line = re.match(r"L(\d+(?::\d+)?):", row["assertion"])
+                shared_site = re.match(r"(packages/[^\s]+:\d+:\d+):", row["assertion"])
+                locations = reviewed.setdefault(index, set())
+                if source_line:
+                    locations.add(source_line[1])
+                elif shared_site:
+                    locations.add(shared_site[1])
+                disposition = row["disposition"]
+                if disposition not in {"ported", "covered", "adapted", "excluded", "upstream pending",
+                                       "skipped upstream", "related", "not ported"}:
+                    raise ValueError(f"{where}: unknown assertion disposition: {disposition}")
+                if disposition not in {"ported", "covered"} and row["reason"].strip() in {"", "-", "—"}:
+                    raise ValueError(f"{where}: explain the {disposition} assertion")
+                dispositions.setdefault(index, set()).add(disposition)
                 java = re.split(r"[(,]", row["java_test"], maxsplit=1)[0].strip()
                 if java not in {"-", "—"}:
                     tests.setdefault(java, where)
+                elif disposition in {"ported", "covered", "adapted"}:
+                    raise ValueError(f"{where}: {disposition} assertion needs a Java fixture")
     root = directory.resolve().parents[3]
     for java, where in tests.items():
         cls, method = java.rsplit(".", 1)
@@ -157,16 +171,23 @@ def audit():
         case = cases[index]
         for mode in MODES:
             for site in case[mode + " expect sites"].split():
-                # Helpers in another file have a full path. Their behavior needs a separate review.
-                if not re.fullmatch(r"\d+:\d+", site):
-                    continue
-                line, column = map(int, site.split(":"))
-                if (line, column) not in rows and (line, 0) not in rows:
-                    missing.append(f"{case['suite']} {case[mode + ' id']} ({mode}) L{site}")
+                if site != "-" and site not in rows and site.rsplit(":", 1)[0] not in rows:
+                    missing.append(f"{case['suite']} {case[mode + ' id']} ({mode}) {site}")
     if missing:
         raise ValueError("Unmapped executed expect sites in individually mapped cases:\n" + "\n".join(missing))
     print(f"Validated source locations and {len(tests)} Java fixture methods across "
           f"{len(reviewed)} individually mapped cases. Stock inventory: {len(cases)} cases across both modes.")
+    counts = Counter()
+    for values in dispositions.values():
+        if values & {"related", "not ported"}:
+            counts["partial or pending"] += 1
+        elif values & {"ported", "covered", "adapted"}:
+            counts["all mapped applicable assertions have Java counterparts"] += 1
+        else:
+            counts["only excluded or upstream-skipped assertions"] += 1
+    for label, count in sorted(counts.items()):
+        print(f"  {count} cases: {label}")
+    print(f"  {len(cases) - len(reviewed)} stock cases have no individual assertion map.")
 
 
 def main():
