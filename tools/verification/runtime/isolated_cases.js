@@ -109,6 +109,7 @@ exports.run = function(mode) {
   run('ReactJSXElementValidator fragment refs', () => ChildDiagnostics.fragmentAttributes(true, mode === 'development'));
   run('ReactElementValidator invalid types', () => ChildDiagnostics.invalidTypes(mode === 'development'));
   run('ReactElementValidator numeric children', () => ChildDiagnostics.numericChildren());
+  run('ReactElementClone foreign owner stack', () => ChildDiagnostics.clonedPropStack(mode === 'development'));
   run('ReactSymbols unique record markers', () => ChildDiagnostics.symbolUniqueness());
   run('ReactErrorLoggingRecovery console failure', () => ErrorLogging.consoleRecovery());
   run('ReactElement captures its creating component instance', () => SideEffects.elementOwner());

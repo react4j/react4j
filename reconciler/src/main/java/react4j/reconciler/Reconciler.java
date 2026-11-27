@@ -4668,8 +4668,8 @@ public final class Reconciler {
                         final var location = sourceLocation(fiber.node);
                         if (null != location) {
                             stack.append(" (at ").append(location).append(')');
-                        } else if (fiber.node.owner() instanceof Fiber owner) {
-                            final var ownerName = frameName(owner.type);
+                        } else {
+                            final var ownerName = elementOwnerName(fiber.node);
                             if (null != ownerName) {
                                 stack.append(" (created by ").append(ownerName).append(')');
                             }

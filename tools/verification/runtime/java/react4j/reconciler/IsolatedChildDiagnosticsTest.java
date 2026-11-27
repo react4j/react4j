@@ -239,6 +239,43 @@ public final class IsolatedChildDiagnosticsTest {
         equal(0, calls[0]);
     }
 
+    public static void clonedPropStack(boolean development) {
+        final var root = new IsolatedReconcilerTest.Harness().memory.createRoot(false);
+        final var grand = named("CloneGrandParent");
+        final var parent = named("CloneParent");
+        final var child = named("CloneComponent");
+        final PropTypeValidator.Validator color = (values, property, name, location, publicName, secret) ->
+                "number".equals(Js.typeof(props(Objects.requireNonNull(values)).get(property)))
+                        ? new ValidationError("CloneComponent expects a string color.")
+                        : null;
+        props(child).set("componentClass", child);
+        props(child).set("propTypes", JsPropertyMap.of("color", color));
+        final var owner = JsPropertyMap.of("type", grand);
+        final var tree = view(grand, () -> {
+            final var original = view(child, () -> host("div", null, null)).input("color", "red");
+            props(original).set("_owner", owner);
+            final var middle = view(parent, () -> original.dup().input("color", 123d));
+            props(middle).set("_owner", owner);
+            return middle;
+        });
+        final var warnings = captureWarnings(() -> root.render(tree, null));
+        if (development) {
+            check(
+                    warnings.contains("CloneComponent expects a string color.")
+                            && warnings.contains("\n    in CloneComponent (created by CloneGrandParent)"
+                                    + "\n    in CloneParent (created by CloneGrandParent)\n    in CloneGrandParent"),
+                    "A cloned prop warning identifies both foreign owners: " + warnings);
+        } else {
+            equal("", warnings);
+        }
+        rootShape(root, "div()");
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Error")
+    private static final class ValidationError {
+        ValidationError(String message) {}
+    }
+
     public static void symbolUniqueness() {
         final var context = props(new Context<Object>());
         final var provider = Objects.requireNonNull(context.get("Provider"));
