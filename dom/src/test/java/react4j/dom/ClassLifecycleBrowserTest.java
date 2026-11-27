@@ -22,6 +22,9 @@ import react4j.webtesting.Browser;
 
 @NullMarked
 public final class ClassLifecycleBrowserTest {
+    private static final PropTypeValidator.Validator ANY_CONTEXT =
+            (values, property, name, location, publicName, secret) -> null;
+
     private ClassLifecycleBrowserTest() {}
 
     @JsMethod
@@ -44,7 +47,7 @@ public final class ClassLifecycleBrowserTest {
     private static void legacyContext(Browser.Element host) {
         final ViewConstructorFunction provider = Provider::new;
         final ViewConstructorFunction reader = Reader::new;
-        final var types = JsPropertyMap.of("language", true);
+        final var types = JsPropertyMap.of("language", ANY_CONTEXT);
         ClassComponent.properties(provider).set("childContextTypes", types);
         ClassComponent.properties(reader).set("contextTypes", types);
         final var child = ReactElement.createViewElement(reader);
@@ -73,7 +76,7 @@ public final class ClassLifecycleBrowserTest {
             return instance;
         };
         ClassComponent.properties(provider).set("displayName", "LegacyHooks");
-        ClassComponent.properties(provider).set("childContextTypes", JsPropertyMap.of("language", true));
+        ClassComponent.properties(provider).set("childContextTypes", JsPropertyMap.of("language", ANY_CONTEXT));
         final var app = ReactElement.createViewElement(provider).input("children", ReactNode.of("first"));
         final var warnings = EventsBrowserTest.captureWarnings(() -> {
             ReactDOM.render(ReactElement.createStrictMode(app.input("language", "en")), host);

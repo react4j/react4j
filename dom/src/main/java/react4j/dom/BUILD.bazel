@@ -14,6 +14,7 @@ _RECONCILER_SOURCES = [
     "ClassComponent.java",
     "FiberDevTools.java",
     "NativeReactRoot.java",
+    "PropTypeValidator.java",
     "ReactPortal.java",
     "ReactRoot.java",
     "Reconciler.java",

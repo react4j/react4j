@@ -2303,6 +2303,14 @@ final class Reconciler {
                         record.set(slot, RENDERER_ID);
                     }
                     final var inputs = element.inputs();
+                    if (DEVELOPMENT) {
+                        PropTypeValidator.check(
+                                ClassComponent.properties(type).get("propTypes"),
+                                inputs,
+                                "prop",
+                                "Context.Provider",
+                                () -> RenderFailure.stackFrom(this));
+                    }
                     final var value = inputs.get("value");
                     var provided = _providedScope;
                     if (null == provided || provided.parent != scope || !sameContextValue(value, provided.value)) {
@@ -2749,6 +2757,9 @@ final class Reconciler {
             final var previousInputs = null == existing ? null : existing.inputs();
             final var predicate = _viewPredicate;
             final var classType = _classType;
+            if (DEVELOPMENT && null != classType) {
+                PropTypeValidator.checkElement(element, classType, () -> RenderFailure.stackFrom(this));
+            }
             final var contextType = null == classType
                     ? null
                     : ClassComponent.properties(classType).get("contextType");
@@ -2766,6 +2777,14 @@ final class Reconciler {
             } else if (null != classType && source != _legacySource) {
                 _legacySource = source;
                 _maskedContext = ClassComponent.mask(classType, source);
+                if (DEVELOPMENT) {
+                    PropTypeValidator.check(
+                            ClassComponent.properties(classType).get("contextTypes"),
+                            _maskedContext,
+                            "context",
+                            ClassComponent.name(classType),
+                            () -> RenderFailure.stackFrom(this));
+                }
             }
             final boolean clean = !refreshChildren && !_retrySuspendedView;
             if (null != existing
@@ -2924,8 +2943,16 @@ final class Reconciler {
                 if (null != provide && render) {
                     final var phase = startPhase("getChildContext");
                     try {
-                        final var value = ClassComponent.merge(
-                                JsPropertyMap.of(), source, ClassComponent.apply(provide, component, new Object[0]));
+                        final var supplied = ClassComponent.apply(provide, component, new Object[0]);
+                        if (DEVELOPMENT) {
+                            PropTypeValidator.check(
+                                    ClassComponent.properties(classType).get("childContextTypes"),
+                                    supplied,
+                                    "child context",
+                                    ClassComponent.name(classType),
+                                    () -> RenderFailure.stackFrom(this));
+                        }
+                        final var value = ClassComponent.merge(JsPropertyMap.of(), source, supplied);
                         _legacyChildren = new Scope(scope, ClassComponent.LEGACY_CONTEXT, value, ALL_CONTEXT_BITS);
                     } finally {
                         finishPhase(phase);

@@ -345,6 +345,19 @@ function createRenderer(moduleFor, sourceReact) {
     constructors.set(type, create);
     return create;
   }
+  function validateJSXProps(element, type) {
+    if (process.env.NODE_ENV !== 'production' && typeof type === 'function' &&
+        (type.propTypes || type.PropTypes !== undefined || typeof type.getDefaultProps === 'function')) {
+      const PropTypes = moduleFor('react4j.dom.PropTypeValidator');
+      const describe = require('shared/describeComponentFrame').default;
+      const name = candidate => candidate?.displayName || candidate?.name || null;
+      PropTypes[member(PropTypes, 'm_checkElement__')](element, type, () =>
+        describe(name(type), element._source, name(element._owner?.type)) +
+        internals.ReactDebugCurrentFrame.getStackAddendum());
+    }
+    return element;
+  }
+
   const react = Object.assign({}, sourceReact, {
     Component, PureComponent,
     createElement(type, props, ...children) {
@@ -352,7 +365,10 @@ function createRenderer(moduleFor, sourceReact) {
         const render = children[0];
         children[0] = value => renderFixture(undefined, render, [value]);
       }
-      return sourceReact.createElement(factory(type), props, ...children);
+      return validateJSXProps(sourceReact.createElement(factory(type), props, ...children), type);
+    },
+    cloneElement(element, ...args) {
+      return validateJSXProps(sourceReact.cloneElement(element, ...args), element.type?.componentClass);
     },
     createContext(initial, changedBits) {
       const context = JavaReact[member(JavaReact, 'm_createContext__')](initial);

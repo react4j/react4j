@@ -39,6 +39,201 @@ public final class ClassStateBrowserTest {
         statefulModule(host);
         moduleDerivedState(host);
         classShapeDiagnostics(host, production);
+        statelessProps(host);
+        classConstructorState(host);
+        derivedClassState(host, production);
+        stateUpdatesFromClassEvents(host);
+        contextInClassConstructor(host);
+        ordinaryClassLifecycle(host);
+        componentStringRefs(host);
+    }
+
+    private static void statelessProps(Browser.Element host) {
+        final ViewConstructorFunction inner = InputStateView::new;
+        describe(inner, "Inner");
+        final var child = ReactElement.createViewElement(inner).input("variant", StateVariant.PROPS);
+        final var outer = stateBox(new StateBox[1]).input("draw", (Draw)
+                view -> child.dup().input("initialValue", view.requireInputs().get("value")));
+        render(outer.dup().input("value", "foo"), host);
+        assertHost(host, "DIV", "foo");
+        render(outer.dup().input("value", "bar"), host);
+        assertHost(host, "DIV", "bar");
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static void classConstructorState(Browser.Element host) {
+        final ViewConstructorFunction type = InputStateView::new;
+        describe(type, "Foo");
+        final var initial = ReactElement.createViewElement(type).input("initialValue", "foo");
+        render(initial.dup().input("variant", StateVariant.INSTANCE_STATE), host);
+        assertHost(host, "SPAN", "foo");
+        ReactDOM.unmountComponentAtNode(host);
+
+        final var state = initial.dup().input("variant", StateVariant.CONSTRUCTOR_STATE);
+        final var instance =
+                (InputStateView) Objects.requireNonNull(Renderer.render(state, Js.uncheckedCast(host), null));
+        assertHost(host, "DIV", "foo");
+        instance.setState(JsPropertyMap.of("bar", "bar"));
+        render(state.dup(), host);
+        assertHost(host, "SPAN", "bar");
+        ReactDOM.unmountComponentAtNode(host);
+
+        final var renders = new int[1];
+        render(initial.dup().input("variant", StateVariant.MOUNT_STATE).input("renders", renders), host);
+        assertHost(host, "SPAN", "bar");
+        check(1 == renders[0], "Mount applies the queued state before the first render");
+        ReactDOM.unmountComponentAtNode(host);
+
+        render(initial.dup().input("variant", StateVariant.NULL_STATE), host);
+        assertHost(host, "SPAN", "");
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static void derivedClassState(Browser.Element host, boolean production) {
+        final ViewConstructorFunction initialized = StateBox::new;
+        describe(initialized, "Foo").set("getDerivedStateFromProps", (Derive)
+                (props, oldState) -> JsPropertyMap.of("foo", props.get("foo"), "bar", "bar"));
+        final Draw renderPair = view -> {
+            final var state = Objects.requireNonNull(view.state());
+            return styled("div", state.get("foo") + " " + state.get("bar"), null);
+        };
+        final var initial = ReactElement.createViewElement(initialized)
+                .input("capture", new StateBox[1])
+                .input("draw", renderPair)
+                .input("foo", "foo");
+        render(initial.dup().input("state", JsPropertyMap.of()), host);
+        assertHost(host, "DIV", "foo bar");
+        ReactDOM.unmountComponentAtNode(host);
+        final ViewConstructorFunction unset = StateBox::new;
+        describe(unset, "Unset")
+                .set(
+                        "getDerivedStateFromProps",
+                        ClassComponent.properties(initialized).get("getDerivedStateFromProps"));
+        final var unsetState = ReactElement.createViewElement(unset)
+                .input("capture", new StateBox[1])
+                .input("draw", renderPair)
+                .input("foo", "foo");
+        final var warnings = ComponentLifecycleBrowserTest.captureWarnings(() -> render(unsetState, host));
+        check(
+                production == List.of(warnings).stream().noneMatch(warning -> warning.contains("its initial state is")),
+                "Unset constructor state is diagnosed only in development");
+        assertHost(host, "DIV", "foo bar");
+        ReactDOM.unmountComponentAtNode(host);
+
+        final ViewConstructorFunction patch = StateBox::new;
+        describe(patch, "Patch").set("getDerivedStateFromProps", (Derive)
+                (props, oldState) -> JsPropertyMap.of("foo", "not-" + oldState.get("foo")));
+        render(
+                ReactElement.createViewElement(patch)
+                        .input("capture", new StateBox[1])
+                        .input("draw", renderPair)
+                        .input("state", JsPropertyMap.of("foo", "foo", "bar", "bar")),
+                host);
+        assertHost(host, "DIV", "not-foo bar");
+        ReactDOM.unmountComponentAtNode(host);
+
+        final ViewConstructorFunction update = StateBox::new;
+        describe(update, "Update").set("getDerivedStateFromProps", (Derive) (props, oldState) ->
+                Boolean.TRUE.equals(props.get("update")) ? JsPropertyMap.of("value", "updated") : null);
+        final var child = ReactElement.createViewElement(update)
+                .input("capture", new StateBox[1])
+                .input("state", JsPropertyMap.of("value", "initial"))
+                .input("draw", (Draw) view -> styled(
+                        "div",
+                        (String) Objects.requireNonNull(
+                                Objects.requireNonNull(view.state()).get("value")),
+                        null));
+        render(child.dup().input("update", false), host);
+        assertHost(host, "DIV", "initial");
+        render(child.dup().input("update", true), host);
+        assertHost(host, "DIV", "updated");
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static void stateUpdatesFromClassEvents(Browser.Element host) {
+        final ViewConstructorFunction type = InputStateView::new;
+        describe(type, "EventView");
+        for (final var variant : List.of(StateVariant.EVENT_STATE, StateVariant.FORCE_UPDATE)) {
+            final var child = ReactElement.createViewElement(type)
+                    .input("variant", variant)
+                    .input("initialValue", "foo");
+            final var instance =
+                    (InputStateView) Objects.requireNonNull(Renderer.render(child, Js.uncheckedCast(host), null));
+            check(
+                    (StateVariant.FORCE_UPDATE == variant) == (null == instance.state()),
+                    "Only stateful click uses state");
+            assertHost(host, "DIV", "foo");
+            final var node = Objects.requireNonNull(host.getFirstElementChild());
+            node.click();
+            assertHost(host, "DIV", "bar");
+            ReactDOM.unmountComponentAtNode(host);
+        }
+    }
+
+    private static void contextInClassConstructor(Browser.Element host) {
+        final PropTypeValidator.Validator accept = (values, property, name, location, publicName, secret) -> null;
+        final ContextConstructor contextReader = ContextState::new;
+        final ViewConstructorFunction reader = Js.uncheckedCast(contextReader);
+        describe(reader, "Foo").set("contextTypes", JsPropertyMap.of("tag", accept, "className", accept));
+        final ViewConstructorFunction provider = ClassContextProvider::new;
+        describe(provider, "Outer").set("childContextTypes", JsPropertyMap.of("tag", accept, "className", accept));
+        final var app = ReactElement.createViewElement(provider).input("child", ReactElement.createViewElement(reader));
+        render(app.dup().input("tag", "span").input("className", "foo"), host);
+        assertHost(host, "SPAN", "foo");
+        ReactDOM.unmountComponentAtNode(host);
+        render(app.dup().input("tag", "div").input("className", "bar-through-context"), host);
+        assertHost(host, "DIV", "bar-through-context");
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static void ordinaryClassLifecycle(Browser.Element host) {
+        final var actions = new ArrayList<String>();
+        final ViewConstructorFunction type = OrdinaryHooks::new;
+        describe(type, "Foo");
+        final var element = ReactElement.createViewElement(type).input("actions", actions);
+        render(element.dup().input("value", "foo"), host);
+        assertHost(host, "SPAN", "foo");
+        check(actions.equals(List.of("will-mount", "did-mount")), "Ordinary mount phases: " + actions);
+        actions.clear();
+        render(element.dup().input("value", "bar"), host);
+        assertHost(host, "SPAN", "bar");
+        check(
+                actions.equals(
+                        List.of("receive-props:bar", "should-update:bar:", "will-update:bar:", "did-update:foo:")),
+                "Ordinary hooks receive the new inputs and old/new empty state in order: " + actions);
+        actions.clear();
+        ReactDOM.unmountComponentAtNode(host);
+        check(actions.equals(List.of("will-unmount")), "Ordinary unmount phase: " + actions);
+    }
+
+    private static void componentStringRefs(Browser.Element host) {
+        final ViewConstructorFunction inner = InputStateView::new;
+        describe(inner, "Inner");
+        final var owner = stateBox(new StateBox[1]).input("draw", (Draw) view -> {
+            final var innerView = ReactElement.createViewElement(inner)
+                    .input("variant", StateVariant.PROPS)
+                    .input("initialValue", "foo");
+            ClassComponent.properties(innerView).set("ref", "inner");
+            return innerView;
+        });
+        final var instance = Objects.requireNonNull(Renderer.render(owner, Js.uncheckedCast(host), null));
+        assertHost(host, "DIV", "foo");
+        final var refs = ClassComponent.properties(
+                Objects.requireNonNull(ClassComponent.properties(instance).get("refs")));
+        final var referenced = (InputStateView) Objects.requireNonNull(refs.get("inner"));
+        equal("foo", (String) referenced.requireInputs().get("initialValue"));
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static ReactElement styled(String tag, String className, @Nullable Hook click) {
+        return ReactElement.createHostElement(
+                tag, null, null, JsPropertyMap.of("className", className, "onClick", click));
+    }
+
+    private static void assertHost(Browser.Element host, String tag, String className) {
+        final var child = Objects.requireNonNull(host.getFirstElementChild());
+        equal(tag, (String) Browser.property(child, "tagName"));
+        equal(className, (String) Browser.property(child, "className"));
     }
 
     private static void stateJournal(Browser.Element host) {
@@ -408,7 +603,158 @@ public final class ClassStateBrowserTest {
 
     @JsFunction
     private interface Derive {
+        @Nullable
         Object apply(JsPropertyMap<@Nullable Object> inputs, JsPropertyMap<@Nullable Object> state);
+    }
+
+    private enum StateVariant {
+        PROPS,
+        INSTANCE_STATE,
+        CONSTRUCTOR_STATE,
+        MOUNT_STATE,
+        NULL_STATE,
+        EVENT_STATE,
+        FORCE_UPDATE
+    }
+
+    private static final class InputStateView extends NativeView {
+        private final StateVariant _variant;
+        private final Hook _click = this::updateFromClick;
+        private String _mutable;
+
+        @JsConstructor
+        InputStateView(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+            _variant = (StateVariant) Objects.requireNonNull(inputs.get("variant"));
+            _mutable = (String) Objects.requireNonNull(inputs.get("initialValue"));
+            switch (_variant) {
+                case INSTANCE_STATE ->
+                    applyState(JsPropertyMap.of("bar", requireInputs().get("initialValue")));
+                case CONSTRUCTOR_STATE, EVENT_STATE, MOUNT_STATE -> applyState(JsPropertyMap.of("bar", _mutable));
+                default -> {}
+            }
+            if (StateVariant.MOUNT_STATE == _variant) {
+                ClassComponent.properties(this)
+                        .set("UNSAFE_componentWillMount", (Hook) () -> setState(JsPropertyMap.of("bar", "bar")));
+            }
+        }
+
+        private void updateFromClick() {
+            if (StateVariant.FORCE_UPDATE == _variant) {
+                _mutable = "bar";
+                forceUpdate();
+            } else {
+                setState(JsPropertyMap.of("bar", "bar"));
+            }
+        }
+
+        @Override
+        public ReactNode render() {
+            final var count = (int[]) requireInputs().get("renders");
+            if (null != count) {
+                count[0]++;
+            }
+            return switch (_variant) {
+                case PROPS ->
+                    styled(
+                            "div",
+                            (String) Objects.requireNonNull(requireInputs().get("initialValue")),
+                            null);
+                case NULL_STATE -> styled("span", "", null);
+                case FORCE_UPDATE -> styled("div", _mutable, _click);
+                default -> {
+                    final var value = (String) Objects.requireNonNull(
+                            Objects.requireNonNull(state()).get("bar"));
+                    final var div = StateVariant.EVENT_STATE == _variant
+                            || StateVariant.CONSTRUCTOR_STATE == _variant && "foo".equals(value);
+                    yield styled(div ? "div" : "span", value, StateVariant.EVENT_STATE == _variant ? _click : null);
+                }
+            };
+        }
+    }
+
+    @JsFunction
+    private interface ContextConstructor {
+        NativeView construct(JsPropertyMap<@Nullable Object> inputs, Object context);
+    }
+
+    private static final class ClassContextProvider extends NativeView {
+        @JsConstructor
+        ClassContextProvider(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+            ClassComponent.properties(this).set("getChildContext", (ContextFields) () -> JsPropertyMap.of(
+                    "tag",
+                    requireInputs().get("tag"),
+                    "className",
+                    requireInputs().get("className")));
+        }
+
+        @Override
+        public ReactNode render() {
+            return (ReactNode) Objects.requireNonNull(requireInputs().get("child"));
+        }
+    }
+
+    @JsFunction
+    private interface ContextFields {
+        Object get();
+    }
+
+    private static final class ContextState extends NativeView {
+        @JsConstructor
+        ContextState(JsPropertyMap<@Nullable Object> inputs, Object context) {
+            super(inputs);
+            final var values = ClassComponent.properties(context);
+            applyState(JsPropertyMap.of("tag", values.get("tag"), "className", values.get("className")));
+        }
+
+        @Override
+        public ReactNode render() {
+            final var values = Objects.requireNonNull(state());
+            return styled(
+                    (String) Objects.requireNonNull(values.get("tag")),
+                    (String) Objects.requireNonNull(values.get("className")),
+                    null);
+        }
+    }
+
+    private static final class OrdinaryHooks extends NativeView implements OnComponentDidMount, OnComponentWillUnmount {
+        private final List<String> _actions;
+
+        @JsConstructor
+        OrdinaryHooks(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+            _actions = Js.uncheckedCast(Objects.requireNonNull(inputs.get("actions")));
+            applyState(JsPropertyMap.of());
+            final var view = ClassComponent.properties(this);
+            view.set("UNSAFE_componentWillMount", (Hook) () -> _actions.add("will-mount"));
+            view.set("UNSAFE_componentWillReceiveProps", (Receive) next -> _actions.add(
+                    "receive-props:" + ClassComponent.properties(next).get("value")));
+            view.set("shouldComponentUpdate", (ObserveUpdate) (next, state) -> hook("should-update", next, state));
+            view.set("UNSAFE_componentWillUpdate", (ObserveUpdate) (next, state) -> hook("will-update", next, state));
+            view.set("componentDidUpdate", (ObserveUpdate) (previous, state) -> hook("did-update", previous, state));
+        }
+
+        private boolean hook(String name, Object inputs, @Nullable Object state) {
+            _actions.add(name + ":" + ClassComponent.properties(inputs).get("value") + ":" + keys(state));
+            return true;
+        }
+
+        @Override
+        public void componentDidMount() {
+            _actions.add("did-mount");
+        }
+
+        @Override
+        public void componentWillUnmount() {
+            _actions.add("will-unmount");
+        }
+
+        @Override
+        public ReactNode render() {
+            return styled(
+                    "span", (String) Objects.requireNonNull(requireInputs().get("value")), null);
+        }
     }
 
     @JsFunction

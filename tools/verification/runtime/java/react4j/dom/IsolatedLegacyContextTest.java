@@ -35,6 +35,9 @@ import react4j.internal.ViewConstructorFunction;
 @NullMarked
 @JsType(namespace = "react4j.testing")
 public final class IsolatedLegacyContextTest {
+    private static final PropTypeValidator.Validator ANY_CONTEXT =
+            (values, property, name, location, publicName, secret) -> null;
+
     private IsolatedLegacyContextTest() {}
 
     public static void cases(int number, boolean development) {
@@ -483,7 +486,7 @@ public final class IsolatedLegacyContextTest {
         private Object keys(@Nullable String[] names) {
             final var keys = JsPropertyMap.of();
             for (final var name : names) {
-                keys.set(Objects.requireNonNull(name), true);
+                keys.set(Objects.requireNonNull(name), ANY_CONTEXT);
             }
             return keys;
         }

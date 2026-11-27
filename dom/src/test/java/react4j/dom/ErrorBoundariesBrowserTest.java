@@ -31,6 +31,9 @@ import react4j.webtesting.Browser;
 
 @NullMarked
 public final class ErrorBoundariesBrowserTest {
+    private static final PropTypeValidator.Validator ANY_CONTEXT =
+            (values, property, name, location, publicName, secret) -> null;
+
     private ErrorBoundariesBrowserTest() {}
 
     @JsMethod
@@ -136,7 +139,7 @@ public final class ErrorBoundariesBrowserTest {
         try (final var scenario = new Scenario(derived)) {
             final ViewConstructorFunction provider = inputs -> new ContextProvider(inputs, modulePattern);
             final var descriptor = ClassComponent.properties(provider);
-            descriptor.set("childContextTypes", JsPropertyMap.of("foo", true));
+            descriptor.set("childContextTypes", JsPropertyMap.of("foo", ANY_CONTEXT));
             descriptor.set("functionComponent", modulePattern);
             scenario.render(scenario.boundary(ReactElement.createViewElement(provider)));
             scenario.firstChildText("Caught an error: Hello.");

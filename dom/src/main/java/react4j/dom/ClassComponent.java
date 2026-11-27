@@ -138,7 +138,7 @@ final class ClassComponent {
         return true;
     }
 
-    private static String name(Object type) {
+    static String name(Object type) {
         final var descriptor = properties(type);
         final var displayName = descriptor.get("displayName");
         final var declaredName = descriptor.get("name");

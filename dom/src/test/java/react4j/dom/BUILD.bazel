@@ -49,6 +49,7 @@ j2cl_library(
         "ClassStateBrowserTest.java",
         "ComponentLifecycleBrowserTest.java",
         "ComponentLifecycleBrowserTest.native.js",
+        "PropTypeValidatorBrowserTest.java",
     ],
     deps = [
         "//:core",

@@ -19,6 +19,7 @@ The assertion maps below link original checks to Java methods. **Ported** and **
 | DOM attributes, SVG, styles, text and raw HTML | [DOM host](host-assertions.tsv) |
 | Input, select, option and textarea | [Forms](forms-assertions.tsv) |
 | Programmatic Profiler callbacks and timing | [Profiler](profiler-assertions.tsv) |
+| JavaScript component props and context diagnostics | [PropTypes](prop-type-assertions.tsv) |
 | In-memory reconciliation | [Fragments and boundaries](reconciler-fragment-assertions.tsv), [persistence](reconciler-persistence-assertions.tsv), [scheduling](reconciler-scheduling-assertions.tsv), [state queues](reconciler-updates-assertions.tsv), [lazy and memo](reconciler-wrapped-assertions.tsv), [Suspense](reconciler-suspense-assertions.tsv), [no-op host Suspense](reconciler-suspense-noop-assertions.tsv) |
 | In-memory commits and interrupted work | [Reflection](reconciler-reflection-assertions.tsv), [error logging and replay](reconciler-error-logging-assertions.tsv), [triangle workloads](reconciler-triangle-assertions.tsv), [side effects](reconciler-side-effects-assertions.tsv) |
 

@@ -28,6 +28,9 @@ import react4j.webtesting.BrowserPromise;
 
 @NullMarked
 public final class ComponentLifecycleBrowserTest {
+    private static final PropTypeValidator.Validator ANY_CONTEXT =
+            (values, property, name, location, publicName, secret) -> null;
+
     private ComponentLifecycleBrowserTest() {}
 
     @JsMethod
@@ -56,6 +59,7 @@ public final class ComponentLifecycleBrowserTest {
             contextTypeDiagnostics(host, production);
             auxiliaryRoot(host);
             ClassStateBrowserTest.run(host, production);
+            PropTypeValidatorBrowserTest.run(host, production);
         } finally {
             ReactDOM.unmountComponentAtNode(host);
             host.remove();
@@ -207,9 +211,9 @@ public final class ComponentLifecycleBrowserTest {
         final var trace = new ArrayList<String>();
         final ViewConstructorFunction parent = ModulePattern::new;
         final ViewConstructorFunction child = ModuleContextChild::new;
-        classDescriptor(parent, "Parent").set("childContextTypes", JsPropertyMap.of("x", true));
+        classDescriptor(parent, "Parent").set("childContextTypes", JsPropertyMap.of("x", ANY_CONTEXT));
         ClassComponent.properties(parent).set("functionComponent", true);
-        classDescriptor(child, "Child").set("contextTypes", JsPropertyMap.of("x", true));
+        classDescriptor(child, "Child").set("contextTypes", JsPropertyMap.of("x", ANY_CONTEXT));
         final var element =
                 ReactElement.createViewElement(parent).input("trace", trace).input("child", child);
         final Ref firstRef = value -> {
@@ -234,7 +238,7 @@ public final class ComponentLifecycleBrowserTest {
     private static void modulePatternDeriveFailure(Browser.Element host, boolean production) {
         final ViewConstructorFunction provider = ModulePattern::new;
         final var descriptor = classDescriptor(provider, "Provider");
-        descriptor.set("childContextTypes", JsPropertyMap.of("x", true));
+        descriptor.set("childContextTypes", JsPropertyMap.of("x", ANY_CONTEXT));
         descriptor.set("functionComponent", true);
         descriptor.set("getDerivedStateFromProps", (Derive) (inputs, state) -> {
             throw new IllegalStateException("Oops!");
@@ -565,9 +569,10 @@ public final class ComponentLifecycleBrowserTest {
         final var trace = new ArrayList<@Nullable Object>();
         final ContextClass factory = (inputs, value) -> new ContextView(inputs, value, trace, false, true);
         final ViewConstructorFunction childType = Js.uncheckedCast(factory);
-        classDescriptor(childType, "Component").set("contextTypes", JsPropertyMap.of("foo", true));
+        classDescriptor(childType, "Component").set("contextTypes", JsPropertyMap.of("foo", ANY_CONTEXT));
         final ViewConstructorFunction parentType = LegacyContextProvider::new;
-        classDescriptor(parentType, "Parent").set("childContextTypes", JsPropertyMap.of("foo", true, "bar", true));
+        classDescriptor(parentType, "Parent")
+                .set("childContextTypes", JsPropertyMap.of("foo", ANY_CONTEXT, "bar", ANY_CONTEXT));
         final var child = ReactElement.createViewElement(childType);
         final var parent = ReactElement.createViewElement(parentType).input("child", child);
         render(parent.dup().input("foo", "abc"), host);
@@ -605,12 +610,12 @@ public final class ComponentLifecycleBrowserTest {
                 final ViewConstructorFunction type = Js.uncheckedCast(factory);
                 final var descriptor = classDescriptor(type, name);
                 if ("missing".equals(scenario)) {
-                    descriptor.set("childContextTypes", JsPropertyMap.of("foo", true));
+                    descriptor.set("childContextTypes", JsPropertyMap.of("foo", ANY_CONTEXT));
                 } else {
                     descriptor.set("contextType", "provider".equals(scenario) ? provider : context);
                 }
                 if ("class".equals(scenario)) {
-                    descriptor.set("contextTypes", JsPropertyMap.of("foo", true));
+                    descriptor.set("contextTypes", JsPropertyMap.of("foo", ANY_CONTEXT));
                 } else if ("function".equals(scenario)) {
                     descriptor.set("functionComponent", true);
                 }
