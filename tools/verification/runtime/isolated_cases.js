@@ -1,5 +1,6 @@
 goog.module('react4j.testing.IsolatedCases');
 const ErrorLogging = goog.require('react4j.testing.IsolatedErrorLoggingTest');
+const Incremental = goog.require('react4j.testing.IsolatedIncrementalTest');
 const Reflection = goog.require('react4j.testing.IsolatedReflectionTest');
 const Scheduling = goog.require('react4j.testing.IsolatedSchedulingTest');
 const SideEffects = goog.require('react4j.testing.IsolatedSideEffectsTest');
@@ -65,6 +66,11 @@ exports.run = function(mode) {
   for (let i = 0; i <= 22; i++) {
     if (i <= 13 || i >= 16) {
       run('ReactIncrementalSideEffects spec' + i, () => SideEffects.cases(i, mode === 'development'));
+    }
+  }
+  for (let i = 0; i <= 49; i++) {
+    if (i <= 6 || (i >= 14 && i <= 21) || i === 27 || i === 28 || i === 31 || i === 32 || i >= 47) {
+      run('ReactIncremental spec' + i, () => Incremental.cases(i));
     }
   }
   return count;

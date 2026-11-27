@@ -40,6 +40,7 @@ j2cl_library(
     srcs = [
         "IsolatedErrorLoggingTest.java",
         "IsolatedErrorLoggingTest.native.js",
+        "IsolatedIncrementalTest.java",
         "IsolatedReconcilerTest.java",
         "IsolatedReconcilerTest.native.js",
         "IsolatedReflectionTest.java",
