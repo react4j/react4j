@@ -199,6 +199,12 @@ function createRenderer(moduleFor, sourceReact) {
   const JavaReact = moduleFor('react4j.React');
   const currentOwner = JavaReact[member(JavaReact, 'm_currentOwner__')].bind(JavaReact);
   const Fiber = moduleFor('react4j.dom.Reconciler.Fiber');
+  const DomHost = moduleFor('react4j.dom.DomReconcilerHost');
+  if (DomHost) {
+    DomHost.prototype[member(DomHost.prototype, 'm_replayFailedRender__')] = () =>
+      require('shared/ReactFeatureFlags').replayFailedUnitOfWorkWithInvokeGuardedCallback !== false;
+  }
+
   const Failure = moduleFor('react4j.dom.Reconciler.RenderFailure');
   if (internals.ReactDebugCurrentFrame) {
     const stack = member(Failure, 'm_stackFrom__');
@@ -241,6 +247,15 @@ function createRenderer(moduleFor, sourceReact) {
   }
   const hooks = ['componentDidMount', 'componentDidUpdate', 'componentWillUnmount',
     'getSnapshotBeforeUpdate', 'shouldComponentUpdate', 'componentDidCatch'];
+  function installLifecycleHooks(instance) {
+    for (const hook of hooks) {
+      if (typeof instance[hook] !== 'function') continue;
+      const name = 'On' + hook.charAt(0).toUpperCase() + hook.slice(1);
+      const iface = moduleFor('react4j.internal.' + name);
+      instance['$implements__react4j_internal_' + name] = true;
+      instance[member(iface.prototype, 'm_' + hook + '__')] = instance[hook];
+    }
+  }
   const lazyType = typeof Symbol === 'function' && Symbol.for ? Symbol.for('react.lazy') : 0xead4;
   const memoType = typeof Symbol === 'function' && Symbol.for ? Symbol.for('react.memo') : 0xead3;
   const forwardRefType = typeof Symbol === 'function' && Symbol.for ? Symbol.for('react.forward_ref') : 0xead0;
@@ -282,13 +297,7 @@ function createRenderer(moduleFor, sourceReact) {
         }, [], true);
         const render = instance.render;
         instance.render = function() { return renderFixture(this, render, []); };
-        for (const hook of hooks) {
-          if (typeof instance[hook] !== 'function') continue;
-          const name = 'On' + hook.charAt(0).toUpperCase() + hook.slice(1);
-          const iface = moduleFor('react4j.internal.' + name);
-          instance['$implements__react4j_internal_' + name] = true;
-          instance[member(iface.prototype, 'm_' + hook + '__')] = instance[hook];
-        }
+        installLifecycleHooks(instance);
         return instance;
       }
       const view = new View(inputs);
@@ -298,7 +307,10 @@ function createRenderer(moduleFor, sourceReact) {
         if (result && typeof result.render === 'function') {
           Object.assign(this, result);
           this.moduleComponent = true;
+          installLifecycleHooks(this);
           this.render = () => renderFixture(this, result.render, []);
+          const fiber = currentOwner();
+          if (fiber) fiber[member(Fiber.prototype, 'm_runMountLifecycle__')](this);
           return this.render();
         }
         return result;

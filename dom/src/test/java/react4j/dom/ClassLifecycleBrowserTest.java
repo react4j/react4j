@@ -15,6 +15,8 @@ import react4j.Context;
 import react4j.ReactElement;
 import react4j.ReactNode;
 import react4j.internal.NativeView;
+import react4j.internal.OnComponentDidMount;
+import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.ViewConstructorFunction;
 import react4j.webtesting.Browser;
 
@@ -30,6 +32,8 @@ public final class ClassLifecycleBrowserTest {
             legacyHooks(host, production);
             stringRefs(host, production);
             derivedState(host);
+            retriesMountLifecycleAfterCapturingRenderError(host);
+            capturesUnmountErrorDuringCommitRecovery(host);
             observedContextBits(host);
         } finally {
             ReactDOM.unmountComponentAtNode(host);
@@ -156,6 +160,87 @@ public final class ClassLifecycleBrowserTest {
         ReactDOM.render(app.dup().input("children", ReactElement.createViewElement(broken)), host);
         equal("recovered", host.getTextContent());
         ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static void retriesMountLifecycleAfterCapturingRenderError(Browser.Element host) {
+        final var trace = new StringBuilder();
+        final var app = recoveringBoundary(trace);
+        final ViewConstructorFunction broken = inputs -> {
+            throw new IllegalStateException("render broke");
+        };
+        ReactDOM.render(app.input("children", ReactElement.createViewElement(broken)), host);
+        equal("recovered", host.getTextContent());
+        equal("mount derive mount ", trace.toString());
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static void capturesUnmountErrorDuringCommitRecovery(Browser.Element host) {
+        final var trace = new StringBuilder();
+        final var app = recoveringBoundary(trace);
+        final ViewConstructorFunction broken = BrokenCommit::new;
+        ReactDOM.render(
+                app.input("children", ReactElement.createViewElement(broken).input("trace", trace)), host);
+        equal("recovered", host.getTextContent());
+        equal("mount didMount derive update unmount derive update ", trace.toString());
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static ReactElement recoveringBoundary(StringBuilder trace) {
+        final ViewConstructorFunction boundary = inputs -> {
+            final var instance = new Recovering(inputs);
+            ClassComponent.properties(instance)
+                    .set("componentWillMount", (EventsBrowserTest.Probe) () -> trace.append("mount "));
+            ClassComponent.properties(instance)
+                    .set("componentWillUpdate", (EventsBrowserTest.Probe) () -> trace.append("update "));
+            return instance;
+        };
+        ClassComponent.properties(boundary).set("getDerivedStateFromError", (Catch) thrown -> {
+            trace.append("derive ");
+            return JsPropertyMap.<@Nullable Object>of("failed", true);
+        });
+        return ReactElement.createViewElement(boundary);
+    }
+
+    private static final class Recovering extends NativeView {
+        @JsConstructor
+        Recovering(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final var state = state();
+            return null != state && Boolean.TRUE.equals(state.get("failed"))
+                    ? ReactNode.of("recovered")
+                    : Js.uncheckedCast(requireInputs().get("children"));
+        }
+    }
+
+    private static final class BrokenCommit extends NativeView implements OnComponentDidMount, OnComponentWillUnmount {
+        private final StringBuilder _trace;
+
+        @JsConstructor
+        BrokenCommit(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+            _trace = (StringBuilder) Objects.requireNonNull(requireInputs().get("trace"));
+        }
+
+        @Override
+        public ReactNode render() {
+            return ReactNode.of("child");
+        }
+
+        @Override
+        public void componentDidMount() {
+            _trace.append("didMount ");
+            throw new IllegalStateException("mount broke");
+        }
+
+        @Override
+        public void componentWillUnmount() {
+            _trace.append("unmount ");
+            throw new IllegalStateException("unmount broke");
+        }
     }
 
     private static void observedContextBits(Browser.Element host) {

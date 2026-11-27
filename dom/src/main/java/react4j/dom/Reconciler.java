@@ -70,6 +70,7 @@ final class Reconciler {
     private static final LinkedHashSet<Root> INTERACTIVE = new LinkedHashSet<>();
     private static final LinkedHashSet<Root> SYNCHRONOUS = new LinkedHashSet<>();
     private static int _batchDepth;
+    private static final HashSet<Fiber> FAILED_LEGACY_BOUNDARIES = new HashSet<>();
     private static boolean _flushing;
     private static boolean _working;
     private static @Nullable Root _renderingRoot;
@@ -442,6 +443,7 @@ final class Reconciler {
             _flushing = false;
             _lastCommittedRoot = null;
             _nestedUpdateCount = 0;
+            FAILED_LEGACY_BOUNDARIES.clear();
         }
     }
 
@@ -1311,8 +1313,9 @@ final class Reconciler {
         private void captureCommitFailure(Fiber source, Throwable error) {
             var boundary = source.parent;
             while (null != boundary
-                    && (boundary._captured
-                            || (!(boundary.view instanceof OnComponentDidCatch) && null == boundary.errorHandler()))) {
+                    && null == boundary.errorHandler()
+                    && (!(boundary.view instanceof OnComponentDidCatch)
+                            || FAILED_LEGACY_BOUNDARIES.contains(boundary))) {
                 boundary = boundary.parent;
             }
             _commitFailures.add(new CommitFailure(new RenderFailure(source, error), boundary));
@@ -1333,15 +1336,15 @@ final class Reconciler {
                     next.failure.logUnhandled();
                 } else if (boundary.alive && null != boundary.view) {
                     final var instance = boundary.view;
-                    final var catcher = instance instanceof OnComponentDidCatch hook ? hook : null;
-                    final var derived = boundary.errorHandler();
-                    runEffect(boundary, boundary.capture(catcher, next.failure, true, 0));
-                    if (null != derived) {
-                        runEffect(boundary, () -> {
-                            boundary.applyErrorState(derived, instance, next.failure);
-                            instance.forceUpdate();
-                        });
-                    }
+                    runEffect(boundary, () -> {
+                        final var pending = new ArrayList<RenderFailure>();
+                        if (null != boundary._commitErrors) {
+                            pending.addAll(boundary._commitErrors);
+                        }
+                        pending.add(next.failure);
+                        boundary._commitErrors = pending;
+                        instance.forceUpdate();
+                    });
                 }
             }
             if (null != unhandled) {
@@ -1433,6 +1436,7 @@ final class Reconciler {
         private @Nullable Object _legacySource;
         private @Nullable Object _maskedContext;
         private @Nullable Scope _legacyChildren;
+        private @Nullable List<RenderFailure> _commitErrors = Js.uncheckedCast(Js.undefined());
         private boolean _preparingClass;
         private boolean _catchScheduled;
         private @Nullable Scope _providedScope = Js.uncheckedCast(Js.undefined());
@@ -2766,12 +2770,24 @@ final class Reconciler {
             if (changed && null != derive && null != classType) {
                 pendingState = ClassComponent.derive(derive, classType, inputs, pendingState, false);
             }
+            final var commitErrors = _commitErrors;
+            final var deriveError = null == commitErrors ? null : errorHandler();
+            final var legacyCapture = null != commitErrors && null == deriveError;
+            if (null != commitErrors) {
+                _commitErrors = null;
+                if (null != deriveError) {
+                    for (final var error : commitErrors) {
+                        pendingState = deriveErrorState(deriveError, pendingState, error);
+                    }
+                }
+            }
             if (changed) {
                 startViewTiming(mounting);
             }
             final var shouldUpdate =
                     null == classType ? null : ClassComponent.method(component, "shouldComponentUpdate");
             final boolean render = changed
+                    && (!legacyCapture || stateChanged || oldNode != element || contextChanged)
                     && (null == existing
                             || force
                             || retry
@@ -2788,10 +2804,18 @@ final class Reconciler {
             if (pendingState != previousState) {
                 component.applyState(pendingState);
             }
-            if (render) {
+            if (legacyCapture) {
+                queueDeletions(children);
+                children = NO_CHILDREN;
+                output = null;
+            } else if (render) {
                 final var replay = DEVELOPMENT && root.host.replayFailedRender() ? component.checkpoint() : null;
                 try {
                     renderView(component);
+                    if (null != commitErrors) {
+                        queueDeletions(children);
+                        children = NO_CHILDREN;
+                    }
                 } catch (Throwable error) {
                     final var failure = new RenderFailure(this, error);
                     updateDurations(elapsedTime());
@@ -2832,12 +2856,13 @@ final class Reconciler {
                     component,
                     null == existing,
                     render,
-                    walkChildren && !changed,
+                    walkChildren && !changed && !legacyCapture,
                     previousInputs,
                     previousState,
                     null != _legacyChildren ? _legacyChildren : scope,
                     mounting,
                     callbacks,
+                    commitErrors,
                     complete);
         }
 
@@ -2851,6 +2876,19 @@ final class Reconciler {
             reconcileRef(elementRef(element), component);
             queuePlacement();
             finishReady(complete);
+        }
+
+        void runMountLifecycle(NativeView component) {
+            _preparingClass = true;
+            try {
+                ClassComponent.before(this, component, "componentWillMount");
+                final var state = component.preparePendingState(component.requireInputs());
+                if (null != state) {
+                    component.applyState(state.state());
+                }
+            } finally {
+                _preparingClass = false;
+            }
         }
 
         private void replayFailedView(NativeView component, Runnable checkpoint) {
@@ -2887,6 +2925,7 @@ final class Reconciler {
                 @Nullable Scope scope,
                 boolean mounting,
                 @Nullable List<NativeView.StateCallback> callbacks,
+                @Nullable List<RenderFailure> commitErrors,
                 Completion complete) {
             recordDurations(mounting, render ? elapsedTime() : 0);
             final var snapshots = root._snapshots.size();
@@ -2904,12 +2943,15 @@ final class Reconciler {
                             scope,
                             callbacks,
                             complete,
+                            commitErrors,
                             null);
                     return;
                 }
                 final var derived = errorHandler();
                 final var catcher = component instanceof OnComponentDidCatch hook ? hook : null;
-                if (_captured || failure.isSuspension() || (null == derived && null == catcher)) {
+                if (_captured
+                        || failure.isSuspension()
+                        || (null == derived && (null == catcher || FAILED_LEGACY_BOUNDARIES.contains(this)))) {
                     finishUpdate(failure, scope, complete);
                     return;
                 }
@@ -2922,7 +2964,11 @@ final class Reconciler {
                         _discardedDuration += child.actualDuration();
                     }
                 }
-                final var report = capture(catcher, failure, false, mutations);
+                _captured = true;
+                output = null;
+                queueDeletions(children, mutations);
+                children = NO_CHILDREN;
+                final Task report = () -> reportCapture(failure, catcher);
                 if (null == derived) {
                     completeView(
                             element,
@@ -2934,13 +2980,35 @@ final class Reconciler {
                             scope,
                             callbacks,
                             complete,
+                            commitErrors,
                             report);
                     return;
                 }
                 try {
                     _discardedDuration += _selfDuration;
                     final var recoveryStart = profileTime();
-                    applyErrorState(derived, component, failure);
+                    final var previousRecoveryState = component.state();
+                    final var recoveryState = deriveErrorState(derived, previousRecoveryState, failure);
+                    component.applyState(recoveryState);
+                    final var classType = _classType;
+                    if (null != classType
+                            && null == ClassComponent.method(classType, "getDerivedStateFromProps")
+                            && !(component instanceof OnGetSnapshotBeforeUpdate)) {
+                        if (newView && recoveryState != previousRecoveryState) {
+                            runMountLifecycle(component);
+                        } else if (!newView) {
+                            final var nextState = component.state();
+                            component.applyState(previousRecoveryState);
+                            ClassComponent.before(
+                                    this,
+                                    component,
+                                    "componentWillUpdate",
+                                    component.requireInputs(),
+                                    nextState,
+                                    _maskedContext);
+                            component.applyState(nextState);
+                        }
+                    }
                     output = renderOwned(component);
                     recordDurations(mounting, profileTime() - recoveryStart);
                     reconcileChildren(output, scope, fallbackFailure -> {
@@ -2949,12 +3017,13 @@ final class Reconciler {
                                     element,
                                     component,
                                     newView,
-                                    render,
+                                    true,
                                     previousInputs,
                                     previousState,
                                     scope,
                                     callbacks,
                                     complete,
+                                    commitErrors,
                                     report);
                         } else {
                             finishUpdate(fallbackFailure, scope, complete);
@@ -2982,6 +3051,7 @@ final class Reconciler {
                 @Nullable Scope scope,
                 @Nullable List<NativeView.StateCallback> callbacks,
                 Completion complete,
+                @Nullable List<RenderFailure> commitErrors,
                 @Nullable Task onError) {
             if (render && !newView && component instanceof OnGetSnapshotBeforeUpdate lifecycle) {
                 root._snapshots.add(new Effect(
@@ -3004,6 +3074,12 @@ final class Reconciler {
                         () -> runPhase(
                                 "componentDidUpdate",
                                 () -> lifecycle.componentDidUpdate(Objects.requireNonNull(previousInputs)))));
+            }
+            if (null != commitErrors) {
+                final var catcher = component instanceof OnComponentDidCatch hook ? hook : null;
+                for (final var error : commitErrors) {
+                    root._effects.add(new Effect(this, () -> reportCapture(error, catcher)));
+                }
             }
             if (null != onError) {
                 root._effects.add(new Effect(this, onError));
@@ -3360,6 +3436,7 @@ final class Reconciler {
             final var legacyChildren = _legacyChildren;
             final var maskedContext = _maskedContext;
             final var captured = _captured;
+            final var commitErrors = _commitErrors;
             final var suspension = _suspension;
             final var primaryCount = _primaryCount;
             final var index = _index;
@@ -3401,6 +3478,7 @@ final class Reconciler {
                     ClassComponent.properties(previousView).set("context", maskedContext);
                 }
                 _captured = captured;
+                _commitErrors = commitErrors;
                 _suspension = suspension;
                 _primaryCount = primaryCount;
                 _index = index;
@@ -3460,43 +3538,22 @@ final class Reconciler {
             return ClassComponent.method(null == classType ? type : classType, "getDerivedStateFromError");
         }
 
-        private void applyErrorState(Object derive, NativeView instance, RenderFailure failure) {
-            final var state = ClassComponent.derive(derive, type, failure.thrown(), instance.state(), true);
-            instance.applyState(state);
+        private @Nullable JsPropertyMap<@Nullable Object> deriveErrorState(
+                Object derive, @Nullable JsPropertyMap<@Nullable Object> state, RenderFailure failure) {
+            var result = ClassComponent.derive(derive, type, failure.thrown(), state, true);
             if (null != failure._siblings) {
                 for (final var sibling : failure._siblings) {
-                    applyErrorState(derive, instance, sibling);
+                    result = deriveErrorState(derive, result, sibling);
                 }
             }
+            return result;
         }
 
-        private Task capture(
-                @Nullable OnComponentDidCatch catcher,
-                RenderFailure failure,
-                boolean committing,
-                int mutationPosition) {
-            _captured = true;
-            output = null;
-            if (committing) {
-                disposeChildren();
-                final var persistence = root.persistence;
-                if (null != persistence) {
-                    for (var ancestor = parent; null != ancestor; ancestor = ancestor.parent) {
-                        if (Kind.HOST == ancestor.kind) {
-                            ancestor.refreshPersistentInstance(
-                                    persistence, Objects.requireNonNull(ancestor.node), false);
-                        } else if (Kind.ROOT == ancestor.kind || Kind.PORTAL == ancestor.kind) {
-                            ancestor.publishPersistentChildren();
-                            break;
-                        }
-                    }
-                }
-                root.host.onHostTreeCommitted(root);
-            } else {
-                queueDeletions(children, mutationPosition);
-                children = NO_CHILDREN;
+        private void reportCapture(RenderFailure failure, @Nullable OnComponentDidCatch catcher) {
+            if (null == errorHandler()) {
+                FAILED_LEGACY_BOUNDARIES.add(this);
             }
-            return () -> failure.report(this, catcher);
+            failure.report(this, catcher);
         }
 
         private @Nullable Object elementRef(ReactElement element) {
