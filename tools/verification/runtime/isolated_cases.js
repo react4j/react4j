@@ -2,6 +2,7 @@ goog.module('react4j.testing.IsolatedCases');
 const ErrorLogging = goog.require('react4j.testing.IsolatedErrorLoggingTest');
 const Reflection = goog.require('react4j.testing.IsolatedReflectionTest');
 const Scheduling = goog.require('react4j.testing.IsolatedSchedulingTest');
+const SideEffects = goog.require('react4j.testing.IsolatedSideEffectsTest');
 const Suspense = goog.require('react4j.testing.IsolatedSuspenseTest');
 const Tests = goog.require('react4j.testing.IsolatedReconcilerTest');
 const Triangle = goog.require('react4j.testing.IsolatedTriangleTest');
@@ -61,5 +62,10 @@ exports.run = function(mode) {
   run('ReactSuspenseWithNoopRenderer spec15', () => Suspense.noop(15));
   run('ReactSuspenseWithNoopRenderer spec16', () => Suspense.noop(16));
   for (let i = 0; i < 4; i++) run('ReactIncrementalTriangle spec' + i, () => Triangle.cases(i));
+  for (let i = 0; i <= 22; i++) {
+    if (i <= 13 || i >= 16) {
+      run('ReactIncrementalSideEffects spec' + i, () => SideEffects.cases(i, mode === 'development'));
+    }
+  }
   return count;
 };
