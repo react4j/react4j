@@ -136,7 +136,7 @@ final class ClassComponent {
         }
     }
 
-    static void warnMount(Object type, NativeView view, boolean derive) {
+    static void warnMount(Object type, Object factory, NativeView view, boolean derive) {
         if (!firstWarning(MOUNT_CHECKED, type)) {
             return;
         }
@@ -147,7 +147,7 @@ final class ClassComponent {
             warn("Warning: " + name + ": It is not recommended to assign props directly to state because updates to"
                     + " props won't be reflected in state. In most cases, it is better to use props directly.");
         }
-        if (derive && null == state) {
+        if (derive && null == state && !Boolean.TRUE.equals(properties(factory).get("functionComponent"))) {
             final var unset = "undefined".equals(Js.typeof(state)) ? "undefined" : "null";
             warn("Warning: `" + name + "` uses `getDerivedStateFromProps` but its initial state is " + unset
                     + ". This is not recommended. Instead, define the initial state by assigning an object to"

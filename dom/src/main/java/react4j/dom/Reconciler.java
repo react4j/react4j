@@ -2726,7 +2726,7 @@ final class Reconciler {
             final boolean oldHooks =
                     null != classType && null == derive && !(component instanceof OnGetSnapshotBeforeUpdate);
             if (DEVELOPMENT && null != classType && null == existing) {
-                ClassComponent.warnMount(classType, component, null != derive);
+                ClassComponent.warnMount(classType, type, component, null != derive);
                 if (strict) {
                     if (null == root._warnings) {
                         root._warnings = new ClassComponent.Warnings();

@@ -41,6 +41,7 @@ public final class ComponentLifecycleBrowserTest {
             constructorUpdateIsIgnored(host);
             readsCommittedHostDuringRender(host);
             modulePatternEffects(host);
+            modulePatternDeriveFailure(host, production);
             lifecycleOrder(host, false);
             lifecycleOrder(host, true);
             lifecycleDiagnostics(host, production);
@@ -192,6 +193,31 @@ public final class ComponentLifecycleBrowserTest {
         render(viewWithRef(parent, nextRef, element.dup().inputs()), host);
         check(trace.equals(List.of("will mount", "render", "did mount", "ref", "render", "did update", "ref")),
                 "The module pattern commits context and lifecycle callbacks in order: " + trace);
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static void modulePatternDeriveFailure(Browser.Element host, boolean production) {
+        final ViewConstructorFunction provider = ModulePattern::new;
+        final var descriptor = classDescriptor(provider, "Provider");
+        descriptor.set("childContextTypes", JsPropertyMap.of("x", true));
+        descriptor.set("functionComponent", true);
+        descriptor.set("getDerivedStateFromProps", (Derive) (inputs, state) -> {
+            throw new IllegalStateException("Oops!");
+        });
+        final var element = ReactElement.createViewElement(provider).input("trace", new ArrayList<String>());
+        final var messages = captureWarnings(() -> {
+            try {
+                render(ReactElement.createStrictMode(element), host);
+                throw new AssertionError("The derived-state callback should fail");
+            } catch (RuntimeException error) {
+                check(Objects.requireNonNull(error.getMessage()).contains("Oops!"), "The original derive error survives");
+            }
+        });
+        check(List.of(messages).stream().noneMatch(message -> message.contains("its initial state is")),
+                "Function factories do not run the class constructor state diagnostic");
+        check(production == List.of(messages).stream().noneMatch(message ->
+                message.contains("Legacy context API has been detected within a strict-mode tree")
+                        && message.contains("Provider")), "The strict legacy context diagnostic names Provider");
         ReactDOM.unmountComponentAtNode(host);
     }
 
