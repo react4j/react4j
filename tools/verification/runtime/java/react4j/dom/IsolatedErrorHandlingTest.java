@@ -638,8 +638,8 @@ public final class IsolatedErrorHandlingTest {
             final var tree = f.boundary(
                             broken, null, null, error -> span("Caught an error:" + error + "."), (view, error) -> {})
                     .input("manual", true)
-                    .input("info", (BiConsumer<Catching, ReactErrorInfo>)
-                            (view, info) -> view.setState(JsPropertyMap.<@Nullable Object>of("error", info.componentStack)));
+                    .input("info", (BiConsumer<Catching, ReactErrorInfo>) (view, info) ->
+                            view.setState(JsPropertyMap.<@Nullable Object>of("error", info.componentStack)));
             f.render(tree);
             f.output("Caught an error:\n    in BrokenRender\n    in ErrorBoundary.");
         }
