@@ -339,7 +339,10 @@ public final class ClassStateBrowserTest {
         final var child = stateBox(new StateBox[1]).input("willUnmount", (Visit)
                 view -> Objects.requireNonNull(parent[0]).setState(JsPropertyMap.of("showChild", false)));
         render(stateBox(parent).input("draw", (Draw) view -> child), host);
-        ComponentLifecycleBrowserTest.captureWarnings(() -> ReactDOM.unmountComponentAtNode(host));
+        final var warnings = ComponentLifecycleBrowserTest.captureWarnings(() -> ReactDOM.unmountComponentAtNode(host));
+        check(
+                0 == warnings.length,
+                "A child can request an update of its unmounting parent without warnings: " + List.of(warnings));
     }
 
     private static void updateFromChildReceiveProps(Browser.Element host) {

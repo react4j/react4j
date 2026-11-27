@@ -559,6 +559,7 @@ public final class Reconciler {
         private final Completion _saveResult = this::saveResult;
         private @Nullable RenderFailure _resultFailure;
         private @Nullable LinkedHashMap<Fiber, ClassComponent.Warnings> _warnings;
+        private ClassComponent.@Nullable Deprecations _deprecations;
         private final List<Effect> _snapshots = new ArrayList<>();
         private final List<CommitFailure> _commitFailures = new ArrayList<>();
         private final LinkedHashSet<Fiber> _heldFallbacks = new LinkedHashSet<>();
@@ -1129,7 +1130,12 @@ public final class Reconciler {
             _profilerCommitTime = host.profilerEnabled() ? now() : 0;
             final var pendingWarnings = _warnings;
             _warnings = null;
+            final var deprecations = _deprecations;
+            _deprecations = null;
             try {
+                if (DEVELOPMENT && null != deprecations) {
+                    deprecations.flush();
+                }
                 if (DEVELOPMENT && null != pendingWarnings) {
                     pendingWarnings.forEach((fiber, warnings) -> warnings.flush(RenderFailure.stackFrom(fiber)));
                 }
@@ -1267,6 +1273,7 @@ public final class Reconciler {
                 _renderWakeables = null;
                 _restartRender = false;
             }
+            _deprecations = null;
             _effects.clear();
             _mutations.clear();
             _snapshots.clear();
@@ -2972,6 +2979,12 @@ public final class Reconciler {
             if (DEVELOPMENT && null != classType && null == existing) {
                 ClassComponent.warnMount(classType, type, component, inputs, null != derive);
                 ClassComponent.warnContextType(classType, contextType, function, hasMarker(contextType, CONTEXT_TYPE));
+                if (root.host.warnDeprecatedLifecycles()) {
+                    if (null == root._deprecations) {
+                        root._deprecations = new ClassComponent.Deprecations();
+                    }
+                    root._deprecations.record(classType, component);
+                }
                 if (strict) {
                     if (null == root._warnings) {
                         root._warnings = new LinkedHashMap<>();
@@ -4309,20 +4322,26 @@ public final class Reconciler {
             if (null != _attachedRef) {
                 root.runEffect(this, this::detachRef);
             }
-            if (null != view) {
-                view.detach();
-                if (_mounted && view instanceof OnComponentWillUnmount lifecycle) {
+            final var component = view;
+            final var wasMounted = _mounted;
+            if (null != component) {
+                component.detach();
+                if (wasMounted && component instanceof OnComponentWillUnmount lifecycle) {
                     root.runEffect(this, () -> runPhase("componentWillUnmount", lifecycle::componentWillUnmount));
-                }
-                if (DEVELOPMENT && _mounted && null != _classType && !isFunctionComponent(view)) {
-                    ClassComponent.attachUnmountedDiagnostic(
-                            view, ClassComponent.name(_classType), RenderFailure.stackFrom(this));
                 }
                 _mounted = false;
             }
             final var node = hostInstance;
             // A host's descendants stay in its detached subtree. Portals start in a separate container.
             disposeChildren(Kind.PORTAL == kind || removeDom && null == node);
+            if (DEVELOPMENT
+                    && wasMounted
+                    && null != component
+                    && null != _classType
+                    && !isFunctionComponent(component)) {
+                ClassComponent.attachUnmountedDiagnostic(
+                        component, ClassComponent.name(_classType), RenderFailure.stackFrom(this));
+            }
             if (null != root.persistence && Kind.PORTAL == kind) {
                 publishPersistentChildren();
             } else if (null != node && null == root.persistence) {

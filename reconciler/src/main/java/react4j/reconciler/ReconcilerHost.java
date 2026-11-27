@@ -119,6 +119,10 @@ public interface ReconcilerHost {
         return false;
     }
 
+    default boolean warnDeprecatedLifecycles() {
+        return false;
+    }
+
     default boolean replayFailedRender() {
         return true;
     }

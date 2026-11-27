@@ -225,6 +225,8 @@ function createRenderer(moduleFor, sourceReact) {
   const DomHost = moduleFor('react4j.dom.DomReconcilerHost');
   if (DomHost) {
     DomHost.prototype[member(DomHost.prototype, 'm_strictReplay__')] = strictReplay;
+    DomHost.prototype[member(DomHost.prototype, 'm_warnDeprecatedLifecycles__')] = () =>
+      require('shared/ReactFeatureFlags').warnAboutDeprecatedLifecycles === true;
     DomHost.prototype[member(DomHost.prototype, 'm_replayFailedRender__')] = () =>
       require('shared/ReactFeatureFlags').replayFailedUnitOfWorkWithInvokeGuardedCallback !== false;
   }

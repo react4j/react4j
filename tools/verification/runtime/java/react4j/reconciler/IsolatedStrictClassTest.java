@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -154,6 +155,42 @@ public final class IsolatedStrictClassTest {
         root.unmount(null);
     }
 
+    public static void deprecationWarnings(boolean development) {
+        final var driver = new Driver(false, false);
+        props(driver).set("warnDeprecatedLifecycles", true);
+        final var root = new MemoryRenderer(driver).createTestRoot(false);
+        final var first = diagnosticView("ZLegacyHooks").input("deprecated", true);
+        final var second = diagnosticView("ALegacyHooks").input("deprecated", true);
+        final var suppressed = diagnosticView("SuppressedLegacyHooks")
+                .input("deprecated", true)
+                .input("suppressed", true);
+        final var tree = ReactElement.createFragment(null, first, second, suppressed);
+        final var warnings = captureLowPriorityWarnings(() -> root.render(tree, null));
+        if (development) {
+            final var messages = warnings.split("\u001E");
+            equal(3, messages.length);
+            for (final var message : messages) {
+                contains(message, "Please update the following components: ALegacyHooks, ZLegacyHooks");
+            }
+            contains(messages[0], "componentWillMount is deprecated");
+            contains(messages[1], "componentWillReceiveProps is deprecated");
+            contains(messages[2], "componentWillUpdate is deprecated");
+        } else {
+            equal("", warnings);
+        }
+        equal(
+                "",
+                captureLowPriorityWarnings(() -> root.render(
+                        tree.dup().input("children", new ReactElement[] {first.dup(), second.dup(), suppressed.dup()}),
+                        null)));
+        root.unmount(null);
+        equal("", captureLowPriorityWarnings(() -> root.render(tree, null)));
+        root.unmount(null);
+    }
+
+    @JsMethod
+    private static native String captureLowPriorityWarnings(Reconciler.Task action);
+
     public static void stringRefWarnings(boolean development) {
         final var root = new MemoryRenderer(new Driver(false, false)).createRoot(false);
         final var owner = new DiagnosticView[1];
@@ -245,7 +282,16 @@ public final class IsolatedStrictClassTest {
         DiagnosticView(JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
             final var name = Js.asString(inputs.get("name"));
-            if ("RefOwner".equals(name)) {
+            if (Boolean.TRUE.equals(inputs.get("deprecated"))) {
+                for (final var hook :
+                        List.of("componentWillMount", "componentWillReceiveProps", "componentWillUpdate")) {
+                    final Hook callback = () -> {};
+                    if (Boolean.TRUE.equals(inputs.get("suppressed"))) {
+                        props(callback).set("__suppressDeprecationWarning", true);
+                    }
+                    props(this).set(hook, callback);
+                }
+            } else if ("RefOwner".equals(name)) {
                 ((DiagnosticView[]) Objects.requireNonNull(inputs.get("owner")))[0] = this;
             } else if (name.startsWith("Legacy")) {
                 if ("LegacyProvider".equals(name)) {

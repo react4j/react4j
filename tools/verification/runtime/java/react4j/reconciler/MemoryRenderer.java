@@ -342,6 +342,11 @@ public final class MemoryRenderer {
         }
 
         @Override
+        public boolean warnDeprecatedLifecycles() {
+            return Boolean.TRUE.equals(properties(_callbacks).get("warnDeprecatedLifecycles"));
+        }
+
+        @Override
         public boolean userTimingEnabled() {
             return _callbacks.userTimingEnabled();
         }

@@ -345,6 +345,62 @@ final class ClassComponent {
         }
     }
 
+    static final class Deprecations {
+        private static final Reconciler.WeakKeys<Object, Boolean> WARNED = new Reconciler.WeakKeys<>();
+        private final LinkedHashSet<Object> _types = new LinkedHashSet<>();
+        private final ArrayList<String> _mount = new ArrayList<>();
+        private final ArrayList<String> _receive = new ArrayList<>();
+        private final ArrayList<String> _update = new ArrayList<>();
+
+        void record(Object type, NativeView view) {
+            if (null != WARNED.get(type) || _types.contains(type)) {
+                return;
+            }
+            final var name = name(type);
+            final var before = _mount.size() + _receive.size() + _update.size();
+            record(view, name, "componentWillMount", _mount);
+            record(view, name, "componentWillReceiveProps", _receive);
+            record(view, name, "componentWillUpdate", _update);
+            if (before != _mount.size() + _receive.size() + _update.size()) {
+                _types.add(type);
+            }
+        }
+
+        private static void record(NativeView view, String name, String hook, ArrayList<String> names) {
+            if (hasUnprefixedLegacyHook(view, hook)) {
+                names.add(name);
+            }
+        }
+
+        void flush() {
+            if (_mount.isEmpty() && _receive.isEmpty() && _update.isEmpty()) {
+                return;
+            }
+            _types.forEach(type -> WARNED.set(type, true));
+            report("componentWillMount", "componentDidMount", true, _mount);
+            report("componentWillReceiveProps", "static getDerivedStateFromProps", false, _receive);
+            report("componentWillUpdate", "componentDidUpdate", true, _update);
+        }
+
+        private static void report(String hook, String replacement, boolean temporary, ArrayList<String> names) {
+            if (!names.isEmpty()) {
+                warnLowPriority("Warning: " + hook
+                        + " is deprecated and will be removed in the next major version. Use "
+                        + replacement + " instead."
+                        + (temporary ? " As a temporary workaround, you can rename to UNSAFE_" + hook + "." : "")
+                        + "\n\nPlease update the following components: " + Warnings.names(names)
+                        + "\n\n"
+                        + "Learn more about this warning here:\n"
+                        + "https://fb.me/react-async-component-lifecycle-hooks");
+            }
+        }
+    }
+
+    private static boolean hasUnprefixedLegacyHook(NativeView view, String hook) {
+        final var legacy = method(view, hook);
+        return null != legacy && !Boolean.TRUE.equals(properties(legacy).get("__suppressDeprecationWarning"));
+    }
+
     static final class Warnings {
         private static final Reconciler.WeakKeys<Object, Boolean> WARNED_LIFECYCLES = new Reconciler.WeakKeys<>();
         private static final Reconciler.WeakKeys<Object, Boolean> WARNED_CONTEXT = new Reconciler.WeakKeys<>();
@@ -373,9 +429,7 @@ final class ClassComponent {
         }
 
         private static void recordLifecycle(NativeView view, String name, String hook, ArrayList<String> names) {
-            final var legacy = method(view, hook);
-            if ((null != legacy && !Boolean.TRUE.equals(properties(legacy).get("__suppressDeprecationWarning")))
-                    || null != method(view, "UNSAFE_" + hook)) {
+            if (hasUnprefixedLegacyHook(view, hook) || null != method(view, "UNSAFE_" + hook)) {
                 names.add(name);
             }
         }
@@ -417,4 +471,7 @@ final class ClassComponent {
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "console.error")
     private static native void warn(String message);
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "console.warn")
+    private static native void warnLowPriority(String message);
 }

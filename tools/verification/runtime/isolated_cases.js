@@ -159,6 +159,7 @@ exports.run = function(mode) {
   run('ReactStrictMode replacing strict with fragment', () => StrictClass.reconciliation(true, false));
   run('ReactStrictMode replacing fragment with strict', () => StrictClass.reconciliation(false, true));
   run('ReactStrictMode keeping strict', () => StrictClass.reconciliation(true, true));
+  run('Deprecated class lifecycle warnings', () => StrictClass.deprecationWarnings(mode === 'development'));
   run('ReactStrictMode subtree warnings', () => StrictClass.subtreeWarnings(mode === 'development'));
   run('ReactStrictMode string ref warnings', () => StrictClass.stringRefWarnings(mode === 'development'));
   for (let i = 0; i < 3; i++) {
