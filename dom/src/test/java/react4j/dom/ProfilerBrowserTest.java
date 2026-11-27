@@ -34,6 +34,7 @@ import react4j.reconciler.Reconciler;
 @NullMarked
 public final class ProfilerBrowserTest {
     private static final ViewConstructorFunction TIMED = TimedView::new;
+    private static final ViewConstructorFunction SUSPENSE_TRACE = SuspenseTrace::new;
     private static final ViewConstructorFunction BOUNDARY = Boundary::new;
 
     private ProfilerBrowserTest() {}
@@ -57,6 +58,7 @@ public final class ProfilerBrowserTest {
         }
         requiredParameters(production);
         suspenseWithoutSubscribers();
+        suspensePastDeadline();
         capturedInteractionsAndCommits();
         commitSpawnedWork();
         tracedParentUpdate();
@@ -424,7 +426,7 @@ public final class ProfilerBrowserTest {
         check(renders.equals(List.of("10", "30", "7")), "Only the urgent branch completes: " + renders);
         driver.assertSamples(new Sample("test", "update", 37, 42, 229, 266));
         if (tracing) {
-            driver.assertInteractions(List.of("second"));
+            driver.assertInteractions(List.of("first", "second"));
         }
         driver.clearSamples();
         driver.time += 100;
@@ -496,31 +498,78 @@ public final class ProfilerBrowserTest {
     private static void suspenseWithoutSubscribers() {
         final var driver = new Driver(true);
         final var root = driver.memory.createRoot(true);
+        final var yields = new ArrayList<String>();
         final var pending = new Pending();
-        final var async = timed(driver, 0, ReactNode.of("Async")).input("pending", pending);
-        final var captured = new TimedView[1];
-        final var sibling = timed(driver, 0, ReactNode.of("Sync")).input("capture", captured);
+        final var async = suspenseTrace(yields, "Async", "AsyncText").input("pending", pending);
+        final var monkey = new SuspenseTrace[1];
         root.render(
                 profile(
                         driver,
                         "test-profiler",
-                        ReactNode.of(ReactElement.createSuspense(null, ReactNode.of("Loading..."), 0, async), sibling)),
+                        ReactNode.of(
+                                ReactElement.createSuspense(
+                                        null, suspenseTrace(yields, "Loading...", "Text"), 0, async),
+                                suspenseTrace(yields, "Sync", "Text"),
+                                suspenseTrace(yields, "Monkey", "").input("capture", monkey))),
                 null);
         driver.drain();
+        assertYields(yields, "Suspend [Async]", "Text [Loading...]", "Text [Sync]", "Monkey");
         check(driver.samples.isEmpty(), "Preparing a fallback does not yet commit the Profiler");
         equal("", output(root.getChildren()));
         driver.time = 10_000;
+        driver.memory.flushExpired();
         driver.drainTimers();
+        assertYields(yields);
         driver.assertSamples(new Sample("test-profiler", "mount", 0, 0, 0, 10_000));
         equal("Loading...Sync", output(root.getChildren()));
-        Objects.requireNonNull(captured[0]).forceUpdate();
+        Objects.requireNonNull(monkey[0]).forceUpdate();
         driver.drain();
+        assertYields(yields, "Monkey");
         check(driver.samples.size() == 2, "An independent sibling update reports a second commit");
-        pending.resolve();
+        pending.resolve(() -> yields.add("Promise resolved [Async]"));
         driver.drain();
+        assertYields(yields, "Promise resolved [Async]", "AsyncText [Async]");
         check(driver.samples.size() == 3, "Resolving the primary reports a third commit");
         equal("test-profiler", driver.samples.get(2).id());
         equal("AsyncSync", output(root.getChildren()));
+    }
+
+    private static void suspensePastDeadline() {
+        final var driver = new Driver(true);
+        final var root = driver.memory.createTestRoot(true);
+        final var yields = new ArrayList<String>();
+        final var pending = new Pending();
+        root.render(
+                profile(
+                        driver,
+                        "app",
+                        ReactElement.createSuspense(
+                                null,
+                                suspenseTrace(yields, "loading", "Text"),
+                                1000,
+                                suspenseTrace(yields, "loaded", "AsyncText").input("pending", pending))),
+                null);
+        driver.time = 1500;
+        driver.drain();
+        assertYields(yields, "Suspend [loaded]", "Text [loading]");
+        driver.time = 4000;
+        pending.resolve(() -> yields.add("Promise resolved [loaded]"));
+        assertYields(yields, "Promise resolved [loaded]");
+        driver.drain();
+        assertYields(yields, "AsyncText [loaded]");
+        equal("loaded", output(root.getChildren()));
+    }
+
+    private static ReactElement suspenseTrace(List<String> yields, String text, String prefix) {
+        return ReactElement.createViewElement(SUSPENSE_TRACE)
+                .input("yields", yields)
+                .input("text", text)
+                .input("prefix", prefix);
+    }
+
+    private static void assertYields(List<String> actual, String... expected) {
+        check(actual.equals(List.of(expected)), "Expected yields " + List.of(expected) + ", got " + actual);
+        actual.clear();
     }
 
     private static void capturedInteractionsAndCommits() {
@@ -626,41 +675,60 @@ public final class ProfilerBrowserTest {
     }
 
     private static void urgentUpdateDuringSuspense() {
-        for (final var concurrent : new boolean[] {false, true}) {
+        for (final var concurrent : new boolean[] {true, false}) {
             final var driver = new Driver(true);
-            final var root = driver.memory.createRoot(concurrent);
+            final var root = driver.memory.createTestRoot(concurrent);
             final var pending = new Pending();
-            final var primary = timed(driver, 0, ReactNode.of("loaded")).input("pending", pending);
-            final var boundary = ReactElement.createSuspense(null, ReactNode.of("loading"), 2000, primary);
+            final var yields = new ArrayList<String>();
             driver.trace("initial");
-            root.render(profile(driver, "app", ReactNode.of(boundary, ReactNode.of("initial"))), null);
+            root.render(urgentSuspenseTree(driver, pending, "initial", yields), null);
             driver.trace();
             driver.drain();
             if (concurrent) {
+                assertYields(yields, "Suspend [loaded]", "Text [loading]", "Text [initial]");
                 check(driver.samples.isEmpty(), "The initial concurrent render defers its fallback commit");
             } else {
                 equal("loadinginitial", output(root.getChildren()));
+                check(2 == driver.samples.size(), "Two synchronous initial commits: " + driver.samples);
+                yields.clear();
             }
 
             driver.time = 500;
             driver.clearSamples();
             driver.trace("urgent");
-            driver.memory.flushSync(() ->
-                    root.render(profile(driver, "app", ReactNode.of(boundary, ReactNode.of("updated"))), null));
+            driver.memory.flushSync(() -> root.render(urgentSuspenseTree(driver, pending, "updated", yields), null));
             driver.trace();
             equal("loadingupdated", output(root.getChildren()));
-            check(!driver.samples.isEmpty(), "The urgent render commits the updated sibling and fallback");
             if (concurrent) {
+                assertYields(yields, "Suspend [loaded]", "Text [loading]", "Text [updated]");
                 driver.assertInteractions(List.of("urgent"));
+            } else {
+                check(2 == driver.samples.size(), "Two synchronous update commits: " + driver.samples);
+                yields.clear();
             }
 
             driver.time = 1000;
             driver.clearSamples();
-            pending.resolve();
+            pending.resolve(() -> yields.add("Promise resolved [loaded]"));
+            if (concurrent) {
+                assertYields(yields, "Promise resolved [loaded]");
+            }
             driver.drain();
             equal("loadedupdated", output(root.getChildren()));
-            check(!driver.samples.isEmpty(), "The retry commits the resolved primary beside the updated sibling");
+            if (concurrent) {
+                assertYields(yields, "AsyncText [loaded]");
+                check(1 == driver.samples.size(), "One concurrent retry commit: " + driver.samples);
+            } else {
+                check(2 == driver.samples.size(), "Two synchronous retry commits: " + driver.samples);
+            }
         }
+    }
+
+    private static ReactElement urgentSuspenseTree(
+            Driver driver, Pending pending, String sibling, List<String> yields) {
+        final var primary = suspenseTrace(yields, "loaded", "AsyncText").input("pending", pending);
+        final var boundary = ReactElement.createSuspense(null, suspenseTrace(yields, "loading", "Text"), 2000, primary);
+        return profile(driver, "app", ReactNode.of(boundary, suspenseTrace(yields, sibling, "Text")));
     }
 
     private static void interleavedRoots() {
@@ -954,7 +1022,12 @@ public final class ProfilerBrowserTest {
         private boolean ready;
 
         private void resolve() {
+            resolve(() -> {});
+        }
+
+        private void resolve(Runnable onResolve) {
             ready = true;
+            onResolve.run();
             final var pending = List.copyOf(callbacks);
             callbacks.clear();
             pending.forEach(Reconciler.Task::run);
@@ -964,6 +1037,36 @@ public final class ProfilerBrowserTest {
     @JsFunction
     private interface Subscribe {
         void then(Reconciler.Task resolve);
+    }
+
+    private static final class SuspenseTrace extends NativeView {
+        @JsConstructor
+        SuspenseTrace(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public @Nullable ReactNode render() {
+            final var inputs = requireInputs();
+            final var yields = Js.<List<String>>uncheckedCast(inputs.get("yields"));
+            final var text = Js.asString(inputs.get("text"));
+            final var pending = (Pending) inputs.get("pending");
+            if (null != pending && !pending.ready) {
+                yields.add("Suspend [" + text + "]");
+                return RuntimeParityBrowserTest.throwPending(Js.uncheckedCast(pending.thenable));
+            }
+            final var captured = inputs.get("capture");
+            if (null != captured) {
+                Js.<@Nullable SuspenseTrace[]>uncheckedCast(captured)[0] = this;
+            }
+            final var prefix = Js.asString(inputs.get("prefix"));
+            if (prefix.isEmpty()) {
+                yields.add(text);
+                return null;
+            }
+            yields.add(prefix + " [" + text + "]");
+            return ReactNode.of(text);
+        }
     }
 
     private static final class TimedView extends NativeView

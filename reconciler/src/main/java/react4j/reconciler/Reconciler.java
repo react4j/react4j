@@ -1016,7 +1016,9 @@ public final class Reconciler {
             _activeSequence = _committedSequence;
             _renderStarted = now();
             _fallbackDeadline = 0;
-            _activeProfilerInteractions = null;
+            if (!_interrupted) {
+                _activeProfilerInteractions = null;
+            }
             final var work = new ArrayList<PendingWork>();
             final var actions = new ArrayList<Runnable>();
             _heldCallbacks = List.copyOf(_callbacks);
