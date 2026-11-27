@@ -27,6 +27,8 @@ import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidCatch;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.ViewConstructorFunction;
+import react4j.reconciler.MemoryRenderer;
+import react4j.reconciler.Reconciler;
 import react4j.webtesting.BrowserPromise;
 
 @NullMarked

@@ -16,12 +16,12 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
-import react4j.internal.CurrentOwner;
 import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.ViewConstructorFunction;
+import react4j.reconciler.ReconcilerTestAccess;
 import react4j.webtesting.Browser;
 
 @NullMarked
@@ -108,7 +108,7 @@ public final class ClassStateBrowserTest {
         describe(unset, "Unset")
                 .set(
                         "getDerivedStateFromProps",
-                        ClassComponent.properties(initialized).get("getDerivedStateFromProps"));
+                        ReconcilerTestAccess.properties(initialized).get("getDerivedStateFromProps"));
         final var unsetState = ReactElement.createViewElement(unset)
                 .input("capture", new StateBox[1])
                 .input("draw", renderPair)
@@ -171,7 +171,7 @@ public final class ClassStateBrowserTest {
     }
 
     private static void contextInClassConstructor(Browser.Element host) {
-        final PropTypeValidator.Validator accept = (values, property, name, location, publicName, secret) -> null;
+        final ReconcilerTestAccess.Validator accept = (values, property, name, location, publicName, secret) -> null;
         final ContextConstructor contextReader = ContextState::new;
         final ViewConstructorFunction reader = Js.uncheckedCast(contextReader);
         describe(reader, "Foo").set("contextTypes", JsPropertyMap.of("tag", accept, "className", accept));
@@ -213,13 +213,13 @@ public final class ClassStateBrowserTest {
             final var innerView = ReactElement.createViewElement(inner)
                     .input("variant", StateVariant.PROPS)
                     .input("initialValue", "foo");
-            ClassComponent.properties(innerView).set("ref", "inner");
+            ReconcilerTestAccess.properties(innerView).set("ref", "inner");
             return innerView;
         });
         final var instance = Objects.requireNonNull(Renderer.render(owner, Js.uncheckedCast(host), null));
         assertHost(host, "DIV", "foo");
-        final var refs = ClassComponent.properties(
-                Objects.requireNonNull(ClassComponent.properties(instance).get("refs")));
+        final var refs = ReconcilerTestAccess.properties(
+                Objects.requireNonNull(ReconcilerTestAccess.properties(instance).get("refs")));
         final var referenced = (InputStateView) Objects.requireNonNull(refs.get("inner"));
         equal("foo", (String) referenced.requireInputs().get("initialValue"));
         ReactDOM.unmountComponentAtNode(host);
@@ -408,7 +408,7 @@ public final class ClassStateBrowserTest {
 
     private static String keys(@Nullable Object value) {
         final var keys = new ArrayList<String>();
-        ClassComponent.properties(Objects.requireNonNull(value)).forEach(keys::add);
+        ReconcilerTestAccess.properties(Objects.requireNonNull(value)).forEach(keys::add);
         return String.join(",", keys);
     }
 
@@ -536,7 +536,7 @@ public final class ClassStateBrowserTest {
         });
         classShape(host, production, "Foo", null, shape -> {
             final Hook initializer = ClassStateBrowserTest::unexpected;
-            ClassComponent.properties(initializer).set("isReactClassApproved", JsPropertyMap.of());
+            ReconcilerTestAccess.properties(initializer).set("isReactClassApproved", JsPropertyMap.of());
             shape.set("getInitialState", initializer);
         });
         for (final var hook :
@@ -586,7 +586,7 @@ public final class ClassStateBrowserTest {
     private static native Object number(double value);
 
     private static JsPropertyMap<@Nullable Object> describe(ViewConstructorFunction type, String name) {
-        final var descriptor = ClassComponent.properties(type);
+        final var descriptor = ReconcilerTestAccess.properties(type);
         descriptor.set("componentClass", type);
         descriptor.set("displayName", name);
         return descriptor;
@@ -634,7 +634,7 @@ public final class ClassStateBrowserTest {
                 default -> {}
             }
             if (StateVariant.MOUNT_STATE == _variant) {
-                ClassComponent.properties(this)
+                ReconcilerTestAccess.properties(this)
                         .set("UNSAFE_componentWillMount", (Hook) () -> setState(JsPropertyMap.of("bar", "bar")));
             }
         }
@@ -682,7 +682,7 @@ public final class ClassStateBrowserTest {
         @JsConstructor
         ClassContextProvider(JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
-            ClassComponent.properties(this).set("getChildContext", (ContextFields) () -> JsPropertyMap.of(
+            ReconcilerTestAccess.properties(this).set("getChildContext", (ContextFields) () -> JsPropertyMap.of(
                     "tag",
                     requireInputs().get("tag"),
                     "className",
@@ -704,7 +704,7 @@ public final class ClassStateBrowserTest {
         @JsConstructor
         ContextState(JsPropertyMap<@Nullable Object> inputs, Object context) {
             super(inputs);
-            final var values = ClassComponent.properties(context);
+            final var values = ReconcilerTestAccess.properties(context);
             applyState(JsPropertyMap.of("tag", values.get("tag"), "className", values.get("className")));
         }
 
@@ -726,17 +726,17 @@ public final class ClassStateBrowserTest {
             super(inputs);
             _actions = Js.uncheckedCast(Objects.requireNonNull(inputs.get("actions")));
             applyState(JsPropertyMap.of());
-            final var view = ClassComponent.properties(this);
+            final var view = ReconcilerTestAccess.properties(this);
             view.set("UNSAFE_componentWillMount", (Hook) () -> _actions.add("will-mount"));
             view.set("UNSAFE_componentWillReceiveProps", (Receive) next -> _actions.add(
-                    "receive-props:" + ClassComponent.properties(next).get("value")));
+                    "receive-props:" + ReconcilerTestAccess.properties(next).get("value")));
             view.set("shouldComponentUpdate", (ObserveUpdate) (next, state) -> hook("should-update", next, state));
             view.set("UNSAFE_componentWillUpdate", (ObserveUpdate) (next, state) -> hook("will-update", next, state));
             view.set("componentDidUpdate", (ObserveUpdate) (previous, state) -> hook("did-update", previous, state));
         }
 
         private boolean hook(String name, Object inputs, @Nullable Object state) {
-            _actions.add(name + ":" + ClassComponent.properties(inputs).get("value") + ":" + keys(state));
+            _actions.add(name + ":" + ReconcilerTestAccess.properties(inputs).get("value") + ":" + keys(state));
             return true;
         }
 
@@ -806,7 +806,7 @@ public final class ClassStateBrowserTest {
             applyState(Js.uncheckedCast(values.get("state")));
             final var predicate = (Before) values.get("predicate");
             final var receive = (Before) values.get("willReceive");
-            final var instance = ClassComponent.properties(this);
+            final var instance = ReconcilerTestAccess.properties(this);
             if (null != predicate) {
                 instance.set(
                         "shouldComponentUpdate", (ObserveUpdate) (next, state) -> predicate.apply(this, next, state));
@@ -850,7 +850,7 @@ public final class ClassStateBrowserTest {
             ((ColorView[]) Objects.requireNonNull(requireInputs().get("capture")))[0] = this;
             observe("getInitialState");
             applyState(JsPropertyMap.of("color", "red"));
-            final var instance = ClassComponent.properties(this);
+            final var instance = ReconcilerTestAccess.properties(this);
             instance.set("UNSAFE_componentWillMount", (Hook) this::willMount);
             instance.set("UNSAFE_componentWillReceiveProps", (Receive) this::willReceive);
             instance.set("shouldComponentUpdate", (ObserveUpdate) (next, state) -> {
@@ -875,8 +875,9 @@ public final class ClassStateBrowserTest {
         }
 
         private void observe(String name, @Nullable Object state) {
-            final var color =
-                    null == state ? null : ClassComponent.properties(state).get("color");
+            final var color = null == state
+                    ? null
+                    : ReconcilerTestAccess.properties(state).get("color");
             _trace.add(name + ":" + (null == color ? "" : color));
         }
 
@@ -906,7 +907,7 @@ public final class ClassStateBrowserTest {
 
         private void willReceive(Object next) {
             observe("componentWillReceiveProps-start");
-            final var color = ClassComponent.properties(next).get("nextColor");
+            final var color = ReconcilerTestAccess.properties(next).get("nextColor");
             if (null != color) {
                 setStateWithCallback(
                         (StatePatch) state -> {
@@ -950,7 +951,7 @@ public final class ClassStateBrowserTest {
         @JsConstructor
         ClassShape(@Nullable JsPropertyMap<@Nullable Object> inputs, Shape shape) {
             super(inputs);
-            shape.apply(ClassComponent.properties(this));
+            shape.apply(ReconcilerTestAccess.properties(this));
         }
 
         @Override
@@ -967,10 +968,11 @@ public final class ClassStateBrowserTest {
             super(inputs);
             _trace = Js.uncheckedCast(Objects.requireNonNull(requireInputs().get("trace")));
             applyState(JsPropertyMap.of("step", 1, "extra", true));
-            ClassComponent.properties(this).set("UNSAFE_" + requireInputs().get("hook"), (Hook) () -> {
-                setStateWithCallback(JsPropertyMap.of("step", 2), () -> observe("callback"));
-                ClassComponent.properties(this).set("state", JsPropertyMap.of("step", 3));
-            });
+            ReconcilerTestAccess.properties(this)
+                    .set("UNSAFE_" + requireInputs().get("hook"), (Hook) () -> {
+                        setStateWithCallback(JsPropertyMap.of("step", 2), () -> observe("callback"));
+                        ReconcilerTestAccess.properties(this).set("state", JsPropertyMap.of("step", 3));
+                    });
         }
 
         private void observe(String phase) {
@@ -1002,8 +1004,7 @@ public final class ClassStateBrowserTest {
                 }
                 final var count = requireInputs().get("count");
                 applyState(JsPropertyMap.of("count", null == count ? 1 : count));
-                final var owner = CurrentOwner.get();
-                ((Reconciler.Fiber) Objects.requireNonNull(owner)).initializeModuleComponent(this);
+                ReconcilerTestAccess.initializeModuleComponent(this);
                 _initialized = true;
             }
             final var count = Objects.requireNonNull(state()).get("count");

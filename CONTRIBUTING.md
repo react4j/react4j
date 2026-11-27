@@ -44,7 +44,7 @@ Examples use native `j2cl_library` with explicit checker settings from `examples
 
 Browser applications compile the Java renderer into `app.js`. Development uses BUNDLE with runtime Closure defines. `-c opt` selects ADVANCED production. Both modes exercise generated inputs, context and runtime configuration.
 
-Child matching, Fiber state, and commit ordering live in the [reconciler](dom/src/main/java/react4j/dom/Reconciler.java). Platform renderers supply host operations and a scheduler. The in-memory host builds without ReactDOM and runs the [original React 16.6 reconciler suites](tools/verification/runtime/upstream/README.md) in Node. For browser changes, also compare the DOM scenarios, TodoMVC workloads and React DevTools behavior with the [pinned React 16.6 reference](tools/verification/runtime/README.md).
+Child matching, Fiber state, and commit ordering live in the [reconciler](reconciler/src/main/java/react4j/reconciler/Reconciler.java). Platform renderers supply host operations and a scheduler. The in-memory host builds without ReactDOM and runs the [original React 16.6 reconciler suites](tools/verification/runtime/upstream/README.md) in Node. For browser changes, also compare the DOM scenarios, TodoMVC workloads and React DevTools behavior with the [pinned React 16.6 reference](tools/verification/runtime/README.md).
 
 Write browser scenarios and assertions in checked Java/J2CL, called by thin Closure test-suite modules. Keep native JavaScript for browser/service instrumentation, generated-overlay discovery and interop fixtures. Compare observations in Java using explicit assertion failures that remain active in optimized builds.
 
@@ -52,7 +52,7 @@ Write browser scenarios and assertions in checked Java/J2CL, called by thin Clos
 
 The full gate enforces [coverage.json](tools/verification/coverage.json), including per-class overrides. It writes `reports/coverage/jvm.lcov`, `runtime.lcov` and `summary.txt`.
 
-Core and DOM execute in pinned Chromium with the J2CL renderer and Arez, in both runtime configurations. Their coverage bundle preserves every owned J2CL module without optimization or pruning. Publication class archives supply the complete Java line and method inventory without loading or executing runtime classes; source maps and parsed Java expressions/callables establish browser execution. Every runtime hit comes from Chromium. Ambiguous or unmapped execution remains uncovered. Other configured roots use JVM coverage directly.
+Core, reconciler and DOM code execute in pinned Chromium with the J2CL renderer and Arez, in both runtime configurations. Their coverage bundle preserves every owned J2CL module without optimization or pruning. Publication class archives supply the complete Java line and method inventory without loading or executing runtime classes; source maps and parsed Java expressions/callables establish browser execution. Every runtime hit comes from Chromium. Ambiguous or unmapped execution remains uncovered. Other configured roots use JVM coverage directly.
 
 Browser branch obligations cover conditions, ternaries, short circuits, assertions, loop exits and switch arm entries, including fallthrough and unmatched defaults. These source decisions have stable identities independent of JVM branch numbering. Missing modules, source maps, declared sources, method inventories or counters fail collection. When investigating a coverage failure, retain the raw reports and verify attribution before changing tests or rules.
 

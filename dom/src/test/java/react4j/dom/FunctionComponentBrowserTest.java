@@ -19,12 +19,13 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 import react4j.internal.NativeView;
 import react4j.internal.ViewConstructorFunction;
+import react4j.reconciler.ReconcilerTestAccess;
 import react4j.webtesting.Browser;
 import react4j.webtesting.BrowserPromise;
 
 @NullMarked
 final class FunctionComponentBrowserTest {
-    private static final PropTypeValidator.Validator ACCEPT =
+    private static final ReconcilerTestAccess.Validator ACCEPT =
             (values, property, name, location, publicName, secret) -> null;
 
     private FunctionComponentBrowserTest() {}
@@ -62,12 +63,12 @@ final class FunctionComponentBrowserTest {
     private static void legacyContextThroughFunction(Browser.Element host) {
         final var scope = JsPropertyMap.of("lang", ACCEPT);
         final var reader = type("Child", false);
-        ClassComponent.properties(reader).set("contextTypes", scope);
+        ReconcilerTestAccess.properties(reader).set("contextTypes", scope);
         final var view = ReactElement.createViewElement(reader).input("draw", (Draw)
                 component -> text("div", context(component).get("lang")));
         final var middle = ReactElement.createViewElement(type("Parent", true)).input("draw", (Draw) ignored -> view);
         final var provider = type("GrandParent", false);
-        ClassComponent.properties(provider).set("childContextTypes", scope);
+        ReconcilerTestAccess.properties(provider).set("childContextTypes", scope);
         final var app = ReactElement.createViewElement(provider).input("draw", (Draw) ignored -> middle);
         render(app.dup().input("supplied", JsPropertyMap.of("lang", "test")), host);
         equal("test", host.getTextContent());
@@ -76,7 +77,7 @@ final class FunctionComponentBrowserTest {
         ReactDOM.unmountComponentAtNode(host);
 
         final var consumer = type("FunctionReader", true);
-        ClassComponent.properties(consumer).set("contextTypes", scope);
+        ReconcilerTestAccess.properties(consumer).set("contextTypes", scope);
         final var inner = ReactElement.createViewElement(consumer).input("draw", (Draw)
                 component -> text("div", context(component).get("lang")));
         render(
@@ -88,7 +89,7 @@ final class FunctionComponentBrowserTest {
 
     private static void classOnlyDiagnostics(Browser.Element host, boolean production) {
         final var derive = type("FunctionWithDerivedState", true);
-        ClassComponent.properties(derive).set("getDerivedStateFromProps", (ContextProvider) () -> {
+        ReconcilerTestAccess.properties(derive).set("getDerivedStateFromProps", (ContextProvider) () -> {
             throw new AssertionError("Do not call derive on a plain function");
         });
         expectWarning(
@@ -98,7 +99,7 @@ final class FunctionComponentBrowserTest {
         ReactDOM.unmountComponentAtNode(host);
 
         final var provider = type("FunctionWithChildren", true);
-        ClassComponent.properties(provider).set("childContextTypes", JsPropertyMap.of("lang", ACCEPT));
+        ReconcilerTestAccess.properties(provider).set("childContextTypes", JsPropertyMap.of("lang", ACCEPT));
         expectWarning(
                 production,
                 "FunctionWithChildren(...): childContextTypes cannot be defined on a function component.",
@@ -124,7 +125,8 @@ final class FunctionComponentBrowserTest {
                                 (Ref) value -> check(null == value, "A function ref never receives an instance");
                         final var target =
                                 ReactElement.createViewElement(child).input("draw", (Draw) v -> text("span", "A"));
-                        ClassComponent.properties(target).set("ref", "StringOwner".equals(owner) ? "child" : callback);
+                        ReconcilerTestAccess.properties(target)
+                                .set("ref", "StringOwner".equals(owner) ? "child" : callback);
                         return text("div", target);
                     });
             expectWarning(production, "Check the render method of `" + owner + "`.", () -> render(parent, host));
@@ -142,9 +144,9 @@ final class FunctionComponentBrowserTest {
             defineProperty(owner, "name", JsPropertyMap.of("value", Js.undefined()));
             final var parent = ReactElement.createViewElement(owner).input("draw", (Draw) ignored -> {
                 final var target = ReactElement.createViewElement(child);
-                ClassComponent.properties(target).set("ref", (Ref) value -> {});
+                ReconcilerTestAccess.properties(target).set("ref", (Ref) value -> {});
                 if (hasSource) {
-                    ClassComponent.properties(target)
+                    ReconcilerTestAccess.properties(target)
                             .set("_source", JsPropertyMap.of("fileName", "RefOwner.jsx", "lineNumber", number(13)));
                 }
                 return target;
@@ -162,14 +164,14 @@ final class FunctionComponentBrowserTest {
         final var child = type("ReferencedContextConsumer", true);
         final var parent = type("ReferencingContextProvider", false);
         final var context = JsPropertyMap.of("lang", ACCEPT);
-        ClassComponent.properties(child).set("contextTypes", context);
-        ClassComponent.properties(parent).set("childContextTypes", context);
+        ReconcilerTestAccess.properties(child).set("contextTypes", context);
+        ReconcilerTestAccess.properties(parent).set("childContextTypes", context);
         final var app = ReactElement.createViewElement(parent)
                 .input("supplied", JsPropertyMap.of("lang", "en"))
                 .input("draw", (Draw) ignored -> {
                     final var target = ReactElement.createViewElement(child).input("draw", (Draw)
                             view -> text("div", context(view).get("lang")));
-                    ClassComponent.properties(target).set("ref", (Ref) value -> {});
+                    ReconcilerTestAccess.properties(target).set("ref", (Ref) value -> {});
                     return target;
                 });
         expectWarning(
@@ -184,7 +186,7 @@ final class FunctionComponentBrowserTest {
         final var component = ReactElement.createViewElement(type("FunctionList", true))
                 .input("draw", (Draw) ignored -> {
                     final var child = text("span", "");
-                    ClassComponent.properties(child).set("_store", JsPropertyMap.of("validated", false));
+                    ReconcilerTestAccess.properties(child).set("_store", JsPropertyMap.of("validated", false));
                     return text("div", new Object[] {child});
                 });
         expectWarning(
@@ -204,17 +206,20 @@ final class FunctionComponentBrowserTest {
 
     private static void functionDefaults(Browser.Element host, boolean production) {
         final var component = type("DefaultFunctionValue", true);
-        final var description = ClassComponent.properties(component);
+        final var description = ReconcilerTestAccess.properties(component);
         description.set("defaultProps", JsPropertyMap.of("test", number(2)));
-        final PropTypeValidator.Validator validate = (values, property, name, location, publicName, secret) -> "string"
-                        .equals(Js.typeof(ClassComponent.properties(Objects.requireNonNull(values))
-                                .get(property)))
-                ? null
-                : error("Invalid prop `test` of type `number` supplied to `DefaultFunctionValue`, expected `string`.");
+        final ReconcilerTestAccess.Validator validate =
+                (values, property, name, location, publicName, secret) -> "string"
+                                .equals(Js.typeof(ReconcilerTestAccess.properties(Objects.requireNonNull(values))
+                                        .get(property)))
+                        ? null
+                        : error("Invalid prop `test` of type `number` supplied to `DefaultFunctionValue`, expected"
+                                + " `string`.");
         description.set("propTypes", JsPropertyMap.of("test", validate));
         final var wrapped = text("div", null).input("draw", (Draw)
                 view -> text("div", view.requireInputs().get("test")));
-        ClassComponent.properties(wrapped).set("type", JsPropertyMap.of("$$typeof", React.Memo, "type", component));
+        ReconcilerTestAccess.properties(wrapped)
+                .set("type", JsPropertyMap.of("$$typeof", React.Memo, "type", component));
         expectWarning(production, "Invalid prop `test` of type `number`", () -> render(wrapped, host));
         equal("2", host.getTextContent());
         ReactDOM.unmountComponentAtNode(host);
@@ -234,7 +239,7 @@ final class FunctionComponentBrowserTest {
 
     private static ViewConstructorFunction type(String name, boolean function) {
         final ViewConstructorFunction constructor = View::new;
-        final var descriptor = ClassComponent.properties(constructor);
+        final var descriptor = ReconcilerTestAccess.properties(constructor);
         descriptor.set("componentClass", constructor);
         descriptor.set("displayName", name);
         descriptor.set("functionComponent", function);
@@ -242,8 +247,8 @@ final class FunctionComponentBrowserTest {
     }
 
     private static JsPropertyMap<@Nullable Object> context(View view) {
-        return ClassComponent.properties(
-                Objects.requireNonNull(ClassComponent.properties(view).get("context")));
+        return ReconcilerTestAccess.properties(
+                Objects.requireNonNull(ReconcilerTestAccess.properties(view).get("context")));
     }
 
     private static void expectWarning(boolean production, String message, BrowserPromise.Action action) {
@@ -304,7 +309,7 @@ final class FunctionComponentBrowserTest {
         View(JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
             if (inputs.has("supplied")) {
-                ClassComponent.properties(this).set("getChildContext", (ContextProvider)
+                ReconcilerTestAccess.properties(this).set("getChildContext", (ContextProvider)
                         () -> Objects.requireNonNull(requireInputs().get("supplied")));
             }
         }

@@ -39,6 +39,7 @@ paths=(
   tools/testing/src/main/java
   core/src/main/java
   core/src/test/java
+  reconciler/src/main/java
   dom/src/main/java
   dom/src/test/java
   processor/src/main/java

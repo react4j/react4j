@@ -18,6 +18,9 @@ import react4j.ReactNode;
 import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
+import react4j.reconciler.Reconciler;
+import react4j.reconciler.ReconcilerScheduler;
+import react4j.reconciler.ReconcilerTestAccess;
 import react4j.webtesting.Browser;
 import react4j.webtesting.BrowserPromise;
 
@@ -36,30 +39,37 @@ public final class FiberReconciliationTest {
         final var b = ReactElement.createFragment("b");
         return Browser.callback(done -> root.render(ReactNode.of(a, b), done::run))
                 .then(ignored -> {
-                    final var first = root.fiber.children;
-                    final var leaf = first[0].children[0];
-                    check(first[0].parent == root.fiber && leaf.parent == first[0], "Committed parent links");
+                    final var first = ReconcilerTestAccess.children(ReconcilerTestAccess.rootFiber(root));
+                    final var leaf = ReconcilerTestAccess.children(first[0])[0];
                     check(
-                            Reconciler.Kind.FRAGMENT == leaf.kind && null == leaf.hostInstance,
+                            ReconcilerTestAccess.parent(first[0]) == ReconcilerTestAccess.rootFiber(root)
+                                    && ReconcilerTestAccess.parent(leaf) == first[0],
+                            "Committed parent links");
+                    check(
+                            ReconcilerTestAccess.isFragment(leaf) && null == ReconcilerTestAccess.hostInstance(leaf),
                             "Logical leaf has no host instance");
                     return Browser.callback(done -> root.render(ReactNode.of(b, null, a), done::run))
                             .then(moved -> {
-                                final var second = root.fiber.children;
+                                final var second = ReconcilerTestAccess.children(ReconcilerTestAccess.rootFiber(root));
                                 check(
                                         2 == second.length && second[0] == first[1] && second[1] == first[0],
                                         "Sparse reorder retains both fibers");
-                                check(leaf == second[1].children[0], "A moved subtree retains its child fiber");
+                                check(
+                                        leaf == ReconcilerTestAccess.children(second[1])[0],
+                                        "A moved subtree retains its child fiber");
                                 final var nested =
                                         ReactElement.createFragment("b", ReactElement.createFragment("leaf"));
                                 return Browser.callback(done -> root.render(nested, done::run))
                                         .then(reparented -> {
-                                            final var remaining = root.fiber.children;
+                                            final var remaining =
+                                                    ReconcilerTestAccess.children(ReconcilerTestAccess.rootFiber(root));
                                             check(
                                                     1 == remaining.length && remaining[0] == first[1],
                                                     "A keyed single child retains its fiber");
-                                            final var replacement = remaining[0].children[0];
+                                            final var replacement = ReconcilerTestAccess.children(remaining[0])[0];
                                             check(
-                                                    leaf != replacement && replacement.parent == remaining[0],
+                                                    leaf != replacement
+                                                            && ReconcilerTestAccess.parent(replacement) == remaining[0],
                                                     "Keys are scoped to their parent");
                                             check(
                                                     null == container.firstChild,
@@ -68,7 +78,9 @@ public final class FiberReconciliationTest {
                                         });
                             });
                 })
-                .thenDo(() -> check(0 == root.fiber.children.length, "Unmount empties the root fiber"));
+                .thenDo(() -> check(
+                        0 == ReconcilerTestAccess.children(ReconcilerTestAccess.rootFiber(root)).length,
+                        "Unmount empties the root fiber"));
     }
 
     @JsMethod

@@ -7,6 +7,7 @@ import jsinterop.base.Js;
 import org.jspecify.annotations.Nullable;
 import react4j.ReactNode;
 import react4j.dom.DomHost.Node;
+import react4j.reconciler.Reconciler;
 
 final class Renderer {
     private static final DomHost.WeakMap<Node, Reconciler.Root> ROOTS = new DomHost.WeakMap<>();
@@ -34,6 +35,22 @@ final class Renderer {
         return new Reconciler.Root(container, true, DomReconcilerHost.INSTANCE, BrowserScheduler.INSTANCE);
     }
 
+    static ReactRoot createPublicRoot(Node container) {
+        return new DomRoot(createRoot(container));
+    }
+
+    private record DomRoot(Reconciler.Root root) implements ReactRoot, NativeReactRoot {
+        @Override
+        public void render(@Nullable ReactNode children, ReactRoot.@Nullable PostRenderCallbackFn callback) {
+            root.render(children, null == callback ? null : callback::call);
+        }
+
+        @Override
+        public void unmount(ReactRoot.@Nullable PostUnmountCallbackFn callback) {
+            root.unmount(null == callback ? null : callback::call);
+        }
+    }
+
     static @Nullable Object render(
             @Nullable ReactNode node, Node container, ReactDOM.@Nullable RenderCallbackFn callback) {
         if (DEVELOPMENT) {
@@ -51,7 +68,7 @@ final class Renderer {
             ROOTS.set(container, existing);
             markRoot(container, () -> unmount(container));
         } else if (DEVELOPMENT && 8 != container.nodeType) {
-            final var host = firstHost(existing.fiber);
+            final var host = Js.<@Nullable Node>uncheckedCast(existing.firstHost());
             if (null != host && host.parentNode != container) {
                 warning("Warning: render(...): It looks like the React-rendered content of this container was removed "
                         + "without using React. This is not supported and will cause errors. Instead, call "
@@ -59,7 +76,7 @@ final class Renderer {
             }
         }
         final var root = existing;
-        root.submit(node, null == callback ? null : () -> invokeCallback(callback, root.publicInstance()));
+        root.render(node, null == callback ? null : () -> invokeCallback(callback, root.publicInstance()));
         return root.publicInstance();
     }
 
@@ -109,22 +126,6 @@ final class Renderer {
     private static boolean hasManagedChild(Node container) {
         final var first = container.firstChild;
         return null != first && 1 == first.nodeType && null != DomEvents.state(Js.uncheckedCast(first));
-    }
-
-    private static @Nullable Node firstHost(Reconciler.Fiber fiber) {
-        if (Reconciler.Kind.PORTAL == fiber.kind) {
-            return null;
-        }
-        if (null != fiber.hostInstance) {
-            return Js.uncheckedCast(fiber.hostInstance);
-        }
-        for (final var child : fiber.children) {
-            final var host = firstHost(child);
-            if (null != host) {
-                return host;
-            }
-        }
-        return null;
     }
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "console.error")

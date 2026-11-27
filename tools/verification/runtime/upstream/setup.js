@@ -206,8 +206,8 @@ function createRenderer(moduleFor, sourceReact) {
   const JavaReact = moduleFor('react4j.React');
   const owner = moduleFor('react4j.internal.CurrentOwner');
   const currentOwner = owner[member(owner, 'm_get__')].bind(owner);
-  const Fiber = moduleFor('react4j.dom.Reconciler.Fiber');
-  const reconciler = moduleFor('react4j.dom.Reconciler');
+  const Fiber = moduleFor('react4j.reconciler.Reconciler.Fiber');
+  const reconciler = moduleFor('react4j.reconciler.Reconciler');
   const readContext = member(reconciler, 'm_readCurrentContext__');
   const DomHost = moduleFor('react4j.dom.DomReconcilerHost');
   if (DomHost) {
@@ -215,7 +215,7 @@ function createRenderer(moduleFor, sourceReact) {
       require('shared/ReactFeatureFlags').replayFailedUnitOfWorkWithInvokeGuardedCallback !== false;
   }
 
-  const Failure = moduleFor('react4j.dom.Reconciler.RenderFailure');
+  const Failure = moduleFor('react4j.reconciler.Reconciler.RenderFailure');
   if (internals.ReactDebugCurrentFrame) {
     const stack = member(Failure, 'm_stackFrom__');
     internals.ReactDebugCurrentFrame.getCurrentStack = () => {
@@ -235,7 +235,7 @@ function createRenderer(moduleFor, sourceReact) {
   PureComponent.prototype = Object.create(Component.prototype);
   PureComponent.prototype.constructor = PureComponent;
   PureComponent.prototype.shouldComponentUpdate = function(props, state) {
-    const runtime = moduleFor('react4j.dom.Reconciler');
+    const runtime = moduleFor('react4j.reconciler.Reconciler');
     return !runtime.shallowEqual(this.props, props) || !runtime.shallowEqual(this.state, state);
   };
   function renderFixture(receiver, render, args, constructing = false) {
@@ -379,7 +379,7 @@ function createRenderer(moduleFor, sourceReact) {
       reconciler[member(reconciler, 'm_checkForwardRefProps__')](element, type, element.props, stack(displayName));
     } else if (typeof type === 'function' &&
         (type.propTypes || type.PropTypes !== undefined || typeof type.getDefaultProps === 'function')) {
-      const PropTypes = moduleFor('react4j.dom.PropTypeValidator');
+      const PropTypes = moduleFor('react4j.reconciler.PropTypeValidator');
       PropTypes[member(PropTypes, 'm_checkElement__')](element, type, stack(name(type)));
     }
     return element;
@@ -455,7 +455,7 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, registerRefl
   const dom = moduleFor('react4j.dom.ReactDOM');
   // Find the committed host exposed through refs in Java fixtures. Each Jest case owns its roots.
   const domRenderer = moduleFor('react4j.dom.Renderer');
-  const isMountedView = member(moduleFor('react4j.dom.Reconciler.Fiber').prototype, 'm_isMountedView__');
+  const isMountedView = member(moduleFor('react4j.reconciler.Reconciler.Fiber').prototype, 'm_isMountedView__');
   const committedRoot = container => domRenderer[member(domRenderer, 'f_ROOTS__')].get(container);
   const rootFiber = root => root[member(root, 'f_fiber__')];
   const fiberView = fiber => fiber[member(fiber, 'f_view__')];

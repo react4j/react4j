@@ -13,7 +13,10 @@ for (const mode of ['development', 'production']) {
   const load = new Function('scope', 'with (scope) { return function(goog) {' +
     source + '\nreturn name => goog.module.get(name); }; }');
   const moduleFor = load(scope).call(scope, scope.goog);
+  assert.ok(moduleFor('react4j.reconciler.Reconciler'));
   assert.ok(!moduleFor('react4j.dom.DomHost'));
+  assert.ok(!moduleFor('react4j.dom.ReactRoot'));
+  assert.ok(!moduleFor('react4j.dom.ReactPortal'));
   const cases = moduleFor('react4j.testing.IsolatedCases');
   console.log(mode + ': ' + cases.run(mode) + ' isolated reconciler cases passed');
 }

@@ -42,7 +42,13 @@ public class DomJDependTest {
 
         react4jDom.dependsUpon(arez);
         react4jDom.dependsUpon(react4j);
-        react4jDom.dependsUpon(constraint.addPackage("react4j.internal"));
+        final var reconciler = constraint.addPackage("react4j.reconciler");
+        react4jDom.dependsUpon(reconciler);
+        reconciler.dependsUpon(react4j);
+        reconciler.dependsUpon(constraint.addPackage("react4j.internal"));
+        reconciler.dependsUpon(jsinteropAnnotations);
+        reconciler.dependsUpon(jsinteropBase);
+        reconciler.dependsUpon(jspecify);
         react4jDom.dependsUpon(react4jDomEvents);
         react4jDom.dependsUpon(jsinteropAnnotations);
         react4jDom.dependsUpon(jsinteropBase);

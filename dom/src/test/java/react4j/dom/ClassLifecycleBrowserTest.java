@@ -18,11 +18,12 @@ import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.ViewConstructorFunction;
+import react4j.reconciler.ReconcilerTestAccess;
 import react4j.webtesting.Browser;
 
 @NullMarked
 public final class ClassLifecycleBrowserTest {
-    private static final PropTypeValidator.Validator ANY_CONTEXT =
+    private static final ReconcilerTestAccess.Validator ANY_CONTEXT =
             (values, property, name, location, publicName, secret) -> null;
 
     private ClassLifecycleBrowserTest() {}
@@ -48,8 +49,9 @@ public final class ClassLifecycleBrowserTest {
         final ViewConstructorFunction provider = Provider::new;
         final ViewConstructorFunction reader = Reader::new;
         final var types = JsPropertyMap.of("language", ANY_CONTEXT);
-        ClassComponent.properties(provider).set("childContextTypes", types);
-        ClassComponent.properties(reader).set("contextTypes", types);
+        ReconcilerTestAccess.properties(provider)
+                .set("childContextTypes", JsPropertyMap.of("language", ANY_CONTEXT, "unused", ANY_CONTEXT));
+        ReconcilerTestAccess.properties(reader).set("contextTypes", types);
         final var child = ReactElement.createViewElement(reader);
         final var app = ReactElement.createViewElement(provider).input("children", child);
         ReactDOM.render(app.input("language", "fr"), host);
@@ -67,7 +69,7 @@ public final class ClassLifecycleBrowserTest {
         final var trace = new StringBuilder();
         final ViewConstructorFunction provider = inputs -> {
             final var instance = new Provider(inputs);
-            final var methods = ClassComponent.properties(instance);
+            final var methods = ReconcilerTestAccess.properties(instance);
             methods.set("componentWillMount", (EventsBrowserTest.Probe) () -> trace.append("mount "));
             methods.set("UNSAFE_componentWillReceiveProps", (EventsBrowserTest.Probe) () -> trace.append("receive "));
             methods.set("componentWillUpdate", (EventsBrowserTest.Probe) () -> trace.append("update "));
@@ -75,8 +77,9 @@ public final class ClassLifecycleBrowserTest {
             methods.set("shouldComponentUpdate", should);
             return instance;
         };
-        ClassComponent.properties(provider).set("displayName", "LegacyHooks");
-        ClassComponent.properties(provider).set("childContextTypes", JsPropertyMap.of("language", ANY_CONTEXT));
+        ReconcilerTestAccess.properties(provider).set("displayName", "LegacyHooks");
+        ReconcilerTestAccess.properties(provider)
+                .set("childContextTypes", JsPropertyMap.of("language", ANY_CONTEXT, "unused", ANY_CONTEXT));
         final var app = ReactElement.createViewElement(provider).input("children", ReactNode.of("first"));
         final var warnings = EventsBrowserTest.captureWarnings(() -> {
             ReactDOM.render(ReactElement.createStrictMode(app.input("language", "en")), host);
@@ -119,12 +122,12 @@ public final class ClassLifecycleBrowserTest {
             owner[0] = instance;
             return instance;
         };
-        ClassComponent.properties(component).set("displayName", "RefOwner");
+        ReconcilerTestAccess.properties(component).set("displayName", "RefOwner");
         final var app = ReactElement.createViewElement(component).input("name", "first");
         final var warnings =
                 EventsBrowserTest.captureWarnings(() -> ReactDOM.render(ReactElement.createStrictMode(app), host));
-        final var refs = ClassComponent.properties(
-                Objects.requireNonNull(ClassComponent.properties(owner[0]).get("refs")));
+        final var refs = ReconcilerTestAccess.properties(
+                Objects.requireNonNull(ReconcilerTestAccess.properties(owner[0]).get("refs")));
         final var node = Js.<DomHost.Node>uncheckedCast(host).firstChild;
         check(node == refs.get("first"), "A string ref refers to its mounted host child");
         check(production == warnings.isEmpty(), "Development warns for a strict-mode string ref");
@@ -150,8 +153,8 @@ public final class ClassLifecycleBrowserTest {
         final Derive props = (next, previous) -> JsPropertyMap.of("label", next.get("label"));
         final Catch error =
                 thrown -> Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(JsPropertyMap.of("failed", true));
-        ClassComponent.properties(boundary).set("getDerivedStateFromProps", props);
-        ClassComponent.properties(boundary).set("getDerivedStateFromError", error);
+        ReconcilerTestAccess.properties(boundary).set("getDerivedStateFromProps", props);
+        ReconcilerTestAccess.properties(boundary).set("getDerivedStateFromError", error);
         final var app = ReactElement.createViewElement(boundary);
         ReactDOM.render(app.input("label", "one"), host);
         equal("one", host.getTextContent());
@@ -191,13 +194,13 @@ public final class ClassLifecycleBrowserTest {
     private static ReactElement recoveringBoundary(StringBuilder trace) {
         final ViewConstructorFunction boundary = inputs -> {
             final var instance = new Recovering(inputs);
-            ClassComponent.properties(instance)
+            ReconcilerTestAccess.properties(instance)
                     .set("componentWillMount", (EventsBrowserTest.Probe) () -> trace.append("mount "));
-            ClassComponent.properties(instance)
+            ReconcilerTestAccess.properties(instance)
                     .set("componentWillUpdate", (EventsBrowserTest.Probe) () -> trace.append("update "));
             return instance;
         };
-        ClassComponent.properties(boundary).set("getDerivedStateFromError", (Catch) thrown -> {
+        ReconcilerTestAccess.properties(boundary).set("getDerivedStateFromError", (Catch) thrown -> {
             trace.append("derive ");
             return JsPropertyMap.<@Nullable Object>of("failed", true);
         });
@@ -248,7 +251,7 @@ public final class ClassLifecycleBrowserTest {
 
     private static void observedContextBits(Browser.Element host) {
         final var context = new Context<Integer>();
-        ClassComponent.properties(context).set("_calculateChangedBits", (Bits) (before, after) -> before ^ after);
+        ReconcilerTestAccess.properties(context).set("_calculateChangedBits", (Bits) (before, after) -> before ^ after);
         final var counts = new int[2];
         final var first = readBits(context, counts, 0);
         final var second = readBits(context, counts, 1);
@@ -296,7 +299,7 @@ public final class ClassLifecycleBrowserTest {
             super(props);
             final ChildContext context =
                     () -> JsPropertyMap.of("language", requireInputs().get("language"), "unused", true);
-            ClassComponent.properties(this).set("getChildContext", context);
+            ReconcilerTestAccess.properties(this).set("getChildContext", context);
         }
 
         @Override
@@ -313,8 +316,8 @@ public final class ClassLifecycleBrowserTest {
 
         @Override
         public ReactNode render() {
-            final var context = ClassComponent.properties(
-                    Objects.requireNonNull(ClassComponent.properties(this).get("context")));
+            final var context = ReconcilerTestAccess.properties(
+                    Objects.requireNonNull(ReconcilerTestAccess.properties(this).get("context")));
             check(!context.has("unused"), "Legacy context includes only declared keys");
             return ReactNode.of(Js.asString(context.get("language")));
         }

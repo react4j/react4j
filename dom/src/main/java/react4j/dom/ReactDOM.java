@@ -7,6 +7,7 @@ import org.jspecify.annotations.Nullable;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.Renderable;
+import react4j.reconciler.Reconciler;
 
 /** Entry points for rendering React4j nodes into the DOM. */
 public final class ReactDOM {
@@ -39,7 +40,7 @@ public final class ReactDOM {
     }
 
     public static ReactRoot createRoot(final Object container) {
-        return Renderer.createRoot(Renderer.requireContainer(container, "unstable_createRoot(...): "));
+        return Renderer.createPublicRoot(Renderer.requireContainer(container, "unstable_createRoot(...): "));
     }
 
     /**

@@ -49,7 +49,9 @@ public final class BrowserApplicationTest {
                     if ("maps".equals(maps)) {
                         var sourceMap = JsonParser.parseString(Files.readString(directory.resolve("app.js.map")))
                                 .getAsJsonObject();
-                        for (var type : new String[] {"react4j/dom/Renderer", "react4j/css/example/AssetsExample"}) {
+                        for (var type : new String[] {
+                            "react4j/dom/Renderer", "react4j/reconciler/Reconciler", "react4j/css/example/AssetsExample"
+                        }) {
                             assertTrue(hasJavaSource(sourceMap, type), level + " source map must embed " + type);
                         }
                     }

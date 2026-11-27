@@ -20,6 +20,7 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 import react4j.internal.NativeView;
 import react4j.internal.ViewConstructorFunction;
+import react4j.reconciler.ReconcilerTestAccess;
 import react4j.webtesting.Browser;
 import react4j.webtesting.BrowserPromise;
 
@@ -100,7 +101,7 @@ final class PropTypeValidatorBrowserTest {
     private static void providerProps(Browser.Element host, boolean production) {
         final var context = new Context<Object>();
         final var valid = Js.<ReactElement>uncheckedCast(context.provide("val"));
-        ClassComponent.properties(valid.type()).set("propTypes", JsPropertyMap.of("value", type("string", true)));
+        ReconcilerTestAccess.properties(valid.type()).set("propTypes", JsPropertyMap.of("value", type("string", true)));
         expectWarnings(production, () -> render(valid, host));
         final var missing = valid.dup();
         missing.inputs().delete("value");
@@ -138,7 +139,7 @@ final class PropTypeValidatorBrowserTest {
                 "MiddleMissingContext.childContextTypes is specified but there is no getChildContext() method",
                 "Failed context type: The context `bar` is marked as required in `ChildContextConsumer`, but its value"
                         + " is `undefined`.");
-        final var masked = ClassComponent.properties(Objects.requireNonNull(captured.get("context")));
+        final var masked = ReconcilerTestAccess.properties(Objects.requireNonNull(captured.get("context")));
         equal("FOO", (String) masked.get("foo"));
         equal("undefined", Js.typeof(masked.get("bar")));
         ReactDOM.unmountComponentAtNode(host);
@@ -225,7 +226,7 @@ final class PropTypeValidatorBrowserTest {
         }
 
         final ViewConstructorFunction creator = Child::new;
-        final PropTypeValidator.Validator typeCreator =
+        final ReconcilerTestAccess.Validator typeCreator =
                 (values, key, name, location, publicName, secret) -> type("string", true);
         descriptor(creator, "MalformedCreator").set("propTypes", JsPropertyMap.of("value", typeCreator));
         expectWarnings(
@@ -260,7 +261,8 @@ final class PropTypeValidatorBrowserTest {
         definition.set("propTypes", JsPropertyMap.of("value", type("string", true)));
         definition.set("defaultProps", JsPropertyMap.<@Nullable Object>of("value", null));
         final var wrapper = ReactElement.createHostElement("div", null, null, JsPropertyMap.of());
-        ClassComponent.properties(wrapper).set("type", JsPropertyMap.of("$$typeof", React.Memo, "type", required));
+        ReconcilerTestAccess.properties(wrapper)
+                .set("type", JsPropertyMap.of("$$typeof", React.Memo, "type", required));
         expectWarnings(
                 production,
                 () -> render(wrapper, host),
@@ -268,13 +270,13 @@ final class PropTypeValidatorBrowserTest {
         ReactDOM.unmountComponentAtNode(host);
     }
 
-    private static PropTypeValidator.Validator type(String expected, boolean required) {
+    private static ReconcilerTestAccess.Validator type(String expected, boolean required) {
         return (values, property, name, location, publicName, secret) -> {
             check(
                     null == publicName && "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED".equals(secret),
                     "Validators receive the standard interop arguments");
-            final var value =
-                    ClassComponent.properties(Objects.requireNonNull(values)).get(property);
+            final var value = ReconcilerTestAccess.properties(Objects.requireNonNull(values))
+                    .get(property);
             final var actual = Js.typeof(value);
             if (null == value) {
                 return required
@@ -302,7 +304,7 @@ final class PropTypeValidatorBrowserTest {
     }
 
     private static JsPropertyMap<@Nullable Object> descriptor(ViewConstructorFunction type, String name) {
-        final var properties = ClassComponent.properties(type);
+        final var properties = ReconcilerTestAccess.properties(type);
         properties.set("componentClass", type);
         properties.set("displayName", name);
         return properties;
@@ -327,7 +329,7 @@ final class PropTypeValidatorBrowserTest {
         @JsConstructor
         Provider(JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
-            ClassComponent.properties(this).set("getChildContext", (ChildContext)
+            ReconcilerTestAccess.properties(this).set("getChildContext", (ChildContext)
                     () -> Objects.requireNonNull(requireInputs().get("supplied")));
         }
 
@@ -347,8 +349,8 @@ final class PropTypeValidatorBrowserTest {
         public @Nullable ReactNode render() {
             final var capture = requireInputs().get("capture");
             if (null != capture) {
-                ClassComponent.properties(capture)
-                        .set("context", ClassComponent.properties(this).get("context"));
+                ReconcilerTestAccess.properties(capture)
+                        .set("context", ReconcilerTestAccess.properties(this).get("context"));
             }
             return Js.uncheckedCast(requireInputs().get("child"));
         }

@@ -19,7 +19,6 @@ import react4j.JsError;
 import react4j.ReactElement;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
-import react4j.internal.CurrentOwner;
 import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidCatch;
 import react4j.internal.OnComponentDidMount;
@@ -27,11 +26,12 @@ import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.ViewConstructorFunction;
+import react4j.reconciler.ReconcilerTestAccess;
 import react4j.webtesting.Browser;
 
 @NullMarked
 public final class ErrorBoundariesBrowserTest {
-    private static final PropTypeValidator.Validator ANY_CONTEXT =
+    private static final ReconcilerTestAccess.Validator ANY_CONTEXT =
             (values, property, name, location, publicName, secret) -> null;
 
     private ErrorBoundariesBrowserTest() {}
@@ -138,7 +138,7 @@ public final class ErrorBoundariesBrowserTest {
     public static void captureContextProviderMount(boolean derived, boolean modulePattern) {
         try (final var scenario = new Scenario(derived)) {
             final ViewConstructorFunction provider = inputs -> new ContextProvider(inputs, modulePattern);
-            final var descriptor = ClassComponent.properties(provider);
+            final var descriptor = ReconcilerTestAccess.properties(provider);
             descriptor.set("childContextTypes", JsPropertyMap.of("foo", ANY_CONTEXT));
             descriptor.set("functionComponent", modulePattern);
             scenario.render(scenario.boundary(ReactElement.createViewElement(provider)));
@@ -235,13 +235,13 @@ public final class ErrorBoundariesBrowserTest {
             final int number = objectRefs ? 15 : 14;
             scenario.verifyTrace(derived, production, number, 0);
             if (objectRefs) {
-                final var current = ClassComponent.properties(fallbackRef).get("current");
+                final var current = ReconcilerTestAccess.properties(fallbackRef).get("current");
                 equal("[object HTMLDivElement]", nativeString(current));
             }
             scenario.unmount();
             scenario.verifyTrace(derived, production, number, 1);
             if (objectRefs) {
-                check(null == ClassComponent.properties(fallbackRef).get("current"), "Fallback ref is cleared");
+                check(null == ReconcilerTestAccess.properties(fallbackRef).get("current"), "Fallback ref is cleared");
             }
         }
     }
@@ -473,7 +473,7 @@ public final class ErrorBoundariesBrowserTest {
     }
 
     private static void withRef(ReactElement element, Object ref) {
-        ClassComponent.properties(element).set("ref", ref);
+        ReconcilerTestAccess.properties(element).set("ref", ref);
     }
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "String")
@@ -503,11 +503,11 @@ public final class ErrorBoundariesBrowserTest {
     public static void rejectsBadRoot() {
         try (final var scenario = new Scenario(true)) {
             final var bad = host("div", null);
-            ClassComponent.properties(bad).set("type", null);
+            ReconcilerTestAccess.properties(bad).set("type", null);
             check(caughtMessage(() -> scenario.render(bad)).contains("got: null"), "Runtime reports null type");
             scenario.empty();
             final var undefined = host("div", null);
-            ClassComponent.properties(undefined).set("type", Js.undefined());
+            ReconcilerTestAccess.properties(undefined).set("type", Js.undefined());
             check(
                     caughtMessage(() -> scenario.render(undefined)).contains("got: undefined"),
                     "Runtime reports undefined type");
@@ -607,7 +607,7 @@ public final class ErrorBoundariesBrowserTest {
             final var thrown = newError("expected");
             final var errors = new JsError[2];
             final ViewConstructorFunction type = inputs -> new CatchingProbe(inputs);
-            ClassComponent.properties(type).set("getDerivedStateFromError", (Derive) error -> {
+            ReconcilerTestAccess.properties(type).set("getDerivedStateFromError", (Derive) error -> {
                 errors[0] = error;
                 return JsPropertyMap.<@Nullable Object>of("error", error);
             });
@@ -742,7 +742,7 @@ public final class ErrorBoundariesBrowserTest {
             final ViewConstructorFunction factory = _derived
                     ? (JsPropertyMap<@Nullable Object> inputs) -> new Probe(inputs)
                     : (JsPropertyMap<@Nullable Object> inputs) -> new CatchingProbe(inputs);
-            final var type = ClassComponent.properties(factory);
+            final var type = ReconcilerTestAccess.properties(factory);
             type.set("childContextTypes", JsPropertyMap.of());
             type.set("displayName", name);
             if (_derived) {
@@ -780,7 +780,7 @@ public final class ErrorBoundariesBrowserTest {
             final var type = _components.computeIfAbsent(
                     "Normal2".equals(name) || "LastChild".equals(name) ? "Normal" : name, ignored -> {
                         final ViewConstructorFunction constructor = Probe::new;
-                        ClassComponent.properties(constructor).set("childContextTypes", JsPropertyMap.of());
+                        ReconcilerTestAccess.properties(constructor).set("childContextTypes", JsPropertyMap.of());
                         return constructor;
                     });
             return ReactElement.createViewElement(type)
@@ -863,7 +863,7 @@ public final class ErrorBoundariesBrowserTest {
         Probe(JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
             event("constructor");
-            final var methods = ClassComponent.properties(this);
+            final var methods = ReconcilerTestAccess.properties(this);
             methods.set("UNSAFE_componentWillMount", (Hook) () -> event("componentWillMount"));
             if (!Boolean.TRUE.equals(inputs.get("mountOnly"))) {
                 methods.set("UNSAFE_componentWillReceiveProps", (Hook) () -> event("componentWillReceiveProps"));
@@ -906,7 +906,7 @@ public final class ErrorBoundariesBrowserTest {
                                                             Js.<@Nullable String>uncheckedCast(
                                                                     inputs.get("errorPrefix")),
                                                             "Caught an error: ")
-                                                    + Js.asString(ClassComponent.properties(error)
+                                                    + Js.asString(ReconcilerTestAccess.properties(error)
                                                             .get("message")) + ".")))
                             : Js.uncheckedCast(fallback);
                 }
@@ -981,7 +981,7 @@ public final class ErrorBoundariesBrowserTest {
         }
 
         private void installLegacyHooks() {
-            final var props = ClassComponent.properties(this);
+            final var props = ReconcilerTestAccess.properties(this);
             props.set("getChildContext", (ChildContext) () -> JsPropertyMap.of("foo", 42));
             props.set("UNSAFE_componentWillMount", (Hook) () -> fail("Hello"));
         }
@@ -990,9 +990,7 @@ public final class ErrorBoundariesBrowserTest {
         public ReactNode render() {
             if (_modulePattern) {
                 installLegacyHooks();
-                final var owner = CurrentOwner.get();
-                Js.<Reconciler.Fiber>uncheckedCast(Objects.requireNonNull(owner))
-                        .initializeModuleComponent(this);
+                ReconcilerTestAccess.initializeModuleComponent(this);
             }
             return host("div", Js.uncheckedCast(requireInputs().get("children")));
         }

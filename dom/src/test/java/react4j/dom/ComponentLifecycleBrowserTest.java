@@ -22,12 +22,13 @@ import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnGetSnapshotBeforeUpdate;
 import react4j.internal.ViewConstructorFunction;
+import react4j.reconciler.ReconcilerTestAccess;
 import react4j.webtesting.Browser;
 import react4j.webtesting.BrowserPromise;
 
 @NullMarked
 public final class ComponentLifecycleBrowserTest {
-    private static final PropTypeValidator.Validator ANY_CONTEXT =
+    private static final ReconcilerTestAccess.Validator ANY_CONTEXT =
             (values, property, name, location, publicName, secret) -> null;
 
     private ComponentLifecycleBrowserTest() {}
@@ -71,7 +72,7 @@ public final class ComponentLifecycleBrowserTest {
     private static void snapshots(Browser.Element host, String snapshot) {
         final var trace = new ArrayList<String>();
         final ViewConstructorFunction type = SnapshotView::new;
-        final var descriptor = ClassComponent.properties(type);
+        final var descriptor = ReconcilerTestAccess.properties(type);
         descriptor.set("componentClass", type);
         descriptor.set("displayName", "SnapshotView");
         descriptor.set("getDerivedStateFromProps", (Derive)
@@ -214,7 +215,7 @@ public final class ComponentLifecycleBrowserTest {
         final ViewConstructorFunction parent = ModulePattern::new;
         final ViewConstructorFunction child = ModuleContextChild::new;
         classDescriptor(parent, "Parent").set("childContextTypes", JsPropertyMap.of("x", ANY_CONTEXT));
-        ClassComponent.properties(parent).set("functionComponent", true);
+        ReconcilerTestAccess.properties(parent).set("functionComponent", true);
         classDescriptor(child, "Child").set("contextTypes", JsPropertyMap.of("x", ANY_CONTEXT));
         final var element =
                 ReactElement.createViewElement(parent).input("trace", trace).input("child", child);
@@ -276,7 +277,7 @@ public final class ComponentLifecycleBrowserTest {
             @Override
             public ReactNode render() {
                 if (!_initialized) {
-                    activeFiber().initializeModuleComponent(this);
+                    ReconcilerTestAccess.initializeModuleComponent(this);
                     _initialized = true;
                 }
                 return ReactElement.createHostElement("div", null, "elemRef", JsPropertyMap.of());
@@ -285,9 +286,9 @@ public final class ComponentLifecycleBrowserTest {
         classDescriptor(factory, "Factory").set("functionComponent", true);
         final var instance = Objects.requireNonNull(render(ReactElement.createViewElement(factory), host));
         final var refs =
-                Objects.requireNonNull(ClassComponent.properties(instance).get("refs"));
+                Objects.requireNonNull(ReconcilerTestAccess.properties(instance).get("refs"));
         final var element =
-                Objects.requireNonNull(ClassComponent.properties(refs).get("elemRef"));
+                Objects.requireNonNull(ReconcilerTestAccess.properties(refs).get("elemRef"));
         equal("DIV", Browser.string(Browser.property(element, "tagName")));
         ReactDOM.unmountComponentAtNode(host);
     }
@@ -337,14 +338,10 @@ public final class ComponentLifecycleBrowserTest {
     private static ReactElement viewWithRef(
             ViewConstructorFunction type, Ref ref, JsPropertyMap<@Nullable Object> inputs) {
         final var element = ReactElement.createViewElement(type);
-        final var raw = ClassComponent.properties(element);
+        final var raw = ReconcilerTestAccess.properties(element);
         raw.set("ref", ref);
         raw.set("props", inputs);
         return element;
-    }
-
-    private static Reconciler.Fiber activeFiber() {
-        return Objects.requireNonNull(Reconciler.currentFiber());
     }
 
     private static void lifecycleOrder(Browser.Element host, boolean modern) {
@@ -354,11 +351,11 @@ public final class ComponentLifecycleBrowserTest {
         classDescriptor(outer, "Outer");
         classDescriptor(inner, "Inner");
         if (modern) {
-            ClassComponent.properties(outer).set("getDerivedStateFromProps", (Derive) (props, state) -> {
+            ReconcilerTestAccess.properties(outer).set("getDerivedStateFromProps", (Derive) (props, state) -> {
                 phase.add("outer derive");
                 return null;
             });
-            ClassComponent.properties(inner).set("getDerivedStateFromProps", (Derive) (props, state) -> {
+            ReconcilerTestAccess.properties(inner).set("getDerivedStateFromProps", (Derive) (props, state) -> {
                 phase.add("inner derive");
                 return null;
             });
@@ -528,8 +525,9 @@ public final class ComponentLifecycleBrowserTest {
         final ViewConstructorFunction parent = BatchParent::new;
         classDescriptor(parent, "Parent");
         final ViewConstructorFunction child = BatchChild::new;
-        classDescriptor(child, "Child").set("getDerivedStateFromProps", (Derive) (inputs, state) ->
-                ClassComponent.merge(JsPropertyMap.of(), state, JsPropertyMap.of("remote", inputs.get("remote"))));
+        classDescriptor(child, "Child").set("getDerivedStateFromProps", (Derive)
+                (inputs, state) -> ReconcilerTestAccess.merge(
+                        JsPropertyMap.of(), state, JsPropertyMap.of("remote", inputs.get("remote"))));
         final var captured = new BatchChild[1];
         render(ReactElement.createViewElement(parent).input("child", child).input("capture", captured), host);
         equal("remote:0, local:0", host.getTextContent());
@@ -566,7 +564,7 @@ public final class ComponentLifecycleBrowserTest {
             final var view =
                     (ConstructorUpdate) Objects.requireNonNull(render(ReactElement.createViewElement(type), target));
             final ViewConstructorFunction function = RenderCallback::new;
-            ClassComponent.properties(function).set("functionComponent", true);
+            ReconcilerTestAccess.properties(function).set("functionComponent", true);
             expectWarning(
                     production,
                     "Cannot update during an existing state transition",
@@ -652,7 +650,7 @@ public final class ComponentLifecycleBrowserTest {
     private static void checkLegacyContext(List<@Nullable Object> trace, String... expected) {
         check(trace.size() == expected.length, "Legacy context lifecycle count: " + trace);
         for (var i = 0; i < expected.length; i++) {
-            final var context = ClassComponent.properties(Objects.requireNonNull(trace.get(i)));
+            final var context = ReconcilerTestAccess.properties(Objects.requireNonNull(trace.get(i)));
             equal(expected[i], (String) context.get("foo"));
             check(!context.has("bar"), "Undeclared context fields are hidden from the class");
         }
@@ -732,7 +730,7 @@ public final class ComponentLifecycleBrowserTest {
             super(inputs);
             _trace = trace;
             _pure = pure;
-            final var properties = ClassComponent.properties(this);
+            final var properties = ReconcilerTestAccess.properties(this);
             properties.set("context", value);
             properties.set("shouldComponentUpdate", (UpdateContext) (nextInputs, state, context) -> {
                 if (legacy) {
@@ -758,7 +756,7 @@ public final class ComponentLifecycleBrowserTest {
         }
 
         private @Nullable Object context() {
-            return ClassComponent.properties(this).get("context");
+            return ReconcilerTestAccess.properties(this).get("context");
         }
 
         @Override
@@ -784,7 +782,7 @@ public final class ComponentLifecycleBrowserTest {
         @JsConstructor
         LegacyContextProvider(@Nullable JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
-            ClassComponent.properties(this).set("getChildContext", (ContextValue)
+            ReconcilerTestAccess.properties(this).set("getChildContext", (ContextValue)
                     () -> JsPropertyMap.of("foo", requireInputs().get("foo"), "bar", "bar"));
         }
 
@@ -807,7 +805,7 @@ public final class ComponentLifecycleBrowserTest {
     }
 
     private static JsPropertyMap<@Nullable Object> classDescriptor(ViewConstructorFunction type, String name) {
-        final var descriptor = ClassComponent.properties(type);
+        final var descriptor = ReconcilerTestAccess.properties(type);
         descriptor.set("componentClass", type);
         descriptor.set("displayName", name);
         return descriptor;
@@ -834,7 +832,7 @@ public final class ComponentLifecycleBrowserTest {
     }
 
     private static final class MountedView extends NativeView implements OnComponentDidMount, OnComponentWillUnmount {
-        private Reconciler.@Nullable Fiber _fiber;
+        private @Nullable Object _fiber;
         private final List<String> _phases;
 
         @JsConstructor
@@ -842,7 +840,7 @@ public final class ComponentLifecycleBrowserTest {
             super(inputs);
             _phases = Js.uncheckedCast(Objects.requireNonNull(requireInputs().get("phases")));
             mark("constructor");
-            ClassComponent.properties(this).set("UNSAFE_componentWillMount", (Ref) ignored -> mark("willMount"));
+            ReconcilerTestAccess.properties(this).set("UNSAFE_componentWillMount", (Ref) ignored -> mark("willMount"));
         }
 
         private void mark(String phase) {
@@ -850,12 +848,12 @@ public final class ComponentLifecycleBrowserTest {
         }
 
         private boolean mounted() {
-            return null != _fiber && _fiber.isMountedView(this);
+            return null != _fiber && ReconcilerTestAccess.isMountedView(_fiber, this);
         }
 
         @Override
         public @Nullable ReactNode render() {
-            _fiber = activeFiber();
+            _fiber = ReconcilerTestAccess.currentFiber();
             mark("render");
             return Boolean.TRUE.equals(requireInputs().get("nullOutput")) ? null : ReactNode.of("mounted");
         }
@@ -872,7 +870,7 @@ public final class ComponentLifecycleBrowserTest {
     }
 
     private static final class JournalView extends NativeView implements OnComponentDidMount, OnComponentWillUnmount {
-        private Reconciler.@Nullable Fiber _fiber;
+        private @Nullable Object _fiber;
         private final List<String> _log;
 
         @JsConstructor
@@ -881,7 +879,7 @@ public final class ComponentLifecycleBrowserTest {
             _log = Js.uncheckedCast(Objects.requireNonNull(requireInputs().get("log")));
             applyState(JsPropertyMap.of("flags", 0));
             mark("constructor");
-            ClassComponent.properties(this).set("UNSAFE_componentWillMount", (Ref) ignored -> {
+            ReconcilerTestAccess.properties(this).set("UNSAFE_componentWillMount", (Ref) ignored -> {
                 mark("willMount");
                 Objects.requireNonNull(state()).set("flags", flags() | 1);
             });
@@ -896,12 +894,12 @@ public final class ComponentLifecycleBrowserTest {
         }
 
         private boolean mounted() {
-            return null != _fiber && _fiber.isMountedView(this);
+            return null != _fiber && ReconcilerTestAccess.isMountedView(_fiber, this);
         }
 
         @Override
         public ReactNode render() {
-            _fiber = activeFiber();
+            _fiber = ReconcilerTestAccess.currentFiber();
             mark(0 == (flags() & 2) ? "initialRender" : "laterRender");
             Objects.requireNonNull(state()).set("flags", flags() | 2);
             return ReactNode.of("I am the inner DIV");
@@ -970,7 +968,7 @@ public final class ComponentLifecycleBrowserTest {
         @JsConstructor
         BeforeMount(@Nullable JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
-            ClassComponent.properties(this).set("UNSAFE_componentWillMount", (Ref) ignored -> {
+            ReconcilerTestAccess.properties(this).set("UNSAFE_componentWillMount", (Ref) ignored -> {
                 if (Boolean.TRUE.equals(requireInputs().get("read"))) {
                     Objects.requireNonNull(state()).get("stateField");
                 } else {
@@ -1027,11 +1025,11 @@ public final class ComponentLifecycleBrowserTest {
 
         @Override
         public ReactNode render() {
-            final var fiber = activeFiber();
-            if (fiber.isMountedView(this)) {
+            final var fiber = ReconcilerTestAccess.currentFiber();
+            if (ReconcilerTestAccess.isMountedView(fiber, this)) {
                 final var seen = Js.<@Nullable Object[]>uncheckedCast(
                         Objects.requireNonNull(requireInputs().get("seen")));
-                seen[0] = fiber.children[0].hostInstance;
+                seen[0] = ReconcilerTestAccess.hostInstance(ReconcilerTestAccess.children(fiber)[0]);
             }
             return ReactElement.createHostElement("div", null, null, JsPropertyMap.of());
         }
@@ -1056,10 +1054,10 @@ public final class ComponentLifecycleBrowserTest {
         public ReactNode render() {
             equal("object", Js.typeof(inputs()));
             if (!_initialized) {
-                final var methods = ClassComponent.properties(this);
+                final var methods = ReconcilerTestAccess.properties(this);
                 methods.set("UNSAFE_componentWillMount", (Ref) ignored -> _trace.add("will mount"));
                 methods.set("getChildContext", (ContextValue) () -> JsPropertyMap.of("x", 2));
-                activeFiber().initializeModuleComponent(this);
+                ReconcilerTestAccess.initializeModuleComponent(this);
                 _initialized = true;
             }
             _trace.add("render");
@@ -1087,9 +1085,9 @@ public final class ComponentLifecycleBrowserTest {
         @Override
         public ReactNode render() {
             final var context =
-                    Objects.requireNonNull(ClassComponent.properties(this).get("context"));
+                    Objects.requireNonNull(ReconcilerTestAccess.properties(this).get("context"));
             check(
-                    2 == Js.coerceToInt(ClassComponent.properties(context).get("x")),
+                    2 == Js.coerceToInt(ReconcilerTestAccess.properties(context).get("x")),
                     "The child's legacy context is two");
             return ReactElement.createHostElement("div", null, null, JsPropertyMap.of());
         }
@@ -1099,7 +1097,7 @@ public final class ComponentLifecycleBrowserTest {
         @JsConstructor
         PreparedChild(JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
-            ClassComponent.properties(this)
+            ReconcilerTestAccess.properties(this)
                     .set("UNSAFE_componentWillMount", (Ref) ignored -> mark("componentWillMount"));
         }
 
@@ -1136,7 +1134,7 @@ public final class ComponentLifecycleBrowserTest {
             _trace = Js.uncheckedCast(Objects.requireNonNull(requireInputs().get("trace")));
             _role = (String) Objects.requireNonNull(requireInputs().get("role"));
             applyState(JsPropertyMap.of());
-            final var methods = ClassComponent.properties(this);
+            final var methods = ReconcilerTestAccess.properties(this);
             if (!(this instanceof ModernOrder)) {
                 methods.set("UNSAFE_componentWillMount", (Ref) ignored -> mark("willMount"));
                 methods.set("UNSAFE_componentWillReceiveProps", (Ref) ignored -> mark("receive"));
@@ -1260,13 +1258,13 @@ public final class ComponentLifecycleBrowserTest {
                 if (!"unsafe".equals(mode)) {
                     final Ref callback = ignored -> log.add(hook);
                     if (Boolean.TRUE.equals(requireInputs().get("suppress"))) {
-                        ClassComponent.properties(callback).set("__suppressDeprecationWarning", true);
+                        ReconcilerTestAccess.properties(callback).set("__suppressDeprecationWarning", true);
                     }
-                    ClassComponent.properties(this).set(hook, callback);
+                    ReconcilerTestAccess.properties(this).set(hook, callback);
                 }
                 if (List.of("legacy", "unsafe").contains(mode)) {
                     final var name = "UNSAFE_" + hook;
-                    ClassComponent.properties(this).set(name, (Ref) ignored -> log.add(name));
+                    ReconcilerTestAccess.properties(this).set(name, (Ref) ignored -> log.add(name));
                 }
             }
         }
@@ -1385,7 +1383,7 @@ public final class ComponentLifecycleBrowserTest {
             super(inputs);
             applyState(JsPropertyMap.of("value", 0));
             _trace = Js.uncheckedCast(Objects.requireNonNull(requireInputs().get("trace")));
-            ClassComponent.properties(this).set("componentDidUpdate", (DidUpdate)
+            ReconcilerTestAccess.properties(this).set("componentDidUpdate", (DidUpdate)
                     (previousInputs, previousState, snapshot) -> {
                         equal(
                                 "value:" + requireInputs().get("value"),

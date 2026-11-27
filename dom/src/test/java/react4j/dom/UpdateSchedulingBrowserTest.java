@@ -30,6 +30,9 @@ import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
+import react4j.reconciler.Reconciler;
+import react4j.reconciler.ReconcilerScheduler;
+import react4j.reconciler.ReconcilerTestAccess;
 import react4j.webtesting.Browser;
 import react4j.webtesting.BrowserPromise;
 
@@ -269,7 +272,7 @@ public final class UpdateSchedulingBrowserTest {
     private static void renderPhaseUpdates(Browser.Element host) {
         final var trace = new ArrayList<String>();
         final ViewConstructorFunction type = RenderPhase::new;
-        final var descriptor = ClassComponent.properties(type);
+        final var descriptor = ReconcilerTestAccess.properties(type);
         descriptor.set("componentClass", type);
         descriptor.set("displayName", "Foo");
         final var messages = captureWarnings(
@@ -850,7 +853,7 @@ public final class UpdateSchedulingBrowserTest {
 
     private static ViewConstructorFunction batchClass() {
         final ViewConstructorFunction type = BatchView::new;
-        ClassComponent.properties(type).set("componentClass", type);
+        ReconcilerTestAccess.properties(type).set("componentClass", type);
         return type;
     }
 
@@ -1034,16 +1037,17 @@ public final class UpdateSchedulingBrowserTest {
             capture[0] = this;
             final var mount = (Probe) requireInputs().get("willMount");
             if (null != mount) {
-                ClassComponent.properties(this).set("UNSAFE_componentWillMount", (MountHook) () -> mount.accept(this));
+                ReconcilerTestAccess.properties(this)
+                        .set("UNSAFE_componentWillMount", (MountHook) () -> mount.accept(this));
             }
             final var receive = (BeforeState) requireInputs().get("willReceive");
             if (null != receive) {
-                ClassComponent.properties(this).set("UNSAFE_componentWillReceiveProps", (LifecycleArguments)
+                ReconcilerTestAccess.properties(this).set("UNSAFE_componentWillReceiveProps", (LifecycleArguments)
                         (nextInputs, nextState) -> receive.update(this, Js.uncheckedCast(nextInputs)));
             }
             final var willUpdate = (BeforeState) requireInputs().get("willUpdate");
             if (null != willUpdate) {
-                ClassComponent.properties(this).set("UNSAFE_componentWillUpdate", (LifecycleArguments)
+                ReconcilerTestAccess.properties(this).set("UNSAFE_componentWillUpdate", (LifecycleArguments)
                         (nextInputs, nextState) -> willUpdate.update(this, Js.uncheckedCast(nextState)));
             }
         }

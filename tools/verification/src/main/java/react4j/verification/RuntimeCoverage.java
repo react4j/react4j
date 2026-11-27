@@ -479,6 +479,10 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
         return LcovReport.write(result);
     }
 
+    static Map<String, Path> publishedArchives(Path core, Path dom) {
+        return Map.of("core/src/main/java", core, "dom/src/main/java", dom, "reconciler/src/main/java", dom);
+    }
+
     public static void main(String[] args) throws Exception {
         if (10 != args.length) {
             throw new IllegalArgumentException(
@@ -497,9 +501,8 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
         var declared = Set.copyOf(Files.readAllLines(paths.get(6)));
         var collector = new RuntimeCoverage(
                 bundle,
-                JavaInventory.read(
-                        Map.of("core/src/main/java", paths.get(7), "dom/src/main/java", paths.get(8)), declared),
-                Map.of("core/src/main/java", paths.get(2), "dom/src/main/java", paths.get(3)),
+                JavaInventory.read(publishedArchives(paths.get(7), paths.get(8)), declared),
+                publishedArchives(paths.get(2), paths.get(3)),
                 paths.subList(4, 6),
                 declared);
         var instrumentation = CoverageInstrumenter.instrument(bundle, collector);

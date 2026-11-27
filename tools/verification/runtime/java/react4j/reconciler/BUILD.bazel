@@ -1,0 +1,112 @@
+load("//third_party/java:rules.bzl", "j2cl_library")
+
+_MEMORY_HOST_SOURCES = [
+    "MemoryRenderer.java",
+    "TestHostPlan.java",
+]
+
+j2cl_library(
+    name = "memory_renderer",
+    testonly = True,
+    srcs = _MEMORY_HOST_SOURCES + ["HostFixture.java"],
+    visibility = [
+        "//:__pkg__",
+        "//tools/verification/runtime:__pkg__",
+    ],
+    deps = [
+        "//:core",
+        "//reconciler/src/main/java/react4j/reconciler:reconciler-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "browser_memory_renderer",
+    testonly = True,
+    srcs = _MEMORY_HOST_SOURCES,
+    visibility = [
+        "//dom/src/test/java/react4j/dom:__pkg__",
+        "//tools/verification/runtime:__pkg__",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+    ],
+)
+
+_ISOLATED_CASE_SOURCES = [
+    "IsolatedChildDiagnosticsTest.java",
+    "IsolatedContextTest.java",
+    "IsolatedErrorHandlingTest.java",
+    "IsolatedErrorHandlingTest.native.js",
+    "IsolatedErrorLoggingTest.java",
+    "IsolatedErrorLoggingTest.native.js",
+    "IsolatedForwardRefTest.java",
+    "IsolatedIncrementalTest.java",
+    "IsolatedLegacyContextTest.java",
+    "IsolatedProfilerDevToolsTest.java",
+    "IsolatedReconcilerTest.java",
+    "IsolatedReconcilerTest.native.js",
+    "IsolatedReflectionTest.java",
+    "IsolatedSchedulingTest.java",
+    "IsolatedSideEffectsTest.java",
+    "IsolatedStrictClassTest.java",
+    "IsolatedSuspenseTest.java",
+    "IsolatedSuspenseTest.native.js",
+    "IsolatedSuspenseVariantsTest.java",
+    "IsolatedTimingTest.java",
+    "IsolatedTimingTest.native.js",
+    "IsolatedTriangleTest.java",
+    "IsolatedUpdateQueueTest.java",
+    "IsolatedWrappedViewsTest.java",
+    "IsolatedWrappedViewsTest.native.js",
+]
+
+j2cl_library(
+    name = "isolated_reconciler_tests",
+    testonly = True,
+    srcs = _ISOLATED_CASE_SOURCES,
+    visibility = [
+        "//:__pkg__",
+        "//tools/verification/runtime:__pkg__",
+    ],
+    deps = [
+        ":memory_renderer",
+        "//:core",
+        "//reconciler/src/main/java/react4j/reconciler:reconciler-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "browser_reconciler_coverage",
+    testonly = True,
+    srcs = _ISOLATED_CASE_SOURCES + ["HostFixture.java"],
+    visibility = ["//tools/verification/runtime:__pkg__"],
+    deps = [
+        ":browser_memory_renderer",
+        "//:core",
+        "//:dom",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "browser_fiber_test_access",
+    testonly = True,
+    srcs = ["ReconcilerTestAccess.java"],
+    visibility = ["//dom/src/test/java/react4j/dom:__pkg__"],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+    ],
+)

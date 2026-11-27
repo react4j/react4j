@@ -1,0 +1,37 @@
+load("//third_party/java:rules.bzl", "j2cl_library", "java_library")
+
+package(default_visibility = ["//:__subpackages__"])
+
+exports_files(["Reconciler.native.js"], visibility = ["//tools/release:__pkg__"])
+
+_SOURCES = [
+    "ClassComponent.java",
+    "FiberDevTools.java",
+    "Portal.java",
+    "PropTypeValidator.java",
+    "Reconciler.java",
+    "ReconcilerHost.java",
+    "ReconcilerScheduler.java",
+    "UserTiming.java",
+    "package-info.java",
+]
+
+java_library(
+    name = "reconciler",
+    srcs = _SOURCES,
+    deps = [
+        "//core",
+        "//third_party/java:base",
+        "//third_party/java:jsinterop_annotations",
+    ],
+)
+
+j2cl_library(
+    name = "reconciler-j2cl",
+    srcs = _SOURCES + ["Reconciler.native.js"],
+    deps = [
+        "//:core",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+    ],
+)

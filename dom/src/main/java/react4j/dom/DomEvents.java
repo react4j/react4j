@@ -19,6 +19,7 @@ import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
 import react4j.dom.events.ReactEventHandler;
 import react4j.dom.events.SyntheticEvent;
+import react4j.reconciler.Reconciler;
 
 final class DomEvents {
     private static final boolean DEVELOPMENT = !"production".equals(System.getProperty("react4j.environment"));

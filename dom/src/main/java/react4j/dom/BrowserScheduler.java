@@ -5,6 +5,8 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
+import react4j.reconciler.Reconciler;
+import react4j.reconciler.ReconcilerScheduler;
 
 final class BrowserScheduler implements ReconcilerScheduler {
     static final BrowserScheduler INSTANCE = new BrowserScheduler();

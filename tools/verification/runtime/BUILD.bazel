@@ -32,7 +32,7 @@ closure_js_binary(
     dependency_mode = "SORT_ONLY",
     deps = [
         "//:dom",
-        "//tools/verification/runtime/java/react4j/dom:browser_memory_renderer",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_memory_renderer",
         "//tools/verification/runtime/java/react4j/dom:foreign_root_assertions",
     ],
 )
@@ -42,7 +42,7 @@ closure_js_binary(
     testonly = True,
     compilation_level = "BUNDLE",
     dependency_mode = "SORT_ONLY",
-    deps = ["//tools/verification/runtime/java/react4j/dom:memory_renderer"],
+    deps = ["//tools/verification/runtime/java/react4j/reconciler:memory_renderer"],
 )
 
 closure_js_binary(
@@ -57,7 +57,7 @@ closure_js_library(
     name = "isolated_cases",
     testonly = True,
     srcs = ["isolated_cases.js"],
-    deps = ["//tools/verification/runtime/java/react4j/dom:isolated_reconciler_tests"],
+    deps = ["//tools/verification/runtime/java/react4j/reconciler:isolated_reconciler_tests"],
 )
 
 closure_js_library(
@@ -65,7 +65,7 @@ closure_js_library(
     testonly = True,
     srcs = ["isolated_cases.js"],
     visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
-    deps = ["//tools/verification/runtime/java/react4j/dom:browser_reconciler_coverage"],
+    deps = ["//tools/verification/runtime/java/react4j/reconciler:browser_reconciler_coverage"],
 )
 
 browser_test(

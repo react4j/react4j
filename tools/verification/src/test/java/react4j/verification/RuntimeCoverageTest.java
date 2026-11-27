@@ -181,9 +181,9 @@ public final class RuntimeCoverageTest {
     public void actualReactMultilineMapHolesRemainIndependentObligations() throws Exception {
         var declared = Set.copyOf(Files.readAllLines(Path.of(System.getProperty("coverage.runtime.sources"))));
         var inventory = JavaInventory.read(
-                Map.of(
-                        "core/src/main/java", Path.of(System.getProperty("coverage.runtime.core.jar")),
-                        "dom/src/main/java", Path.of(System.getProperty("coverage.runtime.dom.jar"))),
+                RuntimeCoverage.publishedArchives(
+                        Path.of(System.getProperty("coverage.runtime.core.jar")),
+                        Path.of(System.getProperty("coverage.runtime.dom.jar"))),
                 declared);
         var core = Path.of(System.getProperty("coverage.runtime.core.modules"));
         var original = new SourceMapConsumerV3();
@@ -212,10 +212,8 @@ public final class RuntimeCoverageTest {
         var collector = new RuntimeCoverage(
                 bundle,
                 inventory,
-                Map.of(
-                        "core/src/main/java",
+                RuntimeCoverage.publishedArchives(
                         Path.of(System.getProperty("coverage.runtime.core.sources")),
-                        "dom/src/main/java",
                         Path.of(System.getProperty("coverage.runtime.dom.sources"))),
                 List.of(core, Path.of(System.getProperty("coverage.runtime.dom.modules"))),
                 declared);

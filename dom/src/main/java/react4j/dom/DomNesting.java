@@ -10,6 +10,7 @@ import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.base.Js;
 import org.jspecify.annotations.Nullable;
+import react4j.reconciler.ReconcilerHost.HostFiber;
 
 final class DomNesting {
     private static final Set<String> PARAGRAPH_CLOSERS = Set.of(
@@ -159,7 +160,7 @@ final class DomNesting {
     }
 
     static void checkHost(
-            final Reconciler.Fiber fiber,
+            final HostFiber fiber,
             final String tag,
             final boolean mounting,
             final @Nullable String text,
@@ -174,17 +175,17 @@ final class DomNesting {
         }
     }
 
-    static void checkText(final Reconciler.Fiber fiber, final String text, final Supplier<String> stack) {
+    static void checkText(final HostFiber fiber, final String text, final Supplier<String> stack) {
         check("#text", text, ancestors(fiber), stack);
     }
 
-    private static List<String> ancestors(final Reconciler.Fiber fiber) {
+    private static List<String> ancestors(final HostFiber fiber) {
         final List<String> tags = new ArrayList<>();
-        for (var parent = fiber.parent; null != parent; parent = parent.parent) {
-            if (Reconciler.Kind.HOST == parent.kind) {
-                tags.add(Js.asString(parent.type));
-            } else if (Reconciler.Kind.ROOT == parent.kind || Reconciler.Kind.PORTAL == parent.kind) {
-                final var container = Js.<DomHost.Node>uncheckedCast(parent.type);
+        for (var parent = fiber.parentHost(); null != parent; parent = parent.parentHost()) {
+            if (parent.isHostElement()) {
+                tags.add(Js.asString(parent.type()));
+            } else {
+                final var container = Js.<DomHost.Node>uncheckedCast(parent.type());
                 final var tag = rootTag(container);
                 if (null != tag) {
                     tags.add(tag);

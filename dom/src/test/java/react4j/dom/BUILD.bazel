@@ -45,7 +45,8 @@ j2cl_library(
         "//third_party:jsinterop_annotations-j2cl",
         "//third_party:jsinterop_base-j2cl",
         "//third_party:jspecify-j2cl",
-        "//tools/verification/runtime/java/react4j/dom:browser_memory_renderer",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_memory_renderer",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_fiber_test_access",
     ],
 )
 
@@ -66,6 +67,7 @@ j2cl_library(
         "//third_party:jsinterop_annotations-j2cl",
         "//third_party:jsinterop_base-j2cl",
         "//third_party:jspecify-j2cl",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_fiber_test_access",
     ],
 )
 
@@ -89,6 +91,7 @@ j2cl_library(
         "//third_party:jsinterop_annotations-j2cl",
         "//third_party:jsinterop_base-j2cl",
         "//third_party:jspecify-j2cl",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_fiber_test_access",
     ],
 )
 
@@ -171,5 +174,6 @@ j2cl_library(
         "//third_party:jsinterop_annotations-j2cl",
         "//third_party:jsinterop_base-j2cl",
         "//third_party:jspecify-j2cl",
+        "//tools/verification/runtime/java/react4j/reconciler:browser_fiber_test_access",
     ],
 )

@@ -9,6 +9,9 @@ import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.dom.DomHost.Element;
 import react4j.dom.DomHost.Node;
+import react4j.reconciler.FiberDevTools;
+import react4j.reconciler.Reconciler;
+import react4j.reconciler.ReconcilerHost;
 
 final class DomReconcilerHost implements ReconcilerHost {
     private static final FiberDevTools DEV_TOOLS = FiberDevTools.connect("react4j-dom");
@@ -30,9 +33,9 @@ final class DomReconcilerHost implements ReconcilerHost {
 
     @Override
     public HostPlan planHost(
-            Reconciler.Fiber fiber, ReactElement element, @Nullable ReactElement previousElement, boolean mounting) {
+            HostFiber fiber, ReactElement element, @Nullable ReactElement previousElement, boolean mounting) {
         final var inputs = element.inputs();
-        final var tag = Js.asString(fiber.type);
+        final var tag = Js.asString(fiber.type());
         final var content = inputs.get("children");
         final var previous = null == previousElement ? null : previousElement.inputs();
         final var oldContent = null == previous ? null : previous.get("children");
@@ -46,7 +49,7 @@ final class DomReconcilerHost implements ReconcilerHost {
             DomHost.warnProperties(
                     tag,
                     inputs,
-                    mounting ? null : Js.uncheckedCast(fiber.hostInstance),
+                    mounting ? null : Js.uncheckedCast(fiber.hostInstance()),
                     fiber.hostOwnerName(element),
                     fiber::hostStack);
         }
@@ -95,22 +98,18 @@ final class DomReconcilerHost implements ReconcilerHost {
         }
     }
 
-    private String parentNamespace(Reconciler.Fiber fiber) {
-        for (var current = fiber.parent; null != current; current = current.parent) {
-            if (Reconciler.Kind.HOST == current.kind) {
-                return Js.asString(Objects.requireNonNull(current.childHostContext));
-            }
-            if (Reconciler.Kind.PORTAL == current.kind) {
-                return DomHost.rootNamespace(Js.uncheckedCast(mountParent(current.type)));
-            }
+    private String parentNamespace(HostFiber fiber) {
+        final var parent = Objects.requireNonNull(fiber.parentHost());
+        if (parent.isHostElement()) {
+            return Js.asString(Objects.requireNonNull(parent.childHostContext()));
         }
-        return DomHost.rootNamespace(Js.uncheckedCast(mountParent(fiber.root.container)));
+        return DomHost.rootNamespace(Js.uncheckedCast(mountParent(parent.type())));
     }
 
     @Override
-    public Object createElement(Reconciler.Fiber fiber, Object container, ReactElement element, HostPlan plan) {
+    public Object createElement(HostFiber fiber, Object container, ReactElement element, HostPlan plan) {
         final var initial = Js.<DomPlan>uncheckedCast(plan);
-        final var tag = Js.asString(fiber.type);
+        final var tag = Js.asString(fiber.type());
         final var inputs = element.inputs();
         final var namespace = Js.<String>uncheckedCast(initial.namespace());
         final var host = DomHost.createElement(Js.uncheckedCast(container), namespace, tag, inputs);
@@ -142,7 +141,7 @@ final class DomReconcilerHost implements ReconcilerHost {
     }
 
     @Override
-    public Object createText(Reconciler.Fiber fiber, Object container, String text) {
+    public Object createText(HostFiber fiber, Object container, String text) {
         if (DEVELOPMENT) {
             DomNesting.checkText(fiber, text, fiber::hostStack);
         }
@@ -278,7 +277,7 @@ final class DomReconcilerHost implements ReconcilerHost {
     }
 
     @Override
-    public void onCommitUnmount(Reconciler.Fiber fiber) {
+    public void onCommitUnmount(HostFiber fiber) {
         DEV_TOOLS.onCommitUnmount(fiber);
     }
 

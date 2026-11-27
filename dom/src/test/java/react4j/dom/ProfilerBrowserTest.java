@@ -28,6 +28,8 @@ import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnShouldComponentUpdate;
 import react4j.internal.ViewConstructorFunction;
+import react4j.reconciler.MemoryRenderer;
+import react4j.reconciler.Reconciler;
 
 @NullMarked
 public final class ProfilerBrowserTest {
