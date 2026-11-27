@@ -73,6 +73,13 @@ browser_test(
     deps = ["//dom/src/test/java/react4j/dom:host_scenarios"],
 )
 
+browser_test(
+    name = "host_shady_test",
+    srcs = ["host_shady_test.js"],
+    entry_point = "react4j.dom.HostShadyTest",
+    deps = ["//dom/src/test/java/react4j/dom:host_scenarios"],
+)
+
 closure_js_library(
     name = "properties_test",
     testonly = True,

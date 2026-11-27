@@ -158,3 +158,37 @@ DomHostBrowserTest.propertyWrites = function(element, name, render) {
     }
   }
 };
+
+/** @param {!Element} element @param {string} type */
+DomHostBrowserTest.event = function(element, type) {
+  element.dispatchEvent(new Event(type));
+};
+
+/** @param {function():void} action @return {string} */
+DomHostBrowserTest.observeCreateOptions = function(action) {
+  const create = document.createElement;
+  let name = '';
+  document.createElement = function(tag, options) {
+    if (tag === 'div' && options) name = options['is'];
+    return create.call(document, tag, options);
+  };
+  try {
+    action();
+    return name;
+  } finally {
+    document.createElement = create;
+  }
+};
+
+/** @param {!Element} root @param {function():void} capture @param {function():void} bubble @param {function():void} click */
+DomHostBrowserTest.documentClickOrder = function(root, capture, bubble, click) {
+  const document = root.ownerDocument;
+  document.addEventListener('click', capture, true);
+  document.addEventListener('click', bubble);
+  try {
+    click();
+  } finally {
+    document.removeEventListener('click', capture, true);
+    document.removeEventListener('click', bubble);
+  }
+};

@@ -266,6 +266,7 @@ test_suite(
         "//dom/src/test/js/react4j/dom:error_boundary_test",
         "//dom/src/test/js/react4j/dom:fiber_test",
         "//dom/src/test/js/react4j/dom:forms_test",
+        "//dom/src/test/js/react4j/dom:host_shady_test",
         "//dom/src/test/js/react4j/dom:host_test",
         "//dom/src/test/js/react4j/dom:update_scheduling_test",
         "//examples/drumloop/src/test/js/react4j/drumloop:browser_tests",
