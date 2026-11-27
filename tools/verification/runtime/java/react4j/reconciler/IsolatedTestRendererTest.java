@@ -511,7 +511,8 @@ public final class IsolatedTestRendererTest {
         final var foo = component(false, ignored -> {
             final var child = ReactElement.createViewElement(bar);
             props(child).set("ref", "foo");
-            props(child).set("_source", JsPropertyMap.of("fileName", "IsolatedTestRendererTest.java", "lineNumber", 513));
+            props(child)
+                    .set("_source", JsPropertyMap.of("fileName", "IsolatedTestRendererTest.java", "lineNumber", 513));
             return child;
         });
         props(foo).set("displayName", "Foo");
