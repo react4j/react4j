@@ -62,6 +62,23 @@ This opens Chrome DevTools, inspects a generated component, checks the highlight
 
 ## Measured results
 
+### Production at `d9e4b006e`
+
+Thirty measured pairs per application and CPU configuration ran on the same system as the previous comparison. Each cell gives stock React 16.6 followed by Java. The input events, retained nodes and final rows agreed in every pair. [Individual samples](measurements.csv)
+
+| CPUs | Application | Load (ms) | Add 50 (ms) | Toggle 25 (ms) | 1,000 keys (ms) | Heap (bytes) | JavaScript (bytes) | Gzip (bytes) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0-5 | Raw | 28.95 / 30.60 | 18.65 / 20.75 | 4.65 / 4.35 | 6.55 / 5.30 | 1,995,588 / 2,042,674 | 166,367 / 151,643 | 54,943 / 52,797 |
+| 0-5 | Arez | 53.05 / 58.40 | 244.80 / 243.05 | 9.25 / 8.70 | 12.00 / 11.15 | 2,586,934 / 2,626,048 | 184,824 / 171,888 | 59,922 / 58,107 |
+| 0-5 | Sting | 41.95 / 40.50 | 218.80 / 217.70 | 10.50 / 8.45 | 13.55 / 10.80 | 2,592,326 / 2,629,718 | 185,631 / 172,761 | 60,272 / 58,434 |
+| 0-15 | Raw | 28.65 / 29.65 | 20.50 / 25.90 | 5.75 / 5.10 | 8.75 / 6.60 | 1,995,986 / 2,041,284 | 166,367 / 151,643 | 54,943 / 52,797 |
+| 0-15 | Arez | 46.75 / 45.90 | 238.90 / 241.05 | 8.55 / 8.15 | 12.40 / 10.75 | 2,587,360 / 2,625,372 | 184,824 / 171,888 | 59,922 / 58,107 |
+| 0-15 | Sting | 31.50 / 31.90 | 212.80 / 213.90 | 7.55 / 6.50 | 9.10 / 7.70 | 2,592,306 / 2,629,304 | 185,631 / 172,761 | 60,272 / 58,434 |
+
+React DevTools 8.0.0 inspected and highlighted the component and profiled 125 commits in each of the four builds. Stock development, Java development, Java production and named Java production reported 95, 99, 68 and 61 commits with positive durations, respectively. Named production retained `TodoEntry` and `TodoItem.todo`. Chrome resolved all seven application source maps, including the optimized builds.
+
+39 of 42 comparisons met the existing budgets. Raw 50-row insertion exceeded the budget under both CPU configurations. The pinned Arez startup also exceeded it. All three optimized application bundles were smaller than stock before and after gzip. The upstream Jest and Java browser runs shared this machine.
+
 ### Production at `2e2bfcbf5`
 
 Chrome 145 ran 30 measured pairs for each application on CPUs 0–5 and 30 with unrestricted scheduling. Compilation and browser verification were running on the same machine. Each cell gives the stock React 16.6 median followed by the Java median. All pairs produced the same visible state and retained DOM identity. [Individual samples](measurements.csv)
