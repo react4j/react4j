@@ -184,6 +184,12 @@ def _browser_application_impl(name, visibility, entry_point, deps, html, assets,
     if runtime_mode not in ["", "development", "production"]:
         fail("runtime_mode must be development or production")
     level = compilation_level if compilation_level else select({_PRODUCTION: "ADVANCED", "//conditions:default": "BUNDLE"})
+
+    # Keep Closure's renamed application bindings private to this script.
+    function_wrapper = "(function(){%output%}).call(this);"
+    wrapper = select({_PRODUCTION: function_wrapper, "//conditions:default": ""})
+    if compilation_level:
+        wrapper = function_wrapper if compilation_level == "ADVANCED" else ""
     defines = _compiler_defines(runtime_mode = runtime_mode) + defs
     css_js_binary(
         name = name + "_bundle",
@@ -192,6 +198,7 @@ def _browser_application_impl(name, visibility, entry_point, deps, html, assets,
         entry_points = [entry_point],
         compilation_level = level,
         defs = defines,
+        output_wrapper = wrapper,
         visibility = visibility,
     )
     web_bundle(name = name + "_web", testonly = testonly, root = name + "_bundle", styles = styles)
