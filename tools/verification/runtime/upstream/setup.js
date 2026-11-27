@@ -53,7 +53,10 @@ function installJavaRenderer() {
     return fixture().adapter;
   });
   jest.doMock('react-dom/src/client/ReactDOM', () => fixture().adapter);
-  jest.doMock('react-dom/test-utils', () => createTestUtils(fixture().adapter));
+  jest.doMock('react-dom/test-utils', () => {
+    const {adapter, react} = fixture();
+    return createTestUtils(adapter, react);
+  });
   jest.doMock('react-dom/src/client/ReactDOMComponentTree', () => ({
     ...require.requireActual('react-dom/src/client/ReactDOMComponentTree'),
     getInstanceFromNode: node => fixture().adapter.eventHost(node),
@@ -83,49 +86,82 @@ function installJavaRenderer() {
   }
 }
 
-function createTestUtils(adapter) {
+function createTestUtils(adapter, react) {
   const isDOMComponent = instance => Boolean(instance && instance.nodeType === 1 && instance.tagName);
-
-  function scryRenderedDOMComponentsWithClass(instance, classNames) {
-    const required = Array.isArray(classNames) ? classNames : classNames.split(/\s+/);
-    return adapter.findRenderedHosts(instance, node => {
-      if (!isDOMComponent(node)) return false;
-      const classes = (node.getAttribute('class') || '').split(/\s+/);
-      return required.every(name => classes.includes(name));
-    });
+  const query = (instance, method, match) => adapter.findRenderedTree(instance, method, match);
+  const classMatch = names => node => {
+    if (!isDOMComponent(node)) return false;
+    const required = Array.isArray(names) ? names : names.split(/\s+/);
+    const classes = (node.getAttribute('class') || '').split(/\s+/);
+    return required.every(name => classes.includes(name));
+  };
+  const tagMatch = name => node => isDOMComponent(node) && node.tagName.toUpperCase() === name.toUpperCase();
+  const typeMatch = type => (instance, classType) => instance != null && classType != null && classType === type;
+  function one(instance, method, match, label, argument) {
+    const matches = query(instance, method, match);
+    if (matches.length !== 1) {
+      throw new Error('Did not find exactly one match (found: ' + matches.length + ') for ' + label + ':' + argument);
+    }
+    return matches[0];
   }
-
+  function eventTarget(node) {
+    const suffix = 'Pass the DOM node you wish to simulate the event on instead.';
+    if (react.isValidElement(node)) {
+      throw new Error('TestUtils.Simulate expected a DOM node as the first argument but received a React element. ' +
+        suffix + ' Note that TestUtils.Simulate will not work if you are using shallow rendering.');
+    }
+    if (adapter.isRenderedClass(node)) {
+      throw new Error('TestUtils.Simulate expected a DOM node as the first argument but received a component instance. ' + suffix);
+    }
+    if (!node?.ownerDocument) unsupported('event simulation without a DOM node');
+    return node;
+  }
   return {
     renderIntoDocument: element => adapter.render(element, document.createElement('div')),
     isDOMComponent,
-    scryRenderedDOMComponentsWithClass,
-    findRenderedDOMComponentWithClass(instance, className) {
-      const matches = scryRenderedDOMComponentsWithClass(instance, className);
-      if (matches.length !== 1) {
-        throw new Error('Did not find exactly one match (found: ' + matches.length + ') for class:' + className);
-      }
-      return matches[0];
+    findAllInRenderedTree(instance, match) {
+      return query(instance, 'findAllInRenderedTree', match);
+    },
+    scryRenderedDOMComponentsWithClass(instance, names) {
+      return query(instance, 'scryRenderedDOMComponentsWithClass', classMatch(names));
+    },
+    findRenderedDOMComponentWithClass(instance, names) {
+      return one(instance, 'findRenderedDOMComponentWithClass', classMatch(names), 'class', names);
+    },
+    scryRenderedDOMComponentsWithTag(instance, name) {
+      return query(instance, 'scryRenderedDOMComponentsWithTag', tagMatch(name));
+    },
+    findRenderedDOMComponentWithTag(instance, name) {
+      return one(instance, 'findRenderedDOMComponentWithTag', tagMatch(name), 'tag', name);
+    },
+    scryRenderedComponentsWithType(instance, type) {
+      return query(instance, 'scryRenderedComponentsWithType', typeMatch(type));
+    },
+    findRenderedComponentWithType(instance, type) {
+      return one(instance, 'findRenderedComponentWithType', typeMatch(type), 'componentType', type);
     },
     SimulateNative: {click: node => dispatchNative(node, 'click')},
     Simulate: {
       click(node, eventData) {
-        if (eventData != null) unsupported('synthetic click event data');
-        return dispatchNative(node, 'click');
+        return adapter.dispatchSimulated(eventTarget(node), 'click', eventData);
       },
       mouseEnter(node, eventData) {
         if (eventData != null) unsupported('synthetic mouseEnter event data');
-        return dispatchNative(node, 'mouseover');
+        return adapter.dispatchSimulated(eventTarget(node), 'mouseover');
       },
-      change(node) {
-        if (node.tagName !== 'SELECT') unsupported('synthetic-only change outside a select');
-        return dispatchNative(node, 'change');
+      keyDown(node, eventData) {
+        return adapter.dispatchSimulated(eventTarget(node), 'keydown', eventData);
+      },
+      change(node, eventData) {
+        if (eventData != null) unsupported('synthetic change event data');
+        return adapter.dispatchChange(eventTarget(node));
       },
     },
   };
 }
 
 // ReactTestUtils exposes dispatch errors synchronously. DOM dispatch reports them to Window.
-function dispatchNative(node, type) {
+function dispatchNative(node, type, eventData = {}, dispatch = event => node.dispatchEvent(event)) {
   adaptations.add('native ' + type + ' fixture');
   const win = node.ownerDocument.defaultView;
   let failure;
@@ -135,8 +171,13 @@ function dispatchNative(node, type) {
   }
   win.addEventListener('error', onError);
   try {
-    const EventType = type === 'click' || type === 'mouseover' ? win.MouseEvent : win.Event;
-    node.dispatchEvent(new EventType(type, {bubbles: true, cancelable: true}));
+    const EventType = type === 'click' || type === 'mouseover' ? win.MouseEvent :
+      type === 'keydown' ? win.KeyboardEvent : win.Event;
+    const event = new EventType(type, {...eventData, bubbles: true, cancelable: true});
+    for (const [name, value] of Object.entries(eventData ?? {})) {
+      if (event[name] !== value) unsupported('non-native ' + type + ' event data: ' + name);
+    }
+    dispatch(event);
     if (failure) throw failure;
   } finally {
     win.removeEventListener('error', onError);
@@ -206,6 +247,7 @@ function createRenderer(moduleFor, sourceReact) {
   };
 
   const constructors = new WeakMap();
+  const constructedClasses = new WeakSet();
   const warnedUnextended = new WeakSet();
   const internals = sourceReact.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
   const current = internals.ReactCurrentOwner;
@@ -341,6 +383,7 @@ function createRenderer(moduleFor, sourceReact) {
           instance.render._isMockFunction = true;
         }
         installLifecycleHooks(instance);
+        constructedClasses.add(instance);
         return instance;
       }
       const view = new View(inputs);
@@ -358,6 +401,7 @@ function createRenderer(moduleFor, sourceReact) {
         if (result && typeof result.render === 'function') {
           Object.assign(this, result);
           installLifecycleHooks(this);
+          constructedClasses.add(this);
           const fiber = currentOwner();
           if (fiber) fiber[member(Fiber.prototype, 'm_initializeModuleComponent__')](this);
           this.render = () => renderFixture(this, result.render, []);
@@ -466,14 +510,19 @@ function createRenderer(moduleFor, sourceReact) {
     };
   }
   let adapter;
-  return {get adapter() { return adapter ??= createDOMAdapter(moduleFor, member, current, currentOwner, lookup => { isMounted = lookup; }); }, react, noop, createHostFixture};
+  return {get adapter() { return adapter ??= createDOMAdapter(
+    moduleFor, member, current, currentOwner, constructedClasses, lookup => { isMounted = lookup; }
+  ); }, react, noop, createHostFixture};
 }
 
-function createDOMAdapter(moduleFor, member, current, currentOwner, registerReflection) {
+function createDOMAdapter(moduleFor, member, current, currentOwner, constructedClasses, registerReflection) {
   const dom = moduleFor('react4j.dom.ReactDOM');
   // Find the committed host exposed through refs in Java fixtures. Each Jest case owns its roots.
   const domRenderer = moduleFor('react4j.dom.Renderer');
-  const isMountedView = member(moduleFor('react4j.reconciler.Reconciler.Fiber').prototype, 'm_isMountedView__');
+  const Fiber = moduleFor('react4j.reconciler.Reconciler.Fiber');
+  const isMountedView = member(Fiber.prototype, 'm_isMountedView__');
+  const publicInstance = member(Fiber.prototype, 'm_publicInstance__');
+  const Failure = moduleFor('react4j.reconciler.Reconciler.RenderFailure');
   const committedRoot = container => domRenderer[member(domRenderer, 'f_ROOTS__')].get(container);
   const rootFiber = root => root[member(root, 'f_fiber__')];
   const fiberView = fiber => fiber[member(fiber, 'f_view__')];
@@ -496,6 +545,11 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, registerRefl
         fiber => fiberView(fiber) === instance ? fiber : undefined);
       if (view) return view;
     }
+  }
+  function renderedClass(instance) {
+    if (instance == null) return null;
+    const view = findView(instance);
+    return view && view[publicInstance]() === instance ? view : null;
   }
   const renderWarnings = new Map();
   function warnOnRenderAccess(method) {
@@ -520,7 +574,49 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, registerRefl
   const batch = member(dom, 'm_batchedUpdates__');
   const portal = member(dom, 'm_createPortal__');
   const events = moduleFor('react4j.dom.DomEvents');
-  const eventState = node => events[member(events, 'm_state__')](node);
+  const getEventState = member(events, 'm_state__');
+  const eventState = node => events[getEventState](node);
+  const lastCommittedValues = new WeakMap();
+  function rememberControl(host, state = eventState(host)) {
+    if (!state) return;
+    const tracked = Object.keys(state).find(name => name.startsWith('f_trackedProperty__'));
+    if (tracked && state[tracked] === 'value') {
+      lastCommittedValues.set(host, state[member(state, 'f_lastValue__')]);
+    }
+  }
+  function dispatchSimulated(node, type, data) {
+    const prototype = moduleFor('react4j.dom.DomEvents.Dispatch').prototype;
+    const initialize = member(prototype, 'm_initialize__');
+    const persist = member(prototype, 'm_persist__');
+    return dispatchNative(node, type, data, nativeEvent => {
+      const previous = prototype[initialize];
+      // TestUtils.Simulate supplies persistent events while native dispatch pools them.
+      prototype[initialize] = function(target, name, event, related, detail) {
+        previous.call(this, target, name, event, related, detail);
+        if (event === nativeEvent) this[persist]();
+      };
+      try {
+        adaptations.add('persist Java synthetic event for TestUtils.Simulate');
+        node.dispatchEvent(nativeEvent);
+      } finally {
+        prototype[initialize] = previous;
+      }
+    });
+  }
+  const warnedStrictFindNode = new Set();
+  function warnStrictFindNode(view, hostFiber) {
+    if (process.env.NODE_ENV === 'production' || !hostFiber[member(hostFiber, 'f_strict__')]) return;
+    const type = view[member(view, 'f_type__')];
+    const name = type.displayName || type.name || 'Component';
+    if (warnedStrictFindNode.has(name)) return;
+    warnedStrictFindNode.add(name);
+    const strict = view[member(view, 'f_strict__')];
+    const stack = Failure[member(Failure, 'm_stackFrom__')](hostFiber);
+    console.error('Warning: findDOMNode is deprecated in StrictMode. findDOMNode was passed an instance of ' +
+      name + (strict ? ' which is inside StrictMode. ' : ' which renders StrictMode children. ') +
+      'Instead, add a ref directly to the element you want to reference.\n' + stack +
+      '\n\nLearn more about using refs safely here:\nhttps://fb.me/react-strict-mode-find-node');
+  }
   let eventsEnabled = true;
   let warnedPortalAlias = false;
   return {
@@ -548,6 +644,8 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, registerRefl
       if (root) walk(rootFiber(root), fiber => {
         const view = fiberView(fiber);
         if (view) mountedViews.set(view, fiber);
+        const host = fiberHost(fiber);
+        if (host?.localName === 'input' || host?.localName === 'textarea') rememberControl(host);
       });
       return instance;
     },
@@ -610,29 +708,66 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, registerRefl
     // Upstream tests use findDOMNode to inspect fixtures. React4j exposes their DOM through refs.
     findDOMNode(instance) {
       warnOnRenderAccess('findDOMNode');
-      if (instance == null || instance.nodeType) return instance;
+      if (instance == null) return null;
+      if (instance.nodeType) return instance;
       adaptations.add('findDOMNode fixture');
-      const view = findView(instance);
-      if (view) return walk(view, fiberHost) || null;
-      // During unmount the parent can already have removed the child from its list.
-      // Read the actual fiber until dispose clears its view and host children.
       const previous = mountedViews.get(instance);
-      if (previous && fiberView(previous) === instance) {
-        return walk(previous, fiberHost) || null;
+      const view = findView(instance) || (previous && previous[isMountedView](instance) ? previous : null);
+      if (view) {
+        const hostFiber = walk(view, fiber => fiberHost(fiber) ? fiber : undefined);
+        if (!hostFiber) return null;
+        warnStrictFindNode(view, hostFiber);
+        return fiberHost(hostFiber);
       }
-      unsupported('findDOMNode outside a committed tree');
+      if (constructedClasses.has(instance) && !previous) return null;
+      if (constructedClasses.has(instance) || typeof instance.render === 'function') {
+        throw new Error('Unable to find node on an unmounted component.');
+      }
+      throw new Error('Argument appears to not be a ReactComponent. Keys: ' + Object.keys(instance));
     },
-    findRenderedHosts(instance, match) {
-      if (instance == null) return [];
-      const view = findView(instance);
-      if (!view) unsupported('rendered host query outside a committed view');
-      adaptations.add('committed host class query');
+    isRenderedClass(instance) {
+      return renderedClass(instance) != null;
+    },
+    findRenderedTree(instance, method, match) {
+      if (!instance) return [];
+      const view = renderedClass(instance);
+      if (!view) {
+        const stringified = String(instance);
+        const received = Array.isArray(instance) ? 'an array' :
+          instance.nodeType === 1 && instance.tagName ? 'a DOM node' :
+          stringified === '[object Object]' ? 'object with keys {' + Object.keys(instance).join(', ') + '}' :
+          stringified;
+        throw new Error(method + '(...): the first argument must be a React class instance. Instead received: ' + received + '.');
+      }
+      adaptations.add('committed fiber tree query');
       const matches = [];
       walk(view, fiber => {
         const host = fiberHost(fiber);
-        if (host && match(host)) matches.push(host);
+        const component = fiberView(fiber);
+        if (host != null || component != null) {
+          const instance = host ?? fiber[publicInstance]();
+          const type = component == null || instance == null ? null : fiber[member(fiber, 'f__classType__')];
+          if (match(instance, type)) matches.push(instance);
+        }
       });
       return matches;
+    },
+    dispatchSimulated,
+    dispatchChange(node) {
+      const state = eventState(node);
+      if (!state) unsupported('change simulation outside a managed control');
+      if (lastCommittedValues.has(node)) {
+        const trackedValue = member(state, 'f_lastValue__');
+        // The fixture assigned through the tracking setter. Restore the previous
+        // committed baseline so Java observes the edit through its native change path.
+        state[trackedValue] = lastCommittedValues.get(node);
+        adaptations.add('native change over previous tracked value');
+      }
+      try {
+        return dispatchSimulated(node, 'change');
+      } finally {
+        rememberControl(node, eventState(node));
+      }
     },
   };
 }
