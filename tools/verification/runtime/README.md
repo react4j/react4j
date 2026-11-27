@@ -62,6 +62,23 @@ This opens Chrome DevTools, inspects a generated component, checks the highlight
 
 ## Measured results
 
+### Production at `2e2bfcbf5`
+
+Chrome 145 ran 30 measured pairs for each application on CPUs 0–5 and 30 with unrestricted scheduling. Compilation and browser verification were running on the same machine. Each cell gives the stock React 16.6 median followed by the Java median. All pairs produced the same visible state and retained DOM identity. [Individual samples](measurements.csv)
+
+| CPUs | Application | Load (ms) | Add 50 (ms) | Toggle 25 (ms) | 1,000 keys (ms) | Heap (bytes) | JavaScript (bytes) | Gzip (bytes) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0-5 | Raw | 43.80 / 50.45 | 29.85 / 39.10 | 8.35 / 8.00 | 10.30 / 8.45 | 1,996,326 / 2,041,090 | 166,367 / 150,291 | 54,943 / 52,337 |
+| 0-5 | Arez | 64.45 / 60.25 | 272.15 / 272.05 | 11.10 / 10.00 | 14.35 / 11.20 | 2,586,892 / 2,624,422 | 184,824 / 170,538 | 59,922 / 57,689 |
+| 0-5 | Sting | 58.75 / 56.25 | 256.30 / 274.65 | 9.20 / 9.30 | 12.15 / 11.70 | 2,592,204 / 2,628,100 | 185,631 / 171,413 | 60,272 / 58,000 |
+| 0-15 | Raw | 52.70 / 54.55 | 31.40 / 44.20 | 9.95 / 8.40 | 11.80 / 10.70 | 1,997,210 / 2,040,882 | 166,367 / 150,291 | 54,943 / 52,337 |
+| 0-15 | Arez | 31.55 / 35.50 | 212.00 / 214.20 | 8.05 / 7.25 | 9.25 / 8.60 | 2,587,316 / 2,623,250 | 184,824 / 170,538 | 59,922 / 57,689 |
+| 0-15 | Sting | 28.15 / 27.65 | 199.70 / 199.15 | 6.85 / 6.35 | 7.50 / 6.85 | 2,592,274 / 2,627,490 | 185,631 / 171,413 | 60,272 / 58,000 |
+
+Thirty-eight of 42 measurements met the existing budgets. Adding 50 rows in Raw exceeded the budget in both runs. Raw startup exceeded it on CPUs 0–5, and Arez startup exceeded it in the unrestricted run. All three optimized bundles were smaller than stock, both raw and gzipped.
+
+React DevTools 8.0.0 inspected and highlighted the input component and recorded 125 commits in each of stock development, Java development, Java production and named Java production. The ordinary Java production profile had 75 commits with positive durations, including eight timed updates to the input component. Named production exposed `TodoEntry` and `TodoItem.todo`. Chrome reported the source map URLs for all seven Java applications, and the maps contained the exact renderer and TodoMVC component sources.
+
 ### Production at `211e46fce`
 
 Each cell gives the stock React 16.6 median followed by the Java median. Chrome ran 60 measured Raw pairs and 30 Arez and Sting pairs on CPUs 0–5 and 120 pairs per application under unrestricted scheduling. The same optimized Raw bundle was used in both runs. [Individual samples](measurements.csv)
