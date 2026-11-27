@@ -43,6 +43,23 @@ j2cl_library(
 )
 
 j2cl_library(
+    name = "forms_scenarios",
+    testonly = True,
+    srcs = [
+        "FormsBrowserTest.java",
+        "FormsBrowserTest.native.js",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
     name = "legacy_render_support",
     testonly = True,
     srcs = ["LegacyRenderSupport.java"],

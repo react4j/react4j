@@ -41,6 +41,13 @@ browser_test(
     deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
 )
 
+browser_test(
+    name = "forms_test",
+    srcs = ["forms_test.js"],
+    entry_point = "react4j.dom.FormsTest",
+    deps = ["//dom/src/test/java/react4j/dom:forms_scenarios"],
+)
+
 closure_js_library(
     name = "properties_test",
     testonly = True,
