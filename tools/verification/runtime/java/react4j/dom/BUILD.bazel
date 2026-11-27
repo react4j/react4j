@@ -41,6 +41,7 @@ j2cl_library(
         "IsolatedErrorLoggingTest.java",
         "IsolatedErrorLoggingTest.native.js",
         "IsolatedIncrementalTest.java",
+        "IsolatedLegacyContextTest.java",
         "IsolatedReconcilerTest.java",
         "IsolatedReconcilerTest.native.js",
         "IsolatedReflectionTest.java",

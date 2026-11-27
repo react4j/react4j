@@ -1,6 +1,7 @@
 goog.module('react4j.testing.IsolatedCases');
 const ErrorLogging = goog.require('react4j.testing.IsolatedErrorLoggingTest');
 const Incremental = goog.require('react4j.testing.IsolatedIncrementalTest');
+const LegacyContext = goog.require('react4j.testing.IsolatedLegacyContextTest');
 const Reflection = goog.require('react4j.testing.IsolatedReflectionTest');
 const Scheduling = goog.require('react4j.testing.IsolatedSchedulingTest');
 const SideEffects = goog.require('react4j.testing.IsolatedSideEffectsTest');
@@ -72,6 +73,9 @@ exports.run = function(mode) {
     if (i <= 6 || (i >= 14 && i <= 21) || i === 27 || i === 28 || i === 31 || i === 32 || i >= 47) {
       run('ReactIncremental spec' + i, () => Incremental.cases(i));
     }
+  }
+  for (let i = 33; i <= 46; i++) {
+    if (i !== 42) run('ReactIncremental legacy context spec' + i, () => LegacyContext.cases(i, mode === 'development'));
   }
   return count;
 };
