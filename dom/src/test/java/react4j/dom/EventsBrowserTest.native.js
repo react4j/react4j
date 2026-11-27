@@ -416,6 +416,36 @@ EventsBrowserTest.editableSelection = function(element) {
 };
 
 
+/** @param {function():void} mount @param {boolean} ie */
+EventsBrowserTest.mountLegacyInput = function(mount, ie) {
+  const properties = ie ? [[document, 'documentMode']] :
+    [[window, 'TextEvent'], [window, 'CompositionEvent']];
+  const saved = properties.map(([object, name]) => Object.getOwnPropertyDescriptor(object, name));
+  if (ie) Object.defineProperty(document, 'documentMode', {value: 11, configurable: true});
+  else properties.forEach(([object, name]) => { delete object[name]; });
+  try {
+    mount();
+  } finally {
+    properties.forEach(([object, name], index) => {
+      if (saved[index]) Object.defineProperty(object, name, saved[index]);
+      else delete object[name];
+    });
+  }
+};
+
+/** @param {!Element} target @param {string} text */
+EventsBrowserTest.setCompositionText = function(target, text) {
+  if ('value' in target) Reflect.set(target, 'value', text);
+  else target.textContent = text;
+};
+
+/** @param {!Element} target @param {string} type @param {string} data @param {string} locale */
+EventsBrowserTest.stockLocalizedComposition = function(target, type, data, locale) {
+  const event = new Event(type, {bubbles: true});
+  Object.assign(event, {data, locale});
+  target.dispatchEvent(event);
+};
+
 /** @param {function():void} mount */
 EventsBrowserTest.withoutTextInput = function(mount) {
   const previous = Object.getOwnPropertyDescriptor(window, 'TextEvent');

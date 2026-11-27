@@ -6,6 +6,7 @@ import static react4j.webtesting.Checks.equal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
@@ -1340,16 +1341,34 @@ public final class EventsBrowserTest {
     @JsMethod
     public static void runStockBeforeInput() {
         for (final var tag : new String[] {"input", "div"}) {
-            runStockBeforeInput(tag, true);
-            runStockBeforeInput(tag, false);
+            runStockBeforeInput(tag, InputEnvironment.TEXT_EVENT);
+            runStockBeforeInput(tag, InputEnvironment.COMPOSITION_EVENT);
         }
     }
 
-    private static void runStockBeforeInput(String tag, boolean textInput) {
+    @JsMethod
+    public static void runLegacyBeforeInput() {
+        runStockBeforeInput("input", InputEnvironment.DOCUMENT_MODE);
+        runStockBeforeInput("div", InputEnvironment.DOCUMENT_MODE);
+        runStockBeforeInput("input", InputEnvironment.KEYBOARD_COMPOSITION);
+    }
+
+    private enum InputEnvironment {
+        TEXT_EVENT,
+        COMPOSITION_EVENT,
+        DOCUMENT_MODE,
+        KEYBOARD_COMPOSITION
+    }
+
+    private static void runStockBeforeInput(String tag, InputEnvironment environment) {
+        final boolean textInput = InputEnvironment.TEXT_EVENT == environment;
+        final boolean ie = InputEnvironment.DOCUMENT_MODE == environment;
+        final boolean keyboard = InputEnvironment.KEYBOARD_COMPOSITION == environment;
         final var root = Browser.append("div");
         try {
             final var before = new ArrayList<String>();
             final var composition = new ArrayList<String>();
+            final var end = new ArrayList<String>();
             final ReactEventHandler onBefore =
                     event -> before.add(event.getType() + "=" + Browser.property(event, "data"));
             final ReactEventHandler onComposition =
@@ -1361,31 +1380,36 @@ public final class EventsBrowserTest {
                     onComposition,
                     "onCompositionUpdate",
                     onComposition);
+            props.set("onCompositionEnd", (ReactEventHandler)
+                    event -> end.add(event.getType() + "=" + Browser.property(event, "data")));
             if ("div".equals(tag)) {
                 props.set("contentEditable", true);
             } else {
                 props.set("type", "text");
             }
             final Probe mount = () -> ReactDOM.render(host(tag, props), root);
-            if (textInput) {
-                mount.run();
-            } else {
-                withoutTextInput(mount);
+            switch (environment) {
+                case TEXT_EVENT -> mount.run();
+                case COMPOSITION_EVENT -> withoutTextInput(mount);
+                case DOCUMENT_MODE -> mountLegacyInput(mount, true);
+                case KEYBOARD_COMPOSITION -> mountLegacyInput(mount, false);
             }
             final var input = Browser.query(root, tag);
             stockComposition(input, "compositionstart", "test");
             check(before.isEmpty(), "Composition start does not synthesize before-input");
             check(
-                    composition.equals(Arrays.asList("compositionstart=test")),
+                    composition.equals(keyboard ? List.of() : List.of("compositionstart=test")),
                     "Composition start dispatches native data");
             composition.clear();
             stockComposition(input, "compositionupdate", "test string");
             check(before.isEmpty(), "Composition update does not synthesize before-input");
             check(
-                    composition.equals(Arrays.asList("compositionupdate=test string")),
+                    composition.equals(keyboard ? List.of() : List.of("compositionupdate=test string")),
                     "Composition update dispatches native data");
+            composition.clear();
             stockComposition(input, "compositionend", "test string 3");
-            beforeInputEquals(before, "compositionend=test string 3");
+            beforeInputEquals(before, ie || keyboard ? null : "compositionend=test string 3");
+            beforeInputEquals(end, keyboard ? null : "compositionend=test string 3");
             stockComposition(input, "textInput", "abcß");
             beforeInputEquals(before, textInput ? "textInput=abcß" : null);
             fallbackKeyPress(input, 'a', false, false, false, null);
@@ -1409,13 +1433,43 @@ public final class EventsBrowserTest {
                 valueTarget.set("value", 0 == index ? "foo" : "foofoo");
                 stockKey(input, "keydown", "", 229, 0, false);
                 beforeInputEquals(before, null);
+                if (keyboard) {
+                    check(
+                            composition.size() == 1 && composition.get(0).startsWith("keydown="),
+                            "IME keydown starts a keyboard composition");
+                    composition.clear();
+                } else {
+                    check(composition.isEmpty(), "Native composition does not start on IME keydown");
+                }
                 valueTarget.set("value", 0 == index ? "foobar" : 1 == index ? "fooBARfoo" : "Barfoofoo");
                 if (2 == index) {
                     legacyKey(input, "keypress", 60);
                 } else {
                     stockKey(input, 0 == index ? "keydown" : "keyup", "", 9, 0, false);
                 }
-                beforeInputEquals(before, null);
+                final var composed =
+                        switch (index) {
+                            case 0 -> "keydown=bar";
+                            case 1 -> "keyup=BAR";
+                            default -> "keypress=Bar";
+                        };
+                beforeInputEquals(before, keyboard ? composed : null);
+                beforeInputEquals(end, keyboard ? composed : null);
+            }
+            if (ie) {
+                if ("div".equals(tag)) {
+                    valueTarget.delete("value");
+                }
+                setCompositionText(input, "prefixsuffix");
+                stockComposition(input, "compositionstart", "incorrect");
+                setCompositionText(input, "prefix　suffix");
+                stockComposition(input, "compositionend", "incorrect");
+                beforeInputEquals(before, "compositionend=　");
+                beforeInputEquals(end, "compositionend=　");
+                stockComposition(input, "compositionstart", "한", "ko");
+                stockComposition(input, "compositionend", "한", "ko");
+                beforeInputEquals(before, "compositionend=한");
+                beforeInputEquals(end, "compositionend=한");
             }
             dispatch(input, "onPaste");
             beforeInputEquals(before, null);
@@ -1436,6 +1490,15 @@ public final class EventsBrowserTest {
 
     @JsMethod
     private static native void stockComposition(Browser.Element input, String type, String data);
+
+    @JsMethod(name = "stockLocalizedComposition")
+    private static native void stockComposition(Browser.Element input, String type, String data, String locale);
+
+    @JsMethod
+    private static native void mountLegacyInput(Probe mount, boolean ie);
+
+    @JsMethod
+    private static native void setCompositionText(Browser.Element input, String text);
 
     @JsMethod
     public static void runBeforeInput() {

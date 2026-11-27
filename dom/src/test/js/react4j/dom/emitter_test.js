@@ -21,5 +21,6 @@ testSuite({
   testMixedPriorities() { return ConcurrentEvents.mixedPriorities(); },
   testChangeEvents() { Events.runStockChangeEvents(); },
   testBeforeInput() { Events.runStockBeforeInput(); },
+  testLegacyBeforeInput() { Events.runLegacyBeforeInput(); },
   testComponentTree() { Events.runStockComponentTree('production' === Mode.environment); },
 });

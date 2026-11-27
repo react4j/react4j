@@ -508,17 +508,13 @@ final class DomEvents {
         final var selected = boundary.selectTarget(name, element);
         final var batch = new DispatchBatch();
         try {
+            final var composition = boundary.compositionEvent(name, target, nativeEvent);
             if (!"Change".equals(name)
                     && !"TextInput".equals(name)
+                    && !name.startsWith("Composition")
                     && !("KeyPress".equals(name) && 0 == charCode(DomHost.properties(nativeEvent)))
                     && !("Click".equals(name) && 2 == eventNumber(DomHost.properties(nativeEvent), "button"))) {
-                collectHandlers(
-                        batch,
-                        state,
-                        target,
-                        name,
-                        nativeEvent,
-                        name.startsWith("Composition") ? customInputData(nativeEvent) : null);
+                collectHandlers(batch, state, target, name, nativeEvent, null);
             }
             switch (name) {
                 case "MouseOver", "MouseOut", "PointerOver", "PointerOut" ->
@@ -531,7 +527,18 @@ final class DomEvents {
             if (null != selected) {
                 collectHandlers(batch, STATES.get(selected), selected, "Select", nativeEvent, null);
             }
-            final var beforeInput = beforeInputData(boundary, name, nativeEvent);
+            if (null != composition && null != composition.name()) {
+                final var data = composition.characters();
+                collectHandlers(
+                        batch,
+                        state,
+                        target,
+                        composition.name(),
+                        nativeEvent,
+                        null == data || data.isEmpty() ? customInputData(nativeEvent) : data);
+            }
+            final var beforeInput =
+                    beforeInputData(boundary, name, nativeEvent, null == composition ? null : composition.characters());
             if (Js.isTruthy(beforeInput)) {
                 collectHandlers(batch, state, target, "BeforeInput", nativeEvent, beforeInput);
             }
@@ -576,7 +583,7 @@ final class DomEvents {
     }
 
     private static @Nullable Object beforeInputData(
-            final Boundary boundary, final String name, final NativeEvent nativeEvent) {
+            final Boundary boundary, final String name, final NativeEvent nativeEvent, @Nullable String composed) {
         final var source = DomHost.properties(nativeEvent);
         if (boundary.hasTextInput) {
             return switch (name) {
@@ -595,8 +602,12 @@ final class DomEvents {
                 default -> null;
             };
         }
+        if (null != composed || null != boundary.composition) {
+            return composed;
+        }
         return switch (name) {
-            case "CompositionEnd" -> source.get("data");
+            case "CompositionEnd" ->
+                boundary.useFallbackCompositionData && !usesKoreanIme(nativeEvent) ? null : source.get("data");
             case "KeyPress" -> {
                 final boolean ctrl = Js.isTruthy(source.get("ctrlKey"));
                 final boolean alt = Js.isTruthy(source.get("altKey"));
@@ -612,6 +623,37 @@ final class DomEvents {
             }
             default -> null;
         };
+    }
+
+    private static boolean usesKoreanIme(NativeEvent event) {
+        return "ko".equals(DomHost.properties(event).get("locale"));
+    }
+
+    private record CompositionEvent(
+            @Nullable String name, @Nullable String characters) {}
+
+    private record CompositionText(DomHost.Node target, String original) {
+        private static String read(DomHost.Node target) {
+            final var properties = DomHost.properties(target);
+            final var text = properties.get(properties.has("value") ? "value" : "textContent");
+            return null == text ? "" : DomHost.stringify(text);
+        }
+
+        String inserted() {
+            final var current = read(target);
+            final int limit = Math.min(original.length(), current.length());
+            int start = 0;
+            while (start < limit && original.charAt(start) == current.charAt(start)) {
+                start++;
+            }
+            int end = current.length();
+            int originalEnd = original.length();
+            while (start < end && start < originalEnd && original.charAt(originalEnd - 1) == current.charAt(end - 1)) {
+                end--;
+                originalEnd--;
+            }
+            return current.substring(start, end);
+        }
     }
 
     private static void collectHandlers(
@@ -938,13 +980,55 @@ final class DomEvents {
         private @Nullable Selection lastSelection;
         private boolean mouseDown;
         private final boolean hasTextInput;
+        private final boolean hasCompositionEvent;
+        private final boolean useFallbackCompositionData;
+        private @Nullable CompositionText composition;
         private int documentEvents;
         int hosts;
 
+        private @Nullable CompositionEvent compositionEvent(String name, DomHost.Node target, NativeEvent event) {
+            final String eventName;
+            if (hasCompositionEvent) {
+                eventName = name.startsWith("Composition") ? name : null;
+            } else {
+                final int key = eventNumber(DomHost.properties(event), "keyCode");
+                if (null == composition) {
+                    eventName = "KeyDown".equals(name) && 229 == key ? "CompositionStart" : null;
+                } else {
+                    eventName = switch (name) {
+                        case "KeyUp" -> 9 == key || 13 == key || 27 == key || 32 == key ? "CompositionEnd" : null;
+                        case "KeyDown" -> 229 != key ? "CompositionEnd" : null;
+                        case "KeyPress", "MouseDown", "Blur" -> "CompositionEnd";
+                        default -> null;
+                    };
+                }
+            }
+            if ("CompositionStart".equals(eventName)
+                    && useFallbackCompositionData
+                    && !usesKoreanIme(event)
+                    && null == composition) {
+                composition = new CompositionText(target, CompositionText.read(target));
+            }
+            String characters = null;
+            final var pending = composition;
+            if (null != pending && ("CompositionEnd".equals(eventName) || "CompositionEnd".equals(name))) {
+                composition = null;
+                characters = pending.inserted();
+            }
+            return null == eventName && null == characters ? null : new CompositionEvent(eventName, characters);
+        }
+
         Boundary(final DomHost.Node node) {
             this.node = node;
-            final var window = DomHost.properties(node.document()).get("defaultView");
-            hasTextInput = null != window && DomHost.properties(window).has("TextEvent");
+            final var document = DomHost.properties(node.document());
+            final var window = document.get("defaultView");
+            final var mode = document.get("documentMode");
+            final int version = "number".equals(Js.typeof(mode)) ? Js.asInt(mode) : 0;
+            hasTextInput = !Js.isTruthy(mode)
+                    && null != window
+                    && DomHost.properties(window).has("TextEvent");
+            hasCompositionEvent = null != window && DomHost.properties(window).has("CompositionEvent");
+            useFallbackCompositionData = !hasCompositionEvent || 8 < version && 11 >= version;
             for (final var name : EVENTS) {
                 final var nativeName = nativeName(name);
                 final boolean interactive = isInteractive(name);
