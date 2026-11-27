@@ -22,5 +22,9 @@ async function run() {
   }
 }
 window['runRuntimeCoverageTests'] = run;
+/** Runs lifecycle diagnostics in a fresh realm. */
+window['runLifecycleCoverageTests'] = () => Dom.lifecycle('production' === Mode.environment);
+/** Runs scheduling diagnostics in a fresh realm. */
+window['runSchedulingCoverageTests'] = () => Dom.scheduling('production' === Mode.environment);
 /** Verifies native element construction. */
 window['runRuntimeMapProbe'] = Example.mapProbe;

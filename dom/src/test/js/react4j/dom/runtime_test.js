@@ -11,6 +11,7 @@ const OriginalHost = goog.require('react4j.dom.OriginalHostCasesBrowserTest');
 const Parity = goog.require('react4j.dom.RuntimeParityBrowserTest');
 const Profiler = goog.require('react4j.dom.ProfilerBrowserTest');
 const ReconcilerDiagnostics = goog.require('react4j.dom.ReconcilerDiagnosticsBrowserTest');
+const Scheduling = goog.require('react4j.dom.UpdateSchedulingBrowserTest');
 const Test = goog.require('react4j.dom.RuntimeBrowserTest');
 const WrappedViews = goog.require('react4j.dom.WrappedViewsBrowserTest');
 /** @param {boolean} production @return {!Promise<void>} */
@@ -26,7 +27,6 @@ async function run(production) {
   Fiber.expiredRoots();
   OriginalHost.run();
   ReconcilerDiagnostics.run(production);
-  ComponentLifecycle.run(production);
   Memory.run();
   Profiler.run(production);
   await Test.run();
@@ -49,4 +49,4 @@ async function run(production) {
   Events.runHostProperties();
   await Parity.run(production);
 }
-exports = {run, checkDevTools: DevToolsHookTest.run, checkSuspense: DevToolsHookTest.checkSuspense};
+exports = {run, lifecycle: ComponentLifecycle.run, scheduling: Scheduling.run, checkDevTools: DevToolsHookTest.run, checkSuspense: DevToolsHookTest.checkSuspense};

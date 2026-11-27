@@ -520,25 +520,29 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
             defines.addProperty("braincheck.check_invariants", "true");
             defines.addProperty("braincheck.check_api_invariants", "true");
             defines.addProperty("braincheck.verbose_error_messages", "true");
-            var assets = Map.of(
-                    "/index.html",
-                    "<!doctype html><body><script>var CLOSURE_DEFINES=" + defines
-                            + ";window.coverageError=null;window.addEventListener('error',e=>queueMicrotask(()=>{if(!e.defaultPrevented)window.coverageError=String(e.error||e.message)}));</script><script"
-                            + " src='/runtime.js'></script>",
-                    "/runtime.js",
-                    instrumentation.javascript()
-                            + "\n"
-                            + "Promise.resolve(window.runRuntimeCoverageTests()).then(()=>window.coverageDone=true,e=>window.coverageError=String(e));");
-            var result = BrowserCoverage.run(
-                    paths.get(1),
-                    assets,
-                    "window.coverageError||window.coverageDone",
-                    "({error:window.coverageError,counters:window['" + instrumentation.variable() + "']})");
-            if (!result.get("error").isJsonNull()) {
-                throw new IllegalStateException(
-                        "Runtime browser test failed (" + environment + "): " + result.get("error"));
+            // Each diagnostic suite observes warnings that the renderer emits once per JavaScript realm.
+            for (String suite :
+                    List.of("runRuntimeCoverageTests", "runLifecycleCoverageTests", "runSchedulingCoverageTests")) {
+                var assets = Map.of(
+                        "/index.html",
+                        "<!doctype html><body><script>var CLOSURE_DEFINES=" + defines
+                                + ";window.coverageError=null;window.addEventListener('error',e=>queueMicrotask(()=>{if(!e.defaultPrevented)window.coverageError=String(e.error||e.message)}));</script><script"
+                                + " src='/runtime.js'></script>",
+                        "/runtime.js",
+                        instrumentation.javascript()
+                                + "\nPromise.resolve().then(()=>window['" + suite
+                                + "']()).then(()=>window.coverageDone=true,e=>window.coverageError=String(e));");
+                var result = BrowserCoverage.run(
+                        paths.get(1),
+                        assets,
+                        "window.coverageError||window.coverageDone",
+                        "({error:window.coverageError,counters:window['" + instrumentation.variable() + "']})");
+                if (!result.get("error").isJsonNull()) {
+                    throw new IllegalStateException(
+                            "Runtime browser test failed (" + environment + ", " + suite + "): " + result.get("error"));
+                }
+                runs.add(result.getAsJsonObject("counters"));
             }
-            runs.add(result.getAsJsonObject("counters"));
         }
         Files.writeString(
                 destination,

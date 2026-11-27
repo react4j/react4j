@@ -90,5 +90,6 @@ closure_js_library(
         "//dom/src/test/java/react4j/dom:component_lifecycle_scenarios",
         "//dom/src/test/java/react4j/dom:emitter_registration",
         "//dom/src/test/java/react4j/dom:runtime_coverage",
+        "//dom/src/test/java/react4j/dom:update_scheduling_scenarios",
     ],
 )
