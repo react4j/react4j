@@ -81,6 +81,18 @@ function installJavaRenderer() {
   });
   jest.doMock('react-dom/src/client/ReactDOM', () => fixture().adapter);
   jest.doMock('react-dom/test-utils', () => createTestUtils(fixture().adapter));
+  jest.doMock('react-dom/src/client/ReactDOMComponentTree', () => ({
+    ...require.requireActual('react-dom/src/client/ReactDOMComponentTree'),
+    getInstanceFromNode: node => fixture().adapter.eventHost(node),
+  }));
+  jest.doMock('events/EventPluginUtils', () => ({
+    ...require.requireActual('events/EventPluginUtils'),
+    getFiberCurrentPropsFromNode: node => fixture().adapter.eventProps(node),
+  }));
+  jest.doMock('react-dom/src/events/ReactBrowserEventEmitter', () => ({
+    ...require.requireActual('react-dom/src/events/ReactBrowserEventEmitter'),
+    setEnabled: enabled => fixture().adapter.setEventsEnabled(enabled),
+  }));
   if (process.env.REACT4J_RECONCILER_CASE) {
     jest.doMock('react-reconciler', () => fixture().createHostFixture);
     jest.doMock('react-noop-renderer', () => require('./noop')(fixture().noop));
@@ -431,7 +443,26 @@ function createDOMAdapter(moduleFor, member) {
   const unmount = member(dom, 'm_unmountComponentAtNode__');
   const batch = member(dom, 'm_batchedUpdates__');
   const portal = member(dom, 'm_createPortal__');
+  const events = moduleFor('react4j.dom.DomEvents');
+  const eventState = node => events[member(events, 'm_state__')](node);
+  let eventsEnabled = true;
   return {
+    eventHost(node) {
+      const state = eventState(node);
+      if (!state) return null;
+      adaptations.add('private emitter host lookup from committed Java event state');
+      return {stateNode: state[member(state, 'f_element__')], type: state[member(state, 'f_tag__')]};
+    },
+    eventProps(node) {
+      const state = eventState(node);
+      return state ? state[member(state, 'f_inputs__')] : null;
+    },
+    setEventsEnabled(enabled) {
+      if (enabled !== eventsEnabled) {
+        events[member(events, enabled ? 'm_resume__' : 'm_pause__')]();
+        eventsEnabled = enabled;
+      }
+    },
     render(element, container, callback) {
       calls++;
       containers.add(container);
