@@ -85,8 +85,23 @@ def scope(suite, name):
     if ((file == "ReactElement-test.js" and "fallback value when in an environment without Symbol" in name)
             or (file == "ReactSymbols-test.internal.js" and "numeric values" in name)):
         return "excluded: numeric no-Symbol protocol"
-    if file.startswith(("ReactRenderDocument", "ReactDOMServer", "ReactServerRendering", "ReactProfiler")):
-        return "review separately: mixed client, server or profiling contracts"
+    if file == "ReactServerRendering-test.js" and name.endswith("can import react-dom in Node environment"):
+        return "review separately: client module loading in Node"
+    if file in {"ReactDOMServerLifecycles-test.js", "ReactDOMServerLifecycles-test.internal.js",
+                "ReactDOMServerSuspense-test.internal.js", "ReactServerRendering-test.js",
+                "ReactServerRenderingBrowser-test.js", "escapeTextForBrowser-test.js",
+                "quoteAttributeValueForBrowser-test.js"}:
+        return "excluded: server renderer"
+    if file == "ReactRenderDocument-test.js":
+        if ("with old implicit hydration API" in name
+                and name.endswith(("renders over an existing text child without throwing",
+                                   "should throw on full document render w/ no markup"))):
+            return "client"
+        return "review separately: assertions following hydration"
+    if file == "ReactDOMServerIntegrationRefs-test.js":
+        return "review separately: ref assertions with server markup"
+    if file.startswith("ReactProfiler"):
+        return "review separately: client profiling and tracing"
     if suite.startswith(("packages/react-dom/", "packages/react-reconciler/", "packages/react/")):
         return "client candidate"
     return "review separately: other package or renderer"
@@ -187,7 +202,10 @@ def audit():
             counts["only excluded or upstream-skipped assertions"] += 1
     for label, count in sorted(counts.items()):
         print(f"  {count} cases: {label}")
-    print(f"  {len(cases) - len(reviewed)} stock cases have no individual assertion map.")
+    unmapped = [case for index, case in enumerate(cases) if index not in reviewed]
+    print(f"  {len(unmapped)} stock cases have no individual assertion map:")
+    for label, count in sorted(Counter(case["scope"] for case in unmapped).items()):
+        print(f"    {count} {label}")
 
 
 def main():
