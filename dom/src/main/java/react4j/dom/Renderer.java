@@ -1,6 +1,7 @@
 package react4j.dom;
 
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
 import jsinterop.base.Js;
 import org.jspecify.annotations.Nullable;
 import react4j.ReactNode;
@@ -39,6 +40,12 @@ final class Renderer {
         }
         var existing = ROOTS.get(container);
         if (null == existing) {
+            if (DEVELOPMENT && hasManagedChild(container)) {
+                warning("Warning: render(...): Replacing React-rendered children with a new root component. If you"
+                        + " intended to update the children of this node, you should instead have the existing"
+                        + " children update their state and render the new components instead of calling"
+                        + " ReactDOM.render.");
+            }
             existing = new Reconciler.Root(container, false, DomReconcilerHost.INSTANCE, BrowserScheduler.INSTANCE);
             ROOTS.set(container, existing);
         }
@@ -50,11 +57,28 @@ final class Renderer {
     static boolean unmount(Node container) {
         final var root = ROOTS.get(container);
         if (null == root) {
+            if (DEVELOPMENT && hasManagedChild(container)) {
+                final var parent = container.parentNode;
+                final String advice = 1 == container.nodeType && null != parent && isRoot(parent)
+                        ? "You may have accidentally passed in a React root node instead of its container."
+                        : "Instead, have the parent component update its state and rerender in order to remove this"
+                                + " component.";
+                warning("Warning: unmountComponentAtNode(): The node you're attempting to unmount was rendered by "
+                        + "React and is not a top-level container. " + advice);
+            }
             return false;
         }
         root.remove(() -> ROOTS.delete(container));
         return true;
     }
+
+    private static boolean hasManagedChild(Node container) {
+        final var first = container.firstChild;
+        return null != first && 1 == first.nodeType && null != DomEvents.state(Js.uncheckedCast(first));
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "console.error")
+    private static native void warning(String message);
 
     @JsMethod
     private static native void invokeCallback(ReactDOM.RenderCallbackFn callback, @Nullable Object instance);

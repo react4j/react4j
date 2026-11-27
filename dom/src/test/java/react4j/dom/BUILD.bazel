@@ -60,6 +60,24 @@ j2cl_library(
 )
 
 j2cl_library(
+    name = "emitter_registration",
+    testonly = True,
+    srcs = [
+        "ConcurrentEventBrowserTest.java",
+        "ConcurrentEventBrowserTest.native.js",
+        "EmitterRegistrationBrowserTest.java",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
     name = "forms_scenarios",
     testonly = True,
     srcs = [

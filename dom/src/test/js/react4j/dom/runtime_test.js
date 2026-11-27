@@ -2,6 +2,7 @@ goog.module('react4j.dom.RuntimeTest');
 const Children = goog.require('react4j.dom.ChildReconciliationTest');
 const Classes = goog.require('react4j.dom.ClassLifecycleBrowserTest');
 const DevToolsHookTest = goog.require('react4j.dom.DevToolsHookTest');
+const EmitterRegistration = goog.require('react4j.dom.EmitterRegistrationBrowserTest');
 const Events = goog.require('react4j.dom.EventsBrowserTest');
 const Fiber = goog.require('react4j.dom.FiberReconciliationTest');
 const Memory = goog.require('react4j.dom.MemoryBrowserTest');
@@ -29,7 +30,7 @@ async function run(production) {
   await Test.run();
   await WrappedViews.run(production);
   Events.runBehavior();
-  Events.runEmitterRegistration();
+  EmitterRegistration.runEmitterRegistration();
   Events.runEmitterPropagation();
   Events.runEmitterSubscriptions();
   Events.runSyntheticLifecycle(production);

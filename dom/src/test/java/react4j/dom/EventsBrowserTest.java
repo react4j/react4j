@@ -314,45 +314,6 @@ public final class EventsBrowserTest {
     }
 
     @JsMethod
-    public static void runEmitterRegistration() {
-        final var root = Browser.append("div");
-        try {
-            final int[] calls = {0};
-            final ReactEventHandler handler = event -> calls[0]++;
-            emitterTree(root, null, null, null);
-            final var child = Browser.query(root, "#emitter-child");
-            emitterTree(root, handler, null, null);
-            check(child == Browser.query(root, "#emitter-child"), "Registration keeps the existing target");
-            check(emitterListener(child, "onClick") == handler, "Registration stores the supplied listener");
-            check(emitterListener(child, "onClick") == handler, "Lookup retrieves the same listener");
-            child.click();
-            check(1 == calls[0], "One native click invokes its registered handler once");
-
-            emitterTree(root, null, null, null);
-            check(
-                    Js.isTripleEqual(Js.undefined(), emitterListener(child, "onClick")),
-                    "Removing handlers returns undefined from lookup");
-            child.click();
-            check(1 == calls[0], "A removed handler receives no later clicks");
-
-            emitterTree(root, handler, null, null);
-            calls[0] = 0;
-            DomEvents.pause();
-            try {
-                child.click();
-                check(0 == calls[0], "A native click is ignored while the emitter is paused");
-            } finally {
-                DomEvents.resume();
-            }
-            child.click();
-            check(1 == calls[0], "The next click is delivered once after the emitter resumes");
-        } finally {
-            ReactDOM.unmountComponentAtNode(root);
-            root.remove();
-        }
-    }
-
-    @JsMethod
     public static void runEmitterPropagation() {
         final var root = Browser.append("div");
         try {
@@ -666,12 +627,6 @@ public final class EventsBrowserTest {
         return host("div", props);
     }
 
-    private static @Nullable Object emitterListener(Browser.Element element, String name) {
-        return Objects.requireNonNull(DomEvents.state(Js.uncheckedCast(element)))
-                .inputs
-                .get(name);
-    }
-
     private static void appendEmitterTarget(StringBuilder trace, SyntheticEvent<?> event) {
         trace.append(Browser.property(event.getCurrentTarget(), "id")).append(' ');
     }
@@ -748,6 +703,502 @@ public final class EventsBrowserTest {
         } finally {
             ReactDOM.unmountComponentAtNode(detached);
             detached.remove();
+        }
+    }
+
+    @JsMethod
+    public static void runStockChangeEvents() {
+        final var root = Browser.append("div");
+        try {
+            final int[] calls = {0};
+            final ReactEventHandler onChange = event -> {
+                equal("change", event.getType());
+                calls[0]++;
+            };
+            final var text =
+                    host("input", JsPropertyMap.of("type", "text", "defaultValue", "foo", "onChange", onChange));
+            ReactDOM.render(text, root);
+            var input = Browser.query(root, "input");
+            nativeInputEvent(input, "input");
+            nativeInputEvent(input, "change");
+            check(0 == calls[0], "Initial text value is tracked");
+            writeValue(input, "bar");
+            nativeInputEvent(input, "input");
+            equal("bar", input.getValue());
+            check(0 == calls[0], "Programmatic text changes do not dispatch");
+            Browser.setValue(input, "foo");
+            equal("foo", input.getValue());
+            check(1 == calls[0], "Untracked text changes dispatch");
+            nativeInputEvent(input, "input");
+            check(1 == calls[0], "Repeated input without a value change is quiet");
+
+            ReactDOM.unmountComponentAtNode(root);
+            calls[0] = 0;
+            ReactDOM.render(
+                    host("input", JsPropertyMap.of("type", "text", "defaultValue", "42", "onChange", onChange)), root);
+            input = Browser.query(root, "input");
+            Objects.requireNonNull(Js.asPropertyMap(input)).set("value", Browser.number(42));
+            nativeInputEvent(input, "input");
+            equal("42", input.getValue());
+            check(0 == calls[0], "Equivalent string and number values are deduplicated");
+
+            for (final boolean initialChecked : new boolean[] {true, false}) {
+                ReactDOM.unmountComponentAtNode(root);
+                ReactDOM.render(
+                        host(
+                                "input",
+                                JsPropertyMap.of(
+                                        "type", "checkbox", "defaultChecked", initialChecked, "onChange", onChange)),
+                        root);
+                input = Browser.query(root, "input");
+                setCheckedUntracked(input, !initialChecked);
+                input.click();
+                check(0 == calls[0], "Initial checkbox state is tracked");
+            }
+
+            ReactDOM.unmountComponentAtNode(root);
+            ReactDOM.render(host("input", JsPropertyMap.of("type", "checkbox", "onChange", onChange)), root);
+            input = Browser.query(root, "input");
+            check(Boolean.FALSE.equals(Browser.property(input, "checked")), "Checkbox starts unchecked");
+            input.click();
+            check(Boolean.TRUE.equals(Browser.property(input, "checked")), "First click checks the box");
+            check(1 == calls[0], "First click emits change");
+            input.click();
+            check(Boolean.FALSE.equals(Browser.property(input, "checked")), "Second click unchecks the box");
+            check(2 == calls[0], "Second click emits change");
+
+            calls[0] = 0;
+            Objects.requireNonNull(Js.asPropertyMap(input)).set("checked", true);
+            setCheckedUntracked(input, false);
+            input.click();
+            check(Boolean.TRUE.equals(Browser.property(input, "checked")), "The click checks the box again");
+            check(0 == calls[0], "Programmatic checked state is tracked");
+            input.click();
+            check(1 == calls[0], "Next real click changes the tracked state");
+
+            ReactDOM.unmountComponentAtNode(root);
+            check(!root.contains(input), "Unmount removes the tracked node");
+            for (final var type : new String[] {"text", "number", "range"}) {
+                for (final var initialEvent : new String[] {"input", "change"}) {
+                    for (final var editedEvent : new String[] {"input", "change"}) {
+                        calls[0] = 0;
+                        ReactDOM.render(host("input", JsPropertyMap.of("type", type, "onChange", onChange)), root);
+                        input = Browser.query(root, "input");
+                        nativeInputEvent(input, initialEvent);
+                        setValueUntracked(input, "42");
+                        nativeInputEvent(input, editedEvent);
+                        nativeInputEvent(input, initialEvent);
+                        check(
+                                1 == calls[0],
+                                type + " change is deduplicated across " + editedEvent + " and " + initialEvent);
+                        ReactDOM.unmountComponentAtNode(root);
+                    }
+                }
+            }
+
+            ReactDOM.render(host("input", JsPropertyMap.of("type", "range", "onChange", onChange)), root);
+            input = Browser.query(root, "input");
+            calls[0] = 0;
+            Browser.setValue(input, "10");
+            setValueUntracked(input, "20");
+            nativeInputEvent(input, "change");
+            check(2 == calls[0], "Range listens for both input and change");
+            calls[0] = 0;
+            Browser.setValue(input, "40");
+            nativeInputEvent(input, "change");
+            Browser.setValue(input, "foo");
+            nativeInputEvent(input, "change");
+            check(2 == calls[0], "Range dispatches only for changes in sanitized value");
+
+            ReactDOM.unmountComponentAtNode(root);
+            ReactDOM.render(host("input", JsPropertyMap.of("type", "radio", "onChange", onChange)), root);
+            calls[0] = 0;
+            final var radio = Browser.query(root, "input");
+            setCheckedUntracked(radio, true);
+            nativeInputEvent(radio, "click");
+            nativeInputEvent(radio, "click");
+            check(1 == calls[0], "A checked radio emits change only once");
+
+            final int[] secondCalls = {0};
+            final ReactEventHandler secondChange = event -> {
+                equal("change", event.getType());
+                secondCalls[0]++;
+            };
+            ReactDOM.unmountComponentAtNode(root);
+            ReactDOM.render(
+                    ReactNode.of(
+                            host("input", JsPropertyMap.of("type", "radio", "name", "group", "id", "first"))
+                                    .input("onChange", onChange),
+                            host("input", JsPropertyMap.of("type", "radio", "name", "group", "id", "second"))
+                                    .input("onChange", secondChange)),
+                    root);
+            calls[0] = 0;
+            Browser.query(root, "#first").click();
+            check(1 == calls[0] && 0 == secondCalls[0], "The first radio dispatches alone");
+            Browser.query(root, "#second").click();
+            check(1 == calls[0] && 1 == secondCalls[0], "The second radio dispatches alone");
+            Browser.query(root, "#first").click();
+            check(2 == calls[0] && 1 == secondCalls[0], "Returning to the first radio dispatches again");
+
+            ReactDOM.unmountComponentAtNode(root);
+            withCustomInputValue(() -> {
+                final var customInput = host("input", JsPropertyMap.of("type", "text"));
+                ReactDOM.render(customInput, root);
+                ReactDOM.render(host("input", JsPropertyMap.of("type", "text")), root);
+                nativeInputEvent(Browser.query(root, "input"), "change");
+                ReactDOM.unmountComponentAtNode(root);
+            });
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
+    private static native void setValueUntracked(Browser.Element input, String value);
+
+    @JsMethod
+    private static native void withCustomInputValue(Probe action);
+
+    @JsMethod
+    public static void runStockComponentTree(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            final var target = new StringBuilder();
+            final ReactEventHandler record = event -> {
+                target.setLength(0);
+                target.append(Browser.property(event.getCurrentTarget(), "id"));
+            };
+            ReactDOM.render(
+                    host(
+                            "div",
+                            JsPropertyMap.of(
+                                    "id",
+                                    "mouseOverID",
+                                    "onMouseOver",
+                                    record,
+                                    "children",
+                                    host("div", JsPropertyMap.of("id", "clickID", "onClick", record)))),
+                    root);
+            check(0 == target.length(), "No current target before an event");
+            Browser.mouse(Browser.query(root, "#mouseOverID"), "mouseover", false);
+            check("mouseOverID".contentEquals(target), "Mouseover current target resolves to its host");
+            Browser.query(root, "#clickID").click();
+            check("clickID".contentEquals(target), "Click current target resolves to its host");
+
+            target.setLength(0);
+            ReactDOM.render(
+                    host(
+                            "div",
+                            JsPropertyMap.of(
+                                    "id",
+                                    "closestInstance",
+                                    "onClick",
+                                    record,
+                                    "dangerouslySetInnerHTML",
+                                    JsPropertyMap.of("__html", "<div id='unmanaged'></div>"))),
+                    root);
+            check(0 == target.length(), "Unmanaged child has not been clicked");
+            Browser.query(root, "#unmanaged").click();
+            check("closestInstance".contentEquals(target), "Unmanaged DOM resolves to the nearest React host");
+
+            final ReactEventHandler a = event -> target.append("A");
+            final ReactEventHandler b = event -> target.append("B");
+            ReactDOM.render(host("div", JsPropertyMap.of("onMouseOver", a)), root);
+            final var div = Browser.query(root, "div");
+            target.setLength(0);
+            Browser.mouse(div, "mouseover", false);
+            check("A".contentEquals(target), "Initial host handler is used");
+            ReactDOM.render(host("div", JsPropertyMap.of("onMouseOver", b)), root);
+            target.setLength(0);
+            Browser.mouse(div, "mouseover", false);
+            check("B".contentEquals(target), "Updated props supply the new host handler");
+
+            final ReactEventHandler control = event -> {
+                final var value = Browser.property(event.getCurrentTarget(), "value");
+                ReactDOM.render(
+                        host("input", JsPropertyMap.of("type", "text", "value", value, "readOnly", true)), root);
+            };
+            ReactDOM.render(
+                    host("input", JsPropertyMap.of("type", "text", "onChange", control, "value", Js.undefined())),
+                    root);
+            final var input = Browser.query(root, "input");
+            final var controlWarning = captureWarnings(() -> Browser.setValue(input, "finish"));
+            equal("finish", input.getValue());
+            if (!production) {
+                check(
+                        controlWarning.contains("uncontrolled input of type text to be controlled"),
+                        "An edited uncontrolled input becoming controlled warns");
+            }
+
+            ReactDOM.render(
+                    host("div", JsPropertyMap.of("children", host("span", JsPropertyMap.of("children", "Hello")))),
+                    root);
+            final var managed = Browser.query(root, "div");
+            final var unmountWarning = captureWarnings(
+                    () -> check(!ReactDOM.unmountComponentAtNode(managed), "A managed child is not a root container"));
+            final var renderWarning = captureWarnings(() -> ReactDOM.render(host("div", JsPropertyMap.of()), managed));
+            try {
+                if (!production) {
+                    check(
+                            unmountWarning.contains("was rendered by React and is not a top-level container"),
+                            "Unmounting a managed host emits the container diagnostic");
+                    check(
+                            renderWarning.contains("Replacing React-rendered children with a new root component"),
+                            "Replacing managed children with a new root emits the container diagnostic");
+                }
+            } finally {
+                ReactDOM.unmountComponentAtNode(managed);
+            }
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
+    public static void runStockEventListeners() {
+        final var outerRoot = Browser.append("div");
+        final var middleRoot = Browser.append("div");
+        final var innerRoot = Browser.append("div");
+        final var unmanaged = Browser.append("h1");
+        try {
+            final var targets = new ArrayList<Object>();
+            final ReactEventHandler currentTarget =
+                    event -> targets.add(Objects.requireNonNull(event.getCurrentTarget()));
+            ReactDOM.render(host("div", JsPropertyMap.of("onMouseEnter", currentTarget)), outerRoot);
+            movement(unmanaged, "mouseout", Browser.query(outerRoot, "div"));
+            check(1 == targets.size(), "Mouse enters a React tree from unmanaged DOM");
+            targets.clear();
+
+            ReactDOM.render(host("div", JsPropertyMap.of("onMouseOut", currentTarget)), innerRoot);
+            ReactDOM.render(host("div", JsPropertyMap.of("onMouseOut", currentTarget)), middleRoot);
+            final var inner = Browser.query(innerRoot, "div");
+            final var middle = Browser.query(middleRoot, "div");
+            appendExisting(middle, innerRoot);
+            movement(inner, "mouseout", null);
+            check(2 == targets.size(), "A mouseout dispatches through two nested roots");
+            check(Browser.same(inner, targets.get(0)), "The inner root dispatches first");
+            check(Browser.same(middle, targets.get(1)), "The parent root dispatches second");
+            targets.clear();
+
+            ReactDOM.render(host("div", JsPropertyMap.of("onMouseOut", currentTarget)), outerRoot);
+            final var outer = Browser.query(outerRoot, "div");
+            appendExisting(outer, middleRoot);
+            movement(inner, "mouseout", null);
+            check(3 == targets.size(), "A mouseout dispatches through three nested roots");
+            check(Browser.same(inner, targets.get(0)), "The inner root dispatches first");
+            check(Browser.same(middle, targets.get(1)), "The middle root dispatches second");
+            check(Browser.same(outer, targets.get(2)), "The outer root dispatches third");
+
+            final var commitTrace = new ArrayList<String>();
+            final ReactEventHandler innerHandler = event -> {
+                ReactDOM.render(host("div", JsPropertyMap.of("children", "1")), innerRoot);
+                commitTrace.add(inner.getTextContent());
+            };
+            final ReactEventHandler middleHandler = event -> {
+                ReactDOM.render(host("div", JsPropertyMap.of("children", "2")), innerRoot);
+                commitTrace.add(inner.getTextContent());
+            };
+            ReactDOM.render(host("div", JsPropertyMap.of("onMouseOut", innerHandler, "children", "Child")), innerRoot);
+            ReactDOM.render(host("div", JsPropertyMap.of("onMouseOut", middleHandler)), middleRoot);
+            movement(inner, "mouseout", null);
+            check(commitTrace.equals(Arrays.asList("Child", "Child")), "Both roots observe the pre-commit value");
+            equal("2", inner.getTextContent());
+
+            final var origins = new ArrayList<Object>();
+            final ReactEventHandler origin = event -> origins.add(Objects.requireNonNull(event.getTarget()));
+            ReactDOM.render(
+                    host("div", JsPropertyMap.of("onMouseOut", origin, "children", host("span", JsPropertyMap.of()))),
+                    innerRoot);
+            final var span = Browser.query(innerRoot, "span");
+            movement(span, "mouseout", null);
+            check(1 == origins.size(), "A single root dispatches the bubbling event once");
+            check(Browser.same(span, origins.get(0)), "The event retains the deepest host target");
+
+            formAndMediaEvents(outerRoot);
+            mediaOnlyDocumentListeners();
+        } finally {
+            ReactDOM.unmountComponentAtNode(innerRoot);
+            ReactDOM.unmountComponentAtNode(middleRoot);
+            ReactDOM.unmountComponentAtNode(outerRoot);
+            innerRoot.remove();
+            middleRoot.remove();
+            outerRoot.remove();
+            unmanaged.remove();
+        }
+    }
+
+    @JsMethod
+    public static void runStockSimpleClicks() {
+        final var root = Browser.append("div");
+        try {
+            final int[] calls = {0};
+            final ReactEventHandler onClick = event -> calls[0]++;
+            final var buttonProps = JsPropertyMap.<@Nullable Object>of(
+                    "disabled", true, "onClick", onClick, "children", host("span", JsPropertyMap.of()));
+            final var childProps = JsPropertyMap.<@Nullable Object>of("onClick", onClick);
+            final var captureProps = JsPropertyMap.<@Nullable Object>of("onClickCapture", onClick);
+            final var cases = new ReactElement[] {
+                host("div", JsPropertyMap.of("onClick", onClick)),
+                host("div", JsPropertyMap.of("onClick", onClick, "children", host("span", JsPropertyMap.of()))),
+                host("button", buttonProps),
+                host("button", JsPropertyMap.of("disabled", true, "children", host("span", childProps))),
+                host(
+                        "div",
+                        JsPropertyMap.of(
+                                "onClickCapture",
+                                onClick,
+                                "children",
+                                host(
+                                        "button",
+                                        JsPropertyMap.of(
+                                                "disabled", true, "children", host("span", JsPropertyMap.of()))))),
+                host("button", JsPropertyMap.of("disabled", true, "children", host("span", captureProps)))
+            };
+            for (int index = 0; index < cases.length; index++) {
+                calls[0] = 0;
+                ReactDOM.unmountComponentAtNode(root);
+                ReactDOM.render(cases[index], root);
+                Browser.query(root, 0 == index ? "div" : "span").click();
+                check((2 == index ? 0 : 1) == calls[0], "Click routing for disabled child case " + index);
+            }
+            for (final var tag : new String[] {"button", "input", "select", "textarea"}) {
+                final var enabled = host(tag, JsPropertyMap.of("onClick", onClick));
+                final var disabled = host(tag, JsPropertyMap.of("onClick", onClick, "disabled", true));
+                final var explicitlyEnabled = host(tag, JsPropertyMap.of("onClick", onClick, "disabled", false));
+                final var casesForTag = new ReactElement[][] {
+                    {enabled}, {disabled}, {disabled, enabled}, {enabled, disabled}, {disabled, explicitlyEnabled}
+                };
+                for (int index = 0; index < casesForTag.length; index++) {
+                    calls[0] = 0;
+                    ReactDOM.unmountComponentAtNode(root);
+                    for (final var version : casesForTag[index]) {
+                        ReactDOM.render(version, root);
+                    }
+                    Browser.query(root, tag).click();
+                    check((1 == index || 3 == index ? 0 : 1) == calls[0], tag + " click case " + index);
+                }
+            }
+            for (final var tag : new String[] {"button", "div"}) {
+                calls[0] = 0;
+                ReactDOM.render(host(tag, JsPropertyMap.of("onClick", onClick)), root);
+                Browser.mouse(Browser.query(root, tag), "click", false);
+                check(1 == calls[0], "Bubbling click invokes " + tag + " once");
+                nonBubblingClick(Browser.query(root, tag));
+                check(1 == calls[0], "Nonbubbling click does not invoke " + tag);
+            }
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
+    private static native void nonBubblingClick(Browser.Element node);
+
+    @JsMethod
+    public static void runStockSelectEvents() {
+        for (final var trigger : new String[] {"keydown", "mouseup", "dragend"}) {
+            final var root = Browser.append("div");
+            try {
+                final var selections = new ArrayList<Object>();
+                final ReactEventHandler onSelect = event -> {
+                    equal("object", Js.typeof(event));
+                    equal("select", event.getType());
+                    check(Browser.same(Browser.query(root, "input"), event.getTarget()), "Select target is the input");
+                    selections.add(Objects.requireNonNull(event.getCurrentTarget()));
+                };
+                final boolean lateSubscription = "keydown".equals(trigger);
+                final ReactEventHandler mouseDown = event -> {};
+                ReactDOM.render(
+                        host(
+                                "input",
+                                lateSubscription
+                                        ? JsPropertyMap.of("type", "text", "onMouseDown", mouseDown)
+                                        : JsPropertyMap.of("type", "text", "onSelect", onSelect)),
+                        root);
+                final var input = Browser.query(root, "input");
+                focus(input);
+                if (lateSubscription) {
+                    Browser.mouse(input, "mousedown", false);
+                    Browser.mouse(input, "mouseup", false);
+                    ReactDOM.render(host("input", JsPropertyMap.of("type", "text", "onSelect", onSelect)), root);
+                    focus(input);
+                    stockKey(input, "keydown", "", 0, 0, false);
+                } else {
+                    Browser.mouse(input, "focus", false);
+                    check(selections.isEmpty(), "Focus alone does not dispatch select");
+                    Browser.mouse(input, "mousedown", false);
+                    check(selections.isEmpty(), "A pending mouse selection does not dispatch");
+                    Browser.mouse(input, trigger, false);
+                }
+                check(1 == selections.size(), trigger + " dispatches exactly one select");
+                check(Browser.same(input, selections.get(0)), "Select currentTarget is the input");
+            } finally {
+                ReactDOM.unmountComponentAtNode(root);
+                root.remove();
+            }
+        }
+    }
+
+    @JsMethod
+    public static void runStockEnterLeave() {
+        final var iframe = Browser.append("iframe");
+        final var frameWindow = Objects.requireNonNull(Browser.property(iframe, "contentWindow"));
+        final var frameDocument = Objects.requireNonNull(Browser.property(iframe, "contentDocument"));
+        final Browser.Element frameBody = Js.uncheckedCast(Browser.property(frameDocument, "body"));
+        final var root = Browser.append("div");
+        try {
+            final var enters = new ArrayList<SyntheticEvent<?>>();
+            final var leaves = new ArrayList<SyntheticEvent<?>>();
+            final ReactEventHandler enter = event -> {
+                event.persist();
+                enters.add(event);
+            };
+            final ReactEventHandler leave = event -> {
+                event.persist();
+                leaves.add(event);
+            };
+            ReactDOM.render(host("div", JsPropertyMap.of("onMouseEnter", enter, "onMouseLeave", leave)), frameBody);
+            final var div = Browser.query(frameBody, "div");
+            movement(div, "mouseout", Js.uncheckedCast(frameWindow));
+            check(1 == leaves.size(), "Iframe dispatches one leave");
+            check(Browser.same(div, leaves.get(0).getTarget()), "Iframe leave targets the host div");
+            check(
+                    Browser.same(frameWindow, Browser.property(leaves.get(0), "relatedTarget")),
+                    "Iframe leave uses the iframe window as relatedTarget");
+            movement(div, "mouseover", null);
+            check(1 == enters.size(), "Iframe dispatches one enter");
+            check(Browser.same(div, enters.get(0).getTarget()), "Iframe enter targets the host div");
+            check(
+                    Browser.same(frameWindow, Browser.property(enters.get(0), "relatedTarget")),
+                    "Iframe enter uses the iframe window as relatedTarget");
+
+            enters.clear();
+            ReactDOM.render(host("div", JsPropertyMap.of("onMouseEnter", enter)), root);
+            final ReactEventHandler childEnter = event -> {
+                event.persist();
+                leaves.add(event);
+            };
+            ReactDOM.render(
+                    host(
+                            "div",
+                            JsPropertyMap.of(
+                                    "onMouseEnter",
+                                    enter,
+                                    "children",
+                                    host("span", JsPropertyMap.of("onMouseEnter", childEnter)))),
+                    root);
+            leaves.clear();
+            movement(Browser.query(root, "div"), "mouseout", Browser.query(root, "span"));
+            check(1 == leaves.size(), "A child inserted on the first update receives enter");
+            check(enters.isEmpty(), "The shared parent does not receive enter again");
+        } finally {
+            ReactDOM.unmountComponentAtNode(frameBody);
+            ReactDOM.unmountComponentAtNode(root);
+            iframe.remove();
+            root.remove();
         }
     }
 
@@ -858,6 +1309,106 @@ public final class EventsBrowserTest {
 
     @JsMethod
     private static native void movement(Browser.Element element, String type, Browser.@Nullable Element related);
+
+    @JsMethod
+    public static void runStockBeforeInput() {
+        for (final var tag : new String[] {"input", "div"}) {
+            runStockBeforeInput(tag, true);
+            runStockBeforeInput(tag, false);
+        }
+    }
+
+    private static void runStockBeforeInput(String tag, boolean textInput) {
+        final var root = Browser.append("div");
+        try {
+            final var before = new ArrayList<String>();
+            final var composition = new ArrayList<String>();
+            final ReactEventHandler onBefore =
+                    event -> before.add(event.getType() + "=" + Browser.property(event, "data"));
+            final ReactEventHandler onComposition =
+                    event -> composition.add(event.getType() + "=" + Browser.property(event, "data"));
+            final var props = JsPropertyMap.<@Nullable Object>of(
+                    "onBeforeInput",
+                    onBefore,
+                    "onCompositionStart",
+                    onComposition,
+                    "onCompositionUpdate",
+                    onComposition);
+            if ("div".equals(tag)) {
+                props.set("contentEditable", true);
+            } else {
+                props.set("type", "text");
+            }
+            final Probe mount = () -> ReactDOM.render(host(tag, props), root);
+            if (textInput) {
+                mount.run();
+            } else {
+                withoutTextInput(mount);
+            }
+            final var input = Browser.query(root, tag);
+            stockComposition(input, "compositionstart", "test");
+            check(before.isEmpty(), "Composition start does not synthesize before-input");
+            check(
+                    composition.equals(Arrays.asList("compositionstart=test")),
+                    "Composition start dispatches native data");
+            composition.clear();
+            stockComposition(input, "compositionupdate", "test string");
+            check(before.isEmpty(), "Composition update does not synthesize before-input");
+            check(
+                    composition.equals(Arrays.asList("compositionupdate=test string")),
+                    "Composition update dispatches native data");
+            stockComposition(input, "compositionend", "test string 3");
+            beforeInputEquals(before, "compositionend=test string 3");
+            stockComposition(input, "textInput", "abcß");
+            beforeInputEquals(before, textInput ? "textInput=abcß" : null);
+            fallbackKeyPress(input, 'a', false, false, false, null);
+            beforeInputEquals(before, textInput ? null : "keypress=a");
+            fallbackKeyPress(input, ' ', false, false, false, null);
+            beforeInputEquals(before, "keypress= ");
+            stockComposition(input, "textInput", " ");
+            beforeInputEquals(before, null);
+            fallbackKeyPress(input, 'a', true, false, false, null);
+            beforeInputEquals(before, null);
+            fallbackKeyPress(input, 'b', false, true, false, null);
+            beforeInputEquals(before, null);
+            fallbackKeyPress(input, 'c', true, true, false, null);
+            beforeInputEquals(before, textInput ? null : "keypress=c");
+            fallbackKeyPress(input, 'X', false, false, false, "😊");
+            beforeInputEquals(before, textInput ? null : "keypress=😊");
+            stockComposition(input, "textInput", "😊");
+            beforeInputEquals(before, textInput ? "textInput=😊" : null);
+            final var valueTarget = Objects.requireNonNull(Js.asPropertyMap(input));
+            for (int index = 0; index < 3; index++) {
+                valueTarget.set("value", 0 == index ? "foo" : "foofoo");
+                stockKey(input, "keydown", "", 229, 0, false);
+                beforeInputEquals(before, null);
+                valueTarget.set("value", 0 == index ? "foobar" : 1 == index ? "fooBARfoo" : "Barfoofoo");
+                if (2 == index) {
+                    legacyKey(input, "keypress", 60);
+                } else {
+                    stockKey(input, 0 == index ? "keydown" : "keyup", "", 9, 0, false);
+                }
+                beforeInputEquals(before, null);
+            }
+            dispatch(input, "onPaste");
+            beforeInputEquals(before, null);
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    private static void beforeInputEquals(ArrayList<String> before, @Nullable String expected) {
+        if (null == expected) {
+            check(before.isEmpty(), "Expected no before-input event, got " + before);
+        } else {
+            check(before.size() == 1 && expected.equals(before.get(0)), "Expected " + expected + ", got " + before);
+        }
+        before.clear();
+    }
+
+    @JsMethod
+    private static native void stockComposition(Browser.Element input, String type, String data);
 
     @JsMethod
     public static void runBeforeInput() {
@@ -1734,6 +2285,99 @@ public final class EventsBrowserTest {
 
     @JsMethod
     private static native void editableSelection(Browser.Element element);
+
+    @JsMethod
+    public static void runStockKeyboardEvents() {
+        final var root = Browser.append("div");
+        try {
+            final var events = new ArrayList<KeyboardEvent>();
+            final ReactEventHandler handler = event -> {
+                final var key = Js.<KeyboardEvent>uncheckedCast(event);
+                check(!key.isDefaultPrevented(), "Key event begins uncanceled");
+                key.preventDefault();
+                check(key.isDefaultPrevented(), "Key event supports preventing default");
+                check(!key.isPropagationStopped(), "Key event begins with propagation enabled");
+                key.stopPropagation();
+                check(key.isPropagationStopped(), "Key event supports stopping propagation");
+                persistEvent(key);
+                events.add(key);
+            };
+            ReactDOM.render(
+                    host("input", JsPropertyMap.of("onKeyDown", handler, "onKeyUp", handler, "onKeyPress", handler)),
+                    root);
+            final var input = Browser.query(root, "input");
+            stockKey(input, "keypress", "", 13, 0, false);
+            stockKey(input, "keypress", "", 0, 32, false);
+            stockKey(input, "keypress", "", 0, 13, false);
+            check(3 == events.size(), "Three printable keypresses dispatch");
+            checkKeyPress(events.get(0), 13);
+            checkKeyPress(events.get(1), 32);
+            checkKeyPress(events.get(2), 13);
+            stockKey(input, "keypress", "", 0, 31, false);
+            check(3 == events.size(), "A non-printable charCode does not dispatch");
+            stockKey(input, "keypress", "", 0, 10, false);
+            stockKey(input, "keypress", "", 0, 10, true);
+            checkKeyPress(events.get(3), 13);
+            checkKeyPress(events.get(4), 13);
+            legacyKey(input, "keypress", 32);
+            legacyKey(input, "keypress", 13);
+            checkKeyPress(events.get(5), 32);
+            checkKeyPress(events.get(6), 13);
+            legacyKey(input, "keypress", 31);
+            check(7 == events.size(), "A legacy non-printable keyCode does not dispatch");
+
+            events.clear();
+            stockKey(input, "keydown", "Del", 0, 0, false);
+            stockKey(input, "keydown", "", 0, 31, false);
+            stockKey(input, "keydown", "", 40, 0, false);
+            stockKey(input, "keyup", "Del", 0, 0, false);
+            stockKey(input, "keyup", "", 40, 0, false);
+            check(5 == events.size(), "All five keydown and keyup events dispatch");
+            for (final var event : events) {
+                check(0 == event.getCharCode(), "Only keypress has a charCode");
+                check(event.getKeyCode() == event.getWhich(), "Keydown and keyup which equals keyCode");
+            }
+            check(40 == events.get(2).getKeyCode(), "Keydown preserves keyCode");
+            check(40 == events.get(4).getKeyCode(), "Keyup preserves keyCode");
+            equal("Delete", events.get(0).getKey());
+
+            events.clear();
+            stockKey(input, "keydown", "f", 0, 0, false);
+            stockKey(input, "keypress", "", 0, 13, false);
+            stockKey(input, "keypress", "", 0, 65, false);
+            stockKey(input, "keydown", "", 45, 0, false);
+            stockKey(input, "keydown", "", 1337, 0, false);
+            check(5 == events.size(), "Each key-name scenario dispatches");
+            equal("f", events.get(0).getKey());
+            equal("Enter", events.get(1).getKey());
+            equal("A", events.get(2).getKey());
+            equal("Insert", events.get(3).getKey());
+            equal("Unidentified", events.get(4).getKey());
+            checkKeyPress(events.get(2), 65);
+
+            events.clear();
+            stockKey(input, "keydown", "", 40, 0, false);
+            stockKey(input, "keyup", "", 40, 0, false);
+            stockKey(input, "keypress", "", 40, 40, false);
+            check(3 == events.size(), "All three key event types were canceled, stopped and persisted");
+            equal("keydown", events.get(0).getType());
+            equal("keyup", events.get(1).getType());
+            equal("keypress", events.get(2).getType());
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    private static void checkKeyPress(KeyboardEvent event, int charCode) {
+        check(charCode == event.getCharCode(), "Keypress normalized charCode " + charCode);
+        check(0 == event.getKeyCode(), "Keypress keyCode is zero");
+        check(charCode == event.getWhich(), "Keypress which equals charCode");
+    }
+
+    @JsMethod
+    private static native void stockKey(
+            Browser.Element input, String type, String key, int keyCode, int charCode, boolean ctrlKey);
 
     @JsMethod
     public static void runKeyboardVariants(final boolean production) {

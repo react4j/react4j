@@ -434,3 +434,41 @@ EventsBrowserTest.fallbackKeyPress = function(input, which, ctrl, alt, meta, cha
   Object.assign(ev, {'which': which, 'ctrlKey': ctrl, 'altKey': alt, 'metaKey': meta, 'char': chars});
   input.dispatchEvent(ev);
 };
+
+/** @param {!Element} input @param {string} type @param {string} key @param {number} keyCode @param {number} charCode @param {boolean} ctrlKey */
+EventsBrowserTest.stockKey = function(input, type, key, keyCode, charCode, ctrlKey) {
+  input.dispatchEvent(new KeyboardEvent(type, {bubbles: true, cancelable: true, key, keyCode, charCode, ctrlKey}));
+};
+
+/** @param {!Element} node */
+EventsBrowserTest.nonBubblingClick = function(node) {
+  node.dispatchEvent(new MouseEvent('click'));
+};
+
+/** @param {!Element} input @param {string} type @param {string} data */
+EventsBrowserTest.stockComposition = function(input, type, data) {
+  const event = new Event(type, {bubbles: true});
+  Object.assign(event, {'data': data, 'detail': {'data': data}});
+  input.dispatchEvent(event);
+};
+
+/** @param {!Element} input @param {string} value */
+EventsBrowserTest.setValueUntracked = function(input, value) {
+  Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(
+      /** @type {!HTMLInputElement} */ (input), value);
+};
+
+/** @param {function():void} action */
+EventsBrowserTest.withCustomInputValue = function(action) {
+  const create = document.createElement;
+  document.createElement = function(tag, opts) {
+    const node = create.call(document, tag, opts);
+    if (tag === 'input') Object.defineProperty(node, 'value', {get() {}, set(_) {}});
+    return node;
+  };
+  try {
+    action();
+  } finally {
+    document.createElement = create;
+  }
+};

@@ -31,7 +31,10 @@ browser_test(
     name = "emitter_test",
     srcs = ["emitter_test.js"],
     entry_point = "react4j.dom.EmitterTest",
-    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
+    deps = [
+        "//dom/src/test/java/react4j/dom:emitter_registration",
+        "//dom/src/test/java/react4j/dom:runtime_coverage",
+    ],
 )
 
 browser_test(
@@ -76,5 +79,8 @@ closure_js_library(
     testonly = True,
     srcs = ["runtime_test.js"],
     visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
-    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
+    deps = [
+        "//dom/src/test/java/react4j/dom:emitter_registration",
+        "//dom/src/test/java/react4j/dom:runtime_coverage",
+    ],
 )

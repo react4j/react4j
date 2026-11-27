@@ -6,6 +6,7 @@
 * Preserve mount and update lifecycle order when an error boundary retries a failed render. Deliver errors from commit and cleanup to the next eligible boundary.
 * Pass the pre-mutation snapshot and previous state to JavaScript class update hooks. Report incompatible lifecycle methods and invalid derived state or snapshot results during development.
 * Honor a synthetic event's current `isPropagationStopped()` result before invoking the next listener.
+* Unmount event handlers in iframe documents and diagnose attempts to replace or unmount managed children through the wrong DOM container.
 * Inspect and highlight generated views and record component render timings with React Developer Tools in development and optimized production builds.
 * Expose generated view props and state on the JavaScript instance, including constructor-assigned state. Error boundaries receive React 16.6 component frames and development owner names.
 * Concurrent roots yield during rendering and commit DOM changes and refs together. Interactive updates flush before the next interactive event, and a Suspense boundary can keep its previous content while loading. When its promise resolves during a paused render, the root retries before rendering the remaining siblings or fallback.

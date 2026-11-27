@@ -304,7 +304,7 @@ final class DomEvents {
             DomHost.properties(element).delete(state.trackedProperty);
         }
         final var boundary = Objects.requireNonNull(state.boundary);
-        final var root = Objects.requireNonNull(state.rootContainer);
+        final var root = DomHost.requireNode(state.rootContainer);
         final var subscriptions = Objects.requireNonNull(DOCUMENT_SUBSCRIPTIONS.get(root));
         if (subscriptions.detach(boundary)) {
             DOCUMENT_SUBSCRIPTIONS.delete(root);
