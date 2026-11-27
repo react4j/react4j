@@ -36,6 +36,8 @@ final class Reconciler {
     private static final HashSet<String> WARNED_MISSING_KEYS = new HashSet<>();
     private static final HashSet<Object> WARNED_FUNCTION_REFS = new HashSet<>();
     private static final HashSet<String> WARNED_STRING_REFS = new HashSet<>();
+    private static boolean _warnedGeneratorChildren;
+    private static boolean _warnedMapChildren;
     private static boolean _warnedDirectConsumer;
     private static final Object RENDERER_ID = new Object();
 
@@ -485,10 +487,13 @@ final class Reconciler {
     private static native void consoleError(@Nullable Object message);
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "Array.isArray")
-    private static native boolean isArray(Object value);
+    static native boolean isArray(Object value);
 
     @JsMethod
     private static native @Nullable Object childIterator(Object value);
+
+    @JsMethod
+    private static native boolean isGenerator(Object value);
 
     @JsMethod
     private static native @Nullable Object[] iterateChildren(Object value, Object iterator);
@@ -1522,6 +1527,9 @@ final class Reconciler {
                     values = null;
                 } else {
                     final var iterator = childIterator(content);
+                    if (DEVELOPMENT && null != iterator) {
+                        warnIterableChildren(content, iterator);
+                    }
                     values = null == iterator ? null : iterateChildren(content, iterator);
                 }
             } catch (Throwable error) {
@@ -1585,6 +1593,23 @@ final class Reconciler {
                 }
             }
             return null != candidate ? candidate : new Fiber(root, this, kind, type, key);
+        }
+
+        private void warnIterableChildren(Object content, Object iterator) {
+            if (!_warnedGeneratorChildren && isGenerator(content)) {
+                _warnedGeneratorChildren = true;
+                consoleError("Warning: Using Generators as children is unsupported and will likely yield "
+                        + "unexpected results because enumerating a generator mutates it. "
+                        + "You may convert it to an array with `Array.from()` or the `[...spread]` operator "
+                        + "before rendering. Keep in mind you might need to polyfill these features for older browsers."
+                        + RenderFailure.stackFrom(this));
+            }
+            if (!_warnedMapChildren && iterator == ClassComponent.properties(content).get("entries")) {
+                _warnedMapChildren = true;
+                consoleError("Warning: Using Maps as children is unsupported and will likely yield "
+                        + "unexpected results. Convert it to a sequence/iterable of keyed ReactElements instead."
+                        + RenderFailure.stackFrom(this));
+            }
         }
 
         private void validateChildKeys(@Nullable Object[] values) {
@@ -2292,11 +2317,11 @@ final class Reconciler {
                         final var consumer = Js.<Context.ConsumerRenderFunction<@Nullable Object>>uncheckedCast(
                                 Objects.requireNonNull(element.inputs().get("children")));
                         final var owner = React.swapCurrentOwner(this);
-                        final var previousPhase = enterRenderPhase();
+                        final var previousPhase = swapRenderPhase(true);
                         try {
                             output = Renderable.toReactNode(consumer.render(value));
                         } finally {
-                            leaveRenderPhase(previousPhase);
+                            swapRenderPhase(previousPhase);
                             React.swapCurrentOwner(owner);
                         }
                     }
@@ -2388,7 +2413,7 @@ final class Reconciler {
                     startTiming(null == renderName ? "ForwardRef" : "ForwardRef(" + renderName + ")", mounting);
                     final var render = Js.<RefRender>uncheckedCast(renderType);
                     final var owner = React.swapCurrentOwner(this);
-                    final var previousPhase = enterRenderPhase();
+                    final var previousPhase = swapRenderPhase(true);
                     try {
                         _renderedCommit = root._commitSequence;
                         _contextReads = null;
@@ -2397,7 +2422,7 @@ final class Reconciler {
                             render.render(element.inputs(), element.ref());
                         }
                     } finally {
-                        leaveRenderPhase(previousPhase);
+                        swapRenderPhase(previousPhase);
                         React.swapCurrentOwner(owner);
                     }
                 }
@@ -2705,8 +2730,8 @@ final class Reconciler {
             final var contextType = null == classType
                     ? null
                     : ClassComponent.properties(classType).get("contextType");
-            final var function =
-                    Boolean.TRUE.equals(ClassComponent.properties(type).get("functionComponent"));
+            final var function = null != classType
+                    && Boolean.TRUE.equals(ClassComponent.properties(type).get("functionComponent"));
             final var classContext =
                     !function && null != contextType && "object".equals(Js.typeof(contextType)) ? contextType : null;
             final var legacy = null == classType ? null : Scope.find(scope, ClassComponent.LEGACY_CONTEXT);
@@ -2764,13 +2789,13 @@ final class Reconciler {
                 }
             }
             final var receive = null != existing && (previousInputs != inputs || previousContext != _maskedContext);
-            if (oldHooks && (null == existing || receive)) {
+            if (oldHooks && null != classType && (null == existing || receive)) {
                 _preparingClass = true;
                 try {
                     if (null == existing) {
-                        ClassComponent.before(this, component, "componentWillMount");
+                        ClassComponent.beforeState(this, classType, component, true);
                     } else {
-                        ClassComponent.before(this, component, "componentWillReceiveProps", inputs, _maskedContext);
+                        ClassComponent.beforeState(this, classType, component, false, inputs, _maskedContext);
                     }
                 } finally {
                     _preparingClass = false;
@@ -2798,7 +2823,10 @@ final class Reconciler {
             if (!stateChanged) {
                 pendingState = previousState;
             }
-            if (changed && null != derive && null != classType) {
+            if (changed
+                    && null != derive
+                    && null != classType
+                    && (!function || null != existing && !isFunctionComponent(component))) {
                 pendingState = ClassComponent.derive(derive, classType, inputs, pendingState, false);
             }
             final var commitErrors = _commitErrors;
@@ -2880,6 +2908,8 @@ final class Reconciler {
                     } finally {
                         finishPhase(phase);
                     }
+                } else if (DEVELOPMENT && render) {
+                    ClassComponent.warnMissingChildContext(classType);
                 }
             }
             finishView(
@@ -2909,10 +2939,29 @@ final class Reconciler {
             finishReady(complete);
         }
 
-        void runMountLifecycle(NativeView component) {
+        void initializeModuleComponent(NativeView component) {
+            ClassComponent.properties(component).set("moduleComponent", true);
+            final var classType = Objects.requireNonNull(_classType);
+            final var previousPhase = swapRenderPhase(false);
+            try {
+                final var derive = ClassComponent.method(classType, "getDerivedStateFromProps");
+                if (null != derive) {
+                    final var inputs = component.requireInputs();
+                    // React 16.6 derives state when adopting the returned module instance and again when mounting it.
+                    final var initial = ClassComponent.derive(derive, classType, inputs, component.state(), false);
+                    component.applyState(ClassComponent.derive(derive, classType, inputs, initial, false));
+                } else if (!(component instanceof OnGetSnapshotBeforeUpdate)) {
+                    runMountLifecycle(component);
+                }
+            } finally {
+                swapRenderPhase(previousPhase);
+            }
+        }
+
+        private void runMountLifecycle(NativeView component) {
             _preparingClass = true;
             try {
-                ClassComponent.before(this, component, "componentWillMount");
+                ClassComponent.beforeState(this, Objects.requireNonNull(_classType), component, true);
                 final var state = component.preparePendingState(component.requireInputs());
                 if (null != state) {
                     component.applyState(state.state());
@@ -3155,27 +3204,21 @@ final class Reconciler {
 
         private @Nullable ReactNode renderOwned(NativeView component) {
             final var owner = React.swapCurrentOwner(this);
-            final var previousPhase = enterRenderPhase();
+            final var previousPhase = swapRenderPhase(true);
             try {
                 return component.render();
             } finally {
-                leaveRenderPhase(previousPhase);
+                swapRenderPhase(previousPhase);
                 React.swapCurrentOwner(owner);
             }
         }
 
-        private static boolean enterRenderPhase() {
+        private static boolean swapRenderPhase(boolean phase) {
             final var previous = _renderPhase;
             if (DEVELOPMENT) {
-                _renderPhase = true;
+                _renderPhase = phase;
             }
             return previous;
-        }
-
-        private static void leaveRenderPhase(boolean previous) {
-            if (DEVELOPMENT) {
-                _renderPhase = previous;
-            }
         }
 
         private void warnOnRenderUpdate(NativeView component) {

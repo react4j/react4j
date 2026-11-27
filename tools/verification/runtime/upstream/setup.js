@@ -146,6 +146,10 @@ function createRenderer(moduleFor, sourceReact) {
     return view;
   }
   Object.setPrototypeOf(Component.prototype, View.prototype);
+  for (const name of ['replaceState', 'isMounted']) {
+    const descriptor = Object.getOwnPropertyDescriptor(sourceReact.Component.prototype, name);
+    if (descriptor) Object.defineProperty(Component.prototype, name, descriptor);
+  }
   Component.prototype.isReactComponent = {};
   let isMounted = () => false;
   function updateCallback(component, callback) {
@@ -286,8 +290,17 @@ function createRenderer(moduleFor, sourceReact) {
           type.call(view, inputs, context, Component.prototype.updater);
           return view;
         }, [], true);
-        const render = instance.render;
-        instance.render = function() { return renderFixture(this, render, []); };
+        const render = instance.render === View.prototype.render ? undefined : instance.render;
+        instance.render = function() {
+          if (process.env.NODE_ENV !== 'production' && !render) {
+            const name = type.displayName || type.name || 'Component';
+            const details = type.prototype?.render && type.prototype.render !== View.prototype.render
+              ? 'did you accidentally return an object from the constructor?'
+              : 'you may have forgotten to define `render`.';
+            console.error('Warning: ' + name + '(...): No `render` method found on the returned component instance: ' + details);
+          }
+          return renderFixture(this, render, []);
+        };
         installLifecycleHooks(instance);
         return instance;
       }
@@ -297,11 +310,10 @@ function createRenderer(moduleFor, sourceReact) {
         const result = renderFixture(undefined, type, [this.props, this.context]);
         if (result && typeof result.render === 'function') {
           Object.assign(this, result);
-          this.moduleComponent = true;
           installLifecycleHooks(this);
-          this.render = () => renderFixture(this, result.render, []);
           const fiber = currentOwner();
-          if (fiber) fiber[member(Fiber.prototype, 'm_runMountLifecycle__')](this);
+          if (fiber) fiber[member(Fiber.prototype, 'm_initializeModuleComponent__')](this);
+          this.render = () => renderFixture(this, result.render, []);
           return this.render();
         }
         return result;

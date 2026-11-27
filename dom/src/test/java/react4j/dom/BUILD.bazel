@@ -46,6 +46,7 @@ j2cl_library(
     name = "component_lifecycle_scenarios",
     testonly = True,
     srcs = [
+        "ClassStateBrowserTest.java",
         "ComponentLifecycleBrowserTest.java",
         "ComponentLifecycleBrowserTest.native.js",
     ],

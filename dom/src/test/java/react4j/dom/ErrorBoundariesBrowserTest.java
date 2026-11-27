@@ -135,7 +135,9 @@ public final class ErrorBoundariesBrowserTest {
     public static void captureContextProviderMount(boolean derived, boolean modulePattern) {
         try (final var scenario = new Scenario(derived)) {
             final ViewConstructorFunction provider = inputs -> new ContextProvider(inputs, modulePattern);
-            ClassComponent.properties(provider).set("childContextTypes", JsPropertyMap.of("foo", true));
+            final var descriptor = ClassComponent.properties(provider);
+            descriptor.set("childContextTypes", JsPropertyMap.of("foo", true));
+            descriptor.set("functionComponent", modulePattern);
             scenario.render(scenario.boundary(ReactElement.createViewElement(provider)));
             scenario.firstChildText("Caught an error: Hello.");
         }
@@ -988,7 +990,7 @@ public final class ErrorBoundariesBrowserTest {
                 final var owner = React.swapCurrentOwner(null);
                 React.swapCurrentOwner(owner);
                 Js.<Reconciler.Fiber>uncheckedCast(Objects.requireNonNull(owner))
-                        .runMountLifecycle(this);
+                        .initializeModuleComponent(this);
             }
             return host("div", Js.uncheckedCast(requireInputs().get("children")));
         }

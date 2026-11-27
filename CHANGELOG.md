@@ -6,6 +6,7 @@
 * Preserve mount and update lifecycle order when an error boundary retries a failed render. Deliver errors from commit and cleanup to the next eligible boundary.
 * Pass the pre-mutation snapshot and previous state to JavaScript class update hooks. Report incompatible lifecycle methods and invalid derived state or snapshot results during development.
 * Deliver static `contextType` values to JavaScript classes and their lifecycle hooks, including when the class would ordinarily skip an update.
+* Apply state assignments in legacy mount and prop-receive hooks as queued replacements. Initialize module-style component state before running its derived-state hooks.
 * Warn in development when a component schedules a state update during render.
 * Honor a synthetic event's current `isPropagationStopped()` result before invoking the next listener.
 * Unmount event handlers in iframe documents and diagnose attempts to replace or unmount managed children through the wrong DOM container.

@@ -13,7 +13,7 @@ The assertion maps below link original checks to Java methods. **Ported** and **
 | Upstream behavior | Checked-in assertion map |
 | --- | --- |
 | Element creation, JSX records and cloning | [Elements](element-assertions.tsv) |
-| Class lifecycle, snapshots, context and state updates | [Class lifecycle](component-lifecycle-assertions.tsv), [class context](class-context-assertions.tsv), [batched and synchronous updates](update-scheduling-assertions.tsv) |
+| Class lifecycle, snapshots, context and state updates | [Class lifecycle](component-lifecycle-assertions.tsv), [class context](class-context-assertions.tsv), [class state](class-state-assertions.tsv), [class diagnostics](class-shape-assertions.tsv), [batched and synchronous updates](update-scheduling-assertions.tsv) |
 | Derived and legacy error boundaries, lifecycle order and recovery | [Error boundaries](error-boundary-assertions.tsv) |
 | Event emitter and synthetic events | [Events](event-assertions.tsv) |
 | DOM attributes, SVG, styles, text and raw HTML | [DOM host](host-assertions.tsv) |

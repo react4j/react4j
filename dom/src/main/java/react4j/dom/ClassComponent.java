@@ -23,6 +23,8 @@ final class ClassComponent {
     private static final Reconciler.WeakKeys<Object, Boolean> UNDEFINED_DERIVED = new Reconciler.WeakKeys<>();
     private static final Reconciler.WeakKeys<Object, Boolean> UNDEFINED_SNAPSHOT = new Reconciler.WeakKeys<>();
     private static final Reconciler.WeakKeys<Object, Boolean> CONTEXT_CHECKED = new Reconciler.WeakKeys<>();
+    private static final Reconciler.WeakKeys<Object, Boolean> RECEIVE_STATE_WARNING = new Reconciler.WeakKeys<>();
+    private static final Reconciler.WeakKeys<Object, Boolean> MISSING_CHILD_CONTEXT = new Reconciler.WeakKeys<>();
 
     private ClassComponent() {}
 
@@ -97,6 +99,22 @@ final class ClassComponent {
         }
     }
 
+    static void beforeState(
+            Reconciler.Fiber fiber, Object type, NativeView instance, boolean mounting, @Nullable Object... args) {
+        final var hook = mounting ? "componentWillMount" : "componentWillReceiveProps";
+        final var previous = instance.state();
+        before(fiber, instance, hook, args);
+        final var replacement = instance.state();
+        if (previous != replacement) {
+            if (DEVELOPMENT && (mounting || firstWarning(RECEIVE_STATE_WARNING, type))) {
+                warn("Warning: " + name(type) + "." + hook + "(): Assigning directly to this.state is "
+                        + "deprecated (except inside a component's constructor). Use setState instead.");
+            }
+            instance.applyState(previous);
+            instance.replaceStateWithCallback(replacement, null);
+        }
+    }
+
     static @Nullable JsPropertyMap<@Nullable Object> derive(
             Object fn,
             Object type,
@@ -124,9 +142,9 @@ final class ClassComponent {
         final var descriptor = properties(type);
         final var displayName = descriptor.get("displayName");
         final var declaredName = descriptor.get("name");
-        return displayName instanceof String display
+        return displayName instanceof String display && !display.isEmpty()
                 ? display
-                : declaredName instanceof String value ? value : "Component";
+                : declaredName instanceof String value && !value.isEmpty() ? value : "Component";
     }
 
     static void warnUndefinedSnapshot(Object type) {
@@ -157,6 +175,15 @@ final class ClassComponent {
         }
     }
 
+    static void warnMissingChildContext(Object type) {
+        if (firstWarning(MISSING_CHILD_CONTEXT, type)) {
+            final var name = name(type);
+            warn("Warning: " + name + ".childContextTypes is specified but there is no getChildContext() method"
+                    + " on the instance. You can either define getChildContext() on " + name
+                    + " or remove childContextTypes from it.");
+        }
+    }
+
     static void warnMount(Object type, Object factory, NativeView view, boolean derive) {
         if (!firstWarning(MOUNT_CHECKED, type)) {
             return;
@@ -164,6 +191,7 @@ final class ClassComponent {
         final var name = name(type);
         final var state = view.state();
         final var snapshot = view instanceof OnGetSnapshotBeforeUpdate;
+        warnClassShape(type, view, name, state);
         if (null != state && state == view.inputs()) {
             warn("Warning: " + name + ": It is not recommended to assign props directly to state because updates to"
                     + " props won't be reflected in state. In most cases, it is better to use props directly.");
@@ -190,6 +218,54 @@ final class ClassComponent {
                         + " but also contains the following legacy lifecycles:\n  " + String.join("\n  ", legacy)
                         + "\n\nThe above lifecycles should be removed. Learn more about this warning here:\n"
                         + "https://fb.me/react-async-component-lifecycle-hooks");
+            }
+        }
+    }
+
+    private static void warnClassShape(
+            Object type, NativeView view, String name, @Nullable JsPropertyMap<@Nullable Object> state) {
+        for (final var hook : new String[] {"getDerivedStateFromProps", "getDerivedStateFromError"}) {
+            if (null != method(view, hook)) {
+                warn("Warning: " + name + ": " + hook + "() is defined as an instance method"
+                        + " and will be ignored. Instead, declare it as a static method.");
+            }
+        }
+        if (null != method(type, "getSnapshotBeforeUpdate")) {
+            warn("Warning: " + name + ": getSnapshotBeforeUpdate() is defined as a static method"
+                    + " and will be ignored. Instead, declare it as an instance method.");
+        }
+        if (null != state && Js.isTruthy(state) && (!"object".equals(Js.typeof(state)) || Reconciler.isArray(state))) {
+            warn("Warning: " + name + ".state: must be set to an object or null");
+        }
+        final var initial = method(view, "getInitialState");
+        if (null != initial && !Js.isTruthy(state) && !Js.isTruthy(properties(initial).get("isReactClassApproved"))) {
+            warn("Warning: getInitialState was defined on " + name + ", a plain JavaScript class."
+                    + " This is only supported for classes created using React.createClass."
+                    + " Did you mean to define a state property instead?");
+        }
+        final var defaults = method(view, "getDefaultProps");
+        if (null != defaults && !Js.isTruthy(properties(defaults).get("isReactClassApproved"))) {
+            warn("Warning: getDefaultProps was defined on " + name + ", a plain JavaScript class."
+                    + " This is only supported for classes created using React.createClass."
+                    + " Use a static property to define defaultProps instead.");
+        }
+        final var instance = properties(view);
+        for (final var property : new String[] {"propTypes", "contextType", "contextTypes"}) {
+            if (Js.isTruthy(instance.get(property))) {
+                warn("Warning: " + property + " was defined as an instance property on " + name
+                        + ". Use a static property to define " + property + " instead.");
+            }
+        }
+        if (null != method(view, "componentShouldUpdate")) {
+            warn("Warning: " + name + " has a method called componentShouldUpdate()."
+                    + " Did you mean shouldComponentUpdate()? The name is phrased as a question"
+                    + " because the function is expected to return a value.");
+        }
+        for (final var prefix : new String[] {"", "UNSAFE_"}) {
+            final var misspelling = prefix + "componentWillRecieveProps";
+            if (null != method(view, misspelling)) {
+                warn("Warning: " + name + " has a method called " + misspelling + "(). Did you mean " + prefix
+                        + "componentWillReceiveProps()?");
             }
         }
     }

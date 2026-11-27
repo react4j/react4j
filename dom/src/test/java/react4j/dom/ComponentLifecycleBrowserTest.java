@@ -51,8 +51,11 @@ public final class ComponentLifecycleBrowserTest {
             exactConflictDiagnostics(host, production);
             derivedBatchedState(host);
             modernClassContext(host);
+            modernClassContextThroughNestedProvider(host);
+            legacyClassContext(host);
             contextTypeDiagnostics(host, production);
             auxiliaryRoot(host);
+            ClassStateBrowserTest.run(host, production);
         } finally {
             ReactDOM.unmountComponentAtNode(host);
             host.remove();
@@ -516,7 +519,7 @@ public final class ComponentLifecycleBrowserTest {
         final var second = JsPropertyMap.of("bar", 456);
         for (final var pure : new boolean[] {false, true}) {
             final var trace = new ArrayList<@Nullable Object>();
-            final ContextClass factory = (inputs, value) -> new ContextView(inputs, value, trace, pure);
+            final ContextClass factory = (inputs, value) -> new ContextView(inputs, value, trace, pure, false);
             final ViewConstructorFunction type = Js.uncheckedCast(factory);
             classDescriptor(type, "ContextView").set("contextType", context);
             final var child = ReactElement.createViewElement(type);
@@ -537,23 +540,76 @@ public final class ComponentLifecycleBrowserTest {
         }
     }
 
+    private static void modernClassContextThroughNestedProvider(Browser.Element host) {
+        final var context = new Context<Object>();
+        final var first = JsPropertyMap.of("value", "nearest");
+        final var second = JsPropertyMap.of("value", "updated nearest");
+        final var trace = new ArrayList<@Nullable Object>();
+        final ContextClass constructor = (inputs, value) -> new ContextView(inputs, value, trace, true, false);
+        final ViewConstructorFunction type = Js.uncheckedCast(constructor);
+        classDescriptor(type, "ContextView").set("contextType", context);
+        final var child = ReactElement.createViewElement(type);
+        final var near = context.provide(first, child);
+        render(context.provide("outer", near), host);
+        check(trace.size() == 3 && trace.get(1) == first, "The class reads the nearest provider on mount");
+        trace.clear();
+        render(context.provide("updated outer", near), host);
+        check(trace.isEmpty(), "An unchanged nearest provider shields the class from outer updates");
+        render(context.provide("updated outer", context.provide(second, child)), host);
+        check(
+                trace.size() == 1 && trace.get(0) == second,
+                "The nearest provider forces the same class element to render");
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static void legacyClassContext(Browser.Element host) {
+        final var trace = new ArrayList<@Nullable Object>();
+        final ContextClass factory = (inputs, value) -> new ContextView(inputs, value, trace, false, true);
+        final ViewConstructorFunction childType = Js.uncheckedCast(factory);
+        classDescriptor(childType, "Component").set("contextTypes", JsPropertyMap.of("foo", true));
+        final ViewConstructorFunction parentType = LegacyContextProvider::new;
+        classDescriptor(parentType, "Parent").set("childContextTypes", JsPropertyMap.of("foo", true, "bar", true));
+        final var child = ReactElement.createViewElement(childType);
+        final var parent = ReactElement.createViewElement(parentType).input("child", child);
+        render(parent.dup().input("foo", "abc"), host);
+        checkLegacyContext(trace, "abc", "abc", "abc");
+        trace.clear();
+        render(parent.dup().input("foo", "def"), host);
+        checkLegacyContext(trace, "abc", "def", "abc", "def", "abc", "def", "def", "def");
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static void checkLegacyContext(List<@Nullable Object> trace, String... expected) {
+        check(trace.size() == expected.length, "Legacy context lifecycle count: " + trace);
+        for (var i = 0; i < expected.length; i++) {
+            final var context = ClassComponent.properties(Objects.requireNonNull(trace.get(i)));
+            equal(expected[i], (String) context.get("foo"));
+            check(!context.has("bar"), "Undeclared context fields are hidden from the class");
+        }
+    }
+
     private static void contextTypeDiagnostics(Browser.Element host, boolean production) {
         final var context = new Context<Object>();
         final var provider =
                 Js.<ReactElement>uncheckedCast(context.provide(null)).type();
-        for (final var scenario : List.of("class", "provider", "function")) {
+        for (final var scenario : List.of("class", "provider", "function", "missing")) {
             final var expected =
                     switch (scenario) {
                         case "class" -> "declares both contextTypes and contextType static properties";
                         case "provider" -> "defines an invalid contextType";
-                        default -> "Function components do not support contextType";
+                        case "function" -> "Function components do not support contextType";
+                        default -> ".childContextTypes is specified but there is no getChildContext() method";
                     };
             for (final var name : List.of("ComponentA", "ComponentB")) {
                 final var trace = new ArrayList<@Nullable Object>();
-                final ContextClass factory = (inputs, value) -> new ContextView(inputs, value, trace, true);
+                final ContextClass factory = (inputs, value) -> new ContextView(inputs, value, trace, true, false);
                 final ViewConstructorFunction type = Js.uncheckedCast(factory);
                 final var descriptor = classDescriptor(type, name);
-                descriptor.set("contextType", "provider".equals(scenario) ? provider : context);
+                if ("missing".equals(scenario)) {
+                    descriptor.set("childContextTypes", JsPropertyMap.of("foo", true));
+                } else {
+                    descriptor.set("contextType", "provider".equals(scenario) ? provider : context);
+                }
                 if ("class".equals(scenario)) {
                     descriptor.set("contextTypes", JsPropertyMap.of("foo", true));
                 } else if ("function".equals(scenario)) {
@@ -601,13 +657,18 @@ public final class ComponentLifecycleBrowserTest {
                 JsPropertyMap<@Nullable Object> inputs,
                 @Nullable Object value,
                 List<@Nullable Object> trace,
-                boolean pure) {
+                boolean pure,
+                boolean legacy) {
             super(inputs);
             _trace = trace;
             _pure = pure;
             final var properties = ClassComponent.properties(this);
             properties.set("context", value);
             properties.set("shouldComponentUpdate", (UpdateContext) (nextInputs, state, context) -> {
+                if (legacy) {
+                    record(context);
+                    return true;
+                }
                 throw new AssertionError("A changed class context forces an update");
             });
             if (!pure) {
@@ -649,8 +710,22 @@ public final class ComponentLifecycleBrowserTest {
         }
     }
 
+    private static final class LegacyContextProvider extends NativeView {
+        @JsConstructor
+        LegacyContextProvider(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+            ClassComponent.properties(this).set("getChildContext", (ContextValue)
+                    () -> JsPropertyMap.of("foo", requireInputs().get("foo"), "bar", "bar"));
+        }
+
+        @Override
+        public ReactNode render() {
+            return ((ReactElement) Objects.requireNonNull(requireInputs().get("child"))).dup();
+        }
+    }
+
     @JsMethod
-    private static native String[] captureWarnings(BrowserPromise.Action action);
+    static native String[] captureWarnings(BrowserPromise.Action action);
 
     private static void expectWarning(boolean production, String expected, BrowserPromise.Action action) {
         final var warnings = captureWarnings(action);
@@ -903,12 +978,11 @@ public final class ComponentLifecycleBrowserTest {
         public ReactNode render() {
             equal("object", Js.typeof(inputs()));
             if (!_initialized) {
-                _initialized = true;
                 final var methods = ClassComponent.properties(this);
-                methods.set("moduleComponent", true);
                 methods.set("UNSAFE_componentWillMount", (Ref) ignored -> _trace.add("will mount"));
                 methods.set("getChildContext", (ContextValue) () -> JsPropertyMap.of("x", 2));
-                activeFiber().runMountLifecycle(this);
+                activeFiber().initializeModuleComponent(this);
+                _initialized = true;
             }
             _trace.add("render");
             return ReactElement.createViewElement((ViewConstructorFunction)
