@@ -138,7 +138,8 @@ public final class MemoryRenderer {
 
     @JsFunction
     private interface NodeMock {
-        @Nullable Object create(Object description);
+        @Nullable
+        Object create(Object description);
     }
 
     @JsType(namespace = "react4j.testing", name = "MemorySchedulerCallbacks")
@@ -300,8 +301,10 @@ public final class MemoryRenderer {
             }
             final var node = properties(instance);
             final var mock = node.get("createNodeMock");
-            return null == mock ? null : Js.<NodeMock>uncheckedCast(mock)
-                    .create(JsPropertyMap.of("type", node.get("type"), "props", node.get("props")));
+            return null == mock
+                    ? null
+                    : Js.<NodeMock>uncheckedCast(mock)
+                            .create(JsPropertyMap.of("type", node.get("type"), "props", node.get("props")));
         }
 
         @Override
@@ -385,7 +388,8 @@ public final class MemoryRenderer {
             instance.set("children", new Children());
             defineHiddenProperty(instance, "props", null);
             if (!_directText) {
-                defineHiddenProperty(instance, "createNodeMock", properties(container).get("createNodeMock"));
+                defineHiddenProperty(
+                        instance, "createNodeMock", properties(container).get("createNodeMock"));
             }
             defineHiddenProperty(instance, "text", ((TestHostPlan) plan).initialValue());
             writeProps(instance, element);

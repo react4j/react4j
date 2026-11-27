@@ -14,8 +14,10 @@ final class FiberDevTools {
     private static boolean _loggedError;
     private final @Nullable Hook _hook;
     private final int _id;
-    private final Reconciler.WeakKeys<Reconciler.Root, JsPropertyMap<@Nullable Object>> _roots = new Reconciler.WeakKeys<>();
-    private final Reconciler.WeakKeys<Reconciler.Fiber, JsPropertyMap<@Nullable Object>> _fibers = new Reconciler.WeakKeys<>();
+    private final Reconciler.WeakKeys<Reconciler.Root, JsPropertyMap<@Nullable Object>> _roots =
+            new Reconciler.WeakKeys<>();
+    private final Reconciler.WeakKeys<Reconciler.Fiber, JsPropertyMap<@Nullable Object>> _fibers =
+            new Reconciler.WeakKeys<>();
     private final Reconciler.WeakKeys<Object, JsPropertyMap<@Nullable Object>> _hosts;
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -36,7 +38,8 @@ final class FiberDevTools {
         Object find(Object node);
     }
 
-    private FiberDevTools(@Nullable Hook hook, int id, Reconciler.WeakKeys<Object, JsPropertyMap<@Nullable Object>> hosts) {
+    private FiberDevTools(
+            @Nullable Hook hook, int id, Reconciler.WeakKeys<Object, JsPropertyMap<@Nullable Object>> hosts) {
         _hook = hook;
         _id = id;
         _hosts = hosts;
@@ -77,7 +80,8 @@ final class FiberDevTools {
         return null != _hook;
     }
 
-    @Nullable Object tree(Reconciler.Root root) {
+    @Nullable
+    Object tree(Reconciler.Root root) {
         final var record = _roots.get(root);
         return null == record ? null : record.get("current");
     }
@@ -148,17 +152,21 @@ final class FiberDevTools {
         next.set("elementType", fiber.type);
         next.set("key", fiber.key);
         next.set("ref", fiber.ref);
-        next.set("stateNode", switch (fiber.kind) {
-            case ROOT -> root;
-            case HOST, TEXT -> fiber.hostInstance;
-            default -> fiber.publicInstance();
-        });
+        next.set(
+                "stateNode",
+                switch (fiber.kind) {
+                    case ROOT -> root;
+                    case HOST, TEXT -> fiber.hostInstance;
+                    default -> fiber.publicInstance();
+                });
         if (null != fiber.hostInstance) {
             _hosts.set(fiber.hostInstance, next);
         }
-        next.set("memoizedProps", Reconciler.Kind.TEXT == fiber.kind
-                ? fiber.devToolsText()
-                : null == fiber.node ? null : fiber.node.inputs());
+        next.set(
+                "memoizedProps",
+                Reconciler.Kind.TEXT == fiber.kind
+                        ? fiber.devToolsText()
+                        : null == fiber.node ? null : fiber.node.inputs());
         if (Reconciler.Kind.ROOT == fiber.kind) {
             final var state = JsPropertyMap.<@Nullable Object>of();
             state.set("element", 0 == fiber.children.length ? null : fiber.children[0].type);

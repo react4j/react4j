@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsFunction;
-import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
@@ -64,8 +63,13 @@ public final class IsolatedProfilerDevToolsTest {
             clock.time += 20;
             captureWarnings(() -> {
                 try {
-                    root.render(ReactElement.createHostElement("div", null, "invalid-string-ref",
-                            JsPropertyMap.of("children", timed(clock, 3, true))), null);
+                    root.render(
+                            ReactElement.createHostElement(
+                                    "div",
+                                    null,
+                                    "invalid-string-ref",
+                                    JsPropertyMap.of("children", timed(clock, 3, true))),
+                            null);
                     throw new AssertionError("Expected the invalid string ref to throw");
                 } catch (RuntimeException expected) {
                     check(Objects.requireNonNull(expected.getMessage()).contains("ref"), "Preserve the render error");
@@ -89,7 +93,9 @@ public final class IsolatedProfilerDevToolsTest {
             final var event = JsPropertyMap.of("name", "some event", "timestamp", clock.time);
             clock.interactions.add(event);
             root.render(host("div", null, null), null);
-            equal(List.of(event), List.of(arrayFrom(Objects.requireNonNull(state.get("memoizedInteractions")))));
+            final var committed = Objects.requireNonNull(state.get("memoizedInteractions"));
+            equal(1, metric(props(committed), "size"));
+            check(Js.<NativeSet>uncheckedCast(committed).has(event), "The exact interaction was committed");
             check(state == clock.commits.get(1), "The committed root record remains stable across updates");
         });
     }
@@ -108,7 +114,8 @@ public final class IsolatedProfilerDevToolsTest {
         final var input = new Object();
         final var li = new Object();
         final var anchor = new Object();
-        final Mock mock = description -> switch ((String) Objects.requireNonNull(props(description).get("type"))) {
+        final Mock mock = description -> switch ((String)
+                Objects.requireNonNull(props(description).get("type"))) {
             case "div" -> div;
             case "input" -> input;
             case "li" -> li;
@@ -118,16 +125,39 @@ public final class IsolatedProfilerDevToolsTest {
         final Ref collect = refs::add;
         testRoot(memory, mock).render(refHost("div", collect), null);
         testRoot(memory, mock).render(refHost("input", collect), null);
-        testRoot(memory, mock).render(host("div", null, host("span", null, array(
-                host("ul", null, refHost("li", collect)),
-                host("ul", null, array(refHost("li", collect), refHost("li", collect)))))), null);
-        testRoot(memory, mock).render(ReactElement.createViewElement(REF_OWNER)
-                .input("tag", "a").input("collect", collect), null);
+        testRoot(memory, mock)
+                .render(
+                        host(
+                                "div",
+                                null,
+                                host(
+                                        "span",
+                                        null,
+                                        array(
+                                                host("ul", null, refHost("li", collect)),
+                                                host(
+                                                        "ul",
+                                                        null,
+                                                        array(refHost("li", collect), refHost("li", collect)))))),
+                        null);
+        testRoot(memory, mock)
+                .render(
+                        ReactElement.createViewElement(REF_OWNER)
+                                .input("tag", "a")
+                                .input("collect", collect),
+                        null);
         testRoot(memory, null).render(refHost("div", collect), null);
         testRoot(memory, null).render(refHost("div", collect), null);
-        check(8 == refs.size() && refs.get(0) == div && refs.get(1) == input && refs.get(2) == li
-                        && refs.get(3) == li && refs.get(4) == li && refs.get(5) == anchor
-                        && null == refs.get(6) && null == refs.get(7),
+        check(
+                8 == refs.size()
+                        && refs.get(0) == div
+                        && refs.get(1) == input
+                        && refs.get(2) == li
+                        && refs.get(3) == li
+                        && refs.get(4) == li
+                        && refs.get(5) == anchor
+                        && null == refs.get(6)
+                        && null == refs.get(7),
                 "Distinct mocks reach callback and string refs in commit order: " + refs);
     }
 
@@ -137,7 +167,11 @@ public final class IsolatedProfilerDevToolsTest {
         final var refs = new Object[1];
         final var root = testRoot(memory, description -> expected);
         root.render(refHost("div", (Ref) value -> refs[0] = Objects.requireNonNull(value)), null);
-        check(expected == refs[0] && expected == root.getPublicHost(Objects.requireNonNull(child(root).get("stateNode"))),
+        check(
+                expected == refs[0]
+                        && expected
+                                == root.getPublicHost(
+                                        Objects.requireNonNull(child(root).get("stateNode"))),
                 "Root inspection and the host ref use the same mock");
     }
 
@@ -158,8 +192,9 @@ public final class IsolatedProfilerDevToolsTest {
 
         final var unmounts = new int[1];
         final var nested = testRoot(memory, mock);
-        nested.render(host("div", null, owner.dup().input("tag", "div")
-                .input("unmount", (Runnable) () -> unmounts[0]++)), null);
+        nested.render(
+                host("div", null, owner.dup().input("tag", "div").input("unmount", (Runnable) () -> unmounts[0]++)),
+                null);
         nested.unmount(null);
         equal(1, unmounts[0]);
     }
@@ -174,7 +209,9 @@ public final class IsolatedProfilerDevToolsTest {
         final var diagnostic = captureWarnings(() -> secondary.render(context.provide("secondary", content), null));
         equal("", diagnostic);
         if (!production) {
-            check(null != props(context).get("_currentRenderer") && null != props(context).get("_currentRenderer2"),
+            check(
+                    null != props(context).get("_currentRenderer")
+                            && null != props(context).get("_currentRenderer2"),
                     "The two host types reserve independent development context slots");
         }
     }
@@ -217,10 +254,11 @@ public final class IsolatedProfilerDevToolsTest {
         final var hook = JsPropertyMap.of(
                 "supportsFiber", true,
                 "inject", (Inject) renderer -> 1,
-                "onCommitFiberRoot", (Commit) (id, root) -> {
-                    equal(1, id);
-                    commits.add(root);
-                });
+                "onCommitFiberRoot",
+                        (Commit) (id, root) -> {
+                            equal(1, id);
+                            commits.add(root);
+                        });
         hook.set("onCommitFiberUnmount", (Commit) (id, fiber) -> {});
         Js.global().set(HOOK, hook);
         try {
@@ -235,19 +273,24 @@ public final class IsolatedProfilerDevToolsTest {
     }
 
     private static JsPropertyMap<@Nullable Object> child(MemoryRenderer.Root root) {
-        return props(Objects.requireNonNull(props(Objects.requireNonNull(root.getTestTree())).get("child")));
+        return props(Objects.requireNonNull(
+                props(Objects.requireNonNull(root.getTestTree())).get("child")));
     }
 
     private static int metric(JsPropertyMap<@Nullable Object> record, String name) {
         return Js.coerceToInt(record.get(name));
     }
 
-    @JsMethod(namespace = JsPackage.GLOBAL, name = "Array.from")
-    private static native Object[] arrayFrom(Object elements);
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Set")
+    private static final class NativeSet {
+        native boolean has(Object value);
+    }
 
     private static ReactElement timed(Clock clock, int duration, boolean shouldUpdate) {
         return ReactElement.createViewElement(TIMED)
-                .input("clock", clock).input("duration", duration).input("shouldUpdate", shouldUpdate);
+                .input("clock", clock)
+                .input("duration", duration)
+                .input("shouldUpdate", shouldUpdate);
     }
 
     @JsFunction
@@ -262,7 +305,8 @@ public final class IsolatedProfilerDevToolsTest {
 
     @JsFunction
     private interface Mock {
-        @Nullable Object create(Object description);
+        @Nullable
+        Object create(Object description);
     }
 
     @JsFunction
@@ -272,7 +316,8 @@ public final class IsolatedProfilerDevToolsTest {
 
     @JsFunction
     private interface Report {
-        void report(String id, String phase, double actual, double base, double start, double commit, Object interactions);
+        void report(
+                String id, String phase, double actual, double base, double start, double commit, Object interactions);
     }
 
     private record Sample(String id, String phase, double actual, double base, double start, double commit, int size) {}
@@ -288,22 +333,57 @@ public final class IsolatedProfilerDevToolsTest {
         private boolean pauseAfterRender;
         private boolean yielded;
 
-        Clock(List<Object> commits) { this.commits = commits; }
+        Clock(List<Object> commits) {
+            this.commits = commits;
+        }
 
-        @Override public double now() { return time; }
-        @Override public boolean strictReplay() { return false; }
-        @Override public boolean userTimingEnabled() { return false; }
-        @Override public boolean replayFailedRender() { return false; }
-        @Override public boolean profilerEnabled() { return true; }
-        @Override public Reconciler.ProfilerInteractions profilerInteractions() { return interactions; }
-        @Override public boolean shouldYield(double deadline) { return yielded; }
-        @Override public int schedule(Reconciler.Task task, int delay) {
+        @Override
+        public double now() {
+            return time;
+        }
+
+        @Override
+        public boolean strictReplay() {
+            return false;
+        }
+
+        @Override
+        public boolean userTimingEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean replayFailedRender() {
+            return false;
+        }
+
+        @Override
+        public boolean profilerEnabled() {
+            return true;
+        }
+
+        @Override
+        public Reconciler.ProfilerInteractions profilerInteractions() {
+            return interactions;
+        }
+
+        @Override
+        public boolean shouldYield(double deadline) {
+            return yielded;
+        }
+
+        @Override
+        public int schedule(Reconciler.Task task, int delay) {
             check(0 == delay, "No delayed work in the Profiler fixtures");
             final int id = ++nextId;
             tasks.put(id, task);
             return id;
         }
-        @Override public void cancel(int handle) { tasks.remove(handle); }
+
+        @Override
+        public void cancel(int handle) {
+            tasks.remove(handle);
+        }
 
         void turn(boolean pause) {
             pauseAfterRender = pause;
@@ -318,17 +398,34 @@ public final class IsolatedProfilerDevToolsTest {
 
     private static final class App extends NativeView {
         @JsConstructor
-        App(JsPropertyMap<@Nullable Object> inputs) { super(inputs); }
+        App(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
 
         @Override
         public ReactNode render() {
             final var clock = (Clock) Objects.requireNonNull(requireInputs().get("clock"));
             final var multiplier = metric(requireInputs(), "multiplier");
             clock.time += 2;
-            final var profiler = ReactElement.createHostElement("div", null, null, JsPropertyMap.of(
-                    "id", "Profiler", "children", array(timed(clock, 3 * multiplier, true), timed(clock, 7 * multiplier, false)),
-                    "onRender", (Report) (id, phase, actual, base, start, commit, interactions) ->
-                            clock.samples.add(new Sample(id, phase, actual, base, start, commit, metric(props(interactions), "size")))));
+            final var profiler = ReactElement.createHostElement(
+                    "div",
+                    null,
+                    null,
+                    JsPropertyMap.of(
+                            "id",
+                            "Profiler",
+                            "children",
+                            array(timed(clock, 3 * multiplier, true), timed(clock, 7 * multiplier, false)),
+                            "onRender",
+                            (Report) (id, phase, actual, base, start, commit, interactions) ->
+                                    clock.samples.add(new Sample(
+                                            id,
+                                            phase,
+                                            actual,
+                                            base,
+                                            start,
+                                            commit,
+                                            metric(props(interactions), "size")))));
             props(profiler).set("type", React.Profiler);
             return profiler;
         }
@@ -336,7 +433,9 @@ public final class IsolatedProfilerDevToolsTest {
 
     private static final class Timed extends NativeView implements OnShouldComponentUpdate {
         @JsConstructor
-        Timed(JsPropertyMap<@Nullable Object> inputs) { super(inputs); }
+        Timed(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
 
         @Override
         public boolean shouldComponentUpdate(JsPropertyMap<@Nullable Object> inputs) {
@@ -367,7 +466,8 @@ public final class IsolatedProfilerDevToolsTest {
         public void componentDidMount() {
             final var collect = (Ref) requireInputs().get("collect");
             if (null != collect) {
-                collect.attach(props(Objects.requireNonNull(props(this).get("refs"))).get("mock"));
+                collect.attach(
+                        props(Objects.requireNonNull(props(this).get("refs"))).get("mock"));
             }
         }
 
