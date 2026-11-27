@@ -13,6 +13,7 @@ const SideEffects = goog.require('react4j.testing.IsolatedSideEffectsTest');
 const StrictClass = goog.require('react4j.testing.IsolatedStrictClassTest');
 const Suspense = goog.require('react4j.testing.IsolatedSuspenseTest');
 const SuspenseVariants = goog.require('react4j.testing.IsolatedSuspenseVariantsTest');
+const TestRenderer = goog.require('react4j.testing.IsolatedTestRendererTest');
 const Tests = goog.require('react4j.testing.IsolatedReconcilerTest');
 const Timing = goog.require('react4j.testing.IsolatedTimingTest');
 const Triangle = goog.require('react4j.testing.IsolatedTriangleTest');
@@ -103,6 +104,24 @@ exports.run = function(mode) {
   }
   run('ReactElement captures its creating component instance', () => SideEffects.elementOwner());
   run('ReactCreateRef rejects invalid ref objects in development', () => SideEffects.invalidRefObjects(mode === 'development'));
+  run('ReactTestRenderer basic host output', () => TestRenderer.basicOutput());
+  run('ReactTestRenderer update on mount', () => TestRenderer.updatingOnMount());
+  run('ReactTestRenderer mounted class instance', () => TestRenderer.classInstance());
+  run('ReactTestRenderer host and keyed updates', () => TestRenderer.hostUpdates());
+  run('ReactTestRenderer complete lifecycle', () => TestRenderer.lifecycle());
+  run('ReactTestRenderer error boundary recovery', () => TestRenderer.errorBoundary());
+  run('ReactTestRenderer text and root fragments', () => TestRenderer.textAndRootFragments());
+  for (const number of [17, 18, 19, 20, 21, 22, 24, 27, 28, 29]) {
+    run('ReactTestRenderer tree spec' + number, () => TestRenderer.treeSnapshots(number));
+  }
+  run('ReactTestRenderer function ref warning', () => TestRenderer.functionRef(mode === 'development'));
+  run('ReactTestRendererTraversal transparent nodes', () => TestRenderer.transparentNodes());
+  run('ReactTestRendererTraversal special roots', () => TestRenderer.specialRoots());
+  run('ReactTestRendererAsync scheduled host updates', () => TestRenderer.flushPlainUpdates());
+  run('ReactTestRendererAsync ordered yields', () => TestRenderer.flushYields(false));
+  run('ReactTestRendererAsync partial sibling work', () => TestRenderer.flushYields(true));
+  run('ReactTestRendererAsync urgent interruption', () => TestRenderer.interruptedUpdate());
+  run('ReactTestRendererAsync render errors', () => TestRenderer.flushErrors());
   run('ReactTestRenderer foreign portal container', () => ProfilerDevTools.foreignPortal(mode === 'production'));
   run('ReactTestRenderer default host refs', () => ProfilerDevTools.nativeRefDefault());
   run('ReactTestRenderer host mocks', () => ProfilerDevTools.nodeMocks());
