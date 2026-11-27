@@ -3376,7 +3376,8 @@ public final class Reconciler {
                     if (DEVELOPMENT && !isFunctionComponent(component)) {
                         final var method = ClassComponent.method(component, "render");
                         if (null != method
-                                && Boolean.TRUE.equals(ClassComponent.properties(method).get("_isMockFunction"))) {
+                                && Boolean.TRUE.equals(
+                                        ClassComponent.properties(method).get("_isMockFunction"))) {
                             return null;
                         }
                     }

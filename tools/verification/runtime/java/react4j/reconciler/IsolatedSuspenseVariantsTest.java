@@ -22,12 +22,12 @@ import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
-import react4j.reconciler.IsolatedSuspenseTest.Scenario;
 import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidCatch;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.ViewConstructorFunction;
+import react4j.reconciler.IsolatedSuspenseTest.Scenario;
 
 @NullMarked
 @JsType(namespace = "react4j.testing")
