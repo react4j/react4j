@@ -12,3 +12,23 @@ CleanClientElementsBrowserTest.childCount = function(node) {
 CleanClientElementsBrowserTest.attributeIn = function(node, namespace, name) {
   return node.getAttributeNS(namespace, name);
 };
+
+/** @param {string} name @return {?} */
+CleanClientElementsBrowserTest.symbol = function(name) {
+  return Symbol.for(name);
+};
+
+/** @param {function(!Object):!Object} factory @return {?} */
+CleanClientElementsBrowserTest.constructable = function(factory) {
+  function View(props) { return factory(props); }
+  View.prototype['isReactComponent'] = {};
+  return View;
+};
+
+/** @param {!Object} instance */
+CleanClientElementsBrowserTest.mockRender = function(instance) {
+  const render = instance['render'];
+  const mocked = render.bind(instance);
+  mocked['_isMockFunction'] = true;
+  instance['render'] = mocked;
+};

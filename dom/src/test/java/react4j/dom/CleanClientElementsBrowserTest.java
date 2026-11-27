@@ -11,8 +11,10 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.ReactTestUtil;
 import react4j.Renderable;
 import react4j.internal.NativeView;
 import react4j.internal.ViewConstructorFunction;
@@ -22,6 +24,7 @@ import react4j.webtesting.Browser;
 public final class CleanClientElementsBrowserTest {
     private static final ViewConstructorFunction OUTPUT = Output::new;
     private static final ViewConstructorFunction WRAPPER = Wrapper::new;
+    private static final ViewConstructorFunction REF_OWNER = RefOwner::new;
     private static final String SVG = "http://www.w3.org/2000/svg";
     private static final String MATH = "http://www.w3.org/1998/Math/MathML";
     private static final String XLINK = "http://www.w3.org/1999/xlink";
@@ -43,6 +46,282 @@ public final class CleanClientElementsBrowserTest {
         } finally {
             ReactDOM.unmountComponentAtNode(root);
             root.remove();
+        }
+    }
+
+    @JsMethod
+    public static void basic(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            tag(mount(root, production, host("div")), "DIV");
+            tag(mount(root, production, host("br")), "BR");
+            final var parent = mount(root, production, host("div", host("br")));
+            count(parent, 1);
+            tag(child(parent, 0), "BR");
+
+            for (final var value : new Object[] {"Hello", Browser.number(42), Browser.number(0)}) {
+                mountRoot(root, production, Js.uncheckedCast(value));
+                text(child(root, 0), Browser.string(value));
+            }
+
+            mountRoot(root, production, Js.uncheckedCast(new ReactElement[] {keyed("div", "1", "text1")}));
+            tag(child(root, 0), "DIV");
+
+            final var header = output(host("p", "header"));
+            header.setKey("3");
+            final var footer = output(new ReactElement[] {keyed("h2", "1", "footer"), keyed("h3", "2", "about")});
+            footer.setKey("4");
+            mountRoot(root, production, Js.uncheckedCast(new ReactElement[] {
+                keyed("div", "1", "text1"), keyed("span", "2", "text2"), header, footer
+            }));
+            tags(root, "DIV", "SPAN", "P", "H2", "H3");
+
+            mountRoot(root, production, Js.uncheckedCast(new Object[] {
+                new ReactElement[] {keyed("div", "1", "text1")},
+                keyed("span", "1", "text2"),
+                new Object[] {new @Nullable Object[] {null, keyed("p", "1", null)}, false}
+            }));
+            tags(root, "DIV", "SPAN", "P");
+
+            final var iterable = DomRootBrowserTest.iterable(
+                    new ReactElement[] {keyed("div", "1", null), keyed("div", "2", null), keyed("div", "3", null)},
+                    false);
+            mountRoot(root, production, Js.uncheckedCast(iterable));
+            tags(root, "DIV", "DIV", "DIV");
+
+            equal("", mount(root, production, host("div", "")).getTextContent());
+            for (final var value : new @Nullable Object[] {
+                new Object[0],
+                false,
+                true,
+                Js.undefined(),
+                new @Nullable Object[] {new Object[][] {{false}}, Js.undefined()}
+            }) {
+                mountRoot(root, production, Js.uncheckedCast(value));
+                count(root, 0);
+            }
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
+    public static void specialTypes(boolean production) {
+        final var root = Browser.append("div");
+        final var invariants = React.shouldCheckInvariants();
+        ReactTestUtil.noCheckInvariants();
+        try {
+            final var forwarded = JsPropertyMap.<@Nullable Object>of("current", null);
+            final var host = mount(root, production, forward("Test", forwarded));
+            tag(host, "DIV");
+            equal("Test", host.getTextContent());
+            check(host == forwarded.get("current"), "Forwarding resolves the committed host");
+
+            final var profiled = mount(
+                    root,
+                    production,
+                    typed(symbol("react.profiler"), null)
+                            .input("id", "profiler")
+                            .input("onRender", (Profile) (id, phase) -> {})
+                            .input("children", host("div", "Test")));
+            tag(profiled, "DIV");
+            equal("Test", profiled.getTextContent());
+
+            final var trace = new StringBuilder();
+            final Yield yield = text -> trace.append(text).append(' ');
+            final ViewConstructorFunction counter = constructable(MemoCounter::new);
+            final var basic = memo(counter, null);
+            equal(
+                    "Count: 0",
+                    mount(
+                                    root,
+                                    production,
+                                    typed(basic, null)
+                                            .input("count", Browser.number(0))
+                                            .input("yield", yield))
+                            .getTextContent());
+            trace.setLength(0);
+
+            final Forward forward = (inputs, ref) -> ReactElement.createViewElement(counter)
+                    .input(
+                            "count",
+                            Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(ref)
+                                    .get("current"))
+                    .input("yield", inputs.get("yield"));
+            final var wrapper = JsPropertyMap.of("$$typeof", symbol("react.forward_ref"), "render", forward);
+            final var count = JsPropertyMap.of("current", Browser.number(0));
+            mount(root, production, typed(memo(wrapper, null), count).input("yield", yield));
+            equal("Count: 0 ", trace.toString());
+            trace.setLength(0);
+
+            for (final var logComparator : new boolean[] {false, true}) {
+                final Compare compare = (previous, next) -> {
+                    if (logComparator) {
+                        trace.append("comparator ");
+                    }
+                    return false;
+                };
+                mount(
+                        root,
+                        production,
+                        typed(memo(counter, compare), null)
+                                .input("count", Browser.number(0))
+                                .input("yield", yield));
+                equal("Count: 0 ", trace.toString());
+                trace.setLength(0);
+            }
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+            if (invariants) {
+                ReactTestUtil.checkInvariants();
+            }
+        }
+    }
+
+    @JsMethod
+    public static void clientRefs(boolean production) {
+        final var root = Browser.append("div");
+        final var invariants = React.shouldCheckInvariants();
+        ReactTestUtil.noCheckInvariants();
+        try {
+            final var calls = new int[1];
+            final var received = new Object[1];
+            final Ref callback = element -> {
+                if (null != element) {
+                    calls[0]++;
+                    received[0] = element;
+                }
+            };
+            final var node = mount(
+                    root, production, ReactElement.createViewElement(REF_OWNER).input("refValue", callback));
+            check(1 == calls[0], "Client mounting attaches exactly one callback ref");
+            check(null != received[0], "The callback receives a host");
+            check(node == received[0], "The callback receives the rendered DOM element");
+
+            ReactDOM.unmountComponentAtNode(root);
+            final var owner = Objects.requireNonNull(
+                    ReactDOM.render(ReactElement.createViewElement(REF_OWNER).input("refValue", "myDiv"), root));
+            final var refs = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(Browser.property(owner, "refs"));
+            check(
+                    root.getFirstElementChild() == refs.get("myDiv"),
+                    "The component owns a ref to the root's first child");
+
+            final var forwarded = JsPropertyMap.<@Nullable Object>of("current", null);
+            mount(root, production, forward("hello", forwarded));
+            final var current = Js.<Browser.Element>uncheckedCast(Objects.requireNonNull(forwarded.get("current")));
+            equal("hello", current.getTextContent());
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+            if (invariants) {
+                ReactTestUtil.checkInvariants();
+            }
+        }
+    }
+
+    @JsMethod
+    public static void progress(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            final var initial = mount(root, production, host("progress").input("value", null));
+            check(!initial.hasAttribute("value"), "A null value leaves progress indeterminate");
+            equal(
+                    "50",
+                    mount(root, production, host("progress").input("value", Browser.number(50)))
+                            .getAttribute("value"));
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    private static void tags(Browser.Element parent, String... names) {
+        count(parent, names.length);
+        for (var i = 0; i < names.length; i++) {
+            tag(child(parent, i), names[i]);
+        }
+    }
+
+    private static ReactElement keyed(String tag, String key, @Nullable Object value) {
+        return ReactElement.createHostElement(tag, key, null, JsPropertyMap.of("children", value));
+    }
+
+    private static ReactElement typed(Object type, @Nullable Object ref) {
+        final var element = ReactElement.createViewElement(OUTPUT);
+        final var record = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(element);
+        record.set("type", type);
+        record.set("ref", ref);
+        return element;
+    }
+
+    private static ReactElement forward(String label, Object ref) {
+        final Forward render = (inputs, forwarded) -> ReactElement.createViewElement(REF_OWNER)
+                .input("refValue", forwarded)
+                .input("text", inputs.get("label"));
+        return typed(JsPropertyMap.of("$$typeof", symbol("react.forward_ref"), "render", render), ref)
+                .input("label", label);
+    }
+
+    private static Object memo(Object type, @Nullable Compare compare) {
+        return JsPropertyMap.of("$$typeof", symbol("react.memo"), "type", type, "compare", compare);
+    }
+
+    @JsMethod
+    private static native Object symbol(String name);
+
+    @JsFunction
+    private interface Ref {
+        void accept(@Nullable Object value);
+    }
+
+    @JsFunction
+    private interface Forward {
+        ReactNode render(JsPropertyMap<@Nullable Object> inputs, @Nullable Object ref);
+    }
+
+    @JsFunction
+    private interface Compare {
+        boolean matches(JsPropertyMap<@Nullable Object> last, JsPropertyMap<@Nullable Object> next);
+    }
+
+    @JsFunction
+    private interface Profile {
+        void accept(String id, String phase);
+    }
+
+    @JsFunction
+    private interface Yield {
+        void accept(String message);
+    }
+
+    private static final class MemoCounter extends NativeView {
+        @JsConstructor
+        private MemoCounter(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final var inputs = requireInputs();
+            final var text = "Count: " + Browser.string(Objects.requireNonNull(inputs.get("count")));
+            Js.<Yield>uncheckedCast(Objects.requireNonNull(inputs.get("yield"))).accept(text);
+            return host("span", text);
+        }
+    }
+
+    private static final class RefOwner extends NativeView {
+        @JsConstructor
+        private RefOwner(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final var inputs = requireInputs();
+            return ReactElement.createHostElement(
+                    "div", null, inputs.get("refValue"), JsPropertyMap.of("children", inputs.get("text")));
         }
     }
 
@@ -250,6 +529,27 @@ public final class CleanClientElementsBrowserTest {
         equal(special, Browser.string(Browser.property(anchor, "title")));
     }
 
+    @JsMethod
+    public static void mockedUndefined(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            final var element =
+                    rawOutput(false, "MockedComponent", Js.undefined()).input("mockRender", true);
+            if (production) {
+                failure(root, element, "Nothing was returned from render.", 152);
+                failure(root, element.dup(), "Nothing was returned from render.", 152);
+            } else {
+                ReactDOM.render(element, root);
+                count(root, 0);
+                ReactDOM.render(element.dup(), root);
+                count(root, 0);
+            }
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
     private static void invalidChildren(Browser.Element root) {
         final var undefinedMessage = "UndefinedComponent(...): Nothing was returned from render. This usually means a"
                 + " return statement is missing. Or, to render nothing, return null.";
@@ -275,7 +575,7 @@ public final class CleanClientElementsBrowserTest {
     }
 
     private static ReactElement rawOutput(boolean function, String name, @Nullable Object value) {
-        final ViewConstructorFunction type = RawOutput::new;
+        final ViewConstructorFunction type = constructable(RawOutput::new);
         final var descriptor = Js.<JsPropertyMap<Object>>uncheckedCast(type);
         descriptor.set("displayName", name);
         descriptor.set("componentClass", type);
@@ -366,6 +666,12 @@ public final class CleanClientElementsBrowserTest {
     }
 
     @JsMethod
+    private static native ViewConstructorFunction constructable(ViewConstructorFunction constructor);
+
+    @JsMethod
+    private static native void mockRender(NativeView instance);
+
+    @JsMethod
     private static native Browser.Element child(Browser.Element node, int index);
 
     @JsMethod
@@ -396,6 +702,9 @@ public final class CleanClientElementsBrowserTest {
         @JsConstructor
         private RawOutput(JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
+            if (Boolean.TRUE.equals(inputs.get("mockRender"))) {
+                mockRender(this);
+            }
         }
 
         @Override

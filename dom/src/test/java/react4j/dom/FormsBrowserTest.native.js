@@ -15,7 +15,7 @@ FormsBrowserTest.withoutExpectedWindowError = function(message, minified, action
   const previous = window.onerror;
   window.onerror = function(text, url, line, column, error) {
     if (String(text).includes(message) || String(text).includes(minified)) return true;
-    return previous ? previous.call(window, text, url, line, column, error) : false;
+    return previous ? previous.apply(window, arguments) : false;
   };
   try {
     action();

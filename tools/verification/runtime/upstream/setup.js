@@ -318,6 +318,9 @@ function createRenderer(moduleFor, sourceReact) {
           }
           return renderFixture(this, render, []);
         };
+        if (render?._isMockFunction) {
+          instance.render._isMockFunction = true;
+        }
         installLifecycleHooks(instance);
         return instance;
       }

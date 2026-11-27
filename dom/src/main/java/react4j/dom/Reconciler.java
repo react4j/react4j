@@ -3315,6 +3315,13 @@ final class Reconciler {
                         && (isFunctionComponent(component)
                                 || Boolean.TRUE.equals(
                                         ClassComponent.properties(type).get("rawRenderResult")))) {
+                    if (DEVELOPMENT && !isFunctionComponent(component)) {
+                        final var method = ClassComponent.method(component, "render");
+                        if (null != method
+                                && Boolean.TRUE.equals(ClassComponent.properties(method).get("_isMockFunction"))) {
+                            return null;
+                        }
+                    }
                     final var name = Objects.requireNonNullElse(RenderFailure.frameName(type), "Component");
                     throw new IllegalStateException(name
                             + "(...): Nothing was returned from render. This usually means a return statement is"
