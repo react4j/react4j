@@ -503,7 +503,9 @@ public final class ErrorBoundariesBrowserTest {
             scenario.empty();
             final var undefined = host("div", null);
             ClassComponent.properties(undefined).set("type", Js.undefined());
-            check(caughtMessage(() -> scenario.render(undefined)).contains("got: undefined"), "Runtime reports undefined type");
+            check(
+                    caughtMessage(() -> scenario.render(undefined)).contains("got: undefined"),
+                    "Runtime reports undefined type");
             scenario.empty();
         }
     }
@@ -519,7 +521,8 @@ public final class ErrorBoundariesBrowserTest {
                 scenario.empty();
             } else {
                 final var warnings = captureWarnings(() -> scenario.render(root));
-                check(production || warnings.contains("should implement getDerivedStateFromError()"),
+                check(
+                        production || warnings.contains("should implement getDerivedStateFromError()"),
                         "Legacy boundary without a state update warns");
                 scenario.firstChildText("Sibling");
             }
@@ -537,19 +540,28 @@ public final class ErrorBoundariesBrowserTest {
             if (snapshot) {
                 final ViewConstructorFunction type = inputs -> new SnapshotFailure(inputs);
                 final var child = ReactElement.createViewElement(type)
-                        .input("trace", scenario._trace).input("name", "child");
+                        .input("trace", scenario._trace)
+                        .input("name", "child");
                 final var parent = ReactElement.createViewElement(type)
-                        .input("trace", scenario._trace).input("name", "parent").input("children", child);
+                        .input("trace", scenario._trace)
+                        .input("name", "parent")
+                        .input("children", child);
                 scenario.render(parent.input("value", 1));
-                equal("child sad", caughtMessage(() -> scenario.render(parent.dup().input("value", 2)
-                        .input("children", child.dup().input("value", 2)))));
+                equal(
+                        "child sad",
+                        caughtMessage(() -> scenario.render(parent.dup()
+                                .input("value", 2)
+                                .input("children", child.dup().input("value", 2)))));
                 scenario.trace(List.of("child sad", "parent sad"));
             } else {
                 final ViewConstructorFunction type = inputs -> new MountFailure(inputs);
                 final var child = ReactElement.createViewElement(type)
-                        .input("trace", scenario._trace).input("name", "child");
+                        .input("trace", scenario._trace)
+                        .input("name", "child");
                 final var parent = ReactElement.createViewElement(type)
-                        .input("trace", scenario._trace).input("name", "parent").input("children", child);
+                        .input("trace", scenario._trace)
+                        .input("name", "parent")
+                        .input("children", child);
                 equal("child sad", caughtMessage(() -> scenario.render(parent)));
                 scenario.trace(List.of("child sad", "parent sad"));
             }
@@ -560,8 +572,10 @@ public final class ErrorBoundariesBrowserTest {
     public static void unbatchedInitialMountError() {
         try (final var scenario = new Scenario(true)) {
             final ViewConstructorFunction type = inputs -> new Downstream(inputs).withFailure(() -> fail("foo error"));
-            equal("foo error", caughtMessage(() ->
-                    ReactDOM.batchedUpdates(() -> scenario.render(ReactElement.createViewElement(type)))));
+            equal(
+                    "foo error",
+                    caughtMessage(() ->
+                            ReactDOM.batchedUpdates(() -> scenario.render(ReactElement.createViewElement(type)))));
         }
     }
 
@@ -569,11 +583,15 @@ public final class ErrorBoundariesBrowserTest {
     public static void warnsLegacyWithoutState(boolean production) {
         try (final var scenario = new Scenario(false)) {
             final var boundary = scenario.specialBoundary("InvalidErrorBoundary", scenario.broken("render"))
-                    .input("ignoreError", true).input("silentCatch", true);
+                    .input("ignoreError", true)
+                    .input("silentCatch", true);
             final var warnings = captureWarnings(() -> scenario.render(boundary));
-            check(production || warnings.contains("InvalidErrorBoundary: Error boundaries should implement "
-                    + "getDerivedStateFromError(). In that method, return a state update to display an error message "
-                    + "or fallback UI."), "Development warns when componentDidCatch does not update state");
+            check(
+                    production
+                            || warnings.contains("InvalidErrorBoundary: Error boundaries should implement"
+                                    + " getDerivedStateFromError(). In that method, return a state update to display an"
+                                    + " error message or fallback UI."),
+                    "Development warns when componentDidCatch does not update state");
             scenario.text("");
         }
     }
@@ -591,7 +609,9 @@ public final class ErrorBoundariesBrowserTest {
             final ViewConstructorFunction childType =
                     inputs -> new Downstream(inputs).withFailure(() -> throwError(thrown));
             final var boundary = ReactElement.createViewElement(type)
-                    .input("trace", scenario._trace).input("name", "ErrorBoundary").input("boundary", true)
+                    .input("trace", scenario._trace)
+                    .input("name", "ErrorBoundary")
+                    .input("boundary", true)
                     .input("children", ReactElement.createViewElement(childType))
                     .input("fallback", ReactNode.of("ErrorBoundary"))
                     .input("observeCatch", (ObserveCatch) error -> errors[1] = error);
