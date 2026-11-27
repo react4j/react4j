@@ -1,6 +1,7 @@
 goog.module('react4j.dom.RuntimeTest');
 const Children = goog.require('react4j.dom.ChildReconciliationTest');
 const Classes = goog.require('react4j.dom.ClassLifecycleBrowserTest');
+const ComponentLifecycle = goog.require('react4j.dom.ComponentLifecycleBrowserTest');
 const DevToolsHookTest = goog.require('react4j.dom.DevToolsHookTest');
 const EmitterRegistration = goog.require('react4j.dom.EmitterRegistrationBrowserTest');
 const Events = goog.require('react4j.dom.EventsBrowserTest');
@@ -25,6 +26,7 @@ async function run(production) {
   Fiber.expiredRoots();
   OriginalHost.run();
   ReconcilerDiagnostics.run(production);
+  ComponentLifecycle.run(production);
   Memory.run();
   Profiler.run(production);
   await Test.run();

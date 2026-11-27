@@ -80,6 +80,7 @@ closure_js_library(
     srcs = ["runtime_test.js"],
     visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
     deps = [
+        "//dom/src/test/java/react4j/dom:component_lifecycle_scenarios",
         "//dom/src/test/java/react4j/dom:emitter_registration",
         "//dom/src/test/java/react4j/dom:runtime_coverage",
     ],
