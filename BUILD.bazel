@@ -254,6 +254,7 @@ test_suite(
         "//dom/src/test/js/react4j/dom:browser_tests",
         "//dom/src/test/js/react4j/dom:devtools_test",
         "//dom/src/test/js/react4j/dom:emitter_test",
+        "//dom/src/test/js/react4j/dom:error_boundary_test",
         "//dom/src/test/js/react4j/dom:fiber_test",
         "//examples/drumloop/src/test/js/react4j/drumloop:browser_tests",
         "//examples/heart-rate-monitor/src/test/js/react4j/hrm:browser_tests",

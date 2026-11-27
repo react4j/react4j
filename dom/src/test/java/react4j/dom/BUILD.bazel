@@ -53,3 +53,21 @@ j2cl_library(
         "//third_party:jspecify-j2cl",
     ],
 )
+
+j2cl_library(
+    name = "error_boundary_test",
+    testonly = True,
+    srcs = [
+        "ErrorBoundariesBrowserTest.java",
+        "ErrorBoundariesBrowserTest.native.js",
+        "ErrorBoundaryTraces.java",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
