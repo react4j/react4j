@@ -212,6 +212,14 @@ def audit():
                     missing.append(f"{case['suite']} {case[mode + ' id']} ({mode}) {site}")
     if missing:
         raise ValueError("Unmapped executed expect sites in individually mapped cases:\n" + "\n".join(missing))
+    incomplete = [
+        f"{case['suite']} {case['upstream case']}"
+        for index, case in enumerate(cases)
+        if (index not in reviewed and not case["scope"].startswith("excluded:"))
+        or dispositions.get(index, set()) & {"related", "not ported"}
+    ]
+    if incomplete:
+        raise ValueError("Applicable cases without a complete Java assertion map:\n" + "\n".join(incomplete))
     print(f"Validated source locations and {len(tests)} Java fixture methods across "
           f"{len(reviewed)} individually mapped cases. Stock inventory: {len(cases)} cases across both modes.")
     counts = Counter()
