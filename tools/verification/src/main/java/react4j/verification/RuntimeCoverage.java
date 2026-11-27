@@ -521,8 +521,11 @@ final class RuntimeCoverage implements CoverageInstrumenter.Locations {
             defines.addProperty("braincheck.check_api_invariants", "true");
             defines.addProperty("braincheck.verbose_error_messages", "true");
             // Each diagnostic suite observes warnings that the renderer emits once per JavaScript realm.
-            for (String suite :
-                    List.of("runRuntimeCoverageTests", "runLifecycleCoverageTests", "runSchedulingCoverageTests")) {
+            for (String suite : List.of(
+                    "runRuntimeCoverageTests",
+                    "runLifecycleCoverageTests",
+                    "runSchedulingCoverageTests",
+                    "runReconcilerCoverageTests")) {
                 var assets = Map.of(
                         "/index.html",
                         "<!doctype html><body><script>var CLOSURE_DEFINES=" + defines

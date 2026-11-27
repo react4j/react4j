@@ -56,6 +56,14 @@ closure_js_library(
     deps = ["//tools/verification/runtime/java/react4j/dom:isolated_reconciler_tests"],
 )
 
+closure_js_library(
+    name = "reconciler_coverage",
+    testonly = True,
+    srcs = ["isolated_cases.js"],
+    visibility = ["//tools/verification/src/test/js/react4j/verification:__pkg__"],
+    deps = ["//tools/verification/runtime/java/react4j/dom:browser_reconciler_coverage"],
+)
+
 browser_test(
     name = "isolated_cases_test",
     srcs = ["isolated_cases_test.js"],

@@ -34,26 +34,28 @@ j2cl_library(
     ],
 )
 
+_ISOLATED_CASE_SOURCES = [
+    "IsolatedErrorLoggingTest.java",
+    "IsolatedErrorLoggingTest.native.js",
+    "IsolatedIncrementalTest.java",
+    "IsolatedLegacyContextTest.java",
+    "IsolatedReconcilerTest.java",
+    "IsolatedReconcilerTest.native.js",
+    "IsolatedReflectionTest.java",
+    "IsolatedSchedulingTest.java",
+    "IsolatedSideEffectsTest.java",
+    "IsolatedSuspenseTest.java",
+    "IsolatedSuspenseTest.native.js",
+    "IsolatedTriangleTest.java",
+    "IsolatedUpdateQueueTest.java",
+    "IsolatedWrappedViewsTest.java",
+    "IsolatedWrappedViewsTest.native.js",
+]
+
 j2cl_library(
     name = "isolated_reconciler_tests",
     testonly = True,
-    srcs = [
-        "IsolatedErrorLoggingTest.java",
-        "IsolatedErrorLoggingTest.native.js",
-        "IsolatedIncrementalTest.java",
-        "IsolatedLegacyContextTest.java",
-        "IsolatedReconcilerTest.java",
-        "IsolatedReconcilerTest.native.js",
-        "IsolatedReflectionTest.java",
-        "IsolatedSchedulingTest.java",
-        "IsolatedSideEffectsTest.java",
-        "IsolatedSuspenseTest.java",
-        "IsolatedSuspenseTest.native.js",
-        "IsolatedTriangleTest.java",
-        "IsolatedUpdateQueueTest.java",
-        "IsolatedWrappedViewsTest.java",
-        "IsolatedWrappedViewsTest.native.js",
-    ],
+    srcs = _ISOLATED_CASE_SOURCES,
     visibility = [
         "//:__pkg__",
         "//tools/verification/runtime:__pkg__",
@@ -62,6 +64,21 @@ j2cl_library(
         ":memory_renderer",
         "//:core",
         "//dom/src/main/java/react4j/dom:reconciler",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "browser_reconciler_coverage",
+    testonly = True,
+    srcs = _ISOLATED_CASE_SOURCES + ["HostFixture.java"],
+    visibility = ["//tools/verification/runtime:__pkg__"],
+    deps = [
+        ":browser_memory_renderer",
+        "//:core",
+        "//:dom",
         "//third_party:jsinterop_annotations-j2cl",
         "//third_party:jsinterop_base-j2cl",
         "//third_party:jspecify-j2cl",
