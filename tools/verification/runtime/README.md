@@ -62,6 +62,23 @@ This opens Chrome DevTools, inspects a generated component, checks the highlight
 
 ## Measured results
 
+### Standalone reconciler at `1ce36e444`
+
+Chrome for Testing 145.0.7632.117 ran 30 measured pairs per application and CPU configuration. Each cell gives the stock median followed by the Java median. The final list, input value and retained node identities matched in every pair. Other verification jobs shared the host during this run. [Individual samples](measurements.csv)
+
+| CPUs | Application | Load (ms) | Add 50 (ms) | Toggle 25 (ms) | 1,000 keys (ms) | Heap (bytes) | JavaScript (bytes) | Gzip (bytes) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0-5 | Raw | 25.80 / 28.45 | 18.95 / 25.00 | 4.40 / 4.30 | 6.00 / 5.40 | 1,995,886 / 2,050,428 | 166,367 / 152,777 | 54,943 / 53,481 |
+| 0-5 | Arez | 37.20 / 42.85 | 218.95 / 217.45 | 9.05 / 8.85 | 12.00 / 9.90 | 2,587,360 / 2,634,460 | 184,824 / 173,049 | 59,922 / 58,801 |
+| 0-5 | Sting | 35.00 / 31.90 | 215.05 / 213.30 | 9.20 / 7.30 | 11.45 / 9.80 | 2,592,344 / 2,637,856 | 185,631 / 173,923 | 60,272 / 59,179 |
+| 0-15 | Raw | 33.75 / 30.45 | 23.35 / 30.00 | 6.65 / 6.70 | 9.80 / 8.15 | 1,994,766 / 2,050,018 | 166,367 / 152,777 | 54,943 / 53,481 |
+| 0-15 | Arez | 47.05 / 42.70 | 238.05 / 237.65 | 8.20 / 7.55 | 10.70 / 9.75 | 2,587,360 / 2,633,334 | 184,824 / 173,049 | 59,922 / 58,801 |
+| 0-15 | Sting | 37.55 / 37.05 | 231.00 / 234.65 | 8.00 / 7.95 | 9.60 / 10.00 | 2,592,296 / 2,637,844 | 185,631 / 173,923 | 60,272 / 59,179 |
+
+The candidate met 38 of the 42 comparison budgets. Raw insertion of 50 rows exceeded the threshold in both CPU configurations. On CPUs 0–5, Raw and Arez startup also exceeded it. All three optimized bundles were smaller than stock, both raw and gzipped.
+
+React DevTools 8.0.0 inspected the input component, highlighted its host and recorded 125 commits in each build. Java development, default production and named production recorded 98, 68 and 73 commits with positive component durations respectively. The named build displayed `TodoEntry` and `TodoItem.todo`. Chrome resolved all seven application source maps, and their contents matched the committed Java reconciler, DOM renderer and TodoMVC view sources.
+
 ### Production at `d9e4b006e`
 
 Thirty measured pairs per application and CPU configuration ran on the same system as the previous comparison. Each cell gives stock React 16.6 followed by Java. The input events, retained nodes and final rows agreed in every pair. [Individual samples](measurements.csv)
