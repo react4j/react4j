@@ -154,44 +154,6 @@ final class DomEvents {
             "time",
             "url",
             "week");
-    private static final Map<String, String> KEY_ALIASES = Map.ofEntries(
-            Map.entry("Esc", "Escape"),
-            Map.entry("Spacebar", " "),
-            Map.entry("Left", "ArrowLeft"),
-            Map.entry("Up", "ArrowUp"),
-            Map.entry("Right", "ArrowRight"),
-            Map.entry("Down", "ArrowDown"),
-            Map.entry("Del", "Delete"),
-            Map.entry("Win", "OS"),
-            Map.entry("Menu", "ContextMenu"),
-            Map.entry("Apps", "ContextMenu"),
-            Map.entry("Scroll", "ScrollLock"),
-            Map.entry("MozPrintableKey", "Unidentified"));
-    private static final Map<Integer, String> LEGACY_KEYS = Map.ofEntries(
-            Map.entry(8, "Backspace"),
-            Map.entry(9, "Tab"),
-            Map.entry(12, "Clear"),
-            Map.entry(13, "Enter"),
-            Map.entry(16, "Shift"),
-            Map.entry(17, "Control"),
-            Map.entry(18, "Alt"),
-            Map.entry(19, "Pause"),
-            Map.entry(20, "CapsLock"),
-            Map.entry(27, "Escape"),
-            Map.entry(32, " "),
-            Map.entry(33, "PageUp"),
-            Map.entry(34, "PageDown"),
-            Map.entry(35, "End"),
-            Map.entry(36, "Home"),
-            Map.entry(37, "ArrowLeft"),
-            Map.entry(38, "ArrowUp"),
-            Map.entry(39, "ArrowRight"),
-            Map.entry(40, "ArrowDown"),
-            Map.entry(45, "Insert"),
-            Map.entry(46, "Delete"),
-            Map.entry(144, "NumLock"),
-            Map.entry(145, "ScrollLock"),
-            Map.entry(224, "Meta"));
     private static final DomHost.WeakMap<DomHost.Node, Boundary> BOUNDARIES = new DomHost.WeakMap<>();
     private static final DomHost.WeakMap<DomHost.Node, State> STATES = new DomHost.WeakMap<>();
     private static final DomHost.WeakMap<DomHost.Node, DocumentSubscriptions> DOCUMENT_SUBSCRIPTIONS =
@@ -658,8 +620,8 @@ final class DomEvents {
             final String name,
             final NativeEvent nativeEvent,
             @Nullable final Object data) {
-        List<Invocation> captures = null;
-        List<Invocation> bubbles = null;
+        Invocation captures = null;
+        Invocation bubbles = null;
         final var property = "on" + name;
         final var captureProperty = property + "Capture";
         final boolean hasCapture = OBSERVED_HANDLERS.has(captureProperty);
@@ -680,8 +642,8 @@ final class DomEvents {
                         && !(checkDisabled
                                 && DISABLABLE.contains(state.tag)
                                 && Js.isTruthy(state.inputs.get("disabled")))) {
-                    captures = appendHandler(captures, state.element, captureProperty, capture);
-                    bubbles = appendHandler(bubbles, state.element, property, bubble);
+                    captures = collectHandler(captures, state.element, captureProperty, capture, true);
+                    bubbles = collectHandler(bubbles, state.element, property, bubble, false);
                 }
             }
         }
@@ -728,13 +690,13 @@ final class DomEvents {
         final var window = DomHost.properties(document).get("defaultView");
         if (null != from) {
             final var leaveName = prefix + "Leave";
-            final var calls = pathHandlers(leavePath, leaveLength, leaveName);
-            batch.add(from, leaveName, nativeEvent, null != to ? to : window, null, List.of(), calls);
+            final var calls = pathHandlers(leavePath, leaveLength, leaveName, false);
+            batch.add(from, leaveName, nativeEvent, null != to ? to : window, null, null, calls);
         }
         if (null != to) {
             final var enterName = prefix + "Enter";
-            final var calls = pathHandlers(enterPath, enterLength, enterName);
-            batch.add(to, enterName, nativeEvent, null != from ? from : window, null, calls, List.of());
+            final var calls = pathHandlers(enterPath, enterLength, enterName, true);
+            batch.add(to, enterName, nativeEvent, null != from ? from : window, null, calls, null);
         }
     }
 
@@ -757,12 +719,16 @@ final class DomEvents {
         return path;
     }
 
-    private static List<Invocation> pathHandlers(final List<State> path, final int length, final String name) {
-        final List<Invocation> calls = new ArrayList<>();
+    private static @Nullable Invocation pathHandlers(
+            final List<State> path, final int length, final String name, final boolean capture) {
+        Invocation calls = null;
         final var property = "on" + name;
         for (int i = 0; i < length; i++) {
             final var state = path.get(i);
-            addHandler(calls, state.element, state.inputs.get(property));
+            final var handler = state.inputs.get(property);
+            if ("function".equals(Js.typeof(handler))) {
+                calls = new Invocation(state.element, Js.uncheckedCast(handler)).link(calls, capture);
+            }
         }
         return calls;
     }
@@ -778,9 +744,9 @@ final class DomEvents {
                 final NativeEvent nativeEvent,
                 @Nullable final Object relatedTarget,
                 @Nullable final Object data,
-                @Nullable final List<Invocation> captures,
-                @Nullable final List<Invocation> bubbles) {
-            if ((null == captures || captures.isEmpty()) && (null == bubbles || bubbles.isEmpty())) {
+                @Nullable final Invocation captures,
+                @Nullable final Invocation bubbles) {
+            if (null == captures && null == bubbles) {
                 return;
             }
             final var kind = eventKind(name);
@@ -799,18 +765,8 @@ final class DomEvents {
 
         void run() {
             for (var event = first; null != event; ) {
-                final var captures = event.captures;
-                final var bubbles = event.bubbles;
-                if (null != captures) {
-                    for (int i = captures.size() - 1; 0 <= i && !event.stopped; i--) {
-                        call(event, captures.get(i));
-                    }
-                }
-                if (null != bubbles) {
-                    for (int i = 0; i < bubbles.size() && !event.stopped; i++) {
-                        call(event, bubbles.get(i));
-                    }
-                }
+                invoke(event, event.captures);
+                invoke(event, event.bubbles);
                 event = release(event);
             }
             if (failure instanceof RuntimeException exception) {
@@ -842,6 +798,19 @@ final class DomEvents {
             return next;
         }
 
+        private void invoke(final Dispatch event, @Nullable final Invocation tail) {
+            if (null != tail) {
+                var invocation = tail.next;
+                while (!event.stopped) {
+                    call(event, invocation);
+                    if (Js.isTripleEqual(invocation, tail)) {
+                        break;
+                    }
+                    invocation = invocation.next;
+                }
+            }
+        }
+
         private void call(final Dispatch event, final Invocation invocation) {
             try {
                 event.call(invocation);
@@ -853,28 +822,20 @@ final class DomEvents {
         }
     }
 
-    private static void addHandler(
-            final List<Invocation> calls, final DomHost.Element element, @Nullable final Object handler) {
-        if ("function".equals(Js.typeof(handler))) {
-            calls.add(new Invocation(element, Js.uncheckedCast(handler)));
-        }
-    }
-
-    private static @Nullable List<Invocation> appendHandler(
-            @Nullable final List<Invocation> calls,
+    private static @Nullable Invocation collectHandler(
+            @Nullable final Invocation tail,
             final DomHost.Element element,
             final String property,
-            @Nullable final Object handler) {
+            @Nullable final Object handler,
+            final boolean capture) {
         if (!Js.isTruthy(handler)) {
-            return calls;
+            return tail;
         }
         final var type = Js.typeof(handler);
         if (!"function".equals(type)) {
             throw new IllegalArgumentException(invalidListener(property, type));
         }
-        final var updated = null == calls ? new ArrayList<Invocation>() : calls;
-        updated.add(new Invocation(element, Js.uncheckedCast(handler)));
-        return updated;
+        return new Invocation(element, Js.uncheckedCast(handler)).link(tail, capture);
     }
 
     static final class State {
@@ -1258,7 +1219,21 @@ final class DomEvents {
         final var key = event.get("key");
         if (null != key && !"".equals(key)) {
             final var text = DomHost.stringify(key);
-            final var normalized = KEY_ALIASES.getOrDefault(text, text);
+            final var normalized =
+                    switch (text) {
+                        case "Esc" -> "Escape";
+                        case "Spacebar" -> " ";
+                        case "Left" -> "ArrowLeft";
+                        case "Up" -> "ArrowUp";
+                        case "Right" -> "ArrowRight";
+                        case "Down" -> "ArrowDown";
+                        case "Del" -> "Delete";
+                        case "Win" -> "OS";
+                        case "Menu", "Apps" -> "ContextMenu";
+                        case "Scroll" -> "ScrollLock";
+                        case "MozPrintableKey" -> "Unidentified";
+                        default -> text;
+                    };
             if (!"Unidentified".equals(normalized)) {
                 return normalized;
             }
@@ -1266,10 +1241,58 @@ final class DomEvents {
         if (keyPress) {
             return 13 == code ? "Enter" : String.valueOf((char) code);
         }
-        return 112 <= code && code <= 123 ? "F" + (code - 111) : LEGACY_KEYS.getOrDefault(code, "Unidentified");
+        if (112 <= code && code <= 123) {
+            return "F" + (code - 111);
+        }
+        return switch (code) {
+            case 8 -> "Backspace";
+            case 9 -> "Tab";
+            case 12 -> "Clear";
+            case 13 -> "Enter";
+            case 16 -> "Shift";
+            case 17 -> "Control";
+            case 18 -> "Alt";
+            case 19 -> "Pause";
+            case 20 -> "CapsLock";
+            case 27 -> "Escape";
+            case 32 -> " ";
+            case 33 -> "PageUp";
+            case 34 -> "PageDown";
+            case 35 -> "End";
+            case 36 -> "Home";
+            case 37 -> "ArrowLeft";
+            case 38 -> "ArrowUp";
+            case 39 -> "ArrowRight";
+            case 40 -> "ArrowDown";
+            case 45 -> "Insert";
+            case 46 -> "Delete";
+            case 144 -> "NumLock";
+            case 145 -> "ScrollLock";
+            case 224 -> "Meta";
+            default -> "Unidentified";
+        };
     }
 
-    private record Invocation(DomHost.Element element, ReactEventHandler handler) {}
+    private static final class Invocation {
+        final DomHost.Element element;
+        final ReactEventHandler handler;
+        Invocation next = this;
+
+        Invocation(final DomHost.Element element, final ReactEventHandler handler) {
+            this.element = element;
+            this.handler = handler;
+        }
+
+        // The tail points back to the first call. Capture inserts at the front and bubble at the back.
+        Invocation link(@Nullable final Invocation tail, final boolean capture) {
+            if (null == tail) {
+                return this;
+            }
+            next = tail.next;
+            tail.next = this;
+            return capture ? tail : this;
+        }
+    }
 
     private static final class LegacyMovement {
         private @Nullable Double previous;
@@ -1295,8 +1318,8 @@ final class DomEvents {
         private final Modifier getModifierState = this::getModifierState;
         private final Action persist = this::persist;
         private @Nullable Dispatch next;
-        private @Nullable List<Invocation> captures;
-        private @Nullable List<Invocation> bubbles;
+        private @Nullable Invocation captures;
+        private @Nullable Invocation bubbles;
         private boolean stopped;
         private boolean persistent;
         private boolean released;
@@ -1506,9 +1529,9 @@ final class DomEvents {
         }
 
         void call(final Invocation call) {
-            properties.set("currentTarget", call.element());
+            properties.set("currentTarget", call.element);
             try {
-                call.handler().onReactEvent(event);
+                call.handler.onReactEvent(event);
             } finally {
                 properties.set("currentTarget", null);
             }

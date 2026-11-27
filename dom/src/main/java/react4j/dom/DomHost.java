@@ -21,6 +21,7 @@ final class DomHost {
     private static final String XLINK = "http://www.w3.org/1999/xlink";
     private static final String XML = "http://www.w3.org/XML/1998/namespace";
     private static final JsPropertyMap<AttributeInfo> ATTRIBUTES = buildAttributes();
+    private static final AttributeName MIXED_CASE = new AttributeName("[A-Z]");
     private static final DomEvents.Listener CLICK_TRAP = event -> {};
     private static final Set<String> RESERVED_HYPHENATED_TAGS = Set.of(
             "annotation-xml",
@@ -326,7 +327,7 @@ final class DomHost {
                 }
                 final var value = inputs.get(name);
                 final var type = Js.typeof(value);
-                final var info = ATTRIBUTES.get(name);
+                final var info = attributeInfo(name);
                 final var lower = name.toLowerCase(Locale.ROOT);
                 final var data = lower.startsWith("data-") || lower.startsWith("aria-");
                 final var standard = STANDARD_NAMES.get(lower);
@@ -421,14 +422,19 @@ final class DomHost {
             }) {
                 names.set(name.toLowerCase(Locale.ROOT), name);
             }
-            ATTRIBUTES.forEach(name -> {
+            addStandardAttributeNames(names, ATTRIBUTES);
+            addStandardAttributeNames(names, SvgAttributes.ATTRIBUTES);
+            return names;
+        }
+
+        private static void addStandardAttributeNames(JsPropertyMap<String> names, JsPropertyMap<AttributeInfo> table) {
+            table.forEach(name -> {
                 names.set(name.toLowerCase(Locale.ROOT), name);
-                final var info = ATTRIBUTES.get(name);
+                final var info = table.get(name);
                 if (null != info) {
                     names.set(info.name().toLowerCase(Locale.ROOT), name);
                 }
             });
-            return names;
         }
 
         private static @Nullable String eventWarning(String name, String lower) {
@@ -998,14 +1004,20 @@ final class DomHost {
         addHtmlAttributes(table, AttributeType.OVERLOADED_BOOLEAN, "capture", "download");
         addHtmlAttributes(table, AttributeType.POSITIVE_NUMERIC, "cols", "rows", "size", "span");
         addHtmlAttributes(table, AttributeType.NUMERIC, "rowSpan", "start");
+        // The lowercase SVG properties share the common table.
+        table.set("focusable", new AttributeInfo("focusable", null, AttributeType.BOOLEAN_STRING));
+        table.set("panose-1", new AttributeInfo("panose-1", null, AttributeType.STRING));
+        return table;
+    }
+
+    private static final class SvgAttributes {
+        private static final JsPropertyMap<AttributeInfo> ATTRIBUTES = buildSvgAttributes();
+    }
+
+    private static JsPropertyMap<AttributeInfo> buildSvgAttributes() {
+        final var table = newAttributeTable(null);
         addSvgAttributes(
-                table,
-                AttributeType.BOOLEAN_STRING,
-                null,
-                "autoReverse",
-                "externalResourcesRequired",
-                "focusable",
-                "preserveAlpha");
+                table, AttributeType.BOOLEAN_STRING, null, "autoReverse", "externalResourcesRequired", "preserveAlpha");
         addSvgAttributes(
                 table,
                 AttributeType.STRING,
@@ -1048,7 +1060,6 @@ final class DomHost {
                 "overline-position",
                 "overline-thickness",
                 "paint-order",
-                "panose-1",
                 "pointer-events",
                 "rendering-intent",
                 "shape-rendering",
@@ -1098,6 +1109,11 @@ final class DomHost {
         return table;
     }
 
+    private static @Nullable AttributeInfo attributeInfo(String name) {
+        final var common = ATTRIBUTES.get(name);
+        return null != common || !MIXED_CASE.test(name) ? common : SvgAttributes.ATTRIBUTES.get(name);
+    }
+
     private static void addHtmlAttributes(JsPropertyMap<AttributeInfo> table, AttributeType type, String... names) {
         for (final var name : names) {
             table.set(name, new AttributeInfo(name.toLowerCase(Locale.ROOT), null, type));
@@ -1143,7 +1159,7 @@ final class DomHost {
     }
 
     private static void setAttribute(Element element, String name, @Nullable Object value, boolean custom) {
-        final var info = custom ? null : ATTRIBUTES.get(name);
+        final var info = custom ? null : attributeInfo(name);
         if (null == info) {
             setUnknownAttribute(element, name, value, custom);
             return;
