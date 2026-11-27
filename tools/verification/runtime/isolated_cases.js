@@ -111,8 +111,10 @@ exports.run = function(mode) {
   run('ReactTestRenderer complete lifecycle', () => TestRenderer.lifecycle());
   run('ReactTestRenderer error boundary recovery', () => TestRenderer.errorBoundary());
   run('ReactTestRenderer text and root fragments', () => TestRenderer.textAndRootFragments());
-  for (const number of [17, 18, 19, 20, 21, 22, 24, 27, 28, 29]) {
-    run('ReactTestRenderer tree spec' + number, () => TestRenderer.treeSnapshots(number));
+  for (let number = 17; number <= 29; number++) {
+    if (number !== 23 && number !== 25 && number !== 26) {
+      run('ReactTestRenderer tree spec' + number, () => TestRenderer.treeSnapshots(number));
+    }
   }
   run('ReactTestRenderer function ref warning', () => TestRenderer.functionRef(mode === 'development'));
   run('ReactTestRendererTraversal transparent nodes', () => TestRenderer.transparentNodes());
