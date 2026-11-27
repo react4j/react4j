@@ -91,8 +91,16 @@ public final class DomPortalBrowserTest {
 
     private static void propagation(Browser.Element root, Browser.Element target) {
         final var trace = new ArrayList<String>();
-        ReactDOM.render(tree("div", ReactDOM.createPortal(host("div").input("onClick", handler(trace, "portal clicked"))
-                .input("children", "portal"), target)).input("onClick", handler(trace, "parent clicked")), root);
+        ReactDOM.render(
+                tree(
+                                "div",
+                                ReactDOM.createPortal(
+                                        host("div")
+                                                .input("onClick", handler(trace, "portal clicked"))
+                                                .input("children", "portal"),
+                                        target))
+                        .input("onClick", handler(trace, "parent clicked")),
+                root);
         final var portal = Browser.query(target, "div");
         equal("DIV", Browser.string(Browser.property(portal, "tagName")));
         portal.click();
@@ -100,11 +108,15 @@ public final class DomPortalBrowserTest {
         ReactDOM.unmountComponentAtNode(root);
         trace.clear();
 
-        final var parent = tree("div",
-                host("div").input("id", "portal-first"),
-                ReactDOM.createPortal(host("div").input("id", "portal-second")
-                        .input("onMouseEnter", handler(trace, "enter portal"))
-                        .input("onMouseLeave", handler(trace, "leave portal")), target))
+        final var parent = tree(
+                        "div",
+                        host("div").input("id", "portal-first"),
+                        ReactDOM.createPortal(
+                                host("div")
+                                        .input("id", "portal-second")
+                                        .input("onMouseEnter", handler(trace, "enter portal"))
+                                        .input("onMouseLeave", handler(trace, "leave portal")),
+                                target))
                 .input("onMouseEnter", handler(trace, "enter parent"))
                 .input("onMouseLeave", handler(trace, "leave parent"));
         ReactDOM.render(tree("div", parent, host("div").input("id", "portal-third")), root);
@@ -158,19 +170,28 @@ public final class DomPortalBrowserTest {
 
     private static void memoizedHost(Browser.Element root) {
         final var trace = new ArrayList<String>();
-        ReactDOM.render(tree("div", ReactElement.createViewElement(CAPTURE_UPDATE), host("input")
-                .input("type", "checkbox")
-                .input("checked", true)
-                .input("onChange", handler(trace, "change"))), root);
+        ReactDOM.render(
+                tree(
+                        "div",
+                        ReactElement.createViewElement(CAPTURE_UPDATE),
+                        host("input")
+                                .input("type", "checkbox")
+                                .input("checked", true)
+                                .input("onChange", handler(trace, "change"))),
+                root);
         Browser.query(root, "input").click();
-        check(trace.equals(List.of("change")), "A child update during document capture preserves the parent's change event");
+        check(
+                trace.equals(List.of("change")),
+                "A child update during document capture preserves the parent's change event");
         ReactDOM.unmountComponentAtNode(root);
     }
 
     private static void containerValidation(Browser.Element target) {
         final var portal = host("div");
         for (final var candidate : new @Nullable Object[] {null, createTextNode(target)}) {
-            DomRootBrowserTest.expectInvariant("Target container is not a DOM element.", 200,
+            DomRootBrowserTest.expectInvariant(
+                    "Target container is not a DOM element.",
+                    200,
                     () -> ReactDOM.createPortal(portal, Js.uncheckedCast(candidate)));
         }
     }
@@ -206,10 +227,11 @@ public final class DomPortalBrowserTest {
         @Override
         public ReactNode render() {
             final var props = requireInputs();
-            final var value = null == state() ? props.get("value") : Objects.requireNonNull(state()).get("value");
-            return Js.<Context<String>>uncheckedCast(props.get("context")).provide(
-                    null == value ? "initial" : (String) value,
-                    Js.uncheckedCast(props.get("portal")));
+            final var value = null == state()
+                    ? props.get("value")
+                    : Objects.requireNonNull(state()).get("value");
+            return Js.<Context<String>>uncheckedCast(props.get("context"))
+                    .provide(null == value ? "initial" : (String) value, Js.uncheckedCast(props.get("portal")));
         }
     }
 

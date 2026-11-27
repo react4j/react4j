@@ -283,8 +283,10 @@ public final class ComponentLifecycleBrowserTest {
         };
         classDescriptor(factory, "Factory").set("functionComponent", true);
         final var instance = Objects.requireNonNull(render(ReactElement.createViewElement(factory), host));
-        final var refs = Objects.requireNonNull(ClassComponent.properties(instance).get("refs"));
-        final var element = Objects.requireNonNull(ClassComponent.properties(refs).get("elemRef"));
+        final var refs =
+                Objects.requireNonNull(ClassComponent.properties(instance).get("refs"));
+        final var element =
+                Objects.requireNonNull(ClassComponent.properties(refs).get("elemRef"));
         equal("DIV", Browser.string(Browser.property(element, "tagName")));
         ReactDOM.unmountComponentAtNode(host);
     }
@@ -300,17 +302,34 @@ public final class ComponentLifecycleBrowserTest {
             final var children = new ReactElement[2];
             for (int i = 0; i < children.length; i++) {
                 final var key = 0 == i ? "one" : "two";
-                final var child = ReactElement.createViewElement(type).input("trace", trace).input("name", key + suffix);
+                final var child = ReactElement.createViewElement(type)
+                        .input("trace", trace)
+                        .input("name", key + suffix);
                 child.setKey(key);
                 children[i] = child;
             }
-            render(ReactElement.createHostElement("div", null, null, JsPropertyMap.of("children", ReactNode.of(children))),
+            render(
+                    ReactElement.createHostElement(
+                            "div", null, null, JsPropertyMap.of("children", ReactNode.of(children))),
                     host);
         }
-        check(trace.equals(List.of("oneA componentWillMount", "oneA render", "twoA componentWillMount", "twoA render",
-                "oneA componentDidMount", "twoA componentDidMount", "oneB componentWillMount", "oneB render",
-                "twoB componentWillMount", "twoB render", "oneA componentWillUnmount", "twoA componentWillUnmount",
-                "oneB componentDidMount", "twoB componentDidMount")), trace.toString());
+        check(
+                trace.equals(List.of(
+                        "oneA componentWillMount",
+                        "oneA render",
+                        "twoA componentWillMount",
+                        "twoA render",
+                        "oneA componentDidMount",
+                        "twoA componentDidMount",
+                        "oneB componentWillMount",
+                        "oneB render",
+                        "twoB componentWillMount",
+                        "twoB render",
+                        "oneA componentWillUnmount",
+                        "twoA componentWillUnmount",
+                        "oneB componentDidMount",
+                        "twoB componentDidMount")),
+                trace.toString());
         ReactDOM.unmountComponentAtNode(host);
     }
 
@@ -1079,7 +1098,8 @@ public final class ComponentLifecycleBrowserTest {
         @JsConstructor
         PreparedChild(JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
-            ClassComponent.properties(this).set("UNSAFE_componentWillMount", (Ref) ignored -> mark("componentWillMount"));
+            ClassComponent.properties(this)
+                    .set("UNSAFE_componentWillMount", (Ref) ignored -> mark("componentWillMount"));
         }
 
         private void mark(String phase) {

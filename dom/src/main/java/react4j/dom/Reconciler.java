@@ -3264,11 +3264,12 @@ final class Reconciler {
                 final var result = component.render();
                 if ("undefined".equals(Js.typeof(result))
                         && (isFunctionComponent(component)
-                                || Boolean.TRUE.equals(ClassComponent.properties(type).get("rawRenderResult")))) {
+                                || Boolean.TRUE.equals(
+                                        ClassComponent.properties(type).get("rawRenderResult")))) {
                     final var name = Objects.requireNonNullElse(RenderFailure.frameName(type), "Component");
                     throw new IllegalStateException(name
-                            + "(...): Nothing was returned from render. This usually means a return statement is missing."
-                            + " Or, to render nothing, return null.");
+                            + "(...): Nothing was returned from render. This usually means a return statement is"
+                            + " missing. Or, to render nothing, return null.");
                 }
                 return result;
             } finally {

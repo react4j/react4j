@@ -464,7 +464,10 @@ public final class DomRootBrowserTest {
             action.run();
         } catch (Throwable error) {
             final var actual = error.getMessage();
-            check(null != actual && (actual.contains(message) || actual.contains("Minified React error #" + stockCode + ";")),
+            check(
+                    null != actual
+                            && (actual.contains(message)
+                                    || actual.contains("Minified React error #" + stockCode + ";")),
                     "Expected " + message + ", observed " + actual);
             return;
         }

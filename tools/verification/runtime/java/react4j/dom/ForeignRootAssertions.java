@@ -30,7 +30,8 @@ public final class ForeignRootAssertions {
     }
 
     @JsMethod
-    public static void verifyRefs(Action mount, Action update, Check initialRef, Check foreignRef, Check foreignMissing) {
+    public static void verifyRefs(
+            Action mount, Action update, Check initialRef, Check foreignRef, Check foreignMissing) {
         mount.run();
         check(initialRef.get(), "The owner's first ref is its local host");
         check(foreignMissing.get(), "The second ref is absent before rendering it");

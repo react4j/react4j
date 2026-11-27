@@ -135,7 +135,8 @@ public final class DomRefsBrowserTest {
             check(empty != refs(first), "Attaching the first ref gives its owner a private map");
             check(isElement(refs(first).get("owned"), "SPAN"), "The first ref resolves to the owner's host");
             check(empty == refs(second) && 0 == refsSize(empty), "The other view keeps the shared empty map");
-            check("development".equals(System.getProperty("react4j.environment")) == isFrozen(empty),
+            check(
+                    "development".equals(System.getProperty("react4j.environment")) == isFrozen(empty),
                     "The shared empty ref map is frozen only in development");
         } finally {
             ReactDOM.unmountComponentAtNode(root);
