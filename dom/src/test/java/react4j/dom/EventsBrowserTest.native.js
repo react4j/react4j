@@ -97,6 +97,8 @@ EventsBrowserTest.dispatch = function(target, name) {
     'onLegacyKeyDown': () => new window.KeyboardEvent('keydown', {bubbles: true, key: 'Left', keyCode: 37, charCode: 17}),
     'onFocus': () => new window.FocusEvent('focus', {relatedTarget: document.body}),
     'onCopy': () => new window.ClipboardEvent('copy', {bubbles: true, cancelable: true, clipboardData: transfer}),
+    'onCut': () => new window.ClipboardEvent('cut', {bubbles: true, cancelable: true, clipboardData: transfer}),
+    'onPaste': () => new window.ClipboardEvent('paste', {bubbles: true, cancelable: true, clipboardData: transfer}),
     'onCompositionStart': () => new window.CompositionEvent('compositionstart', {bubbles: true, data: 't'}),
     'onCompositionUpdate': () => new window.CompositionEvent('compositionupdate', {bubbles: true, data: 'ty'}),
     'onCustomCompositionEnd': () => new CustomEvent('compositionend', {bubbles: true, detail: {'data': 'custom'}}),
@@ -110,6 +112,10 @@ EventsBrowserTest.dispatch = function(target, name) {
       pointerType: 'pen', pressure: 0.5, tangentialPressure: 0.25, width: 4, height: 6, tiltX: 17,
       tiltY: -20, twist: 70, isPrimary: true}),
     'onWheel': () => new window.WheelEvent('wheel', Object.assign({}, mouseOptions, {deltaX: 11, deltaY: 17, deltaZ: 23, deltaMode: 1})),
+    'mouseWheelButton': () => new MouseEvent('wheel', {bubbles: true, cancelable: true, button: 1}),
+    'normalizedWheel': () => new WheelEvent('wheel', {bubbles: true, cancelable: true, deltaX: 10, deltaY: -50}),
+    'normalizedLegacyWheel': () => Object.assign(new MouseEvent('wheel', {bubbles: true, cancelable: true}),
+        {'wheelDeltaX': -10, 'wheelDeltaY': 50}),
     'onTouchStart': () => new window.TouchEvent('touchstart', {bubbles: true, touches: [], targetTouches: [], changedTouches: [], altKey: true}),
     'onAnimationEnd': () => new AnimationEvent('animationend', {bubbles: true, animationName: 'fade', elapsedTime: 0.5, pseudoElement: '::before'}),
     'onTransitionEnd': () => new TransitionEvent('transitionend', {bubbles: true, propertyName: 'opacity', elapsedTime: 0.25, pseudoElement: ''}),
@@ -131,6 +137,11 @@ EventsBrowserTest.dispatch = function(target, name) {
       return event;
     },
     'legacyCopy': () => new Event('copy', {bubbles: true}),
+    'preCanceled': () => {
+      const event = new Event('click', {bubbles: true, cancelable: true});
+      event.preventDefault();
+      return event;
+    },
     'legacyCanceled': () => {
       const event = new MouseEvent('click', {bubbles: true, cancelable: true});
       event.preventDefault();
@@ -219,15 +230,24 @@ EventsBrowserTest.withoutReportedErrors = function(probe) {
 
 /** @param {!Element} root @param {function():void} probe @return {string} */
 EventsBrowserTest.observeDocumentListeners = function(root, probe) {
-  const document = root.ownerDocument;
-  const add = document.addEventListener;
-  const descriptor = Object.getOwnPropertyDescriptor(document, 'addEventListener');
+  return observeListenerRegistrations(root.ownerDocument, probe);
+};
+
+/** @param {!Element} root @param {function():void} probe @return {string} */
+EventsBrowserTest.observeRootListeners = function(root, probe) {
+  return observeListenerRegistrations(root, probe);
+};
+
+/** @param {!EventTarget} target @param {function():void} probe @return {string} */
+function observeListenerRegistrations(target, probe) {
+  const add = target.addEventListener;
+  const descriptor = Object.getOwnPropertyDescriptor(target, 'addEventListener');
   const events = [];
-  Object.defineProperty(document, 'addEventListener', {
+  Object.defineProperty(target, 'addEventListener', {
     configurable: true,
     value(type, listener, options) {
       events.push(type);
-      add.call(document, type, listener, options);
+      add.call(target, type, listener, options);
     },
   });
   try {
@@ -235,12 +255,12 @@ EventsBrowserTest.observeDocumentListeners = function(root, probe) {
     return events.join(' ');
   } finally {
     if (descriptor) {
-      Object.defineProperty(document, 'addEventListener', descriptor);
+      Object.defineProperty(target, 'addEventListener', descriptor);
     } else {
-      Reflect.deleteProperty(document, 'addEventListener');
+      Reflect.deleteProperty(target, 'addEventListener');
     }
   }
-};
+}
 
 /** @param {!Element} element @param {boolean} checked */
 EventsBrowserTest.setCheckedUntracked = function(element, checked) {

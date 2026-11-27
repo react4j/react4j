@@ -27,6 +27,11 @@ async function run(production) {
   await Test.run();
   await WrappedViews.run(production);
   Events.runBehavior();
+  Events.runEmitterRegistration();
+  Events.runEmitterPropagation();
+  Events.runEmitterSubscriptions();
+  Events.runSyntheticLifecycle(production);
+  Events.runSyntheticSpecializations();
   Events.runEnterLeave();
   Events.runBeforeInput();
   Events.runBeforeInputFallback();

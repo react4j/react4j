@@ -21,6 +21,13 @@ browser_test(
 )
 
 browser_test(
+    name = "emitter_test",
+    srcs = ["emitter_test.js"],
+    entry_point = "react4j.dom.EmitterTest",
+    deps = ["//dom/src/test/java/react4j/dom:runtime_coverage"],
+)
+
+browser_test(
     name = "fiber_test",
     srcs = ["fiber_test.js"],
     entry_point = "react4j.dom.FiberTest",

@@ -801,7 +801,7 @@ final class DomEvents {
         private void invoke(final Dispatch event, @Nullable final Invocation tail) {
             if (null != tail) {
                 var invocation = tail.next;
-                while (!event.stopped) {
+                while (!event.event.isPropagationStopped()) {
                     call(event, invocation);
                     if (Js.isTripleEqual(invocation, tail)) {
                         break;
@@ -1342,7 +1342,6 @@ final class DomEvents {
         private @Nullable Dispatch next;
         private @Nullable Invocation captures;
         private @Nullable Invocation bubbles;
-        private boolean stopped;
         private boolean persistent;
         private boolean released;
 
@@ -1357,7 +1356,6 @@ final class DomEvents {
                 final NativeEvent nativeEvent,
                 @Nullable final Object relatedTarget,
                 @Nullable final Object data) {
-            stopped = false;
             persistent = false;
             if (DEVELOPMENT && released) {
                 RELEASED_PROPERTIES.keySet().forEach(properties::delete);
@@ -1468,7 +1466,6 @@ final class DomEvents {
                 } else {
                     source.set("cancelBubble", true);
                 }
-                stopped = true;
                 properties.set("isPropagationStopped", TRUE);
             }
         }

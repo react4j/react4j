@@ -3,6 +3,9 @@ package react4j.dom;
 import static react4j.webtesting.Checks.check;
 import static react4j.webtesting.Checks.equal;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
@@ -308,6 +311,374 @@ public final class EventsBrowserTest {
             root.remove();
             portal.remove();
         }
+    }
+
+    @JsMethod
+    public static void runEmitterRegistration() {
+        final var root = Browser.append("div");
+        try {
+            final int[] calls = {0};
+            final ReactEventHandler handler = event -> calls[0]++;
+            emitterTree(root, null, null, null);
+            final var child = Browser.query(root, "#emitter-child");
+            emitterTree(root, handler, null, null);
+            check(child == Browser.query(root, "#emitter-child"), "Registration keeps the existing target");
+            check(emitterListener(child, "onClick") == handler, "Registration stores the supplied listener");
+            check(emitterListener(child, "onClick") == handler, "Lookup retrieves the same listener");
+            child.click();
+            check(1 == calls[0], "One native click invokes its registered handler once");
+
+            emitterTree(root, null, null, null);
+            check(
+                    Js.isTripleEqual(Js.undefined(), emitterListener(child, "onClick")),
+                    "Removing handlers returns undefined from lookup");
+            child.click();
+            check(1 == calls[0], "A removed handler receives no later clicks");
+
+            emitterTree(root, handler, null, null);
+            calls[0] = 0;
+            DomEvents.pause();
+            try {
+                child.click();
+                check(0 == calls[0], "A native click is ignored while the emitter is paused");
+            } finally {
+                DomEvents.resume();
+            }
+            child.click();
+            check(1 == calls[0], "The next click is delivered once after the emitter resumes");
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
+    public static void runEmitterPropagation() {
+        final var root = Browser.append("div");
+        try {
+            final var trace = new StringBuilder();
+            final ReactEventHandler record = event -> {
+                final var id = Browser.property(event.getCurrentTarget(), "id");
+                check(
+                        Js.isTripleEqual(event.getCurrentTarget(), Browser.query(root, "#" + id)),
+                        "A delegated currentTarget is the exact registered DOM element");
+                appendEmitterTarget(trace, event);
+            };
+            emitterTree(root, record, record, record);
+            final var child = Browser.query(root, "#emitter-child");
+            child.click();
+            equal("emitter-child emitter-parent emitter-grandparent ", trace.toString());
+
+            final ReactEventHandler replacement = event -> trace.append("updated ");
+            emitterTree(root, record, record, replacement);
+            trace.setLength(0);
+            child.click();
+            equal("emitter-child emitter-parent updated ", trace.toString());
+
+            final ReactEventHandler throwing = event -> {
+                appendEmitterTarget(trace, event);
+                throw new IllegalStateException("Emitter handler interrupted");
+            };
+            emitterTree(root, record, throwing, record);
+            trace.setLength(0);
+            check(clickError(child).contains("Emitter handler interrupted"), "Dispatch surfaces the throwing listener");
+            equal("emitter-child emitter-parent emitter-grandparent ", trace.toString());
+
+            final ReactEventHandler stop = event -> {
+                appendEmitterTarget(trace, event);
+                event.stopPropagation();
+            };
+            emitterTree(root, record, stop, record);
+            trace.setLength(0);
+            child.click();
+            equal("emitter-child emitter-parent ", trace.toString());
+
+            final ReactEventHandler overrideStop = event -> {
+                appendEmitterTarget(trace, event);
+                Js.<JsPropertyMap<Object>>uncheckedCast(event).set("isPropagationStopped", (FlagProbe) () -> true);
+            };
+            emitterTree(root, record, overrideStop, record);
+            trace.setLength(0);
+            child.click();
+            equal("emitter-child emitter-parent ", trace.toString());
+
+            emitterTree(root, stop, record, record);
+            trace.setLength(0);
+            child.click();
+            equal("emitter-child ", trace.toString());
+
+            final EmitterBooleanHandler returnsFalse = event -> {
+                appendEmitterTarget(trace, event);
+                return false;
+            };
+            emitterTree(root, Js.uncheckedCast(returnsFalse), record, record);
+            trace.setLength(0);
+            child.click();
+            equal("emitter-child emitter-parent emitter-grandparent ", trace.toString());
+
+            final int[] parentCalls = {0};
+            final ReactEventHandler parent = event -> parentCalls[0]++;
+            emitterTree(root, event -> emitterTree(root, null, null, null), parent, null);
+            child.click();
+            check(1 == parentCalls[0], "The ongoing click includes a listener removed while bubbling");
+            emitterTree(root, event -> emitterTree(root, null, parent, null), null, null);
+            child.click();
+            check(1 == parentCalls[0], "The ongoing click excludes a newly inserted listener");
+            child.click();
+            check(2 == parentCalls[0], "The next click sees the newly inserted listener");
+
+            final int[] entered = {0};
+            final ReactEventHandler enter = event -> {
+                check(Js.isTripleEqual(child, event.getCurrentTarget()), "Mouse enter targets the registered child");
+                entered[0]++;
+            };
+            ReactDOM.render(
+                    emitterNode(
+                            "emitter-grandparent",
+                            null,
+                            emitterNode(
+                                    "emitter-parent",
+                                    null,
+                                    host("div", JsPropertyMap.of("id", "emitter-child", "onMouseEnter", enter)))),
+                    root);
+            movement(child, "mouseover", null);
+            check(1 == entered[0], "One native mouseover extracts one current-target mouse enter");
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
+    public static void runEmitterSubscriptions() {
+        final var root = Browser.append("div");
+        try {
+            final int[] clicks = {0};
+            final ReactEventHandler click = event -> clicks[0]++;
+            final var registered = observeRootListeners(root, () -> {
+                emitterTree(root, click, null, null);
+                emitterTree(root, click, click, null);
+            });
+            final var registrations = Arrays.asList(registered.split(" "));
+            check(
+                    1 == Collections.frequency(registrations, "click"),
+                    "Multiple handler registrations attach one native click listener");
+            check(
+                    registrations.contains("input") && registrations.contains("change"),
+                    "The root listens for the native events used to extract input changes");
+            Browser.query(root, "#emitter-child").click();
+            check(2 == clicks[0], "One native click reaches each registered listener once");
+            final int[] changes = {0};
+            final ReactEventHandler change = event -> {
+                equal("change", event.getType());
+                changes[0]++;
+            };
+            ReactDOM.render(host("input", JsPropertyMap.of("onChange", change)), root);
+            Browser.setValue(Browser.query(root, "input"), "entered");
+            check(1 == changes[0], "An edited control delivers one synthetic change");
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
+    private static native String observeRootListeners(Browser.Element root, Probe probe);
+
+    @JsMethod
+    public static void runSyntheticLifecycle(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            final int[] calls = {0};
+            final SyntheticEvent<?>[] saved = new SyntheticEvent<?>[1];
+            final ReactEventHandler preserve = event -> {
+                check(!event.isDefaultPrevented(), "A fresh click starts uncanceled");
+                event.preventDefault();
+                check(
+                        event.isDefaultPrevented() && Boolean.TRUE.equals(Browser.property(event, "defaultPrevented")),
+                        "Preventing default sets both synthetic indicators");
+                check(!event.isPropagationStopped(), "A fresh click can propagate");
+                event.stopPropagation();
+                check(event.isPropagationStopped(), "Stopping propagation sets the synthetic flag");
+                persistEvent(event);
+                saved[0] = event;
+                calls[0]++;
+            };
+            ReactDOM.render(host("button", JsPropertyMap.of("onClick", preserve)), root);
+            final var button = Browser.query(root, "button");
+            button.click();
+            final var kept = Objects.requireNonNull(saved[0]);
+            equal("click", kept.getType());
+            check(kept.isBubbles() && kept.isCancelable(), "Persisted clicks keep their native flags");
+            check(1 == calls[0], "One click invokes the persistent handler once");
+
+            calls[0] = 0;
+            final ReactEventHandler canceled = event -> {
+                check(event.isDefaultPrevented(), "Native cancellation is visible in the synthetic event");
+                calls[0]++;
+            };
+            ReactDOM.render(host("button", JsPropertyMap.of("onClick", canceled)), root);
+            dispatch(button, "preCanceled");
+            dispatch(button, "legacyCanceled");
+            check(2 == calls[0], "Both modern and legacy native cancellation dispatch");
+
+            calls[0] = 0;
+            final ReactEventHandler pooled = event -> {
+                saved[0] = event;
+                calls[0]++;
+            };
+            ReactDOM.render(host("button", JsPropertyMap.of("onClick", pooled)), root);
+            button.click();
+            final var released = Objects.requireNonNull(saved[0]);
+            check(1 == calls[0], "A released click was delivered exactly once");
+            releasedDiagnostic(
+                    "type",
+                    production,
+                    () -> check(Js.isTripleEqual(null, released.getType()), "Released type is null"));
+            releasedDiagnostic(
+                    "nativeEvent",
+                    production,
+                    () -> check(Js.isTripleEqual(null, released.getNativeEvent()), "Released native event is null"));
+            releasedDiagnostic(
+                    "target",
+                    production,
+                    () -> check(Js.isTripleEqual(null, released.getTarget()), "Released target is null"));
+            releasedDiagnostic(
+                    "type",
+                    production,
+                    () -> Js.<JsPropertyMap<Object>>uncheckedCast(released).set("type", "MouseEvent"));
+            releasedDiagnostic("preventDefault", production, released::preventDefault);
+            releasedDiagnostic("stopPropagation", production, released::stopPropagation);
+            releasedDiagnostic(
+                    "isPropagationStopped",
+                    production,
+                    () -> check(!released.isPropagationStopped(), "Released propagation state resets"));
+            releasedDiagnostic(
+                    "isDefaultPrevented",
+                    production,
+                    () -> check(!released.isDefaultPrevented(), "Released default state resets"));
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    private static void releasedDiagnostic(String member, boolean production, Probe action) {
+        final var warning = captureWarnings(action);
+        if (production) {
+            equal("", warning);
+        } else {
+            check(
+                    warning.contains("`" + member + "`") && warning.contains("released/nullified synthetic event"),
+                    "Expected a warning for released event member " + member + ": " + warning);
+        }
+    }
+
+    @JsMethod
+    public static void runSyntheticSpecializations() {
+        final var root = Browser.append("div");
+        try {
+            final var wheels = new ArrayList<SyntheticEvent<?>>();
+            final ReactEventHandler wheel = event -> {
+                check(!event.isDefaultPrevented(), "Wheel begins uncanceled");
+                event.preventDefault();
+                check(event.isDefaultPrevented(), "Wheel supports preventing default");
+                persistEvent(event);
+                wheels.add(event);
+            };
+            ReactDOM.render(host("div", JsPropertyMap.of("onWheel", wheel)), root);
+            final var node = Browser.query(root, "div");
+            dispatch(node, "mouseWheelButton");
+            check(1 == wheels.size(), "One native wheel with mouse fields invokes the handler once");
+            equal("wheel", wheels.get(0).getType());
+            check(Js.isTripleEqual(1, Browser.property(wheels.get(0), "button")), "Wheel inherits the mouse button");
+            wheels.clear();
+            dispatch(node, "normalizedWheel");
+            dispatch(node, "normalizedLegacyWheel");
+            check(2 == wheels.size(), "Modern and legacy wheel events are delivered");
+            for (final var event : wheels) {
+                check(Js.isTripleEqual(10, Browser.property(event, "deltaX")), "Wheel preserves normalized deltaX");
+                check(Js.isTripleEqual(-50, Browser.property(event, "deltaY")), "Wheel preserves normalized deltaY");
+            }
+
+            final var clipboardEvents = new ArrayList<SyntheticEvent<?>>();
+            final ReactEventHandler clipboard = event -> {
+                check(!event.isDefaultPrevented(), "Clipboard begins uncanceled");
+                event.preventDefault();
+                check(event.isDefaultPrevented(), "Clipboard supports preventing default");
+                check(!event.isPropagationStopped(), "Clipboard begins with propagation enabled");
+                event.stopPropagation();
+                check(event.isPropagationStopped(), "Clipboard supports stopping propagation");
+                persistEvent(event);
+                clipboardEvents.add(event);
+            };
+            ReactDOM.render(
+                    host("div", JsPropertyMap.of("onCopy", clipboard, "onCut", clipboard, "onPaste", clipboard)), root);
+            for (final var type : new String[] {"Copy", "Cut", "Paste"}) {
+                final var nativeEvent = dispatch(node, "on" + type);
+                final var received = clipboardEvents.get(clipboardEvents.size() - 1);
+                final var data = Browser.property(nativeEvent, "clipboardData");
+                check(
+                        null != data && data == Browser.property(received, "clipboardData"),
+                        "Clipboard event exposes the native DataTransfer instance");
+            }
+            check(3 == clipboardEvents.size(), "Copy, cut and paste each dispatch one event");
+            equal("copy", clipboardEvents.get(0).getType());
+            equal("cut", clipboardEvents.get(1).getType());
+            equal("paste", clipboardEvents.get(2).getType());
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    private static void persistEvent(SyntheticEvent<?> event) {
+        check(
+                !Js.<FlagProbe>uncheckedCast(Browser.property(event, "isPersistent"))
+                        .read(),
+                "A fresh synthetic event is pooled");
+        event.persist();
+        check(
+                Js.<FlagProbe>uncheckedCast(Browser.property(event, "isPersistent"))
+                        .read(),
+                "Persist keeps the event after dispatch");
+    }
+
+    private static void emitterTree(
+            Browser.Element root,
+            @Nullable ReactEventHandler child,
+            @Nullable ReactEventHandler parent,
+            @Nullable ReactEventHandler grandparent) {
+        ReactDOM.render(
+                emitterNode(
+                        "emitter-grandparent",
+                        grandparent,
+                        emitterNode("emitter-parent", parent, emitterNode("emitter-child", child, null))),
+                root);
+    }
+
+    private static ReactElement emitterNode(
+            String id, @Nullable ReactEventHandler listener, @Nullable ReactNode child) {
+        final var props = JsPropertyMap.<@Nullable Object>of("id", id, "children", child);
+        if (null != listener) {
+            props.set("onClick", listener);
+        }
+        return host("div", props);
+    }
+
+    private static @Nullable Object emitterListener(Browser.Element element, String name) {
+        return Objects.requireNonNull(DomEvents.state(Js.uncheckedCast(element)))
+                .inputs
+                .get(name);
+    }
+
+    private static void appendEmitterTarget(StringBuilder trace, SyntheticEvent<?> event) {
+        trace.append(Browser.property(event.getCurrentTarget(), "id")).append(' ');
+    }
+
+    @JsFunction
+    private interface EmitterBooleanHandler {
+        boolean handle(SyntheticEvent<?> event);
     }
 
     private static void radioGroups(final Browser.Element root) {
