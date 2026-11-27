@@ -85,13 +85,20 @@ public final class IsolatedSuspenseTest {
         final var s = new Scenario(3 != number && (6 > number || 9 == number), false);
         switch (number) {
             case 0 -> {
-                final var app = s.wrapper(() -> {
-                    s.lines.add("Foo");
-                    return s.boundary(5000, "Loading...", s.wrapper(() -> {
-                        s.lines.add("Bar");
-                        return array(s.async("A", 100), s.textNode("B"));
-                    }, null));
-                }, null);
+                final var app = s.wrapper(
+                        () -> {
+                            s.lines.add("Foo");
+                            return s.boundary(
+                                    5000,
+                                    "Loading...",
+                                    s.wrapper(
+                                            () -> {
+                                                s.lines.add("Bar");
+                                                return array(s.async("A", 100), s.textNode("B"));
+                                            },
+                                            null));
+                        },
+                        null);
                 s.render(app);
                 s.yields("Foo", "Bar", "Suspend! [A]", "B", "Loading...");
                 s.visible("");
@@ -129,13 +136,15 @@ public final class IsolatedSuspenseTest {
             case 2 -> {
                 final var pending = new IsolatedWrappedViewsTest.Pending();
                 final boolean[] ready = {false};
-                final var async = s.wrapper(() -> {
-                    if (!ready[0]) {
-                        s.lines.add("Suspend!");
-                        return suspend(pending);
-                    }
-                    return s.logText("Async");
-                }, null);
+                final var async = s.wrapper(
+                        () -> {
+                            if (!ready[0]) {
+                                s.lines.add("Suspend!");
+                                return suspend(pending);
+                            }
+                            return s.logText("Async");
+                        },
+                        null);
                 s.root.render(s.boundary(1000, "Loading...", array(async, s.textNode("Sibling"))), null);
                 untilYield(s.harness, s.lines, 1);
                 s.yields("Suspend!");
@@ -149,8 +158,8 @@ public final class IsolatedSuspenseTest {
             case 3 -> {
                 final var pending = new IsolatedWrappedViewsTest.Pending();
                 final var lazy = host("i", null, null);
-                props(lazy).set("type", JsPropertyMap.of("$$typeof", React.Lazy, "_status", -1,
-                        "_ctor", (Loader) () -> pending));
+                props(lazy).set("type", JsPropertyMap.of("$$typeof", React.Lazy, "_status", -1, "_ctor", (Loader)
+                        () -> pending));
                 lazy.input("name", "Hi").input("scenario", s).input("mode", "text");
                 s.render(s.boundary(5000, "Loading...", lazy));
                 s.yields("Loading...");
@@ -185,8 +194,9 @@ public final class IsolatedSuspenseTest {
                     try {
                         s.flush();
                     } catch (Throwable error) {
-                        check(Objects.requireNonNull(error.getMessage()).contains(
-                                "An update was suspended, but no placeholder UI was provided."),
+                        check(
+                                Objects.requireNonNull(error.getMessage())
+                                        .contains("An update was suspended, but no placeholder UI was provided."),
                                 "Uncaught suspension reports missing fallback");
                         return;
                     }
@@ -220,8 +230,10 @@ public final class IsolatedSuspenseTest {
                 s.visible("AB:2C");
             }
             case 7 -> {
-                final var app = s.wrapper(() -> s.boundary(5000, "Loading...", array(
-                        s.subject("Stateful", "plain", 0), s.async(s.middle, 1000))), null);
+                final var app = s.wrapper(
+                        () -> s.boundary(
+                                5000, "Loading...", array(s.subject("Stateful", "plain", 0), s.async(s.middle, 1000))),
+                        null);
                 s.middle = "A";
                 s.render(app);
                 s.yields("Stateful: 1", "Suspend! [A]", "Loading...");
@@ -294,11 +306,16 @@ public final class IsolatedSuspenseTest {
         final ViewConstructorFunction hidden;
         final ViewConstructorFunction wrapper = IsolatedReconcilerTest.Output::new;
         final ViewConstructorFunction subject = Subject::new;
-        @Nullable Subject stateful;
+
+        @Nullable
+        Subject stateful;
+
         String middle = "";
 
         Scenario(boolean concurrent, boolean persistent) {
-            root = persistent ? harness.memory.createPersistentRoot(concurrent) : harness.memory.createTestRoot(concurrent);
+            root = persistent
+                    ? harness.memory.createPersistentRoot(concurrent)
+                    : harness.memory.createTestRoot(concurrent);
             hidden = (JsPropertyMap<@Nullable Object> inputs) -> new Hidden(inputs).observe(this);
         }
 
@@ -310,11 +327,13 @@ public final class IsolatedSuspenseTest {
         ReactNode read(String text, int delay) {
             final var resource = resources.computeIfAbsent(text, key -> {
                 final var pending = new Resource();
-                harness.schedule(() -> {
-                    pending.ready = true;
-                    lines.add("Promise resolved [" + key + "]");
-                    pending.pending.resolve(key);
-                }, delay);
+                harness.schedule(
+                        () -> {
+                            pending.ready = true;
+                            lines.add("Promise resolved [" + key + "]");
+                            pending.pending.resolve(key);
+                        },
+                        delay);
                 return pending;
             });
             if (resource.ready) {
@@ -340,7 +359,10 @@ public final class IsolatedSuspenseTest {
 
         ReactElement subject(String text, String mode, int delay) {
             return ReactElement.createViewElement(subject)
-                    .input("name", text).input("mode", mode).input("delay", delay).input("scenario", this);
+                    .input("name", text)
+                    .input("mode", mode)
+                    .input("delay", delay)
+                    .input("scenario", this);
         }
 
         ReactElement boundary(int duration, String fallback, ReactNode child) {
@@ -388,8 +410,9 @@ public final class IsolatedSuspenseTest {
                     if (Boolean.TRUE.equals(item.get("hidden"))) {
                         result.append("{hidden}");
                     }
-                    result.append("(").append(null == text
-                            ? visibleChildren(Objects.requireNonNull(item.get("children"))) : text).append(")");
+                    result.append("(")
+                            .append(null == text ? visibleChildren(Objects.requireNonNull(item.get("children"))) : text)
+                            .append(")");
                 }
             }
             return result.toString();
@@ -416,7 +439,8 @@ public final class IsolatedSuspenseTest {
 
         @Override
         public ReactNode render() {
-            return host("span", null, Objects.requireNonNull(_scenario).logText("A")).input("hidden", true);
+            return host("span", null, Objects.requireNonNull(_scenario).logText("A"))
+                    .input("hidden", true);
         }
     }
 

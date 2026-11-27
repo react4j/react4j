@@ -521,7 +521,8 @@ public final class IsolatedReconcilerTest {
                 Scheduled event = null;
                 for (final var entry : _tasks.entrySet()) {
                     final var candidate = entry.getValue();
-                    if (candidate.timer() && candidate.time() <= end
+                    if (candidate.timer()
+                            && candidate.time() <= end
                             && (null == event || candidate.time() < event.time())) {
                         handle = entry.getKey();
                         event = candidate;

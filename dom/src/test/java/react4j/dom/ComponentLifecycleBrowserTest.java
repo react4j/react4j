@@ -63,16 +63,33 @@ public final class ComponentLifecycleBrowserTest {
         descriptor.set("displayName", "SnapshotView");
         descriptor.set("getDerivedStateFromProps", (Derive)
                 (inputs, state) -> JsPropertyMap.of("value", Js.coerceToInt(state.get("value")) + 1));
-        render(ReactElement.createViewElement(type).input("value", "foo").input("trace", trace).input("snapshotValue", snapshot), host);
+        render(
+                ReactElement.createViewElement(type)
+                        .input("value", "foo")
+                        .input("trace", trace)
+                        .input("snapshotValue", snapshot),
+                host);
         check(trace.equals(List.of("render")), "Mount calls neither snapshot nor update: " + trace);
         trace.clear();
-        render(ReactElement.createViewElement(type).input("value", "bar").input("trace", trace).input("snapshotValue", snapshot), host);
+        render(
+                ReactElement.createViewElement(type)
+                        .input("value", "bar")
+                        .input("trace", trace)
+                        .input("snapshotValue", snapshot),
+                host);
         check(
                 trace.equals(List.of("render", "snapshot:foo:1", "update:foo:1:" + snapshot)),
                 "Snapshot reaches update: " + trace);
         trace.clear();
-        render(ReactElement.createViewElement(type).input("value", "baz").input("trace", trace).input("snapshotValue", snapshot), host);
-        check(trace.equals(List.of("render", "snapshot:bar:2", "update:bar:2:" + snapshot)), "Snapshot refreshes: " + trace);
+        render(
+                ReactElement.createViewElement(type)
+                        .input("value", "baz")
+                        .input("trace", trace)
+                        .input("snapshotValue", snapshot),
+                host);
+        check(
+                trace.equals(List.of("render", "snapshot:bar:2", "update:bar:2:" + snapshot)),
+                "Snapshot refreshes: " + trace);
         trace.clear();
         ReactDOM.unmountComponentAtNode(host);
         check(trace.isEmpty(), "Neither snapshot nor update runs on unmount");
@@ -108,7 +125,8 @@ public final class ComponentLifecycleBrowserTest {
         classDescriptor(type, "LifeCycleComponent");
         final var instance = (JournalView) Objects.requireNonNull(
                 render(ReactElement.createViewElement(type).input("log", log), host));
-        check(log.equals(List.of(
+        check(
+                log.equals(List.of(
                         "constructor:false:0",
                         "willMount:false:0",
                         "initialRender:false:1",
@@ -185,13 +203,23 @@ public final class ComponentLifecycleBrowserTest {
         classDescriptor(parent, "Parent").set("childContextTypes", JsPropertyMap.of("x", true));
         ClassComponent.properties(parent).set("functionComponent", true);
         classDescriptor(child, "Child").set("contextTypes", JsPropertyMap.of("x", true));
-        final var element = ReactElement.createViewElement(parent).input("trace", trace).input("child", child);
-        final Ref firstRef = value -> { if (null != value) { trace.add("ref"); } };
-        final Ref nextRef = value -> { if (null != value) { trace.add("ref"); } };
+        final var element =
+                ReactElement.createViewElement(parent).input("trace", trace).input("child", child);
+        final Ref firstRef = value -> {
+            if (null != value) {
+                trace.add("ref");
+            }
+        };
+        final Ref nextRef = value -> {
+            if (null != value) {
+                trace.add("ref");
+            }
+        };
         render(viewWithRef(parent, firstRef, element.inputs()), host);
         // New inputs ensure React reconciles the wrapper and invokes didUpdate.
         render(viewWithRef(parent, nextRef, element.dup().inputs()), host);
-        check(trace.equals(List.of("will mount", "render", "did mount", "ref", "render", "did update", "ref")),
+        check(
+                trace.equals(List.of("will mount", "render", "did mount", "ref", "render", "did update", "ref")),
                 "The module pattern commits context and lifecycle callbacks in order: " + trace);
         ReactDOM.unmountComponentAtNode(host);
     }
@@ -210,18 +238,26 @@ public final class ComponentLifecycleBrowserTest {
                 render(ReactElement.createStrictMode(element), host);
                 throw new AssertionError("The derived-state callback should fail");
             } catch (RuntimeException error) {
-                check(Objects.requireNonNull(error.getMessage()).contains("Oops!"), "The original derive error survives");
+                check(
+                        Objects.requireNonNull(error.getMessage()).contains("Oops!"),
+                        "The original derive error survives");
             }
         });
-        check(List.of(messages).stream().noneMatch(message -> message.contains("its initial state is")),
+        check(
+                List.of(messages).stream().noneMatch(message -> message.contains("its initial state is")),
                 "Function factories do not run the class constructor state diagnostic");
-        check(production == List.of(messages).stream().noneMatch(message ->
-                message.contains("Legacy context API has been detected within a strict-mode tree")
-                        && message.contains("Provider")), "The strict legacy context diagnostic names Provider");
+        check(
+                production
+                        == List.of(messages).stream()
+                                .noneMatch(message -> message.contains(
+                                                "Legacy context API has been detected within a strict-mode tree")
+                                        && message.contains("Provider")),
+                "The strict legacy context diagnostic names Provider");
         ReactDOM.unmountComponentAtNode(host);
     }
 
-    private static ReactElement viewWithRef(ViewConstructorFunction type, Ref ref, JsPropertyMap<@Nullable Object> inputs) {
+    private static ReactElement viewWithRef(
+            ViewConstructorFunction type, Ref ref, JsPropertyMap<@Nullable Object> inputs) {
         final var element = ReactElement.createViewElement(type);
         final var raw = ClassComponent.properties(element);
         raw.set("ref", ref);
@@ -355,8 +391,7 @@ public final class ComponentLifecycleBrowserTest {
             final var expectsWarning = !production && !legacy && !polyfill;
             final var api = mode.startsWith("snapshot") ? "getSnapshotBeforeUpdate()" : "getDerivedStateFromProps()";
             if (polyfill) {
-                final var warnings = captureWarnings(
-                        () -> render(ReactElement.createStrictMode(element), host));
+                final var warnings = captureWarnings(() -> render(ReactElement.createStrictMode(element), host));
                 check(0 == warnings.length, "Polyfilled old hooks do not warn in strict mode");
             } else {
                 expectWarning(
@@ -642,7 +677,8 @@ public final class ComponentLifecycleBrowserTest {
 
         @Override
         public ReactNode render() {
-            return ReactNode.of((String) Objects.requireNonNull(Objects.requireNonNull(state()).get("stateField")));
+            return ReactNode.of((String)
+                    Objects.requireNonNull(Objects.requireNonNull(state()).get("stateField")));
         }
     }
 
@@ -661,7 +697,8 @@ public final class ComponentLifecycleBrowserTest {
         public ReactNode render() {
             final var fiber = activeFiber();
             if (fiber.isMountedView(this)) {
-                final var seen = Js.<@Nullable Object[]>uncheckedCast(Objects.requireNonNull(requireInputs().get("seen")));
+                final var seen = Js.<@Nullable Object[]>uncheckedCast(
+                        Objects.requireNonNull(requireInputs().get("seen")));
                 seen[0] = fiber.children[0].hostInstance;
             }
             return ReactElement.createHostElement("div", null, null, JsPropertyMap.of());
@@ -718,8 +755,11 @@ public final class ComponentLifecycleBrowserTest {
 
         @Override
         public ReactNode render() {
-            final var context = Objects.requireNonNull(ClassComponent.properties(this).get("context"));
-            check(2 == Js.coerceToInt(ClassComponent.properties(context).get("x")), "The child's legacy context is two");
+            final var context =
+                    Objects.requireNonNull(ClassComponent.properties(this).get("context"));
+            check(
+                    2 == Js.coerceToInt(ClassComponent.properties(context).get("x")),
+                    "The child's legacy context is two");
             return ReactElement.createHostElement("div", null, null, JsPropertyMap.of());
         }
     }
