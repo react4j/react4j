@@ -43,18 +43,20 @@ The selected suites include forwardRef, the React core files that import ReactDO
 
 ## Results
 
-The comparison ran 1,900 cases in 118 suites at runtime commit `211e46fce`. Stock React passed all 1,876 enabled cases in both modes. Across the entire selection Java passed 1,610 in development and 1,732 in production. Every previously passing case still passed. The mode names refer to Jest and the Java runtime environment defines. The optimized production application is tested separately in Chromium.
+The comparison ran 1,900 cases in 118 suites with the runtime and fixture bridge at `3dbf42f3e`. Stock React passed all 1,876 enabled cases in both modes. Java passed 1,658 in development and 1,769 in production. This adds 48 development and 37 production passes over `211e46fce`, and every previously passing case still passed. The mode names refer to Jest and the Java runtime environment defines. The optimized production application is tested separately in Chromium.
 
 | Outcome of original case | Development | Production |
 | --- | ---: | ---: |
-| Passed with a Java renderer call and an effective assertion | 1,433 | 1,369 |
+| Passed with a Java renderer call and an effective assertion | 1,481 | 1,406 |
 | Passed with a Java renderer call and no effective assertion | 49 | 234 |
 | Passed without entering the Java renderer | 128 | 129 |
-| Failed after entering the Java renderer | 219 | 98 |
+| Failed after entering the Java renderer | 171 | 61 |
 | Failed before entering the Java renderer | 46 | 45 |
 | Failed with an explicit test-adapter limit | 1 | 1 |
 | Failed on an unsupported runtime feature | 0 | 0 |
 | Skipped upstream | 24 | 24 |
+
+All 84 original DOM error-boundary cases passed on both runtimes and in both modes. The Java translations exercise both recovery strategies in 77 Chromium tests sharing seven identical scenarios. Five original event-emitter cases now look up listeners in committed Java event state, disable and re-enable dispatch, and pass using native clicks. Three other emitter originals use ReactDOM’s private event-plugin registration API. Their Java counterparts observe native listener registrations and change delivery.
 
 All 198 cases in the input, select, option and textarea suites passed on both sides. Of those, 188 entered the Java renderer. Of the 151 cases in ReactDOMComponent, 133 entered Java. All 133 passed in production and 131 passed in development. The other two expect warnings for the legacy ShadyDOM polyfill.
 
