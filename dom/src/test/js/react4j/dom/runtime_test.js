@@ -1,20 +1,31 @@
 goog.module('react4j.dom.RuntimeTest');
 const Children = goog.require('react4j.dom.ChildReconciliationTest');
+const Classes = goog.require('react4j.dom.ClassLifecycleBrowserTest');
 const DevToolsHookTest = goog.require('react4j.dom.DevToolsHookTest');
 const Events = goog.require('react4j.dom.EventsBrowserTest');
 const Fiber = goog.require('react4j.dom.FiberReconciliationTest');
+const Memory = goog.require('react4j.dom.MemoryBrowserTest');
 const OriginalHost = goog.require('react4j.dom.OriginalHostCasesBrowserTest');
 const Parity = goog.require('react4j.dom.RuntimeParityBrowserTest');
+const ReconcilerDiagnostics = goog.require('react4j.dom.ReconcilerDiagnosticsBrowserTest');
 const Test = goog.require('react4j.dom.RuntimeBrowserTest');
+const WrappedViews = goog.require('react4j.dom.WrappedViewsBrowserTest');
 /** @param {boolean} production @return {!Promise<void>} */
 async function run(production) {
   Events.runNestingDiagnostics(production);
   Events.runFormDiagnostics(production);
   Children.run();
+  Classes.run(production);
   await Fiber.run();
   Fiber.interruptedSuspense();
+  await Fiber.orderedStateQueue();
+  Fiber.legacyStateCallbacks();
+  Fiber.expiredRoots();
   OriginalHost.run();
+  ReconcilerDiagnostics.run(production);
+  Memory.run();
   await Test.run();
+  await WrappedViews.run(production);
   Events.runBehavior();
   Events.runEnterLeave();
   Events.runBeforeInput();

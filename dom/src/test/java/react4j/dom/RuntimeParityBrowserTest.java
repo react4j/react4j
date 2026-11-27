@@ -1426,7 +1426,7 @@ public final class RuntimeParityBrowserTest {
         expectFailure("", () -> ReactDOM.unmountComponentAtNode(invalid));
     }
 
-    private static void expectFailure(String message, Runnable action) {
+    static void expectFailure(String message, Runnable action) {
         try {
             action.run();
         } catch (Throwable error) {

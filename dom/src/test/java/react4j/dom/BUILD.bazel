@@ -11,18 +11,22 @@ j2cl_library(
     srcs = [
         "BuildableBrowserTest.java",
         "ChildReconciliationTest.java",
+        "ClassLifecycleBrowserTest.java",
         "DevToolsHookTest.java",
         "EventsBrowserTest.java",
         "EventsBrowserTest.native.js",
         "FiberReconciliationTest.java",
+        "MemoryBrowserTest.java",
         "OriginalHostCasesBrowserTest.java",
         "OriginalHostCasesBrowserTest.native.js",
         "PropertiesBrowserTest.java",
         "PropertiesBrowserTest.native.js",
+        "ReconcilerDiagnosticsBrowserTest.java",
         "RuntimeBrowserTest.java",
         "RuntimeCoverageExample.java",
         "RuntimeParityBrowserTest.java",
         "RuntimeParityBrowserTest.native.js",
+        "WrappedViewsBrowserTest.java",
     ],
     deps = [
         "//:core",
@@ -32,6 +36,7 @@ j2cl_library(
         "//third_party:jsinterop_annotations-j2cl",
         "//third_party:jsinterop_base-j2cl",
         "//third_party:jspecify-j2cl",
+        "//tools/verification/runtime/java/react4j/dom:browser_memory_renderer",
     ],
 )
 

@@ -195,7 +195,7 @@ public final class OriginalHostCasesBrowserTest {
     }
 
     @JsMethod
-    private static native String[] captureWarnings(BrowserPromise.Action render);
+    static native String[] captureWarnings(BrowserPromise.Action render);
 
     private static void inputAttributeOrder(Browser.Element container) {
         final var input = ReactElement.createHostElement(

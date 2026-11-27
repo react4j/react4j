@@ -1474,7 +1474,7 @@ public final class EventsBrowserTest {
     }
 
     @JsFunction
-    private interface Probe {
+    interface Probe {
         void run();
     }
 
@@ -1487,7 +1487,7 @@ public final class EventsBrowserTest {
     private static native int releasedWarnings(Probe probe);
 
     @JsMethod
-    private static native String captureWarnings(Probe probe);
+    static native String captureWarnings(Probe probe);
 
     @JsMethod
     private static native String clickError(Browser.Element target);

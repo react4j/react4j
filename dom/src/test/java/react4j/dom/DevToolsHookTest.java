@@ -11,6 +11,8 @@ import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.Contexts;
+import react4j.React;
+import react4j.ReactNode;
 import react4j.webtesting.Browser;
 
 /** Exercises renderer registration and host selection across commits through the public extension hook. */
@@ -82,12 +84,33 @@ public final class DevToolsHookTest {
                 observer.throwNotifications = false;
             }
             checkContext(container, find);
+            checkWrapperTypes(container, find);
             checkObserver();
         } finally {
             ReactDOM.unmountComponentAtNode(container);
             container.remove();
             Js.global().delete("__REACT_DEVTOOLS_GLOBAL_HOOK__");
         }
+    }
+
+    private static void checkWrapperTypes(Browser.Element container, FindFiber find) {
+        final var forward = JsPropertyMap.of(
+                "$$typeof", React.ForwardRef, "render", (Forward) (inputs, ref) -> DOM.span("wrapped"));
+        final var memo = JsPropertyMap.of("$$typeof", React.Memo, "type", forward);
+        final var lazy = JsPropertyMap.of("$$typeof", React.Lazy, "_status", 1, "_result", memo);
+        ReactDOM.render(WrappedViewsBrowserTest.element(lazy, null, JsPropertyMap.of()), container);
+        check("wrapped".equals(container.getTextContent()), "All wrappers reached the host");
+        var fiber = record(find.find(container.getFirstElementChild()));
+        for (final int tag : new int[] {11, 14, 16}) {
+            fiber = record(fiber.get("return"));
+            check(tag == Js.asInt(fiber.get("tag")), "Extension sees the correct wrapper tag " + tag);
+        }
+        check(lazy == fiber.get("type"), "Extension preserves lazy descriptor identity");
+    }
+
+    @JsFunction
+    private interface Forward {
+        ReactNode render(JsPropertyMap<@Nullable Object> inputs, @Nullable Object ref);
     }
 
     private static void checkContext(final Browser.Element container, final FindFiber find) {
