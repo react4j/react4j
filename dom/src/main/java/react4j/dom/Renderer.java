@@ -750,6 +750,9 @@ final class Renderer {
         private boolean _captured;
         private @Nullable Object _suspension = Js.undefined();
         private @Nullable LegacySuspense _fallbackPending = Js.uncheckedCast(Js.undefined());
+        private @Nullable LegacyReturn _legacyReturn;
+        private @Nullable LegacyReturn _legacyPrimary;
+        private boolean _legacyPing;
         private boolean _retrySuspendedView;
         private int _primaryCount;
         private int _index;
@@ -802,7 +805,7 @@ final class Renderer {
                 }
                 if (1 != values.length || !reuseSingle(values[0], scope, complete)) {
                     final var deletionPosition = root._mutations.size();
-                    if (root.concurrent || null != root._legacySuspense || 0 == previous.length) {
+                    if (root.concurrent || tracksLegacyReturns() || 0 == previous.length) {
                         new ChildList(values, previous, scope, complete, 0, deletionPosition, null).advance();
                     } else {
                         reconcileAlignedChildren(values, previous, scope, complete, deletionPosition);
@@ -1113,6 +1116,9 @@ final class Renderer {
                 boolean place,
                 @Nullable Scope scope,
                 Completion complete) {
+            if (tracksLegacyReturns()) {
+                child.advanceLegacyReturn(_legacyReturn);
+            }
             final var undo = root._renderUndo;
             if (null != undo) {
                 undo.add(child.checkpoint());
@@ -1145,8 +1151,42 @@ final class Renderer {
         }
 
         private void invalidateLegacy() {
-            markDirty();
+            invalidateLegacy(_legacyReturn);
+        }
+
+        private void invalidateLegacy(@Nullable LegacyReturn source) {
+            if (null == source) {
+                markDirty();
+            } else {
+                for (var link = source; null != link; link = link.parent) {
+                    link.dirty = true;
+                }
+                // Deferred updates can keep a child dirty after the boundary has bailed out.
+                for (var fiber = this; null != fiber; fiber = fiber.parent) {
+                    fiber._dirty = true;
+                }
+            }
             root.enqueue(null);
+        }
+
+        private boolean tracksLegacyReturns() {
+            return null != _legacyReturn || (React.Suspense == type && !root.concurrent);
+        }
+
+        private void advanceLegacyReturn(@Nullable LegacyReturn nextParent) {
+            final var current = _legacyReturn;
+            final LegacyReturn next;
+            if (null == current) {
+                next = new LegacyReturn();
+            } else if (null == current.alternate) {
+                next = new LegacyReturn();
+                current.alternate = next;
+                next.alternate = current;
+            } else {
+                next = current.alternate;
+            }
+            next.parent = nextParent;
+            _legacyReturn = next;
         }
 
         private void markDirty() {
@@ -1174,6 +1214,9 @@ final class Renderer {
         private void visitCommittedChildren(@Nullable Scope scope) {
             RenderFailure failure = null;
             for (final var child : children) {
+                if (tracksLegacyReturns()) {
+                    child.advanceLegacyReturn(_legacyReturn);
+                }
                 final var description = child._description;
                 if (!child.canReuse(description, scope)) {
                     child.update(Objects.requireNonNull(description), scope, root._saveResult);
@@ -1534,7 +1577,8 @@ final class Renderer {
             if (root.concurrent) {
                 attachConcurrentUpdater(component);
             } else {
-                component.attachLegacy(this::invalidateLegacy);
+                final var source = _legacyReturn;
+                component.attachLegacy(() -> invalidateLegacy(source));
             }
         }
 
@@ -1830,37 +1874,41 @@ final class Renderer {
             if (null != pending) {
                 _fallbackPending = null;
                 _suspension = pending;
-                showFallback(inputs, scope, primary, fallback, suspended, complete);
+                final var primaryReturn = new LegacyReturn();
+                primaryReturn.parent = _legacyReturn;
+                _legacyPrimary = primaryReturn;
+                reparentLegacyChildren(primary, 0, primary.length, primaryReturn);
+                showFallback(inputs, scope, primary, fallback, false, complete);
                 return;
             }
 
-            if (suspended && sameInputsAndScope) {
-                boolean primaryDirty = false;
-                for (final var child : primary) {
+            final var primaryReturn = _legacyPrimary;
+            final var ping = _legacyPing;
+            _legacyPing = false;
+            if (suspended && sameInputsAndScope && !ping && (null == primaryReturn || !primaryReturn.dirty)) {
+                for (final var child : fallback) {
                     if (child._dirty) {
-                        primaryDirty = true;
-                        break;
+                        showFallback(inputs, scope, primary, fallback, true, complete);
+                        return;
                     }
                 }
-                if (!primaryDirty) {
-                    showFallback(inputs, scope, primary, fallback, true, complete);
-                    return;
-                }
+                complete.finish(null);
+                return;
             }
 
             final var outer = root._legacySuspense;
             final var attempt = new LegacySuspense();
             root._legacySuspense = attempt;
             children = primary;
+            queueDeletions(fallback);
             reconcileChildren(inputs.get("children"), scope, renderFailure -> {
                 root._legacySuspense = outer;
                 if (null != renderFailure) {
-                    queueDeletions(fallback);
                     complete.finish(renderFailure);
                     return;
                 }
                 if (attempt.failures.isEmpty()) {
-                    completePrimary(fallback);
+                    completePrimary(NO_CHILDREN);
                     complete.finish(null);
                     return;
                 }
@@ -1868,34 +1916,55 @@ final class Renderer {
                 for (final var failure : attempt.failures) {
                     final var source = failure.source;
                     final Continuation retry = ignored -> {
-                        if (alive && source.alive && (_suspension == attempt || _fallbackPending == attempt)) {
-                            source.invalidate();
+                        if (alive && source.alive) {
+                            _legacyPing = true;
+                            source._retrySuspendedView = true;
+                            source.invalidateLegacy();
                         }
                     };
                     Js.<Thenable>uncheckedCast(failure.thrown()).then(retry, retry);
                 }
-                if (suspended) {
-                    _suspension = attempt;
-                    final var hidden = children;
-                    root._effects.add(new Effect(this, () -> setHidden(hidden, true)));
-                    showFallback(inputs, scope, hidden, fallback, true, complete);
-                } else {
-                    root._effects.add(new Effect(this, () -> {
-                        _fallbackPending = attempt;
-                        invalidate();
-                    }));
-                    complete.finish(null);
-                }
+                // The attempted primary commits first, deleting the old fallback.
+                // A second commit attaches a fresh fallback if the primary suspended again.
+                _suspension = null;
+                _legacyPrimary = null;
+                _primaryCount = 0;
+                root._effects.add(new Effect(this, () -> {
+                    _fallbackPending = attempt;
+                    invalidate();
+                }));
+                complete.finish(null);
             });
+        }
+
+        private static void reparentLegacyChildren(Fiber[] branch, int start, int end, @Nullable LegacyReturn parent) {
+            for (int i = start; i < end; i++) {
+                final var child = branch[i];
+                final var link = child._legacyReturn;
+                if (null != link) {
+                    link.parent = parent;
+                    if (Kind.HOST != child.kind && Kind.TEXT != child.kind) {
+                        final var primary = child._legacyPrimary;
+                        if (null != primary) {
+                            primary.parent = link;
+                            reparentLegacyChildren(child.children, 0, child._primaryCount, primary);
+                        }
+                        reparentLegacyChildren(child.children, child._primaryCount, child.children.length, link);
+                    }
+                }
+            }
         }
 
         private void completePrimary(Fiber[] fallback) {
             queueDeletions(fallback);
             if (null != _suspension) {
                 _suspension = null;
+                _legacyPrimary = null;
                 _primaryCount = 0;
                 if (root.concurrent) {
                     root._mutations.add(new Effect(this, () -> root._heldFallbacks.remove(this)));
+                } else {
+                    reparentLegacyChildren(children, 0, children.length, _legacyReturn);
                 }
                 final var restored = children;
                 root._effects.add(new Effect(this, () -> setHidden(restored, false)));
@@ -2286,6 +2355,14 @@ final class Renderer {
 
     private static final class LegacySuspense {
         private final List<RenderFailure> failures = new ArrayList<>();
+    }
+
+    // Legacy class instances schedule through the fiber copy on which they mounted.
+    // Hiding primary children reparents the committed copies underneath a new fragment.
+    private static final class LegacyReturn {
+        private @Nullable LegacyReturn parent;
+        private @Nullable LegacyReturn alternate;
+        private boolean dirty;
     }
 
     @JsFunction

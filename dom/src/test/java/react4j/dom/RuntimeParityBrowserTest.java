@@ -105,6 +105,9 @@ public final class RuntimeParityBrowserTest {
                 .then(ignored -> concurrentErrorWithPendingState())
                 .then(ignored -> laterSuspense(false))
                 .then(ignored -> laterSuspense(true))
+                .then(ignored -> hiddenPrimaryUpdates(false, false, production))
+                .then(ignored -> hiddenPrimaryUpdates(true, false, production))
+                .then(ignored -> hiddenPrimaryUpdates(true, true, production))
                 .then(ignored -> concurrentUpdates())
                 .then(ignored -> concurrentYield())
                 .then(ignored -> concurrentInterruption(false))
@@ -2037,6 +2040,150 @@ public final class RuntimeParityBrowserTest {
         }
     }
 
+    private static BrowserPromise hiddenPrimaryUpdates(boolean initiallySuspended, boolean nested, boolean production) {
+        final var gateRendersPerRetry = !production && React.shouldCheckInvariants() ? 2 : 1;
+        final var container = Browser.append("div");
+        final var primaryTrace = new StringBuilder();
+        final var fallbackTrace = new StringBuilder();
+        final var primary = new SuspenseCounter[1];
+        final var fallback = new SuspenseCounter[1];
+        final var primaryType = constructible(inputs -> primary[0] = new SuspenseCounter(inputs));
+        final var fallbackType = constructible(inputs -> fallback[0] = new SuspenseCounter(inputs));
+        final var gateType = constructible(OutputProbe::new);
+        final var ready = new boolean[1];
+        final var gateRenders = new int[1];
+        final var reveal = new BrowserPromise.Action[1];
+        final Consumer<Boolean> render = suspend -> {
+            ready[0] = !suspend;
+            final var pending = Browser.callback(done -> reveal[0] = () -> {
+                ready[0] = true;
+                gateRenders[0] = 0;
+                done.run();
+            });
+            final var gate = ReactElement.createViewElement(gateType).input("output", (Supplier<ReactNode>) () -> {
+                if (!ready[0]) {
+                    return throwPending(pending);
+                }
+                gateRenders[0]++;
+                return ReactNode.of("ready");
+            });
+            gate.setKey("gate");
+            final var counter = ReactElement.createViewElement(primaryType)
+                    .input("tag", "span")
+                    .input("trace", primaryTrace);
+            counter.setKey("primary");
+            final var sibling = ReactElement.createHostElement("em", "sibling", null, JsPropertyMap.of());
+            final var loading = ReactElement.createViewElement(fallbackType)
+                    .input("tag", "b")
+                    .input("trace", fallbackTrace);
+            ReactDOM.render(
+                    (nested
+                                    ? ReactElement.createSuspense(
+                                            null,
+                                            loading,
+                                            0,
+                                            gate,
+                                            ReactElement.createHostElement(
+                                                    "section",
+                                                    "wrapper",
+                                                    null,
+                                                    JsPropertyMap.of("children", new ReactNode[] {counter, sibling})))
+                                    : ReactElement.createSuspense(null, loading, 0, counter, sibling, gate))
+                            .input("maxDuration", 0),
+                    container);
+        };
+        try {
+            render.accept(initiallySuspended);
+            final var instance = Objects.requireNonNull(primary[0]);
+            final var host = Browser.query(container, "span");
+            equal("mount,", primaryTrace.toString());
+            var next = Browser.callback(done -> {
+                if (initiallySuspended) {
+                    Objects.requireNonNull(reveal[0]).run();
+                }
+                nextBrowserTask(done);
+            });
+            for (int cycle = 0; cycle < 2; cycle++) {
+                final var first = 0 == cycle;
+                final var count = 10 * (cycle + 1);
+                final var retriesForce = initiallySuspended && (!nested || first);
+                final var retriesState = initiallySuspended && nested && first;
+                next = next.then(ignored -> {
+                            render.accept(true);
+                            final var originalFallback = Objects.requireNonNull(fallback[0]);
+                            final var originalFallbackHost = Browser.query(container, "b");
+                            primaryTrace.setLength(0);
+                            fallbackTrace.setLength(0);
+                            instance.forceUpdate();
+                            equal(retriesForce ? "update," : "", primaryTrace.toString());
+                            equal(retriesForce ? "unmount,mount," : "", fallbackTrace.toString());
+                            check(
+                                    retriesForce == (originalFallback != fallback[0]),
+                                    "Fallback instance after forceUpdate");
+                            check(
+                                    retriesForce == (originalFallbackHost != Browser.query(container, "b")),
+                                    "Fallback host after forceUpdate");
+
+                            final var forcedFallback = Objects.requireNonNull(fallback[0]);
+                            final var forcedFallbackHost = Browser.query(container, "b");
+                            primaryTrace.setLength(0);
+                            fallbackTrace.setLength(0);
+                            instance.setState(JsPropertyMap.of("count", count + 2));
+                            equal(retriesState ? "update," : "", primaryTrace.toString());
+                            equal(retriesState ? "unmount,mount," : "", fallbackTrace.toString());
+                            check(
+                                    retriesState == (forcedFallback != fallback[0]),
+                                    "Fallback instance after hidden setState");
+                            check(
+                                    retriesState == (forcedFallbackHost != Browser.query(container, "b")),
+                                    "Fallback host after hidden setState");
+
+                            final var liveFallback = Objects.requireNonNull(fallback[0]);
+                            final var liveFallbackHost = Browser.query(container, "b");
+                            fallbackTrace.setLength(0);
+                            liveFallback.setState(JsPropertyMap.of("count", 7));
+                            equal("update,", fallbackTrace.toString());
+                            check(liveFallback == fallback[0], "Fallback updates preserve its instance");
+                            check(
+                                    liveFallbackHost == Browser.query(container, "b"),
+                                    "Fallback updates preserve its host");
+                            equal("7", liveFallbackHost.getTextContent());
+
+                            primaryTrace.setLength(0);
+                            fallbackTrace.setLength(0);
+                            instance.setState(JsPropertyMap.of("count", count + 3));
+                            equal("", primaryTrace.toString());
+                            equal("", fallbackTrace.toString());
+                            equal(retriesState ? String.valueOf(count + 2) : first ? "0" : "13", host.getTextContent());
+                            Objects.requireNonNull(reveal[0]).run();
+                            return Browser.callback(RuntimeParityBrowserTest::nextBrowserTask);
+                        })
+                        .then(ignored -> {
+                            final var expectedRenders =
+                                    gateRendersPerRetry * (1 + (retriesForce ? 1 : 0) + (retriesState ? 1 : 0));
+                            check(
+                                    expectedRenders == gateRenders[0],
+                                    "Expected " + expectedRenders + " gate renders, got " + gateRenders[0]
+                                            + " (initially suspended " + initiallySuspended + ", nested " + nested
+                                            + ", first cycle " + first + ")");
+                            equal("update,", primaryTrace.toString());
+                            equal("unmount,", fallbackTrace.toString());
+                            check(instance == primary[0], "Revealing the primary preserves its instance");
+                            check(host == Browser.query(container, "span"), "Revealing the primary preserves its host");
+                            equal(String.valueOf(count + 3), host.getTextContent());
+                            check(
+                                    0 == Browser.queryAll(container, "b").length,
+                                    "Revealing the primary removes the fallback");
+                            return null;
+                        });
+            }
+            return next.finallyDo(() -> remove(container));
+        } catch (Throwable error) {
+            remove(container);
+            throw error;
+        }
+    }
+
     private static BrowserPromise abandonSuspense(boolean concurrent) {
         final var container = Browser.append("div");
         final var root = concurrent ? ReactDOM.createRoot(container) : null;
@@ -2561,6 +2708,44 @@ public final class RuntimeParityBrowserTest {
             if (Boolean.TRUE.equals(inputs.get(fail))) {
                 throw new IllegalStateException("Commit parity failure");
             }
+        }
+    }
+
+    private static final class SuspenseCounter extends NativeView
+            implements OnComponentDidMount, OnComponentDidUpdate, OnComponentWillUnmount {
+        @JsConstructor
+        SuspenseCounter(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final var state = state();
+            return ReactElement.createHostElement(
+                    (String) Objects.requireNonNull(requireInputs().get("tag")),
+                    null,
+                    null,
+                    JsPropertyMap.of(
+                            "children", ReactNode.of(null == state ? "0" : String.valueOf(state.get("count")))));
+        }
+
+        @Override
+        public void componentDidMount() {
+            record("mount,");
+        }
+
+        @Override
+        public void componentDidUpdate(JsPropertyMap<@Nullable Object> previousInputs) {
+            record("update,");
+        }
+
+        @Override
+        public void componentWillUnmount() {
+            record("unmount,");
+        }
+
+        private void record(String phase) {
+            ((StringBuilder) Objects.requireNonNull(requireInputs().get("trace"))).append(phase);
         }
     }
 
