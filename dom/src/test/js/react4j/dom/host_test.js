@@ -4,8 +4,12 @@ const Mode = goog.require('react4j.browser.Mode');
 const testSuite = goog.require('goog.testing.testSuite');
 testSuite({
   testAttributeMutations() { Host.attributeMutations(); },
+  testAttributeDiagnostics() { Host.attributeDiagnostics('production' === Mode.environment); },
+  testAttributeObjectsAndBooleans() { Host.attributeObjectsAndBooleans('production' === Mode.environment); },
   testAttributeUpdates() { Host.attributeUpdates(); },
   testInnerHtml() { Host.innerHtml(); },
+  testInvalidHostInputs() { Host.invalidHostInputs('production' === Mode.environment); },
+  testReservedPropsAndMarkup() { Host.reservedPropsAndMarkup(); },
   testSvgNamespaces() { Host.svgNamespaces(); },
   testTextNodes() { Host.textNodes(); },
   testStyles() { Host.styles('production' === Mode.environment); },

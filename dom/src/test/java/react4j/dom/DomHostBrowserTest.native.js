@@ -120,19 +120,41 @@ DomHostBrowserTest.styleProperty = function(element, name) {
   return /** @type {!HTMLElement} */ (element).style.getPropertyValue(name);
 };
 
-/** @param {!Element} element @param {function():void} action @return {!Array<string>} */
-DomHostBrowserTest.styleWrites = function(element, action) {
-  const style = /** @type {!HTMLElement} */ (element).style;
+/** @param {function():void} action @return {!Array<string>} */
+DomHostBrowserTest.styleWrites = function(action) {
+  const style = CSSStyleDeclaration.prototype;
   const previous = style.setProperty;
   const writes = [];
   style.setProperty = function(name, value, priority = '') {
     writes.push(name + '=' + value);
-    previous.call(style, name, value, priority);
+    previous.call(this, name, value, priority);
   };
   try {
     action();
     return writes;
   } finally {
-    delete style.setProperty;
+    style.setProperty = previous;
+  }
+};
+
+/** @param {!Element} element @param {string} name @param {function():void} render @return {number} */
+DomHostBrowserTest.propertyWrites = function(element, name, render) {
+  const descriptor = Object.getOwnPropertyDescriptor(element, name);
+  let value = element[name];
+  let writes = 0;
+  Object.defineProperty(element, name, {
+    configurable: true,
+    get() { return value; },
+    set(next) { value = next; writes++; }
+  });
+  try {
+    render();
+    return writes;
+  } finally {
+    if (descriptor) {
+      Object.defineProperty(element, name, descriptor);
+    } else {
+      delete element[name];
+    }
   }
 };

@@ -3,6 +3,7 @@ package react4j.dom;
 import static react4j.webtesting.Checks.check;
 import static react4j.webtesting.Checks.equal;
 
+import java.util.Locale;
 import java.util.Objects;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsFunction;
@@ -84,27 +85,20 @@ public final class DomHostBrowserTest {
     public static void cleanStyles(boolean production) {
         final var root = Browser.append("div");
         try {
-            ReactDOM.render(style("div", JsPropertyMap.of("color", "red", "width", "30px")), root);
-            final var div = Browser.query(root, "div");
-            styleEquals(div, "color", "red", "width", "30px");
+            styleEquals(mountStyle(root, production, JsPropertyMap.of("color", "red", "width", "30px")),
+                    "color", "red", "width", "30px");
             final var lengths = JsPropertyMap.<@Nullable Object>of("left", 0, "margin", 16, "opacity", 0.5);
             lengths.set("padding", "4px");
-            ReactDOM.render(style("div", lengths), root);
-            styleEquals(div, "left", "0px", "margin", "16px", "opacity", "0.5", "padding", "4px");
-            expectWarnings(production, () -> ReactDOM.render(style("div", JsPropertyMap.of("--foo", 5)), root));
-            styleEquals(div, "--foo", "5");
-            expectWarnings(
-                    production,
-                    () -> ReactDOM.render(
-                            style("div", JsPropertyMap.of("--foo-primary", "red", "backgroundColor", "red")), root));
-            styleEquals(div, "--foo-primary", "red", "background-color", "red");
+            styleEquals(mountStyle(root, production, lengths),
+                    "left", "0px", "margin", "16px", "opacity", "0.5", "padding", "4px");
+            styleEquals(mountStyle(root, production, JsPropertyMap.of("--foo", 5)), "--foo", "5");
+            styleEquals(mountStyle(root, production, JsPropertyMap.of("--foo-primary", "red", "backgroundColor", "red")),
+                    "--foo-primary", "red", "background-color", "red");
             for (final var unset : new @Nullable Object[] {Js.undefined(), null}) {
-                ReactDOM.render(style("div", JsPropertyMap.of("color", unset, "width", "30px")), root);
-                styleEquals(div, "color", "", "width", "30px");
+                styleEquals(mountStyle(root, production, JsPropertyMap.of("color", unset, "width", "30px")),
+                        "color", "", "width", "30px");
             }
-            ReactDOM.unmountComponentAtNode(root);
-            ReactDOM.render(style("div", JsPropertyMap.of("color", null, "width", null)), root);
-            final var fresh = Browser.query(root, "div");
+            final var fresh = mountStyle(root, production, JsPropertyMap.of("color", null, "width", null));
             styleEquals(fresh, "color", "", "width", "");
             attribute(fresh, "style", false);
 
@@ -125,14 +119,20 @@ public final class DomHostBrowserTest {
             }) {
                 prefixed.set(name, 10);
             }
-            final var writes = styleWrites(fresh, () -> ReactDOM.render(style("div", prefixed), root));
-            check(12 == writes.length, "All prefixed CSS values reach the DOM style setter");
-            for (final var write : writes) {
-                check(write.endsWith("=10"), "Numeric style must not gain units: " + write);
-            }
+            final var writes = styleWrites(() -> mountStyle(root, production, prefixed));
+            equal("line-clamp=10,-webkit-line-clamp=10,-moz-flex-grow=10,-ms-flex-grow=10,-ms-grid-row=10,"
+                            + "-ms-grid-row-end=10,-ms-grid-row-span=10,-ms-grid-row-start=10,-ms-grid-column=10,"
+                            + "-ms-grid-column-end=10,-ms-grid-column-span=10,-ms-grid-column-start=10",
+                    String.join(",", writes));
         } finally {
             close(root);
         }
+    }
+
+    private static Browser.Element mountStyle(Browser.Element root, boolean production, Object styles) {
+        ReactDOM.unmountComponentAtNode(root);
+        expectWarnings(production, () -> ReactDOM.render(style("div", styles), root));
+        return Browser.query(root, "div");
     }
 
     @JsMethod
@@ -240,7 +240,7 @@ public final class DomHostBrowserTest {
     private static native String styleProperty(Browser.Element element, String name);
 
     @JsMethod
-    private static native String[] styleWrites(Browser.Element element, Action action);
+    private static native String[] styleWrites(Action action);
 
     @JsMethod
     public static void cleanAttributeMounts(boolean production) {
@@ -1016,6 +1016,249 @@ public final class DomHostBrowserTest {
             }
         });
     }
+
+    @JsMethod
+    public static void reservedPropsAndMarkup() {
+        final var root = Browser.append("div");
+        try {
+            for (final boolean enabled : new boolean[] {true, false}) {
+                ReactDOM.render(children("my-component", ReactNode.of(enabled ? "foo" : "bar"))
+                                .input("suppressContentEditableWarning", enabled)
+                                .input("suppressHydrationWarning", enabled), root);
+                final var custom = Browser.query(root, "my-component");
+                attribute(custom, "children", false);
+                attribute(custom, "suppressContentEditableWarning", false);
+                attribute(custom, "suppressHydrationWarning", false);
+            }
+            for (final var value : new String[] {"hi", "bye"}) {
+                ReactDOM.render(rawHtml("my-component", value), root);
+                attribute(Browser.query(root, "my-component"), "dangerouslySetInnerHTML", false);
+            }
+            for (final var vector : new @Nullable Object[][] {
+                {"textContent", "textContent"}, {Browser.number(0), "0"}, {false, "false"},
+                {"", ""}, {null, ""}, {Js.undefined(), ""}
+            }) {
+                ReactDOM.render(rawHtml("div", vector[0]), root);
+                equal(Objects.requireNonNull((String) vector[1]), root.getTextContent());
+            }
+            ReactDOM.unmountComponentAtNode(root);
+            for (final var html : new String[] {
+                "\n  \t  <span>  \n  testContent  \t  </span>  \n  \t",
+                "\n  \t  <span>  \n  testContent1  \t  </span>  \n  \t",
+                "\n  \t  <div>  \n  testContent2  \t  </div>  \n  \t"
+            }) {
+                ReactDOM.render(rawHtml("div", html), root);
+                property(Browser.query(root, "div"), "innerHTML", html);
+            }
+        } finally {
+            close(root);
+        }
+    }
+
+    @JsMethod
+    public static void invalidHostInputs(boolean production) {
+        final var root = Browser.append("div");
+        final var voidMessage = "input is a void element tag and must neither have `children` nor use `dangerouslySetInnerHTML`.";
+        final var htmlMessage = "`props.dangerouslySetInnerHTML` must be in the form `{__html: ...}`.";
+        final var styleMessage = "The `style` prop expects a mapping from style properties to values, not a string.";
+        final var exclusive = "Can only set one of `children` or `props.dangerouslySetInnerHTML`.";
+        try {
+            for (final var invalid : new ReactElement[] {
+                host("input").input("children", "children"), rawHtml("input", "content")
+            }) {
+                final var failure = rejected(() -> ReactDOM.render(invalid, root), voidMessage);
+                check(production || failure.contains("in input"), "The diagnostic identifies the input");
+                ReactDOM.render(host("input"), root);
+                rejected(() -> ReactDOM.render(invalid, root), voidMessage);
+            }
+            final ViewConstructorFunction invalidInput = inputs -> new NativeView(inputs) {
+                @Override
+                public ReactNode render() {
+                    return host("input").input("children", "moo");
+                }
+            };
+            Objects.requireNonNull(Js.asPropertyMap(invalidInput)).set("displayName", "X");
+            final var inputFailure = rejected(
+                    () -> ReactDOM.render(ReactElement.createViewElement(invalidInput), root), voidMessage);
+            check(production || inputFailure.contains("in input") && inputFailure.contains("in X"),
+                    "The diagnostic identifies the owner and its input");
+            rejected(() -> ReactDOM.render(host("div").input("children", "").input("dangerouslySetInnerHTML", ""), root),
+                    exclusive);
+            ReactDOM.render(host("div"), root);
+            rejected(() -> ReactDOM.render(rawHtml("div", "").input("children", ""), root), exclusive);
+            rejected(() -> ReactDOM.render(host("div").input("dangerouslySetInnerHTML", "<span>Hi Jim!</span>"), root),
+                    htmlMessage);
+            rejected(() -> ReactDOM.render(host("div").input("dangerouslySetInnerHTML", JsPropertyMap.of("foo", "bar")),
+                    root), htmlMessage);
+            ReactDOM.render(rawHtml("div", null), root);
+            equal("", root.getTextContent());
+            ReactDOM.unmountComponentAtNode(root);
+            rejected(() -> ReactDOM.render(style("div", "display: none"), root), styleMessage);
+            ReactDOM.render(host("div"), root);
+            rejected(() -> ReactDOM.render(style("div", Browser.number(1)), root), styleMessage);
+            final ViewConstructorFunction animal = StyleComponent::new;
+            Objects.requireNonNull(Js.asPropertyMap(animal)).set("displayName", "Animal");
+            final var styleFailure = rejected(
+                    () -> ReactDOM.render(ReactElement.createViewElement(animal).input("css", Browser.number(1)), root),
+                    styleMessage);
+            check(production || styleFailure.contains("in div") && styleFailure.contains("in Animal"),
+                    "The style diagnostic names the owner and host");
+        } finally {
+            close(root);
+        }
+    }
+
+    private static String rejected(Action render, String message) {
+        final var failure = new @Nullable String[1];
+        captureWarnings(() -> {
+            try {
+                render.run();
+            } catch (final Throwable error) {
+                failure[0] = error.getMessage();
+            }
+        });
+        final var actual = Objects.requireNonNull(failure[0], "Invalid host inputs must throw");
+        check(actual.contains(message), "Expected " + message + ", observed " + actual);
+        return actual;
+    }
+
+    @JsMethod
+    public static void attributeDiagnostics(boolean production) {
+        final var root = Browser.append("div");
+        final ReactEventHandler handler = event -> {};
+        try {
+            warnedAttribute(root, production, "div", "foo", handler, "Invalid value for prop `foo` on <div>");
+            expectWarnings(production, () -> ReactDOM.render(host("div").input("foogroup", handler)
+                    .input("baz", handler), root), "Invalid values for props `foogroup`, `baz` on <div>");
+            for (final var vector : new Object[][] {
+                {"onUnknown", "ignored"}, {"onunknown", "ignored"}, {"on-unknown", "ignored"},
+                {"onUnknownFunction", handler}, {"onunknownfunction", handler}, {"on-unknown-function", handler}
+            }) {
+                final var key = (String) vector[0];
+                warnedAttribute(root, production, "div", key, vector[1],
+                        "Unknown event handler property `" + key + "`. It will be ignored.");
+                final var div = Browser.query(root, "div");
+                attribute(div, key, false);
+                property(div, key, Js.undefined());
+            }
+
+            warnedAttribute(root, production, "div", "CHILDREN", "5",
+                    "Invalid DOM property `CHILDREN`. Did you mean `children`?");
+            attribute(Browser.query(root, "div"), "CHILDREN", "5");
+            warnedAttribute(root, production, "div", "innerhtml", "<span>Hi Jim!</span>",
+                    "Directly setting property `innerHTML` is not permitted.");
+            warnedAttribute(root, production, "div", "aria", "hello",
+                    "The `aria` attribute is reserved for future use in React.");
+            warnedAttribute(root, production, "button", "is", handler,
+                    "Received a `function` for a string attribute `is`.");
+            ReactDOM.render(host("button").input("is", "test").input("cowabunga", "chevynova"), root);
+            attribute(Browser.query(root, "button"), "cowabunga", true);
+
+            for (final var name : new String[] {"class", "cLASS"}) {
+                warnedAttribute(root, production, "div", name, "test",
+                        "Invalid DOM property `" + name + "`. Did you mean `className`?");
+                property(Browser.query(root, "div"), "className", "test");
+                ReactDOM.render(host("div").input("is", "custom-element").input(name, "test"), root);
+                attribute(Browser.query(root, "div"), "class", "test");
+            }
+            expectWarnings(production, () -> ReactDOM.render(
+                    children("svg", host("text").input("arabic-form", "isolated")), root),
+                    "Invalid DOM property `arabic-form`. Did you mean `arabicForm`?");
+            attribute(Browser.query(root, "text"), "arabic-form", true);
+
+            for (final var name : new String[] {"whatever", "unknownflag", "stringflag"}) {
+                warnedAttribute(root, production, "div", name, true,
+                        "Received `true` for a non-boolean attribute `" + name + "`.");
+                attribute(Browser.query(root, "div"), name, false);
+            }
+            warnedAttribute(root, production, "div", "callbackprop", handler,
+                    "Invalid value for prop `callbackprop` on <div>");
+            attribute(Browser.query(root, "div"), "callbackprop", false);
+            ReactDOM.render(host("div").input("mutableprop", Browser.number(0)), root);
+            warnedAttribute(root, production, "div", "mutableprop", handler,
+                    "Invalid value for prop `mutableprop` on <div>");
+            attribute(Browser.query(root, "div"), "mutableprop", false);
+            warnedAttribute(root, production, "div", "invalidnumber", Browser.number(Double.NaN),
+                    "Received NaN for the `invalidnumber` attribute.");
+            attribute(Browser.query(root, "div"), "invalidnumber", "NaN");
+            for (final var attribute : new String[] {"data-fooBar", "fooBar"}) {
+                final var lower = attribute.toLowerCase(Locale.ROOT);
+                warnedAttribute(root, production, "div", attribute, "true", "spell it as lowercase `" + lower + "`");
+                attribute(Browser.query(root, "div"), lower, "true");
+            }
+            warnedAttribute(root, production, "div", "SiZe", "30",
+                    "Invalid DOM property `SiZe`. Did you mean `size`?");
+            attribute(Browser.query(root, "div"), "size", "30");
+
+            warnedAttribute(root, production, "div", "hidden", "false",
+                    "Received the string `false` for the boolean attribute `hidden`.");
+            attribute(Browser.query(root, "div"), "hidden", "");
+            warnedAttribute(root, production, "div", "disabled", "true",
+                    "Received the string `true` for the boolean attribute `disabled`.");
+            attribute(Browser.query(root, "div"), "disabled", "");
+        } finally {
+            close(root);
+        }
+    }
+
+    private static void warnedAttribute(Browser.Element root, boolean production, String tag, String name,
+            @Nullable Object value, String message) {
+        expectWarnings(production, () -> ReactDOM.render(host(tag).input(name, value), root), message);
+    }
+
+    @JsMethod
+    public static void attributeObjectsAndBooleans(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            final var object = JsPropertyMap.of("object", "value");
+            ReactDOM.render(host("form").input("acceptCharset", object), root);
+            attribute(Browser.query(root, "form"), "accept-charset", "[object Object]");
+            ReactDOM.render(host("svg").input("arabicForm", object), root);
+            attribute(Browser.query(root, "svg"), "arabic-form", "[object Object]");
+            ReactDOM.render(host("div").input("unknown", object), root);
+            final var div = Browser.query(root, "div");
+            attribute(div, "unknown", "[object Object]");
+            final Stringifier stringify = () -> "about:blank#hello";
+            final var ownMethod = JsPropertyMap.of("toString", stringify);
+            ReactDOM.render(host("img").input("src", ownMethod), root);
+            property(Browser.query(root, "img"), "src", "about:blank#hello");
+            ReactDOM.render(host("svg").input("arabicForm", ownMethod), root);
+            attribute(Browser.query(root, "svg"), "arabic-form", "about:blank#hello");
+            ReactDOM.render(host("div").input("unknown", ownMethod), root);
+            attribute(Browser.query(root, "div"), "unknown", "about:blank#hello");
+            ReactDOM.render(host("img").input("src", inherits(ownMethod)), root);
+            property(Browser.query(root, "img"), "src", "about:blank#hello");
+
+            expectWarnings(production, () -> ReactDOM.render(
+                    children("svg", host("font-face").input("x-height", "2")), root),
+                    "Invalid DOM property `x-height`. Did you mean `xHeight`");
+            attribute(Browser.query(root, "font-face"), "x-height", true);
+            expectWarnings(production, () -> ReactDOM.render(
+                    children("svg", host("font-face").input("fontflag", true)), root),
+                    "Received `true` for a non-boolean attribute `fontflag`");
+            attribute(Browser.query(root, "font-face"), "fontflag", false);
+
+            ReactDOM.render(host("div").input("checked", true), root);
+            final var checked = Browser.query(root, "div");
+            final var checkedAgain = host("div").input("checked", true);
+            final var unchecked = host("div").input("checked", false);
+            final var inputs = new ReactElement[] {checkedAgain, host("div"), unchecked, checkedAgain};
+            final int[] expectedWrites = {0, 1, 1, 1};
+            for (int i = 0; i < inputs.length; i++) {
+                final var next = inputs[i];
+                check(expectedWrites[i] == propertyWrites(checked, "checked", () -> ReactDOM.render(next, root)),
+                        "Only changed boolean inputs write the host property");
+            }
+        } finally {
+            close(root);
+        }
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.create")
+    private static native Object inherits(Object prototype);
+
+    @JsMethod
+    private static native int propertyWrites(Browser.Element element, String name, Action render);
 
     @JsMethod
     public static void textNodes() {
