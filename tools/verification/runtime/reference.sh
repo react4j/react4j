@@ -15,6 +15,8 @@ cp "$root/$(dirname "$suite")/forms_test.js" "$destination/$(dirname "$suite")/"
 cd "$destination"
 core_tests=core/src/test/java/react4j
 cp "$root/$core_tests/ElementBrowserTest.java" "$core_tests/"
+# Read the same element records and active owner through the bindings shipped with React 16.6.
+sed -i -E '/^import react4j.internal.CurrentOwner;/d; s/CurrentOwner\.get\(\)/React.currentOwner()/g; s/([[:alnum:]_]+)\.(ref|type)\(\)/record(\1).get("\2")/g' "$core_tests/ElementBrowserTest.java"
 sed -i '/"RuntimeBrowserTest.java",/a\        "ElementBrowserTest.java",' "$core_tests/BUILD.bazel"
 sed -i '/ContextsTest.run(root);/a\            ElementBrowserTest.run(root, ElementBrowserTest::stockIsElement);' "$core_tests/RuntimeBrowserTest.java"
 sed -i '/^browser_test(/,/^)/s|deps = \["//dom/src/test/java/react4j/dom:runtime_coverage"\]|deps = ["//dom/src/test/java/react4j/dom:runtime_coverage", "//third_party:closure_testcase"]|' "$(dirname "$suite")/BUILD.bazel"

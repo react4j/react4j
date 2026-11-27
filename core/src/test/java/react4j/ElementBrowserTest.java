@@ -35,7 +35,8 @@ final class ElementBrowserTest {
         specifiedMetadata();
         independentInputs();
         hiddenMetadataGetters();
-        clonedStringRefs(root);
+        typedDupStringRef(root);
+        externalCloneStringRefs(root);
         validElements(isElement);
         childrenInputs(root);
         providedDomChild(root);
@@ -138,29 +139,54 @@ final class ElementBrowserTest {
         equal("{\"foo\":\"value\"}", Browser.json(clone.inputs()));
     }
 
-    private static void clonedStringRefs(Browser.Element root) {
+    private static void typedDupStringRef(Browser.Element root) {
+        copiedStringRef(root, CopyKind.TYPED_DUP);
+    }
+
+    private static void externalCloneStringRefs(Browser.Element root) {
+        copiedStringRef(root, CopyKind.EXTERNAL_CLONE);
+        copiedStringRef(root, CopyKind.EXTERNAL_REPLACEMENT);
+    }
+
+    private static void copiedStringRef(Browser.Element root, CopyKind kind) {
         final ViewConstructorFunction owner = OriginalRefOwner::new;
         final ViewConstructorFunction copier = CopyRefOwner::new;
-        for (final boolean move : new boolean[] {false, true}) {
-            final @Nullable Object[] mounted = {null};
-            final var element = ReactElement.createViewElement(owner)
-                    .input("copier", copier)
-                    .input("move", move);
-            record(element).set("ref", (Ref) value -> mounted[0] = value);
+        final @Nullable Object[] mounted = {null};
+        final var element =
+                ReactElement.createViewElement(owner).input("copier", copier).input("kind", kind);
+        record(element).set("ref", (Ref) value -> mounted[0] = value);
+        try {
             RuntimeBrowserTest.render(element, root);
             final var original = refs(Objects.requireNonNull(mounted[0]));
-            final var child = refs(Objects.requireNonNull(original.get("parent")));
-            if (move) {
-                check("undefined".equals(Js.typeof(original.get("child"))), "A replacement ref belongs to its creator");
-                final var target = Objects.requireNonNull(child.get("xyz"));
-                equal("SPAN", Js.asString(Browser.property(Js.uncheckedCast(target), "tagName")));
-            } else {
-                final var target = Objects.requireNonNull(original.get("yolo"));
-                equal("DIV", Js.asString(Browser.property(Js.uncheckedCast(target), "tagName")));
-                equal("{}", Browser.json(child));
+            final var copy = refs(Objects.requireNonNull(original.get("parent")));
+            switch (kind) {
+                case TYPED_DUP -> {
+                    check(!original.has("yolo"), "A typed copy does not assign the original creator's ref");
+                    assertRefTag(copy, "yolo", "DIV");
+                }
+                case EXTERNAL_CLONE -> {
+                    assertRefTag(original, "yolo", "DIV");
+                    check(!copy.has("yolo"), "An incoming clone retains its supplied creator");
+                }
+                case EXTERNAL_REPLACEMENT -> {
+                    check(!original.has("child"), "A replacement ref belongs to its new creator");
+                    assertRefTag(copy, "xyz", "SPAN");
+                }
             }
+        } finally {
             RuntimeBrowserTest.render(null, root);
         }
+    }
+
+    private static void assertRefTag(JsPropertyMap<@Nullable Object> refs, String name, String tag) {
+        final var target = Objects.requireNonNull(refs.get(name));
+        equal(tag, Js.asString(Browser.property(target, "tagName")));
+    }
+
+    private enum CopyKind {
+        TYPED_DUP,
+        EXTERNAL_CLONE,
+        EXTERNAL_REPLACEMENT
     }
 
     private static JsPropertyMap<@Nullable Object> refs(Object instance) {
@@ -473,11 +499,15 @@ final class ElementBrowserTest {
         public ReactNode render() {
             final var inputs = requireInputs();
             final var copier = Js.<ViewConstructorFunction>uncheckedCast(inputs.get("copier"));
-            final boolean move = Boolean.TRUE.equals(inputs.get("move"));
+            final var kind = (CopyKind) Objects.requireNonNull(inputs.get("kind"));
+            final boolean replace = CopyKind.EXTERNAL_REPLACEMENT == kind;
             final var child = ReactElement.createHostElement(
-                    move ? "span" : "div", "abc", move ? "child" : "yolo", JsPropertyMap.of("className", "original"));
+                    replace ? "span" : "div",
+                    "abc",
+                    replace ? "child" : "yolo",
+                    JsPropertyMap.of("className", "original"));
             final var parent =
-                    ReactElement.createViewElement(copier).input("child", child).input("move", move);
+                    ReactElement.createViewElement(copier).input("child", child).input("kind", kind);
             record(parent).set("ref", "parent");
             return parent;
         }
@@ -492,15 +522,24 @@ final class ElementBrowserTest {
         @Override
         public ReactNode render() {
             final var inputs = requireInputs();
-            final var child =
-                    Js.<ReactElement>uncheckedCast(inputs.get("child")).dup().input("className", "xyz");
-            if (Boolean.TRUE.equals(inputs.get("move"))) {
-                final var replacement = ReactElement.createHostElement("span", "xyz", "xyz", child.inputs());
-                equal("xyz", replacement.key());
-                equal("xyz", Js.asString(replacement.ref()));
-                return replacement;
-            }
-            return child;
+            final var child = Js.<ReactElement>uncheckedCast(inputs.get("child"));
+            final var kind = (CopyKind) Objects.requireNonNull(inputs.get("kind"));
+            return switch (kind) {
+                case TYPED_DUP -> child.dup().input("className", "xyz");
+                case EXTERNAL_CLONE -> {
+                    final var incoming = ReactElement.createHostElement(
+                            "div", child.key(), record(child).get("ref"), JsPropertyMap.of("className", "xyz"));
+                    record(incoming).set("_owner", record(child).get("_owner"));
+                    yield incoming;
+                }
+                case EXTERNAL_REPLACEMENT -> {
+                    final var incoming =
+                            ReactElement.createHostElement("span", "xyz", "xyz", JsPropertyMap.of("className", "xyz"));
+                    equal("xyz", incoming.key());
+                    equal("xyz", Js.asString(record(incoming).get("ref")));
+                    yield incoming;
+                }
+            };
         }
     }
 

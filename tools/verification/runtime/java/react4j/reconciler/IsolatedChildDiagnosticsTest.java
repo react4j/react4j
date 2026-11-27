@@ -254,7 +254,13 @@ public final class IsolatedChildDiagnosticsTest {
         final var tree = view(grand, () -> {
             final var original = view(child, () -> host("div", null, null)).input("color", "red");
             props(original).set("_owner", owner);
-            final var middle = view(parent, () -> original.dup().input("color", 123d));
+            final var middle = view(parent, () -> {
+                final var incoming = ReactElement.createViewElement(child)
+                        .input("output", original.inputs().get("output"))
+                        .input("color", 123d);
+                props(incoming).set("_owner", props(original).get("_owner"));
+                return incoming;
+            });
             props(middle).set("_owner", owner);
             return middle;
         });
