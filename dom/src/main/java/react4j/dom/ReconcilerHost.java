@@ -53,7 +53,7 @@ interface ReconcilerHost {
 
     void insert(Object parent, Object instance, @Nullable Object anchor);
 
-    void remove(Object instance);
+    void remove(Object parent, Object instance);
 
     void resetContent(Object instance);
 

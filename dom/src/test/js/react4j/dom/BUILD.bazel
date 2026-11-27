@@ -65,6 +65,13 @@ browser_test(
     deps = ["//dom/src/test/java/react4j/dom:forms_scenarios"],
 )
 
+browser_test(
+    name = "host_test",
+    srcs = ["host_test.js"],
+    entry_point = "react4j.dom.HostTest",
+    deps = ["//dom/src/test/java/react4j/dom:host_scenarios"],
+)
+
 closure_js_library(
     name = "properties_test",
     testonly = True,

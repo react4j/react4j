@@ -444,6 +444,7 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, registerRefl
   const events = moduleFor('react4j.dom.DomEvents');
   const eventState = node => events[member(events, 'm_state__')](node);
   let eventsEnabled = true;
+  let warnedPortalAlias = false;
   return {
     eventHost(node) {
       const state = eventState(node);
@@ -493,6 +494,17 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, registerRefl
       if (key != null) unsupported('keyed portal');
       counters.calls++;
       return dom[portal](children, container);
+    },
+    unstable_createPortal(children, container, key) {
+      adaptations.add('deprecated portal alias uses createPortal');
+      if (process.env.NODE_ENV !== 'production' && !warnedPortalAlias) {
+        warnedPortalAlias = true;
+        console.warn('Warning: The ReactDOM.unstable_createPortal() alias has been deprecated, ' +
+          'and will be removed in React 17+. Update your code to use ' +
+          'ReactDOM.createPortal() instead. It has the exact same API, ' +
+          'but without the "unstable_" prefix.');
+      }
+      return this.createPortal(children, container, key);
     },
     unstable_createRoot(container, options) {
       if (options && options.hydrate) unsupported('hydration');

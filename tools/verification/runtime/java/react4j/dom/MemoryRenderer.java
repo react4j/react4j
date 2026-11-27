@@ -386,13 +386,17 @@ public final class MemoryRenderer {
             if (null != anchor && -1 == siblings.indexOf(anchor)) {
                 throw new IllegalStateException("Insertion anchor is outside its parent");
             }
-            remove(instance);
+            removeFromCurrentParent(instance);
             siblings.splice(null == anchor ? siblings.length() : siblings.indexOf(anchor), 0, instance);
             properties(instance).set("parent", parent);
         }
 
         @Override
-        public void remove(Object instance) {
+        public void remove(Object parent, Object instance) {
+            removeFromCurrentParent(instance);
+        }
+
+        private void removeFromCurrentParent(Object instance) {
             final var node = properties(instance);
             final var parent = node.get("parent");
             if (null != parent) {

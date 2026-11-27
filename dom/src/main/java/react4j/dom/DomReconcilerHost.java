@@ -114,6 +114,7 @@ final class DomReconcilerHost implements ReconcilerHost {
         final var host = DomHost.createElement(Js.uncheckedCast(container), namespace, tag, inputs);
         if (DEVELOPMENT) {
             DomHost.warnTag(host, namespace, tag, inputs, fiber::hostStack);
+            DomHost.warnShadyDom(host, tag, inputs, fiber.hostOwnerName(element), fiber::hostStack);
         }
         return host;
     }
@@ -168,12 +169,8 @@ final class DomReconcilerHost implements ReconcilerHost {
     }
 
     @Override
-    public void remove(Object instance) {
-        final var node = Js.<Node>uncheckedCast(instance);
-        final var container = node.parentNode;
-        if (null != container) {
-            container.removeChild(node);
-        }
+    public void remove(Object parent, Object instance) {
+        Js.<Node>uncheckedCast(parent).removeChild(Js.uncheckedCast(instance));
     }
 
     @Override

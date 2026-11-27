@@ -1416,6 +1416,7 @@ final class Reconciler {
         private boolean _initialized;
         private boolean _mounted;
         private @Nullable Object _attachedRef = Js.undefined();
+        private @Nullable Object _insertedParent = Js.undefined();
         private @Nullable ContextRead _contextReads;
         private boolean _captured;
         private @Nullable Object _suspension = Js.undefined();
@@ -3509,6 +3510,7 @@ final class Reconciler {
             final var previousView = view;
             final var previousPredicate = _viewPredicate;
             final var previousHostInstance = hostInstance;
+            final var insertedParent = _insertedParent;
             final var hostState = _hostState;
             final var hostContext = childHostContext;
             final var previousRef = ref;
@@ -3548,6 +3550,7 @@ final class Reconciler {
                 view = previousView;
                 _viewPredicate = previousPredicate;
                 hostInstance = previousHostInstance;
+                _insertedParent = insertedParent;
                 _hostState = hostState;
                 childHostContext = hostContext;
                 ref = previousRef;
@@ -3750,6 +3753,7 @@ final class Reconciler {
                     final var node = child.hostInstance;
                     if (null != node) {
                         root.host.insert(target, node, null);
+                        child._insertedParent = target;
                     } else {
                         child.appendInitialChildren(target);
                     }
@@ -3877,6 +3881,7 @@ final class Reconciler {
                 }
             } else {
                 root.host.insert(container, node, anchor);
+                _insertedParent = container;
             }
         }
 
@@ -3983,8 +3988,10 @@ final class Reconciler {
                 if (Kind.HOST == kind) {
                     root.host.clearElement(node);
                 }
-                if (removeDom) {
-                    root.host.remove(node);
+                final var insertedParent = _insertedParent;
+                _insertedParent = null;
+                if (removeDom && null != insertedParent) {
+                    root.host.remove(insertedParent, node);
                 }
             }
         }

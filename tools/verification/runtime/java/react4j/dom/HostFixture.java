@@ -198,7 +198,7 @@ public final class HostFixture {
         }
 
         @Override
-        public void remove(Object instance) {
+        public void remove(Object parent, Object instance) {
             throw unsupported();
         }
 

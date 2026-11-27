@@ -48,6 +48,13 @@ final class Renderer {
             }
             existing = new Reconciler.Root(container, false, DomReconcilerHost.INSTANCE, BrowserScheduler.INSTANCE);
             ROOTS.set(container, existing);
+        } else if (DEVELOPMENT && 8 != container.nodeType) {
+            final var host = firstHost(existing.fiber);
+            if (null != host && host.parentNode != container) {
+                warning("Warning: render(...): It looks like the React-rendered content of this container was removed "
+                        + "without using React. This is not supported and will cause errors. Instead, call "
+                        + "ReactDOM.unmountComponentAtNode to empty a container.");
+            }
         }
         final var root = existing;
         root.submit(node, null == callback ? null : () -> invokeCallback(callback, root.publicInstance()));
@@ -75,6 +82,22 @@ final class Renderer {
     private static boolean hasManagedChild(Node container) {
         final var first = container.firstChild;
         return null != first && 1 == first.nodeType && null != DomEvents.state(Js.uncheckedCast(first));
+    }
+
+    private static @Nullable Node firstHost(Reconciler.Fiber fiber) {
+        if (Reconciler.Kind.PORTAL == fiber.kind) {
+            return null;
+        }
+        if (null != fiber.hostInstance) {
+            return Js.uncheckedCast(fiber.hostInstance);
+        }
+        for (final var child : fiber.children) {
+            final var host = firstHost(child);
+            if (null != host) {
+                return host;
+            }
+        }
+        return null;
     }
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "console.error")

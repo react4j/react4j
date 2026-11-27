@@ -316,6 +316,7 @@ final class DomHost {
         private static final JsPropertyMap<String> STANDARD_NAMES = standardNames();
         private static boolean invalidOptionChild;
         private static boolean selectedOption;
+        private static boolean shadyDom;
 
         private static void warn(
                 final String tag, final JsPropertyMap<@Nullable Object> inputs, final Supplier<String> stack) {
@@ -668,6 +669,21 @@ final class DomHost {
         warnFormProps(tag, inputs, host, owner, stack);
     }
 
+    static void warnShadyDom(
+            final Element element,
+            final String tag,
+            final JsPropertyMap<@Nullable Object> inputs,
+            final String owner,
+            final Supplier<String> stack) {
+        if (!PropertyWarnings.shadyDom
+                && isCustom(tag, inputs)
+                && Js.isTruthy(properties(element).get("shadyRoot"))) {
+            PropertyWarnings.shadyDom = true;
+            reportHostWarning(
+                    owner + " is using shady DOM. Using shady DOM with React can cause things to break subtly.", stack);
+        }
+    }
+
     static void warnTag(
             Element host,
             String namespace,
@@ -901,6 +917,20 @@ final class DomHost {
         return null == value ? null : properties(value).get("__html");
     }
 
+    private static void setInnerHtml(final Element element, final String html) {
+        if (SVG.equals(element.namespaceURI) && !properties(element).has("innerHTML")) {
+            final var wrapper = element.document().createElement("div");
+            wrapper.innerHTML = "<svg>" + html + "</svg>";
+            final var svg = requireNode(wrapper.firstChild);
+            element.textContent = "";
+            while (null != svg.firstChild) {
+                element.appendChild(svg.firstChild);
+            }
+        } else {
+            element.innerHTML = html;
+        }
+    }
+
     private static void setProperty(
             final Element element,
             final DomEvents.State state,
@@ -920,7 +950,7 @@ final class DomHost {
             case "dangerouslySetInnerHTML" -> {
                 final var html = rawHtml(value);
                 if (null != html && !Js.isTripleEqual(rawHtml(previous), html)) {
-                    element.innerHTML = stringify(html);
+                    setInnerHtml(element, stringify(html));
                 }
             }
             case "checked", "multiple", "muted", "selected" -> {
