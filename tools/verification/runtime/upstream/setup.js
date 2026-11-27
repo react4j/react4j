@@ -275,11 +275,13 @@ function createRenderer(moduleFor, sourceReact) {
     if (type?.$$typeof === lazyType) {
       const wrapper = Object.assign({}, type, {_resolveType: factory});
       constructors.set(type, wrapper);
+      constructors.set(wrapper, wrapper);
       return wrapper;
     }
     if (type?.$$typeof === memoType) {
       const wrapper = Object.assign({}, type, {type: factory(type.type), originalType: type});
       constructors.set(type, wrapper);
+      constructors.set(wrapper, wrapper);
       return wrapper;
     }
     if (type?.$$typeof === forwardRefType) {
@@ -289,6 +291,7 @@ function createRenderer(moduleFor, sourceReact) {
       const wrapper = Object.assign({}, type, {render, originalType: type});
       delete wrapper.propTypes;
       constructors.set(type, wrapper);
+      constructors.set(wrapper, wrapper);
       return wrapper;
     }
     if (typeof type !== 'function') return type;
@@ -347,7 +350,21 @@ function createRenderer(moduleFor, sourceReact) {
     Object.defineProperty(create, 'name', {value: type.name});
     Object.defineProperty(create, 'defaultProps', {get: () => type.defaultProps});
     constructors.set(type, create);
+    constructors.set(create, create);
     return create;
+  }
+  // Upstream JSX exposes the original class on its records. Resolve React4j view factories at the Java boundary.
+  const elementAccess = moduleFor('react4j.ReactElement.$Overlay');
+  const typeAccessor = member(elementAccess, 'm_type__');
+  const readType = elementAccess[typeAccessor];
+  elementAccess[typeAccessor] = element => factory(readType.call(elementAccess, element));
+
+  function withElementType(element, type) {
+    if (element == null || element.type === type) return element;
+    const descriptors = Object.getOwnPropertyDescriptors(element);
+    descriptors.type.value = type;
+    const record = Object.create(Object.getPrototypeOf(element), descriptors);
+    return Object.isFrozen(element) ? Object.freeze(record) : record;
   }
   function validateJSXProps(element, type) {
     if (process.env.NODE_ENV === 'production') return element;
@@ -375,11 +392,13 @@ function createRenderer(moduleFor, sourceReact) {
         const render = children[0];
         children[0] = value => renderFixture(undefined, render, [value]);
       }
-      return validateJSXProps(sourceReact.createElement(factory(type), props, ...children), type);
+      const element = sourceReact.createElement(factory(type), props, ...children);
+      return validateJSXProps(withElementType(element, type), type);
     },
     cloneElement(element, ...args) {
-      return validateJSXProps(sourceReact.cloneElement(element, ...args),
-        element.type?.componentClass ?? element.type?.originalType);
+      const type = element?.type;
+      const clone = sourceReact.cloneElement(withElementType(element, factory(type)), ...args);
+      return validateJSXProps(withElementType(clone, type), type);
     },
     createContext(initial, changedBits) {
       const context = JavaReact[member(JavaReact, 'm_createContext__')](initial);
