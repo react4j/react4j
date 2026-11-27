@@ -338,6 +338,7 @@ function createRenderer(moduleFor, sourceReact) {
     }
     create.componentClass = type;
     create.functionComponent = !type.prototype?.isReactComponent;
+    create.rawRenderResult = true;
     create.displayName = type.displayName || type.name;
     Object.defineProperty(create, 'defaultProps', {get: () => type.defaultProps});
     constructors.set(type, create);

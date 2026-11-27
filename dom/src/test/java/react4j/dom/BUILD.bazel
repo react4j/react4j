@@ -12,6 +12,8 @@ j2cl_library(
         "BuildableBrowserTest.java",
         "ChildReconciliationTest.java",
         "ClassLifecycleBrowserTest.java",
+        "CleanClientElementsBrowserTest.java",
+        "CleanClientElementsBrowserTest.native.js",
         "DevToolsHookTest.java",
         "DomPortalBrowserTest.java",
         "DomPortalBrowserTest.native.js",

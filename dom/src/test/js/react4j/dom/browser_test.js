@@ -1,5 +1,6 @@
 goog.module('react4j.dom.BrowserTest');
 const Children = goog.require('react4j.dom.ChildReconciliationTest');
+const CleanElements = goog.require('react4j.dom.CleanClientElementsBrowserTest');
 const DomPortal = goog.require('react4j.dom.DomPortalBrowserTest');
 const DomRefs = goog.require('react4j.dom.DomRefsBrowserTest');
 const DomRoot = goog.require('react4j.dom.DomRootBrowserTest');
@@ -14,6 +15,7 @@ testSuite({
   testRootValuesAndCallbacks() { DomRoot.valuesAndCallbacks(); },
   testFragmentFirstHosts() { DomRoot.fragmentFirstHosts(); },
   testCleanFragments() { DomRoot.cleanFragments(); },
+  testCleanClientElements() { CleanElements.run('production' === Mode.environment); },
   testPortalCommits() { DomRoot.portalCommits(); },
   testPortalEventsAndContext() { DomPortal.run(); },
   testPortalNamespaces() { DomRoot.portalNamespaces(); },

@@ -3261,7 +3261,16 @@ final class Reconciler {
             final var owner = CurrentOwner.swap(this);
             final var previousPhase = swapRenderPhase(true);
             try {
-                return component.render();
+                final var result = component.render();
+                if ("undefined".equals(Js.typeof(result))
+                        && (isFunctionComponent(component)
+                                || Boolean.TRUE.equals(ClassComponent.properties(type).get("rawRenderResult")))) {
+                    final var name = Objects.requireNonNullElse(RenderFailure.frameName(type), "Component");
+                    throw new IllegalStateException(name
+                            + "(...): Nothing was returned from render. This usually means a return statement is missing."
+                            + " Or, to render nothing, return null.");
+                }
+                return result;
             } finally {
                 swapRenderPhase(previousPhase);
                 CurrentOwner.swap(owner);
