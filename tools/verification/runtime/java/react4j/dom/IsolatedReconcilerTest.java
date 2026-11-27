@@ -510,8 +510,12 @@ public final class IsolatedReconcilerTest {
         }
 
         void advance(int milliseconds) {
-            _now += milliseconds;
+            advanceClock(milliseconds);
             _timerNow += milliseconds;
+        }
+
+        void advanceClock(int milliseconds) {
+            _now += milliseconds;
         }
 
         void advanceTimers(int milliseconds) {

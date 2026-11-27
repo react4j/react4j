@@ -82,7 +82,11 @@ public final class IsolatedSuspenseTest {
     }
 
     public static void suspense(int number) {
-        final var s = new Scenario(3 != number && (6 > number || 9 == number), false);
+        suspense(number, false);
+    }
+
+    private static void suspense(int number, boolean noop) {
+        final var s = new Scenario(3 != number && (6 > number || 9 == number), false, noop);
         switch (number) {
             case 0 -> {
                 final var app = s.wrapper(
@@ -101,37 +105,37 @@ public final class IsolatedSuspenseTest {
                         null);
                 s.render(app);
                 s.yields("Foo", "Bar", "Suspend! [A]", "B", "Loading...");
-                s.visible("");
+                s.output();
                 s.time(50);
                 s.flush();
                 s.yields();
-                s.visible("");
+                s.output();
                 s.time(50);
                 s.yields("Promise resolved [A]");
                 s.flush();
                 s.yields("Foo", "Bar", "A", "B");
-                s.visible("AB");
+                s.output("A", "B");
             }
             case 1 -> {
                 s.render(array(
                         s.boundary(1000, "Loading A...", s.async("A", 5000)),
                         s.boundary(3000, "Loading B...", s.async("B", 6000))));
                 s.yields("Suspend! [A]", "Loading A...", "Suspend! [B]", "Loading B...");
-                s.visible("");
+                s.output();
                 s.time(4000);
                 s.flush();
                 s.yields();
-                s.visible("Loading A...Loading B...");
+                s.output("Loading A...", "Loading B...");
                 s.time(1000);
                 s.yields("Promise resolved [A]");
                 s.flush();
                 s.yields("A");
-                s.visible("ALoading B...");
+                s.output("A", "Loading B...");
                 s.time(1000);
                 s.yields("Promise resolved [B]");
                 s.flush();
                 s.yields("B");
-                s.visible("AB");
+                s.output("A", "B");
             }
             case 2 -> {
                 final var pending = new IsolatedWrappedViewsTest.Pending();
@@ -205,6 +209,95 @@ public final class IsolatedSuspenseTest {
                 s.yields("Suspend! [Hi]", "Suspend! [Hi]");
             }
             case 6, 7, 8, 9 -> legacy(s, number);
+            default -> throw new AssertionError(number);
+        }
+    }
+
+    public static void noop(int number) {
+        if (2 > number) {
+            suspense(number, true);
+            return;
+        }
+        final var s = new Scenario(true, false, true);
+        switch (number) {
+            case 2 -> {
+                s.render(s.boundary(
+                        5000,
+                        "Loading...",
+                        array(s.textNode("A"), s.async("B", 100), s.textNode("C"), s.textNode("D"))));
+                s.yields("A", "Suspend! [B]", "C", "D", "Loading...");
+                s.output();
+                s.time(100);
+                s.flush();
+                s.yields("Promise resolved [B]", "A", "B", "C", "D");
+                s.output("A", "B", "C", "D");
+            }
+            case 8 -> {
+                s.render(array(s.boundary(5000, "Loading...", s.async("Async", 20000)), s.textNode("Sync")));
+                s.yields("Suspend! [Async]", "Loading...", "Sync");
+                s.output();
+                s.harness.advanceClock(10000);
+                s.time(10000);
+                s.harness.memory.flushExpired();
+                s.yields();
+                s.output("Loading...", "Sync");
+                s.time(10000);
+                s.flush();
+                s.yields("Promise resolved [Async]", "Async");
+                s.output("Async", "Sync");
+            }
+            case 13 -> {
+                s.root.render(s.boundary(1000, "Loading...", s.async("Async", 3000)), null);
+                untilYield(s.harness, s.lines, 1);
+                s.yields("Suspend! [Async]");
+                s.time(1500);
+                s.harness.advanceClock(1500);
+                s.yields();
+                s.time(2000);
+                s.yields("Promise resolved [Async]");
+                s.flush();
+                s.yields("Async");
+                s.output("Async");
+            }
+            case 14 -> {
+                captureWarnings(() -> {
+                    try {
+                        s.harness.memory.flushSync(() -> s.root.render(s.async("Async", 100), null));
+                    } catch (Throwable error) {
+                        check(
+                                Objects.requireNonNull(error.getMessage())
+                                        .contains("An update was suspended, but no placeholder UI was provided."),
+                                "Synchronous suspension reports the missing boundary");
+                        return;
+                    }
+                    throw new AssertionError("Expected uncaught suspension");
+                });
+                s.output();
+            }
+            case 15 -> {
+                s.root.render(s.boundary(0, "Loading...", array(s.async("A", 100), s.async("B", 100))), null);
+                s.harness.advanceClock(10000);
+                s.harness.memory.flushExpired();
+                s.yields("Suspend! [A]", "Suspend! [B]", "Loading...");
+                s.output("Loading...");
+                s.time(100);
+                s.flush();
+                s.yields("Promise resolved [A]", "Promise resolved [B]", "A", "B");
+                s.output("A", "B");
+            }
+            case 16 -> {
+                s.render(s.boundary(1000, "Loading...", s.async("Async", 100)));
+                s.yields("Suspend! [Async]", "Loading...");
+                s.output();
+                s.time(99);
+                s.flush();
+                s.yields();
+                s.output();
+                s.time(1);
+                s.flush();
+                s.yields("Promise resolved [Async]", "Async");
+                s.output("Async");
+            }
             default -> throw new AssertionError(number);
         }
     }
@@ -301,6 +394,7 @@ public final class IsolatedSuspenseTest {
     private static final class Scenario {
         final IsolatedReconcilerTest.Harness harness = new IsolatedReconcilerTest.Harness();
         final MemoryRenderer.Root root;
+        final boolean noop;
         final ArrayList<String> lines = new ArrayList<>();
         final HashMap<String, Resource> resources = new HashMap<>();
         final ViewConstructorFunction hidden;
@@ -313,15 +407,20 @@ public final class IsolatedSuspenseTest {
         String middle = "";
 
         Scenario(boolean concurrent, boolean persistent) {
+            this(concurrent, persistent, false);
+        }
+
+        Scenario(boolean concurrent, boolean persistent, boolean noop) {
+            this.noop = noop;
             root = persistent
                     ? harness.memory.createPersistentRoot(concurrent)
-                    : harness.memory.createTestRoot(concurrent);
+                    : noop ? harness.memory.createRoot(concurrent) : harness.memory.createTestRoot(concurrent);
             hidden = (JsPropertyMap<@Nullable Object> inputs) -> new Hidden(inputs).observe(this);
         }
 
         ReactNode logText(String text) {
             lines.add(text);
-            return ReactNode.of(text);
+            return noop ? host("span", null, null).input("prop", text) : ReactNode.of(text);
         }
 
         ReactNode read(String text, int delay) {
@@ -388,6 +487,18 @@ public final class IsolatedSuspenseTest {
         void yields(String... expected) {
             equal(List.of(expected), lines);
             lines.clear();
+        }
+
+        void output(String... labels) {
+            if (noop) {
+                final var expected = new ArrayList<String>();
+                for (final var label : labels) {
+                    expected.add("span[" + label + "]()");
+                }
+                IsolatedReconcilerTest.rootShape(root, String.join(",", expected));
+            } else {
+                visible(String.join("", labels));
+            }
         }
 
         void visible(String output) {

@@ -1,7 +1,10 @@
 goog.module('react4j.testing.IsolatedCases');
+const ErrorLogging = goog.require('react4j.testing.IsolatedErrorLoggingTest');
+const Reflection = goog.require('react4j.testing.IsolatedReflectionTest');
 const Scheduling = goog.require('react4j.testing.IsolatedSchedulingTest');
 const Suspense = goog.require('react4j.testing.IsolatedSuspenseTest');
 const Tests = goog.require('react4j.testing.IsolatedReconcilerTest');
+const Triangle = goog.require('react4j.testing.IsolatedTriangleTest');
 const Updates = goog.require('react4j.testing.IsolatedUpdateQueueTest');
 const Wrapped = goog.require('react4j.testing.IsolatedWrappedViewsTest');
 
@@ -42,5 +45,21 @@ exports.run = function(mode) {
     Updates.updates(i, mode === 'development'));
   for (let i = 0; i < 4; i++) run('ReactSuspensePlaceholder spec' + i, () => Suspense.placeholder(i >= 2, i % 2 === 0));
   for (let i = 0; i < 10; i++) run('ReactSuspense spec' + i, () => Suspense.suspense(i));
+  run('ReactIncrementalReflection deferred mount', () => Reflection.deferredMount(mode === 'development'));
+  run('ReactIncrementalReflection deferred unmount', () => Reflection.deferredUnmount(mode === 'development'));
+  run('ReactIncrementalReflection committed host', () => Reflection.findCommittedHost(mode === 'development'));
+  for (let i = 0; i < 4; i++) run('ReactIncrementalErrorLogging spec' + i, () =>
+    ErrorLogging.errors(i, mode === 'development'));
+  run('ReactIncrementalErrorReplay host failure', () => ErrorLogging.replay(true));
+  run('ReactIncrementalErrorReplay successful retry', () => ErrorLogging.replay(false));
+  run('ReactSuspenseWithNoopRenderer spec0', () => Suspense.noop(0));
+  run('ReactSuspenseWithNoopRenderer spec1', () => Suspense.noop(1));
+  run('ReactSuspenseWithNoopRenderer spec2', () => Suspense.noop(2));
+  run('ReactSuspenseWithNoopRenderer spec8', () => Suspense.noop(8));
+  run('ReactSuspenseWithNoopRenderer spec13', () => Suspense.noop(13));
+  run('ReactSuspenseWithNoopRenderer spec14', () => Suspense.noop(14));
+  run('ReactSuspenseWithNoopRenderer spec15', () => Suspense.noop(15));
+  run('ReactSuspenseWithNoopRenderer spec16', () => Suspense.noop(16));
+  for (let i = 0; i < 4; i++) run('ReactIncrementalTriangle spec' + i, () => Triangle.cases(i));
   return count;
 };
