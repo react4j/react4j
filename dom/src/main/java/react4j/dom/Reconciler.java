@@ -1604,7 +1604,8 @@ final class Reconciler {
                         + "before rendering. Keep in mind you might need to polyfill these features for older browsers."
                         + RenderFailure.stackFrom(this));
             }
-            if (!_warnedMapChildren && iterator == ClassComponent.properties(content).get("entries")) {
+            if (!_warnedMapChildren
+                    && iterator == ClassComponent.properties(content).get("entries")) {
                 _warnedMapChildren = true;
                 consoleError("Warning: Using Maps as children is unsupported and will likely yield "
                         + "unexpected results. Convert it to a sequence/iterable of keyed ReactElements instead."

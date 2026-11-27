@@ -22,6 +22,11 @@ Reconciler.childIterator = function(value) {
   return typeof iterator === 'function' ? iterator : null;
 };
 
+/** @param {*} value @return {boolean} */
+Reconciler.isGenerator = function(value) {
+  return typeof Symbol === 'function' && value[Symbol.toStringTag] === 'Generator';
+};
+
 /** @param {*} value @param {*} iterator @return {!Array<*>} */
 Reconciler.iterateChildren = function(value, iterator) {
   const cursor = iterator.call(value);

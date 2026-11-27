@@ -238,7 +238,9 @@ final class ClassComponent {
             warn("Warning: " + name + ".state: must be set to an object or null");
         }
         final var initial = method(view, "getInitialState");
-        if (null != initial && !Js.isTruthy(state) && !Js.isTruthy(properties(initial).get("isReactClassApproved"))) {
+        if (null != initial
+                && !Js.isTruthy(state)
+                && !Js.isTruthy(properties(initial).get("isReactClassApproved"))) {
             warn("Warning: getInitialState was defined on " + name + ", a plain JavaScript class."
                     + " This is only supported for classes created using React.createClass."
                     + " Did you mean to define a state property instead?");
