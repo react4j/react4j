@@ -215,8 +215,16 @@ function createRenderer(moduleFor, sourceReact) {
   const Fiber = moduleFor('react4j.reconciler.Reconciler.Fiber');
   const reconciler = moduleFor('react4j.reconciler.Reconciler');
   const readContext = member(reconciler, 'm_readCurrentContext__');
+  function strictReplay() {
+    if (process.env.NODE_ENV === 'production') return false;
+    const flags = require('shared/ReactFeatureFlags');
+    if (flags.debugRenderPhaseSideEffectsForStrictMode !== false) return true;
+    adaptations.add('upstream flag disables strict render replay');
+    return false;
+  }
   const DomHost = moduleFor('react4j.dom.DomReconcilerHost');
   if (DomHost) {
+    DomHost.prototype[member(DomHost.prototype, 'm_strictReplay__')] = strictReplay;
     DomHost.prototype[member(DomHost.prototype, 'm_replayFailedRender__')] = () =>
       require('shared/ReactFeatureFlags').replayFailedUnitOfWorkWithInvokeGuardedCallback !== false;
   }
@@ -433,13 +441,7 @@ function createRenderer(moduleFor, sourceReact) {
       return require('shared/ReactFeatureFlags').debugRenderPhaseSideEffects === true;
     },
     registerReflection: lookup => { isMounted = lookup; },
-    strictReplay() {
-      if (process.env.NODE_ENV === 'production') return false;
-      const flags = require('shared/ReactFeatureFlags');
-      if (flags.debugRenderPhaseSideEffectsForStrictMode !== false) return true;
-      adaptations.add('upstream flag disables strict render replay');
-      return false;
-    },
+    strictReplay,
     replayFailedRender() {
       return require('shared/ReactFeatureFlags').replayFailedUnitOfWorkWithInvokeGuardedCallback !== false;
     },
