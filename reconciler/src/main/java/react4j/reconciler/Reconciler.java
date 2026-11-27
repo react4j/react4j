@@ -34,6 +34,7 @@ public final class Reconciler {
     private static final int ALL_CONTEXT_BITS = 0x3fffffff;
     private static final Object PROVIDER_TYPE = symbol("react.provider");
     private static final Object CONTEXT_TYPE = symbol("react.context");
+    private static final WeakKeys<ReactElement, Boolean> CHECKED_FRAGMENT_PROPS = new WeakKeys<>();
     private static final HashSet<String> WARNED_MISSING_KEYS = new HashSet<>();
     private static final HashSet<String> WARNED_FUNCTION_REFS = new HashSet<>();
     private static final WeakKeys<Fiber, Boolean> WARNED_ANONYMOUS_FUNCTION_REFS = new WeakKeys<>();
@@ -1583,6 +1584,9 @@ public final class Reconciler {
             if (element) {
                 final var fragment = Js.<ReactElement>uncheckedCast(content);
                 if (React.Fragment == fragment.type() && null == fragment.key()) {
+                    if (DEVELOPMENT) {
+                        validateFragmentProps(fragment);
+                    }
                     content = fragment.inputs().get("children");
                     element = ReactElement.isElement(content);
                 }
@@ -1698,7 +1702,8 @@ public final class Reconciler {
                 }
                 final String key;
                 if (ReactElement.isElement(value)) {
-                    key = Js.<ReactElement>uncheckedCast(value).key();
+                    final var element = Js.<ReactElement>uncheckedCast(value);
+                    key = element.key();
                     final var store = ClassComponent.properties(value).get("_store");
                     if (null == key
                             && null != store
@@ -1710,6 +1715,7 @@ public final class Reconciler {
                         if (WARNED_MISSING_KEYS.add(stack)) {
                             consoleError(
                                     "Warning: Each child in an array or iterator should have a unique \"key\" prop."
+                                            + missingKeyOwner(element)
                                             + " See https://fb.me/react-warning-keys for more information."
                                             + stack);
                         }
@@ -1729,6 +1735,42 @@ public final class Reconciler {
                             + " Non-unique keys may cause children to be duplicated and/or omitted — the behavior is"
                             + " unsupported and could change in a future version." + stack);
                 }
+            }
+        }
+
+        private String missingKeyOwner(ReactElement child) {
+            final var parentElement = node;
+            if (Kind.HOST != kind || null == parentElement) {
+                return "";
+            }
+            final var receiver = RenderFailure.elementOwnerName(parentElement);
+            if (null == receiver) {
+                return null == parentElement.owner() ? "\n\nCheck the top-level render call using <" + type + ">." : "";
+            }
+            final var creator = RenderFailure.elementOwnerName(child);
+            final var addendum = "\n\nCheck the render method of `" + receiver + "`.";
+            return null != creator && child.owner() != parentElement.owner()
+                    ? addendum + " It was passed a child from " + creator + "."
+                    : addendum;
+        }
+
+        private void validateFragmentProps(ReactElement fragment) {
+            // Upstream JSX validates fragment attributes when it creates its development element record.
+            if (null != ClassComponent.properties(fragment).get("_store")
+                    || null != CHECKED_FRAGMENT_PROPS.get(fragment)) {
+                return;
+            }
+            CHECKED_FRAGMENT_PROPS.set(fragment, true);
+            for (final var name : objectKeys(fragment.inputs())) {
+                if (!"children".equals(name) && !"key".equals(name)) {
+                    consoleError("Warning: Invalid prop `" + name + "` supplied to `React.Fragment`. React.Fragment"
+                            + " can only have `key` and `children` props." + RenderFailure.stackFrom(this));
+                    break;
+                }
+            }
+            if (null != fragment.ref()) {
+                consoleError("Warning: Invalid attribute `ref` supplied to `React.Fragment`."
+                        + RenderFailure.stackFrom(this));
             }
         }
 
@@ -2329,6 +2371,9 @@ public final class Reconciler {
                 }
                 case FRAGMENT -> {
                     final var element = node;
+                    if (DEVELOPMENT && React.Fragment == type && null != element) {
+                        validateFragmentProps(element);
+                    }
                     if (React.Suspense == type && null != element) {
                         startTiming("Suspense", mounting);
                         reconcileSuspense(element.inputs(), scope, sameScope && oldNode == element, finish);

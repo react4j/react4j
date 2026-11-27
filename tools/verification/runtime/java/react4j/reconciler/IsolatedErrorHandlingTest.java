@@ -685,7 +685,7 @@ public final class IsolatedErrorHandlingTest {
     private static native void raise(Object error);
 
     @JsMethod
-    private static native @Nullable Object thrownBy(Reconciler.Task task);
+    static native @Nullable Object thrownBy(Reconciler.Task task);
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Error")
     private static final class JsFailure {

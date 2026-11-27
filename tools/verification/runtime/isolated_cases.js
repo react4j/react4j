@@ -102,6 +102,15 @@ exports.run = function(mode) {
   for (let i = 0; i < 3; i++) {
     run('ReactChildren spec' + (29 + i), () => ChildDiagnostics.arrayKeys(i, mode === 'development'));
   }
+  for (let i = 0; i < 15; i++) {
+    run('ReactElementValidator key case ' + i, () => ChildDiagnostics.elementKeys(i, mode === 'development'));
+  }
+  run('ReactElementValidator fragment props', () => ChildDiagnostics.fragmentAttributes(false, mode === 'development'));
+  run('ReactJSXElementValidator fragment refs', () => ChildDiagnostics.fragmentAttributes(true, mode === 'development'));
+  run('ReactElementValidator invalid types', () => ChildDiagnostics.invalidTypes(mode === 'development'));
+  run('ReactElementValidator numeric children', () => ChildDiagnostics.numericChildren());
+  run('ReactSymbols unique record markers', () => ChildDiagnostics.symbolUniqueness());
+  run('ReactErrorLoggingRecovery console failure', () => ErrorLogging.consoleRecovery());
   run('ReactElement captures its creating component instance', () => SideEffects.elementOwner());
   run('ReactCreateRef rejects invalid ref objects in development', () => SideEffects.invalidRefObjects(mode === 'development'));
   run('ReactTestRenderer basic host output', () => TestRenderer.basicOutput());

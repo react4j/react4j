@@ -1,5 +1,6 @@
 package react4j.reconciler;
 
+import static react4j.reconciler.IsolatedReconcilerTest.array;
 import static react4j.reconciler.IsolatedReconcilerTest.check;
 import static react4j.reconciler.IsolatedReconcilerTest.equal;
 import static react4j.reconciler.IsolatedReconcilerTest.host;
@@ -24,6 +25,7 @@ import react4j.ReactNode;
 import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidCatch;
 import react4j.internal.OnComponentDidMount;
+import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.ViewConstructorFunction;
 
@@ -116,6 +118,33 @@ public final class IsolatedErrorLoggingTest {
         rootShape(root, "text(reused)");
     }
 
+    public static void consoleRecovery() {
+        final var harness = new IsolatedReconcilerTest.Harness();
+        final var root = harness.memory.createRoot(false);
+        final ViewConstructorFunction type = BadUpdate::new;
+        final var bad = ReactElement.createViewElement(type);
+        final int[] calls = {0};
+        observeLogs(
+                () -> {
+                    root.render(bad, null);
+                    final var failure = thrownBy(() -> root.render(bad.dup(), null));
+                    check(null != failure, "The update error reaches the caller even if logging throws");
+                    equal("no", propertyMap(Objects.requireNonNull(failure)).get("message"));
+                    root.render(host("span", null, array(ReactNode.of("Hello"))), null);
+                    rootShape(root, "span(text(Hello))");
+                    final var delayed = thrownBy(() -> harness.advanceTimers(1));
+                    check(null != delayed, "The console error is surfaced separately after root recovery");
+                    equal(
+                            "Buggy console.error",
+                            propertyMap(Objects.requireNonNull(delayed)).get("message"));
+                },
+                ignored -> {
+                    calls[0]++;
+                    failWith("Buggy console.error");
+                });
+        equal(1, calls[0]);
+    }
+
     public static void replay(boolean hostFailure) {
         final var harness = new IsolatedReconcilerTest.Harness();
         final var root = harness.memory.createRoot(true);
@@ -163,6 +192,23 @@ public final class IsolatedErrorLoggingTest {
 
     @JsMethod
     private static native void failWith(String message);
+
+    private static final class BadUpdate extends NativeView implements OnComponentDidUpdate {
+        @JsConstructor
+        BadUpdate(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public @Nullable ReactNode render() {
+            return null;
+        }
+
+        @Override
+        public void componentDidUpdate(JsPropertyMap<@Nullable Object> previousInputs) {
+            failWith("no");
+        }
+    }
 
     private static final class Failing extends NativeView implements OnComponentDidMount {
         @JsConstructor

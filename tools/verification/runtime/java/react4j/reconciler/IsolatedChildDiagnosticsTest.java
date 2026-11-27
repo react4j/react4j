@@ -1,5 +1,6 @@
 package react4j.reconciler;
 
+import static react4j.reconciler.IsolatedErrorHandlingTest.thrownBy;
 import static react4j.reconciler.IsolatedReconcilerTest.array;
 import static react4j.reconciler.IsolatedReconcilerTest.captureWarnings;
 import static react4j.reconciler.IsolatedReconcilerTest.check;
@@ -8,13 +9,19 @@ import static react4j.reconciler.IsolatedReconcilerTest.host;
 import static react4j.reconciler.IsolatedReconcilerTest.props;
 import static react4j.reconciler.IsolatedReconcilerTest.rootShape;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Context;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 import react4j.internal.ViewConstructorFunction;
@@ -93,6 +100,252 @@ public final class IsolatedChildDiagnosticsTest {
             equal("", warnings);
         }
         rootShape(root, "div(),div()");
+    }
+
+    public static void elementKeys(int number, boolean development) {
+        final var root = new IsolatedReconcilerTest.Harness().memory.createTestRoot(false);
+        final var expected =
+                switch (number) {
+                    case 1 ->
+                        "Check the render method of `InnerComponent`. It was passed a child from ComponentWrapper.";
+                    case 3 -> "Check the top-level render call using <section>.";
+                    case 4 -> "Check the render method of `KeyComponent`.";
+                    default -> null;
+                };
+        final ReactNode tree =
+                switch (number) {
+                    case 0 -> host("div", null, array(stored("span", null), stored("span", null)));
+                    case 1 ->
+                        view(named("ComponentWrapper"), () -> {
+                            final var pair = array(stored("span", null), stored("span", null));
+                            return view(named("InnerComponent"), () -> host("div", null, pair));
+                        });
+                    case 2 -> {
+                        final var anonymous = named("unused");
+                        props(anonymous).delete("displayName");
+                        defineProperty(anonymous, "name", JsPropertyMap.of("value", Js.undefined()));
+                        yield view(
+                                anonymous, () -> host("div", null, array(stored("span", null), stored("span", null))));
+                    }
+                    case 3 -> host("section", null, array(stored("span", null), stored("span", null)));
+                    case 4 ->
+                        view(named("KeyGrandParent"), () -> {
+                            final var child = view(
+                                    named("KeyComponent"),
+                                    () -> host("div", null, array(stored("span", null), stored("span", null))));
+                            return view(named("KeyParent"), child::dup);
+                        });
+                    case 5 ->
+                        view(named("StaticChildrenWrapper"), () -> {
+                            final var pair = array(staticChild("span"), staticChild("span"));
+                            return host("div", null, array(pair, staticChild("footer")));
+                        });
+                    case 6 ->
+                        host("article", null, null)
+                                .input("children", iterable(stored("span", null), stored("span", null)));
+                    case 7 -> host("div", null, array(stored("span", "one"), stored("span", "two")));
+                    case 8 ->
+                        host("div", null, null)
+                                .input("children", iterable(stored("span", "one"), stored("span", "two")));
+                    case 9 -> host("div", null, array(staticChild("span"), staticChild("span")));
+                    case 10 ->
+                        view(named("IgnoresNonElements"), () -> host("div", null, null))
+                                .input("children", array(JsPropertyMap.of(), JsPropertyMap.of()));
+                    case 11 -> {
+                        final var pairs = iterable(array(1d, stored("span", null)), array(2d, stored("span", null)));
+                        props(pairs).set("entries", props(pairs).get("@@iterator"));
+                        yield view(named("IgnoresEntryIterable"), () -> host("div", null, null))
+                                .input("children", pairs);
+                    }
+                    case 12 ->
+                        ReactElement.createFragment(
+                                null,
+                                staticChild("span").input("children", "1"),
+                                staticChild("span").input("children", "2"));
+                    case 13 ->
+                        ReactElement.createFragment(
+                                null,
+                                stored("span", "a").input("children", "1"),
+                                stored("span", "a").input("children", "2"),
+                                stored("span", "b").input("children", "3"));
+                    case 14 -> host("div", null, array(host("span", null, null)));
+                    default -> throw new IllegalArgumentException("Unexpected element fixture " + number);
+                };
+        final var warnings = captureWarnings(() -> root.render(tree, null));
+        if (development && (number < 5 || 6 == number)) {
+            check(warnings.contains(KEY_WARNING), "Expected missing keys: " + warnings);
+            if (null != expected) {
+                check(warnings.contains(expected), "Expected the key owner addendum: " + warnings);
+            }
+            if (2 == number) {
+                check(
+                        warnings.contains("\n    in div") && !warnings.contains("Check the render method"),
+                        "An anonymous owner still reports the host frame");
+            } else if (4 == number) {
+                int previous = -1;
+                for (final var label : new String[] {"div", "KeyComponent", "KeyParent", "KeyGrandParent"}) {
+                    final int index = warnings.indexOf("\n    in " + label);
+                    check(index > previous, "Expected the complete child key stack: " + warnings);
+                    previous = index;
+                }
+            }
+        } else if (development && 13 == number) {
+            check(
+                    warnings.contains("Encountered two children with the same key, `a`.")
+                            && !warnings.contains("\n    in "),
+                    "Root duplicate keys have no component stack: " + warnings);
+        } else {
+            equal("", warnings);
+        }
+        rootShape(
+                root,
+                switch (number) {
+                    case 3 -> "section(span(),span())";
+                    case 5 -> "div(span(),span(),footer())";
+                    case 6 -> "article(span(),span())";
+                    case 10, 11 -> "div()";
+                    case 12 -> "span(text(1)),span(text(2))";
+                    case 13 -> "span(text(1)),span(text(2)),span(text(3))";
+                    case 14 -> "div(span())";
+                    default -> "div(span(),span())";
+                });
+    }
+
+    public static void fragmentAttributes(boolean ref, boolean development) {
+        final var root = new IsolatedReconcilerTest.Harness().memory.createRoot(false);
+        final int[] calls = {0};
+        for (final var key : new String[] {null, "keyed"}) {
+            final var fragment = ReactElement.createFragment(key, ReactNode.of("hello"));
+            if (ref) {
+                props(fragment).set("ref", (Ref) ignored -> calls[0]++);
+            } else {
+                fragment.input("a", 1);
+            }
+            final var tree = view(named("FragmentOwner"), () -> fragment);
+            final var warned = captureWarnings(() -> root.render(tree, null));
+            final var expected = ref
+                    ? "Invalid attribute `ref` supplied to `React.Fragment`."
+                    : "Invalid prop `a` supplied to `React.Fragment`. React.Fragment can only have `key` and"
+                            + " `children` props.";
+            if (development) {
+                check(
+                        warned.contains(expected) && warned.contains("in FragmentOwner"),
+                        "Fragment diagnostic has the owner frame: " + warned);
+            } else {
+                equal("", warned);
+            }
+            rootShape(root, "text(hello)");
+        }
+        equal(0, calls[0]);
+    }
+
+    public static void symbolUniqueness() {
+        final var context = props(new Context<Object>());
+        final var provider = Objects.requireNonNull(context.get("Provider"));
+        final var consumer = Objects.requireNonNull(context.get("Consumer"));
+        final var root = new IsolatedReconcilerTest.Harness().memory.createRoot(false);
+        final String[] names = {
+            "element",
+            "portal",
+            "fragment",
+            "strict_mode",
+            "profiler",
+            "provider",
+            "context",
+            "concurrent_mode",
+            "forward_ref",
+            "suspense",
+            "memo",
+            "lazy"
+        };
+        final @Nullable Object[] markers = {
+            props(host("div", null, null)).get("$$typeof"),
+            props(Portal.create(null, root.getContainer())).get("$$typeof"),
+            React.Fragment,
+            React.StrictMode,
+            React.Profiler,
+            props(provider).get("$$typeof"),
+            props(consumer).get("$$typeof"),
+            React.ConcurrentMode,
+            React.ForwardRef,
+            React.Suspense,
+            React.Memo,
+            React.Lazy,
+        };
+        for (int i = 0; i < markers.length; i++) {
+            final var marker = markers[i];
+            check(Js.isTripleEqual(symbol("react." + names[i]), marker), "Expected registered " + names[i] + " symbol");
+            for (int j = 0; j < i; j++) {
+                check(!Js.isTripleEqual(marker, markers[j]), names[i] + " must differ from " + names[j]);
+            }
+        }
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Symbol.for")
+    private static native Object symbol(String name);
+
+    public static void invalidTypes(boolean development) {
+        final Object[] invalid = {Js.undefined(), false, 3d};
+        final String[] labels = {"undefined", "boolean", "number"};
+        checkInvalidType(null, "null", development);
+        for (int i = 0; i < invalid.length; i++) {
+            checkInvalidType(invalid[i], labels[i], development);
+        }
+    }
+
+    private static void checkInvalidType(@Nullable Object type, String label, boolean development) {
+        final var root = new IsolatedReconcilerTest.Harness().memory.createRoot(false);
+        final var owner = view(named("ParentComp"), () -> {
+            final var child = host("div", null, array(stored("span", null)));
+            props(child).set("type", type);
+            return child;
+        });
+        final @Nullable Object[] error = {null};
+        final var warnings = captureWarnings(() -> error[0] = thrownBy(() -> root.render(owner, null)));
+        final var message = Js.asString(props(Objects.requireNonNull(error[0])).get("message"));
+        check(
+                message.contains("Element type is invalid: expected a string (for built-in components)"
+                        + " or a class/function (for composite components) but got: " + label + "."),
+                "Expected invalid type " + label + ": " + message);
+        equal(development, message.contains("Check the render method of `ParentComp`."));
+        check(!warnings.contains(KEY_WARNING), "An invalid parent type does not attempt child key validation");
+    }
+
+    public static void numericChildren() {
+        final var root = new IsolatedReconcilerTest.Harness().memory.createRoot(false);
+        final var prototype = props(numberPrototype());
+        final var iterator = prototype.get("@@iterator");
+        final boolean hadIterator = prototype.has("@@iterator");
+        prototype.set("@@iterator", (Iterator) () -> {
+            throw new AssertionError("A numeric child must not invoke an inherited iterator");
+        });
+        try {
+            equal("", captureWarnings(() -> root.render(host("div", null, array(5d, 12d, 13d)), null)));
+            rootShape(root, "div(text(5),text(12),text(13))");
+        } finally {
+            if (hadIterator) {
+                prototype.set("@@iterator", iterator);
+            } else {
+                prototype.delete("@@iterator");
+            }
+        }
+    }
+
+    private static ReactElement staticChild(String tag) {
+        final var child = stored(tag, null);
+        props(child).set("_store", JsPropertyMap.of("validated", true));
+        return child;
+    }
+
+    @JsProperty(namespace = JsPackage.GLOBAL, name = "Number.prototype")
+    private static native Object numberPrototype();
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.defineProperty")
+    private static native void defineProperty(Object value, String key, Object descriptor);
+
+    @JsFunction
+    private interface Ref {
+        void set(@Nullable Object value);
     }
 
     private static ReactElement stored(String tag, @Nullable String key) {

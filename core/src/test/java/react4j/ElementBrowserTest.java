@@ -8,6 +8,8 @@ import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
@@ -18,6 +20,7 @@ import react4j.annotations.Render;
 import react4j.annotations.View;
 import react4j.internal.CurrentOwner;
 import react4j.internal.NativeView;
+import react4j.internal.OnComponentDidMount;
 import react4j.internal.ViewConstructorFunction;
 import react4j.webtesting.Browser;
 
@@ -35,6 +38,7 @@ final class ElementBrowserTest {
         clonedStringRefs(root);
         validElements(isElement);
         childrenInputs(root);
+        providedDomChild(root);
         compositeCopy(root);
         copiedChildrenAndRefs(root);
         defaultedInputs(root);
@@ -210,6 +214,55 @@ final class ElementBrowserTest {
         equal("[1,2,3]", Browser.json(ordered.inputs().get("children")));
         RuntimeBrowserTest.render(ordered, root);
         equal("123", root.getTextContent());
+    }
+
+    private static void providedDomChild(Browser.Element root) {
+        final ViewConstructorFunction type = DomContainer::new;
+        final var provided = Browser.append("div");
+        provided.remove();
+        final var console = record(console());
+        final var original = console.get("error");
+        final int[] warnings = {0};
+        console.set("error", (Ref) ignored -> warnings[0]++);
+        try {
+            RuntimeBrowserTest.render(ReactElement.createViewElement(type).input("children", provided), root);
+            check(
+                    root.getFirstElementChild().getFirstElementChild() == provided,
+                    "A DOM child passed as an input is attached by the mount lifecycle");
+            check(0 == warnings[0], "The DOM input is not interpreted as renderer children");
+        } finally {
+            console.set("error", original);
+            RuntimeBrowserTest.render(null, root);
+        }
+    }
+
+    @JsProperty(namespace = JsPackage.GLOBAL, name = "console")
+    private static native Object console();
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Node")
+    private interface DomNode {
+        void appendChild(Browser.Element child);
+    }
+
+    private static final class DomContainer extends NativeView implements OnComponentDidMount {
+        private @Nullable DomNode _host;
+
+        @JsConstructor
+        DomContainer(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            return ReactElement.createHostElement(
+                    "div", null, (Ref) node -> _host = Js.uncheckedCast(node), JsPropertyMap.of());
+        }
+
+        @Override
+        public void componentDidMount() {
+            Objects.requireNonNull(_host)
+                    .appendChild(Js.uncheckedCast(requireInputs().get("children")));
+        }
     }
 
     private static void compositeCopy(Browser.Element root) {
