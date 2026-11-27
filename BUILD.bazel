@@ -252,6 +252,7 @@ test_suite(
         "//css/examples/save-button/src/test/js/react4j/css/example:uncompressed_browser_tests",
         "//doc-examples/src/test/js/react4j/examples:browser_tests",
         "//dom/src/test/js/react4j/dom:browser_tests",
+        "//dom/src/test/js/react4j/dom:component_lifecycle_test",
         "//dom/src/test/js/react4j/dom:devtools_test",
         "//dom/src/test/js/react4j/dom:emitter_test",
         "//dom/src/test/js/react4j/dom:error_boundary_test",

@@ -176,6 +176,7 @@ function createRenderer(moduleFor, sourceReact) {
   function Component(props, context) {
     const view = Reflect.construct(View, [props], this.constructor);
     view.context = context;
+    view.state = undefined;
     view.refs = emptyRefs;
     return view;
   }
@@ -189,7 +190,17 @@ function createRenderer(moduleFor, sourceReact) {
     }
     return () => callback.call(component);
   }
+  const warnedConstructorState = new WeakSet();
+  let constructingFixture = false;
   Component.prototype.setState = function(patch, callback) {
+    if (process.env.NODE_ENV !== 'production' && constructingFixture && !warnedConstructorState.has(this.constructor)) {
+      warnedConstructorState.add(this.constructor);
+      const name = this.constructor.displayName || this.constructor.name || 'Component';
+      console.error("Warning: Can't call setState on a component that is not yet mounted. " +
+        'This is a no-op, but it might indicate a bug in your application. ' +
+        'Instead, assign to `this.state` directly or define a `state = {};` ' +
+        'class property with the desired state in the ' + name + ' component.');
+    }
     const done = updateCallback(this, callback);
     const update = typeof patch === 'function' ? (state, props) => patch.call(this, state, props) : patch;
     View.prototype.setStateWithCallback.call(this, update, done);
@@ -246,6 +257,8 @@ function createRenderer(moduleFor, sourceReact) {
     const previous = current.currentDispatcher;
     const parent = current.current;
     const fiber = currentOwner();
+    const previousConstructing = constructingFixture;
+    constructingFixture = constructing;
     current.currentDispatcher = dispatcher;
     if (!constructing && fiber && (receiver || internals.ReactDebugCurrentFrame)) {
       current.current = {type: fiber[member(fiber, 'f_type__')], tag: receiver ? 1 : 0, stateNode: receiver};
@@ -255,6 +268,7 @@ function createRenderer(moduleFor, sourceReact) {
     try { return render.apply(receiver, args); } finally {
       current.current = parent;
       current.currentDispatcher = previous;
+      constructingFixture = previousConstructing;
     }
   }
   const hooks = ['componentDidMount', 'componentDidUpdate', 'componentWillUnmount',
@@ -409,13 +423,14 @@ function createRenderer(moduleFor, sourceReact) {
     };
   }
   let adapter;
-  return {get adapter() { return adapter ??= createDOMAdapter(moduleFor, member); }, react, noop, createHostFixture};
+  return {get adapter() { return adapter ??= createDOMAdapter(moduleFor, member, current, currentOwner, lookup => { isMounted = lookup; }); }, react, noop, createHostFixture};
 }
 
-function createDOMAdapter(moduleFor, member) {
+function createDOMAdapter(moduleFor, member, current, currentOwner, registerReflection) {
   const dom = moduleFor('react4j.dom.ReactDOM');
   // Find the committed host exposed through refs in Java fixtures. Each Jest case owns its roots.
   const domRenderer = moduleFor('react4j.dom.Renderer');
+  const isMountedView = member(moduleFor('react4j.dom.Reconciler.Fiber').prototype, 'm_isMountedView__');
   const committedRoot = container => domRenderer[member(domRenderer, 'f_ROOTS__')].get(container);
   const rootFiber = root => root[member(root, 'f_fiber__')];
   const fiberView = fiber => fiber[member(fiber, 'f_view__')];
@@ -439,6 +454,24 @@ function createDOMAdapter(moduleFor, member) {
       if (view) return view;
     }
   }
+  const renderWarnings = new Map();
+  function warnOnRenderAccess(method) {
+    const owner = current.current?.stateNode;
+    if (process.env.NODE_ENV === 'production' || !owner) return;
+    let warned = renderWarnings.get(method);
+    if (!warned) renderWarnings.set(method, warned = new WeakSet());
+    if (warned.has(owner)) return;
+    warned.add(owner);
+    const name = owner.constructor.displayName || owner.constructor.name || 'Component';
+    console.error('Warning: ' + name + ' is accessing ' + method + ' inside its render() function. ' +
+      'render() should be a pure function of props and state.');
+  }
+  registerReflection(instance => {
+    warnOnRenderAccess('isMounted');
+    const rendering = current.current?.stateNode === instance ? currentOwner() : null;
+    const fiber = rendering || findView(instance) || mountedViews.get(instance);
+    return !!fiber && fiber[isMountedView](instance);
+  });
   const render = member(dom, 'm_render__react4j_Renderable__java_lang_Object__react4j_dom_ReactDOM_RenderCallbackFn');
   const unmount = member(dom, 'm_unmountComponentAtNode__');
   const batch = member(dom, 'm_batchedUpdates__');
@@ -515,6 +548,7 @@ function createDOMAdapter(moduleFor, member) {
     },
     // Upstream tests use findDOMNode to inspect fixtures. React4j exposes their DOM through refs.
     findDOMNode(instance) {
+      warnOnRenderAccess('findDOMNode');
       if (instance == null || instance.nodeType) return instance;
       adaptations.add('findDOMNode fixture');
       const view = findView(instance);

@@ -2725,12 +2725,17 @@ final class Reconciler {
             final var derive = null == classType ? null : ClassComponent.method(classType, "getDerivedStateFromProps");
             final boolean oldHooks =
                     null != classType && null == derive && !(component instanceof OnGetSnapshotBeforeUpdate);
-            if (DEVELOPMENT && null != classType && null == existing && strict) {
-                if (null == root._warnings) {
-                    root._warnings = new ClassComponent.Warnings();
+            if (DEVELOPMENT && null != classType && null == existing) {
+                ClassComponent.warnMount(classType, component, null != derive);
+                if (strict) {
+                    if (null == root._warnings) {
+                        root._warnings = new ClassComponent.Warnings();
+                    }
+                    root._warnings.record(
+                            classType,
+                            component,
+                            Objects.requireNonNullElse(RenderFailure.frameName(type), "Component"));
                 }
-                root._warnings.record(
-                        classType, component, Objects.requireNonNullElse(RenderFailure.frameName(type), "Component"));
             }
             final var receive = null != existing && (previousInputs != inputs || previousContext != _maskedContext);
             if (oldHooks && (null == existing || receive)) {
@@ -3041,6 +3046,52 @@ final class Reconciler {
             }
         }
 
+        private void queueUpdateEffects(
+                NativeView component,
+                JsPropertyMap<@Nullable Object> previousInputs,
+                @Nullable JsPropertyMap<@Nullable Object> previousState) {
+            final var classType = _classType;
+            final var didUpdate = null == classType ? null : ClassComponent.method(component, "componentDidUpdate");
+            final var snapshot = component instanceof OnGetSnapshotBeforeUpdate hook ? hook : null;
+            final var captured = null == didUpdate || null == snapshot ? null : new SnapshotValue();
+            if (null != snapshot) {
+                final var classSnapshot =
+                        null == classType ? null : ClassComponent.method(component, "getSnapshotBeforeUpdate");
+                root._snapshots.add(new Effect(
+                        this,
+                        () -> runPhase("getSnapshotBeforeUpdate", () -> {
+                            final var result = null != classSnapshot
+                                    ? ClassComponent.apply(
+                                            classSnapshot, component, new Object[] {previousInputs, previousState})
+                                    : snapshot.getSnapshotBeforeUpdate(
+                                            previousInputs, null == previousState ? JsPropertyMap.of() : previousState);
+                            if (null != captured) {
+                                captured.value = result;
+                            }
+                            if (DEVELOPMENT && null != classType && "undefined".equals(Js.typeof(result))) {
+                                ClassComponent.warnUndefinedSnapshot(classType);
+                            }
+                        })));
+            }
+            if (null != didUpdate) {
+                root._effects.add(new Effect(
+                        this,
+                        () -> runPhase(
+                                "componentDidUpdate",
+                                () -> ClassComponent.apply(didUpdate, component, new Object[] {
+                                    previousInputs, previousState, null == captured ? Js.undefined() : captured.value
+                                }))));
+            } else if (component instanceof OnComponentDidUpdate lifecycle) {
+                root._effects.add(new Effect(
+                        this,
+                        () -> runPhase("componentDidUpdate", () -> lifecycle.componentDidUpdate(previousInputs))));
+            }
+        }
+
+        private static final class SnapshotValue {
+            private @Nullable Object value = Js.undefined();
+        }
+
         private void completeView(
                 ReactElement element,
                 NativeView component,
@@ -3053,27 +3104,14 @@ final class Reconciler {
                 Completion complete,
                 @Nullable List<RenderFailure> commitErrors,
                 @Nullable Task onError) {
-            if (render && !newView && component instanceof OnGetSnapshotBeforeUpdate lifecycle) {
-                root._snapshots.add(new Effect(
-                        this,
-                        () -> runPhase(
-                                "getSnapshotBeforeUpdate",
-                                () -> lifecycle.getSnapshotBeforeUpdate(
-                                        Objects.requireNonNull(previousInputs),
-                                        null == previousState ? JsPropertyMap.of() : previousState))));
-            }
             if (newView) {
                 root._mutations.add(new Effect(this, () -> _mounted = true));
                 if (component instanceof OnComponentDidMount lifecycle) {
                     root._effects.add(
                             new Effect(this, () -> runPhase("componentDidMount", lifecycle::componentDidMount)));
                 }
-            } else if (render && component instanceof OnComponentDidUpdate lifecycle) {
-                root._effects.add(new Effect(
-                        this,
-                        () -> runPhase(
-                                "componentDidUpdate",
-                                () -> lifecycle.componentDidUpdate(Objects.requireNonNull(previousInputs)))));
+            } else if (render) {
+                queueUpdateEffects(component, Objects.requireNonNull(previousInputs), previousState);
             }
             if (null != commitErrors) {
                 final var catcher = component instanceof OnComponentDidCatch hook ? hook : null;
@@ -3859,6 +3897,10 @@ final class Reconciler {
             }
         }
 
+        boolean isMountedView(Object instance) {
+            return _mounted && view == instance;
+        }
+
         private void dispose() {
             dispose(true);
         }
@@ -3881,6 +3923,7 @@ final class Reconciler {
                 if (_mounted && view instanceof OnComponentWillUnmount lifecycle) {
                     root.runEffect(this, () -> runPhase("componentWillUnmount", lifecycle::componentWillUnmount));
                 }
+                _mounted = false;
             }
             final var node = hostInstance;
             // A host's descendants stay in its detached subtree. Portals start in a separate container.

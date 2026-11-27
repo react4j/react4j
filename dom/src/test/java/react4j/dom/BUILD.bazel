@@ -43,6 +43,23 @@ j2cl_library(
 )
 
 j2cl_library(
+    name = "component_lifecycle_scenarios",
+    testonly = True,
+    srcs = [
+        "ComponentLifecycleBrowserTest.java",
+        "ComponentLifecycleBrowserTest.native.js",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
     name = "forms_scenarios",
     testonly = True,
     srcs = [

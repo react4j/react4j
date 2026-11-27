@@ -4,6 +4,7 @@
 
 * Support React 16.6 lazy, memo and forwarded-ref elements, observed context bits, class error recovery and synchronous updates in the Java reconciler. Apply queued state updates in priority order and run their callbacks after commit.
 * Preserve mount and update lifecycle order when an error boundary retries a failed render. Deliver errors from commit and cleanup to the next eligible boundary.
+* Pass the pre-mutation snapshot and previous state to JavaScript class update hooks. Report incompatible lifecycle methods and invalid derived state or snapshot results during development.
 * Honor a synthetic event's current `isPropagationStopped()` result before invoking the next listener.
 * Inspect and highlight generated views and record component render timings with React Developer Tools in development and optimized production builds.
 * Expose generated view props and state on the JavaScript instance, including constructor-assigned state. Error boundaries receive React 16.6 component frames and development owner names.

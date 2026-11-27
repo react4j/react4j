@@ -10,11 +10,18 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
 import react4j.internal.NativeView;
+import react4j.internal.OnComponentDidUpdate;
+import react4j.internal.OnGetSnapshotBeforeUpdate;
 
 /** Class lifecycle methods exposed by JavaScript component constructors. */
 final class ClassComponent {
     static final Object LEGACY_CONTEXT = new Object();
     static final JsPropertyMap<@Nullable Object> EMPTY_CONTEXT = JsPropertyMap.of();
+
+    private static final boolean DEVELOPMENT = "development".equals(System.getProperty("react4j.environment"));
+    private static final Reconciler.WeakKeys<Object, Boolean> MOUNT_CHECKED = new Reconciler.WeakKeys<>();
+    private static final Reconciler.WeakKeys<Object, Boolean> UNDEFINED_DERIVED = new Reconciler.WeakKeys<>();
+    private static final Reconciler.WeakKeys<Object, Boolean> UNDEFINED_SNAPSHOT = new Reconciler.WeakKeys<>();
 
     private ClassComponent() {}
 
@@ -96,7 +103,83 @@ final class ClassComponent {
             @Nullable JsPropertyMap<@Nullable Object> previous,
             boolean error) {
         final var result = apply(fn, type, error ? new Object[] {first} : new Object[] {first, previous});
+        if (DEVELOPMENT && !error && "undefined".equals(Js.typeof(result)) && firstWarning(UNDEFINED_DERIVED, type)) {
+            warn("Warning: " + name(type)
+                    + ".getDerivedStateFromProps(): A valid state object (or null) must be returned. You have"
+                    + " returned undefined.");
+        }
         return null == result ? previous : merge(JsPropertyMap.of(), previous, result);
+    }
+
+    private static boolean firstWarning(Reconciler.WeakKeys<Object, Boolean> seen, Object type) {
+        if (null != seen.get(type)) {
+            return false;
+        }
+        seen.set(type, true);
+        return true;
+    }
+
+    private static String name(Object type) {
+        final var descriptor = properties(type);
+        final var displayName = descriptor.get("displayName");
+        final var declaredName = descriptor.get("name");
+        return displayName instanceof String display
+                ? display
+                : declaredName instanceof String value ? value : "Component";
+    }
+
+    static void warnUndefinedSnapshot(Object type) {
+        if (firstWarning(UNDEFINED_SNAPSHOT, type)) {
+            warn("Warning: " + name(type)
+                    + ".getSnapshotBeforeUpdate(): A snapshot value (or null) must be returned. You have"
+                    + " returned undefined.");
+        }
+    }
+
+    static void warnMount(Object type, NativeView view, boolean derive) {
+        if (!firstWarning(MOUNT_CHECKED, type)) {
+            return;
+        }
+        final var name = name(type);
+        final var state = view.state();
+        final var snapshot = view instanceof OnGetSnapshotBeforeUpdate;
+        if (null != state && state == view.inputs()) {
+            warn("Warning: " + name + ": It is not recommended to assign props directly to state because updates to"
+                    + " props won't be reflected in state. In most cases, it is better to use props directly.");
+        }
+        if (derive && null == state) {
+            final var unset = "undefined".equals(Js.typeof(state)) ? "undefined" : "null";
+            warn("Warning: `" + name + "` uses `getDerivedStateFromProps` but its initial state is " + unset
+                    + ". This is not recommended. Instead, define the initial state by assigning an object to"
+                    + " `this.state` in the constructor of `" + name
+                    + "`. This ensures that `getDerivedStateFromProps` arguments have a consistent shape.");
+        }
+        if (snapshot && !(view instanceof OnComponentDidUpdate) && null == method(view, "componentDidUpdate")) {
+            warn("Warning: " + name + ": getSnapshotBeforeUpdate() should be used with componentDidUpdate()."
+                    + " This component defines getSnapshotBeforeUpdate() only.");
+        }
+        if (derive || snapshot) {
+            final var legacy = new ArrayList<String>();
+            recordConflictingHook(view, "componentWillMount", legacy);
+            recordConflictingHook(view, "componentWillReceiveProps", legacy);
+            recordConflictingHook(view, "componentWillUpdate", legacy);
+            if (!legacy.isEmpty()) {
+                warn("Warning: Unsafe legacy lifecycles will not be called for components using new component APIs.\n\n"
+                        + name + " uses " + (derive ? "getDerivedStateFromProps()" : "getSnapshotBeforeUpdate()")
+                        + " but also contains the following legacy lifecycles:\n  " + String.join("\n  ", legacy)
+                        + "\n\nThe above lifecycles should be removed. Learn more about this warning here:\n"
+                        + "https://fb.me/react-async-component-lifecycle-hooks");
+            }
+        }
+    }
+
+    private static void recordConflictingHook(NativeView view, String hook, ArrayList<String> result) {
+        final var old = method(view, hook);
+        if (null != old && !Boolean.TRUE.equals(properties(old).get("__suppressDeprecationWarning"))) {
+            result.add(hook);
+        } else if (null != method(view, "UNSAFE_" + hook)) {
+            result.add("UNSAFE_" + hook);
+        }
     }
 
     static final class Warnings {
