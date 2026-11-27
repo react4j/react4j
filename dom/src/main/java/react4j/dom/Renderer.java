@@ -1,5 +1,6 @@
 package react4j.dom;
 
+import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.base.Js;
@@ -48,6 +49,7 @@ final class Renderer {
             }
             existing = new Reconciler.Root(container, false, DomReconcilerHost.INSTANCE, BrowserScheduler.INSTANCE);
             ROOTS.set(container, existing);
+            markRoot(container, () -> unmount(container));
         } else if (DEVELOPMENT && 8 != container.nodeType) {
             final var host = firstHost(existing.fiber);
             if (null != host && host.parentNode != container) {
@@ -64,6 +66,14 @@ final class Renderer {
     static boolean unmount(Node container) {
         final var root = ROOTS.get(container);
         if (null == root) {
+            final var foreignUnmount = rootUnmount(container);
+            if (null != foreignUnmount) {
+                if (DEVELOPMENT && null != container.firstChild) {
+                    warning("Warning: unmountComponentAtNode(): The node you're attempting to unmount "
+                            + "was rendered by another copy of React.");
+                }
+                return foreignUnmount.call();
+            }
             if (DEVELOPMENT && hasManagedChild(container)) {
                 final var parent = container.parentNode;
                 final String advice = 1 == container.nodeType && null != parent && isRoot(parent)
@@ -75,9 +85,26 @@ final class Renderer {
             }
             return false;
         }
-        root.remove(() -> ROOTS.delete(container));
+        root.remove(() -> {
+            ROOTS.delete(container);
+            unmarkRoot(container);
+        });
         return true;
     }
+
+    @JsFunction
+    private interface Unmount {
+        boolean call();
+    }
+
+    @JsMethod
+    private static native void markRoot(Node container, Unmount unmount);
+
+    @JsMethod
+    private static native @Nullable Unmount rootUnmount(Node container);
+
+    @JsMethod
+    private static native void unmarkRoot(Node container);
 
     private static boolean hasManagedChild(Node container) {
         final var first = container.firstChild;

@@ -30,7 +30,10 @@ closure_js_binary(
     testonly = True,
     compilation_level = "BUNDLE",
     dependency_mode = "SORT_ONLY",
-    deps = ["//:dom"],
+    deps = [
+        "//:dom",
+        "//tools/verification/runtime/java/react4j/dom:foreign_root_assertions",
+    ],
 )
 
 closure_js_binary(

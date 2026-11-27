@@ -2,6 +2,7 @@
 
 import argparse
 import concurrent.futures
+from contextlib import ExitStack
 import json
 import os
 from pathlib import Path
@@ -114,12 +115,15 @@ def main():
     selection.add_argument("--suite", action="append", type=Path, help="Relative upstream suite path; may repeat")
     selection.add_argument("--additional", action="store_true",
                            help="Run additional original core, profiling, test renderer and integration suites")
+    selection.add_argument("--foreign-root", action="store_true",
+                           help="Run the supplementary two-renderer root ownership test")
     args = parser.parse_args()
     checkout = args.checkout.resolve()
     bundle = args.bundle.resolve(strict=True)
     if json.loads((checkout / "package.json").read_text())["version"] != "16.6.0":
         raise ValueError("Expected a React 16.6.0 source checkout")
-    selected = args.suite or list(additional_specs() if args.additional else specs(checkout))
+    selected = [] if args.foreign_root else args.suite or list(
+        additional_specs() if args.additional else specs(checkout))
     reconciler_bundle = None
     if any(map(is_reconciler_spec, selected)):
         if args.reconciler_bundle is None:
@@ -130,8 +134,13 @@ def main():
     output = args.output.resolve()
     output.mkdir()
     pairs = {}
-    with tempfile.TemporaryDirectory(dir=checkout / "scripts/jest") as temp:
-        folder = Path(temp)
+    with ExitStack() as resources:
+        folder = Path(resources.enter_context(tempfile.TemporaryDirectory(dir=checkout / "scripts/jest")))
+        if args.foreign_root:
+            fixture = resources.enter_context(tempfile.NamedTemporaryFile(
+                dir=checkout / "packages/react-dom/src/__tests__", prefix="react4j_foreign_root_", suffix=".js"))
+            shutil.copyfile(Path(__file__).with_name("foreign-root-test.js"), fixture.name)
+            selected = [Path(fixture.name).relative_to(checkout)]
         for name in ("setup.js", "noop.js", "reporter.js"):
             shutil.copyfile(Path(__file__).with_name(name), folder / name)
         configs = {}
@@ -162,10 +171,15 @@ def main():
                 raise RuntimeError(f"Case {test_id} changed name between runtimes in {spec}")
             if uses_server_integration_variants(Path(spec)) and "with clean client render" not in name:
                 continue
-            rows.append(dict(suite=spec, id=test_id, case=name, stock=stock["status"], java=java["status"],
+            rows.append(dict(suite="foreign-root-test.js" if args.foreign_root else spec,
+                             id=test_id, case=name, stock=stock["status"], java=java["status"],
                              calls=java.get("calls", 0), assertions=java.get("assertions", 0),
                              adaptations=java.get("adaptations", []), failure=java.get("failure", "")))
     (output / "cases.json").write_text(json.dumps(rows, indent=2) + "\n")
+    if args.foreign_root and (len(rows) != 1 or any(
+            row["stock"] != "passed" or row["java"] != "passed" or not row["calls"] or not row["assertions"]
+            for row in rows)):
+        raise SystemExit(f"Foreign root ownership comparison failed; see {output / 'cases.json'}")
     mismatches = [row for row in rows if requires_reconciler_parity(Path(row["suite"]))
                   and (row["stock"] not in ("passed", "pending") or row["java"] != row["stock"])]
     if mismatches:

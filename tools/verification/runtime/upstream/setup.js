@@ -487,6 +487,9 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, registerRefl
       return instance;
     },
     unmountComponentAtNode(container) { counters.calls++; return dom[unmount](container); },
+    verifyForeignRootOwnership(...operations) {
+      moduleFor('react4j.dom.ForeignRootAssertions').verify(...operations);
+    },
     unstable_batchedUpdates(action, ...args) {
       counters.calls++;
       let result;

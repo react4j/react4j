@@ -85,3 +85,14 @@ j2cl_library(
         "//third_party:jspecify-j2cl",
     ],
 )
+
+j2cl_library(
+    name = "foreign_root_assertions",
+    testonly = True,
+    srcs = ["ForeignRootAssertions.java"],
+    visibility = ["//tools/verification/runtime:__pkg__"],
+    deps = [
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
