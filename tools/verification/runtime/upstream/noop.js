@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function createNoop({dom, moduleFor, member, observe, unsupported, react}) {
+module.exports = function createNoop({dom, moduleFor, member, observe, unsupported, react, configureTestRoot}) {
   const defaultRoot = '<default>';
   const roots = new Map();
   const hosts = new WeakMap();
@@ -66,6 +66,7 @@ module.exports = function createNoop({dom, moduleFor, member, observe, unsupport
       const target = {container, fixture: {rootID: id, children: []}};
       if (concurrent) {
         const root = dom[create](container);
+        configureTestRoot(root);
         const prototype = Object.getPrototypeOf(root);
         const schedule = member(prototype, 'm_scheduleSlice__');
         target.root = root;

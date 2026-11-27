@@ -165,6 +165,37 @@ function createRenderer(moduleFor, sourceReact) {
     return keys[0];
   }
 
+  const testRoots = new WeakSet();
+  let configuredStrictReplay = false;
+  function configureTestRoot(root) {
+    if (process.env.NODE_ENV === 'production') return;
+    testRoots.add(root);
+    if (configuredStrictReplay) return;
+
+    const flags = require('shared/ReactFeatureFlags');
+    const fiber = root[member(root, 'f_fiber__')];
+    const fiberRoot = member(fiber, 'f_root__');
+    const strict = member(fiber, 'f_strict__');
+    const prototype = Object.getPrototypeOf(fiber);
+    const renderView = member(prototype, 'm_renderView__');
+    const original = prototype[renderView];
+    prototype[renderView] = function(component) {
+      if (!this[strict] || !testRoots.has(this[fiberRoot]) ||
+          flags.debugRenderPhaseSideEffectsForStrictMode !== false) {
+        return original.call(this, component);
+      }
+      // Apply the fixture flag to render replay only, leaving StrictMode inheritance intact.
+      adaptations.add('upstream flag disables strict render replay');
+      this[strict] = false;
+      try {
+        return original.call(this, component);
+      } finally {
+        this[strict] = true;
+      }
+    };
+    configuredStrictReplay = true;
+  }
+
   // The historical Babel class transform calls its superclass as a function.
   // Construct the Java instance with the original fixture subclass's prototype.
   function Component(props) {
@@ -345,7 +376,7 @@ function createRenderer(moduleFor, sourceReact) {
       unsupported('findDOMNode outside a committed tree');
     },
   };
-  return {adapter, react, noop: {dom, moduleFor, member, unsupported, react, observe() {
+  return {adapter, react, noop: {dom, moduleFor, member, unsupported, react, configureTestRoot, observe() {
     calls++;
     adaptations.add('test host projection from Java DOM');
   }}};
