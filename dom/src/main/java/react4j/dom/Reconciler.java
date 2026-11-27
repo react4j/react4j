@@ -198,6 +198,9 @@ final class Reconciler {
         private final List<CommitFailure> _commitFailures = new ArrayList<>();
         private final LinkedHashSet<Fiber> _heldFallbacks = new LinkedHashSet<>();
         private @Nullable List<Runnable> _renderUndo;
+        private @Nullable Wakeables<Object, Wakeable> _wakeables;
+        private @Nullable List<Wakeable> _renderWakeables;
+        private boolean _restartRender;
         private @Nullable LegacySuspense _legacySuspense;
         private boolean _concurrentSuspense;
         private boolean _initialized;
@@ -331,7 +334,7 @@ final class Reconciler {
         }
 
         private void runSlice(boolean synchronous) {
-            if (0 == _fallbackTimer && null == _nextStep && !_hasWork && !_hasUrgentWork) {
+            if (0 == _fallbackTimer && null == _nextStep && !_restartRender && !_hasWork && !_hasUrgentWork) {
                 return;
             }
             _working = true;
@@ -342,14 +345,17 @@ final class Reconciler {
                     _fallbackTimer = 0;
                     if (_hasWork || _hasUrgentWork) {
                         abandonRender();
-                    } else {
+                    } else if (!_restartRender) {
                         completeConcurrentRender(synchronous);
                         return;
                     }
                 } else if (_hasUrgentWork && !_activeUrgent && null != _nextStep) {
                     abandonRender();
                 }
-                if (null == _nextStep) {
+                if (_restartRender) {
+                    restartConcurrentRender();
+                    renderActiveNode();
+                } else if (null == _nextStep) {
                     beginConcurrentRender();
                 }
                 final var deadline = synchronous ? Double.POSITIVE_INFINITY : now() + RENDER_BUDGET_MS;
@@ -380,17 +386,30 @@ final class Reconciler {
             for (var step = _nextStep; null != step; step = _nextStep) {
                 _nextStep = null;
                 step.run();
-                if (null != _nextStep && deadline != Double.POSITIVE_INFINITY && scheduler.shouldYield(deadline)) {
+                if (_restartRender) {
+                    if (deadline != Double.POSITIVE_INFINITY) {
+                        return false;
+                    }
+                    restartConcurrentRender();
+                    renderActiveNode();
+                } else if (null != _nextStep
+                        && deadline != Double.POSITIVE_INFINITY
+                        && scheduler.shouldYield(deadline)) {
                     return false;
                 }
             }
             return true;
         }
 
-        private void retryConcurrentRender(boolean includeLowerPriorityWork) {
+        private void restartConcurrentRender() {
+            _nextStep = null;
             rollback(Objects.requireNonNull(_renderUndo), 0);
             clearEffects();
             _fallbackDeadline = 0;
+        }
+
+        private void retryConcurrentRender(boolean includeLowerPriorityWork) {
+            restartConcurrentRender();
             if (includeLowerPriorityWork) {
                 _activeNode = node;
                 _updates.addAll(_activeUpdates);
@@ -575,6 +594,11 @@ final class Reconciler {
         }
 
         private void clearEffects() {
+            if (null != _renderWakeables) {
+                _renderWakeables.forEach(Wakeable::endRender);
+                _renderWakeables = null;
+                _restartRender = false;
+            }
             _effects.clear();
             _mutations.clear();
             _snapshots.clear();
@@ -583,6 +607,48 @@ final class Reconciler {
             _renderErrored = false;
             _resultFailure = null;
             _concurrentSuspense = false;
+        }
+
+        private void observeWakeable(Object thenable) {
+            if (null == _wakeables) {
+                _wakeables = new Wakeables<>();
+            }
+            var wakeable = _wakeables.get(thenable);
+            if (null == wakeable) {
+                final var pending = new Wakeable();
+                final Continuation notify = ignored -> pending.resolve();
+                Js.<Thenable>uncheckedCast(thenable).then(notify, notify);
+                _wakeables.set(thenable, pending);
+                wakeable = pending;
+            }
+            // A synchronous callback cannot interrupt yielded work.
+            if (!wakeable._settled && !wakeable._rendering) {
+                if (null == _renderWakeables) {
+                    _renderWakeables = new ArrayList<>();
+                }
+                _renderWakeables.add(wakeable);
+                wakeable._rendering = true;
+                wakeable._root = this;
+            }
+        }
+
+        private void ping(Wakeable wakeable) {
+            final var boundaries = wakeable._boundaries;
+            if (wakeable._rendering && null != _renderUndo) {
+                _restartRender = true;
+                if (!boundaries.isEmpty()) {
+                    final var updates = new ArrayList<>(_activeUpdates);
+                    for (final var boundary : boundaries) {
+                        updates.add(boundary::markDirty);
+                    }
+                    _activeUpdates = updates;
+                }
+                scheduleSlice();
+            } else {
+                for (final var boundary : boundaries) {
+                    update(boundary::markDirty);
+                }
+            }
         }
 
         private double time() {
@@ -720,6 +786,7 @@ final class Reconciler {
         private @Nullable Object _contextValue = Js.undefined();
         private boolean _captured;
         private @Nullable Object _suspension = Js.undefined();
+        private @Nullable ConcurrentSuspense _committedSuspension;
         private @Nullable LegacySuspense _fallbackPending = Js.uncheckedCast(Js.undefined());
         private @Nullable LegacyReturn _legacyReturn;
         private @Nullable LegacyReturn _legacyPrimary;
@@ -1174,14 +1241,6 @@ final class Reconciler {
             root._nextStep = () -> child.update(next, scope, complete);
         }
 
-        private void invalidate() {
-            if (root.concurrent) {
-                root.update(this::markDirty);
-            } else {
-                invalidateLegacy();
-            }
-        }
-
         private void invalidateLegacy() {
             invalidateLegacy(_legacyReturn);
         }
@@ -1408,6 +1467,15 @@ final class Reconciler {
                 final var suspense = root._legacySuspense;
                 if (null == suspense) {
                     root._renderErrored |= !root._concurrentSuspense;
+                    if (root._concurrentSuspense) {
+                        try {
+                            root.observeWakeable(failure.thrown());
+                        } catch (Throwable error) {
+                            root._renderErrored = true;
+                            complete.finish(new RenderFailure(this, error));
+                            return;
+                        }
+                    }
                     complete.finish(
                             root._concurrentSuspense
                                     ? failure
@@ -1801,19 +1869,7 @@ final class Reconciler {
                     final var suspension = new ConcurrentSuspense(
                             thenables, null == previousSuspension ? -1 : previousSuspension.committedAt);
                     _suspension = suspension;
-                    final Continuation retry = ignored -> {
-                        if (alive && _suspension == suspension) {
-                            invalidate();
-                        }
-                    };
-                    try {
-                        for (final var pending : thenables) {
-                            Js.<Thenable>uncheckedCast(pending).then(retry, retry);
-                        }
-                    } catch (Throwable error) {
-                        complete.finish(new RenderFailure(this, error));
-                        return;
-                    }
+                    root._mutations.add(new Effect(this, () -> commitSuspension(suspension)));
                 }
                 if (suspended) {
                     children = previous;
@@ -1924,7 +1980,7 @@ final class Reconciler {
                 _primaryCount = 0;
                 root._effects.add(new Effect(this, () -> {
                     _fallbackPending = attempt;
-                    invalidate();
+                    invalidateLegacy();
                 }));
                 complete.finish(null);
             });
@@ -1955,13 +2011,38 @@ final class Reconciler {
                 _legacyPrimary = null;
                 _primaryCount = 0;
                 if (root.concurrent) {
-                    root._mutations.add(new Effect(this, () -> root._heldFallbacks.remove(this)));
+                    root._mutations.add(new Effect(this, () -> {
+                        root._heldFallbacks.remove(this);
+                        commitSuspension(null);
+                    }));
                 } else {
                     reparentLegacyChildren(children, 0, children.length, _legacyReturn);
                 }
                 final var restored = children;
                 root._effects.add(new Effect(this, () -> setHidden(restored, false)));
             }
+        }
+
+        private void commitSuspension(@Nullable ConcurrentSuspense next) {
+            final var previous = _committedSuspension;
+            final var wakeables = Objects.requireNonNull(root._wakeables);
+            if (null != previous) {
+                for (final var thenable : previous.thenables) {
+                    final var wakeable = Objects.requireNonNull(wakeables.get(thenable));
+                    wakeable._boundaries.remove(this);
+                    wakeable.release();
+                }
+            }
+            if (null != next) {
+                for (final var thenable : next.thenables) {
+                    final var wakeable = Objects.requireNonNull(wakeables.get(thenable));
+                    if (!wakeable._settled) {
+                        wakeable._boundaries.add(this);
+                        wakeable._root = root;
+                    }
+                }
+            }
+            _committedSuspension = next;
         }
 
         private void showFallback(
@@ -2292,6 +2373,9 @@ final class Reconciler {
                 return;
             }
             alive = false;
+            if (null != _committedSuspension) {
+                commitSuspension(null);
+            }
             root._heldFallbacks.remove(this);
             root.host.onCommitUnmount(this);
             if (null != _attachedRef) {
@@ -2319,6 +2403,41 @@ final class Reconciler {
 
     private static final class LegacySuspense {
         private final List<RenderFailure> failures = new ArrayList<>();
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "WeakMap")
+    private static final class Wakeables<K, V> {
+        native @Nullable V get(K key);
+
+        native void set(K key, V value);
+    }
+
+    private static final class Wakeable {
+        private final LinkedHashSet<Fiber> _boundaries = new LinkedHashSet<>();
+        private @Nullable Root _root;
+        private boolean _rendering;
+        private boolean _settled;
+
+        private void resolve() {
+            final var root = _root;
+            _root = null;
+            _settled = true;
+            if (null != root) {
+                root.ping(this);
+                _boundaries.clear();
+            }
+        }
+
+        private void endRender() {
+            _rendering = false;
+            release();
+        }
+
+        private void release() {
+            if (!_rendering && _boundaries.isEmpty()) {
+                _root = null;
+            }
+        }
     }
 
     private static final class ConcurrentSuspense {

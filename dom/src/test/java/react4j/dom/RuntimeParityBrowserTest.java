@@ -2566,7 +2566,7 @@ public final class RuntimeParityBrowserTest {
     }
 
     @JsMethod
-    private static native ReactNode throwPending(BrowserPromise pending);
+    static native ReactNode throwPending(BrowserPromise pending);
 
     @JsMethod
     private static native ViewConstructorFunction constructible(ViewConstructorFunction type);

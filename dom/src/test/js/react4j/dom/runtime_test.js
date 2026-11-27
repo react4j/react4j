@@ -12,6 +12,7 @@ async function run(production) {
   Events.runFormDiagnostics(production);
   Children.run();
   await Fiber.run();
+  Fiber.interruptedSuspense();
   OriginalHost.run();
   await Test.run();
   Events.runBehavior();

@@ -4,7 +4,7 @@
 
 * Inspect and highlight generated views and record component render timings with React Developer Tools in development and optimized production builds.
 * Expose generated view props and state on the JavaScript instance, including constructor-assigned state. Error boundaries receive React 16.6 component frames and development owner names.
-* Concurrent roots yield during rendering and commit DOM changes and refs together. Interactive updates flush before the next interactive event, and a Suspense boundary can keep its previous content while loading.
+* Concurrent roots yield during rendering and commit DOM changes and refs together. Interactive updates flush before the next interactive event, and a Suspense boundary can keep its previous content while loading. When its promise resolves during a paused render, the root retries before rendering the remaining siblings or fallback.
 * Accept direct declarations inside supported nested CSS groups in shared stylesheets, `@GlobalCss` and `@Css`. Preserve declaration order and the enclosing selector's specificity and pseudo-element matching.
 * Reduce native utility compilation work by preparing each provider once per compiler invocation and binding only requested fragments. Reuse read-only provider syntax and name analysis, decoded source maps, indexed line starts, parsed CSS tokens and invariant hashes. Preserve generated Java/CSS, metadata, source maps, diagnostics and traces.
 * Expose `browser_files` through `@react4j//:defs.bzl` to share declared browser runfiles and executable-path variables between Closure and JVM tests. Reject empty dependency lists and conflicting named files; applications retain browser-version and capability selection.
