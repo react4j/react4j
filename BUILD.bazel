@@ -67,6 +67,7 @@ java_format_check(
         "//tools/browser:preview",
         "//tools/browser/src/test/java/react4j/browser:tests",
         "//tools/verification:coverage_check",
+        "//tools/verification/runtime/java/react4j/dom:isolated_reconciler_tests",
         "//tools/verification/runtime/java/react4j/dom:memory_renderer",
         "//tools/verification/src/main/java/react4j/verification:browser_coverage",
         "//tools/verification/src/main/java/react4j/verification:coverage_instrumenter",
@@ -264,6 +265,7 @@ test_suite(
         "//examples/todomvc/src/test/js/react4j/todomvc:browser_tests",
         "//examples/utility-css/src/test/js/react4j/utilitydemo:browser_tests",
         "//examples/webspeechdemo/src/test/js/react4j/webspeechdemo:browser_tests",
+        "//tools/verification/runtime:isolated_cases_test",
         "//tools/verification/src/test/java/react4j/verification:application_tests",
     ],
 )

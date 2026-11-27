@@ -1,5 +1,6 @@
-load("@rules_closure//closure:defs.bzl", "closure_js_binary")
+load("@rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
 load("//:defs.bzl", "browser_application", "css_bundle")
+load("//tools/browser:rules.bzl", "browser_test")
 
 css_bundle(
     name = "styles",
@@ -38,4 +39,27 @@ closure_js_binary(
     compilation_level = "BUNDLE",
     dependency_mode = "SORT_ONLY",
     deps = ["//tools/verification/runtime/java/react4j/dom:memory_renderer"],
+)
+
+closure_js_binary(
+    name = "isolated_reconciler_tests",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    dependency_mode = "SORT_ONLY",
+    deps = [":isolated_cases"],
+)
+
+closure_js_library(
+    name = "isolated_cases",
+    testonly = True,
+    srcs = ["isolated_cases.js"],
+    deps = ["//tools/verification/runtime/java/react4j/dom:isolated_reconciler_tests"],
+)
+
+browser_test(
+    name = "isolated_cases_test",
+    srcs = ["isolated_cases_test.js"],
+    entry_point = "react4j.testing.IsolatedCasesTest",
+    visibility = ["//:__pkg__"],
+    deps = [":isolated_cases"],
 )

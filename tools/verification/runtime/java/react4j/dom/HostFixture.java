@@ -1,6 +1,5 @@
 package react4j.dom;
 
-import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -27,7 +26,7 @@ public final class HostFixture {
         target.root.render(children, callback);
     }
 
-    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    @JsType(namespace = "react4j.testing", name = "HostFixtureCallbacks")
     public interface Callbacks {
         @Nullable
         Object getRootHostContext(@Nullable Object container);
