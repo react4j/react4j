@@ -62,22 +62,24 @@ This opens Chrome DevTools, inspects a generated component, checks the highlight
 
 ## Measured results
 
-### Production at `aec7b03ff`
+### Production at `d92506b6c`
 
-Linux x86-64, Intel Core Ultra 7 255H, Chrome for Testing 145.0.7632.117 and Node 26.12.1. Each application ran 30 measured pairs on CPUs 0–5, then 30 pairs with unrestricted scheduling across CPUs 0–15. Each cell gives the stock React 16.6 value followed by the Java renderer value. Rows ending in `_aec7b03ff` in the sample file belong to these runs. Run zero is the discarded warm-up. [Individual samples](measurements.csv)
+Linux x86-64, Intel Core Ultra 7 255H, Chrome for Testing 145.0.7632.117 and Node 26.12.1. Each application ran 30 measured pairs on CPUs 0–5 and 120 pairs with unrestricted scheduling across CPUs 0–15. Each cell gives the stock React 16.6 value followed by the Java renderer value. The sample labels contain `d92506b6c` and the pair count. Run zero is the discarded warm-up. [Individual samples](measurements.csv)
 
 | CPUs | Application | Load (ms) | Add 50 (ms) | Toggle 25 (ms) | 1,000 keys (ms) | Heap (bytes) | JavaScript (bytes) | Gzip (bytes) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0–5 | Raw | 27.70 / 27.95 | **22.50 / 25.00** | 3.60 / 3.00 | 5.25 / 4.90 | 1,998,472 / 1,994,558 | 166,367 / 129,672 | 54,943 / 44,510 |
-| 0–5 | Arez | 32.25 / 34.95 | 210.90 / 216.40 | 7.45 / 6.90 | 10.60 / 9.05 | 2,587,328 / 2,564,632 | 184,824 / 149,893 | 59,922 / 49,826 |
-| 0–5 | Sting | 32.85 / 35.65 | 213.50 / 215.55 | 7.60 / 6.70 | 9.90 / 9.25 | 2,592,248 / 2,570,964 | 185,631 / 150,767 | 60,272 / 50,174 |
-| Unrestricted | Raw | 25.25 / 26.05 | 18.00 / 18.75 | 3.85 / 3.10 | 5.70 / 5.20 | 1,994,682 / 1,991,548 | 166,367 / 129,672 | 54,943 / 44,510 |
-| Unrestricted | Arez | 28.85 / 26.70 | 206.85 / 210.80 | 6.90 / 6.50 | 9.50 / 8.40 | 2,587,324 / 2,564,534 | 184,824 / 149,893 | 59,922 / 49,826 |
-| Unrestricted | Sting | 29.00 / 27.50 | 201.85 / 210.75 | 6.55 / 6.50 | 8.10 / 8.40 | 2,592,254 / 2,570,448 | 185,631 / 150,767 | 60,272 / 50,174 |
+| 0–5 | Raw | 27.75 / 27.90 | 22.90 / 24.60 | 3.35 / 3.30 | 5.20 / 4.40 | 1,998,256 / 1,952,520 | 166,367 / 128,457 | 54,943 / 44,536 |
+| 0–5 | Arez | 33.45 / 34.15 | 212.80 / 214.90 | 7.40 / 6.70 | 10.55 / 8.15 | 2,587,358 / 2,527,396 | 184,824 / 148,687 | 59,922 / 49,853 |
+| 0–5 | Sting | 31.70 / 33.75 | 212.55 / 214.60 | 7.70 / 6.60 | 10.30 / 8.25 | 2,592,248 / 2,533,434 | 185,631 / 149,561 | 60,272 / 50,176 |
+| Unrestricted | Raw | 26.50 / 24.90 | 17.60 / 19.05 | 3.90 / 3.45 | 5.60 / 4.75 | 1,994,440 / 1,949,786 | 166,367 / 128,457 | 54,943 / 44,536 |
+| Unrestricted | Arez | 28.25 / 26.95 | 204.85 / 206.95 | 7.00 / 6.30 | 9.40 / 7.10 | 2,587,328 / 2,526,640 | 184,824 / 148,687 | 59,922 / 49,853 |
+| Unrestricted | Sting | 28.75 / 27.20 | 203.25 / 202.70 | 6.90 / 6.30 | 9.05 / 6.65 | 2,592,260 / 2,532,708 | 185,631 / 149,561 | 60,272 / 50,176 |
 
-Raw insertion on CPUs 0–5 exceeded the 24.75 ms cutoff by 0.25 ms. Every other metric met its budget.
+All 42 comparisons met their budgets. Raw insertion remained 7.4% slower than stock on CPUs 0–5 and 8.2% slower under unrestricted scheduling.
 
 ### Historical performance comparisons
+
+The regression at `aec7b03ff` was Raw insertion on CPUs 0–5. Stock took 22.50 ms and Java took 25.00 ms, above the 24.75 ms cutoff. Of the intervening builds, `5084d4c76` exceeded the Arez startup budget and `073dfa723` exceeded the Raw insertion budget. At `9f3bec3c4`, all pinned measurements passed. A 120-pair unrestricted run confirmed a Raw insertion miss (17.60 / 19.85 ms) and an Arez startup pass (28.00 / 27.15 ms). All 42 comparisons passed at `3d3eeb629`. The sample file retains each run.
 
 Candidate runtime at `2aa7b48f5`. Linux x86-64, Intel Core Ultra 7 255H, Chrome for Testing 145.0.7632.117 and Node 26.12.1. Both runtimes used CPUs 0–5 for the primary comparison. Each cell gives the pinned React 16.6 median followed by the Java renderer median. The sample file also includes the unrestricted comparison on CPUs 0–15, a Raw comparison on efficiency cores 6–13, and Raw controls with identical pinned bundles. Run zero is the discarded warm-up. [Individual samples](measurements.csv)
 
@@ -93,15 +95,15 @@ The control runs loaded the same pinned Raw bundle on both sides. Every metric p
 
 ### React Developer Tools and source maps
 
-React Developer Tools 8.0.0 inspected a generated component, highlighted its host element, and recorded 125 commits in each build below at candidate source `aec7b03ff`. The table counts commits with a positive duration in the extension export. A commit can appear with zero duration at the browser's timer resolution. Other verification work ran during this probe.
+React Developer Tools 8.0.0 inspected a generated component, highlighted its host element, and recorded 125 commits in each build below at candidate source `d92506b6c`. The table counts commits with a positive duration in the extension export. A commit can appear with zero duration at the browser's timer resolution. The extension probe ran alongside other verification work.
 
 | Profile | Commits with a positive component duration | Updates with a positive TodoEntry duration | Peak TodoEntry duration (ms) |
 | --- | ---: | ---: | ---: |
-| React 16.6 development | 111 | 66 | 15.9 |
-| Java development | 114 | 55 | 14.7 |
-| Java production | 74 | 7 | 0.1 |
-| Java production with names | 79 | 11 | 0.2 |
+| React 16.6 development | 106 | 53 | 2.5 |
+| Java development | 113 | 59 | 0.5 |
+| Java production | 73 | 4 | 0.5 |
+| Java production with names | 72 | 8 | 0.6 |
 
 The named production build exposed `TodoEntry` and `TodoItem.todo`. In the earlier comparison at `2aa7b48f5`, the same extension could select the component on the stock ReactDOM 16.6.0 production script and recorded zero profiled commits there.
 
-Chrome reported `app.js.map` as the source map URL for each candidate TodoMVC application in BUNDLE and ADVANCED, including the named production build. The maps resolved to files with mapped `Renderer.java`, `TodoEntry.java`, and `TodoItem.java` contents identical to the source at `aec7b03ff`.
+Chrome reported `app.js.map` as the source map URL for each candidate TodoMVC application in BUNDLE and ADVANCED, including the named production build. The maps resolved to files with mapped `Renderer.java`, `TodoEntry.java`, and `TodoItem.java` contents identical to the source at `d92506b6c`.
