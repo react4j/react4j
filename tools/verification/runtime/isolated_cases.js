@@ -9,7 +9,9 @@ const Reflection = goog.require('react4j.testing.IsolatedReflectionTest');
 const Scheduling = goog.require('react4j.testing.IsolatedSchedulingTest');
 const SideEffects = goog.require('react4j.testing.IsolatedSideEffectsTest');
 const Suspense = goog.require('react4j.testing.IsolatedSuspenseTest');
+const SuspenseVariants = goog.require('react4j.testing.IsolatedSuspenseVariantsTest');
 const Tests = goog.require('react4j.testing.IsolatedReconcilerTest');
+const Timing = goog.require('react4j.testing.IsolatedTimingTest');
 const Triangle = goog.require('react4j.testing.IsolatedTriangleTest');
 const Updates = goog.require('react4j.testing.IsolatedUpdateQueueTest');
 const Wrapped = goog.require('react4j.testing.IsolatedWrappedViewsTest');
@@ -97,6 +99,14 @@ exports.run = function(mode) {
   run('ReactTestRenderer independent context', () => ProfilerDevTools.secondaryContext(mode === 'production'));
   for (let i = 0; i <= 37; i++) {
     run('ReactIncrementalErrorHandling spec' + i, () => ErrorHandling.cases(i, mode === 'development'));
+  }
+  for (let i = 3; i <= 27; i++) {
+    if (i !== 8 && (i < 13 || i > 16)) {
+      run('ReactSuspenseWithNoopRenderer spec' + i, () => SuspenseVariants.cases(i));
+    }
+  }
+  for (let i = 0; i < 20; i++) {
+    run('ReactIncrementalPerf spec' + i, () => Timing.cases(i, mode === 'development'));
   }
   return count;
 };

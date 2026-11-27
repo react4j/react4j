@@ -479,7 +479,17 @@ public final class IsolatedReconcilerTest {
         private double _now;
         private double _timerNow;
         private BooleanSupplier _shouldYield = () -> false;
-        final MemoryRenderer memory = new MemoryRenderer(this);
+        private final boolean _timing;
+        final MemoryRenderer memory;
+
+        Harness() {
+            this(false);
+        }
+
+        Harness(boolean timing) {
+            _timing = timing;
+            memory = new MemoryRenderer(this);
+        }
 
         void render(MemoryRenderer.Root root, @Nullable ReactNode value) {
             root.render(value, null);
@@ -555,7 +565,7 @@ public final class IsolatedReconcilerTest {
 
         @Override
         public boolean userTimingEnabled() {
-            return false;
+            return _timing;
         }
 
         @Override

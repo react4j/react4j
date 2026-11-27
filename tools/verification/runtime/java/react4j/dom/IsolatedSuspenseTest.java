@@ -379,7 +379,10 @@ public final class IsolatedSuspenseTest {
     }
 
     @JsMethod
-    private static native ReactNode suspend(IsolatedWrappedViewsTest.Pending pending);
+    static native <T> T suspend(Object pending);
+
+    @JsMethod
+    private static native Object failure(String message);
 
     @JsFunction
     private interface Loader {
@@ -389,9 +392,12 @@ public final class IsolatedSuspenseTest {
     private static final class Resource {
         final IsolatedWrappedViewsTest.Pending pending = new IsolatedWrappedViewsTest.Pending();
         boolean ready;
+
+        @Nullable
+        Object rejection;
     }
 
-    private static final class Scenario {
+    static final class Scenario {
         final IsolatedReconcilerTest.Harness harness = new IsolatedReconcilerTest.Harness();
         final MemoryRenderer.Root root;
         final boolean noop;
@@ -405,6 +411,7 @@ public final class IsolatedSuspenseTest {
         Subject stateful;
 
         String middle = "";
+        boolean reject;
 
         Scenario(boolean concurrent, boolean persistent) {
             this(concurrent, persistent, false);
@@ -424,19 +431,35 @@ public final class IsolatedSuspenseTest {
         }
 
         ReactNode read(String text, int delay) {
+            return logText(readValue(text, delay));
+        }
+
+        String readValue(String text, int delay) {
             final var resource = resources.computeIfAbsent(text, key -> {
                 final var pending = new Resource();
                 harness.schedule(
                         () -> {
                             pending.ready = true;
-                            lines.add("Promise resolved [" + key + "]");
-                            pending.pending.resolve(key);
+                            if (reject) {
+                                final var reason = failure("Failed to load: " + key);
+                                pending.rejection = reason;
+                                lines.add("Promise rejected [" + key + "]");
+                                pending.pending.reject(reason);
+                            } else {
+                                lines.add("Promise resolved [" + key + "]");
+                                pending.pending.resolve(key);
+                            }
                         },
                         delay);
                 return pending;
             });
             if (resource.ready) {
-                return logText(text);
+                final var rejected = resource.rejection;
+                if (null != rejected) {
+                    lines.add("Error! [" + text + "]");
+                    return suspend(rejected);
+                }
+                return text;
             }
             lines.add("Suspend! [" + text + "]");
             return suspend(resource.pending);
