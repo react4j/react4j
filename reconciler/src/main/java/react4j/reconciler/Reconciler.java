@@ -77,6 +77,9 @@ public final class Reconciler {
     private static @Nullable Root _renderingRoot;
     private static boolean _renderPhase;
     private static boolean _warnedRenderUpdate;
+    private static boolean _warnedNestedRender;
+    private static boolean _readingChildContext;
+    private static boolean _warnedChildContextUpdate;
     private static boolean _interactive;
     private static boolean _synchronous;
     private static boolean _deferred;
@@ -625,6 +628,14 @@ public final class Reconciler {
         }
 
         void submit(@Nullable ReactNode children, @Nullable Task callback) {
+            if (DEVELOPMENT && _renderPhase && !_warnedNestedRender && null != currentFiber()) {
+                final var owner = Objects.requireNonNull(currentFiber());
+                _warnedNestedRender = true;
+                consoleError("Warning: Render methods should be a pure function of props and state; triggering"
+                        + " nested component updates from render is not allowed. If necessary, trigger nested updates"
+                        + " in componentDidUpdate.\n\nCheck the render method of "
+                        + Objects.requireNonNullElse(RenderFailure.frameName(owner.type), "Unknown") + ".");
+            }
             UserTiming.scheduledUpdate();
             if (concurrent) {
                 enqueueRender(children, callback);
@@ -2614,8 +2625,14 @@ public final class Reconciler {
                 @Nullable JsPropertyMap<@Nullable Object> state) {
             final var phase = startPhase("shouldComponentUpdate");
             try {
-                return Js.isTruthy(
-                        ClassComponent.apply(method, component, new Object[] {inputs, state, _maskedContext}));
+                final var result =
+                        ClassComponent.apply(method, component, new Object[] {inputs, state, _maskedContext});
+                if (DEVELOPMENT && "undefined".equals(Js.typeof(result))) {
+                    consoleError("Warning: " + ClassComponent.name(Objects.requireNonNull(_classType))
+                            + ".shouldComponentUpdate(): Returned undefined instead of a boolean value."
+                            + " Make sure to return true or false.");
+                }
+                return Js.isTruthy(result);
             } finally {
                 finishPhase(phase);
             }
@@ -2908,7 +2925,7 @@ public final class Reconciler {
             final boolean oldHooks =
                     null != classType && null == derive && !(component instanceof OnGetSnapshotBeforeUpdate);
             if (DEVELOPMENT && null != classType && null == existing) {
-                ClassComponent.warnMount(classType, type, component, null != derive);
+                ClassComponent.warnMount(classType, type, component, inputs, null != derive);
                 ClassComponent.warnContextType(classType, contextType, function, hasMarker(contextType, CONTEXT_TYPE));
                 if (strict) {
                     if (null == root._warnings) {
@@ -3035,17 +3052,30 @@ public final class Reconciler {
             if (DEVELOPMENT && functionView && null == existing && null != classType) {
                 ClassComponent.warnFunctionType(classType);
             }
-            if (!functionView
-                    && null != classType
-                    && null != ClassComponent.properties(classType).get("childContextTypes")) {
+            final var childContextTypes = null == classType
+                    ? null
+                    : ClassComponent.properties(classType).get("childContextTypes");
+            if (!functionView && null != classType && null != childContextTypes) {
                 final var provide = ClassComponent.method(component, "getChildContext");
                 if (null != provide && render) {
                     final var phase = startPhase("getChildContext");
+                    final var previousReadingChildContext = _readingChildContext;
+                    _readingChildContext = DEVELOPMENT;
                     try {
                         final var supplied = ClassComponent.apply(provide, component, new Object[0]);
+                        if (null != supplied && "object".equals(Js.typeof(supplied))) {
+                            final var keys = ClassComponent.properties(childContextTypes);
+                            for (final var key : objectKeys(supplied)) {
+                                if (!keys.has(key)) {
+                                    throwRaw(new NativeError(ClassComponent.name(classType)
+                                            + ".getChildContext(): key \"" + key
+                                            + "\" is not defined in childContextTypes."));
+                                }
+                            }
+                        }
                         if (DEVELOPMENT) {
                             PropTypeValidator.check(
-                                    ClassComponent.properties(classType).get("childContextTypes"),
+                                    childContextTypes,
                                     supplied,
                                     "child context",
                                     ClassComponent.name(classType),
@@ -3054,6 +3084,7 @@ public final class Reconciler {
                         final var value = ClassComponent.merge(JsPropertyMap.of(), source, supplied);
                         _legacyChildren = new Scope(scope, ClassComponent.LEGACY_CONTEXT, value, ALL_CONTEXT_BITS);
                     } finally {
+                        _readingChildContext = previousReadingChildContext;
                         finishPhase(phase);
                     }
                 } else if (DEVELOPMENT && render) {
@@ -3404,7 +3435,12 @@ public final class Reconciler {
         }
 
         private void warnOnRenderUpdate(NativeView component) {
-            if (DEVELOPMENT && _renderPhase && !_warnedRenderUpdate && !isFunctionComponent(component)) {
+            if (DEVELOPMENT && _readingChildContext) {
+                if (!_warnedChildContextUpdate) {
+                    _warnedChildContextUpdate = true;
+                    consoleError("Warning: setState(...): Cannot call setState() inside getChildContext()");
+                }
+            } else if (DEVELOPMENT && _renderPhase && !_warnedRenderUpdate && !isFunctionComponent(component)) {
                 _warnedRenderUpdate = true;
                 consoleError("Warning: Cannot update during an existing state transition (such as within `render`)."
                         + " Render methods should be a pure function of props and state.");
@@ -3955,11 +3991,7 @@ public final class Reconciler {
         }
 
         private void warnFunctionRef(ReactElement element) {
-            final var owner = element.owner();
-            final var ownerType = owner instanceof Fiber source
-                    ? source.type
-                    : null == owner ? null : ClassComponent.properties(owner).get("type");
-            final var name = null == ownerType ? null : RenderFailure.frameName(ownerType);
+            final var name = RenderFailure.elementOwnerName(element);
             final var location = RenderFailure.sourceLocation(element);
             if (null != location || null != name) {
                 if (!WARNED_FUNCTION_REFS.add(null == location ? "owner:" + name : "source:" + location)) {
@@ -4233,6 +4265,10 @@ public final class Reconciler {
                 view.detach();
                 if (_mounted && view instanceof OnComponentWillUnmount lifecycle) {
                     root.runEffect(this, () -> runPhase("componentWillUnmount", lifecycle::componentWillUnmount));
+                }
+                if (DEVELOPMENT && _mounted && null != _classType && !isFunctionComponent(view)) {
+                    ClassComponent.attachUnmountedDiagnostic(
+                            view, ClassComponent.name(_classType), RenderFailure.stackFrom(this));
                 }
                 _mounted = false;
             }
@@ -4525,12 +4561,18 @@ public final class Reconciler {
             return stackFrom(source);
         }
 
+        private static @Nullable String elementOwnerName(ReactElement element) {
+            final var owner = element.owner();
+            final var ownerType = owner instanceof Fiber source
+                    ? source.type
+                    : null == owner ? null : ClassComponent.properties(owner).get("type");
+            return null == ownerType ? null : frameName(ownerType);
+        }
+
         private static String ownerName(final Fiber source, final ReactElement element) {
-            if (element.owner() instanceof Fiber owner) {
-                final var name = frameName(owner.type);
-                if (null != name) {
-                    return name;
-                }
+            final var owner = elementOwnerName(element);
+            if (null != owner) {
+                return owner;
             }
             for (var parent = source.parent; null != parent; parent = parent.parent) {
                 if (Kind.VIEW == parent.kind) {

@@ -175,21 +175,26 @@ function createRenderer(moduleFor, sourceReact) {
     return () => callback.call(component);
   }
   const warnedConstructorState = new WeakSet();
+  const warnedConstructorForce = new WeakSet();
   let constructingFixture = false;
-  Component.prototype.setState = function(patch, callback) {
-    if (process.env.NODE_ENV !== 'production' && constructingFixture && !warnedConstructorState.has(this.constructor)) {
-      warnedConstructorState.add(this.constructor);
-      const name = this.constructor.displayName || this.constructor.name || 'Component';
-      console.error("Warning: Can't call setState on a component that is not yet mounted. " +
+  function warnConstructorUpdate(instance, method, warned) {
+    if (process.env.NODE_ENV !== 'production' && constructingFixture && !warned.has(instance.constructor)) {
+      warned.add(instance.constructor);
+      const name = instance.constructor.displayName || instance.constructor.name || 'Component';
+      console.error("Warning: Can't call " + method + " on a component that is not yet mounted. " +
         'This is a no-op, but it might indicate a bug in your application. ' +
         'Instead, assign to `this.state` directly or define a `state = {};` ' +
         'class property with the desired state in the ' + name + ' component.');
     }
+  }
+  Component.prototype.setState = function(patch, callback) {
+    warnConstructorUpdate(this, 'setState', warnedConstructorState);
     const done = updateCallback(this, callback);
     const update = typeof patch === 'function' ? (state, props) => patch.call(this, state, props) : patch;
     View.prototype.setStateWithCallback.call(this, update, done);
   };
   Component.prototype.forceUpdate = function(callback) {
+    warnConstructorUpdate(this, 'forceUpdate', warnedConstructorForce);
     View.prototype.forceUpdateWithCallback.call(this, updateCallback(this, callback));
   };
   Component.prototype.updater = {
@@ -201,6 +206,7 @@ function createRenderer(moduleFor, sourceReact) {
   };
 
   const constructors = new WeakMap();
+  const warnedUnextended = new WeakSet();
   const internals = sourceReact.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
   const current = internals.ReactCurrentOwner;
   const JavaReact = moduleFor('react4j.React');
@@ -304,12 +310,15 @@ function createRenderer(moduleFor, sourceReact) {
     }
     function create(inputs, context) {
       if (type.prototype?.isReactComponent) {
-        const instance = renderFixture(undefined, () => {
+        let instance = renderFixture(undefined, () => {
           if (!legacyClass) return new type(inputs, context);
           const view = Reflect.construct(View, [inputs], type);
           type.call(view, inputs, context, Component.prototype.updater);
           return view;
         }, [], true);
+        if (typeof instance[member(View.prototype, 'm_updateInputs__')] !== 'function') {
+          instance = Object.assign(new View(inputs), instance);
+        }
         const render = instance.render === View.prototype.render ? undefined : instance.render;
         instance.render = function() {
           if (process.env.NODE_ENV !== 'production' && !render) {
@@ -330,6 +339,14 @@ function createRenderer(moduleFor, sourceReact) {
       const view = new View(inputs);
       view.context = context;
       view.render = function() {
+        if (process.env.NODE_ENV !== 'production' && typeof type.prototype?.render === 'function'
+            && !warnedUnextended.has(type)) {
+          warnedUnextended.add(type);
+          const name = type.displayName || type.name || 'Component';
+          console.error('Warning: The <' + name + ' /> component appears to have a render method, ' +
+            "but doesn't extend React.Component. This is likely to cause errors. " +
+            'Change ' + name + ' to extend React.Component instead.');
+        }
         const result = renderFixture(undefined, type, [this.props, this.context]);
         if (result && typeof result.render === 'function') {
           Object.assign(this, result);

@@ -55,6 +55,7 @@ j2cl_library(
     testonly = True,
     srcs = [
         "ClassStateBrowserTest.java",
+        "CompositeDiagnosticsBrowserTest.java",
         "ComponentLifecycleBrowserTest.java",
         "ComponentLifecycleBrowserTest.native.js",
         "FunctionComponentBrowserTest.java",

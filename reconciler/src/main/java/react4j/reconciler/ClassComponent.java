@@ -2,6 +2,7 @@ package react4j.reconciler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
@@ -26,6 +27,7 @@ final class ClassComponent {
     private static final Reconciler.WeakKeys<Object, Boolean> RECEIVE_STATE_WARNING = new Reconciler.WeakKeys<>();
     private static final Reconciler.WeakKeys<Object, Boolean> MISSING_CHILD_CONTEXT = new Reconciler.WeakKeys<>();
     private static final Reconciler.WeakKeys<Object, Boolean> FUNCTION_CHECKED = new Reconciler.WeakKeys<>();
+    private static final HashSet<String> WARNED_UNMOUNTED_UPDATES = new HashSet<>();
 
     private ClassComponent() {}
 
@@ -181,6 +183,16 @@ final class ClassComponent {
         }
     }
 
+    static void attachUnmountedDiagnostic(NativeView view, String name, String stack) {
+        view.attach(update -> {
+            if (WARNED_UNMOUNTED_UPDATES.add(name)) {
+                warn("Warning: Can't call setState (or forceUpdate) on an unmounted component. This is a no-op, but"
+                        + " it indicates a memory leak in your application. To fix, cancel all subscriptions and"
+                        + " asynchronous tasks in the componentWillUnmount method." + stack);
+            }
+        });
+    }
+
     static void warnMissingChildContext(Object type) {
         if (firstWarning(MISSING_CHILD_CONTEXT, type)) {
             final var name = name(type);
@@ -202,7 +214,7 @@ final class ClassComponent {
         }
     }
 
-    static void warnMount(Object type, Object factory, NativeView view, boolean derive) {
+    static void warnMount(Object type, Object factory, NativeView view, Object inputs, boolean derive) {
         if (!firstWarning(MOUNT_CHECKED, type)) {
             return;
         }
@@ -210,6 +222,10 @@ final class ClassComponent {
         final var state = view.state();
         final var snapshot = view instanceof OnGetSnapshotBeforeUpdate;
         warnClassShape(type, view, name, state);
+        if (view.inputs() != inputs && !"undefined".equals(Js.typeof(view.inputs()))) {
+            warn("Warning: " + name + "(...): When calling super() in `" + name + "`, make sure to pass up the same"
+                    + " props that your component's constructor was passed.");
+        }
         if (null != state && state == view.inputs()) {
             warn("Warning: " + name + ": It is not recommended to assign props directly to state because updates to"
                     + " props won't be reflected in state. In most cases, it is better to use props directly.");
@@ -280,6 +296,26 @@ final class ClassComponent {
             warn("Warning: " + name + " has a method called componentShouldUpdate()."
                     + " Did you mean shouldComponentUpdate()? The name is phrased as a question"
                     + " because the function is expected to return a value.");
+        }
+        if (null != method(view, "componentDidUnmount")) {
+            warn("Warning: " + name + " has a method called componentDidUnmount(). But there is no such lifecycle"
+                    + " method. Did you mean componentWillUnmount()?");
+        }
+        if (null != method(view, "componentDidReceiveProps")) {
+            warn("Warning: " + name + " has a method called componentDidReceiveProps(). But there is no such lifecycle"
+                    + " method. If you meant to update the state in response to changing props, use"
+                    + " componentWillReceiveProps(). If you meant to fetch data or run side-effects or mutations after"
+                    + " React has updated the UI, use componentDidUpdate().");
+        }
+        if (Js.isTruthy(instance.get("defaultProps"))) {
+            warn("Warning: Setting defaultProps as an instance property on " + name
+                    + " is not supported and will be ignored. Instead, define defaultProps as a static property on "
+                    + name + ".");
+        }
+        if (null != method(view, "getChildContext")
+                && !"object".equals(Js.typeof(properties(type).get("childContextTypes")))) {
+            warn("Warning: " + name
+                    + ".getChildContext(): childContextTypes must be defined in order to use getChildContext().");
         }
         for (final var prefix : new String[] {"", "UNSAFE_"}) {
             final var misspelling = prefix + "componentWillRecieveProps";
