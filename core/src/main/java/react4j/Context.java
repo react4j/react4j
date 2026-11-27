@@ -6,6 +6,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
+import react4j.internal.CurrentOwner;
 
 /**
  * Context is designed to share data that can be considered "global" for a tree of views.
@@ -15,6 +16,7 @@ import org.jspecify.annotations.Nullable;
  * views without having to explicitly pass a input through every level of the tree.
  */
 public final class Context<T extends @Nullable Object> {
+    private static final boolean DEVELOPMENT = "development".equals(System.getProperty("react4j.environment"));
     private static final Object CONTEXT_TYPE = symbol("react.context");
     private static final Object PROVIDER_TYPE = symbol("react.provider");
 
@@ -31,7 +33,41 @@ public final class Context<T extends @Nullable Object> {
         final var record = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(this);
         record.set("$$typeof", CONTEXT_TYPE);
         record.set("_currentValue", defaultValue);
+        record.set("Provider", _provider);
+        record.set("Consumer", DEVELOPMENT ? _consumer : this);
+        if (DEVELOPMENT) {
+            legacyAccessor("Consumer", _consumer);
+            legacyAccessor("Provider", _provider);
+        }
     }
+
+    private void legacyAccessor(String name, Object target) {
+        final boolean[] warned = {false};
+        final Accessor getter = () -> {
+            if (!warned[0]) {
+                warned[0] = true;
+                final var owner = CurrentOwner.get();
+                final var stack =
+                        owner instanceof CurrentOwner.ComponentStack provider ? provider.componentStack() : "";
+                consoleError("Warning: Rendering <Context.Consumer." + name
+                        + "> is not supported and will be removed in a future major release. "
+                        + "Did you mean to render <Context." + name + "> instead?" + stack);
+            }
+            return target;
+        };
+        defineProperty(_consumer, name, JsPropertyMap.of("get", getter));
+    }
+
+    @JsFunction
+    private interface Accessor {
+        Object read();
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.defineProperty")
+    private static native void defineProperty(Object object, String name, Object descriptor);
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "console.error")
+    private static native void consoleError(String message);
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "Symbol.for")
     private static native Object symbol(String name);

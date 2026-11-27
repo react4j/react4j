@@ -1390,7 +1390,7 @@ final class Reconciler {
         PORTAL
     }
 
-    static final class Fiber {
+    static final class Fiber implements CurrentOwner.ComponentStack {
         final Root root;
         final @Nullable Fiber parent;
         final Kind kind;
@@ -3759,6 +3759,11 @@ final class Reconciler {
             };
             ClassComponent.properties(assign).set("_stringRef", name);
             return assign;
+        }
+
+        @Override
+        public String componentStack() {
+            return RenderFailure.stackFrom(this);
         }
 
         boolean isFunctionComponent(Object instance) {

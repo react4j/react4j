@@ -82,7 +82,7 @@ exports.run = function(mode) {
   for (let i = 0; i < 45; i++) {
     run('ReactNewContext spec' + i, () => Context.cases(i % 15, Math.floor(i / 15)));
   }
-  for (let i = 45; i <= 56; i++) {
+  for (let i = 45; i <= 58; i++) {
     run('ReactNewContext spec' + i, () => Context.additional(i, mode === 'development'));
   }
   run('ReactProfiler DevTools automatic profiling', () => ProfilerDevTools.autoProfile());

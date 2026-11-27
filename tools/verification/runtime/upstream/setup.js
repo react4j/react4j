@@ -356,26 +356,7 @@ function createRenderer(moduleFor, sourceReact) {
     },
     createContext(initial, changedBits) {
       const context = JavaReact[member(JavaReact, 'm_createContext__')](initial);
-      const provider = context[member(Object.getPrototypeOf(context), 'm_provide__')](initial, []);
-      const builder = context[member(Object.getPrototypeOf(context), 'm_consumer__')]();
-      const consumer = builder[member(Object.getPrototypeOf(builder), 'm_render__')](() => null);
       context._calculateChangedBits = changedBits;
-      context.Provider = provider.type;
-      if (internals.ReactDebugCurrentFrame) {
-        context.Consumer = consumer.type;
-        for (const name of ['Consumer', 'Provider']) {
-          let warned = false;
-          Object.defineProperty(consumer.type, name, {get() {
-            if (!warned) {
-              warned = true;
-              console.error('Warning: Rendering <Context.Consumer.' + name + '> is not supported and will be removed in a future major release. Did you mean to render <Context.' + name + '> instead?' + internals.ReactDebugCurrentFrame.getStackAddendum());
-            }
-            return context[name];
-          }});
-        }
-      } else {
-        context.Consumer = context;
-      }
       return context;
     },
   });

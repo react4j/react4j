@@ -6,6 +6,10 @@ import org.jspecify.annotations.Nullable;
 public final class CurrentOwner {
     private static @Nullable Object c_owner;
 
+    public interface ComponentStack {
+        String componentStack();
+    }
+
     private CurrentOwner() {}
 
     public static @Nullable Object get() {

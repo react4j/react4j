@@ -36,6 +36,9 @@ import react4j.internal.ViewConstructorFunction;
 @NullMarked
 @JsType(namespace = "react4j.testing")
 public final class IsolatedContextTest {
+    private static final PropTypeValidator.Validator ANY_CONTEXT =
+            (values, property, name, location, publicName, secret) -> null;
+
     private IsolatedContextTest() {}
 
     public static void cases(int number, int reader) {
@@ -140,6 +143,7 @@ public final class IsolatedContextTest {
             }
             case 53, 54 -> fuzz(54 == number);
             case 55, 56 -> direct(f, number, development);
+            case 57, 58 -> nestedAccessor(f, 58 == number, development);
             default -> throw new AssertionError(number);
         }
     }
@@ -155,7 +159,7 @@ public final class IsolatedContextTest {
         props(f.stateful).set("componentClass", f.stateful);
         final ViewConstructorFunction provider = LegacyScope::new;
         props(provider).set("displayName", "LegacyProvider");
-        props(provider).set("childContextTypes", JsPropertyMap.of("legacyValue", true));
+        props(provider).set("childContextTypes", JsPropertyMap.of("legacyValue", ANY_CONTEXT));
         final var ref = JsPropertyMap.<@Nullable Object>of("current", null);
         final var tree =
                 ReactElement.createViewElement(provider).input("child", app).input("log", f.trace);
@@ -258,6 +262,38 @@ public final class IsolatedContextTest {
         } else {
             equal("", warning);
         }
+        f.committed(1);
+    }
+
+    private static void nestedAccessor(Fixture f, boolean provider, boolean development) {
+        final var context = context(0d);
+        props(f.view).set("displayName", "Component");
+        final var app = f.view(() -> {
+            final var consumer = Objects.requireNonNull(props(context).get("Consumer"));
+            final var descriptor = props(consumer).get(provider ? "Provider" : "Consumer");
+            final var target = Objects.requireNonNull(descriptor);
+            final var reader = Js.<ReactElement>uncheckedCast(f.publicRead(context, null, IsolatedContextTest::span));
+            if (provider) {
+                final var element = Js.<ReactElement>uncheckedCast(context.provide(1d, reader));
+                props(element).set("type", target);
+                return element;
+            }
+            props(reader).set("type", props(target).get("Consumer"));
+            return context.provide(1d, reader);
+        });
+        final var warning = captureWarnings(() -> f.render(app));
+        if (development) {
+            final var name = provider ? "Provider" : "Consumer";
+            check(
+                    warning.contains("Rendering <Context.Consumer." + name + "> is not supported")
+                            && warning.contains("Did you mean to render <Context." + name + ">")
+                            && warning.contains("in Component"),
+                    "Expected nested " + name + " diagnostic and stack: " + warning);
+        } else {
+            equal("", warning);
+        }
+        f.committed(1);
+        equal("", captureWarnings(() -> f.render(app.dup())));
         f.committed(1);
     }
 
