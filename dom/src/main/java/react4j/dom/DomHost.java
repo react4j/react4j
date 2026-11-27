@@ -21,49 +21,6 @@ final class DomHost {
     private static final String XLINK = "http://www.w3.org/1999/xlink";
     private static final String XML = "http://www.w3.org/XML/1998/namespace";
     private static final JsPropertyMap<AttributeInfo> ATTRIBUTES = buildAttributes();
-    private static final Set<String> UNITLESS_STYLES = Set.of(
-            "animationIterationCount",
-            "borderImageOutset",
-            "borderImageSlice",
-            "borderImageWidth",
-            "boxFlex",
-            "boxFlexGroup",
-            "boxOrdinalGroup",
-            "columnCount",
-            "columns",
-            "fillOpacity",
-            "flex",
-            "flexGrow",
-            "flexNegative",
-            "flexOrder",
-            "flexPositive",
-            "flexShrink",
-            "floodOpacity",
-            "fontWeight",
-            "gridArea",
-            "gridColumn",
-            "gridColumnEnd",
-            "gridColumnSpan",
-            "gridColumnStart",
-            "gridRow",
-            "gridRowEnd",
-            "gridRowSpan",
-            "gridRowStart",
-            "lineClamp",
-            "lineHeight",
-            "opacity",
-            "order",
-            "orphans",
-            "stopOpacity",
-            "strokeDasharray",
-            "strokeDashoffset",
-            "strokeMiterlimit",
-            "strokeOpacity",
-            "strokeWidth",
-            "tabSize",
-            "widows",
-            "zIndex",
-            "zoom");
     private static final DomEvents.Listener CLICK_TRAP = event -> {};
     private static final Set<String> RESERVED_HYPHENATED_TAGS = Set.of(
             "annotation-xml",
@@ -197,7 +154,7 @@ final class DomHost {
             final String tag,
             final JsPropertyMap<@Nullable Object> inputs,
             @Nullable final String text) {
-        final var state = new DomEvents.State(inputs, tag);
+        final var state = new DomEvents.State(element, inputs, tag);
         applyProperties(element, state, null, inputs, text);
         if (isControlTag(tag)) {
             restoreControlled(element, state);
@@ -208,15 +165,6 @@ final class DomHost {
             }
         }
         return state;
-    }
-
-    static void attachInitial(
-            final Element element,
-            final DomEvents.State state,
-            final Node boundary,
-            final Node rootContainer,
-            @Nullable final Element logicalParent) {
-        DomEvents.attach(element, state, boundary, rootContainer, logicalParent);
     }
 
     static void update(
@@ -1159,20 +1107,17 @@ final class DomHost {
     private static void addSvgAttributes(
             JsPropertyMap<AttributeInfo> table, AttributeType type, @Nullable String namespace, String... names) {
         for (final var name : names) {
-            final var property = new StringBuilder(name.length());
-            for (int i = 0; i < name.length(); i++) {
-                final var ch = name.charAt(i);
-                if (('-' == ch || ':' == ch) && i + 1 < name.length()) {
-                    final var next = name.charAt(i + 1);
-                    if (next >= 'a' && next <= 'z') {
-                        property.append(Character.toUpperCase(next));
-                        i++;
-                        continue;
-                    }
+            String property = "";
+            int start = 0;
+            for (int i = 1; i < name.length(); i++) {
+                final var separator = name.charAt(i - 1);
+                final var next = name.charAt(i);
+                if (('-' == separator || ':' == separator) && 'a' <= next && next <= 'z') {
+                    property += name.substring(start, i - 1) + Character.toUpperCase(next);
+                    start = i + 1;
                 }
-                property.append(ch);
             }
-            table.set(property.toString(), new AttributeInfo(name, namespace, type));
+            table.set(property + name.substring(start), new AttributeInfo(name, namespace, type));
         }
     }
 
@@ -1234,6 +1179,52 @@ final class DomHost {
         };
     }
 
+    private static final class Styles {
+        private static final Set<String> UNITLESS_STYLES = Set.of(
+                "animationIterationCount",
+                "borderImageOutset",
+                "borderImageSlice",
+                "borderImageWidth",
+                "boxFlex",
+                "boxFlexGroup",
+                "boxOrdinalGroup",
+                "columnCount",
+                "columns",
+                "fillOpacity",
+                "flex",
+                "flexGrow",
+                "flexNegative",
+                "flexOrder",
+                "flexPositive",
+                "flexShrink",
+                "floodOpacity",
+                "fontWeight",
+                "gridArea",
+                "gridColumn",
+                "gridColumnEnd",
+                "gridColumnSpan",
+                "gridColumnStart",
+                "gridRow",
+                "gridRowEnd",
+                "gridRowSpan",
+                "gridRowStart",
+                "lineClamp",
+                "lineHeight",
+                "opacity",
+                "order",
+                "orphans",
+                "stopOpacity",
+                "strokeDasharray",
+                "strokeDashoffset",
+                "strokeMiterlimit",
+                "strokeOpacity",
+                "strokeWidth",
+                "tabSize",
+                "widows",
+                "zIndex",
+                "zoom");
+    }
+
     private static void setStyles(final Element element, @Nullable final Object previous, @Nullable final Object next) {
         final var style = element.style;
         final var before = null == previous ? null : properties(previous);
@@ -1254,7 +1245,7 @@ final class DomHost {
                     final boolean pixels = !name.startsWith("--")
                             && "number".equals(Js.typeof(value))
                             && 0 != Js.asDouble(value)
-                            && !UNITLESS_STYLES.contains(unprefixed(name));
+                            && !Styles.UNITLESS_STYLES.contains(unprefixed(name));
                     style.setProperty(styleName(name), stringify(value).trim() + (pixels ? "px" : ""));
                 }
             }
@@ -1333,14 +1324,14 @@ final class DomHost {
             } else {
                 if (null != value) {
                     final var text = formValue(value);
-                    if (!text.equals(props.get("value"))) {
+                    if (!Js.isTripleEqual(text, props.get("value"))) {
                         props.set("value", text);
                     }
                 }
                 final var text = null != defaultValue ? defaultValue : value;
                 if (null != text) {
                     final var reset = formValue(text);
-                    if (!reset.equals(props.get("defaultValue"))) {
+                    if (!Js.isTripleEqual(reset, props.get("defaultValue"))) {
                         props.set("defaultValue", reset);
                     }
                 }
@@ -1376,11 +1367,11 @@ final class DomHost {
                         && "number".equals(Js.typeof(value))
                         && !"".equals(current)
                         && number(current) == Js.asDouble(value);
-                if ((mounting || null != value) && !text.equals(current) && !sameNumber) {
+                if ((mounting || null != value) && !Js.isTripleEqual(text, current) && !sameNumber) {
                     props.set("value", text);
                 }
                 if ((!"number".equals(type) || element != element.document().activeElement)
-                        && (mounting || !text.equals(props.get("defaultValue")))) {
+                        && (mounting || !Js.isTripleEqual(text, props.get("defaultValue")))) {
                     props.set("defaultValue", text);
                 }
             }

@@ -734,6 +734,8 @@ final class Renderer {
         @Nullable
         Object ref = Js.undefined();
 
+        private final Node _hostContainer;
+        private DomEvents.@Nullable State _hostState;
         private final @Nullable Object _portalState;
         private @Nullable String _childNamespace = Js.uncheckedCast(Js.undefined());
         private @Nullable Object output = Js.undefined();
@@ -773,9 +775,13 @@ final class Renderer {
             this.type = type;
             this.key = key;
             strict = (null == parent ? root.concurrent : parent.strict) || React.StrictMode == type;
-            _portalState = Kind.PORTAL == kind
-                    ? JsPropertyMap.of("containerInfo", type, "pendingChildren", null, "implementation", null)
-                    : null;
+            if (Kind.PORTAL == kind) {
+                _hostContainer = Js.uncheckedCast(type);
+                _portalState = JsPropertyMap.of("containerInfo", type, "pendingChildren", null, "implementation", null);
+            } else {
+                _hostContainer = null == parent ? root.container : parent._hostContainer;
+                _portalState = null;
+            }
         }
 
         @Nullable
@@ -832,7 +838,7 @@ final class Renderer {
                 }
             } else {
                 for (final var child : previous) {
-                    if (Objects.equals(descriptor.key, child.key)) {
+                    if (sameKey(descriptor.key, child.key)) {
                         if (descriptor.matches(child)) {
                             candidate = child;
                         }
@@ -1085,9 +1091,13 @@ final class Renderer {
             }
             if (ReactElement.isElement(value)) {
                 final var element = Js.<ReactElement>uncheckedCast(value);
-                return Js.isTripleEqual(fiber.type, element.type()) && Objects.equals(fiber.key, element.key());
+                return Js.isTripleEqual(fiber.type, element.type()) && sameKey(fiber.key, element.key());
             }
             return false;
+        }
+
+        private static boolean sameKey(@Nullable String a, @Nullable String b) {
+            return Js.isTripleEqual(a, b) || null == a && null == b;
         }
 
         private Object reconciliationKey() {
@@ -1299,7 +1309,7 @@ final class Renderer {
                         if (DEVELOPMENT) {
                             DomNesting.checkText(this, text, () -> RenderFailure.stackFrom(this));
                         }
-                        dom = DomHost.createText(boundary(), text);
+                        dom = DomHost.createText(mountParent(_hostContainer), text);
                     } else if (!text.equals(dom.nodeValue)) {
                         final var textNode = dom;
                         root._mutations.add(new Effect(this, () -> textNode.nodeValue = text));
@@ -1549,7 +1559,7 @@ final class Renderer {
         }
 
         private void mountHost(ReactElement element, String namespace, @Nullable String initialText) {
-            final var container = boundary();
+            final var container = mountParent(_hostContainer);
             final var inputs = element.inputs();
             final var tag = Js.asString(type);
             final var host = DomHost.createElement(container, namespace, tag, inputs);
@@ -1557,9 +1567,9 @@ final class Renderer {
                 DomHost.warnTag(host, namespace, tag, inputs, () -> RenderFailure.stackFrom(this));
             }
             appendInitialChildren(host);
-            final var state = DomHost.prepareInitial(host, tag, inputs, initialText);
+            _hostState = DomHost.prepareInitial(host, tag, inputs, initialText);
             dom = host;
-            root._mutations.add(new HostAttach(this, container, state));
+            root._mutations.add(new HostAttach(this, container));
         }
 
         private void autofocus(Element host) {
@@ -1606,23 +1616,33 @@ final class Renderer {
                 Completion complete) {
             final var inputs = element.inputs();
             final var existing = view;
+            final var previousInputs = null == existing ? null : existing.inputs();
+            final var predicate = _viewPredicate;
+            final boolean clean = !refreshChildren && !_retrySuspendedView;
+            if (null != existing
+                    && clean
+                    && (oldNode == element || null != predicate && !predicate.shouldComponentUpdate(inputs))) {
+                existing.updateInputs(inputs);
+                reconcileRef(element.ref(), existing);
+                finishUpdate(null, scope, complete);
+                return;
+            }
             final var component = null == existing ? NativeView.construct(type, inputs) : existing;
-            final var previousInputs = component.inputs();
             if (null == existing) {
                 view = component;
-                _viewPredicate = component instanceof OnShouldComponentUpdate predicate ? predicate : null;
+                _viewPredicate = component instanceof OnShouldComponentUpdate shouldUpdate ? shouldUpdate : null;
                 attachUpdater(component);
             }
             final boolean force = dirty && component.consumeForceUpdate();
             final boolean retry = _retrySuspendedView;
             _retrySuspendedView = false;
-            final var predicate = _viewPredicate;
             final var pendingState = dirty ? component.preparePendingState() : null;
             final boolean changed = null == existing || oldNode != element || null != pendingState || force || retry;
             final boolean render = changed
                     && (null == existing
                             || force
                             || retry
+                            || clean
                             || null == predicate
                             || predicate.shouldComponentUpdate(inputs));
             final var previousState = component.state();
@@ -2004,6 +2024,7 @@ final class Renderer {
             final var previousView = view;
             final var previousPredicate = _viewPredicate;
             final var previousDom = dom;
+            final var hostState = _hostState;
             final var childNamespace = _childNamespace;
             final var previousRef = ref;
             final var previousOutput = output;
@@ -2038,6 +2059,7 @@ final class Renderer {
                 view = previousView;
                 _viewPredicate = previousPredicate;
                 dom = previousDom;
+                _hostState = hostState;
                 _childNamespace = childNamespace;
                 ref = previousRef;
                 output = previousOutput;
@@ -2142,15 +2164,6 @@ final class Renderer {
             return null != previous && previous == _attachedRef;
         }
 
-        private Node boundary() {
-            for (var current = parent; null != current; current = current.parent) {
-                if (Kind.PORTAL == current.kind) {
-                    return mountParent(Js.uncheckedCast(current.type));
-                }
-            }
-            return mountParent(root.container);
-        }
-
         private String parentNamespace() {
             for (var current = parent; null != current; current = current.parent) {
                 if (Kind.HOST == current.kind) {
@@ -2163,10 +2176,10 @@ final class Renderer {
             return DomHost.rootNamespace(mountParent(root.container));
         }
 
-        private @Nullable Element hostParent() {
+        private DomEvents.@Nullable State hostParent() {
             for (var current = parent; null != current; current = current.parent) {
                 if (Kind.HOST == current.kind) {
-                    return Js.uncheckedCast(current.dom);
+                    return current._hostState;
                 }
             }
             return null;
@@ -2442,11 +2455,11 @@ final class Renderer {
         }
     }
 
-    private record HostAttach(Fiber fiber, Node container, DomEvents.State state) implements CommitEffect {
+    private record HostAttach(Fiber fiber, Node container) implements CommitEffect {
         @Override
         public void apply() {
-            final var host = Js.<Element>uncheckedCast(DomHost.requireNode(fiber.dom));
-            DomHost.attachInitial(host, state, container, fiber.root.container, fiber.hostParent());
+            DomEvents.attach(
+                    Objects.requireNonNull(fiber._hostState), container, fiber.root.container, fiber.hostParent());
         }
     }
 
@@ -2483,7 +2496,7 @@ final class Renderer {
                 fiber.place();
             }
             if (null != inputs || restoreControl) {
-                final var state = Objects.requireNonNull(DomEvents.state(host));
+                final var state = Objects.requireNonNull(fiber._hostState);
                 if (null != inputs) {
                     DomHost.update(host, state, inputs, text);
                 }

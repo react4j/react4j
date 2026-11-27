@@ -137,8 +137,6 @@ final class DomEvents {
     private static final JsPropertyMap<Boolean> OBSERVED_HANDLERS = JsPropertyMap.of();
     private static final List<String> DOCUMENT_SELECTION_EVENTS =
             List.of("selectionchange", "mousedown", "mouseup", "contextmenu", "dragend");
-    private static final Set<String> MOUSE_ON_DISABLED =
-            Set.of("Click", "DoubleClick", "MouseDown", "MouseMove", "MouseUp");
     private static final Set<String> DISABLABLE = Set.of("button", "input", "select", "textarea");
     private static final Set<String> TEXT_INPUT_TYPES = Set.of(
             "color",
@@ -207,7 +205,8 @@ final class DomEvents {
     private static int paused;
     private static boolean spaceKeypress;
     private static boolean dispatching;
-    private static @Nullable List<DomHost.Element> changedControls;
+    private static DomHost.@Nullable Element changedControl;
+    private static @Nullable List<DomHost.Element> moreChangedControls;
 
     private DomEvents() {}
 
@@ -298,11 +297,11 @@ final class DomEvents {
     }
 
     static void attach(
-            final DomHost.Element element,
             final State state,
             final DomHost.Node container,
             final DomHost.Node rootContainer,
-            final DomHost.@Nullable Element logicalParent) {
+            @Nullable final State logicalParent) {
+        final var element = state.element;
         var boundary = BOUNDARIES.get(container);
         if (null == boundary) {
             boundary = new Boundary(container);
@@ -355,9 +354,10 @@ final class DomEvents {
             }
         }
         if (0 == --boundary.hosts) {
-            boundary.listeners.forEach((name, listener) -> {
+            boundary.listeners.forEach(name -> {
                 if (isDelegated(name)) {
-                    boundary.node.removeEventListener(name, listener, NON_BUBBLING.contains(name));
+                    boundary.node.removeEventListener(
+                            name, Objects.requireNonNull(boundary.listeners.get(name)), NON_BUBBLING.contains(name));
                 }
             });
             boundary.clearDocumentListeners();
@@ -461,8 +461,10 @@ final class DomEvents {
             final var outerRoots = outerRoots(state);
             batchDispatch(() -> {
                 dispatchAt(element, state, actualTarget, name, nativeEvent);
-                for (final var outer : outerRoots) {
-                    dispatchAt(outer.element(), outer.state(), actualTarget, name, nativeEvent);
+                if (null != outerRoots) {
+                    for (final var outer : outerRoots) {
+                        dispatchAt(outer.element(), outer.state(), actualTarget, name, nativeEvent);
+                    }
                 }
             });
             return;
@@ -479,22 +481,25 @@ final class DomEvents {
             ReactDOM.batchedUpdates(action::run);
         } finally {
             dispatching = false;
-            final List<?> controls = changedControls;
-            changedControls = null;
-            if (null != controls) {
+            final var control = changedControl;
+            final var remaining = moreChangedControls;
+            changedControl = null;
+            moreChangedControls = null;
+            if (null != control) {
                 Renderer.flushInteractive();
-                for (final var control : controls) {
-                    DomHost.restoreAfterEvent(Js.uncheckedCast(control));
+                DomHost.restoreAfterEvent(control);
+                if (null != remaining) {
+                    remaining.forEach(DomHost::restoreAfterEvent);
                 }
             }
         }
     }
 
-    private static List<Origin> outerRoots(final State inner) {
+    private static @Nullable List<Origin> outerRoots(final State inner) {
         final var container = DomHost.requireNode(inner.rootContainer);
         final var outer = closestManaged(container);
         if (null == outer) {
-            return List.of();
+            return null;
         }
         final List<Origin> roots = new ArrayList<>();
         final Set<DomHost.Node> seen = new HashSet<>();
@@ -524,10 +529,14 @@ final class DomEvents {
             final NativeEvent nativeEvent) {
         final boolean change = isChange(name, element, state);
         if (change) {
-            if (null == changedControls) {
-                changedControls = new ArrayList<>();
+            if (null == changedControl) {
+                changedControl = element;
+            } else {
+                if (null == moreChangedControls) {
+                    moreChangedControls = new ArrayList<>();
+                }
+                moreChangedControls.add(element);
             }
-            changedControls.add(element);
         }
         final var boundary = Objects.requireNonNull(state.boundary);
         if ("Blur".equals(name)) {
@@ -542,7 +551,7 @@ final class DomEvents {
                     && !("Click".equals(name) && 2 == eventNumber(DomHost.properties(nativeEvent), "button"))) {
                 collectHandlers(
                         batch,
-                        element,
+                        state,
                         target,
                         name,
                         nativeEvent,
@@ -554,14 +563,14 @@ final class DomEvents {
                 default -> {}
             }
             if (change) {
-                collectHandlers(batch, element, target, "Change", nativeEvent, null);
+                collectHandlers(batch, state, target, "Change", nativeEvent, null);
             }
             if (null != selected) {
-                collectHandlers(batch, selected, selected, "Select", nativeEvent, null);
+                collectHandlers(batch, STATES.get(selected), selected, "Select", nativeEvent, null);
             }
             final var beforeInput = beforeInputData(boundary, name, nativeEvent);
             if (Js.isTruthy(beforeInput)) {
-                collectHandlers(batch, element, target, "BeforeInput", nativeEvent, beforeInput);
+                collectHandlers(batch, state, target, "BeforeInput", nativeEvent, beforeInput);
             }
         } catch (RuntimeException | Error error) {
             batch.discard();
@@ -644,7 +653,7 @@ final class DomEvents {
 
     private static void collectHandlers(
             final DispatchBatch batch,
-            final DomHost.Element origin,
+            @Nullable final State origin,
             final DomHost.Node target,
             final String name,
             final NativeEvent nativeEvent,
@@ -658,12 +667,12 @@ final class DomEvents {
         if (!hasCapture && !hasBubble) {
             return;
         }
-        final boolean checkDisabled = MOUSE_ON_DISABLED.contains(name);
-        for (DomHost.Element element = origin; null != element; ) {
-            final var state = STATES.get(element);
-            if (null == state) {
-                break;
-            }
+        final boolean checkDisabled =
+                switch (name) {
+                    case "Click", "DoubleClick", "MouseDown", "MouseMove", "MouseUp" -> true;
+                    default -> false;
+                };
+        for (var state = origin; null != state; state = state.logicalParent) {
             if (state.hasHandlers) {
                 final var capture = hasCapture ? state.inputs.get(captureProperty) : null;
                 final var bubble = hasBubble ? state.inputs.get(property) : null;
@@ -671,11 +680,10 @@ final class DomEvents {
                         && !(checkDisabled
                                 && DISABLABLE.contains(state.tag)
                                 && Js.isTruthy(state.inputs.get("disabled")))) {
-                    captures = appendHandler(captures, element, captureProperty, capture);
-                    bubbles = appendHandler(bubbles, element, property, bubble);
+                    captures = appendHandler(captures, state.element, captureProperty, capture);
+                    bubbles = appendHandler(bubbles, state.element, property, bubble);
                 }
             }
-            element = state.logicalParent;
         }
         batch.add(target, name, nativeEvent, null, data, captures, bubbles);
     }
@@ -739,34 +747,29 @@ final class DomEvents {
         return null;
     }
 
-    private static List<DomHost.Element> logicalPath(DomHost.@Nullable Element origin) {
-        final List<DomHost.Element> path = new ArrayList<>();
-        for (var element = origin; null != element; ) {
-            final var state = STATES.get(element);
-            if (null == state) {
-                break;
+    private static List<State> logicalPath(DomHost.@Nullable Element origin) {
+        final List<State> path = new ArrayList<>();
+        if (null != origin) {
+            for (var state = STATES.get(origin); null != state; state = state.logicalParent) {
+                path.add(state);
             }
-            path.add(element);
-            element = state.logicalParent;
         }
         return path;
     }
 
-    private static List<Invocation> pathHandlers(final List<?> path, final int length, final String name) {
+    private static List<Invocation> pathHandlers(final List<State> path, final int length, final String name) {
         final List<Invocation> calls = new ArrayList<>();
         final var property = "on" + name;
         for (int i = 0; i < length; i++) {
-            final var element = Js.<DomHost.Element>uncheckedCast(path.get(i));
-            final var state = STATES.get(element);
-            if (null != state) {
-                addHandler(calls, element, state.inputs.get(property));
-            }
+            final var state = path.get(i);
+            addHandler(calls, state.element, state.inputs.get(property));
         }
         return calls;
     }
 
     private static final class DispatchBatch {
-        private final List<QueuedDispatch> events = new ArrayList<>();
+        private @Nullable Dispatch first;
+        private @Nullable Dispatch last;
         private @Nullable Throwable failure;
 
         void add(
@@ -781,26 +784,34 @@ final class DomEvents {
                 return;
             }
             final var kind = eventKind(name);
-            final var pool = kind.pool;
-            final var available = pool.pollLast();
+            final var available = kind.pool.pollLast();
             final var event = null == available ? new Dispatch(kind) : available;
             event.initialize(target, name, nativeEvent, relatedTarget, data);
-            events.add(new QueuedDispatch(
-                    event, pool, null == captures ? List.of() : captures, null == bubbles ? List.of() : bubbles));
+            event.captures = captures;
+            event.bubbles = bubbles;
+            if (null == last) {
+                first = event;
+            } else {
+                last.next = event;
+            }
+            last = event;
         }
 
         void run() {
-            for (final var entry : events) {
-                final var event = entry.event();
-                final var captures = entry.captures();
-                final var bubbles = entry.bubbles();
-                for (int i = captures.size() - 1; 0 <= i && !event.stopped; i--) {
-                    call(event, captures.get(i));
+            for (var event = first; null != event; ) {
+                final var captures = event.captures;
+                final var bubbles = event.bubbles;
+                if (null != captures) {
+                    for (int i = captures.size() - 1; 0 <= i && !event.stopped; i--) {
+                        call(event, captures.get(i));
+                    }
                 }
-                for (int i = 0; i < bubbles.size() && !event.stopped; i++) {
-                    call(event, bubbles.get(i));
+                if (null != bubbles) {
+                    for (int i = 0; i < bubbles.size() && !event.stopped; i++) {
+                        call(event, bubbles.get(i));
+                    }
                 }
-                release(entry);
+                event = release(event);
             }
             if (failure instanceof RuntimeException exception) {
                 throw exception;
@@ -811,18 +822,24 @@ final class DomEvents {
         }
 
         void discard() {
-            events.forEach(DispatchBatch::release);
+            for (var event = first; null != event; ) {
+                event = release(event);
+            }
         }
 
-        private static void release(final QueuedDispatch entry) {
-            final var event = entry.event();
+        private static @Nullable Dispatch release(final Dispatch event) {
+            final var next = event.next;
+            event.next = null;
+            event.captures = null;
+            event.bubbles = null;
             if (!event.persistent) {
                 event.release();
-                final var pool = entry.pool();
+                final var pool = event.kind.pool;
                 if (pool.size() < 10) {
                     pool.addLast(event);
                 }
             }
+            return next;
         }
 
         private void call(final Dispatch event, final Invocation invocation) {
@@ -835,9 +852,6 @@ final class DomEvents {
             }
         }
     }
-
-    private record QueuedDispatch(
-            Dispatch event, ArrayDeque<Dispatch> pool, List<Invocation> captures, List<Invocation> bubbles) {}
 
     private static void addHandler(
             final List<Invocation> calls, final DomHost.Element element, @Nullable final Object handler) {
@@ -866,8 +880,9 @@ final class DomEvents {
     static final class State {
         private @Nullable Boundary boundary;
         private DomHost.@Nullable Node rootContainer;
+        final DomHost.Element element;
         final String tag;
-        private DomHost.@Nullable Element logicalParent;
+        private @Nullable State logicalParent;
         JsPropertyMap<@Nullable Object> inputs;
         boolean hasHandlers;
         private int documentEvents;
@@ -885,7 +900,8 @@ final class DomEvents {
         @Nullable
         String trackedProperty;
 
-        State(final JsPropertyMap<@Nullable Object> inputs, final String tag) {
+        State(final DomHost.Element element, final JsPropertyMap<@Nullable Object> inputs, final String tag) {
+            this.element = element;
             this.tag = tag;
             this.inputs = inputs;
         }
@@ -953,7 +969,7 @@ final class DomEvents {
 
     private static final class Boundary {
         final DomHost.Node node;
-        final Map<String, Listener> listeners = new HashMap<>();
+        final JsPropertyMap<Listener> listeners = JsPropertyMap.of();
         final Listener selectionListener;
         final Listener externalMovement;
         private DomHost.@Nullable Element focused;
@@ -971,7 +987,7 @@ final class DomEvents {
                 final var nativeName = nativeName(name);
                 final boolean interactive = isInteractive(name);
                 final Listener listener = event -> dispatch(this, name, event, interactive);
-                listeners.put(nativeName, listener);
+                listeners.set(nativeName, listener);
                 if (isDelegated(nativeName)) {
                     node.addEventListener(nativeName, listener, NON_BUBBLING.contains(nativeName));
                 }
@@ -989,7 +1005,7 @@ final class DomEvents {
                 if (null != selected) {
                     ReactDOM.batchedUpdates(() -> {
                         final var batch = new DispatchBatch();
-                        collectHandlers(batch, selected, selected, "Select", event, null);
+                        collectHandlers(batch, STATES.get(selected), selected, "Select", event, null);
                         batch.run();
                     });
                 }
@@ -1090,7 +1106,7 @@ final class DomEvents {
                     listening = true;
                     break;
                 }
-                current = null == current.logicalParent ? null : STATES.get(current.logicalParent);
+                current = current.logicalParent;
             }
             if (!listening) {
                 return null;
@@ -1278,6 +1294,9 @@ final class DomEvents {
         private final Action stopPropagation = this::stopPropagation;
         private final Modifier getModifierState = this::getModifierState;
         private final Action persist = this::persist;
+        private @Nullable Dispatch next;
+        private @Nullable List<Invocation> captures;
+        private @Nullable List<Invocation> bubbles;
         private boolean stopped;
         private boolean persistent;
         private boolean released;
