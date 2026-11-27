@@ -7,6 +7,7 @@ const Fiber = goog.require('react4j.dom.FiberReconciliationTest');
 const Memory = goog.require('react4j.dom.MemoryBrowserTest');
 const OriginalHost = goog.require('react4j.dom.OriginalHostCasesBrowserTest');
 const Parity = goog.require('react4j.dom.RuntimeParityBrowserTest');
+const Profiler = goog.require('react4j.dom.ProfilerBrowserTest');
 const ReconcilerDiagnostics = goog.require('react4j.dom.ReconcilerDiagnosticsBrowserTest');
 const Test = goog.require('react4j.dom.RuntimeBrowserTest');
 const WrappedViews = goog.require('react4j.dom.WrappedViewsBrowserTest');
@@ -24,6 +25,7 @@ async function run(production) {
   OriginalHost.run();
   ReconcilerDiagnostics.run(production);
   Memory.run();
+  Profiler.run(production);
   await Test.run();
   await WrappedViews.run(production);
   Events.runBehavior();
