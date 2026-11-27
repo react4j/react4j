@@ -74,6 +74,8 @@ final class Reconciler {
     private static boolean _flushing;
     private static boolean _working;
     private static @Nullable Root _renderingRoot;
+    private static boolean _renderPhase;
+    private static boolean _warnedRenderUpdate;
     private static boolean _interactive;
     private static boolean _synchronous;
     private static boolean _deferred;
@@ -2049,6 +2051,10 @@ final class Reconciler {
             if (0 != bits) {
                 _contextReads = new ContextRead(context, bits, _contextReads);
             }
+            return contextValue(context);
+        }
+
+        private @Nullable Object contextValue(Object context) {
             final var provider = Scope.find(_scope, context);
             return null == provider
                     ? Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(context).get("_currentValue")
@@ -2285,9 +2291,11 @@ final class Reconciler {
                         final var consumer = Js.<Context.ConsumerRenderFunction<@Nullable Object>>uncheckedCast(
                                 Objects.requireNonNull(element.inputs().get("children")));
                         final var owner = React.swapCurrentOwner(this);
+                        final var previousPhase = enterRenderPhase();
                         try {
                             output = Renderable.toReactNode(consumer.render(value));
                         } finally {
+                            leaveRenderPhase(previousPhase);
                             React.swapCurrentOwner(owner);
                         }
                     }
@@ -2379,6 +2387,7 @@ final class Reconciler {
                     startTiming(null == renderName ? "ForwardRef" : "ForwardRef(" + renderName + ")", mounting);
                     final var render = Js.<RefRender>uncheckedCast(renderType);
                     final var owner = React.swapCurrentOwner(this);
+                    final var previousPhase = enterRenderPhase();
                     try {
                         _renderedCommit = root._commitSequence;
                         _contextReads = null;
@@ -2387,6 +2396,7 @@ final class Reconciler {
                             render.render(element.inputs(), element.ref());
                         }
                     } finally {
+                        leaveRenderPhase(previousPhase);
                         React.swapCurrentOwner(owner);
                     }
                 }
@@ -2630,12 +2640,16 @@ final class Reconciler {
                 attachConcurrentUpdater(component);
             } else {
                 final var source = _legacyReturn;
-                component.attachLegacy(() -> invalidateLegacy(source));
+                component.attachLegacy(() -> {
+                    warnOnRenderUpdate(component);
+                    invalidateLegacy(source);
+                });
             }
         }
 
         private void attachConcurrentUpdater(final NativeView component) {
             component.attach(update -> {
+                warnOnRenderUpdate(component);
                 _catchScheduled = true;
                 final var urgent = Root.urgentUpdate() || !_deferred && !_committing && root._activeUrgent;
                 final var expiration =
@@ -2687,11 +2701,21 @@ final class Reconciler {
             final var previousInputs = null == existing ? null : existing.inputs();
             final var predicate = _viewPredicate;
             final var classType = _classType;
+            final var contextType = null == classType
+                    ? null
+                    : ClassComponent.properties(classType).get("contextType");
+            final var function =
+                    Boolean.TRUE.equals(ClassComponent.properties(type).get("functionComponent"));
+            final var classContext =
+                    !function && null != contextType && "object".equals(Js.typeof(contextType)) ? contextType : null;
             final var legacy = null == classType ? null : Scope.find(scope, ClassComponent.LEGACY_CONTEXT);
             final Object source = null == legacy ? ClassComponent.EMPTY_CONTEXT : Objects.requireNonNull(legacy.value);
-            final var legacyChanged = null != classType && null != existing && source != _legacySource;
+            final var legacyChanged =
+                    null == classContext && null != classType && null != existing && source != _legacySource;
             final var previousContext = _maskedContext;
-            if (null != classType && source != _legacySource) {
+            if (null != classContext) {
+                _maskedContext = contextValue(classContext);
+            } else if (null != classType && source != _legacySource) {
                 _legacySource = source;
                 _maskedContext = ClassComponent.mask(classType, source);
             }
@@ -2727,6 +2751,7 @@ final class Reconciler {
                     null != classType && null == derive && !(component instanceof OnGetSnapshotBeforeUpdate);
             if (DEVELOPMENT && null != classType && null == existing) {
                 ClassComponent.warnMount(classType, type, component, null != derive);
+                ClassComponent.warnContextType(classType, contextType, function, hasMarker(contextType, CONTEXT_TYPE));
                 if (strict) {
                     if (null == root._warnings) {
                         root._warnings = new ClassComponent.Warnings();
@@ -2816,7 +2841,7 @@ final class Reconciler {
             } else if (render) {
                 final var replay = DEVELOPMENT && root.host.replayFailedRender() ? component.checkpoint() : null;
                 try {
-                    renderView(component);
+                    renderView(component, classContext);
                     if (null != commitErrors) {
                         queueDeletions(children);
                         children = NO_CHILDREN;
@@ -2825,7 +2850,7 @@ final class Reconciler {
                     final var failure = new RenderFailure(this, error);
                     updateDurations(elapsedTime());
                     if (null != replay && !failure.isSuspension()) {
-                        replayFailedView(component, replay);
+                        replayFailedView(component, classContext, replay);
                     }
                     // A legacy suspension can retain the applied update for retry.
                     if (null != existing
@@ -2896,11 +2921,11 @@ final class Reconciler {
             }
         }
 
-        private void replayFailedView(NativeView component, Runnable checkpoint) {
+        private void replayFailedView(NativeView component, @Nullable Object classContext, Runnable checkpoint) {
             final var previousOutput = output;
             checkpoint.run();
             try {
-                renderView(component);
+                renderView(component, classContext);
             } catch (Throwable ignored) {
                 // Boundary delivery reports the original failure.
             } finally {
@@ -2909,10 +2934,10 @@ final class Reconciler {
             }
         }
 
-        private void renderView(NativeView component) {
+        private void renderView(NativeView component, @Nullable Object classContext) {
             _renderedCommit = root._commitSequence;
             _captured = false;
-            _contextReads = null;
+            _contextReads = null == classContext ? null : new ContextRead(classContext, ALL_CONTEXT_BITS, null);
             output = renderOwned(component);
             if (strict && root.host.strictReplay() && !isFunctionComponent(component)) {
                 renderOwned(component);
@@ -3129,10 +3154,34 @@ final class Reconciler {
 
         private @Nullable ReactNode renderOwned(NativeView component) {
             final var owner = React.swapCurrentOwner(this);
+            final var previousPhase = enterRenderPhase();
             try {
                 return component.render();
             } finally {
+                leaveRenderPhase(previousPhase);
                 React.swapCurrentOwner(owner);
+            }
+        }
+
+        private static boolean enterRenderPhase() {
+            final var previous = _renderPhase;
+            if (DEVELOPMENT) {
+                _renderPhase = true;
+            }
+            return previous;
+        }
+
+        private static void leaveRenderPhase(boolean previous) {
+            if (DEVELOPMENT) {
+                _renderPhase = previous;
+            }
+        }
+
+        private void warnOnRenderUpdate(NativeView component) {
+            if (DEVELOPMENT && _renderPhase && !_warnedRenderUpdate && !isFunctionComponent(component)) {
+                _warnedRenderUpdate = true;
+                consoleError("Warning: Cannot update during an existing state transition (such as within `render`)."
+                        + " Render methods should be a pure function of props and state.");
             }
         }
 
@@ -3512,7 +3561,7 @@ final class Reconciler {
                 _legacySource = legacySource;
                 _legacyChildren = legacyChildren;
                 _maskedContext = maskedContext;
-                if (null != previousView && null != maskedContext) {
+                if (null != previousView && null != _classType) {
                     ClassComponent.properties(previousView).set("context", maskedContext);
                 }
                 _captured = captured;

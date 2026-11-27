@@ -22,6 +22,7 @@ final class ClassComponent {
     private static final Reconciler.WeakKeys<Object, Boolean> MOUNT_CHECKED = new Reconciler.WeakKeys<>();
     private static final Reconciler.WeakKeys<Object, Boolean> UNDEFINED_DERIVED = new Reconciler.WeakKeys<>();
     private static final Reconciler.WeakKeys<Object, Boolean> UNDEFINED_SNAPSHOT = new Reconciler.WeakKeys<>();
+    private static final Reconciler.WeakKeys<Object, Boolean> CONTEXT_CHECKED = new Reconciler.WeakKeys<>();
 
     private ClassComponent() {}
 
@@ -133,6 +134,26 @@ final class ClassComponent {
             warn("Warning: " + name(type)
                     + ".getSnapshotBeforeUpdate(): A snapshot value (or null) must be returned. You have"
                     + " returned undefined.");
+        }
+    }
+
+    static void warnContextType(Object type, @Nullable Object context, boolean function, boolean valid) {
+        if (null == context || !firstWarning(CONTEXT_CHECKED, type)) {
+            return;
+        }
+        if (function) {
+            warn("Warning: " + name(type) + ": Function components do not support contextType.");
+        } else if ("object".equals(Js.typeof(context))) {
+            final var name = name(type);
+            if (!valid) {
+                warn("Warning: " + name + " defines an invalid contextType. "
+                        + "contextType should point to the Context object returned by React.createContext(). "
+                        + "Did you accidentally pass the Context.Provider instead?");
+            }
+            if (null != properties(type).get("contextTypes")) {
+                warn("Warning: " + name + " declares both contextTypes and contextType static properties. "
+                        + "The legacy contextTypes property will be ignored.");
+            }
         }
     }
 

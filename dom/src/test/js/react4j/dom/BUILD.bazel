@@ -21,6 +21,13 @@ browser_test(
 )
 
 browser_test(
+    name = "update_scheduling_test",
+    srcs = ["update_scheduling_test.js"],
+    entry_point = "react4j.dom.UpdateSchedulingTest",
+    deps = ["//dom/src/test/java/react4j/dom:update_scheduling_scenarios"],
+)
+
+browser_test(
     name = "devtools_test",
     srcs = ["devtools_test.js"],
     entry_point = "react4j.dom.DevToolsTest",

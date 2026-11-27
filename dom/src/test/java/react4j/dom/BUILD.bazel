@@ -60,6 +60,29 @@ j2cl_library(
 )
 
 j2cl_library(
+    name = "update_scheduling_scenarios",
+    testonly = True,
+    srcs = [
+        "UpdateSchedulingBrowserTest.java",
+        "UpdateSchedulingBrowserTest.native.js",
+    ],
+    plugins = [
+        "//:processor",
+        "//third_party:arez_processor_plugin",
+    ],
+    deps = [
+        "//:core",
+        "//:dom",
+        "//examples/testing/src/main/java/react4j/webtesting:browser",
+        "//third_party:arez_core-j2cl",
+        "//third_party:braincheck_core-j2cl",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+        "//third_party:jspecify-j2cl",
+    ],
+)
+
+j2cl_library(
     name = "emitter_registration",
     testonly = True,
     srcs = [

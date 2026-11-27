@@ -13,6 +13,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Context;
 import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
@@ -33,6 +34,7 @@ public final class ComponentLifecycleBrowserTest {
     public static void run(boolean production) {
         final var host = Browser.append("div");
         try {
+            functionRenderUpdate(host, production);
             snapshots(host, "abc");
             snapshots(host, "foobar");
             mountPhases(host);
@@ -48,6 +50,8 @@ public final class ComponentLifecycleBrowserTest {
             competingLifecycleHooks(host, production);
             exactConflictDiagnostics(host, production);
             derivedBatchedState(host);
+            modernClassContext(host);
+            contextTypeDiagnostics(host, production);
             auxiliaryRoot(host);
         } finally {
             ReactDOM.unmountComponentAtNode(host);
@@ -483,6 +487,168 @@ public final class ComponentLifecycleBrowserTest {
         }
     }
 
+    private static void functionRenderUpdate(Browser.Element host, boolean production) {
+        final var target = Browser.append("div");
+        try {
+            final ViewConstructorFunction type = ConstructorUpdate::new;
+            final var view =
+                    (ConstructorUpdate) Objects.requireNonNull(render(ReactElement.createViewElement(type), target));
+            final ViewConstructorFunction function = RenderCallback::new;
+            ClassComponent.properties(function).set("functionComponent", true);
+            expectWarning(
+                    production,
+                    "Cannot update during an existing state transition",
+                    () -> render(
+                            ReactElement.createViewElement(function).input("run", (Runnable)
+                                    () -> view.setState(JsPropertyMap.of("stateField", "function update"))),
+                            host));
+            equal("function update", target.getTextContent());
+            ReactDOM.unmountComponentAtNode(host);
+        } finally {
+            ReactDOM.unmountComponentAtNode(target);
+            target.remove();
+        }
+    }
+
+    private static void modernClassContext(Browser.Element host) {
+        final var context = new Context<Object>();
+        final var first = JsPropertyMap.of("foo", 123);
+        final var second = JsPropertyMap.of("bar", 456);
+        for (final var pure : new boolean[] {false, true}) {
+            final var trace = new ArrayList<@Nullable Object>();
+            final ContextClass factory = (inputs, value) -> new ContextView(inputs, value, trace, pure);
+            final ViewConstructorFunction type = Js.uncheckedCast(factory);
+            classDescriptor(type, "ContextView").set("contextType", context);
+            final var child = ReactElement.createViewElement(type);
+            render(context.provide(first, child), host);
+            check(trace.size() == 3, "Class context reaches the constructor, render and mount");
+            for (final var value : trace) {
+                check(value == first, "The class receives the exact first context object");
+            }
+            trace.clear();
+            render(context.provide(second, child), host);
+            final List<Object> expected =
+                    pure ? List.of(second) : List.of(first, second, first, second, second, second);
+            check(trace.size() == expected.size(), "A context update bypasses the update predicate: " + trace);
+            for (var i = 0; i < expected.size(); i++) {
+                check(trace.get(i) == expected.get(i), "Previous and next class context preserve identity at " + i);
+            }
+            ReactDOM.unmountComponentAtNode(host);
+        }
+    }
+
+    private static void contextTypeDiagnostics(Browser.Element host, boolean production) {
+        final var context = new Context<Object>();
+        final var provider =
+                Js.<ReactElement>uncheckedCast(context.provide(null)).type();
+        for (final var scenario : List.of("class", "provider", "function")) {
+            final var expected =
+                    switch (scenario) {
+                        case "class" -> "declares both contextTypes and contextType static properties";
+                        case "provider" -> "defines an invalid contextType";
+                        default -> "Function components do not support contextType";
+                    };
+            for (final var name : List.of("ComponentA", "ComponentB")) {
+                final var trace = new ArrayList<@Nullable Object>();
+                final ContextClass factory = (inputs, value) -> new ContextView(inputs, value, trace, true);
+                final ViewConstructorFunction type = Js.uncheckedCast(factory);
+                final var descriptor = classDescriptor(type, name);
+                descriptor.set("contextType", "provider".equals(scenario) ? provider : context);
+                if ("class".equals(scenario)) {
+                    descriptor.set("contextTypes", JsPropertyMap.of("foo", true));
+                } else if ("function".equals(scenario)) {
+                    descriptor.set("functionComponent", true);
+                }
+                final var child = ReactElement.createViewElement(type);
+                final var warnings = captureWarnings(() -> {
+                    render(child, host);
+                    ReactDOM.unmountComponentAtNode(host);
+                    render(child, host);
+                    ReactDOM.unmountComponentAtNode(host);
+                });
+                var count = 0;
+                for (final var warning : warnings) {
+                    if (warning.contains(name) && warning.contains(expected)) {
+                        count++;
+                    }
+                }
+                check(count == (production ? 0 : 1), "The context diagnostic is deduplicated for " + name);
+            }
+        }
+    }
+
+    @JsFunction
+    private interface ContextClass {
+        NativeView create(JsPropertyMap<@Nullable Object> inputs, @Nullable Object context);
+    }
+
+    @JsFunction
+    private interface ReceiveContext {
+        void receive(JsPropertyMap<@Nullable Object> inputs, @Nullable Object context);
+    }
+
+    @JsFunction
+    private interface UpdateContext {
+        boolean update(JsPropertyMap<@Nullable Object> inputs, @Nullable Object state, @Nullable Object context);
+    }
+
+    private static final class ContextView extends NativeView implements OnComponentDidMount, OnComponentDidUpdate {
+        private final List<@Nullable Object> _trace;
+        private final boolean _pure;
+
+        @JsConstructor
+        ContextView(
+                JsPropertyMap<@Nullable Object> inputs,
+                @Nullable Object value,
+                List<@Nullable Object> trace,
+                boolean pure) {
+            super(inputs);
+            _trace = trace;
+            _pure = pure;
+            final var properties = ClassComponent.properties(this);
+            properties.set("context", value);
+            properties.set("shouldComponentUpdate", (UpdateContext) (nextInputs, state, context) -> {
+                throw new AssertionError("A changed class context forces an update");
+            });
+            if (!pure) {
+                properties.set(
+                        "UNSAFE_componentWillReceiveProps", (ReceiveContext) (nextInputs, context) -> record(context));
+                properties.set("UNSAFE_componentWillUpdate", (UpdateContext) (nextInputs, state, context) -> {
+                    record(context);
+                    return true;
+                });
+            }
+            _trace.add(value);
+        }
+
+        private void record(@Nullable Object next) {
+            _trace.add(context());
+            _trace.add(next);
+        }
+
+        private @Nullable Object context() {
+            return ClassComponent.properties(this).get("context");
+        }
+
+        @Override
+        public ReactNode render() {
+            _trace.add(context());
+            return ReactNode.of("class");
+        }
+
+        @Override
+        public void componentDidMount() {
+            _trace.add(context());
+        }
+
+        @Override
+        public void componentDidUpdate(JsPropertyMap<@Nullable Object> previousInputs) {
+            if (!_pure) {
+                _trace.add(context());
+            }
+        }
+    }
+
     @JsMethod
     private static native String[] captureWarnings(BrowserPromise.Action action);
 
@@ -679,6 +845,19 @@ public final class ComponentLifecycleBrowserTest {
         public ReactNode render() {
             return ReactNode.of((String)
                     Objects.requireNonNull(Objects.requireNonNull(state()).get("stateField")));
+        }
+    }
+
+    private static final class RenderCallback extends NativeView {
+        @JsConstructor
+        RenderCallback(@Nullable JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public @Nullable ReactNode render() {
+            ((Runnable) Objects.requireNonNull(requireInputs().get("run"))).run();
+            return null;
         }
     }
 
