@@ -36,6 +36,8 @@ j2cl_library(
 
 _ISOLATED_CASE_SOURCES = [
     "IsolatedContextTest.java",
+    "IsolatedErrorHandlingTest.java",
+    "IsolatedErrorHandlingTest.native.js",
     "IsolatedErrorLoggingTest.java",
     "IsolatedErrorLoggingTest.native.js",
     "IsolatedIncrementalTest.java",

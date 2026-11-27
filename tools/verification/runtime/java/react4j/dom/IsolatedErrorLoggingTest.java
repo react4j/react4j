@@ -151,12 +151,12 @@ public final class IsolatedErrorLoggingTest {
     }
 
     @JsFunction
-    private interface ErrorLog {
+    interface ErrorLog {
         void log(@Nullable Object message);
     }
 
     @JsMethod
-    private static native void observeLogs(Reconciler.Task action, ErrorLog log);
+    static native void observeLogs(Reconciler.Task action, ErrorLog log);
 
     @JsMethod
     private static native @Nullable Object thrownBy(Reconciler.Task action);

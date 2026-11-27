@@ -1,5 +1,6 @@
 goog.module('react4j.testing.IsolatedCases');
 const Context = goog.require('react4j.testing.IsolatedContextTest');
+const ErrorHandling = goog.require('react4j.testing.IsolatedErrorHandlingTest');
 const ErrorLogging = goog.require('react4j.testing.IsolatedErrorLoggingTest');
 const Incremental = goog.require('react4j.testing.IsolatedIncrementalTest');
 const LegacyContext = goog.require('react4j.testing.IsolatedLegacyContextTest');
@@ -94,5 +95,8 @@ exports.run = function(mode) {
   run('ReactTestRenderer mocked root instance', () => ProfilerDevTools.mockedRootInstance());
   run('ReactTestRenderer mocked updates and unmount', () => ProfilerDevTools.mockedUpdatesAndUnmount());
   run('ReactTestRenderer independent context', () => ProfilerDevTools.secondaryContext(mode === 'production'));
+  for (let i = 0; i <= 37; i++) {
+    run('ReactIncrementalErrorHandling spec' + i, () => ErrorHandling.cases(i, mode === 'development'));
+  }
   return count;
 };
