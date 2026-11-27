@@ -41,6 +41,8 @@ j2cl_library(
         "IsolatedReconcilerTest.java",
         "IsolatedReconcilerTest.native.js",
         "IsolatedSchedulingTest.java",
+        "IsolatedSuspenseTest.java",
+        "IsolatedSuspenseTest.native.js",
         "IsolatedUpdateQueueTest.java",
         "IsolatedWrappedViewsTest.java",
         "IsolatedWrappedViewsTest.native.js",

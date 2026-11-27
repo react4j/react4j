@@ -472,11 +472,12 @@ public final class IsolatedReconcilerTest {
     }
 
     static final class Harness implements MemoryRenderer.SchedulerCallbacks {
-        private record Scheduled(Reconciler.Task task, double time) {}
+        private record Scheduled(Reconciler.Task task, double time, boolean timer) {}
 
         private final LinkedHashMap<Integer, Scheduled> _tasks = new LinkedHashMap<>();
         private int _next;
         private double _now;
+        private double _timerNow;
         private BooleanSupplier _shouldYield = () -> false;
         final MemoryRenderer memory = new MemoryRenderer(this);
 
@@ -495,7 +496,7 @@ public final class IsolatedReconcilerTest {
         boolean turn() {
             for (final var entry : _tasks.entrySet()) {
                 final var item = entry.getValue();
-                if (item.time() <= _now) {
+                if (item.time() <= _timerNow) {
                     _tasks.remove(entry.getKey());
                     item.task().run();
                     return true;
@@ -510,6 +511,31 @@ public final class IsolatedReconcilerTest {
 
         void advance(int milliseconds) {
             _now += milliseconds;
+            _timerNow += milliseconds;
+        }
+
+        void advanceTimers(int milliseconds) {
+            final var end = _timerNow + milliseconds;
+            for (int turns = 0; ; turns++) {
+                Integer handle = null;
+                Scheduled event = null;
+                for (final var entry : _tasks.entrySet()) {
+                    final var candidate = entry.getValue();
+                    if (candidate.timer() && candidate.time() <= end
+                            && (null == event || candidate.time() < event.time())) {
+                        handle = entry.getKey();
+                        event = candidate;
+                    }
+                }
+                if (null == event) {
+                    _timerNow = end;
+                    return;
+                }
+                check(100 > turns, "Timers should settle");
+                _timerNow = event.time();
+                _tasks.remove(handle);
+                event.task().run();
+            }
         }
 
         @Override
@@ -554,7 +580,7 @@ public final class IsolatedReconcilerTest {
         @Override
         public int schedule(Reconciler.Task task, int delay) {
             final int handle = ++_next;
-            _tasks.put(handle, new Scheduled(task, _now + delay));
+            _tasks.put(handle, new Scheduled(task, _timerNow + delay, 0 != delay));
             return handle;
         }
 

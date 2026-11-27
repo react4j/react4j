@@ -1,5 +1,6 @@
 goog.module('react4j.testing.IsolatedCases');
 const Scheduling = goog.require('react4j.testing.IsolatedSchedulingTest');
+const Suspense = goog.require('react4j.testing.IsolatedSuspenseTest');
 const Tests = goog.require('react4j.testing.IsolatedReconcilerTest');
 const Updates = goog.require('react4j.testing.IsolatedUpdateQueueTest');
 const Wrapped = goog.require('react4j.testing.IsolatedWrappedViewsTest');
@@ -39,5 +40,7 @@ exports.run = function(mode) {
   for (let i = 0; i < 3; i++) run('ReactIncrementalUpdatesMinimalism spec' + i, () => Tests.minimalism(i, false));
   for (let i = 0; i < 12; i++) run('ReactIncrementalUpdates spec' + i, () =>
     Updates.updates(i, mode === 'development'));
+  for (let i = 0; i < 4; i++) run('ReactSuspensePlaceholder spec' + i, () => Suspense.placeholder(i >= 2, i % 2 === 0));
+  for (let i = 0; i < 10; i++) run('ReactSuspense spec' + i, () => Suspense.suspense(i));
   return count;
 };
