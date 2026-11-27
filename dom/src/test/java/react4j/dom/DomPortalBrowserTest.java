@@ -29,6 +29,7 @@ import react4j.webtesting.BrowserPromise;
 
 @NullMarked
 public final class DomPortalBrowserTest {
+    private static final ViewConstructorFunction PASS_THROUGH = PassThrough::new;
     private static final ViewConstructorFunction PROVIDER = Provider::new;
     private static final ViewConstructorFunction CLICK_TARGET = ClickTarget::new;
     private static final ViewConstructorFunction CLICK_EARLY = ClickEarly::new;
@@ -67,6 +68,16 @@ public final class DomPortalBrowserTest {
         ReactDOM.render(context.provide("bar", ReactDOM.createPortal(simple, target)), root);
         equal("", markup(root));
         equal("<div>bar</div>", markup(target));
+        ReactDOM.unmountComponentAtNode(root);
+
+        final var plain = ReactDOM.createPortal(host("div").input("children", "hello"), target);
+        ReactDOM.render(passThrough(plain), root);
+        equal("<div>hello</div>", markup(target));
+        final var contextual = ReactDOM.createPortal(simple, target);
+        ReactDOM.render(context.provide("foo", passThrough(contextual)), root);
+        equal("<div>foo</div>", markup(target));
+        ReactDOM.render(context.provide("foo", passThrough(passThrough(contextual))), root);
+        equal("<div>foo</div>", markup(target));
         ReactDOM.unmountComponentAtNode(root);
 
         final var compound = context.consumer().render(value -> host("div").input("children", value + "-" + value));
@@ -217,6 +228,22 @@ public final class DomPortalBrowserTest {
 
     @JsMethod
     private static native void documentCapture(BrowserPromise.Action action, boolean add);
+
+    private static ReactElement passThrough(ReactNode child) {
+        return ReactElement.createViewElement(PASS_THROUGH).input("portal", child);
+    }
+
+    private static final class PassThrough extends NativeView {
+        @JsConstructor
+        private PassThrough(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            return Js.uncheckedCast(Objects.requireNonNull(requireInputs().get("portal")));
+        }
+    }
 
     private static final class Provider extends NativeView {
         @JsConstructor

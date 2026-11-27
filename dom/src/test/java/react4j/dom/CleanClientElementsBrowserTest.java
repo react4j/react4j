@@ -3,6 +3,7 @@ package react4j.dom;
 import static react4j.webtesting.Checks.check;
 import static react4j.webtesting.Checks.equal;
 
+import java.util.Locale;
 import java.util.Objects;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsFunction;
@@ -16,13 +17,17 @@ import react4j.ReactElement;
 import react4j.ReactNode;
 import react4j.ReactTestUtil;
 import react4j.Renderable;
+import react4j.dom.events.ReactEventHandler;
 import react4j.internal.NativeView;
+import react4j.internal.OnComponentDidMount;
+import react4j.internal.OnComponentDidUpdate;
 import react4j.internal.ViewConstructorFunction;
 import react4j.webtesting.Browser;
 
 @NullMarked
 public final class CleanClientElementsBrowserTest {
     private static final ViewConstructorFunction OUTPUT = Output::new;
+    private static final ViewConstructorFunction TOGGLE = Toggle::new;
     private static final ViewConstructorFunction WRAPPER = Wrapper::new;
     private static final ViewConstructorFunction REF_OWNER = RefOwner::new;
     private static final String SVG = "http://www.w3.org/2000/svg";
@@ -103,6 +108,279 @@ public final class CleanClientElementsBrowserTest {
         } finally {
             ReactDOM.unmountComponentAtNode(root);
             root.remove();
+        }
+    }
+
+    @JsMethod
+    public static void nestedClickOnMount(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            final var trace = new StringBuilder();
+            final ViewConstructorFunction view = ClickDuringMount::new;
+            mountRoot(root, production, ReactElement.createViewElement(view).input("trace", trace));
+            equal("first second ", trace.toString());
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    private static final class ClickDuringMount extends NativeView implements OnComponentDidMount {
+        private Browser.@Nullable Element _first;
+        private Browser.@Nullable Element _second;
+
+        @JsConstructor
+        private ClickDuringMount(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final var trace =
+                    (StringBuilder) Objects.requireNonNull(requireInputs().get("trace"));
+            final ReactEventHandler first = event -> {
+                trace.append("first ");
+                Objects.requireNonNull(_second).click();
+            };
+            final ReactEventHandler second = event -> trace.append("second ");
+            final Ref firstRef = node -> _first = Js.uncheckedCast(node);
+            final Ref secondRef = node -> _second = Js.uncheckedCast(node);
+            return children(
+                    "div",
+                    ReactElement.createHostElement("div", "a", firstRef, JsPropertyMap.of("onClick", first)),
+                    ReactElement.createHostElement("div", "b", secondRef, JsPropertyMap.of("onClick", second)));
+        }
+
+        @Override
+        public void componentDidMount() {
+            Objects.requireNonNull(_first).click();
+        }
+    }
+
+    @JsMethod
+    public static void hostReplacementAndQueries() {
+        final var root = Browser.append("div");
+        try {
+            for (final var name :
+                    new String[] {"button", "form", "iframe", "img", "input", "option", "select", "textarea"}) {
+                ReactDOM.render(host(name), root);
+                final var element = root.getFirstElementChild();
+                tag(element, name.toUpperCase(Locale.ROOT));
+                check(1 == Js.asInt(Browser.property(element, "nodeType")), "A wrapped host is a DOM element");
+            }
+            final var bird = keyed("div", "theBird", null).input("className", "bird");
+            final var dog = keyed("div", "theDog", null).input("className", "dog");
+            ReactDOM.render(children("div", dog, bird), root);
+            final var retired = Browser.query(root, ".dog");
+            ReactDOM.render(children("div", dog.dup().input("className", "dogbeforedelete"), bird), root);
+            check(retired == Browser.query(root, ".dogbeforedelete"), "Same key updates the mounted host");
+            ReactDOM.render(children("div", bird), root);
+            check(null == Browser.property(retired, "parentNode"), "The old host is detached");
+            ReactDOM.render(children("div", dog, bird), root);
+            final var active = Browser.query(root, ".dog");
+            check(active != retired, "A remounted key allocates a new host");
+            ReactDOM.render(children("div", dog.dup().input("className", "bigdog"), bird), root);
+            check(active == Browser.query(root, ".bigdog"), "The attribute mutation reaches the replacement host");
+            equal("bigdog", active.getAttribute("class"));
+
+            ReactDOM.render(
+                    output(output(children(
+                            "section",
+                            "orangepurple",
+                            host("span", "orange").input("className", "red\nlarge"),
+                            host("span", "purple").input("className", "other"),
+                            host("hr"),
+                            output(host("hr"))))),
+                    root);
+            check(0 == Browser.queryAll(root, ".missing").length, "Text nodes are excluded from host class matches");
+            final var match = Browser.queryAll(root, ".red.large");
+            check(1 == match.length, "A newline separates DOM class tokens");
+            check(match[0] == Browser.query(root, ".large.red"), "Class order preserves node identity");
+            check(0 == Browser.queryAll(root, ".red.other").length, "Partial matches are excluded");
+            final var list = Browser.queryAll(root, "span");
+            check(2 == list.length, "Both nested hosts are discoverable");
+            equal("orange", list[0].getTextContent());
+            equal("purple", list[1].getTextContent());
+            check(2 == Browser.queryAll(root, "hr").length, "Composite boundaries do not hide matching tags");
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
+    public static void emptyComponents(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            for (final var empty : new @Nullable Object[] {null, false}) {
+                mountRoot(root, production, output(empty));
+                count(root, 0);
+            }
+            failure(
+                    root,
+                    rawOutput(false, "Component", Js.undefined()),
+                    "Component(...): Nothing was returned from render.",
+                    152);
+            final var trace = new StringBuilder();
+            final Ref observe = host -> trace.append(null == host ? "-" : Browser.property(host, "tagName"))
+                    .append(' ');
+            for (final var name : new String[] {"div", "script"}) {
+                mountRoot(root, production, toggle(null, name, observe));
+                mountRoot(root, production, toggle(name, null, observe));
+                equal(
+                        "- " + name.toUpperCase(Locale.ROOT) + " " + name.toUpperCase(Locale.ROOT) + " - ",
+                        trace.toString());
+                trace.setLength(0);
+            }
+
+            mountRoot(
+                    root,
+                    production,
+                    children("div", keyedToggle("a", observe), keyedToggle("b", observe), keyedToggle("c", observe)));
+            equal("- - - DIV DIV DIV ", trace.toString());
+            trace.setLength(0);
+
+            mountRoot(root, production, toggle("div", "nested-empty", observe));
+            mountRoot(root, production, toggle("nested-empty", "div", observe));
+            equal("DIV - - DIV ", trace.toString());
+            trace.setLength(0);
+
+            final Ref note = node -> trace.append(null == node ? "unmount " : "mount ");
+            final var child = ReactElement.createHostElement("span", null, note, JsPropertyMap.of());
+            ReactDOM.render(output(child), root);
+            tag(child(root, 0), "SPAN");
+            ReactDOM.render(output(null), root);
+            count(root, 0);
+            ReactDOM.render(output(child), root);
+            tag(child(root, 0), "SPAN");
+            equal("mount unmount mount ", trace.toString());
+
+            final ViewConstructorFunction parent = ForceOnChildMount::new;
+            mountRoot(root, production, ReactElement.createViewElement(parent));
+            equal("hello world", root.getTextContent());
+
+            mountRoot(root, production, Js.uncheckedCast(null));
+            equal("", root.getTextContent());
+            mountRoot(root, production, output(null));
+            check(null == Browser.property(root, "firstChild"), "An empty mount creates no placeholder");
+            ReactDOM.render(output(null), root);
+            check(null == Browser.property(root, "firstChild"), "An empty update creates no placeholder");
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
+    public static void minimalism(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            for (final var text : new String[] {"A string child", "Interpolated String Child"}) {
+                final var e = mount(root, production, output(output(host("div", text))));
+                tag(e, "DIV");
+                texts(e, text);
+            }
+            final var e = mount(root, production, output(output(host("div", host("ul", "list text")))));
+            tag(e, "DIV");
+            count(e, 1);
+            final var ul = child(e, 0);
+            tag(ul, "UL");
+            texts(ul, "list text");
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    private static ReactElement keyedToggle(String key, Ref observe) {
+        final var element = toggle(null, "div", observe);
+        element.setKey(key);
+        return element;
+    }
+
+    private static ReactElement toggle(@Nullable String first, @Nullable String second, Ref observe) {
+        return ReactElement.createViewElement(TOGGLE)
+                .input("first", first)
+                .input("second", second)
+                .input("observe", observe);
+    }
+
+    private static final ViewConstructorFunction MOUNT_NOTIFIER = MountNotifier::new;
+
+    private static final class MountNotifier extends NativeView implements OnComponentDidMount {
+        @JsConstructor
+        private MountNotifier(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            return host("div", "hello world");
+        }
+
+        @Override
+        public void componentDidMount() {
+            Js.<Ref>uncheckedCast(Objects.requireNonNull(requireInputs().get("observe")))
+                    .accept(null);
+        }
+    }
+
+    private static final class ForceOnChildMount extends NativeView {
+        @JsConstructor
+        private ForceOnChildMount(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final var observe = (Ref) ignored -> forceUpdate();
+            final var before = output(null);
+            before.setKey("1");
+            final var during = ReactElement.createViewElement(MOUNT_NOTIFIER).input("observe", observe);
+            during.setKey("0");
+            final var after = output(null);
+            after.setKey("2");
+            return children("div", before, during, after);
+        }
+    }
+
+    private static final class Toggle extends NativeView implements OnComponentDidMount, OnComponentDidUpdate {
+        private @Nullable Object _host;
+        private final Ref _ref = node -> _host = node;
+
+        @JsConstructor
+        private Toggle(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+            Js.<JsPropertyMap<Object>>uncheckedCast(this).set("state", JsPropertyMap.of("changed", false));
+        }
+
+        @Override
+        public @Nullable ReactNode render() {
+            final var key = Boolean.TRUE.equals(Objects.requireNonNull(state()).get("changed")) ? "second" : "first";
+            final var type = requireInputs().get(key);
+            if (null == type) {
+                return null;
+            }
+            if ("nested-empty".equals(type)) {
+                return output(output(null));
+            }
+            return ReactElement.createHostElement(Js.asString(type), null, _ref, JsPropertyMap.of());
+        }
+
+        @Override
+        public void componentDidMount() {
+            observe();
+            setState(JsPropertyMap.of("changed", true));
+        }
+
+        @Override
+        public void componentDidUpdate(JsPropertyMap<@Nullable Object> previousInputs) {
+            observe();
+        }
+
+        private void observe() {
+            Js.<Ref>uncheckedCast(Objects.requireNonNull(requireInputs().get("observe")))
+                    .accept(_host);
         }
     }
 

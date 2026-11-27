@@ -186,6 +186,28 @@ public final class DomRefsBrowserTest {
     }
 
     @JsMethod
+    public static void ownerlessRef() {
+        final var root = Browser.append("div");
+        try {
+            // An element built before rendering has no owner even if another view returns it.
+            final var child = host("span", null, "foo").input("children", "Hello world!");
+            final ViewConstructorFunction present = inputs -> new NativeView(inputs) {
+                @Override
+                public ReactNode render() {
+                    return child;
+                }
+            };
+            EventsBrowserTest.withoutReportedErrors(() -> DomRootBrowserTest.expectInvariant(
+                    "Element ref was specified as a string (foo) but no owner was set.",
+                    290,
+                    () -> ReactDOM.render(ReactElement.createViewElement(present), root)));
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
     public static void constructorRef() {
         final var root = Browser.append("div");
         try {

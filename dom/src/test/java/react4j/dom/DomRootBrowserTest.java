@@ -5,6 +5,7 @@ import static react4j.webtesting.Checks.equal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsFunction;
@@ -299,6 +300,11 @@ public final class DomRootBrowserTest {
             final var app =
                     output(tree("html", tree("head", text("title", "Hello World")), text("body", "Hello world")));
             final var warnings = OriginalHostCasesBrowserTest.captureWarnings(() -> ReactDOM.render(app, document));
+            for (final var name : new String[] {"html", "head", "body"}) {
+                final var element = Browser.query(document, name);
+                equal(name.toUpperCase(Locale.ROOT), Browser.string(Browser.property(element, "tagName")));
+                check(1 == Js.asInt(Browser.property(element, "nodeType")), "The document host is a DOM element");
+            }
             markup(Browser.query(document, "body"), "Hello world");
             check(0 == warnings.length, "Mounting a fresh document does not warn");
         } finally {

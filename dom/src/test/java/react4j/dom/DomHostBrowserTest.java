@@ -1522,6 +1522,101 @@ public final class DomHostBrowserTest {
     }
 
     @JsMethod
+    public static void nestingVectors(boolean production) {
+        final var body = "Rendering components directly into document.body is discouraged";
+        for (final var tags : new String[][] {
+            {"table", "tbody", "tr", "td", "b"},
+            {"div", "a", "object", "a"},
+            {"div", "p", "button", "p"},
+            {"p", "svg", "foreignObject", "p"},
+            {"html", "body", "div"},
+            {"div", "ul", "ul", "li"},
+            {"div", "label", "div"},
+            {"div", "ul", "li", "section", "li"},
+            {"div", "ul", "li", "dd", "li"}
+        }) {
+            nestingVector(production, tags);
+        }
+        nestingVector(production, new String[] {"body", "datalist", "option"}, body);
+        nestingVector(production, new String[] {"a", "a"}, "<a> cannot appear as a descendant of <a>.\n    in a");
+        nestingVector(
+                production,
+                new String[] {"form", "form"},
+                "<form> cannot appear as a descendant of <form>.\n    in form");
+        nestingVector(production, new String[] {"p", "p"}, "<p> cannot appear as a descendant of <p>.\n    in p");
+        nestingVector(
+                production, new String[] {"table", "tr"}, "<tr> cannot appear as a child of <table>. Add a <tbody>");
+        nestingVector(
+                production,
+                new String[] {"div", "ul", "li", "div", "li"},
+                "<li> cannot appear as a descendant of <li>.\n    in li\n    in div\n    in li\n    in ul");
+        nestingVector(
+                production, new String[] {"div", "html"}, "<html> cannot appear as a child of <div>.\n    in html");
+        nestingVector(
+                production,
+                new String[] {"body", "body"},
+                body,
+                "<body> cannot appear as a child of <body>.\n    in body");
+        nestingVector(
+                production,
+                new String[] {"svg", "foreignObject", "body", "p"},
+                "<body> cannot appear as a child of <foreignObject>.\n    in body\n    in foreignObject");
+    }
+
+    private static void nestingVector(boolean production, String[] tags, String... warnings) {
+        final var root = elementNS("svg".equals(tags[0]) ? SVG : HTML, tags[0]);
+        var element = host(tags[tags.length - 1]);
+        for (var i = tags.length - 2; i > 0; i--) {
+            element = children(tags[i], element);
+        }
+        final var input = element;
+        try {
+            expectWarnings(production, () -> ReactDOM.render(input, root), warnings);
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+        }
+    }
+
+    @JsMethod
+    public static void ariaDiagnostics(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            expectWarnings(production, () -> ReactDOM.render(host("div").input("aria-label", "Bumble bees"), root));
+            attribute(Browser.query(root, "div"), "aria-label", "Bumble bees");
+            warnedAttribute(
+                    root, production, "div", "aria-singlebadprop", "maybe", "Invalid aria prop `aria-singlebadprop`");
+            expectWarnings(
+                    production,
+                    () -> ReactDOM.render(
+                            host("div").input("aria-badprop", "trees").input("aria-malprop", "seas"), root),
+                    "Invalid aria props `aria-badprop`, `aria-malprop` on <div>");
+            warnedAttribute(
+                    root,
+                    production,
+                    "div",
+                    "aria-hasPopup",
+                    "true",
+                    "Unknown ARIA attribute `aria-hasPopup`. Did you mean `aria-haspopup`?");
+            warnedAttribute(
+                    root,
+                    production,
+                    "div",
+                    "ariaHasPopup",
+                    "true",
+                    "Invalid ARIA attribute `ariaHasPopup`. Did you mean `aria-haspopup`?");
+            warnedAttribute(
+                    root,
+                    production,
+                    "div",
+                    "ariaSomethingInvalid",
+                    "true",
+                    "Invalid ARIA attribute `ariaSomethingInvalid`. ARIA attributes follow the pattern aria-*");
+        } finally {
+            close(root);
+        }
+    }
+
+    @JsMethod
     public static void attributeDiagnostics(boolean production) {
         final var root = Browser.append("div");
         final ReactEventHandler handler = event -> {};

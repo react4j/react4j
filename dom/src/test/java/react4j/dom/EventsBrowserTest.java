@@ -2027,6 +2027,168 @@ public final class EventsBrowserTest {
     }
 
     @JsMethod
+    public static void treeTraversal() {
+        final var root = Browser.append("div");
+        final var outside = Browser.append("div");
+        final var far = Browser.append("div");
+        try {
+            final var trace = new StringBuilder();
+            final var first = traversalNode("first", trace);
+            final var second = traversalNode("second", trace);
+            final var branch = traversalNode("branch", trace, first, second);
+            final var parent = traversalNode("parent", trace, traversalNode("middle", trace, branch));
+            ReactDOM.render(parent, root);
+            final var firstHost = Browser.query(root, "#first");
+            final var secondHost = Browser.query(root, "#second");
+            final var parentHost = Browser.query(root, "#parent");
+            final var branchHost = Browser.query(root, "#branch");
+
+            outside.click();
+            equal("", trace.toString());
+            firstHost.click();
+            equal(
+                    "parent capture middle capture branch capture first capture "
+                            + "first bubble branch bubble middle bubble parent bubble ",
+                    trace.toString());
+            trace.setLength(0);
+            parentHost.click();
+            equal("parent capture parent bubble ", trace.toString());
+            trace.setLength(0);
+
+            movement(outside, "mouseout", far);
+            movement(firstHost, "mouseout", firstHost);
+            equal("", trace.toString());
+            movement(firstHost, "mouseout", secondHost);
+            equal("first mouseleave second mouseenter ", trace.toString());
+            trace.setLength(0);
+            movement(firstHost, "mouseout", branchHost);
+            equal("first mouseleave ", trace.toString());
+            trace.setLength(0);
+            movement(branchHost, "mouseover", null);
+            equal("parent mouseenter middle mouseenter branch mouseenter ", trace.toString());
+            trace.setLength(0);
+            movement(parentHost, "mouseover", null);
+            equal("parent mouseenter ", trace.toString());
+            trace.setLength(0);
+            movement(branchHost, "mouseout", outside);
+            equal("branch mouseleave middle mouseleave parent mouseleave ", trace.toString());
+            trace.setLength(0);
+            movement(parentHost, "mouseout", outside);
+            equal("parent mouseleave ", trace.toString());
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            far.remove();
+            outside.remove();
+            root.remove();
+        }
+    }
+
+    private static ReactElement traversalNode(String name, StringBuilder trace, ReactElement... children) {
+        final ReactEventHandler capture = event -> trace.append(name).append(" capture ");
+        final ReactEventHandler bubble = event -> trace.append(name).append(" bubble ");
+        final ReactEventHandler movement =
+                event -> trace.append(name).append(' ').append(event.getType()).append(' ');
+        final var inputs = JsPropertyMap.<@Nullable Object>of("id", name, "onClickCapture", capture, "onClick", bubble);
+        inputs.set("onMouseEnter", movement);
+        inputs.set("onMouseLeave", movement);
+        inputs.set("children", children);
+        return ReactElement.createHostElement("div", name, null, inputs);
+    }
+
+    @JsMethod
+    public static void nativeSimulationEquivalents() {
+        final var root = Browser.append("div");
+        try {
+            final var targets = new @Nullable Object[1];
+            final ReactEventHandler change = event -> targets[0] = event.getTarget();
+            final var input = host("input", JsPropertyMap.of("onChange", change));
+            final var values = new String[] {"giraffe", "zebra", "third"};
+            for (int i = 0; i < values.length; i++) {
+                ReactDOM.render(0 == i ? input : host("div", JsPropertyMap.of("children", input)), root);
+                final var control = Browser.query(root, "input");
+                targets[0] = null;
+                Browser.setValue(control, values[i]);
+                check(control == targets[0], "A real input change identifies the receiving DOM target");
+            }
+            final ReactEventHandler key = event -> {
+                equal("keydown", event.getType());
+                equal("keydown", Browser.string(Browser.property(event.getNativeEvent(), "type")));
+            };
+            final ReactEventHandler click = event -> check(
+                    Js.isTripleEqual(Browser.number(100), Browser.property(event, "clientX")),
+                    "Native mouse coordinate");
+            ReactDOM.render(host("div", JsPropertyMap.of("onKeyDown", key, "onClick", click)), root);
+            final var target = Browser.query(root, "div");
+            nativeInputEvent(target, "keydown");
+            nativeMouseWithX(target, 100);
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            root.remove();
+        }
+    }
+
+    @JsMethod
+    private static native void nativeMouseWithX(Browser.Element target, int x);
+
+    @JsMethod
+    public static void independentTargets() {
+        final var root = Browser.append("div");
+        final var legacyRoot = Browser.append("div");
+        try {
+            final var clicks = new int[1];
+            final ReactEventHandler click = event -> clicks[0]++;
+            ReactDOM.render(
+                    host(
+                            "div",
+                            JsPropertyMap.of(
+                                    "onClick",
+                                    click,
+                                    "dangerouslySetInnerHTML",
+                                    JsPropertyMap.of("__html", "<button data-reactid=legacy>click me</button>"))),
+                    root);
+            Browser.query(root, "button").click();
+            check(1 == clicks[0], "Foreign descendants can bubble through the current root");
+
+            clicks[0] = 0;
+            legacyRoot.setAttribute("data-reactid", "legacy");
+            ReactDOM.render(host("button", JsPropertyMap.of("onClick", click)), legacyRoot);
+            final var button = Browser.query(legacyRoot, "button");
+            button.click();
+            check(1 == clicks[0], "A foreign marker on the container does not intercept clicks");
+            clicks[0] = 0;
+            ReactDOM.unmountComponentAtNode(legacyRoot);
+            button.click();
+            check(0 == clicks[0], "A detached host does not retain an active listener");
+
+            final var submits = new int[1];
+            final ReactEventHandler submit = event -> {
+                event.preventDefault();
+                submits[0]++;
+            };
+            final var input = host("input", JsPropertyMap.of("type", "submit"));
+            final var form = host("form", JsPropertyMap.of("children", input));
+            ReactDOM.render(host("div", JsPropertyMap.of("children", form, "onSubmit", submit)), root);
+            Browser.query(root, "input").click();
+            check(1 == submits[0], "Submitting the nested form bubbles once");
+
+            final var loads = new int[1];
+            final ReactEventHandler load = event -> loads[0]++;
+            ReactDOM.render(host("iframe", JsPropertyMap.of("onLoad", load)), root);
+            final var before = loads[0];
+            nativeIframeLoad(Browser.query(root, "iframe"));
+            check(before + 1 == loads[0], "An iframe load reaches its handler once");
+        } finally {
+            ReactDOM.unmountComponentAtNode(legacyRoot);
+            ReactDOM.unmountComponentAtNode(root);
+            legacyRoot.remove();
+            root.remove();
+        }
+    }
+
+    @JsMethod
+    private static native void nativeIframeLoad(Browser.Element iframe);
+
+    @JsMethod
     public static void runInvalidListeners(final boolean production) {
         final var root = Browser.append("div");
         final var invalid = "Expected `onClick` listener to be a function, instead got a value of `string` type.";

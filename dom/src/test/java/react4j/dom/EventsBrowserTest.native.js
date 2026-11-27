@@ -472,3 +472,13 @@ EventsBrowserTest.withCustomInputValue = function(action) {
     document.createElement = create;
   }
 };
+
+/** @param {!Element} target @param {number} x */
+EventsBrowserTest.nativeMouseWithX = function(target, x) {
+  target.dispatchEvent(new MouseEvent('click', {bubbles: true, clientX: x}));
+};
+
+/** @param {!Element} iframe */
+EventsBrowserTest.nativeIframeLoad = function(iframe) {
+  iframe.dispatchEvent(new Event('load'));
+};

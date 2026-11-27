@@ -209,3 +209,79 @@ RuntimeParityBrowserTest.frameBody = function(iframe) {
   const frame = /** @type {!HTMLIFrameElement} */ (iframe);
   return /** @type {!Element} */ (frame.contentDocument.body);
 };
+
+/** @param {!Element} target @param {number} start @param {number} end */
+RuntimeParityBrowserTest.selectTextOffsets = function(target, start, end) {
+  const doc = target.ownerDocument;
+  target.focus();
+  // Initialize each point using DOM range coordinates, including boundaries.
+  const textNodes = [];
+  const walker = doc.createTreeWalker(target, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) textNodes.push(node);
+  function point(offset) {
+    let total = 0;
+    for (const node of textNodes) {
+      const length = node.textContent.length;
+      if (offset <= total + length) return {node, offset: offset - total};
+      total += length;
+    }
+    throw new Error('Offset outside selection fixture.');
+  }
+  const a = point(start);
+  const b = point(end);
+  doc.getSelection().setBaseAndExtent(a.node, a.offset, b.node, b.offset);
+};
+
+/** @param {!Element} target @return {string} */
+RuntimeParityBrowserTest.readTextOffsets = function(target) {
+  const doc = target.ownerDocument;
+  if (doc.activeElement !== target) return 'unfocused';
+  const selection = doc.getSelection();
+  return selection.anchorNode.textContent + ':' + selection.anchorOffset + '|' +
+      selection.focusNode.textContent + ':' + selection.focusOffset;
+};
+
+/** @param {!Element} target @return {boolean} */
+RuntimeParityBrowserTest.isActive = function(target) {
+  return target.ownerDocument.activeElement === target;
+};
+
+/** @param {!Element} owner @param {!Element} target @param {function():void} observed @param {function():void} update */
+RuntimeParityBrowserTest.blurDuringInsert = function(owner, target, observed, update) {
+  const append = owner.appendChild;
+  const insert = owner.insertBefore;
+  function blur() {
+    target.blur();
+    observed();
+  }
+  owner.appendChild = function(node) {
+    blur();
+    return append.call(owner, node);
+  };
+  owner.insertBefore = function(node, before) {
+    blur();
+    return insert.call(owner, node, before);
+  };
+  try {
+    update();
+  } finally {
+    delete owner.appendChild;
+    delete owner.insertBefore;
+  }
+};
+
+/** @param {!Element} root @param {function():void} mount */
+RuntimeParityBrowserTest.autofocusProbe = function(root, mount) {
+  const focus = HTMLElement.prototype.focus;
+  let notified = false;
+  HTMLElement.prototype.focus = function() {
+    if (this.tagName !== 'INPUT' || !root.contains(this)) throw new Error('Focus ran before the input was mounted.');
+    notified = true;
+  };
+  try {
+    mount();
+    if (!notified) throw new Error('AutoFocus did not run.');
+  } finally {
+    HTMLElement.prototype.focus = focus;
+  }
+};

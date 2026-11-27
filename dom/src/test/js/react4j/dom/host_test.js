@@ -4,6 +4,8 @@ const Mode = goog.require('react4j.browser.Mode');
 const testSuite = goog.require('goog.testing.testSuite');
 testSuite({
   testAttributeMutations() { Host.attributeMutations(); },
+  testNestingVectors() { Host.nestingVectors('production' === Mode.environment); },
+  testAriaDiagnostics() { Host.ariaDiagnostics('production' === Mode.environment); },
   testAttributeDiagnostics() { Host.attributeDiagnostics('production' === Mode.environment); },
   testAttributeObjectsAndBooleans() { Host.attributeObjectsAndBooleans('production' === Mode.environment); },
   testAttributeUpdates() { Host.attributeUpdates(); },

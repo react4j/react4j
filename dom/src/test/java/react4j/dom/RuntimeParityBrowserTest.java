@@ -278,6 +278,182 @@ public final class RuntimeParityBrowserTest {
         ReactDOM.unmountComponentAtNode(container);
     }
 
+    @JsMethod
+    public static void focusCommit() {
+        final var root = Browser.append("div");
+        try {
+            final var inserted = new StringBuilder();
+            final BrowserPromise.Action update = () -> {
+                final var first = Browser.query(root, "#first");
+                final var second = Browser.query(root, "#second");
+                check(isActive(first), "Commit restores original focus before componentDidUpdate");
+                second.focus();
+                check(isActive(second), "componentDidUpdate can choose the next focused input");
+                inserted.append("focus ");
+            };
+            final var element =
+                    ReactElement.createViewElement(FocusCommitView::new).input("update", update);
+            ReactDOM.render(element.input("second", false), root);
+            final var first = Browser.query(root, "#first");
+            first.focus();
+            check(isActive(first), "Initial input is focused");
+            blurDuringInsert(
+                    root.getFirstElementChild(),
+                    first,
+                    () -> {
+                        check(!isActive(first), "Insertion temporarily loses focus");
+                        inserted.append("insert ");
+                    },
+                    () -> ReactDOM.render(element.dup().input("second", true), root));
+            check(isActive(Browser.query(root, "#second")), "The lifecycle-selected focus remains active");
+            equal("insert focus ", inserted.toString());
+
+            ReactDOM.unmountComponentAtNode(root);
+            autofocusProbe(
+                    root,
+                    () -> ReactDOM.render(
+                            ReactElement.createHostElement("input", null, null, JsPropertyMap.of("autoFocus", true)),
+                            root));
+        } finally {
+            remove(root);
+        }
+    }
+
+    private static final class FocusCommitView extends NativeView implements OnComponentDidUpdate {
+        @JsConstructor
+        private FocusCommitView(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final var one = ReactElement.createHostElement("input", "one", null, JsPropertyMap.of("id", "first"));
+            final var two = ReactElement.createHostElement("input", "two", null, JsPropertyMap.of("id", "second"));
+            final var hasSecond = Boolean.TRUE.equals(requireInputs().get("second"));
+            return ReactElement.createHostElement(
+                    "div", null, null, JsPropertyMap.of("children", new @Nullable ReactNode[] {
+                        one, hasSecond ? two : null
+                    }));
+        }
+
+        @Override
+        public void componentDidUpdate(JsPropertyMap<@Nullable Object> previousInputs) {
+            Js.<BrowserPromise.Action>uncheckedCast(
+                            Objects.requireNonNull(requireInputs().get("update")))
+                    .run();
+        }
+    }
+
+    @JsMethod
+    private static native boolean isActive(Browser.Element target);
+
+    @JsMethod
+    private static native void blurDuringInsert(
+            Browser.Element owner,
+            Browser.Element target,
+            BrowserPromise.Action observer,
+            BrowserPromise.Action update);
+
+    @JsMethod
+    private static native void autofocusProbe(Browser.Element root, BrowserPromise.Action mount);
+
+    @JsMethod
+    public static BrowserPromise suspenseVisibility() {
+        return suspension(false).then(ignored -> suspension(true));
+    }
+
+    private static BrowserPromise suspension(boolean textOnly) {
+        final var root = Browser.append("div");
+        final var ready = new boolean[1];
+        final var finish = new BrowserPromise.Action[1];
+        final var pending = Browser.callback(done -> finish[0] = done);
+        final var gate = ReactElement.createViewElement(constructible(OutputProbe::new))
+                .input("output", (Supplier<ReactNode>) () -> ready[0] ? ReactNode.of("B") : throwPending(pending));
+        final var hosts = new @Nullable Object[3];
+        final var parts = new ReactNode[] {ReactNode.of("A"), gate, ReactNode.of("C")};
+        if (!textOnly) {
+            for (int i = 0; i < parts.length; i++) {
+                final int index = i;
+                final RefConsumer ref = value -> hosts[index] = value;
+                final var props = JsPropertyMap.<@Nullable Object>of("children", parts[i]);
+                if (2 == i) {
+                    props.set("style", JsPropertyMap.of("display", "block"));
+                }
+                parts[i] = ReactElement.createHostElement("div", "part-" + i, ref, props);
+            }
+        }
+        ReactDOM.render(ReactElement.createSuspense(null, ReactNode.of("Loading..."), 500, parts), root);
+        if (textOnly) {
+            equal("Loading...", root.getTextContent());
+        }
+        if (!textOnly) {
+            for (final var host : hosts) {
+                equal("none", display(Objects.requireNonNull(host)));
+            }
+        }
+        ready[0] = true;
+        Objects.requireNonNull(finish[0]).run();
+        return Browser.until(() -> "ABC".equals(root.getTextContent()), 5000, 25, "Suspense reveals all text")
+                .thenDo(() -> {
+                    equal("ABC", root.getTextContent());
+                    if (!textOnly) {
+                        equal("", display(Objects.requireNonNull(hosts[0])));
+                        equal("", display(Objects.requireNonNull(hosts[1])));
+                        equal("block", display(Objects.requireNonNull(hosts[2])));
+                    }
+                })
+                .finallyDo(() -> remove(root));
+    }
+
+    private static String display(Object host) {
+        final var style = Objects.requireNonNull(Browser.property(host, "style"));
+        return Browser.string(Browser.property(style, "display"));
+    }
+
+    @JsMethod
+    public static void nestedSelectionOffsets() {
+        final var root = Browser.append("div");
+        try {
+            final var layouts = new String[] {
+                "<i>123</i><i>456</i><i>789</i>", "<i><i>1</i><i><i><i>2</i><i></i></i></i><i>3<i>45</i></i></i>"
+            };
+            final String[][] expectations = {{"123:0|456:1", "123:3|789:3"}, {"3:1|45:2"}};
+            final int[][][] offsets = {{{0, 4}, {3, 9}}, {{3, 5}}};
+            for (int i = 0; i < layouts.length; i++) {
+                for (int j = 0; j < offsets[i].length; j++) {
+                    final var editor = ReactElement.createHostElement(
+                            "div",
+                            "editor",
+                            null,
+                            JsPropertyMap.of(
+                                    "contentEditable",
+                                    true,
+                                    "dangerouslySetInnerHTML",
+                                    JsPropertyMap.of("__html", layouts[i])));
+                    final var b = ReactElement.createHostElement("section", "b", null, JsPropertyMap.of());
+                    final var c = ReactElement.createHostElement("section", "c", null, JsPropertyMap.of());
+                    ReactDOM.render(ReactNode.of(editor, b, c), root);
+                    final var target = Browser.query(root, "[contenteditable]");
+                    final var points = offsets[i][j];
+                    selectTextOffsets(target, points[0], points[1]);
+                    check(
+                            observeMove(root, target, () -> ReactDOM.render(ReactNode.of(c, b, editor), root)),
+                            "Reordering physically moves the contentEditable host");
+                    equal(expectations[i][j], readTextOffsets(target));
+                    ReactDOM.unmountComponentAtNode(root);
+                }
+            }
+        } finally {
+            remove(root);
+        }
+    }
+
+    @JsMethod
+    private static native void selectTextOffsets(Browser.Element target, int start, int end);
+
+    @JsMethod
+    private static native String readTextOffsets(Browser.Element target);
+
     private static void focusAfterKeyedMove(Browser.Element container) {
         final var failures = new StringBuilder();
         for (final boolean editable : new boolean[] {true, false}) {
