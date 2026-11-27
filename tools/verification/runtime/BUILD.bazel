@@ -31,3 +31,11 @@ closure_js_binary(
     dependency_mode = "SORT_ONLY",
     deps = ["//:dom"],
 )
+
+closure_js_binary(
+    name = "upstream_memory_renderer",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    dependency_mode = "SORT_ONLY",
+    deps = ["//tools/verification/runtime/java/react4j/dom:memory_renderer"],
+)

@@ -30,6 +30,7 @@ paths=(
   tools/site/src/test/java
   tools/browser/src/main/java
   tools/browser/src/test/java
+  tools/verification/runtime/java
   tools/verification/src/main/java
   tools/verification/src/test/java
   tools/release/src/main/java

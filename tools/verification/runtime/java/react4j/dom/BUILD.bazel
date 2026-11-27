@@ -1,0 +1,20 @@
+load("//third_party/java:rules.bzl", "j2cl_library")
+
+j2cl_library(
+    name = "memory_renderer",
+    testonly = True,
+    srcs = [
+        "HostFixture.java",
+        "MemoryRenderer.java",
+    ],
+    visibility = [
+        "//:__pkg__",
+        "//tools/verification/runtime:__pkg__",
+    ],
+    deps = [
+        "//:core",
+        "//dom/src/main/java/react4j/dom:reconciler",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+    ],
+)
