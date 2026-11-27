@@ -3,6 +3,7 @@ const Context = goog.require('react4j.testing.IsolatedContextTest');
 const ErrorLogging = goog.require('react4j.testing.IsolatedErrorLoggingTest');
 const Incremental = goog.require('react4j.testing.IsolatedIncrementalTest');
 const LegacyContext = goog.require('react4j.testing.IsolatedLegacyContextTest');
+const ProfilerDevTools = goog.require('react4j.testing.IsolatedProfilerDevToolsTest');
 const Reflection = goog.require('react4j.testing.IsolatedReflectionTest');
 const Scheduling = goog.require('react4j.testing.IsolatedSchedulingTest');
 const SideEffects = goog.require('react4j.testing.IsolatedSideEffectsTest');
@@ -84,5 +85,14 @@ exports.run = function(mode) {
   for (let i = 45; i <= 56; i++) {
     run('ReactNewContext spec' + i, () => Context.additional(i, mode === 'development'));
   }
+  run('ReactProfiler DevTools automatic profiling', () => ProfilerDevTools.autoProfile());
+  run('ReactProfiler DevTools recovery timing', () => ProfilerDevTools.recoverTimingAfterError());
+  run('ReactProfiler DevTools committed interactions', () => ProfilerDevTools.committedInteractions());
+  run('ReactProfiler interleaved automatic root profiling', () => ProfilerDevTools.interleavedRootTiming());
+  run('ReactTestRenderer default host refs', () => ProfilerDevTools.nativeRefDefault());
+  run('ReactTestRenderer host mocks', () => ProfilerDevTools.nodeMocks());
+  run('ReactTestRenderer mocked root instance', () => ProfilerDevTools.mockedRootInstance());
+  run('ReactTestRenderer mocked updates and unmount', () => ProfilerDevTools.mockedUpdatesAndUnmount());
+  run('ReactTestRenderer independent context', () => ProfilerDevTools.secondaryContext(mode === 'production'));
   return count;
 };

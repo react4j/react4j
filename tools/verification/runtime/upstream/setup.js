@@ -69,7 +69,16 @@ function installJavaRenderer() {
   if (process.env.REACT4J_RECONCILER_CASE) {
     jest.doMock('react-reconciler', () => fixture().createHostFixture);
     jest.doMock('react-noop-renderer', () => require('./noop')(fixture().noop));
-    jest.doMock('react-test-renderer', () => require('./noop')(fixture().noop).testRenderer());
+    jest.doMock('react-test-renderer', () => {
+      const cases = fixture().noop;
+      if (process.env.REACT4J_RECONCILER_CASE === 'ReactTestRenderer-test.internal.js') {
+        const flags = require('shared/forks/ReactFeatureFlags.test-renderer');
+        return require('./noop')({...cases,
+          replayFailedRender: () => flags.replayFailedUnitOfWorkWithInvokeGuardedCallback,
+        }).testRenderer();
+      }
+      return require('./noop')(cases).testRenderer();
+    });
     jest.doMock('react-noop-renderer/persistent', () => require('./noop')(fixture().noop, true));
   }
 }
@@ -271,7 +280,7 @@ function createRenderer(moduleFor, sourceReact) {
       return wrapper;
     }
     if (type?.$$typeof === memoType) {
-      const wrapper = Object.assign({}, type, {type: factory(type.type)});
+      const wrapper = Object.assign({}, type, {type: factory(type.type), originalType: type});
       constructors.set(type, wrapper);
       return wrapper;
     }
@@ -279,7 +288,7 @@ function createRenderer(moduleFor, sourceReact) {
       const render = (props, ref) => renderFixture(undefined, type.render, [props, ref]);
       Object.defineProperty(render, 'name', {value: type.render.name});
       render.displayName = type.render.displayName;
-      const wrapper = Object.assign({}, type, {render});
+      const wrapper = Object.assign({}, type, {render, originalType: type});
       constructors.set(type, wrapper);
       return wrapper;
     }

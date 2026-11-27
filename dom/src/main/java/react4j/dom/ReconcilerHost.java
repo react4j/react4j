@@ -82,6 +82,14 @@ interface ReconcilerHost {
 
     default void initializeRoot(Object container, boolean concurrent) {}
 
+    default @Nullable Object publicHostInstance(Object instance) {
+        return instance;
+    }
+
+    default boolean isPrimaryRenderer() {
+        return true;
+    }
+
     default boolean strictReplay() {
         return "development".equals(System.getProperty("react4j.environment"));
     }

@@ -11,6 +11,8 @@ import react4j.dom.DomHost.Element;
 import react4j.dom.DomHost.Node;
 
 final class DomReconcilerHost implements ReconcilerHost {
+    private static final FiberDevTools DEV_TOOLS = FiberDevTools.connect("react4j-dom");
+
     static final DomReconcilerHost INSTANCE = new DomReconcilerHost();
     private static final boolean DEVELOPMENT = "development".equals(System.getProperty("react4j.environment"));
 
@@ -247,7 +249,7 @@ final class DomReconcilerHost implements ReconcilerHost {
 
     @Override
     public boolean isProfiling() {
-        return DomDevTools.isActive();
+        return DEV_TOOLS.isActive();
     }
 
     @Override
@@ -270,12 +272,14 @@ final class DomReconcilerHost implements ReconcilerHost {
 
     @Override
     public void onCommitRoot(Reconciler.Root root) {
-        DomDevTools.onCommitRoot(root);
+        if (DEV_TOOLS.isActive()) {
+            DEV_TOOLS.onCommitRoot(root);
+        }
     }
 
     @Override
     public void onCommitUnmount(Reconciler.Fiber fiber) {
-        DomDevTools.onCommitUnmount(fiber);
+        DEV_TOOLS.onCommitUnmount(fiber);
     }
 
     private static boolean isText(@Nullable Object value) {

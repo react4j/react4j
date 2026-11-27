@@ -258,14 +258,115 @@ module.exports = function createNoop(
           '$$typeof', {value: Symbol.for('react.test.json')});
       }
       const clear = () => clearYields() || [];
+      const wrappedTags = new Set([0, 1, 3, 5, 11, 14]);
+      const fixtureType = fiber => fiber.type?.originalType ?? fiber.type?.componentClass ?? fiber.type;
+
+      function childFibers(parent) {
+        const children = [];
+        for (let fiber = parent.child; fiber; fiber = fiber.sibling) {
+          if (wrappedTags.has(fiber.tag) || fiber.tag === 6) children.push(fiber);
+          else children.push(...childFibers(fiber));
+        }
+        return children;
+      }
+
+      function toTree(fiber) {
+        if (fiber.tag === 6) return String(fiber.memoizedProps);
+        const rendered = childFibers(fiber).flatMap(child => {
+          const tree = toTree(child);
+          return Array.isArray(tree) ? tree : [tree];
+        });
+        if (fiber.tag === 5) {
+          return {nodeType: 'host', type: fixtureType(fiber), props: {...fiber.memoizedProps}, instance: null, rendered};
+        }
+        if (fiber.tag === 0 || fiber.tag === 1) {
+          return {nodeType: 'component', type: fixtureType(fiber), props: {...fiber.memoizedProps},
+            instance: fiber.tag === 1 ? fiber.stateNode : null, rendered: combine(rendered)};
+        }
+        return rendered;
+      }
+
+      function findAll(node, predicate, {deep = true} = {}) {
+        const matched = predicate(node);
+        const result = matched ? [node] : [];
+        if (deep || !matched) {
+          for (const child of node.children) {
+            if (typeof child !== 'string') result.push(...findAll(child, predicate, {deep}));
+          }
+        }
+        return result;
+      }
+
+      function one(matches) {
+        if (matches.length !== 1) {
+          throw new Error(matches.length ? 'Expected 1 but found ' + matches.length + ' instances' : 'No instances found');
+        }
+        return matches[0];
+      }
+
+      function propsMatch(candidate, expected) {
+        return candidate.props && Object.keys(expected).every(key => candidate.props[key] === expected[key]);
+      }
+
       return {
         unstable_yield: api.yield,
         unstable_clearYields: clear,
         unstable_setNowImplementation(implementation) { now = implementation; },
         create(element, options) {
-          if (options?.createNodeMock) unsupported('test renderer createNodeMock');
-          const root = memory.createTestRoot(Boolean(options?.unstable_isConcurrent));
-          const update = tree => submit(root, tree);
+          let root = memory.createTestRoot(Boolean(options?.unstable_isConcurrent));
+          if (typeof options?.createNodeMock === 'function') {
+            root.getContainer().createNodeMock = options.createNodeMock;
+          }
+          const wrappers = new WeakMap();
+          const update = tree => {
+            if (root) submit(root, tree);
+          };
+          function wrap(fiber) {
+            if (fiber.tag === 6) return String(fiber.memoizedProps);
+            let wrapper = wrappers.get(fiber) || (fiber.alternate && wrappers.get(fiber.alternate));
+            if (!wrapper) {
+              wrapper = {
+                _fiber: fiber,
+                _currentFiber() {
+                  if (this._fiber._unmounted) throw new Error('Unable to find node on an unmounted component.');
+                  let top = this._fiber;
+                  while (top.return) top = top.return;
+                  const current = root?.getTestTree();
+                  if (top !== current && current && this._fiber.alternate) {
+                    let next = this._fiber.alternate;
+                    while (next.return) next = next.return;
+                    if (next === current) this._fiber = this._fiber.alternate;
+                    else throw new Error('Unable to find node on an unmounted component.');
+                  } else if (top !== current) {
+                    throw new Error('Unable to find node on an unmounted component.');
+                  }
+                  return this._fiber;
+                },
+                get type() { return fixtureType(this._currentFiber()); },
+                get props() { return this._currentFiber().memoizedProps; },
+                get instance() {
+                  const current = this._currentFiber();
+                  if (current.tag === 5) return root.getPublicHost(current.stateNode);
+                  return current.tag === 1 ? current.stateNode : null;
+                },
+                get children() { return childFibers(this._currentFiber()).map(wrap); },
+                get parent() {
+                  let parent = this._currentFiber().return;
+                  while (parent && !wrappedTags.has(parent.tag)) parent = parent.return;
+                  return !parent || parent.tag === 3 && childFibers(parent).length < 2 ? null : wrap(parent);
+                },
+                find(predicate) { return one(this.findAll(predicate, {deep: false})); },
+                findByType(type) { return one(this.findAllByType(type, {deep: false})); },
+                findByProps(props) { return one(this.findAllByProps(props, {deep: false})); },
+                findAll(predicate, options) { return findAll(this, predicate, options); },
+                findAllByType(type, options) { return findAll(this, node => node.type === type, options); },
+                findAllByProps(props, options) { return findAll(this, node => propsMatch(node, props), options); },
+              };
+            }
+            wrapper._fiber = fiber;
+            wrappers.set(fiber, wrapper);
+            return wrapper;
+          }
           update(element);
           return {update, unstable_flushAll: () => flushTestRenderer(Infinity), unstable_clearYields: clear,
             unstable_flushNumberOfYields: flushTestRenderer,
@@ -276,8 +377,30 @@ module.exports = function createNoop(
               return result;
             },
             toJSON() {
+              if (!root) return null;
               const children = root.getChildren().map(toJSON).filter(child => child !== null);
               return children.length > 1 ? children : children[0] ?? null;
+            },
+            toTree() {
+              const fiber = root?.getTestTree();
+              return fiber ? combine(toTree(fiber)) : null;
+            },
+            getInstance() {
+              const child = root?.getTestTree()?.child;
+              if (child?.tag === 5) return root.getPublicHost(child.stateNode);
+              return child?.tag === 1 ? child.stateNode : null;
+            },
+            unmount() {
+              if (!root) return;
+              observe();
+              root.unmount(null);
+              root = null;
+            },
+            get root() {
+              const fiber = root?.getTestTree();
+              const children = fiber ? childFibers(fiber) : [];
+              if (children.length === 0) throw new Error("Can't access .root on unmounted test renderer");
+              return wrap(children.length === 1 ? children[0] : fiber);
             },
           };
         },

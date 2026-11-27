@@ -1326,6 +1326,11 @@ final class Reconciler {
             return fiber.children[0].publicInstance();
         }
 
+        @Nullable
+        ProfilerInteractions profilerInteractions() {
+            return _activeProfilerInteractions;
+        }
+
         private void captureCommitFailure(Fiber source, Throwable error) {
             var boundary = source.parent;
             while (null != boundary
@@ -1505,8 +1510,14 @@ final class Reconciler {
             return switch (kind) {
                 case VIEW -> view;
                 case PORTAL -> _portalState;
+                case HOST -> null == hostInstance ? null : root.host.publicHostInstance(hostInstance);
                 default -> hostInstance;
             };
+        }
+
+        @Nullable
+        Object devToolsText() {
+            return _description;
         }
 
         private void reconcileChildren(@Nullable Object next, @Nullable Scope scope, Completion complete) {
@@ -2283,12 +2294,13 @@ final class Reconciler {
                     final var context = contextOf(type);
                     if (DEVELOPMENT) {
                         final var record = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(context);
-                        final var renderer = record.get("_currentRenderer");
+                        final var slot = root.host.isPrimaryRenderer() ? "_currentRenderer" : "_currentRenderer2";
+                        final var renderer = record.get(slot);
                         if (null != renderer && renderer != RENDERER_ID) {
                             consoleError("Warning: Detected multiple renderers concurrently rendering the same context"
                                     + " provider. This is currently unsupported.");
                         }
-                        record.set("_currentRenderer", RENDERER_ID);
+                        record.set(slot, RENDERER_ID);
                     }
                     final var inputs = element.inputs();
                     final var value = inputs.get("value");
@@ -3749,7 +3761,7 @@ final class Reconciler {
             return assign;
         }
 
-        private boolean isFunctionComponent(Object instance) {
+        boolean isFunctionComponent(Object instance) {
             return Boolean.TRUE.equals(ClassComponent.properties(type).get("functionComponent"))
                     && !Boolean.TRUE.equals(ClassComponent.properties(instance).get("moduleComponent"));
         }
@@ -3784,7 +3796,7 @@ final class Reconciler {
                 root._effects.add(new Effect(this, () -> {
                     if (ref == next) {
                         _attachedRef = next;
-                        applyRef(next, value);
+                        applyRef(next, Kind.HOST == kind ? root.host.publicHostInstance(value) : value);
                     }
                 }));
             }
@@ -4059,6 +4071,8 @@ final class Reconciler {
         native @Nullable V get(K key);
 
         native void set(K key, V value);
+
+        native void delete(K key);
     }
 
     private static final class Wakeable {

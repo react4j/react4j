@@ -12,6 +12,7 @@ exports_files(
 
 _RECONCILER_SOURCES = [
     "ClassComponent.java",
+    "FiberDevTools.java",
     "NativeReactRoot.java",
     "ReactPortal.java",
     "ReactRoot.java",
@@ -27,7 +28,6 @@ java_library(
     srcs = _RECONCILER_SOURCES + [
         "BatchingTaskInterceptor.java",
         "BrowserScheduler.java",
-        "DomDevTools.java",
         "DomEvents.java",
         "DomHost.java",
         "DomNesting.java",

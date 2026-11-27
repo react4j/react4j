@@ -2,6 +2,7 @@ package react4j.dom;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -124,6 +125,20 @@ public final class MemoryRenderer {
         public Object getContainer() {
             return _container;
         }
+
+        public @Nullable Object getTestTree() {
+            final var devTools = ((MemoryHost) _reconciler.host)._devTools;
+            return null == devTools ? null : devTools.tree(_reconciler);
+        }
+
+        public @Nullable Object getPublicHost(Object instance) {
+            return _reconciler.host.publicHostInstance(instance);
+        }
+    }
+
+    @JsFunction
+    private interface NodeMock {
+        @Nullable Object create(Object description);
     }
 
     @JsType(namespace = "react4j.testing", name = "MemorySchedulerCallbacks")
@@ -173,6 +188,7 @@ public final class MemoryRenderer {
         private final boolean _directText;
         private final boolean _persistent;
         private final SchedulerCallbacks _callbacks;
+        private final @Nullable FiberDevTools _devTools;
         private int _nextId;
         private int _diffs;
         private int _updates;
@@ -184,6 +200,7 @@ public final class MemoryRenderer {
             _directText = directText;
             _persistent = persistent;
             _callbacks = callbacks;
+            _devTools = directText ? null : FiberDevTools.connect("react4j-test-renderer");
         }
 
         @Override
@@ -249,6 +266,9 @@ public final class MemoryRenderer {
 
         @Override
         public void onCommitUnmount(Reconciler.Fiber fiber) {
+            if (null != _devTools) {
+                _devTools.onCommitUnmount(fiber);
+            }
             if (null != fiber.view) {
                 _unmounted.add(fiber.view);
             }
@@ -261,6 +281,34 @@ public final class MemoryRenderer {
             }
             _unmounted.clear();
             cacheHostInstances(root.fiber);
+        }
+
+        @Override
+        public boolean isProfiling() {
+            return null != _devTools && _devTools.isActive();
+        }
+
+        @Override
+        public boolean isPrimaryRenderer() {
+            return _directText;
+        }
+
+        @Override
+        public @Nullable Object publicHostInstance(Object instance) {
+            if (_directText) {
+                return instance;
+            }
+            final var node = properties(instance);
+            final var mock = node.get("createNodeMock");
+            return null == mock ? null : Js.<NodeMock>uncheckedCast(mock)
+                    .create(JsPropertyMap.of("type", node.get("type"), "props", node.get("props")));
+        }
+
+        @Override
+        public void onCommitRoot(Reconciler.Root root) {
+            if (null != _devTools) {
+                _devTools.onCommitRoot(root);
+            }
         }
 
         private @Nullable Object cacheHostInstances(Reconciler.Fiber fiber) {
@@ -336,6 +384,9 @@ public final class MemoryRenderer {
             instance.set("type", element.type());
             instance.set("children", new Children());
             defineHiddenProperty(instance, "props", null);
+            if (!_directText) {
+                defineHiddenProperty(instance, "createNodeMock", properties(container).get("createNodeMock"));
+            }
             defineHiddenProperty(instance, "text", ((TestHostPlan) plan).initialValue());
             writeProps(instance, element);
             return instance;

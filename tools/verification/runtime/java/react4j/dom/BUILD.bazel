@@ -40,6 +40,7 @@ _ISOLATED_CASE_SOURCES = [
     "IsolatedErrorLoggingTest.native.js",
     "IsolatedIncrementalTest.java",
     "IsolatedLegacyContextTest.java",
+    "IsolatedProfilerDevToolsTest.java",
     "IsolatedReconcilerTest.java",
     "IsolatedReconcilerTest.native.js",
     "IsolatedReflectionTest.java",

@@ -66,11 +66,11 @@ public final class ProfilerBrowserTest {
         for (final var enabled : new boolean[] {false, true}) {
             final var driver = new Driver(tracing);
             driver.profiling = enabled;
-            final var root = driver.memory.createRoot(false);
+            final var root = driver.memory.createTestRoot(false);
             root.render(profile(driver, "label", null), null);
-            equal("", output(root.getChildren()));
+            equal("", snapshotOutput(root.getChildren()));
             root.render(host("div", profile(driver, "label", null)), null);
-            equal("<div></div>", output(root.getChildren()));
+            equal("<div></div>", snapshotOutput(root.getChildren()));
             root.render(
                     host(
                             "div",
@@ -88,7 +88,7 @@ public final class ProfilerBrowserTest {
                     null);
             equal(
                     "<div><span>outside span</span><span>inside span</span><span>function component</span></div>",
-                    output(root.getChildren()));
+                    snapshotOutput(root.getChildren()));
             root.render(
                     profile(
                             driver,
@@ -107,8 +107,24 @@ public final class ProfilerBrowserTest {
                     null);
             equal(
                     "<div>outer function component</div><block>inner class component</block><span>inner span</span>",
-                    output(root.getChildren()));
+                    snapshotOutput(root.getChildren()));
             check(enabled == !driver.samples.isEmpty(), "The profiling flag controls callback delivery");
+        }
+    }
+
+    private static String snapshotOutput(Object children) {
+        checkSnapshotProps(children);
+        return output(children);
+    }
+
+    private static void checkSnapshotProps(Object children) {
+        for (final var node : Js.<Object[]>uncheckedCast(children)) {
+            final var entry = record(node);
+            final var props = entry.get("props");
+            if (null != props) {
+                record(props).forEach(name -> equal("children", name));
+                checkSnapshotProps(Objects.requireNonNull(entry.get("children")));
+            }
         }
     }
 

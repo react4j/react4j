@@ -9,15 +9,14 @@ import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
 import react4j.React;
 
-/** Publishes committed trees in the React 16.6 Fiber protocol understood by the browser extension. */
-final class DomDevTools {
+/** Publishes committed trees in the React 16.6 Fiber protocol. */
+final class FiberDevTools {
     private static boolean _loggedError;
-    private static final @Nullable DomDevTools INSTANCE = connect();
-    private final Hook _hook;
+    private final @Nullable Hook _hook;
     private final int _id;
-    private final DomHost.WeakMap<Reconciler.Root, JsPropertyMap<@Nullable Object>> _roots = new DomHost.WeakMap<>();
-    private final DomHost.WeakMap<Reconciler.Fiber, JsPropertyMap<@Nullable Object>> _fibers = new DomHost.WeakMap<>();
-    private final DomHost.WeakMap<DomHost.Node, JsPropertyMap<@Nullable Object>> _hosts;
+    private final Reconciler.WeakKeys<Reconciler.Root, JsPropertyMap<@Nullable Object>> _roots = new Reconciler.WeakKeys<>();
+    private final Reconciler.WeakKeys<Reconciler.Fiber, JsPropertyMap<@Nullable Object>> _fibers = new Reconciler.WeakKeys<>();
+    private final Reconciler.WeakKeys<Object, JsPropertyMap<@Nullable Object>> _hosts;
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
     private static class Hook {
@@ -34,24 +33,24 @@ final class DomDevTools {
     @JsFunction
     private interface FindFiber {
         @Nullable
-        Object find(DomHost.Node node);
+        Object find(Object node);
     }
 
-    private DomDevTools(Hook hook, int id, DomHost.WeakMap<DomHost.Node, JsPropertyMap<@Nullable Object>> hosts) {
+    private FiberDevTools(@Nullable Hook hook, int id, Reconciler.WeakKeys<Object, JsPropertyMap<@Nullable Object>> hosts) {
         _hook = hook;
         _id = id;
         _hosts = hosts;
     }
 
-    private static @Nullable DomDevTools connect() {
+    static FiberDevTools connect(String rendererPackageName) {
+        final var hosts = new Reconciler.WeakKeys<Object, JsPropertyMap<@Nullable Object>>();
         final Hook hook = Js.uncheckedCast(Js.global().get("__REACT_DEVTOOLS_GLOBAL_HOOK__"));
         if (null == hook || !hook.supportsFiber || hook.isDisabled) {
-            return null;
+            return new FiberDevTools(null, 0, hosts);
         }
-        final var hosts = new DomHost.WeakMap<DomHost.Node, JsPropertyMap<@Nullable Object>>();
         final var renderer = JsPropertyMap.of();
         renderer.set("version", "16.6.0");
-        renderer.set("rendererPackageName", "react4j-dom");
+        renderer.set("rendererPackageName", rendererPackageName);
         renderer.set("bundleType", "production".equals(System.getProperty("react4j.environment")) ? 0 : 1);
         renderer.set("findFiberByHostInstance", (FindFiber) hosts::get);
         final int id;
@@ -59,9 +58,9 @@ final class DomDevTools {
             id = hook.inject(renderer);
         } catch (Throwable error) {
             logError(error);
-            return null;
+            return new FiberDevTools(null, 0, hosts);
         }
-        return new DomDevTools(hook, id, hosts);
+        return new FiberDevTools(hook, id, hosts);
     }
 
     private static void logError(Throwable error) {
@@ -74,29 +73,37 @@ final class DomDevTools {
     @JsMethod(namespace = JsPackage.GLOBAL, name = "console.error")
     private static native void warn(String message);
 
-    static boolean isActive() {
-        return null != INSTANCE;
+    boolean isActive() {
+        return null != _hook;
     }
 
-    static void onCommitRoot(Reconciler.Root root) {
-        if (null != INSTANCE) {
-            INSTANCE.commit(root);
+    @Nullable Object tree(Reconciler.Root root) {
+        final var record = _roots.get(root);
+        return null == record ? null : record.get("current");
+    }
+
+    void onCommitRoot(Reconciler.Root root) {
+        final var record = publish(root);
+        if (null != _hook) {
+            try {
+                _hook.onCommitFiberRoot(_id, record);
+            } catch (Throwable error) {
+                logError(error);
+            }
         }
     }
 
-    private void commit(Reconciler.Root root) {
+    private JsPropertyMap<@Nullable Object> publish(Reconciler.Root root) {
         var record = _roots.get(root);
         if (null == record) {
             record = JsPropertyMap.of();
             record.set("containerInfo", root.container);
             _roots.set(root, record);
         }
-        record.set("current", snapshot(root.fiber, null, record));
-        try {
-            _hook.onCommitFiberRoot(_id, record);
-        } catch (Throwable error) {
-            logError(error);
-        }
+        record.set("memoizedInteractions", root.profilerInteractions());
+        final var current = snapshot(root.fiber, null, record);
+        record.set("current", current);
+        return record;
     }
 
     private static int viewTag(Reconciler.Fiber fiber) {
@@ -111,7 +118,7 @@ final class DomDevTools {
         if (React.Lazy == marker) {
             return 16;
         }
-        return Boolean.TRUE.equals(descriptor.get("functionComponent")) ? 0 : 1;
+        return null != fiber.view && fiber.isFunctionComponent(fiber.view) ? 0 : 1;
     }
 
     private JsPropertyMap<@Nullable Object> snapshot(
@@ -141,11 +148,17 @@ final class DomDevTools {
         next.set("elementType", fiber.type);
         next.set("key", fiber.key);
         next.set("ref", fiber.ref);
-        next.set("stateNode", Reconciler.Kind.ROOT == fiber.kind ? root : fiber.publicInstance());
+        next.set("stateNode", switch (fiber.kind) {
+            case ROOT -> root;
+            case HOST, TEXT -> fiber.hostInstance;
+            default -> fiber.publicInstance();
+        });
         if (null != fiber.hostInstance) {
-            _hosts.set(Js.uncheckedCast(fiber.hostInstance), next);
+            _hosts.set(fiber.hostInstance, next);
         }
-        next.set("memoizedProps", null == fiber.node ? null : fiber.node.inputs());
+        next.set("memoizedProps", Reconciler.Kind.TEXT == fiber.kind
+                ? fiber.devToolsText()
+                : null == fiber.node ? null : fiber.node.inputs());
         if (Reconciler.Kind.ROOT == fiber.kind) {
             final var state = JsPropertyMap.<@Nullable Object>of();
             state.set("element", 0 == fiber.children.length ? null : fiber.children[0].type);
@@ -222,19 +235,24 @@ final class DomDevTools {
         return record;
     }
 
-    static void onCommitUnmount(Reconciler.Fiber fiber) {
-        if (null != INSTANCE) {
-            final var current = INSTANCE._fibers.get(fiber);
-            if (null != current) {
+    void onCommitUnmount(Reconciler.Fiber fiber) {
+        final var current = _fibers.get(fiber);
+        if (null != current) {
+            if (null != _hook) {
                 try {
-                    INSTANCE._hook.onCommitFiberUnmount(INSTANCE._id, current);
+                    _hook.onCommitFiberUnmount(_id, current);
                 } catch (Throwable error) {
                     logError(error);
                 }
-                INSTANCE._fibers.delete(fiber);
-                if (null != fiber.hostInstance) {
-                    INSTANCE._hosts.delete(Js.uncheckedCast(fiber.hostInstance));
-                }
+            }
+            current.set("_unmounted", true);
+            final var alternate = current.get("alternate");
+            if (null != alternate) {
+                Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(alternate).set("_unmounted", true);
+            }
+            _fibers.delete(fiber);
+            if (null != fiber.hostInstance) {
+                _hosts.delete(fiber.hostInstance);
             }
         }
     }
