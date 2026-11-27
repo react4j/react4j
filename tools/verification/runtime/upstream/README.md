@@ -18,10 +18,10 @@ The assertion maps below link original checks to Java methods. **Ported** and **
 | Event emitter and synthetic events | [Events](event-assertions.tsv) |
 | DOM attributes, SVG, styles, text and raw HTML | [DOM host](host-assertions.tsv) |
 | Input, select, option and textarea | [Forms](forms-assertions.tsv) |
-| Programmatic Profiler callbacks and timing | [Profiler](profiler-assertions.tsv) |
+| Programmatic Profiler callbacks and timing | [Profiler](profiler-assertions.tsv), [DevTools commits](profiler-devtools-assertions.tsv), [test host instances](test-renderer-host-assertions.tsv) |
 | JavaScript component props and context diagnostics | [PropTypes](prop-type-assertions.tsv) |
 | In-memory reconciliation | [Fragments and boundaries](reconciler-fragment-assertions.tsv), [persistence](reconciler-persistence-assertions.tsv), [scheduling](reconciler-scheduling-assertions.tsv), [state queues](reconciler-updates-assertions.tsv), [lazy and memo](reconciler-wrapped-assertions.tsv), [Suspense](reconciler-suspense-assertions.tsv), [no-op host Suspense](reconciler-suspense-noop-assertions.tsv) |
-| In-memory commits and interrupted work | [Reflection](reconciler-reflection-assertions.tsv), [error logging and replay](reconciler-error-logging-assertions.tsv), [triangle workloads](reconciler-triangle-assertions.tsv), [side effects](reconciler-side-effects-assertions.tsv) |
+| In-memory commits and interrupted work | [Reflection](reconciler-reflection-assertions.tsv), [error logging and replay](reconciler-error-logging-assertions.tsv), [triangle workloads](reconciler-triangle-assertions.tsv), [side effects](reconciler-side-effects-assertions.tsv), [incremental work](reconciler-incremental-assertions.tsv), [error handling](reconciler-error-handling-assertions.tsv), [context](reconciler-context-assertions.tsv), [User Timing](reconciler-timing-assertions.tsv) |
 
 The Java port covers client rendering, including ordinary batched updates, synchronous flushing and Profiler callbacks. The scope excludes hydration, server rendering, the experimental `root.createBatch()` manual commit API, scheduler tracing subscribers and the numeric element protocol used without `Symbol`. Mixed cases retain their applicable client assertions. Development diagnostics are compared by condition, affected component and diagnostic information, with exact text where the Java API promises it. The unmodified Jest suite can still fail an exact upstream wording check.
 
@@ -48,15 +48,15 @@ The selected suites include forwardRef, the React core files that import ReactDO
 
 ## Results
 
-The comparison ran 1,900 cases in 118 suites against the candidate at `59e5eb702`. Stock React passed all 1,876 enabled cases in both modes. Java passed 1,739 in development and 1,795 in production. Relative to the matrix at `e60c4957f`, 52 more development cases and 17 more production cases passed. Every previously passing case kept passing. The mode names refer to Jest and the Java runtime environment defines. The optimized production application is tested separately in Chromium.
+The comparison ran 1,900 cases in 118 suites against the candidate at `d9e4b006e`. Stock React passed all 1,876 enabled cases in both modes. Java passed 1,770 in development and 1,825 in production. Relative to the matrix at `59e5eb702`, 31 more development cases and 30 more production cases passed. Every previously passing case kept passing. The mode names refer to Jest and the Java runtime environment defines. The optimized production application is tested separately in Chromium.
 
 | Outcome of original case | Development | Production |
 | --- | ---: | ---: |
-| Passed with a Java renderer call and an effective assertion | 1,562 | 1,432 |
-| Passed with a Java renderer call and no effective assertion | 49 | 234 |
-| Passed without entering the Java renderer | 128 | 129 |
-| Failed after entering the Java renderer | 91 | 36 |
-| Failed before entering the Java renderer | 45 | 44 |
+| Passed with a Java renderer call and an effective assertion | 1,576 | 1,443 |
+| Passed with a Java renderer call and no effective assertion | 49 | 236 |
+| Passed without entering the Java renderer | 145 | 146 |
+| Failed after entering the Java renderer | 85 | 31 |
+| Failed before entering the Java renderer | 20 | 19 |
 | Failed with an explicit test-adapter limit | 1 | 1 |
 | Failed on an unsupported runtime feature | 0 | 0 |
 | Skipped upstream | 24 | 24 |
@@ -67,7 +67,7 @@ All 198 cases in the input, select, option and textarea suites passed on both si
 
 All 324 enabled cases in the 27 upstream reconciler suites passed against both runtimes in both modes. Both runtimes skipped the same 17 upstream cases. In development, 307 passes entered Java and made an effective assertion, 13 entered Java without one, and four exercised helpers. The production counts were 301, 19 and four. The matrix includes every original Suspense, work expiration, persistence and User Timing case. The six additional forwardRef cases also passed in both modes.
 
-A [second matrix](additional-cases.tsv) exercises 17 more suites, including the public JSX Profiler, StrictMode, refs, react-cache, create-subscription and the test renderer. Stock passed all 245 development cases and all 243 production cases. Java passed 148 and 165 respectively. All 19 react-cache and create-subscription cases passed in both modes, including four helper-only passes. The six traversal cases try to use the test renderer's `root`, `find` and `findAll` APIs. The adapter does not expose that tree. Three other cases install a mock DevTools hook on the in-memory test renderer. The actual DOM renderer's browser-extension results are recorded separately.
+A [second matrix](additional-cases.tsv) exercises 17 more suites, including the public JSX Profiler, StrictMode, refs, react-cache, create-subscription and the test renderer. Stock passed all 245 development cases and all 243 production cases. Java passed 180 and 196 respectively. All 19 react-cache and create-subscription cases passed in both modes, including four helper-only passes. All 46 enabled test renderer cases passed, including tree traversal, asynchronous updates, and host-node mocks. The three original DevTools integration cases also passed against the memory renderer. The installed extension exercised the DOM renderer separately. [Browser and extension results](../README.md)
 
 ## Which tests exercise which contract?
 
@@ -89,6 +89,8 @@ A [second matrix](additional-cases.tsv) exercises 17 more suites, including the 
 ## Reconciler isolation
 
 The DOM and in-memory renderers run the same Java reconciler. Its Root schedules work and commits effects. Its Fiber keeps component state, matches children and tracks pending work. DomReconcilerHost owns DOM operations. The in-memory host supplies both mutation and persistence configurations. Persistence builds a new tree for each commit, reuses unchanged branches and leaves earlier snapshots observable. A different platform can supply its own host operations and scheduler while reusing the reconciliation logic. The host interface currently has package visibility. [Java reconciler](../../../../dom/src/main/java/react4j/dom/Reconciler.java) · [Host interface](../../../../dom/src/main/java/react4j/dom/ReconcilerHost.java) · [Upstream reconciler](https://github.com/facebook/react/tree/v16.6.0/packages/react-reconciler/src)
+
+All 341 cases in the 27 reconciler suites have individual assertion maps. Of the 324 enabled originals, 319 have Java counterparts for every applicable assertion. The other five exercise private Fiber-copy or Map-polyfill machinery, the unbound memo factory warning, or scheduler tracing bundle compatibility. Stock skips 17 cases in both modes.
 
 The original ReactNoop and test-renderer fixtures run without a DOM. The checked-in Java translations also run directly on the memory host in Node and in the repository’s Chromium gate. [Isolated Java cases](../java/react4j/dom) · [Test entry points](../isolated_cases.js) Jest supplies the clock and controls when a slice yields. The Java scheduler owns priority, expiration and selection of the next root. Tests read committed in-memory records, host counters and callback order. The original host-context fixture supplies its own host and verifies the container passed to its commit hooks. Four helper-only passes check two JSX memo warnings, the private Fiber replay helper and the compatibility of the upstream scheduler tracing bundle with a profiling renderer. Separate Chromium fixtures exercise Java error recovery, User Timing, immutable snapshots and profiler durations. [Memory host](../java/react4j/dom/MemoryRenderer.java) · [Jest adapter](noop.js)
 
@@ -121,6 +123,6 @@ The source fixtures use their original React JSX constructor. JavaScript class f
 
 The original ReactElement fixture deletes the global `Symbol` before every test. Its numeric `$$typeof` assertion and JSON round-trip depend on that legacy protocol. For the Java run, the adapter initializes J2CL and the upstream JSX constructor with the browser's native `Symbol`, then restores the fixture's global before its assertions. The per-case adaptations column identifies these runs. On the first paired rerun, 24 of 28 cases passed in each mode. Seven passes entered Java and 17 exercised JSX helpers. The numeric marker, JSON round-trip, factory owner and static-method cases still failed.
 
-The broader matrix includes original JSX and DOM tests beyond the APIs bound by React4j. Some depend on server hydration, experimental deferred-commit batches, removal of the global Symbol, or ReactDOM private implementation fields. It also records remaining behavioral and development-warning differences. For example, the TypeScript class fixture still fails six cases in both modes, where the transpiled constructor reads props or context after calling its superclass. The server integration files contribute only their clean-client cases. See the failure column for each original assertion.
+The broader matrix includes original JSX and DOM tests beyond the APIs bound by React4j. Some depend on server hydration, experimental deferred-commit batches, removal of the global Symbol, or ReactDOM private implementation fields. It also records remaining behavioral and development-warning differences. The CoffeeScript class fixture still fails seven development cases that use JSX factories to return child components. The server integration files contribute only their clean-client cases. See the failure column for each original assertion.
 
 The separate public JSX Profiler suite also exercises scheduler tracing subscribers and deferred commits. Its ordinary render callbacks, including recovery timing and interaction sets, run in the Java memory renderer. In the second matrix, 61 of 77 enabled cases passed in development and 59 of 75 in production. The remaining 16 cases per mode exercise tracing subscribers and deferred commits. The browser extension’s commit profiler has its own application-level verification. [Browser measurements and DevTools](../README.md)
