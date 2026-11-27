@@ -88,6 +88,7 @@ public final class RuntimeParityBrowserTest {
         return suspense()
                 .then(ignored -> suspenseWithoutFallback(false))
                 .then(ignored -> suspenseWithoutFallback(true))
+                .then(ignored -> suspenseSiblingDeadlines())
                 .then(ignored -> missingPlaceholder(false, production))
                 .then(ignored -> missingPlaceholder(true, production))
                 .then(ignored -> independentSuspenseSiblings())
@@ -1526,6 +1527,42 @@ public final class RuntimeParityBrowserTest {
             cleanup.run();
             throw error;
         }
+    }
+
+    private static BrowserPromise suspenseSiblingDeadlines() {
+        final var container = Browser.append("div");
+        final var root = ReactDOM.createRoot(container);
+        final var ready = new boolean[1];
+        final var attempted = new boolean[2];
+        final BrowserPromise.Action[] resolve = new BrowserPromise.Action[1];
+        final var pending = Browser.callback(callback -> resolve[0] = callback);
+        final var childType = constructible(SuspendingView::new);
+        final var branches = new ReactElement[2];
+        for (int i = 0; i < branches.length; i++) {
+            final var index = i;
+            final var timeout = 0 == index ? 0 : 4000;
+            final var child = ReactElement.createViewElement(childType)
+                    .input("ready", (BooleanSupplier) () -> {
+                        attempted[index] = true;
+                        return ready[0];
+                    })
+                    .input("pending", pending);
+            final var branch = ReactElement.createSuspense("branch-" + index, null, timeout, child)
+                    .input("maxDuration", timeout);
+            branch.inputs().delete("fallback");
+            branches[i] = branch;
+        }
+        root.render(ReactElement.createSuspense(null, ReactNode.of("waiting"), 0, branches));
+        return Browser.until(() -> attempted[0] && attempted[1], 2000, 10, "Both deadline sources suspend")
+                .then(ignored -> Browser.delay(80))
+                .then(ignored -> {
+                    equal("", container.getTextContent());
+                    ready[0] = true;
+                    Objects.requireNonNull(resolve[0]).run();
+                    return Browser.until(
+                            () -> "readyready".equals(container.getTextContent()), 2000, 10, "Both siblings retry");
+                })
+                .finallyDo(() -> root.unmount(container::remove));
     }
 
     private static BrowserPromise independentSuspenseSiblings() {

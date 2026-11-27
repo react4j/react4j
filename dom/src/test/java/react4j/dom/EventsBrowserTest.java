@@ -1,6 +1,7 @@
 package react4j.dom;
 
 import static react4j.webtesting.Checks.check;
+import static react4j.webtesting.Checks.equal;
 
 import java.util.Objects;
 import jsinterop.annotations.JsFunction;
@@ -1425,10 +1426,51 @@ public final class EventsBrowserTest {
                 check(!event.isDefaultPrevented(), "Released events reset their default prevention state");
             });
             check((production ? 0 : 2) == warnings, "Reading a released event warns only in development");
+
+            checkKey(input, trace, "Esc", 0, "Escape");
+            checkKey(input, trace, "Spacebar", 0, " ");
+            checkKey(input, trace, "Left", 0, "ArrowLeft");
+            checkKey(input, trace, "Up", 0, "ArrowUp");
+            checkKey(input, trace, "Right", 0, "ArrowRight");
+            checkKey(input, trace, "Down", 0, "ArrowDown");
+            checkKey(input, trace, "Del", 0, "Delete");
+            checkKey(input, trace, "Win", 0, "OS");
+            checkKey(input, trace, "Menu", 0, "ContextMenu");
+            checkKey(input, trace, "Apps", 0, "ContextMenu");
+            checkKey(input, trace, "Scroll", 0, "ScrollLock");
+            checkKey(input, trace, "f", 70, "f");
+            checkKey(input, trace, "MozPrintableKey", 45, "Insert");
+            checkKey(input, trace, "Unidentified", 36, "Home");
+
+            checkKey(input, trace, "", 8, "Backspace");
+            checkKey(input, trace, "", 9, "Tab");
+            checkKey(input, trace, "", 13, "Enter");
+            checkKey(input, trace, "", 16, "Shift");
+            checkKey(input, trace, "", 17, "Control");
+            checkKey(input, trace, "", 18, "Alt");
+            checkKey(input, trace, "", 20, "CapsLock");
+            checkKey(input, trace, "", 32, " ");
+            checkKey(input, trace, "", 33, "PageUp");
+            checkKey(input, trace, "", 34, "PageDown");
+            checkKey(input, trace, "", 35, "End");
+            checkKey(input, trace, "", 40, "ArrowDown");
+            checkKey(input, trace, "", 45, "Insert");
+            checkKey(input, trace, "", 123, "F12");
+            checkKey(input, trace, "", 1337, "Unidentified");
+
+            trace.setLength(0);
+            legacyKey(input, "keyup", 224);
+            equal("Meta/0/224/224 ", trace.toString());
         } finally {
             ReactDOM.unmountComponentAtNode(root);
             root.remove();
         }
+    }
+
+    private static void checkKey(Browser.Element input, StringBuilder trace, String key, int keyCode, String expected) {
+        trace.setLength(0);
+        keyboard(input, "keydown", key, keyCode, 0);
+        equal(expected + "/0/" + keyCode + "/" + keyCode + " ", trace.toString());
     }
 
     @JsFunction
