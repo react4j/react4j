@@ -10,6 +10,7 @@ const Mode = goog.require('react4j.browser.Mode');
 const OriginalHost = goog.require('react4j.dom.OriginalHostCasesBrowserTest');
 const Parity = goog.require('react4j.dom.RuntimeParityBrowserTest');
 const Runtime = goog.require('react4j.dom.RuntimeBrowserTest');
+const Subscription = goog.require('react4j.dom.SubscriptionBrowserTest');
 const TestCase = goog.require('goog.testing.TestCase');
 const testSuite = goog.require('goog.testing.testSuite');
 testSuite({
@@ -19,6 +20,8 @@ testSuite({
   testCleanCheckboxes() { Forms.cleanCheckboxes('production' === Mode.environment); },
   testCleanInputs() { Forms.cleanInputs('production' === Mode.environment); },
   testCleanUserInteraction() { Forms.cleanUserInteraction('production' === Mode.environment); },
+  testSubscriptionCommits() { Subscription.subscriptionCommits(); },
+  testSubscriptionPromises() { return Subscription.subscriptionPromises(); },
   testCleanBasicMounts() { CleanElements.basic('production' === Mode.environment); },
   testNestedClickOnMount() { CleanElements.nestedClickOnMount('production' === Mode.environment); },
   testHostReplacementAndQueries() { CleanElements.hostReplacementAndQueries(); },
@@ -69,6 +72,7 @@ testSuite({
   testInvalidListeners() { Events.runInvalidListeners('production' === Mode.environment); },
   testEvents() { Events.runBehavior(); },
   testEventPayloads() { Events.runPayloads(); },
+  testPreloadedSuspense() { return Parity.preloadedSuspense(); },
   testDomSuspenseVisibility() { return Parity.suspenseVisibility(); },
   testFocusCommit() { Parity.focusCommit(); },
   testContentEditableSelectionOffsets() { Parity.nestedSelectionOffsets(); },

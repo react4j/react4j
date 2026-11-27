@@ -13,6 +13,8 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Context;
+import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
 import react4j.Renderable;
@@ -21,6 +23,7 @@ import react4j.internal.NativeView;
 import react4j.internal.OnComponentWillUnmount;
 import react4j.internal.ViewConstructorFunction;
 import react4j.webtesting.Browser;
+import react4j.webtesting.BrowserPromise;
 
 @NullMarked
 public final class DomHostBrowserTest {
@@ -1519,6 +1522,206 @@ public final class DomHostBrowserTest {
         };
         Objects.requireNonNull(Js.asPropertyMap(constructor)).set("displayName", name);
         return ReactElement.createViewElement(constructor);
+    }
+
+    @JsMethod
+    public static BrowserPromise timersWithoutFrameApis() {
+        final var restore = removeFrameApis();
+        final var callbacks = new int[1];
+        try {
+            final var scheduler = BrowserScheduler.INSTANCE;
+            final var start = scheduler.now();
+            final int canceled = scheduler.schedule(() -> callbacks[0] += 100, 0);
+            scheduler.cancel(canceled);
+            final var complete = Browser.callback(done -> scheduler.schedule(
+                    () -> {
+                        callbacks[0]++;
+                        done.run();
+                    },
+                    0));
+            return complete.thenDo(() -> {
+                        check(1 == callbacks[0], "One scheduled timer runs after cancellation");
+                        check(start <= scheduler.now(), "The browser scheduler clock advances");
+                    })
+                    .finallyDo(restore::run);
+        } catch (Throwable e) {
+            restore.run();
+            throw e;
+        }
+    }
+
+    @JsMethod
+    private static native Action removeFrameApis();
+
+    @JsMethod
+    public static void sourceFrames(boolean production) {
+        final var root = Browser.append("div");
+        final String[][] paths = {
+            {"", ""},
+            {"/", ""},
+            {"\\", ""},
+            {"Foo", "Foo"},
+            {"Bar/Foo", "Foo"},
+            {"Bar\\Foo", "Foo"},
+            {"Baz/Bar/Foo", "Foo"},
+            {"Baz\\Bar\\Foo", "Foo"},
+            {"Foo.js", "Foo.js"},
+            {"Foo.jsx", "Foo.jsx"},
+            {"/Foo.js", "Foo.js"},
+            {"/Foo.jsx", "Foo.jsx"},
+            {"\\Foo.js", "Foo.js"},
+            {"\\Foo.jsx", "Foo.jsx"},
+            {"Bar/Foo.js", "Foo.js"},
+            {"Bar/Foo.jsx", "Foo.jsx"},
+            {"Bar\\Foo.js", "Foo.js"},
+            {"Bar\\Foo.jsx", "Foo.jsx"},
+            {"/Bar/Foo.js", "Foo.js"},
+            {"/Bar/Foo.jsx", "Foo.jsx"},
+            {"\\Bar\\Foo.js", "Foo.js"},
+            {"\\Bar\\Foo.jsx", "Foo.jsx"},
+            {"Bar/Baz/Foo.js", "Foo.js"},
+            {"Bar/Baz/Foo.jsx", "Foo.jsx"},
+            {"Bar\\Baz\\Foo.js", "Foo.js"},
+            {"Bar\\Baz\\Foo.jsx", "Foo.jsx"},
+            {"/Bar/Baz/Foo.js", "Foo.js"},
+            {"/Bar/Baz/Foo.jsx", "Foo.jsx"},
+            {"\\Bar\\Baz\\Foo.js", "Foo.js"},
+            {"\\Bar\\Baz\\Foo.jsx", "Foo.jsx"},
+            {"C:\\funny long (path)/Foo.js", "Foo.js"},
+            {"C:\\funny long (path)/Foo.jsx", "Foo.jsx"},
+            {"index.js", "index.js"},
+            {"index.jsx", "index.jsx"},
+            {"/index.js", "index.js"},
+            {"/index.jsx", "index.jsx"},
+            {"\\index.js", "index.js"},
+            {"\\index.jsx", "index.jsx"},
+            {"Bar/index.js", "Bar/index.js"},
+            {"Bar/index.jsx", "Bar/index.jsx"},
+            {"Bar\\index.js", "Bar/index.js"},
+            {"Bar\\index.jsx", "Bar/index.jsx"},
+            {"/Bar/index.js", "Bar/index.js"},
+            {"/Bar/index.jsx", "Bar/index.jsx"},
+            {"\\Bar\\index.js", "Bar/index.js"},
+            {"\\Bar\\index.jsx", "Bar/index.jsx"},
+            {"Bar/Baz/index.js", "Baz/index.js"},
+            {"Bar/Baz/index.jsx", "Baz/index.jsx"},
+            {"Bar\\Baz\\index.js", "Baz/index.js"},
+            {"Bar\\Baz\\index.jsx", "Baz/index.jsx"},
+            {"/Bar/Baz/index.js", "Baz/index.js"},
+            {"/Bar/Baz/index.jsx", "Baz/index.jsx"},
+            {"\\Bar\\Baz\\index.js", "Baz/index.js"},
+            {"\\Bar\\Baz\\index.jsx", "Baz/index.jsx"},
+            {"C:\\funny long (path)/index.js", "funny long (path)/index.js"},
+            {"C:\\funny long (path)/index.jsx", "funny long (path)/index.jsx"},
+        };
+        try {
+            for (int i = 0; i < paths.length; i++) {
+                final var element = host("div").input("SourceNormalized" + i, "value");
+                final var source = JsPropertyMap.of("fileName", paths[i][0], "lineNumber", Browser.number(i));
+                Js.<JsPropertyMap<Object>>uncheckedCast(element).set("_source", source);
+                expectWarnings(
+                        production,
+                        () -> ReactDOM.render(element, root),
+                        "\n    in div (at " + paths[i][1] + ":" + i + ")");
+            }
+        } finally {
+            close(root);
+        }
+    }
+
+    @JsMethod
+    public static void recordInteroperability(boolean production) {
+        final var root = Browser.append("div");
+        final var destination = Browser.append("div");
+        try {
+            final var host = host("div").input("children", "host");
+            final ViewConstructorFunction constructor = inputs -> new NativeView(inputs) {
+                @Override
+                public ReactNode render() {
+                    return host;
+                }
+            };
+            final var view = ReactElement.createViewElement(constructor).input("value", host);
+            final var fragment = ReactElement.createFragment(null, host);
+            final var strict = ReactElement.createStrictMode(host);
+            final var concurrent = typeRecord(React.ConcurrentMode).input("children", host);
+            final var providerContext = new Context<String>();
+            final var consumer =
+                    providerContext.consumer().render(value -> host("span").input("children", value));
+            final var provider = providerContext.provide("provided", consumer);
+            final Forward forwardRender = (inputs, ref) -> host;
+            final var forward = typeRecord(JsPropertyMap.of("$$typeof", React.ForwardRef, "render", forwardRender));
+            final var profiler =
+                    typeRecord(React.Profiler).input("id", "profile").input("children", host);
+
+            for (final var record :
+                    new ReactNode[] {host, view, fragment, strict, concurrent, provider, consumer, forward, profiler}) {
+                check(ReactElement.isElement(record), "Built and interoperable component records are elements");
+            }
+            check(
+                    ReactElement.isElement(ReactElement.createHostElement("div", null, null, JsPropertyMap.of())),
+                    "Host strings have an element record");
+            check("div".equals(host.type()), "A DOM record retains its host string");
+            check(constructor == view.type(), "A view record retains its Java constructor");
+            check(React.Fragment == fragment.type(), "A fragment retains its marker type");
+            check(React.StrictMode == Js.<ReactElement>uncheckedCast(strict).type(), "Strict mode type");
+            check(React.ConcurrentMode == concurrent.type(), "Concurrent mode type");
+            check(React.Profiler == profiler.type(), "Profiler type");
+            check(
+                    symbolFor("react.context")
+                            == marker(Js.<ReactElement>uncheckedCast(consumer).type()),
+                    "Consumer type");
+            check(
+                    symbolFor("react.provider")
+                            == marker(Js.<ReactElement>uncheckedCast(provider).type()),
+                    "Provider type");
+            check(React.ForwardRef == marker(forward.type()), "Forwarded ref type");
+            for (final var invalid : new @Nullable Object[] {
+                "div",
+                true,
+                Browser.number(123),
+                null,
+                Js.undefined(),
+                JsPropertyMap.of(),
+                new Object[0],
+                JsPropertyMap.of("type", "div", "props", JsPropertyMap.of())
+            }) {
+                check(!ReactElement.isElement(invalid), "Only a symbol-marked record is an element");
+            }
+
+            final var portal = ReactDOM.createPortal(host, destination);
+            check(ReactPortal.isPortal(portal), "Portal uses the shared record marker");
+            check(!ReactElement.isElement(portal), "Portal is a distinct record kind");
+            check(null == marker(destination), "A portal host is an ordinary DOM element");
+            check(portal.containerInfo == destination && portal.children == host, "Portal stores its target and child");
+            expectWarnings(production, () -> ReactDOM.render(portal, root));
+            check(0 == childCount(root), "A portal contributes no hosts to the owner root");
+            equal("host", destination.getTextContent());
+            expectWarnings(production, () -> ReactDOM.render(provider, root));
+            equal("provided", root.getTextContent());
+        } finally {
+            ReactDOM.unmountComponentAtNode(root);
+            destination.remove();
+            root.remove();
+        }
+    }
+
+    private static @Nullable Object marker(Object node) {
+        return Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(node).get("$$typeof");
+    }
+
+    private static ReactElement typeRecord(Object type) {
+        final var element = host("div");
+        Js.<JsPropertyMap<Object>>uncheckedCast(element).set("type", type);
+        return element;
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Symbol.for")
+    private static native Object symbolFor(String name);
+
+    @JsFunction
+    private interface Forward {
+        ReactNode render(JsPropertyMap<@Nullable Object> inputs, @Nullable Object ref);
     }
 
     @JsMethod

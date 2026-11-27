@@ -4,6 +4,9 @@ const Mode = goog.require('react4j.browser.Mode');
 const testSuite = goog.require('goog.testing.testSuite');
 testSuite({
   testAttributeMutations() { Host.attributeMutations(); },
+  testTimersWithoutFrameApis() { return Host.timersWithoutFrameApis(); },
+  testSourceFrames() { Host.sourceFrames('production' === Mode.environment); },
+  testRecordInteroperability() { Host.recordInteroperability('production' === Mode.environment); },
   testNestingVectors() { Host.nestingVectors('production' === Mode.environment); },
   testAriaDiagnostics() { Host.ariaDiagnostics('production' === Mode.environment); },
   testAttributeDiagnostics() { Host.attributeDiagnostics('production' === Mode.environment); },

@@ -35,6 +35,8 @@ j2cl_library(
         "RuntimeCoverageExample.java",
         "RuntimeParityBrowserTest.java",
         "RuntimeParityBrowserTest.native.js",
+        "SubscriptionBrowserTest.java",
+        "SubscriptionBrowserTest.native.js",
         "WrappedViewsBrowserTest.java",
     ],
     deps = [

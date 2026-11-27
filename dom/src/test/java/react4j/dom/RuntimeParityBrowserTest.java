@@ -358,6 +358,63 @@ public final class RuntimeParityBrowserTest {
     private static native void autofocusProbe(Browser.Element root, BrowserPromise.Action mount);
 
     @JsMethod
+    public static BrowserPromise preloadedSuspense() {
+        final var container = Browser.append("div");
+        final var trace = new StringBuilder();
+        final var beforeRead = new PendingResource("B", trace);
+        final var requested = new PendingResource("A", trace);
+        final var view = ReactElement.createViewElement(constructible(OutputProbe::new))
+                .input("output", (Supplier<ReactNode>) () -> {
+                    beforeRead.preload();
+                    requested.read();
+                    beforeRead.read();
+                    return ReactNode.of("Result");
+                });
+        ReactDOM.render(ReactElement.createSuspense(null, ReactNode.of("Loading..."), 500, view), container);
+        equal("Loading...", container.getTextContent());
+        equal("start B start A ", trace.toString());
+        beforeRead.resolve();
+        requested.resolve();
+        return Browser.until(() -> "Result".equals(container.getTextContent()), 5000, 25, "Preloaded resources reveal")
+                .thenDo(() -> equal("start B start A resolve B resolve A ", trace.toString()))
+                .finallyDo(() -> remove(container));
+    }
+
+    private static final class PendingResource {
+        private final String _key;
+        private final StringBuilder _trace;
+        private BrowserPromise.@Nullable Action _resolve;
+        private @Nullable BrowserPromise _pending;
+        private boolean _ready;
+
+        private PendingResource(String key, StringBuilder trace) {
+            _key = key;
+            _trace = trace;
+        }
+
+        private void preload() {
+            if (null == _pending) {
+                _trace.append("start ").append(_key).append(' ');
+                _pending = Browser.callback(done -> _resolve = done).thenDo(() -> {
+                    _trace.append("resolve ").append(_key).append(' ');
+                    _ready = true;
+                });
+            }
+        }
+
+        private void read() {
+            preload();
+            if (!_ready) {
+                throwPending(Objects.requireNonNull(_pending));
+            }
+        }
+
+        private void resolve() {
+            Objects.requireNonNull(_resolve).run();
+        }
+    }
+
+    @JsMethod
     public static BrowserPromise suspenseVisibility() {
         return suspension(false).then(ignored -> suspension(true));
     }

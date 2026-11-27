@@ -192,3 +192,15 @@ DomHostBrowserTest.documentClickOrder = function(root, capture, bubble, click) {
     document.removeEventListener('click', bubble);
   }
 };
+
+/** @return {function():void} */
+DomHostBrowserTest.removeFrameApis = function() {
+  const animation = window.requestAnimationFrame;
+  const idle = window.requestIdleCallback;
+  window.requestAnimationFrame = undefined;
+  window.requestIdleCallback = undefined;
+  return function() {
+    window.requestAnimationFrame = animation;
+    window.requestIdleCallback = idle;
+  };
+};
