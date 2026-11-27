@@ -62,6 +62,29 @@ This opens Chrome DevTools, inspects a generated component, checks the highlight
 
 ## Measured results
 
+### Production at `211e46fce`
+
+Each cell gives the stock React 16.6 median followed by the Java median. Chrome ran 60 measured Raw pairs and 30 Arez and Sting pairs on CPUs 0–5 and 120 pairs per application under unrestricted scheduling. The same optimized Raw bundle was used in both runs. [Individual samples](measurements.csv)
+
+| CPUs | Application | Load (ms) | Add 50 (ms) | Toggle 25 (ms) | 1,000 keys (ms) | Heap (bytes) | JavaScript (bytes) | Gzip (bytes) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0-5 | Raw | 27.30 / 29.20 | 22.20 / 25.00 | 3.60 / 3.10 | 5.30 / 4.10 | 1,998,514 / 2,012,492 | 166,367 / 149,090 | 54,943 / 51,857 |
+| 0-5 | Arez | 32.90 / 35.65 | 212.80 / 214.45 | 7.70 / 6.70 | 10.35 / 8.30 | 2,587,338 / 2,607,686 | 184,824 / 169,333 | 59,922 / 57,214 |
+| 0-5 | Sting | 32.95 / 34.20 | 211.50 / 215.00 | 7.50 / 6.70 | 10.35 / 8.25 | 2,592,258 / 2,611,624 | 185,631 / 170,208 | 60,272 / 57,538 |
+| 0-15 | Raw | 25.70 / 25.10 | 18.10 / 20.20 | 3.65 / 3.00 | 5.45 / 4.20 | 1,994,732 / 2,010,988 | 166,367 / 149,090 | 54,943 / 51,857 |
+| 0-15 | Arez | 27.10 / 27.50 | 204.80 / 206.55 | 7.00 / 6.40 | 9.30 / 7.70 | 2,587,328 / 2,607,156 | 184,824 / 169,333 | 59,922 / 57,214 |
+| 0-15 | Sting | 28.65 / 27.90 | 204.65 / 207.00 | 7.00 / 6.40 | 9.40 / 7.60 | 2,592,248 / 2,610,296 | 185,631 / 170,208 | 60,272 / 57,538 |
+
+Forty of 42 checks met the existing budget. Adding 50 rows in Raw took 12.6% longer on CPUs 0–5 and 11.6% longer under unrestricted scheduling. The Java times exceeded the 10% cutoffs by 0.58 ms and 0.29 ms respectively. All three applications met the startup, toggle, keyboard dispatch, retained heap and bundle-size budgets. Arez and Sting also met the insertion budget. A fresh unrestricted comparison of the earlier `f58188962` build measured Raw insertion at 16.95 / 18.90 ms across 120 pairs.
+
+React Developer Tools 8.0.0 inspected and highlighted the input component and profiled 125 commits in each build. In default Java production, 73 commits had positive component durations, including four input-component updates. Named production recorded 77 and 12 respectively and exposed `TodoEntry` and `TodoItem.todo`. Chrome loaded source maps in all seven Java application builds, with Java sources matching this commit.
+
+### React 16.6 reconciler suite at `4c1343f95`
+
+The initial parity build passed 41 of 42 workload budgets. On unrestricted CPUs, adding 50 rows in Raw took 16.85 ms with stock React and 21.30 ms with Java. All other unrestricted measurements passed. The 30-pair runs on CPUs 0–5 overlapped the repository gate, which raised absolute timings. The unrestricted runs used 120 pairs on an idle machine. Every run checked the rendered rows, checked boxes, retained DOM identity and input state. [Individual samples](measurements.csv)
+
+React Developer Tools 8.0.0 inspected and highlighted the input component and recorded 125 commits on each of stock development, Java development, Java production and Java production with names. The default optimized application reported 79 commits with a positive component duration, including 13 timed input-component commits. The named application exposed `TodoEntry` and `TodoItem.todo`. Chrome reported a source map for each of the seven Java application builds. Their maps contained the exact Java sources used to build the reconciler, DOM host, NativeView and application views.
+
 ### Extracted reconciler at `f58188962`
 
 Each cell gives stock React 16.6 followed by React4j. The production applications ran 30 measured pairs on CPUs 0–5 and 120 on CPUs 0–15 with the same Chrome, hardware and workload as the previous comparison. All 42 measurements met their budgets. [Individual samples](measurements.csv)

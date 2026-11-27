@@ -10,7 +10,7 @@ The selected suites include forwardRef, the React core files that import ReactDO
 
 ## Results
 
-The comparison ran 1,900 cases in 118 suites at runtime commit `1a16d5812`. Stock React passed all 1,876 enabled cases in both modes. Across the entire selection Java passed 1,610 in development and 1,732 in production. Every previously passing case still passed. The mode names refer to Jest and the Java runtime environment defines. The optimized production application is tested separately in Chromium.
+The comparison ran 1,900 cases in 118 suites at runtime commit `211e46fce`. Stock React passed all 1,876 enabled cases in both modes. Across the entire selection Java passed 1,610 in development and 1,732 in production. Every previously passing case still passed. The mode names refer to Jest and the Java runtime environment defines. The optimized production application is tested separately in Chromium.
 
 | Outcome of original case | Development | Production |
 | --- | ---: | ---: |
@@ -50,7 +50,7 @@ The DOM and in-memory renderers run the same Java reconciler. Its Root schedules
 
 The ReactNoop and test-renderer fixtures run without a DOM. Jest supplies the clock and controls when a slice yields. The Java scheduler owns priority, expiration and selection of the next root. Tests read committed in-memory records, host counters and callback order. The original host-context fixture supplies its own host and verifies the container passed to its commit hooks. Four helper-only passes check two JSX memo warnings, the private Fiber replay helper and the compatibility of the upstream scheduler tracing bundle with a profiling renderer. Separate Chromium fixtures exercise Java error recovery, User Timing, immutable snapshots and profiler durations. [Memory host](../java/react4j/dom/MemoryRenderer.java) · [Jest adapter](noop.js)
 
-The full upstream coverage run executed 3,416 of 3,677 reconciler source lines (92.9%) and 2,999 of 3,963 branches (75.7%). React4j’s instrumented Chromium fixtures at `bebee6475` executed 2,277 of 2,436 lines (93.5%) and 1,678 of 1,855 branches (90.5%) in Reconciler.java. Including ClassComponent.java and UserTiming.java, they executed 2,447 of 2,610 lines (93.8%) and 1,765 of 1,947 branches (90.7%). The upstream denominator spans 42 source files, including additional host configurations and scheduling facilities. The Java counters use J2CL source maps. The paired case matrix above measures observable test agreement.
+The full upstream coverage run executed 3,416 of 3,677 reconciler source lines (92.9%) and 2,999 of 3,963 branches (75.7%). React4j’s instrumented Chromium fixtures at `211e46fce` executed 2,284 of 2,443 lines (93.5%) and 1,685 of 1,861 branches (90.5%) in Reconciler.java. Including ClassComponent.java and UserTiming.java, they executed 2,454 of 2,617 lines (93.8%) and 1,772 of 1,953 branches (90.7%). The upstream denominator spans 42 source files, including additional host configurations and scheduling facilities. The Java counters use J2CL source maps. The paired case matrix above measures observable test agreement.
 
 ## Reproduce a comparison
 
