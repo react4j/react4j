@@ -57,8 +57,20 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("development", type=Path)
     parser.add_argument("production", type=Path)
+    parser.add_argument("--baseline", type=Path,
+                        help="Reject missing cases, newly failing cases, and losses of renderer or assertion coverage")
     args = parser.parse_args()
     dev, prod = read(args.development), read(args.production)
+    baseline = {}
+    if args.baseline:
+        with args.baseline.open() as previous:
+            for row in csv.DictReader(previous, dialect="excel-tab"):
+                key = (row["suite"], row["id"], row["upstream case"])
+                if key in baseline:
+                    raise ValueError(f"Duplicate baseline case: {key}")
+                baseline[key] = row
+    passing = {"helper only": 1, "smoke": 2, "paired assertion": 3}
+    regressions = []
     output = csv.writer(sys.stdout, dialect="excel-tab", lineterminator="\n")
     output.writerow(("suite", "id", "upstream case", "development", "production",
                      "development calls", "development assertions", "production calls", "production assertions",
@@ -75,11 +87,22 @@ def main():
             label = ", ".join(f"{mode}:{case['id']}" for mode, case in
                               (("development", left), ("production", right)) if case)
         adaptations = sorted(set(left.get("adaptations", []) + right.get("adaptations", [])))
-        output.writerow((key[0], label, key[1], outcome(left), outcome(right),
+        outcomes = (outcome(left), outcome(right))
+        previous = baseline.pop((key[0], label, key[1]), None)
+        if previous:
+            for mode, current in zip(("development", "production"), outcomes):
+                before = previous[mode]
+                if passing.get(current, 0) < passing.get(before, 0):
+                    regressions.append(f"{key[0]} {label} {key[1]} ({mode}): {before} -> {current}")
+        output.writerow((key[0], label, key[1], *outcomes,
                          left.get("calls", "-"), left.get("assertions", "-"),
                          right.get("calls", "-"), right.get("assertions", "-"),
                          ", ".join(adaptations) or "-",
                          failure_reason(left), failure_reason(right)))
+    for suite, label, name in baseline:
+        regressions.append(f"Missing baseline case: {suite} {label} {name}")
+    if regressions:
+        raise SystemExit("\n".join(regressions))
 
 
 if __name__ == "__main__":

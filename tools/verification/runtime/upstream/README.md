@@ -108,9 +108,11 @@ for mode in development production; do
     "$bundles/upstream_renderer.js" "$work/$mode" --mode "$mode" \
     --stock-node "$STOCK_NODE" --reconciler-bundle "$bundles/upstream_memory_renderer.js"
 done
-python3 tools/verification/runtime/upstream/report.py "$work/development/cases.json" "$work/production/cases.json" > "$work/cases.tsv"
-diff -u tools/verification/runtime/upstream/cases.tsv "$work/cases.tsv"
+python3 tools/verification/runtime/upstream/report.py "$work/development/cases.json" "$work/production/cases.json" \
+  --baseline tools/verification/runtime/upstream/cases.tsv > "$work/cases.tsv"
 ```
+
+The baseline check reports each missing case, lost pass, or loss of a Java renderer call or effective assertion in a previously passing case. It permits improvements and variation in the fuzz test's number of calls. Use `additional-cases.tsv` as the baseline for the second matrix.
 
 Pass `--additional` for the second matrix, using a fresh output directory. Pass `--suite packages/react-dom/src/__tests__/ReactDOMInput-test.js` to run a single original suite. Reconciler suites require the isolated bundle flag and run after a Node smoke test verifies memory rendering, scheduling and host bookkeeping. The output contains the Jest logs, failures, test-side adaptations and per-case results for both runtimes. The generated ReactNewContext fuzz case chooses random actions, so its call and assertion counts can vary between runs. Both Jest modes use the inspectable J2CL BUNDLE with the requested environment defines. The separate shared Chromium suites compile and execute the actual optimized Java application and stock ReactDOM production script. [Chromium commands](../README.md)
 
