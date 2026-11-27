@@ -734,6 +734,10 @@ public final class CleanClientElementsBrowserTest {
         final var wrapped = mount(root, production, output(host("div", "foo")));
         texts(wrapped, "foo");
 
+        final var forwardedText = mount(root, production, wrap("Hello"));
+        tag(forwardedText, "DIV");
+        texts(forwardedText, "Hello");
+
         var inner = mount(root, production, wrap(wrap(wrap(wrap(null)))));
         for (int i = 0; i < 3; i++) {
             tag(inner, "DIV");

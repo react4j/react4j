@@ -34,12 +34,26 @@ def specs(checkout):
         yield path.relative_to(checkout)
 
 
+EXTERNAL_HOST_SUITES = {
+    "react-art": ("ReactART-test.js",),
+    "react-native-renderer": ("ReactFabric-test.internal.js", "ReactFabricAndNative-test.internal.js",
+                              "ReactNativeError-test.internal.js", "ReactNativeEvents-test.internal.js",
+                              "ReactNativeMount-test.internal.js", "createReactNativeComponentClass-test.internal.js"),
+    "react-test-renderer": ("ReactShallowRenderer-test.js",),
+}
+
+
+def uses_external_host(spec):
+    return len(spec.parts) > 1 and spec.name in EXTERNAL_HOST_SUITES.get(spec.parts[1], ())
+
+
 def additional_specs():
     groups = {
         "react": ["ReactCoffeeScriptClass-test.coffee", "ReactCreateRef-test.js", "ReactProfiler-test.internal.js",
                   "ReactProfilerDevToolsIntegration-test.internal.js", "ReactStrictMode-test.internal.js",
                   "forwardRef-test.js"],
-        "react-dom": ["ReactDOMserverIntegrationProgress-test.js", "ReactTestUtils-test.js", "findDOMNode-test.js",
+        "react-dom": ["ReactDOMserverIntegrationProgress-test.js", "ReactDOMServerIntegrationRefs-test.js",
+                      "ReactTestUtils-test.js", "findDOMNode-test.js",
                       "multiple-copies-of-react-test.js", "renderSubtreeIntoContainer-test.js"],
         "react-cache": ["ReactCache-test.internal.js"],
         "react-is": ["ReactIs-test.js"],
@@ -47,7 +61,7 @@ def additional_specs():
         "react-test-renderer": ["ReactTestRenderer-test.internal.js", "ReactTestRenderer-test.js", "ReactTestRendererAsync-test.js",
                                 "ReactTestRendererTraversal-test.js"],
     }
-    for package, names in groups.items():
+    for package, names in (*groups.items(), *EXTERNAL_HOST_SUITES.items()):
         for name in names:
             yield Path("packages", package, "src", "__tests__", name)
     for name in ("describeComponentFrame-test.js", "ReactDOMFrameScheduling-test.js", "ReactSymbols-test.internal.js"):
@@ -68,11 +82,12 @@ def is_reconciler_spec(spec):
 
 def uses_isolated_host(spec):
     # The portal interoperability fixture imports both renderers and constructs a real DOM container.
-    return is_reconciler_spec(spec) and spec.name != "ReactTestRenderer-test.js"
+    return is_reconciler_spec(spec) and not uses_external_host(spec) and spec.name != "ReactTestRenderer-test.js"
 
 
 def uses_server_integration_variants(spec):
-    return spec.name.lower().startswith("reactdomserverintegration")
+    return (spec.name.lower().startswith("reactdomserverintegration")
+            and spec.name != "ReactDOMServerIntegrationRefs-test.js")
 
 
 def run_suite(checkout, config, bundle, output, spec, runtime, mode, node):

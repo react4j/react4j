@@ -118,6 +118,18 @@ function createTestUtils(adapter, react) {
   }
   return {
     renderIntoDocument: element => adapter.render(element, document.createElement('div')),
+    mockComponent(...args) {
+      // The stock module initializes its event helpers when it loads. Only reuse its Jest mock helper.
+      const key = '__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED';
+      const stockDOM = require.requireActual('react-dom/src/client/ReactDOM').default;
+      adapter[key] = stockDOM[key];
+      try {
+        require.requireActual('react-dom/test-utils').mockComponent(...args);
+      } finally {
+        delete adapter[key];
+      }
+      return this;
+    },
     isDOMComponent,
     findAllInRenderedTree(instance, match) {
       return query(instance, 'findAllInRenderedTree', match);
@@ -687,6 +699,9 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, constructedC
           'but without the "unstable_" prefix.');
       }
       return this.createPortal(children, container, key);
+    },
+    hydrate() {
+      unsupported('hydration');
     },
     unstable_createRoot(container, options) {
       if (options && options.hydrate) unsupported('hydration');
