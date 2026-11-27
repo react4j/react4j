@@ -1,26 +1,37 @@
-load("//third_party/java:rules.bzl", "java_library")
+load("//third_party/java:rules.bzl", "j2cl_library", "java_library")
 
 package(default_visibility = ["//:__subpackages__"])
 
 exports_files(
-    ["Renderer.native.js"],
+    [
+        "Reconciler.native.js",
+        "Renderer.native.js",
+    ],
     visibility = ["//tools/release:__pkg__"],
 )
 
+_RECONCILER_SOURCES = [
+    "NativeReactRoot.java",
+    "ReactPortal.java",
+    "ReactRoot.java",
+    "Reconciler.java",
+    "ReconcilerHost.java",
+    "ReconcilerScheduler.java",
+    "package-info.java",
+]
+
 java_library(
     name = "dom",
-    srcs = [
+    srcs = _RECONCILER_SOURCES + [
         "BatchingTaskInterceptor.java",
+        "BrowserScheduler.java",
         "DomDevTools.java",
         "DomEvents.java",
         "DomHost.java",
         "DomNesting.java",
-        "NativeReactRoot.java",
+        "DomReconcilerHost.java",
         "ReactDOM.java",
-        "ReactPortal.java",
-        "ReactRoot.java",
         "Renderer.java",
-        "package-info.java",
         "//dom/src/main/java/react4j/dom/events:sources",
         "//dom/src/main/java/react4j/dom/proptypes/cssPropertyTypes:sources",
         "//dom/src/main/java/react4j/dom/proptypes/html:sources",
@@ -34,5 +45,15 @@ java_library(
         "//third_party/java:braincheck_core",
         "//third_party/java:jsinterop_annotations",
         "//third_party/java:org_jetbrains_annotations",
+    ],
+)
+
+j2cl_library(
+    name = "reconciler",
+    srcs = _RECONCILER_SOURCES + ["Reconciler.native.js"],
+    deps = [
+        "//:core",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
     ],
 )

@@ -159,7 +159,7 @@ final class DomNesting {
     }
 
     static void checkHost(
-            final Renderer.Fiber fiber,
+            final Reconciler.Fiber fiber,
             final String tag,
             final boolean mounting,
             final @Nullable String text,
@@ -174,16 +174,16 @@ final class DomNesting {
         }
     }
 
-    static void checkText(final Renderer.Fiber fiber, final String text, final Supplier<String> stack) {
+    static void checkText(final Reconciler.Fiber fiber, final String text, final Supplier<String> stack) {
         check("#text", text, ancestors(fiber), stack);
     }
 
-    private static List<String> ancestors(final Renderer.Fiber fiber) {
+    private static List<String> ancestors(final Reconciler.Fiber fiber) {
         final List<String> tags = new ArrayList<>();
         for (var parent = fiber.parent; null != parent; parent = parent.parent) {
-            if (Renderer.Kind.HOST == parent.kind) {
+            if (Reconciler.Kind.HOST == parent.kind) {
                 tags.add(Js.asString(parent.type));
-            } else if (Renderer.Kind.ROOT == parent.kind || Renderer.Kind.PORTAL == parent.kind) {
+            } else if (Reconciler.Kind.ROOT == parent.kind || Reconciler.Kind.PORTAL == parent.kind) {
                 final var container = Js.<DomHost.Node>uncheckedCast(parent.type);
                 final var tag = rootTag(container);
                 if (null != tag) {

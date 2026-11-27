@@ -20,7 +20,7 @@ public final class FiberReconciliationTest {
     @JsMethod
     public static BrowserPromise run() {
         final var container = container();
-        final var root = (Renderer.Root) Renderer.createRoot(container);
+        final var root = Renderer.createRoot(container);
         final var a = ReactElement.createFragment("a", ReactElement.createFragment("leaf"));
         final var b = ReactElement.createFragment("b");
         return Browser.callback(done -> root.render(ReactNode.of(a, b), done::run))
@@ -28,7 +28,9 @@ public final class FiberReconciliationTest {
                     final var first = root.fiber.children;
                     final var leaf = first[0].children[0];
                     check(first[0].parent == root.fiber && leaf.parent == first[0], "Committed parent links");
-                    check(Renderer.Kind.FRAGMENT == leaf.kind && null == leaf.dom, "Logical leaf has no host instance");
+                    check(
+                            Reconciler.Kind.FRAGMENT == leaf.kind && null == leaf.hostInstance,
+                            "Logical leaf has no host instance");
                     return Browser.callback(done -> root.render(ReactNode.of(b, null, a), done::run))
                             .then(moved -> {
                                 final var second = root.fiber.children;

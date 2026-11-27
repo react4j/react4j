@@ -117,7 +117,7 @@ public final class ReactDOM {
      * @param action the action where all state updates are batched.
      */
     public static void batchedUpdates(final BatchedUpdatesFn action) {
-        Renderer.batchedUpdates(action);
+        Reconciler.batchedUpdates(action::call);
     }
 
     /**

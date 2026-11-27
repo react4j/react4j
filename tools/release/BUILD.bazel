@@ -122,11 +122,13 @@ release_source_jar(
     resource_entries = [
         "META-INF/LICENSE",
         "META-INF/LICENSE.react",
+        "react4j/dom/Reconciler.native.js",
         "react4j/dom/Renderer.native.js",
     ],
     resource_files = [
         "//:LICENSE",
         "//third_party:react/LICENSE",
+        "//dom/src/main/java/react4j/dom:Reconciler.native.js",
         "//dom/src/main/java/react4j/dom:Renderer.native.js",
     ],
 )

@@ -15,8 +15,8 @@ final class DomDevTools {
     private static final @Nullable DomDevTools INSTANCE = connect();
     private final Hook _hook;
     private final int _id;
-    private final DomHost.WeakMap<Renderer.Root, JsPropertyMap<@Nullable Object>> _roots = new DomHost.WeakMap<>();
-    private final DomHost.WeakMap<Renderer.Fiber, JsPropertyMap<@Nullable Object>> _fibers = new DomHost.WeakMap<>();
+    private final DomHost.WeakMap<Reconciler.Root, JsPropertyMap<@Nullable Object>> _roots = new DomHost.WeakMap<>();
+    private final DomHost.WeakMap<Reconciler.Fiber, JsPropertyMap<@Nullable Object>> _fibers = new DomHost.WeakMap<>();
     private final DomHost.WeakMap<DomHost.Node, JsPropertyMap<@Nullable Object>> _hosts;
 
     @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -78,13 +78,13 @@ final class DomDevTools {
         return null != INSTANCE;
     }
 
-    static void onCommitRoot(Renderer.Root root) {
+    static void onCommitRoot(Reconciler.Root root) {
         if (null != INSTANCE) {
             INSTANCE.commit(root);
         }
     }
 
-    private void commit(Renderer.Root root) {
+    private void commit(Reconciler.Root root) {
         var record = _roots.get(root);
         if (null == record) {
             record = JsPropertyMap.of();
@@ -100,7 +100,7 @@ final class DomDevTools {
     }
 
     private JsPropertyMap<@Nullable Object> snapshot(
-            Renderer.Fiber fiber, @Nullable Object parent, JsPropertyMap<@Nullable Object> root) {
+            Reconciler.Fiber fiber, @Nullable Object parent, JsPropertyMap<@Nullable Object> root) {
         final var old = _fibers.get(fiber);
         final var next = alternate(old);
         _fibers.set(fiber, next);
@@ -121,12 +121,12 @@ final class DomDevTools {
         next.set("elementType", fiber.type);
         next.set("key", fiber.key);
         next.set("ref", fiber.ref);
-        next.set("stateNode", Renderer.Kind.ROOT == fiber.kind ? root : fiber.publicInstance());
-        if (null != fiber.dom) {
-            _hosts.set(fiber.dom, next);
+        next.set("stateNode", Reconciler.Kind.ROOT == fiber.kind ? root : fiber.publicInstance());
+        if (null != fiber.hostInstance) {
+            _hosts.set(Js.uncheckedCast(fiber.hostInstance), next);
         }
         next.set("memoizedProps", null == fiber.node ? null : fiber.node.inputs());
-        if (Renderer.Kind.ROOT == fiber.kind) {
+        if (Reconciler.Kind.ROOT == fiber.kind) {
             final var state = JsPropertyMap.<@Nullable Object>of();
             state.set("element", 0 == fiber.children.length ? null : fiber.children[0].type);
             next.set("memoizedState", state);
@@ -141,7 +141,7 @@ final class DomDevTools {
         next.set("treeBaseDuration", fiber.treeBaseDuration);
         next.set("selfBaseDuration", fiber.selfBaseDuration);
         final var owner = null == fiber.node ? null : fiber.node.owner();
-        next.set("_debugOwner", owner instanceof Renderer.Fiber owningFiber ? _fibers.get(owningFiber) : null);
+        next.set("_debugOwner", owner instanceof Reconciler.Fiber owningFiber ? _fibers.get(owningFiber) : null);
         next.set("sibling", null);
         final int count = fiber.suspendedPrimaryCount();
         if (count >= 0) {
@@ -163,7 +163,7 @@ final class DomDevTools {
     }
 
     private void children(
-            Renderer.Fiber fiber,
+            Reconciler.Fiber fiber,
             JsPropertyMap<@Nullable Object> next,
             JsPropertyMap<@Nullable Object> root,
             int start,
@@ -202,7 +202,7 @@ final class DomDevTools {
         return record;
     }
 
-    static void onCommitUnmount(Renderer.Fiber fiber) {
+    static void onCommitUnmount(Reconciler.Fiber fiber) {
         if (null != INSTANCE) {
             final var current = INSTANCE._fibers.get(fiber);
             if (null != current) {
@@ -212,8 +212,8 @@ final class DomDevTools {
                     logError(error);
                 }
                 INSTANCE._fibers.delete(fiber);
-                if (null != fiber.dom) {
-                    INSTANCE._hosts.delete(fiber.dom);
+                if (null != fiber.hostInstance) {
+                    INSTANCE._hosts.delete(Js.uncheckedCast(fiber.hostInstance));
                 }
             }
         }

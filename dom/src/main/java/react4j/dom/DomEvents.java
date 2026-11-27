@@ -355,7 +355,7 @@ final class DomEvents {
             return;
         }
         if (interactive) {
-            Renderer.interactiveUpdates(() -> dispatchBatched(boundary, name, nativeEvent));
+            Reconciler.interactiveUpdates(() -> dispatchBatched(boundary, name, nativeEvent));
         } else {
             dispatchBatched(boundary, name, nativeEvent);
         }
@@ -448,7 +448,7 @@ final class DomEvents {
             changedControl = null;
             moreChangedControls = null;
             if (null != control) {
-                Renderer.flushInteractive();
+                Reconciler.flushInteractive();
                 DomHost.restoreAfterEvent(control);
                 if (null != remaining) {
                     remaining.forEach(DomHost::restoreAfterEvent);
