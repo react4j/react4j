@@ -1,3 +1,4 @@
+load("@rules_closure//closure:defs.bzl", "closure_js_binary")
 load("//:defs.bzl", "browser_application", "css_bundle")
 
 css_bundle(
@@ -21,4 +22,12 @@ browser_application(
     runtime_mode = "production",
     styles = {":styles": "css/index.css"},
     deps = ["//examples/todomvc/raw:entry"],
+)
+
+closure_js_binary(
+    name = "upstream_renderer",
+    testonly = True,
+    compilation_level = "BUNDLE",
+    dependency_mode = "SORT_ONLY",
+    deps = ["//:dom"],
 )

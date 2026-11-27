@@ -1,0 +1,75 @@
+# React 16.6 source tests and React4j
+
+Use this map to find the upstream assertion for a change to React4j, see how it ran against the Java renderer, and choose the corresponding Chromium regression. The reference is React v16.6.0 at `8b97a9c36f2ef7d2c570b25e988b8ca832d9b436`. [Upstream source](https://github.com/facebook/react/tree/8b97a9c36f2ef7d2c570b25e988b8ca832d9b436/packages)
+
+[Individual upstream cases and both build modes](cases.tsv) identify each original Jasmine spec by suite, ID and full name. A paired assertion means both implementations passed, the fixture called the Java renderer, and Jest counted at least one effective assertion. A production `toWarnDev` runs its callback without checking a warning and contributes zero effective assertions. A smoke case reached Java with no effective assertion. A helper-only pass never entered the renderer. Mixed tests can also assert on upstream JSX, server rendering, or fixture helpers. A failing case records an explicit adapter limit or whether execution reached a Java renderer entry point. The failure columns show the first part of the Jest diagnostic. The call and assertion columns give the counts used to label each case. The run directory retains Jest’s full diagnostics. Line and branch coverage use the repository’s separate instrumented browser run.
+
+The shared Chromium case index maps original names to Java fixtures. Rows marked “related scenario” cover part of an upstream assertion set. ReactMultiChildReconcile has 27 array-applicable cases and two iterator-only cases. The shared Java fixture runs its array transitions on both renderers. [Chromium case index](chromium.tsv) · [License for upstream case names, diagnostic text and derived vectors](../../../../third_party/react/LICENSE)
+
+The selected suites include the React core files that import ReactDOM, client DOM and event files, clean-client assertions from the server integration files, and reconciler files that import ReactNoop. The comparison also runs the error-boundary and Suspense suites that use react-test-renderer. The full upstream development coverage run passed 3,585 tests across 181 suites, with 26 skipped. To reproduce that separate measurement in the pinned checkout, use Node 10 and run `yarn test --coverage --maxWorkers=2`.
+
+## Results
+
+At Java runtime commit `aec7b03ff`, the comparison discovered 1,881 cases in 113 suites. Stock React passed all 1,857 enabled cases in both modes. The mode names here refer to Jest and the runtime environment defines. The optimized production application is tested separately in Chromium.
+
+| Outcome of original case | Development | Production |
+| --- | ---: | ---: |
+| Passed with a Java renderer call and an effective assertion | 966 | 944 |
+| Passed with a Java renderer call and no effective assertion | 41 | 202 |
+| Passed without entering the Java renderer | 123 | 124 |
+| Failed after entering the Java renderer | 502 | 350 |
+| Failed before entering the Java renderer | 45 | 44 |
+| Failed with an explicit test-adapter limit | 180 | 193 |
+| Skipped upstream | 24 | 24 |
+
+All 198 cases in the input, select, option and textarea suites passed on both sides. Of those, 188 entered the Java renderer. Of the 151 cases in ReactDOMComponent, 133 entered Java. All 133 passed in production and 131 passed in development. The other two expect warnings for the legacy ShadyDOM polyfill. Across 328 cases in 23 reconciler suites, 66 had paired assertions in development and 104 in production. The internal-node coverage is correspondingly narrower than upstream's.
+
+## Which tests exercise which contract?
+
+| React4j contract | Upstream suites and cases | React4j checks |
+| --- | --- | --- |
+| Element records, generated inputs and stateful views | ReactElement, ReactJSXElement, ReactElementClone, ReactES6Class and ReactCompositeComponentState. The original ReactElement suite removes the global Symbol before loading React. J2CL requires Symbol. Creating elements in a JSX fixture alone exercises upstream React. | ElementBrowserTest uses the typed Java API on both runtimes to check the marker, type, key, ref, owner, copied inputs, shallow children and the rendered result. Generated input tests cover defaults and equality. RuntimeParityBrowserTest exercises object state patches and updates skipped by a predicate. |
+| Mount, update, snapshot and unmount | ReactComponentLifeCycle and ReactUpdates include nested mount-ready callbacks, updates queued in mount and updates blocked by an ancestor. Several original fixtures also assert deprecated class hooks. | RuntimeBrowserTest.nestedViewLifecycle observes what is mounted at each hook and ref callback. RuntimeParityBrowserTest.lifecycle, committedChildren and skippedUpdates exercise children behind a skipped parent. |
+| Root callbacks, portals and batching | ReactMount, ReactMountDestruction, ReactDOMFiber and ReactUpdates cover callback receivers, reuse, changing keys, portal containers and nested roots. | rootIdentity, mountWithinBatch, rootUpdates, alternateContainers, iframePortal and batchedRootState use the public Java entry points. nestedUpdateLimit checks bounded updates and subsequent root recovery. |
+| Child identity and text | ReactIdentity, ReactMultiChildReconcile, ReactFragment, ReactTopLevelFragment and ReactTopLevelText. The list suite combines arrays and two JavaScript iterator protocols within the same test. | ChildReconciliationTest runs its array permutations in both directions, compares host and component identity, and checks ref clearing and remount. fragmentIdentity and keyedAndImplicitSlots exercise keys that look like implicit indices, sparse arrays and nested fragments. |
+| Internal nodes | ReactChildFiber and the ReactNoop reconciler suites test logical children, state preservation, host output and scheduled work. | FiberReconciliationTest inspects actual parent/child links and object identity across commits. Its tree contains only fragments and never creates a host child. Original ReactNoop cases also inspect projected Java renderer output. |
+| Context and refs | ReactNewContext, ReactContextValidator, refs, refs-destruction and ReactComponent. Legacy context, changed-bit masks and string refs appear in the originals. | contextThroughBailout and contextUnwindsOnRenderError cover nested providers, missed updates, NaN and signed zero. replaceRefs, nestedViewLifecycle and abortedRefs cover callback/object refs, order, cleanup and abandoned mounts. |
+| Scheduling and error recovery | ReactIncrementalScheduling, ReactIncrementalErrorHandling, ReactIncrementalErrorReplay, ErrorBoundaryReconciliation and ReactLegacyErrorBoundaries. | Concurrent Chromium cases observe uncommitted DOM and refs. renderFailureSiblings, concurrentRootErrorIsolation and concurrentErrorWithPendingState exercise multiple render faults, replay, priority and recovery in an unrelated root. commitErrors covers a failing snapshot, callback or ref. failedRenderTeardown and errorLoggerRecovery check the state visible at unmount, failed render replay, one log per failure and recovery when the logger throws. |
+| Suspense | ReactSuspense, ReactSuspenseWithNoopRenderer and ReactDOMSuspensePlaceholder cover fallback selection, hidden hosts, retries and multiple boundaries. | suspenseWithoutFallback distinguishes omitted and explicit null fallback. independentSuspenseSiblings resolves two boundaries in reverse order. suspendedListVisitsSiblings exercises multiple pending children in one boundary and checks when their refs attach. |
+| Attributes, style, text, HTML and namespaces | DOMPropertyOperations, CSSPropertyOperations, ReactDOMAttribute, ReactDOMComponent, ReactDOMSVG and the clean-client cases of ReactDOMServerIntegration*. | EventsBrowserTest.runHostProperties and OriginalHostCasesBrowserTest exercise typed and raw properties, invalid content, option text updates, noscript content, namespace attributes and native mutation ordering. |
+| Inputs, selection, radios and form reset | ReactDOMInput, ReactDOMSelect, ReactDOMOption, ReactDOMTextarea and ChangeEventPlugin include nested change dispatch, radio coordination, missing options and form resets. | EventsBrowserTest checks DOM properties, attributes, native events, different roots/forms, processing order and the final controlled value. |
+| Synthetic events and delegation | ReactDOMEventListener, ReactDOMComponentTree, ReactBrowserEventEmitter, SelectEventPlugin, EnterLeaveEventPlugin and Synthetic* include private plugin operations and public dispatch. | EventsBrowserTest dispatches native events. Its checks observe listener installation, rejection of invalid handlers, event-pool cleanup, target removal during dispatch, propagation through portals, keyboard fields, event release, and media/form events that do not bubble. |
+| DevTools, Arez and Sting | The JSX Profiler and interaction tracing suites use their own React APIs. | React4j checks the extension protocol, then loads the installed extension to inspect, highlight and profile an application. Application tests exercise generated views and both integrations. [Browser and extension verification](../README.md) |
+
+## Reconciler isolation
+
+One observable difference remains in legacy Suspense. While a fallback is visible, an update from the fallback preserves its view and DOM identity on both runtimes. An update from the hidden primary is a different case. After a previously suspended primary reveals and suspends again, stock ReactDOM can remount the fallback on the first hidden-primary update and defer later state updates until reveal. The Java renderer can retain the fallback and retry the primary earlier. The original case is “bails out on timed-out primary children even if they receive an update” in ReactSuspense-test.internal.js.
+
+Upstream gives the Fiber data structure, child matching, scheduling and commit phases separate modules. Its host configuration supports a mutation renderer, a persistence renderer and a controlled scheduler used by ReactNoop. React4j keeps its Root, Fiber, and child-list reconciliation inside Renderer. DomHost, DomEvents and DomDevTools have separate responsibilities. Root and Fiber call the DOM implementation directly. [Upstream reconciler](https://github.com/facebook/react/tree/v16.6.0/packages/react-reconciler/src) · [Java renderer](../../../../dom/src/main/java/react4j/dom/Renderer.java)
+
+The internal Java test runs in a document fragment and reads the actual committed Fiber objects. The ReactNoop and react-test-renderer adapters use Java roots in jsdom, drive the Java scheduler callbacks for full flushes, and project the committed DOM into the host records expected by each original suite. Jest's virtual clock drives the Java host's monotonic time and Suspense timers, so the original tests can advance time and observe fallback commits and retries. Finite-unit yields, independently expiring work, host operation counters and persistence remain explicit adapter limits. [Internal Java test](../../../../dom/src/test/java/react4j/dom/FiberReconciliationTest.java) · [Test host adapters](noop.js)
+
+The full upstream coverage run executed 3,416 of 3,677 reconciler source lines (92.9%) and 2,999 of 3,963 branches (75.7%). In React4j's instrumented Chromium run at `aec7b03ff`, Renderer.java executed 1,470 of 1,544 lines (95.2%) and 1,013 of 1,079 branches (93.9%). The upstream number covers 42 source files, including host configurations and scheduling facilities absent from the Java renderer. The Java counters use J2CL source mappings. These are different denominators and instrumentation methods.
+
+## Reproduce a comparison
+
+Use a clean React 16.6.0 source checkout. Install its locked dependencies with Yarn Classic 1.22.22 and Node 10.24.1. Run the comparison itself with modern Node (verified with 26.12.1), Python 3 and the Bazel version pinned in this repository. The comparison requires write access under the upstream `scripts/jest` directory for a temporary Jest configuration.
+
+```sh
+git clone --depth 1 --branch v16.6.0 https://github.com/facebook/react.git /tmp/react-16.6.0
+(cd /tmp/react-16.6.0 && yarn install --frozen-lockfile)
+bazel build //tools/verification/runtime:upstream_renderer
+bundle="$(bazel info bazel-bin)/tools/verification/runtime/upstream_renderer.js"
+work=$(mktemp -d)
+for mode in development production; do
+  python3 tools/verification/runtime/upstream/compare.py /tmp/react-16.6.0 "$bundle" "$work/$mode" --mode "$mode"
+done
+python3 tools/verification/runtime/upstream/report.py "$work/development/cases.json" "$work/production/cases.json" > "$work/cases.tsv"
+diff -u tools/verification/runtime/upstream/cases.tsv "$work/cases.tsv"
+```
+
+Pass `--suite packages/react-dom/src/__tests__/ReactDOMInput-test.js` to run a single original suite. The output contains the Jest logs, failures, test-side adaptations and per-case results for both runtimes. Both Jest modes use the inspectable J2CL BUNDLE with the requested environment defines. The separate shared Chromium suites compile and execute the actual optimized Java application and stock ReactDOM production script. [Chromium commands](../README.md)
+
+The source fixtures use their original React JSX constructor. JavaScript class fixtures construct a Java NativeView and forward supported lifecycle methods. String refs and findDOMNode are fixture adaptations used to obtain real committed instances. Private context reads in render use the active Java Fiber's scope. This lets the original react-cache resource suspend or resolve inside a Java render. The bridge forwards render, batching, portals, unmount and concurrent work to compiled Java. Separate Chromium fixtures start from React4j's typed API and generated views.
+
+Some original cases require server rendering, hydration, JavaScript iterables, legacy context or lifecycle methods, functional setState and completion callbacks, or wrappers such as React.memo, forwardRef and the public JSX Profiler. The server integration suites contribute only their clean-client cases. Development diagnostics are recorded separately. The external container mutation case also differs. After outside code overwrites a managed container with `innerHTML`, stock ReactDOM throws when replacing the old key, while the Java renderer tolerates the missing node. Upstream marks external removal of React-managed contents unsupported.
