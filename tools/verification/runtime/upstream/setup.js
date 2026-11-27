@@ -1,4 +1,4 @@
-// Jest 23 loads this file in each jsdom realm of the upstream source checkout.
+// Jest 23 loads this file in each test realm of the upstream source checkout.
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -66,17 +66,6 @@ function reconcilerTimers() {
 }
 
 function installJavaRenderer() {
-  if (process.env.REACT4J_RECONCILER_CASE && typeof document === 'undefined') {
-    const {JSDOM} = require('jsdom');
-    const browser = new JSDOM('', {pretendToBeVisual: true});
-    global.window = browser.window;
-    global.document = browser.window.document;
-    global.Node = browser.window.Node;
-    global.requestAnimationFrame = browser.window.requestAnimationFrame.bind(browser.window);
-    global.cancelAnimationFrame = browser.window.cancelAnimationFrame.bind(browser.window);
-    global.performance = require('perf_hooks').performance;
-    afterAll(() => browser.window.close());
-  }
   const timers = process.env.REACT4J_RECONCILER_CASE ? reconcilerTimers() : null;
   global.globalThis = global;
   global.CLOSURE_DEFINES = {'react4j.environment':process.env.NODE_ENV, 'react4j.check_invariants':'false'};
@@ -91,18 +80,7 @@ function installJavaRenderer() {
     const scope = Object.create(global);
     scope.globalThis = scope;
     // ReactDebugFiberPerf replaces Performance with a marks-only test double.
-    if (timers) {
-      scope.performance = Object.create(global.performance || null);
-      Object.defineProperty(scope.performance, 'now', {value: () => timers._now});
-      scope.setTimeout = (callback, delay) => {
-        if (delay > 0) adaptations.add('Jest clock drives Java host timers');
-        // The Java binding uses browser timer IDs. Jest's Node environment
-        // wraps those IDs in objects, so convert on both sides of the binding.
-        const handle = global.setTimeout(callback, delay);
-        return handle && typeof handle === 'object' ? handle.id : handle;
-      };
-      scope.clearTimeout = handle => global.clearTimeout(timers._timerConfig.idToRef(handle));
-    } else if (global.performance && typeof global.performance.now !== 'function') {
+    if (global.performance && typeof global.performance.now !== 'function') {
       scope.performance = Object.create(global.performance);
       const clock = require('perf_hooks').performance;
       scope.performance.now = () => {
@@ -111,7 +89,7 @@ function installJavaRenderer() {
       };
     }
     scope.goog = {};
-    return createRenderer(load(scope).call(scope, scope.goog), require.requireActual('react'));
+    return createRenderer(load(scope).call(scope, scope.goog), require.requireActual('react'), timers);
   }, {virtual: true});
   jest.doMock('react', () => fixture().react);
   jest.doMock('react-dom', () => fixture().adapter);
@@ -125,6 +103,10 @@ function installJavaRenderer() {
     }},
   }));
   if (process.env.REACT4J_RECONCILER_CASE) {
+    if (process.env.REACT4J_RECONCILER_CASE === 'ReactTracing-test.internal.js') {
+      jest.doMock('scheduler/tracing', () => unsupported('upstream Scheduler tracing bundle compatibility'));
+    }
+    jest.doMock('react-reconciler', () => fixture().createHostFixture);
     jest.doMock('react-noop-renderer', () => require('./noop')(fixture().noop));
     jest.doMock('react-test-renderer', () => require('./noop')(fixture().noop).testRenderer());
     jest.doMock('react-noop-renderer/persistent', () => new Proxy({}, {
@@ -155,45 +137,13 @@ function dispatchNative(node, type) {
   }
 }
 
-function createRenderer(moduleFor, sourceReact) {
-  const dom = moduleFor('react4j.dom.ReactDOM');
+function createRenderer(moduleFor, sourceReact, timers) {
   const View = moduleFor('react4j.internal.NativeView');
   // Only BUNDLE is used here. Reject changed or ambiguous J2CL signatures.
   function member(object, prefix) {
     const keys = Object.getOwnPropertyNames(object).filter(key => key.startsWith(prefix));
     if (keys.length !== 1) throw Error('Expected one J2CL method matching ' + prefix);
     return keys[0];
-  }
-
-  const testRoots = new WeakSet();
-  let configuredStrictReplay = false;
-  function configureTestRoot(root) {
-    if (process.env.NODE_ENV === 'production') return;
-    testRoots.add(root);
-    if (configuredStrictReplay) return;
-
-    const flags = require('shared/ReactFeatureFlags');
-    const fiber = root[member(root, 'f_fiber__')];
-    const fiberRoot = member(fiber, 'f_root__');
-    const strict = member(fiber, 'f_strict__');
-    const prototype = Object.getPrototypeOf(fiber);
-    const renderView = member(prototype, 'm_renderView__');
-    const original = prototype[renderView];
-    prototype[renderView] = function(component) {
-      if (!this[strict] || !testRoots.has(this[fiberRoot]) ||
-          flags.debugRenderPhaseSideEffectsForStrictMode !== false) {
-        return original.call(this, component);
-      }
-      // Apply the fixture flag to render replay only, leaving StrictMode inheritance intact.
-      adaptations.add('upstream flag disables strict render replay');
-      this[strict] = false;
-      try {
-        return original.call(this, component);
-      } finally {
-        this[strict] = true;
-      }
-    };
-    configuredStrictReplay = true;
   }
 
   // The historical Babel class transform calls its superclass as a function.
@@ -225,7 +175,7 @@ function createRenderer(moduleFor, sourceReact) {
       adaptations.add('private context read from active Java render scope');
       const api = moduleFor('react4j.React');
       const fiber = api[member(api, 'm_currentOwner__')]();
-      const scope = moduleFor('react4j.dom.Renderer.Scope');
+      const scope = moduleFor('react4j.dom.Reconciler.Scope');
       return scope[member(scope, 'm_lookup__')](fiber[member(fiber, 'f__scope__')], java);
     },
   };
@@ -241,7 +191,11 @@ function createRenderer(moduleFor, sourceReact) {
   }
   const hooks = ['componentDidMount', 'componentDidUpdate', 'componentWillUnmount',
     'getSnapshotBeforeUpdate', 'shouldComponentUpdate', 'componentDidCatch'];
+  const lazyType = typeof Symbol === 'function' && Symbol.for ? Symbol.for('react.lazy') : 0xead4;
   function factory(type) {
+    if (type?.$$typeof === lazyType) {
+      throw new Error('Unsupported React4j runtime feature: React.lazy');
+    }
     if (typeof type !== 'function') return type;
     if (constructors.has(type)) return constructors.get(type);
     function create(inputs) {
@@ -304,14 +258,50 @@ function createRenderer(moduleFor, sourceReact) {
     },
   });
 
+  const noop = timers && {
+    MemoryRenderer: moduleFor('react4j.testing.MemoryRenderer'),
+    react,
+    unsupported,
+    clock: () => timers._now,
+    strictReplay() {
+      if (process.env.NODE_ENV === 'production') return false;
+      const flags = require('shared/ReactFeatureFlags');
+      if (flags.debugRenderPhaseSideEffectsForStrictMode !== false) return true;
+      adaptations.add('upstream flag disables strict render replay');
+      return false;
+    },
+    observe() { calls++; },
+  };
+  function createHostFixture(config) {
+    const HostFixture = moduleFor('react4j.testing.HostFixture');
+    const host = new HostFixture(config);
+    return {
+      createContainer: container => host.createContainer(container),
+      updateContainer(element, container, parent, callback) {
+        if (parent != null) unsupported('custom host subtree mounting');
+        calls++;
+        return host.updateContainer(element, container, callback ?? null);
+      },
+    };
+  }
+  let adapter;
+  return {get adapter() { return adapter ??= createDOMAdapter(moduleFor, member); }, react, noop, createHostFixture};
+}
+
+function createDOMAdapter(moduleFor, member) {
+  const dom = moduleFor('react4j.dom.ReactDOM');
   // Find the committed host exposed through refs in Java fixtures. Each Jest case owns its roots.
-  const renderer = moduleFor('react4j.dom.Renderer');
+  const domRenderer = moduleFor('react4j.dom.Renderer');
+  const committedRoot = container => domRenderer[member(domRenderer, 'f_ROOTS__')].get(container);
+  const rootFiber = root => root[member(root, 'f_fiber__')];
+  const fiberView = fiber => fiber[member(fiber, 'f_view__')];
+  const fiberHost = fiber => fiber[member(fiber, 'f_hostInstance__')] || undefined;
   const containers = new Set();
   const mountedViews = new WeakMap();
   function walk(fiber, select) {
     const value = select(fiber);
     if (value !== undefined) return value;
-    for (const child of fiber.f_children__react4j_dom_Renderer_Fiber) {
+    for (const child of fiber[member(fiber, 'f_children__')]) {
       const found = walk(child, select);
       if (found !== undefined) return found;
     }
@@ -320,14 +310,14 @@ function createRenderer(moduleFor, sourceReact) {
   const unmount = member(dom, 'm_unmountComponentAtNode__');
   const batch = member(dom, 'm_batchedUpdates__');
   const portal = member(dom, 'm_createPortal__');
-  const adapter = {
+  return {
     render(element, container, callback) {
       calls++;
       containers.add(container);
       const instance = dom[render](element, container, callback || null);
-      const root = renderer.f_ROOTS__react4j_dom_Renderer_.get(container);
-      if (root) walk(root.f_fiber__react4j_dom_Renderer_Root, fiber => {
-        const view = fiber.f_view__react4j_dom_Renderer_Fiber;
+      const root = committedRoot(container);
+      if (root) walk(rootFiber(root), fiber => {
+        const view = fiberView(fiber);
         if (view) mountedViews.set(view, fiber);
       });
       return instance;
@@ -361,23 +351,19 @@ function createRenderer(moduleFor, sourceReact) {
       if (instance == null || instance.nodeType) return instance;
       adaptations.add('findDOMNode fixture');
       for (const container of containers) {
-        const root = renderer.f_ROOTS__react4j_dom_Renderer_.get(container);
+        const root = committedRoot(container);
         if (!root) continue;
-        const view = walk(root.f_fiber__react4j_dom_Renderer_Root,
-          fiber => fiber.f_view__react4j_dom_Renderer_Fiber === instance ? fiber : undefined);
-        if (view) return walk(view, fiber => fiber.f_dom__react4j_dom_Renderer_Fiber || undefined) || null;
+        const view = walk(rootFiber(root),
+          fiber => fiberView(fiber) === instance ? fiber : undefined);
+        if (view) return walk(view, fiberHost) || null;
       }
       // During unmount the parent can already have removed the child from its list.
       // Read the actual fiber until dispose clears its view and host children.
       const previous = mountedViews.get(instance);
-      if (previous && previous.f_view__react4j_dom_Renderer_Fiber === instance) {
-        return walk(previous, fiber => fiber.f_dom__react4j_dom_Renderer_Fiber || undefined) || null;
+      if (previous && fiberView(previous) === instance) {
+        return walk(previous, fiberHost) || null;
       }
       unsupported('findDOMNode outside a committed tree');
     },
   };
-  return {adapter, react, noop: {dom, moduleFor, member, unsupported, react, configureTestRoot, observe() {
-    calls++;
-    adaptations.add('test host projection from Java DOM');
-  }}};
 }

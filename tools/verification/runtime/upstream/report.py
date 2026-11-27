@@ -21,6 +21,8 @@ def outcome(row):
     if row["stock"] != "passed":
         return "skipped" if row["stock"] == row["java"] == "pending" else "stock " + row["stock"]
     if row["java"] == "failed":
+        if "Unsupported React4j runtime feature:" in row["failure"]:
+            return "runtime limit"
         if "Outside the React4j test adapter:" in row["failure"]:
             return "adapter limit"
         return "failed after Java call" if row["calls"] else "failed before Java call"
@@ -36,8 +38,9 @@ def failure_reason(row):
         return "-"
     lines = row["failure"].splitlines()
     for line in lines:
-        if "Outside the React4j test adapter:" in line:
-            return line[line.index("Outside the React4j test adapter:"):].strip()
+        for prefix in ("Unsupported React4j runtime feature:", "Outside the React4j test adapter:"):
+            if prefix in line:
+                return line[line.index(prefix):].strip()
     message = " ".join(" ".join(lines).split())
     return message[:197] + "..." if len(message) > 200 else message
 

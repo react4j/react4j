@@ -1,48 +1,51 @@
 'use strict';
 
-module.exports = function createNoop({dom, moduleFor, member, observe, unsupported, react, configureTestRoot}) {
+module.exports = function createNoop({MemoryRenderer, clock, strictReplay, observe, unsupported, react}) {
   const defaultRoot = '<default>';
   const roots = new Map();
-  const hosts = new WeakMap();
-  const scheduled = [];
-  const events = moduleFor('react4j.dom.DomEvents');
-  const stateFor = member(events, 'm_state__');
-  const create = member(dom, 'm_createRoot__');
-  const render = member(dom, 'm_render__react4j_Renderable__java_lang_Object__react4j_dom_ReactDOM_RenderCallbackFn');
+  const scheduled = new Map();
+  const timers = new Map();
+  let nextTask = 0;
+  let timeOffset = 0;
+  let now = () => clock() + timeOffset;
   let yielded = null;
-
-  function project(node) {
-    let record = hosts.get(node);
-    if (node.nodeType === 3) {
-      if (!record) {
-        record = {text: '', hidden: false};
-        hosts.set(node, record);
+  let shouldYield = () => false;
+  const memory = new MemoryRenderer({
+    now: () => now(),
+    strictReplay,
+    shouldYield: () => shouldYield(),
+    schedule(task, delay) {
+      const id = ++nextTask;
+      if (delay === 0) scheduled.set(id, task);
+      else {
+        timers.set(id, setTimeout(() => {
+          timers.delete(id);
+          task();
+        }, delay));
       }
-      record.text = node.nodeValue;
-      return record;
+      return id;
+    },
+    cancel(id) {
+      scheduled.delete(id);
+      if (timers.has(id)) {
+        clearTimeout(timers.get(id));
+        timers.delete(id);
+      }
+    },
+  });
+
+  function targetFor(id, concurrent) {
+    if (!roots.has(id)) {
+      const root = memory.createRoot(concurrent);
+      const fixture = root.getContainer();
+      fixture.rootID = id;
+      roots.set(id, root);
     }
-    const state = node.nodeType === 1 && events[stateFor](node);
-    if (!state) unsupported('ReactNoop host outside the Java tree');
-    const props = state[member(state, 'f_inputs__')];
-    if (!record) {
-      record = {type: state[member(state, 'f_tag__')], children: [], prop: undefined, hidden: false};
-      Object.defineProperty(record, 'text', {value: null, writable: true});
-      hosts.set(node, record);
-    }
-    const directText = typeof props.children === 'string' || typeof props.children === 'number';
-    record.text = directText ? node.textContent : null;
-    record.prop = props.prop;
-    record.hidden = props.hidden === true || node.style.display === 'none';
-    record.children.splice(0, record.children.length, ...(directText ? [] : Array.from(node.childNodes, project)));
-    return record;
+    return roots.get(id);
   }
 
   function getChildren(id = defaultRoot) {
-    const target = roots.get(id);
-    if (!target) return null;
-    const children = target.fixture.children;
-    children.splice(0, children.length, ...Array.from(target.container.childNodes, project));
-    return children;
+    return roots.get(id)?.getChildren() ?? null;
   }
 
   function combine(children) {
@@ -60,41 +63,9 @@ module.exports = function createNoop({dom, moduleFor, member, observe, unsupport
     return react.createElement(instance.type, props);
   }
 
-  function targetFor(id, concurrent) {
-    if (!roots.has(id)) {
-      const container = document.createElement('div');
-      const target = {container, fixture: {rootID: id, children: []}};
-      if (concurrent) {
-        const root = dom[create](container);
-        configureTestRoot(root);
-        const prototype = Object.getPrototypeOf(root);
-        const schedule = member(prototype, 'm_scheduleSlice__');
-        target.root = root;
-        root[schedule] = () => {
-          // Capture the actual Java scheduler's host callback. Its enqueue
-          // order, coalescing, and subsequent slices remain Java behavior.
-          const setTimer = global.setTimeout;
-          global.setTimeout = (callback, delay) => {
-            if (delay !== 0) unsupported('ReactNoop delayed scheduler turn');
-            scheduled.push({target, callback});
-          };
-          try {
-            prototype[schedule].call(root);
-          } finally {
-            global.setTimeout = setTimer;
-          }
-        };
-      }
-      roots.set(id, target);
-    }
-    return roots.get(id);
-  }
-
-  function submit(element, id, concurrent, callback) {
-    const target = targetFor(id, concurrent);
+  function submit(root, element, callback) {
     observe();
-    if (target.root) target.root.render(element, callback || null);
-    else dom[render](element, target.container, callback || null);
+    root.render(element, callback || null);
   }
 
   function clearYields() {
@@ -103,30 +74,73 @@ module.exports = function createNoop({dom, moduleFor, member, observe, unsupport
     return result;
   }
 
-  function flush() {
-    let count = 0;
-    let failure = null;
-    const failedRoots = new Set();
-    while (scheduled.length !== 0) {
-      const {target, callback} = scheduled.shift();
-      if (failedRoots.has(target)) continue;
-      if (++count > 1000) unsupported('ReactNoop full flush did not settle');
-      try {
-        callback();
-      } catch (error) {
-        failedRoots.add(target);
-        if (failure === null) failure = {error};
-      }
+  function runNext(shouldPause) {
+    const [id, task] = scheduled.entries().next().value;
+    scheduled.delete(id);
+    const previous = shouldYield;
+    shouldYield = shouldPause;
+    try {
+      task();
+    } finally {
+      shouldYield = previous;
     }
-    if (failure !== null) throw failure.error;
+  }
+
+  function* flushAndYield(units = Infinity, drainAfterError = false) {
+    let count = 0;
+    let stopped = false;
+    let firstFailure;
+    while (!stopped && scheduled.size) {
+      if (++count > 1000) unsupported('ReactNoop flush did not settle');
+      let remaining = units;
+      try {
+        runNext(() => {
+          if (yielded !== null) return true;
+          if (remaining-- > 0) return false;
+          stopped = true;
+          return true;
+        });
+      } catch (error) {
+        if (!drainAfterError) throw error;
+        firstFailure ??= {error};
+      }
+      if (yielded !== null) yield clearYields();
+    }
+    if (firstFailure) throw firstFailure.error;
+  }
+
+  function flushUnitsOfWork(units) {
+    const values = clearYields() || [];
+    try {
+      for (const batch of flushAndYield(units, units === Infinity)) values.push(...batch);
+      return values;
+    } catch (error) {
+      // The caller can still inspect values yielded during a failed flush.
+      yielded = values.concat(clearYields() || []);
+      if (yielded.length === 0) yielded = null;
+      throw error;
+    }
+  }
+
+  function flush() {
+    return flushUnitsOfWork(Infinity);
+  }
+
+  function flushTestRenderer(count) {
+    clearYields();
+    let turns = 0;
+    while (scheduled.size && (yielded?.length ?? 0) < count) {
+      if (++turns > 1000) unsupported('test renderer flush did not settle');
+      runNext(() => (yielded?.length ?? 0) >= count);
+    }
     return clearYields() || [];
   }
 
   const api = {
-    render: (element, callback) => submit(element, defaultRoot, true, callback),
-    renderLegacySyncRoot: (element, callback) => submit(element, defaultRoot, false, callback),
-    renderToRootWithID: (element, id, callback) => submit(element, id, true, callback),
-    getOrCreateRootContainer: (id = defaultRoot, concurrent = false) => targetFor(id, concurrent).fixture,
+    render: (element, callback) => submit(targetFor(defaultRoot, true), element, callback),
+    renderLegacySyncRoot: (element, callback) => submit(targetFor(defaultRoot, false), element, callback),
+    renderToRootWithID: (element, id, callback) => submit(targetFor(id, true), element, callback),
+    getOrCreateRootContainer: (id = defaultRoot, concurrent = false) => targetFor(id, concurrent).getContainer(),
     getChildren,
     getChildrenAsJSX(id) {
       const children = getChildren(id);
@@ -134,31 +148,52 @@ module.exports = function createNoop({dom, moduleFor, member, observe, unsupport
       return Array.isArray(result) ? react.createElement(react.Fragment, {children: result}) : result;
     },
     unmountRootWithID(id) {
-      const target = roots.get(id);
-      if (!target) return;
+      const root = roots.get(id);
+      if (!root) return;
       observe();
-      if (target.root) target.root.unmount(() => roots.delete(id));
-      else {
-        dom[member(dom, 'm_unmountComponentAtNode__')](target.container);
-        roots.delete(id);
-      }
+      root.unmount(() => roots.delete(id));
     },
     createPortal(children, fixture, key) {
-      const target = roots.get(fixture.rootID);
-      if (!target || target.fixture !== fixture || key != null) unsupported('ReactNoop portal container or key');
+      const root = roots.get(fixture.rootID);
+      if (!root || root.getContainer() !== fixture) unsupported('ReactNoop portal container');
       observe();
-      return dom[member(dom, 'm_createPortal__')](children, target.container);
+      return memory.createPortal(children, root, key == null ? null : String(key));
     },
     batchedUpdates(action, ...args) {
       observe();
-      return dom[member(dom, 'm_batchedUpdates__')](() => action(...args));
+      return memory.batchedUpdates(() => action(...args));
     },
-    hasScheduledCallback: () => scheduled.length !== 0,
+    interactiveUpdates(action, ...args) {
+      observe();
+      return memory.interactiveUpdates(() => action(...args));
+    },
+    hasScheduledCallback: () => scheduled.size !== 0,
     flush,
-    flushUnitsOfWork(units) {
-      if (units !== Infinity) unsupported('ReactNoop finite units of work');
-      return flush();
+    flushAndYield: units => flushAndYield(units),
+    flushUnitsOfWork,
+    flushDeferredPri: (timeout = Infinity) => flushUnitsOfWork(timeout / 5 - 1),
+    flushNextYield: () => flushAndYield().next().value || [],
+    flushThrough(expected) {
+      const actual = [];
+      if (expected.length) {
+        for (const batch of flushAndYield()) {
+          actual.push(...batch);
+          if (actual.length >= expected.length) break;
+        }
+      }
+      expect(actual).toEqual(expected);
     },
+    flushWithHostCounters() {
+      memory.resetCounters();
+      try {
+        flush();
+        const {hostDiffCounter, hostUpdateCounter} = memory.getCounters();
+        return {hostDiffCounter, hostUpdateCounter};
+      } finally {
+        memory.resetCounters();
+      }
+    },
+    advanceTime(ms) { timeOffset += ms; },
     yield(value) {
       if (yielded === null) yielded = [];
       yielded.push(value);
@@ -167,29 +202,26 @@ module.exports = function createNoop({dom, moduleFor, member, observe, unsupport
     testRenderer() {
       // Jest's test-renderer matchers consume JSON from committed host children.
       function toJSON(node) {
-        if (node.nodeType === 3) return node.nodeValue;
-        const state = events[stateFor](node);
-        const {children, ...props} = state[member(state, 'f_inputs__')];
-        if (node.style.display === 'none' && (!props.style || props.style.display !== 'none')) return null;
-        const rendered = Array.from(node.childNodes, toJSON).filter(child => child !== null);
-        return {type:state[member(state, 'f_tag__')], props, children:rendered.length ? rendered : null};
+        if (node.suspended) return null;
+        if (!node.children) return node.text;
+        const {children, ...props} = node.props;
+        const rendered = node.children.map(toJSON).filter(child => child !== null);
+        return {type: node.type, props, children: rendered.length ? rendered : null};
       }
       const clear = () => clearYields() || [];
-      let next = 0;
       return {
         unstable_yield: api.yield,
         unstable_clearYields: clear,
-        unstable_setNowImplementation: () => unsupported('test renderer clock injection'),
+        unstable_setNowImplementation(implementation) { now = implementation; },
         create(element, options) {
-          const id = String(++next);
-          const concurrent = Boolean(options && options.unstable_isConcurrent);
-          const target = targetFor(id, concurrent);
-          const update = tree => submit(tree, id, concurrent);
+          if (options?.createNodeMock) unsupported('test renderer createNodeMock');
+          const root = memory.createTestRoot(Boolean(options?.unstable_isConcurrent));
+          const update = tree => submit(root, tree);
           update(element);
-          return {update, unstable_flushAll:flush, unstable_clearYields:clear,
-            unstable_flushNumberOfYields:() => unsupported('test renderer partial flush'),
+          return {update, unstable_flushAll: () => flushTestRenderer(Infinity), unstable_clearYields: clear,
+            unstable_flushNumberOfYields: flushTestRenderer,
             toJSON() {
-              const children = Array.from(target.container.childNodes, toJSON).filter(child => child !== null);
+              const children = root.getChildren().map(toJSON).filter(child => child !== null);
               return children.length > 1 ? children : children[0] ?? null;
             },
           };
@@ -197,8 +229,7 @@ module.exports = function createNoop({dom, moduleFor, member, observe, unsupport
       };
     },
   };
-  for (const operation of ['advanceTime', 'expire', 'flushExpired', 'flushDeferredPri', 'flushNextYield',
-    'flushThrough', 'flushAndYield', 'flushWithHostCounters', 'deferredUpdates', 'interactiveUpdates',
+  for (const operation of ['expire', 'flushExpired', 'deferredUpdates',
     'unbatchedUpdates', 'flushSync', 'dumpTree', 'findInstance']) {
     api[operation] = () => unsupported('ReactNoop.' + operation);
   }
