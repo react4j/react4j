@@ -1,4 +1,5 @@
 goog.module('react4j.testing.IsolatedCases');
+const ChildDiagnostics = goog.require('react4j.testing.IsolatedChildDiagnosticsTest');
 const Context = goog.require('react4j.testing.IsolatedContextTest');
 const ErrorHandling = goog.require('react4j.testing.IsolatedErrorHandlingTest');
 const ErrorLogging = goog.require('react4j.testing.IsolatedErrorLoggingTest');
@@ -9,6 +10,7 @@ const ProfilerDevTools = goog.require('react4j.testing.IsolatedProfilerDevToolsT
 const Reflection = goog.require('react4j.testing.IsolatedReflectionTest');
 const Scheduling = goog.require('react4j.testing.IsolatedSchedulingTest');
 const SideEffects = goog.require('react4j.testing.IsolatedSideEffectsTest');
+const StrictClass = goog.require('react4j.testing.IsolatedStrictClassTest');
 const Suspense = goog.require('react4j.testing.IsolatedSuspenseTest');
 const SuspenseVariants = goog.require('react4j.testing.IsolatedSuspenseVariantsTest');
 const Tests = goog.require('react4j.testing.IsolatedReconcilerTest');
@@ -93,6 +95,15 @@ exports.run = function(mode) {
   run('ReactProfiler DevTools recovery timing', () => ProfilerDevTools.recoverTimingAfterError());
   run('ReactProfiler DevTools committed interactions', () => ProfilerDevTools.committedInteractions());
   run('ReactProfiler interleaved automatic root profiling', () => ProfilerDevTools.interleavedRootTiming());
+  for (let i = 0; i < 5; i++) {
+    run('ReactChildReconciler spec' + i, () => ChildDiagnostics.childReconciler(i, mode === 'development'));
+  }
+  for (let i = 0; i < 3; i++) {
+    run('ReactChildren spec' + (29 + i), () => ChildDiagnostics.arrayKeys(i, mode === 'development'));
+  }
+  run('ReactElement captures its creating component instance', () => SideEffects.elementOwner());
+  run('ReactCreateRef rejects invalid ref objects in development', () => SideEffects.invalidRefObjects(mode === 'development'));
+  run('ReactTestRenderer foreign portal container', () => ProfilerDevTools.foreignPortal(mode === 'production'));
   run('ReactTestRenderer default host refs', () => ProfilerDevTools.nativeRefDefault());
   run('ReactTestRenderer host mocks', () => ProfilerDevTools.nodeMocks());
   run('ReactTestRenderer mocked root instance', () => ProfilerDevTools.mockedRootInstance());
@@ -114,6 +125,16 @@ exports.run = function(mode) {
   }
   for (let i = 0; i < 15; i++) {
     if (i < 4 || i >= 11) run('forwardRef public spec' + i, () => ForwardRef.publicCases(i, mode === 'development'));
+  }
+  run('ReactStrictMode replacing strict with fragment', () => StrictClass.reconciliation(true, false));
+  run('ReactStrictMode replacing fragment with strict', () => StrictClass.reconciliation(false, true));
+  run('ReactStrictMode keeping strict', () => StrictClass.reconciliation(true, true));
+  run('ReactStrictMode subtree warnings', () => StrictClass.subtreeWarnings(mode === 'development'));
+  run('ReactStrictMode string ref warnings', () => StrictClass.stringRefWarnings(mode === 'development'));
+  for (let i = 0; i < 3; i++) {
+    run('ReactStrictMode precommit phases ' + i, () => StrictClass.phases(i !== 0, i !== 2, mode === 'development'));
+    run('ReactStrictMode functional state update ' + i, () =>
+      StrictClass.stateUpdater(i !== 0, i !== 2, mode === 'development'));
   }
   return count;
 };

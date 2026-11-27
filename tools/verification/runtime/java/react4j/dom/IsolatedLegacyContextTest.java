@@ -577,7 +577,8 @@ public final class IsolatedLegacyContextTest {
 
         @Nullable
         ReactNode children() {
-            return Js.uncheckedCast(requireInputs().get("children"));
+            final var children = requireInputs().get("children");
+            return null == children ? null : Js.uncheckedCast(children);
         }
 
         JsPropertyMap<@Nullable Object> context() {
@@ -591,6 +592,9 @@ public final class IsolatedLegacyContextTest {
 
         @Override
         public @Nullable ReactNode render() {
+            if (useConstructorContext && null == props(this).get("moduleComponent")) {
+                Objects.requireNonNull(Reconciler.currentFiber()).initializeModuleComponent(this);
+            }
             return output.apply(this);
         }
 

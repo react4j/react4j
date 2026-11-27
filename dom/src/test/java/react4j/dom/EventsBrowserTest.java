@@ -415,32 +415,59 @@ public final class EventsBrowserTest {
         final var root = Browser.append("div");
         try {
             final int[] clicks = {0};
+            final int[] oldChanges = {0};
+            final int[] newChanges = {0};
             final ReactEventHandler click = event -> clicks[0]++;
+            final ReactEventHandler oldChange = event -> oldChanges[0]++;
+            final ReactEventHandler newChange = event -> {
+                equal("change", event.getType());
+                newChanges[0]++;
+            };
             final var registered = observeRootListeners(root, () -> {
                 emitterTree(root, click, null, null);
                 emitterTree(root, click, click, null);
+                Browser.query(root, "#emitter-child").click();
+                check(2 == clicks[0], "One native click reaches each registered listener once");
+
+                ReactDOM.render(emitterControls(oldChange), root);
+                ReactDOM.render(emitterControls(newChange), root);
+                Browser.setValue(Browser.query(root, "#emitter-text"), "entered");
+                check(1 == newChanges[0], "A native input event delivers one synthetic text change");
+                Browser.query(root, "#emitter-checkbox").click();
+                check(2 == newChanges[0], "A native click delivers one synthetic checkbox change");
+                final var select = Browser.query(root, "#emitter-select");
+                Objects.requireNonNull(Js.asPropertyMap(select)).set("value", "after");
+                nativeInputEvent(select, "change");
+                check(3 == newChanges[0], "A native change event delivers one synthetic select change");
+                check(0 == oldChanges[0], "Renewal replaces the prior change handlers");
             });
             final var registrations = Arrays.asList(registered.split(" "));
-            check(
-                    1 == Collections.frequency(registrations, "click"),
-                    "Multiple handler registrations attach one native click listener");
-            check(
-                    registrations.contains("input") && registrations.contains("change"),
-                    "The root listens for the native events used to extract input changes");
-            Browser.query(root, "#emitter-child").click();
-            check(2 == clicks[0], "One native click reaches each registered listener once");
-            final int[] changes = {0};
-            final ReactEventHandler change = event -> {
-                equal("change", event.getType());
-                changes[0]++;
-            };
-            ReactDOM.render(host("input", JsPropertyMap.of("onChange", change)), root);
-            Browser.setValue(Browser.query(root, "input"), "entered");
-            check(1 == changes[0], "An edited control delivers one synthetic change");
+            for (final var name : new String[] {"click", "input", "change"}) {
+                check(
+                        1 == Collections.frequency(registrations, name),
+                        "Handler renewal attaches one native " + name + " listener");
+            }
         } finally {
             ReactDOM.unmountComponentAtNode(root);
             root.remove();
         }
+    }
+
+    private static ReactElement emitterControls(ReactEventHandler change) {
+        final var text = host("input", JsPropertyMap.of("id", "emitter-text", "onChange", change));
+        text.setKey("text");
+        final var checkbox =
+                host("input", JsPropertyMap.of("id", "emitter-checkbox", "type", "checkbox", "onChange", change));
+        checkbox.setKey("checkbox");
+        final var before = host("option", JsPropertyMap.of("value", "before"));
+        before.setKey("before");
+        final var after = host("option", JsPropertyMap.of("value", "after"));
+        after.setKey("after");
+        final var select = host(
+                "select",
+                JsPropertyMap.of("id", "emitter-select", "children", ReactNode.of(before, after), "onChange", change));
+        select.setKey("select");
+        return host("div", JsPropertyMap.of("children", ReactNode.of(text, checkbox, select)));
     }
 
     @JsMethod

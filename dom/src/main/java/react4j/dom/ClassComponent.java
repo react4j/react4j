@@ -25,6 +25,7 @@ final class ClassComponent {
     private static final Reconciler.WeakKeys<Object, Boolean> CONTEXT_CHECKED = new Reconciler.WeakKeys<>();
     private static final Reconciler.WeakKeys<Object, Boolean> RECEIVE_STATE_WARNING = new Reconciler.WeakKeys<>();
     private static final Reconciler.WeakKeys<Object, Boolean> MISSING_CHILD_CONTEXT = new Reconciler.WeakKeys<>();
+    private static final Reconciler.WeakKeys<Object, Boolean> FUNCTION_CHECKED = new Reconciler.WeakKeys<>();
 
     private ClassComponent() {}
 
@@ -120,8 +121,13 @@ final class ClassComponent {
             Object type,
             @Nullable Object first,
             @Nullable JsPropertyMap<@Nullable Object> previous,
-            boolean error) {
-        final var result = apply(fn, type, error ? new Object[] {first} : new Object[] {first, previous});
+            boolean error,
+            boolean replay) {
+        final var args = error ? new Object[] {first} : new Object[] {first, previous};
+        if (replay) {
+            apply(fn, type, args);
+        }
+        final var result = apply(fn, type, args);
         if (DEVELOPMENT && !error && "undefined".equals(Js.typeof(result)) && firstWarning(UNDEFINED_DERIVED, type)) {
             warn("Warning: " + name(type)
                     + ".getDerivedStateFromProps(): A valid state object (or null) must be returned. You have"
@@ -181,6 +187,18 @@ final class ClassComponent {
             warn("Warning: " + name + ".childContextTypes is specified but there is no getChildContext() method"
                     + " on the instance. You can either define getChildContext() on " + name
                     + " or remove childContextTypes from it.");
+        }
+    }
+
+    static void warnFunctionType(Object type) {
+        if (firstWarning(FUNCTION_CHECKED, type)) {
+            final var name = name(type);
+            if (Js.isTruthy(properties(type).get("childContextTypes"))) {
+                warn("Warning: " + name + "(...): childContextTypes cannot be defined on a function component.");
+            }
+            if (null != method(type, "getDerivedStateFromProps")) {
+                warn("Warning: " + name + ": Function components do not support getDerivedStateFromProps.");
+            }
         }
     }
 
@@ -282,24 +300,30 @@ final class ClassComponent {
     }
 
     static final class Warnings {
-        private static final Reconciler.WeakKeys<Object, Boolean> WARNED = new Reconciler.WeakKeys<>();
-        private final LinkedHashSet<Object> _types = new LinkedHashSet<>();
+        private static final Reconciler.WeakKeys<Object, Boolean> WARNED_LIFECYCLES = new Reconciler.WeakKeys<>();
+        private static final Reconciler.WeakKeys<Object, Boolean> WARNED_CONTEXT = new Reconciler.WeakKeys<>();
+        private static final String LEARN_MORE =
+                "\n\nLearn more about this warning here:\nhttps://fb.me/react-strict-mode-warnings";
+        private final LinkedHashSet<Object> _lifecycleTypes = new LinkedHashSet<>();
+        private final LinkedHashSet<Object> _contextTypes = new LinkedHashSet<>();
         private final ArrayList<String> _context = new ArrayList<>();
         private final ArrayList<String> _mount = new ArrayList<>();
         private final ArrayList<String> _receive = new ArrayList<>();
         private final ArrayList<String> _update = new ArrayList<>();
 
         void record(Object type, NativeView view, String name) {
-            if (null != WARNED.get(type) || !_types.add(type)) {
-                return;
-            }
-            if (null != properties(type).get("contextTypes")
-                    || null != properties(type).get("childContextTypes")) {
+            if (null == WARNED_CONTEXT.get(type)
+                    && (null != properties(type).get("contextTypes")
+                            || null != properties(type).get("childContextTypes")
+                            || null != method(view, "getChildContext"))
+                    && _contextTypes.add(type)) {
                 _context.add(name);
             }
-            recordLifecycle(view, name, "componentWillMount", _mount);
-            recordLifecycle(view, name, "componentWillReceiveProps", _receive);
-            recordLifecycle(view, name, "componentWillUpdate", _update);
+            if (null == WARNED_LIFECYCLES.get(type) && _lifecycleTypes.add(type)) {
+                recordLifecycle(view, name, "componentWillMount", _mount);
+                recordLifecycle(view, name, "componentWillReceiveProps", _receive);
+                recordLifecycle(view, name, "componentWillUpdate", _update);
+            }
         }
 
         private static void recordLifecycle(NativeView view, String name, String hook, ArrayList<String> names) {
@@ -315,8 +339,7 @@ final class ClassComponent {
             return String.join(", ", new LinkedHashSet<>(list));
         }
 
-        void flush() {
-            _types.forEach(type -> WARNED.set(type, true));
+        void flush(String stack) {
             final var warnings = new ArrayList<String>();
             if (!_mount.isEmpty()) {
                 warnings.add(
@@ -334,13 +357,14 @@ final class ClassComponent {
                         + names(_update));
             }
             if (!warnings.isEmpty()) {
-                warn("Warning: Unsafe lifecycle methods were found within a strict-mode tree:\n\n"
-                        + String.join("\n\n", warnings));
+                _lifecycleTypes.forEach(type -> WARNED_LIFECYCLES.set(type, true));
+                warn("Warning: Unsafe lifecycle methods were found within a strict-mode tree:" + stack + "\n\n"
+                        + String.join("\n\n", warnings) + LEARN_MORE);
             }
             if (!_context.isEmpty()) {
-                warn("Warning: Legacy context API has been detected within a strict-mode tree: \n\n"
-                        + "Please update the following components: "
-                        + names(_context));
+                _contextTypes.forEach(type -> WARNED_CONTEXT.set(type, true));
+                warn("Warning: Legacy context API has been detected within a strict-mode tree: " + stack
+                        + "\n\nPlease update the following components: " + names(_context) + LEARN_MORE);
             }
         }
     }

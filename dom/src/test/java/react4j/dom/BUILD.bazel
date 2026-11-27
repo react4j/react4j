@@ -56,6 +56,7 @@ j2cl_library(
         "ClassStateBrowserTest.java",
         "ComponentLifecycleBrowserTest.java",
         "ComponentLifecycleBrowserTest.native.js",
+        "FunctionComponentBrowserTest.java",
         "PropTypeValidatorBrowserTest.java",
     ],
     deps = [
@@ -154,6 +155,7 @@ j2cl_library(
         "//third_party:jspecify-j2cl",
     ],
 )
+
 
 j2cl_library(
     name = "error_boundary_test",

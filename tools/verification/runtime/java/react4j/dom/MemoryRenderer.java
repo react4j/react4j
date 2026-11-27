@@ -18,6 +18,8 @@ import react4j.internal.NativeView;
 @NullMarked
 @JsType(namespace = "react4j.testing", name = "MemoryRenderer")
 public final class MemoryRenderer {
+    private static final boolean DEVELOPMENT = "development".equals(System.getProperty("react4j.environment"));
+
     private final MemoryHost _host;
     private final MemoryHost _testHost;
     private final MemoryHost _persistentHost;
@@ -334,6 +336,11 @@ public final class MemoryRenderer {
         }
 
         @Override
+        public boolean replayOutsideStrictMode() {
+            return Boolean.TRUE.equals(properties(_callbacks).get("replayOutsideStrictMode"));
+        }
+
+        @Override
         public boolean userTimingEnabled() {
             return _callbacks.userTimingEnabled();
         }
@@ -434,6 +441,16 @@ public final class MemoryRenderer {
 
         @Override
         public void insert(Object parent, Object instance, @Nullable Object anchor) {
+            if (!_directText && !isArray(properties(parent).get("children"))) {
+                final String message = "An invalid container has been provided.";
+                if (DEVELOPMENT) {
+                    consoleError("Warning: " + message
+                            + " This may indicate that another renderer is being used in addition to the test renderer."
+                            + " (For example, ReactDOM.createPortal inside of a ReactTestRenderer tree.)"
+                            + " This is not supported.");
+                }
+                throw new IllegalStateException(message);
+            }
             final var siblings = children(parent);
             if (parent == properties(instance).get("parent") && instance == anchor) {
                 return;
@@ -510,6 +527,12 @@ public final class MemoryRenderer {
             }
         }
     }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Array.isArray")
+    private static native boolean isArray(@Nullable Object value);
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "console.error")
+    private static native void consoleError(String message);
 
     private static Children children(Object instance) {
         return Js.uncheckedCast(Objects.requireNonNull(properties(instance).get("children")));

@@ -25,7 +25,10 @@ j2cl_library(
     name = "browser_memory_renderer",
     testonly = True,
     srcs = _MEMORY_HOST_SOURCES,
-    visibility = ["//dom/src/test/java/react4j/dom:__pkg__"],
+    visibility = [
+        "//dom/src/test/java/react4j/dom:__pkg__",
+        "//tools/verification/runtime:__pkg__",
+    ],
     deps = [
         "//:core",
         "//:dom",
@@ -35,6 +38,7 @@ j2cl_library(
 )
 
 _ISOLATED_CASE_SOURCES = [
+    "IsolatedChildDiagnosticsTest.java",
     "IsolatedContextTest.java",
     "IsolatedErrorHandlingTest.java",
     "IsolatedErrorHandlingTest.native.js",
@@ -49,6 +53,7 @@ _ISOLATED_CASE_SOURCES = [
     "IsolatedReflectionTest.java",
     "IsolatedSchedulingTest.java",
     "IsolatedSideEffectsTest.java",
+    "IsolatedStrictClassTest.java",
     "IsolatedSuspenseTest.java",
     "IsolatedSuspenseTest.native.js",
     "IsolatedSuspenseVariantsTest.java",

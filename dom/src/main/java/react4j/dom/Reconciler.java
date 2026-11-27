@@ -35,7 +35,8 @@ final class Reconciler {
     private static final Object PROVIDER_TYPE = symbol("react.provider");
     private static final Object CONTEXT_TYPE = symbol("react.context");
     private static final HashSet<String> WARNED_MISSING_KEYS = new HashSet<>();
-    private static final HashSet<Object> WARNED_FUNCTION_REFS = new HashSet<>();
+    private static final HashSet<String> WARNED_FUNCTION_REFS = new HashSet<>();
+    private static final WeakKeys<Fiber, Boolean> WARNED_ANONYMOUS_FUNCTION_REFS = new WeakKeys<>();
     private static final HashSet<String> WARNED_STRING_REFS = new HashSet<>();
     private static boolean _warnedGeneratorChildren;
     private static boolean _warnedMapChildren;
@@ -553,7 +554,7 @@ final class Reconciler {
         private final List<CommitEffect> _mutations = new ArrayList<>();
         private final Completion _saveResult = this::saveResult;
         private @Nullable RenderFailure _resultFailure;
-        private ClassComponent.@Nullable Warnings _warnings;
+        private @Nullable LinkedHashMap<Fiber, ClassComponent.Warnings> _warnings;
         private final List<Effect> _snapshots = new ArrayList<>();
         private final List<CommitFailure> _commitFailures = new ArrayList<>();
         private final LinkedHashSet<Fiber> _heldFallbacks = new LinkedHashSet<>();
@@ -1106,11 +1107,12 @@ final class Reconciler {
             }
             _committing = true;
             _profilerCommitTime = host.profilerEnabled() ? now() : 0;
-            if (DEVELOPMENT && null != _warnings) {
-                _warnings.flush();
-                _warnings = null;
-            }
+            final var pendingWarnings = _warnings;
+            _warnings = null;
             try {
+                if (DEVELOPMENT && null != pendingWarnings) {
+                    pendingWarnings.forEach((fiber, warnings) -> warnings.flush(RenderFailure.stackFrom(fiber)));
+                }
                 final var failure = _renderFailure;
                 if (null != failure) {
                     throw failure;
@@ -1523,7 +1525,7 @@ final class Reconciler {
         @Nullable
         Object publicInstance() {
             return switch (kind) {
-                case VIEW -> view;
+                case VIEW -> null == view || isFunctionComponent(view) ? null : view;
                 case PORTAL -> _portalState;
                 case HOST -> null == hostInstance ? null : root.host.publicHostInstance(hostInstance);
                 default -> hostInstance;
@@ -1574,7 +1576,7 @@ final class Reconciler {
                 return;
             }
             if (null != values) {
-                if (DEVELOPMENT && 1 < values.length) {
+                if (DEVELOPMENT) {
                     validateChildKeys(values);
                 }
                 if (1 != values.length || !reuseSingle(values[0], scope, complete)) {
@@ -2782,6 +2784,9 @@ final class Reconciler {
                     : ClassComponent.properties(classType).get("contextType");
             final var function = null != classType
                     && Boolean.TRUE.equals(ClassComponent.properties(type).get("functionComponent"));
+            final var replayClass = null != classType
+                    && replayRenderPhase()
+                    && (!function || null != existing && !isFunctionComponent(existing));
             final var classContext =
                     !function && null != contextType && "object".equals(Js.typeof(contextType)) ? contextType : null;
             final var legacy = null == classType ? null : Scope.find(scope, ClassComponent.LEGACY_CONTEXT);
@@ -2818,9 +2823,15 @@ final class Reconciler {
                 final var constructing = _constructingFiber;
                 _constructingFiber = this;
                 try {
-                    component = null == classType
-                            ? NativeView.construct(type, inputs)
-                            : Js.<ContextConstructor>uncheckedCast(type).construct(inputs, _maskedContext);
+                    if (null == classType) {
+                        component = NativeView.construct(type, inputs);
+                    } else {
+                        final var constructor = Js.<ContextConstructor>uncheckedCast(type);
+                        if (replayClass) {
+                            constructor.construct(inputs, _maskedContext);
+                        }
+                        component = constructor.construct(inputs, _maskedContext);
+                    }
                 } finally {
                     _constructingFiber = constructing;
                     CurrentOwner.swap(owner);
@@ -2841,12 +2852,14 @@ final class Reconciler {
                 ClassComponent.warnContextType(classType, contextType, function, hasMarker(contextType, CONTEXT_TYPE));
                 if (strict) {
                     if (null == root._warnings) {
-                        root._warnings = new ClassComponent.Warnings();
+                        root._warnings = new LinkedHashMap<>();
                     }
-                    root._warnings.record(
-                            classType,
-                            component,
-                            Objects.requireNonNullElse(RenderFailure.frameName(type), "Component"));
+                    root._warnings
+                            .computeIfAbsent(strictRoot(), ignored -> new ClassComponent.Warnings())
+                            .record(
+                                    classType,
+                                    component,
+                                    Objects.requireNonNullElse(RenderFailure.frameName(type), "Component"));
                 }
             }
             final var receive = null != existing && (previousInputs != inputs || previousContext != _maskedContext);
@@ -2864,7 +2877,7 @@ final class Reconciler {
             }
             final var readQueue = dirty || oldHooks && (null == existing || receive);
             final var prepared = readQueue && concurrentUpdates && asynchronousRender()
-                    ? component.prepareConcurrentState(inputs, root._activeExpiration)
+                    ? component.prepareConcurrentState(inputs, root._activeExpiration, replayClass)
                     : null;
             final boolean force =
                     contextChanged || (null != prepared ? prepared.force() : dirty && component.consumeForceUpdate());
@@ -2872,7 +2885,8 @@ final class Reconciler {
             _retrySuspendedView = false;
             final var callbacks =
                     null != prepared ? prepared.callbacks() : readQueue ? component.takeCallbacks() : null;
-            final var legacyState = null == prepared && readQueue ? component.preparePendingState(inputs) : null;
+            final var legacyState =
+                    null == prepared && readQueue ? component.preparePendingState(inputs, replayClass) : null;
             var pendingState = null != prepared ? prepared.state() : null == legacyState ? null : legacyState.state();
             final boolean stateChanged = null != prepared ? prepared.changed() : null != legacyState;
             if (null != prepared) {
@@ -2888,7 +2902,7 @@ final class Reconciler {
                     && null != derive
                     && null != classType
                     && (!function || null != existing && !isFunctionComponent(component))) {
-                pendingState = ClassComponent.derive(derive, classType, inputs, pendingState, false);
+                pendingState = ClassComponent.derive(derive, classType, inputs, pendingState, false, replayClass);
             }
             final var commitErrors = _commitErrors;
             final var deriveError = null == commitErrors ? null : errorHandler();
@@ -2957,7 +2971,12 @@ final class Reconciler {
                 finishSkippedView(element, component, complete);
                 return;
             }
-            if (null != classType
+            final var functionView = function && isFunctionComponent(component);
+            if (DEVELOPMENT && functionView && null == existing && null != classType) {
+                ClassComponent.warnFunctionType(classType);
+            }
+            if (!functionView
+                    && null != classType
                     && null != ClassComponent.properties(classType).get("childContextTypes")) {
                 final var provide = ClassComponent.method(component, "getChildContext");
                 if (null != provide && render) {
@@ -3017,8 +3036,10 @@ final class Reconciler {
                 if (null != derive) {
                     final var inputs = component.requireInputs();
                     // React 16.6 derives state when adopting the returned module instance and again when mounting it.
-                    final var initial = ClassComponent.derive(derive, classType, inputs, component.state(), false);
-                    component.applyState(ClassComponent.derive(derive, classType, inputs, initial, false));
+                    final var replay = replayRenderPhase();
+                    final var initial =
+                            ClassComponent.derive(derive, classType, inputs, component.state(), false, replay);
+                    component.applyState(ClassComponent.derive(derive, classType, inputs, initial, false, replay));
                 } else if (!(component instanceof OnGetSnapshotBeforeUpdate)) {
                     runMountLifecycle(component);
                 }
@@ -3031,7 +3052,7 @@ final class Reconciler {
             _preparingClass = true;
             try {
                 ClassComponent.beforeState(this, Objects.requireNonNull(_classType), component, true);
-                final var state = component.preparePendingState(component.requireInputs());
+                final var state = component.preparePendingState(component.requireInputs(), replayRenderPhase());
                 if (null != state) {
                     component.applyState(state.state());
                 }
@@ -3058,9 +3079,23 @@ final class Reconciler {
             _captured = false;
             _contextReads = null == classContext ? null : new ContextRead(classContext, ALL_CONTEXT_BITS, null);
             output = renderOwned(component);
-            if (strict && root.host.strictReplay() && !isFunctionComponent(component)) {
+            if (replayRenderPhase() && !isFunctionComponent(component)) {
                 renderOwned(component);
             }
+        }
+
+        private Fiber strictRoot() {
+            var boundary = this;
+            while (null != boundary.parent && boundary.parent.strict) {
+                boundary = boundary.parent;
+            }
+            return boundary;
+        }
+
+        private boolean replayRenderPhase() {
+            return DEVELOPMENT
+                    && (strict && root.host.strictReplay()
+                            || null != _classType && root.host.replayOutsideStrictMode());
         }
 
         private void finishView(
@@ -3280,6 +3315,13 @@ final class Reconciler {
                         && (isFunctionComponent(component)
                                 || Boolean.TRUE.equals(
                                         ClassComponent.properties(type).get("rawRenderResult")))) {
+                    if (DEVELOPMENT && !isFunctionComponent(component)) {
+                        final var method = ClassComponent.method(component, "render");
+                        if (null != method
+                                && Boolean.TRUE.equals(ClassComponent.properties(method).get("_isMockFunction"))) {
+                            return null;
+                        }
+                    }
                     final var name = Objects.requireNonNullElse(RenderFailure.frameName(type), "Component");
                     throw new IllegalStateException(name
                             + "(...): Nothing was returned from render. This usually means a return statement is"
@@ -3752,7 +3794,7 @@ final class Reconciler {
 
         private @Nullable JsPropertyMap<@Nullable Object> deriveErrorState(
                 Object derive, @Nullable JsPropertyMap<@Nullable Object> state, RenderFailure failure) {
-            var result = ClassComponent.derive(derive, type, failure.thrown(), state, true);
+            var result = ClassComponent.derive(derive, type, failure.thrown(), state, true, false);
             if (null != failure._siblings) {
                 for (final var sibling : failure._siblings) {
                     result = deriveErrorState(derive, result, sibling);
@@ -3772,6 +3814,17 @@ final class Reconciler {
             final var raw = element.ref();
             if (Js.isTripleEqual(null, raw) || "object".equals(Js.typeof(raw)) || "function".equals(Js.typeof(raw))) {
                 return raw;
+            }
+            if (DEVELOPMENT && null != parent && parent.strict) {
+                final var name = Objects.requireNonNullElse(RenderFailure.frameName(parent.type), "Component");
+                if (WARNED_STRING_REFS.add(name)) {
+                    consoleError("Warning: A string ref, \"" + Js.asString(stringValue(raw))
+                            + "\", has been found within a strict mode tree. String refs are a source of potential"
+                            + " bugs and should be avoided. We recommend using createRef() instead.\n"
+                            + RenderFailure.stackFrom(parent)
+                            + "\n\nLearn more about using refs safely here:"
+                            + "\nhttps://fb.me/react-strict-mode-string-ref");
+                }
             }
             final var owner = element.owner();
             if (null == owner) {
@@ -3830,12 +3883,8 @@ final class Reconciler {
 
         private void reconcileRef(@Nullable Object next, Object value) {
             if (null != next && isFunctionComponent(value)) {
-                if (DEVELOPMENT && WARNED_FUNCTION_REFS.add(type)) {
-                    final var ownerName = RenderFailure.ownerName(this, Objects.requireNonNull(node));
-                    consoleError(
-                            "Warning: Function components cannot be given refs. Attempts to access this ref will fail."
-                                    + "\n\nCheck the render method of `" + ownerName + "`."
-                                    + RenderFailure.stackFrom(this));
+                if (DEVELOPMENT) {
+                    warnFunctionRef(Objects.requireNonNull(node));
                 }
                 return;
             }
@@ -3844,20 +3893,40 @@ final class Reconciler {
             }
         }
 
+        private void warnFunctionRef(ReactElement element) {
+            final var owner = element.owner();
+            final var ownerType = owner instanceof Fiber source
+                    ? source.type
+                    : null == owner ? null : ClassComponent.properties(owner).get("type");
+            final var name = null == ownerType ? null : RenderFailure.frameName(ownerType);
+            final var location = RenderFailure.sourceLocation(element);
+            if (null != location || null != name) {
+                if (!WARNED_FUNCTION_REFS.add(null == location ? "owner:" + name : "source:" + location)) {
+                    return;
+                }
+            } else {
+                if (null != WARNED_ANONYMOUS_FUNCTION_REFS.get(this)) {
+                    return;
+                }
+                WARNED_ANONYMOUS_FUNCTION_REFS.set(this, true);
+            }
+            consoleError("Warning: Function components cannot be given refs. Attempts to access this ref will fail."
+                    + (null == name ? "" : "\n\nCheck the render method of `" + name + "`.")
+                    + RenderFailure.stackFrom(this));
+        }
+
         private boolean changeRef(@Nullable Object next, Object value) {
             final var previous = ref;
             ref = next;
-            if (DEVELOPMENT && strict && null != next && null != node) {
-                final var name = ClassComponent.properties(next).get("_stringRef");
-                if (name instanceof String text && WARNED_STRING_REFS.add(RenderFailure.ownerName(this, node))) {
-                    consoleError("Warning: A string ref, \"" + text + "\", has been found within a strict mode tree."
-                            + RenderFailure.stackFrom(this));
-                }
-            }
             if (null != next) {
                 root._effects.add(new Effect(this, () -> {
                     if (ref == next) {
                         _attachedRef = next;
+                        if (DEVELOPMENT && "object".equals(Js.typeof(next)) && !ownsProperty(next, "current")) {
+                            consoleError("Warning: Unexpected ref object provided for " + RenderFailure.frameName(type)
+                                    + ". Use either a ref-setter function or React.createRef()."
+                                    + RenderFailure.stackFrom(this));
+                        }
                         applyRef(next, Kind.HOST == kind ? root.host.publicHostInstance(value) : value);
                     }
                 }));
@@ -4419,7 +4488,10 @@ final class Reconciler {
                 if (Fiber.hasMarker(fiber.type, React.Lazy) || Fiber.hasMarker(fiber.type, React.Memo)) {
                     continue;
                 }
-                if (Kind.VIEW == fiber.kind || Kind.HOST == fiber.kind || React.StrictMode == fiber.type) {
+                if (Kind.VIEW == fiber.kind
+                        || Kind.HOST == fiber.kind
+                        || React.StrictMode == fiber.type
+                        || React.ConcurrentMode == fiber.type) {
                     final var name = frameName(fiber.type);
                     stack.append("\n    in ").append(null == name ? "Unknown" : name);
                     if (DEVELOPMENT && null != fiber.node) {
@@ -4461,6 +4533,9 @@ final class Reconciler {
         private static @Nullable String frameName(Object type) {
             if (React.StrictMode == type) {
                 return "StrictMode";
+            }
+            if (React.ConcurrentMode == type) {
+                return "ConcurrentMode";
             }
             if (type instanceof String name) {
                 return name;

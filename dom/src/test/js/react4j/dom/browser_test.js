@@ -5,6 +5,7 @@ const DomPortal = goog.require('react4j.dom.DomPortalBrowserTest');
 const DomRefs = goog.require('react4j.dom.DomRefsBrowserTest');
 const DomRoot = goog.require('react4j.dom.DomRootBrowserTest');
 const Events = goog.require('react4j.dom.EventsBrowserTest');
+const Forms = goog.require('react4j.dom.FormsBrowserTest');
 const Mode = goog.require('react4j.browser.Mode');
 const OriginalHost = goog.require('react4j.dom.OriginalHostCasesBrowserTest');
 const Parity = goog.require('react4j.dom.RuntimeParityBrowserTest');
@@ -15,6 +16,14 @@ testSuite({
   testRootValuesAndCallbacks() { DomRoot.valuesAndCallbacks(); },
   testFragmentFirstHosts() { DomRoot.fragmentFirstHosts(); },
   testCleanFragments() { DomRoot.cleanFragments(); },
+  testCleanCheckboxes() { Forms.cleanCheckboxes('production' === Mode.environment); },
+  testCleanInputs() { Forms.cleanInputs('production' === Mode.environment); },
+  testCleanUserInteraction() { Forms.cleanUserInteraction('production' === Mode.environment); },
+  testCleanBasicMounts() { CleanElements.basic('production' === Mode.environment); },
+  testCleanSpecialTypes() { CleanElements.specialTypes('production' === Mode.environment); },
+  testClientRefsWithoutServerMarkup() { CleanElements.clientRefs('production' === Mode.environment); },
+  testMockedUndefined() { CleanElements.mockedUndefined('production' === Mode.environment); },
+  testCleanProgress() { CleanElements.progress('production' === Mode.environment); },
   testCleanClientElements() { CleanElements.run('production' === Mode.environment); },
   testPortalCommits() { DomRoot.portalCommits(); },
   testPortalEventsAndContext() { DomPortal.run(); },
@@ -38,7 +47,10 @@ testSuite({
   testANestingDiagnostics() { Events.runNestingDiagnostics('production' === Mode.environment); },
   testAFormDiagnostics() { Events.runFormDiagnostics('production' === Mode.environment); },
   testControlsAndEvents() { Events.runControlsAndEvents(); },
-  testOriginalHostCases() { OriginalHost.run(); },
+  testOriginalHostCases() {
+    OriginalHost.run();
+    Forms.cleanSelects('production' === Mode.environment);
+  },
   testHostProperties() { Events.runHostProperties(); },
   testBeforeInputFallback() { Events.runBeforeInputFallback(); },
   testBeforeInput() { Events.runBeforeInput(); },

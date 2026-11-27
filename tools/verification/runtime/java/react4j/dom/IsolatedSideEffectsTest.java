@@ -429,11 +429,58 @@ public final class IsolatedSideEffectsTest {
         equal(Arrays.asList(null, null), refs);
     }
 
+    public static void elementOwner() {
+        final ViewConstructorFunction type = IsolatedReconcilerTest.Output::new;
+        final @Nullable ReactElement[] child = {null};
+        final var hostOwner = ReactElement.createViewElement(type).input("output", (Supplier<ReactNode>) () -> {
+            child[0] = host("span", null, null);
+            return Objects.requireNonNull(child[0]);
+        });
+        final var root = new IsolatedReconcilerTest.Harness().memory.createRoot(false);
+        final @Nullable Object[] instance = {null};
+        props(hostOwner).set("ref", (Ref) value -> instance[0] = value);
+        root.render(hostOwner, null);
+        final var owner = Objects.requireNonNull(child[0]).owner();
+        check(
+                owner instanceof Reconciler.Fiber fiber && fiber.publicInstance() == instance[0],
+                "The element owner resolves to the creating component's mounted instance");
+    }
+
+    public static void invalidRefObjects(boolean development) {
+        final ViewConstructorFunction wrapper = IsolatedReconcilerTest.Output::new;
+        final ViewConstructorFunction component = IsolatedReconcilerTest.Output::new;
+        props(wrapper).set("displayName", "Wrapper");
+        props(component).set("displayName", "ExampleComponent");
+        final var div = host("div", null, null);
+        final var view =
+                ReactElement.createViewElement(component).input("output", (Supplier<@Nullable ReactNode>) () -> null);
+        for (final var target : new ReactElement[] {div, view}) {
+            final var key = target == div ? "div" : "ExampleComponent";
+            final var ref = JsPropertyMap.<@Nullable Object>of();
+            props(target).set("ref", ref);
+            final var root = new IsolatedReconcilerTest.Harness().memory.createRoot(false);
+            final var warnings = captureWarnings(() -> root.render(
+                    ReactElement.createViewElement(wrapper).input("output", (Supplier<ReactNode>) () -> target), null));
+            if (development) {
+                check(
+                        warnings.contains("Unexpected ref object provided for " + key
+                                + ". Use either a ref-setter function or React.createRef().\n    in " + key
+                                + "\n    in Wrapper"),
+                        "Expected the component and wrapper warning: " + warnings);
+            } else {
+                equal("", warnings);
+            }
+            check(null != ref.get("current"), "The target still attaches to the provided object");
+        }
+    }
+
     private static void stringRef(Fixture f, boolean development) {
         final var ref = JsPropertyMap.<@Nullable Object>of("current", null);
-        final var child = f.probe(new ArrayList<>(), "Bar", IsolatedSideEffectsTest::div);
-        props(child).set("ref", "bar");
-        final var parent = f.view(child::dup);
+        final var parent = f.view(() -> {
+            final var child = f.probe(new ArrayList<>(), "Bar", IsolatedSideEffectsTest::div);
+            props(child).set("ref", "bar");
+            return child;
+        });
         props(parent).set("ref", ref);
         final var warning = captureWarnings(() -> f.harness.render(f.root, parent));
         if (development) {

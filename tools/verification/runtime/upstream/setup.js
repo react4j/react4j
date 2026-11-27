@@ -318,6 +318,9 @@ function createRenderer(moduleFor, sourceReact) {
           }
           return renderFixture(this, render, []);
         };
+        if (render?._isMockFunction) {
+          instance.render._isMockFunction = true;
+        }
         installLifecycleHooks(instance);
         return instance;
       }
@@ -341,6 +344,7 @@ function createRenderer(moduleFor, sourceReact) {
     create.functionComponent = !type.prototype?.isReactComponent;
     create.rawRenderResult = true;
     create.displayName = type.displayName || type.name;
+    Object.defineProperty(create, 'name', {value: type.name});
     Object.defineProperty(create, 'defaultProps', {get: () => type.defaultProps});
     constructors.set(type, create);
     return create;
@@ -389,6 +393,9 @@ function createRenderer(moduleFor, sourceReact) {
     react,
     unsupported,
     userTimingEnabled: () => require('shared/ReactFeatureFlags').enableUserTimingAPI === true,
+    get replayOutsideStrictMode() {
+      return require('shared/ReactFeatureFlags').debugRenderPhaseSideEffects === true;
+    },
     registerReflection: lookup => { isMounted = lookup; },
     strictReplay() {
       if (process.env.NODE_ENV === 'production') return false;

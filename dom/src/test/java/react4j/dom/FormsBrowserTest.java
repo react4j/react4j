@@ -4,6 +4,7 @@ import static react4j.webtesting.Checks.check;
 import static react4j.webtesting.Checks.equal;
 
 import java.util.Objects;
+import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
@@ -15,11 +16,14 @@ import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
 import react4j.dom.events.ReactEventHandler;
+import react4j.internal.NativeView;
+import react4j.internal.ViewConstructorFunction;
 import react4j.webtesting.Browser;
 
 @NullMarked
 public final class FormsBrowserTest {
     private static final ReactEventHandler IGNORE = event -> {};
+    private static final ViewConstructorFunction CONTROLLED = Controlled::new;
 
     private FormsBrowserTest() {}
 
@@ -954,6 +958,295 @@ public final class FormsBrowserTest {
             }
         } finally {
             close(root);
+        }
+    }
+
+    @JsMethod
+    public static void cleanInputs(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            for (final var tag : new String[] {"input", "textarea"}) {
+                final var value = "foo";
+                final var conflict = "with both value and defaultValue props";
+                final var missingHandler = "You provided a `value` prop to a form field without an `onChange` handler";
+                final boolean input = "input".equals(tag);
+                cleanValue(cleanMount(root, control(tag, "value", value), production), input, value);
+                cleanValue(
+                        cleanMount(root, host(tag, "value", value).input("readOnly", true), production), input, value);
+                cleanValue(cleanMount(root, host(tag, "value", value), production, missingHandler), input, value);
+                cleanValue(cleanMount(root, host(tag, "defaultValue", value), production), input, value);
+                cleanValue(
+                        cleanMount(
+                                root,
+                                host(tag, "value", value)
+                                        .input("defaultValue", "bar")
+                                        .input("readOnly", true),
+                                production,
+                                conflict),
+                        input,
+                        value);
+                cleanValue(
+                        cleanMount(
+                                root,
+                                host(tag, "defaultValue", "bar")
+                                        .input("value", value)
+                                        .input("readOnly", true),
+                                production,
+                                conflict),
+                        input,
+                        value);
+            }
+        } finally {
+            close(root);
+        }
+    }
+
+    @JsMethod
+    public static void cleanCheckboxes(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            final var conflict = "with both checked and defaultChecked props";
+            checked(cleanMount(root, input("checkbox", "checked", true), production), true);
+            checked(cleanMount(root, checkbox("checked", true).input("readOnly", true), production), true);
+            checked(
+                    cleanMount(
+                            root,
+                            checkbox("checked", true),
+                            production,
+                            "You provided a `checked` prop to a form field without an `onChange` handler"),
+                    true);
+            cleanChecked(cleanMount(root, checkbox("defaultChecked", true), production));
+            cleanChecked(cleanMount(
+                    root,
+                    checkbox("checked", true).input("defaultChecked", false).input("readOnly", true),
+                    production,
+                    conflict));
+            cleanChecked(cleanMount(
+                    root,
+                    checkbox("defaultChecked", false).input("checked", true).input("readOnly", true),
+                    production,
+                    conflict));
+        } finally {
+            close(root);
+        }
+    }
+
+    @JsMethod
+    public static void cleanSelects(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            final var choices = choices("foo", "bar", "baz");
+            final var conflict = "Select elements must be either controlled or uncontrolled";
+            final var missingHandler = "You provided a `value` prop to a form field without an `onChange` handler";
+            cleanSelection(cleanMount(root, select("value", "bar", false, choices), production), false);
+            cleanSelection(
+                    cleanMount(
+                            root,
+                            host("select", "value", "bar")
+                                    .input("readOnly", true)
+                                    .input("children", choices),
+                            production),
+                    false);
+            final var multiple = new String[] {"bar", "baz"};
+            cleanSelection(cleanMount(root, select("value", multiple, true, choices), production), true);
+            cleanSelection(
+                    cleanMount(
+                            root,
+                            host("select", "value", multiple)
+                                    .input("multiple", true)
+                                    .input("readOnly", true)
+                                    .input("children", choices),
+                            production),
+                    true);
+            cleanSelection(
+                    cleanMount(
+                            root,
+                            host("select", "value", "bar").input("children", choices),
+                            production,
+                            missingHandler),
+                    false);
+            cleanSelection(
+                    cleanMount(root, host("select", "defaultValue", "bar").input("children", choices), production),
+                    false);
+            cleanSelection(
+                    cleanMount(
+                            root,
+                            host("select", "value", "bar")
+                                    .input("defaultValue", "baz")
+                                    .input("readOnly", true)
+                                    .input("children", choices),
+                            production,
+                            conflict),
+                    false);
+            cleanSelection(
+                    cleanMount(
+                            root,
+                            host("select", "defaultValue", "baz")
+                                    .input("value", "bar")
+                                    .input("readOnly", true)
+                                    .input("children", choices),
+                            production,
+                            conflict),
+                    false);
+
+            final var rawOptions = ReactNode.of(
+                    rawOption("foo", "Foo").input("children", Js.undefined()),
+                    rawOption("bar", "Bar").input("children", null),
+                    rawOption("baz", "Baz"));
+            cleanSelection(
+                    cleanMount(
+                            root,
+                            host("select", "defaultValue", "baz")
+                                    .input("value", "bar")
+                                    .input("readOnly", true)
+                                    .input("children", rawOptions),
+                            production,
+                            conflict),
+                    false);
+            for (final var child : new Object[] {Browser.number(0), ""}) {
+                reset(root);
+                fails(
+                        root,
+                        host("select", "defaultValue", "baz")
+                                .input("value", "foo")
+                                .input("readOnly", true)
+                                .input("children", rawOption("foo", "Foo").input("children", child)),
+                        "Can only set one of `children` or `props.dangerouslySetInnerHTML`.",
+                        60,
+                        production);
+            }
+
+            final var flat = cleanMount(
+                    root,
+                    host("select", "value", "bar")
+                            .input("readOnly", true)
+                            .input("children", choice("bar").input("children", new String[] {"A ", "B"})),
+                    production);
+            final var text = node(flat);
+            final var childNodes = Js.<JsArrayLike<Object>>uncheckedCast(Browser.property(text, "childNodes"));
+            check(1 == childNodes.getLength(), "Flattened option contains one text node");
+            final var child = Objects.requireNonNull(childNodes.getAt(0));
+            check(3 == Js.asInt(Browser.property(child, "nodeType")), "Flattened child is a text node");
+            equal("A B", Browser.string(Browser.property(child, "nodeValue")));
+
+            final var mixed = cleanMount(
+                    root,
+                    host("select", "value", "bar")
+                            .input("readOnly", true)
+                            .input("children", choice("bar").input("children", new Object[] {
+                                "Bar", false, "Foo", DOM.div(), "Baz"
+                            })),
+                    production,
+                    "Only strings and numbers are supported as <option> children.");
+            cleanSelection(mixed, false, true);
+            equal("BarFoo[object Object]Baz", html(node(mixed)));
+        } finally {
+            close(root);
+        }
+    }
+
+    @JsMethod
+    public static void cleanUserInteraction(boolean production) {
+        final var root = Browser.append("div");
+        try {
+            for (final var mode : new String[] {"input", "textarea", "checkbox", "select"}) {
+                final var changes = new int[1];
+                final Probe changed = () -> changes[0]++;
+                final var control = cleanMount(
+                        root,
+                        ReactElement.createViewElement(CONTROLLED)
+                                .input("mode", mode)
+                                .input("changed", changed),
+                        production);
+                check(0 == changes[0], "Mounting does not cause an onChange");
+                if ("checkbox".equals(mode)) {
+                    checked(control, true);
+                    control.click();
+                    checked(control, false);
+                } else {
+                    equal("Hello", control.getValue());
+                    setUntracked(control, "value", "Goodbye");
+                    elementEvent(control, "select".equals(mode) ? "change" : "input");
+                    equal("Goodbye", control.getValue());
+                }
+                check(1 == changes[0], "The user interaction causes exactly one onChange");
+            }
+        } finally {
+            close(root);
+        }
+    }
+
+    private static ReactElement checkbox(String property, boolean value) {
+        return host("input", "type", "checkbox").input(property, value);
+    }
+
+    private static void cleanChecked(Browser.Element element) {
+        checked(element, true);
+        check(!element.hasAttribute("defaultChecked"), "defaultChecked is not serialized");
+    }
+
+    private static void cleanValue(Browser.Element element, boolean input, String value) {
+        equal(value, element.getValue());
+        if (input) {
+            equal(value, element.getAttribute("value"));
+        } else {
+            check(!element.hasAttribute("value"), "Textarea value is not serialized as an attribute");
+        }
+        check(!element.hasAttribute("defaultValue"), "defaultValue is not serialized");
+    }
+
+    private static void cleanSelection(Browser.Element element, boolean multiple) {
+        cleanSelection(element, multiple, false);
+    }
+
+    private static void cleanSelection(Browser.Element element, boolean multiple, boolean singleOption) {
+        check(!element.hasAttribute("value"), "Select value is not serialized as an attribute");
+        check(!element.hasAttribute("defaultValue"), "defaultValue is not serialized");
+        selections(element, singleOption ? new boolean[] {true} : new boolean[] {false, true, multiple});
+    }
+
+    private static ReactElement rawOption(String value, String markup) {
+        return host("option", "value", value)
+                .input("id", value)
+                .input("dangerouslySetInnerHTML", JsPropertyMap.of("__html", markup));
+    }
+
+    private static Browser.Element cleanMount(
+            Browser.Element root, ReactElement input, boolean production, String... expected) {
+        final var warnings = warnOnFresh(root, input);
+        check(warnings.length <= (production ? 0 : expected.length), "Unexpected diagnostics count");
+        for (final var warning : warnings) {
+            check(warning.contains(expected[0]), "Unexpected diagnostic " + warning);
+        }
+        return node(root);
+    }
+
+    private static final class Controlled extends NativeView {
+        private final String _mode;
+        private final Probe _changed;
+
+        @JsConstructor
+        private Controlled(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+            _mode = Js.asString(inputs.get("mode"));
+            _changed = Js.uncheckedCast(Objects.requireNonNull(inputs.get("changed")));
+            properties(this).set("state", JsPropertyMap.of("value", "checkbox".equals(_mode) ? true : "Hello"));
+        }
+
+        @Override
+        public ReactNode render() {
+            final var state = Objects.requireNonNull(state()).get("value");
+            final var property = "checkbox".equals(_mode) ? "checked" : "value";
+            final var control = "checkbox".equals(_mode)
+                    ? host("input", "type", "checkbox").input(property, state)
+                    : host(_mode, property, state);
+            if ("select".equals(_mode)) {
+                control.input("children", choices("Hello", "Goodbye"));
+            }
+            return control.input("onChange", (ReactEventHandler) event -> {
+                _changed.run();
+                setState(JsPropertyMap.of("value", Browser.property(event.getTarget(), property)));
+            });
         }
     }
 

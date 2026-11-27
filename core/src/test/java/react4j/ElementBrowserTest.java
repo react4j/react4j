@@ -29,6 +29,10 @@ final class ElementBrowserTest {
         elementAndCopy(root);
         renderOwner(root);
         elementRecords();
+        specifiedMetadata();
+        independentInputs();
+        hiddenMetadataGetters();
+        clonedStringRefs(root);
         validElements(isElement);
         childrenInputs(root);
         compositeCopy(root);
@@ -79,6 +83,93 @@ final class ElementBrowserTest {
                 null == noMetadata.key() && null == record(noMetadata).get("ref"),
                 "Reusing inputs does not copy element metadata");
     }
+
+    private static void specifiedMetadata() {
+        final ViewConstructorFunction type = InputView::new;
+        for (final var value : new String[] {"12", "56"}) {
+            final var view = ReactElement.createViewElement(type).input("foo", value);
+            check(Browser.same(type, view.type()), "A view retains its construction type with inputs");
+            check(Js.isTripleEqual(null, view.key()) && Js.isTripleEqual(null, view.ref()), "Omitted metadata is null");
+            equal("{\"foo\":\"" + value + "\"}", Browser.json(view.inputs()));
+        }
+        final var explicit = ReactElement.createHostElement("div", "12", "34", JsPropertyMap.of("foo", "56"));
+        equal("12", explicit.key());
+        equal("34", Js.asString(explicit.ref()));
+        equal("{\"foo\":\"56\"}", Browser.json(explicit.inputs()));
+        final var copy = explicit.dup().input("foo", "ef");
+        equal("12", copy.key());
+        equal("34", Js.asString(copy.ref()));
+        equal("{\"foo\":\"ef\"}", Browser.json(copy.inputs()));
+        final var cleared = ReactElement.createHostElement("div", null, null, copy.inputs());
+        check(Js.isTripleEqual(null, cleared.ref()), "An explicitly omitted ref remains null on the replacement");
+    }
+
+    private static void independentInputs() {
+        final ViewConstructorFunction type = InputView::new;
+        final var source = JsPropertyMap.<@Nullable Object>of("foo", 1d);
+        final var element = ReactElement.createViewElement(type).input("foo", source.get("foo"));
+        check(1d == Js.asDouble(element.inputs().get("foo")), "The element retains the supplied numeric input");
+        source.set("foo", 2d);
+        check(1d == Js.asDouble(element.inputs().get("foo")), "The element retains the supplied numeric input");
+    }
+
+    private static void hiddenMetadataGetters() {
+        final var inputs = JsPropertyMap.<@Nullable Object>of("foo", "value");
+        final int[] reads = {0};
+        final Getter getter = () -> {
+            reads[0]++;
+            return "metadata warning getter";
+        };
+        defineProperty(inputs, "key", JsPropertyMap.of("get", getter));
+        defineProperty(inputs, "ref", JsPropertyMap.of("get", getter));
+        final var original = ReactElement.createHostElement("div", null, null, inputs);
+        final var clone = original.dup();
+        check(
+                Js.isTripleEqual(null, original.key()) && Js.isTripleEqual(null, original.ref()),
+                "Accessors in the input bag do not become element metadata");
+        check(
+                Js.isTripleEqual(null, clone.key()) && Js.isTripleEqual(null, clone.ref()),
+                "Duplication does not promote input accessors to metadata");
+        check(0 == reads[0], "Neither construction nor copying invokes metadata getters");
+        equal("{\"foo\":\"value\"}", Browser.json(clone.inputs()));
+    }
+
+    private static void clonedStringRefs(Browser.Element root) {
+        final ViewConstructorFunction owner = OriginalRefOwner::new;
+        final ViewConstructorFunction copier = CopyRefOwner::new;
+        for (final boolean move : new boolean[] {false, true}) {
+            final @Nullable Object[] mounted = {null};
+            final var element = ReactElement.createViewElement(owner)
+                    .input("copier", copier)
+                    .input("move", move);
+            record(element).set("ref", (Ref) value -> mounted[0] = value);
+            RuntimeBrowserTest.render(element, root);
+            final var original = refs(Objects.requireNonNull(mounted[0]));
+            final var child = refs(Objects.requireNonNull(original.get("parent")));
+            if (move) {
+                check("undefined".equals(Js.typeof(original.get("child"))), "A replacement ref belongs to its creator");
+                final var target = Objects.requireNonNull(child.get("xyz"));
+                equal("SPAN", Js.asString(Browser.property(Js.uncheckedCast(target), "tagName")));
+            } else {
+                final var target = Objects.requireNonNull(original.get("yolo"));
+                equal("DIV", Js.asString(Browser.property(Js.uncheckedCast(target), "tagName")));
+                equal("{}", Browser.json(child));
+            }
+            RuntimeBrowserTest.render(null, root);
+        }
+    }
+
+    private static JsPropertyMap<@Nullable Object> refs(Object instance) {
+        return Js.uncheckedCast(Objects.requireNonNull(record(instance).get("refs")));
+    }
+
+    @JsFunction
+    interface Getter {
+        Object read();
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.defineProperty")
+    private static native void defineProperty(Object object, String key, Object descriptor);
 
     private static void validElements(ElementCheck isElement) {
         final ViewConstructorFunction constructor = InputView::new;
@@ -317,6 +408,47 @@ final class ElementBrowserTest {
     @JsFunction
     private interface Ref {
         void set(@Nullable Object node);
+    }
+
+    private static final class OriginalRefOwner extends NativeView {
+        @JsConstructor
+        OriginalRefOwner(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final var inputs = requireInputs();
+            final var copier = Js.<ViewConstructorFunction>uncheckedCast(inputs.get("copier"));
+            final boolean move = Boolean.TRUE.equals(inputs.get("move"));
+            final var child = ReactElement.createHostElement(
+                    move ? "span" : "div", "abc", move ? "child" : "yolo", JsPropertyMap.of("className", "original"));
+            final var parent =
+                    ReactElement.createViewElement(copier).input("child", child).input("move", move);
+            record(parent).set("ref", "parent");
+            return parent;
+        }
+    }
+
+    private static final class CopyRefOwner extends NativeView {
+        @JsConstructor
+        CopyRefOwner(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            final var inputs = requireInputs();
+            final var child =
+                    Js.<ReactElement>uncheckedCast(inputs.get("child")).dup().input("className", "xyz");
+            if (Boolean.TRUE.equals(inputs.get("move"))) {
+                final var replacement = ReactElement.createHostElement("span", "xyz", "xyz", child.inputs());
+                equal("xyz", replacement.key());
+                equal("xyz", Js.asString(replacement.ref()));
+                return replacement;
+            }
+            return child;
+        }
     }
 
     private static final class OwnerView extends NativeView {

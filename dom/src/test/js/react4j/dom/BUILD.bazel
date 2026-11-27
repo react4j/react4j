@@ -8,6 +8,7 @@ browser_test(
     srcs = ["browser_test.js"],
     entry_point = "react4j.dom.BrowserTest",
     deps = [
+        "//dom/src/test/java/react4j/dom:forms_scenarios",
         "//dom/src/test/java/react4j/dom:runtime_coverage",
         "//third_party:closure_testcase",
     ],
