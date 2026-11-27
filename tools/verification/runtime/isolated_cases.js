@@ -9,6 +9,7 @@ const ProfilerDevTools = goog.require('react4j.testing.IsolatedProfilerDevToolsT
 const Reflection = goog.require('react4j.testing.IsolatedReflectionTest');
 const Scheduling = goog.require('react4j.testing.IsolatedSchedulingTest');
 const SideEffects = goog.require('react4j.testing.IsolatedSideEffectsTest');
+const StrictClass = goog.require('react4j.testing.IsolatedStrictClassTest');
 const Suspense = goog.require('react4j.testing.IsolatedSuspenseTest');
 const SuspenseVariants = goog.require('react4j.testing.IsolatedSuspenseVariantsTest');
 const Tests = goog.require('react4j.testing.IsolatedReconcilerTest');
@@ -114,6 +115,16 @@ exports.run = function(mode) {
   }
   for (let i = 0; i < 15; i++) {
     if (i < 4 || i >= 11) run('forwardRef public spec' + i, () => ForwardRef.publicCases(i, mode === 'development'));
+  }
+  run('ReactStrictMode replacing strict with fragment', () => StrictClass.reconciliation(true, false));
+  run('ReactStrictMode replacing fragment with strict', () => StrictClass.reconciliation(false, true));
+  run('ReactStrictMode keeping strict', () => StrictClass.reconciliation(true, true));
+  run('ReactStrictMode subtree warnings', () => StrictClass.subtreeWarnings(mode === 'development'));
+  run('ReactStrictMode string ref warnings', () => StrictClass.stringRefWarnings(mode === 'development'));
+  for (let i = 0; i < 3; i++) {
+    run('ReactStrictMode precommit phases ' + i, () => StrictClass.phases(i !== 0, i !== 2, mode === 'development'));
+    run('ReactStrictMode functional state update ' + i, () =>
+      StrictClass.stateUpdater(i !== 0, i !== 2, mode === 'development'));
   }
   return count;
 };

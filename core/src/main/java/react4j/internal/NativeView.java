@@ -108,7 +108,8 @@ public abstract class NativeView {
         return force;
     }
 
-    public final @Nullable LegacyState preparePendingState(final JsPropertyMap<@Nullable Object> inputs) {
+    public final @Nullable LegacyState preparePendingState(
+            final JsPropertyMap<@Nullable Object> inputs, boolean replay) {
         final var first = _pendingState;
         if (null == first) {
             return null;
@@ -116,10 +117,10 @@ public abstract class NativeView {
         final var tail = _pendingStateTail;
         _pendingState = null;
         _pendingStateTail = null;
-        var state = applyPatch(_state, inputs, first);
+        var state = applyPatch(_state, inputs, first, replay);
         if (null != tail) {
             for (final var patch : tail) {
-                state = applyPatch(state, inputs, patch);
+                state = applyPatch(state, inputs, patch, replay);
             }
         }
         return state == _state ? null : new LegacyState(state);
@@ -130,11 +131,12 @@ public abstract class NativeView {
     private @Nullable JsPropertyMap<@Nullable Object> applyPatch(
             @Nullable final JsPropertyMap<@Nullable Object> previous,
             final JsPropertyMap<@Nullable Object> inputs,
-            final Object value) {
+            final Object value,
+            boolean replay) {
         final var replacement = value instanceof Replacement change ? change : null;
         final var update = null == replacement ? value : replacement.value;
         final var patch = "function".equals(Js.typeof(update))
-                ? invokeStateUpdater(Js.uncheckedCast(update), previous, inputs)
+                ? invokeStateUpdater(Js.uncheckedCast(update), previous, inputs, replay)
                 : Js.<@Nullable JsPropertyMap<@Nullable Object>>uncheckedCast(update);
         if (null != replacement) {
             return patch;
@@ -145,13 +147,17 @@ public abstract class NativeView {
     private @Nullable JsPropertyMap<@Nullable Object> invokeStateUpdater(
             StateUpdater updater,
             @Nullable JsPropertyMap<@Nullable Object> previous,
-            JsPropertyMap<@Nullable Object> inputs) {
+            JsPropertyMap<@Nullable Object> inputs,
+            boolean replay) {
         if (!DEVELOPMENT) {
             return updater.update(previous, inputs);
         }
         final var processing = c_processingUpdate;
         c_processingUpdate = this;
         try {
+            if (replay) {
+                updater.update(previous, inputs);
+            }
             return updater.update(previous, inputs);
         } finally {
             c_processingUpdate = processing;
@@ -199,7 +205,8 @@ public abstract class NativeView {
         updates.add(new ScheduledStateUpdate(update, expiration));
     }
 
-    public final @Nullable PreparedState prepareConcurrentState(JsPropertyMap<@Nullable Object> inputs, double cutoff) {
+    public final @Nullable PreparedState prepareConcurrentState(
+            JsPropertyMap<@Nullable Object> inputs, double cutoff, boolean replay) {
         final var updates = _concurrentUpdates;
         if (null == updates) {
             return null;
@@ -219,7 +226,7 @@ public abstract class NativeView {
             } else {
                 final var update = entry.update;
                 if (null != update.patch) {
-                    state = applyPatch(state, inputs, update.patch);
+                    state = applyPatch(state, inputs, update.patch, replay);
                 }
                 force |= update.force;
                 if (Double.NEGATIVE_INFINITY != entry.expiration && null != update.callback) {

@@ -334,6 +334,11 @@ public final class MemoryRenderer {
         }
 
         @Override
+        public boolean replayOutsideStrictMode() {
+            return Boolean.TRUE.equals(properties(_callbacks).get("replayOutsideStrictMode"));
+        }
+
+        @Override
         public boolean userTimingEnabled() {
             return _callbacks.userTimingEnabled();
         }

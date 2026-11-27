@@ -94,6 +94,10 @@ interface ReconcilerHost {
         return "development".equals(System.getProperty("react4j.environment"));
     }
 
+    default boolean replayOutsideStrictMode() {
+        return false;
+    }
+
     default boolean replayFailedRender() {
         return true;
     }

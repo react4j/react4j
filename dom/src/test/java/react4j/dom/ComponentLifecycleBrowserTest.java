@@ -61,6 +61,7 @@ public final class ComponentLifecycleBrowserTest {
             auxiliaryRoot(host);
             ClassStateBrowserTest.run(host, production);
             PropTypeValidatorBrowserTest.run(host, production);
+            FunctionComponentBrowserTest.run(host, production);
         } finally {
             ReactDOM.unmountComponentAtNode(host);
             host.remove();

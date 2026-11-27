@@ -49,6 +49,7 @@ _ISOLATED_CASE_SOURCES = [
     "IsolatedReflectionTest.java",
     "IsolatedSchedulingTest.java",
     "IsolatedSideEffectsTest.java",
+    "IsolatedStrictClassTest.java",
     "IsolatedSuspenseTest.java",
     "IsolatedSuspenseTest.native.js",
     "IsolatedSuspenseVariantsTest.java",

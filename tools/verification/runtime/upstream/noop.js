@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function createNoop(
-  {MemoryRenderer, strictReplay, replayFailedRender, userTimingEnabled, registerReflection,
+  {MemoryRenderer, strictReplay, replayOutsideStrictMode, replayFailedRender, userTimingEnabled, registerReflection,
     profilerEnabled, profilerInteractions, observe, unsupported, react},
   persistent = false,
 ) {
@@ -17,6 +17,7 @@ module.exports = function createNoop(
   const memory = new MemoryRenderer({
     now: () => now(),
     strictReplay,
+    replayOutsideStrictMode,
     replayFailedRender,
     userTimingEnabled,
     profilerEnabled,
