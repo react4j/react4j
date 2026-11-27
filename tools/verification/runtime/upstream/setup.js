@@ -189,8 +189,11 @@ function createRenderer(moduleFor, sourceReact) {
   const internals = sourceReact.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
   const current = internals.ReactCurrentOwner;
   const JavaReact = moduleFor('react4j.React');
-  const currentOwner = JavaReact[member(JavaReact, 'm_currentOwner__')].bind(JavaReact);
+  const owner = moduleFor('react4j.internal.CurrentOwner');
+  const currentOwner = owner[member(owner, 'm_get__')].bind(owner);
   const Fiber = moduleFor('react4j.dom.Reconciler.Fiber');
+  const reconciler = moduleFor('react4j.dom.Reconciler');
+  const readContext = member(reconciler, 'm_readCurrentContext__');
   const DomHost = moduleFor('react4j.dom.DomReconcilerHost');
   if (DomHost) {
     DomHost.prototype[member(DomHost.prototype, 'm_replayFailedRender__')] = () =>
@@ -207,10 +210,8 @@ function createRenderer(moduleFor, sourceReact) {
   }
   const dispatcher = {
     readContext(context, observedBits) {
-      const fiber = currentOwner();
-      if (!fiber) throw new Error('Context can only be read while React is rendering.');
       adaptations.add('private context read from active Java render scope');
-      return fiber[member(Fiber.prototype, 'm_readContext__')](context, observedBits);
+      return reconciler[readContext](context, observedBits);
     },
   };
   function PureComponent(props, context) {

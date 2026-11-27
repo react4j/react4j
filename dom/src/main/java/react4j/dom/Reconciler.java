@@ -21,6 +21,7 @@ import react4j.ReactElement;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
 import react4j.Renderable;
+import react4j.internal.CurrentOwner;
 import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidCatch;
 import react4j.internal.OnComponentDidMount;
@@ -89,6 +90,14 @@ final class Reconciler {
     private static int _nestedUpdateCount;
 
     private Reconciler() {}
+
+    static @Nullable Object readCurrentContext(Object context, @Nullable Object observedBits) {
+        final var owner = CurrentOwner.get();
+        if (!(owner instanceof Fiber fiber)) {
+            throw new IllegalStateException("Context can only be read while React is rendering.");
+        }
+        return fiber.readContext(context, observedBits);
+    }
 
     private static void applyRef(Object ref, @Nullable Object value) {
         if ("function".equals(Js.typeof(ref))) {
@@ -2317,13 +2326,13 @@ final class Reconciler {
                         }
                         final var consumer = Js.<Context.ConsumerRenderFunction<@Nullable Object>>uncheckedCast(
                                 Objects.requireNonNull(element.inputs().get("children")));
-                        final var owner = React.swapCurrentOwner(this);
+                        final var owner = CurrentOwner.swap(this);
                         final var previousPhase = swapRenderPhase(true);
                         try {
                             output = Renderable.toReactNode(consumer.render(value));
                         } finally {
                             swapRenderPhase(previousPhase);
-                            React.swapCurrentOwner(owner);
+                            CurrentOwner.swap(owner);
                         }
                     }
                     recordDurations(mounting, elapsedTime());
@@ -2413,7 +2422,7 @@ final class Reconciler {
                     final var renderName = RenderFailure.frameName(renderType);
                     startTiming(null == renderName ? "ForwardRef" : "ForwardRef(" + renderName + ")", mounting);
                     final var render = Js.<RefRender>uncheckedCast(renderType);
-                    final var owner = React.swapCurrentOwner(this);
+                    final var owner = CurrentOwner.swap(this);
                     final var previousPhase = swapRenderPhase(true);
                     try {
                         _renderedCommit = root._commitSequence;
@@ -2424,7 +2433,7 @@ final class Reconciler {
                         }
                     } finally {
                         swapRenderPhase(previousPhase);
-                        React.swapCurrentOwner(owner);
+                        CurrentOwner.swap(owner);
                     }
                 }
             } else {
@@ -2757,13 +2766,13 @@ final class Reconciler {
             }
             final NativeView component;
             if (null == existing) {
-                final var owner = React.swapCurrentOwner(this);
+                final var owner = CurrentOwner.swap(this);
                 try {
                     component = null == classType
                             ? NativeView.construct(type, inputs)
                             : Js.<ContextConstructor>uncheckedCast(type).construct(inputs, _maskedContext);
                 } finally {
-                    React.swapCurrentOwner(owner);
+                    CurrentOwner.swap(owner);
                 }
             } else {
                 component = existing;
@@ -3204,13 +3213,13 @@ final class Reconciler {
         }
 
         private @Nullable ReactNode renderOwned(NativeView component) {
-            final var owner = React.swapCurrentOwner(this);
+            final var owner = CurrentOwner.swap(this);
             final var previousPhase = swapRenderPhase(true);
             try {
                 return component.render();
             } finally {
                 swapRenderPhase(previousPhase);
-                React.swapCurrentOwner(owner);
+                CurrentOwner.swap(owner);
             }
         }
 

@@ -16,10 +16,10 @@ import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.JsError;
-import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactErrorInfo;
 import react4j.ReactNode;
+import react4j.internal.CurrentOwner;
 import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidCatch;
 import react4j.internal.OnComponentDidMount;
@@ -987,8 +987,7 @@ public final class ErrorBoundariesBrowserTest {
         public ReactNode render() {
             if (_modulePattern) {
                 installLegacyHooks();
-                final var owner = React.swapCurrentOwner(null);
-                React.swapCurrentOwner(owner);
+                final var owner = CurrentOwner.get();
                 Js.<Reconciler.Fiber>uncheckedCast(Objects.requireNonNull(owner))
                         .initializeModuleComponent(this);
             }

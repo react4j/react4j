@@ -3,6 +3,7 @@ package react4j;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import org.jspecify.annotations.Nullable;
+import react4j.internal.CurrentOwner;
 
 /** Configuration and element types used by the React4j runtime. */
 public final class React {
@@ -68,8 +69,6 @@ public final class React {
     public static final Object Profiler = symbol("react.profiler");
     static final Object Element = symbol("react.element");
 
-    private static @Nullable Object c_currentOwner = null;
-
     @JsMethod(namespace = JsPackage.GLOBAL, name = "Symbol.for")
     private static native Object symbol(String name);
 
@@ -77,13 +76,7 @@ public final class React {
         return new Context<>(defaultValue);
     }
 
-    static @Nullable Object currentOwner() {
-        return c_currentOwner;
-    }
-
     public static @Nullable Object swapCurrentOwner(@Nullable final Object owner) {
-        final var previous = c_currentOwner;
-        c_currentOwner = owner;
-        return previous;
+        return CurrentOwner.swap(owner);
     }
 }

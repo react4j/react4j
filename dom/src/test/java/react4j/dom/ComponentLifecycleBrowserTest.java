@@ -14,9 +14,9 @@ import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.Context;
-import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.CurrentOwner;
 import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
@@ -273,8 +273,7 @@ public final class ComponentLifecycleBrowserTest {
     }
 
     private static Reconciler.Fiber activeFiber() {
-        final var owner = React.swapCurrentOwner(null);
-        React.swapCurrentOwner(owner);
+        final var owner = CurrentOwner.get();
         return (Reconciler.Fiber) Objects.requireNonNull(owner);
     }
 

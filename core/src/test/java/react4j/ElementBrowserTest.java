@@ -16,6 +16,7 @@ import react4j.annotations.Input;
 import react4j.annotations.InputDefault;
 import react4j.annotations.Render;
 import react4j.annotations.View;
+import react4j.internal.CurrentOwner;
 import react4j.internal.NativeView;
 import react4j.internal.ViewConstructorFunction;
 import react4j.webtesting.Browser;
@@ -306,7 +307,7 @@ final class ElementBrowserTest {
         equal("{}", Browser.json(view.inputs()));
         RuntimeBrowserTest.render(view, root);
         equal("one:two", root.getTextContent());
-        check(null == React.currentOwner(), "Rendering restores the previous owner");
+        check(null == CurrentOwner.get(), "Rendering restores the previous owner");
     }
 
     private static JsPropertyMap<@Nullable Object> record(Object value) {
@@ -328,7 +329,7 @@ final class ElementBrowserTest {
         public ReactNode render() {
             final var first = ReactElement.createHostElement("i", "first", null, JsPropertyMap.of("children", "one:"));
             final var frame = ReactElement.createFragment("pair", first, ReactNode.of("two"));
-            final var owner = React.currentOwner();
+            final var owner = CurrentOwner.get();
             check(
                     null != owner && Browser.same(owner, record(first).get("_owner")),
                     "A host element captures the rendering view owner");

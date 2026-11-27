@@ -1,4 +1,5 @@
 goog.module('react4j.testing.IsolatedCases');
+const Context = goog.require('react4j.testing.IsolatedContextTest');
 const ErrorLogging = goog.require('react4j.testing.IsolatedErrorLoggingTest');
 const Incremental = goog.require('react4j.testing.IsolatedIncrementalTest');
 const LegacyContext = goog.require('react4j.testing.IsolatedLegacyContextTest');
@@ -76,6 +77,12 @@ exports.run = function(mode) {
   }
   for (let i = 33; i <= 46; i++) {
     if (i !== 42) run('ReactIncremental legacy context spec' + i, () => LegacyContext.cases(i, mode === 'development'));
+  }
+  for (let i = 0; i < 45; i++) {
+    run('ReactNewContext spec' + i, () => Context.cases(i % 15, Math.floor(i / 15)));
+  }
+  for (let i = 45; i <= 56; i++) {
+    run('ReactNewContext spec' + i, () => Context.additional(i, mode === 'development'));
   }
   return count;
 };

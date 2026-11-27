@@ -9,6 +9,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.Nullable;
+import react4j.internal.CurrentOwner;
 import react4j.internal.ViewConstructorFunction;
 
 /**
@@ -79,7 +80,7 @@ public class ReactElement implements ReactNode {
         final var element = new ReactElement();
         element.typeof = typeof;
         element.type = type;
-        element._owner = React.currentOwner();
+        element._owner = CurrentOwner.get();
         return element;
     }
 

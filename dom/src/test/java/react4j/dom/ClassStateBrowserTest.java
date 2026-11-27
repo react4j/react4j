@@ -14,9 +14,9 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-import react4j.React;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.CurrentOwner;
 import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
@@ -656,8 +656,7 @@ public final class ClassStateBrowserTest {
                 }
                 final var count = requireInputs().get("count");
                 applyState(JsPropertyMap.of("count", null == count ? 1 : count));
-                final var owner = React.swapCurrentOwner(null);
-                React.swapCurrentOwner(owner);
+                final var owner = CurrentOwner.get();
                 ((Reconciler.Fiber) Objects.requireNonNull(owner)).initializeModuleComponent(this);
                 _initialized = true;
             }

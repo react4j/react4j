@@ -2,6 +2,7 @@ filegroup(
     name = "sources",
     srcs = [
         "ArrayKeyStrategy.java",
+        "CurrentOwner.java",
         "InputKeys.java",
         "IntrospectUtil.java",
         "NativeView.java",
