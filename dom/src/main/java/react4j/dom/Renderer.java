@@ -914,8 +914,9 @@ final class Renderer {
                 if (null == value || !child._initialized || child._index != position || child._position != position) {
                     break;
                 }
+                final var sameDescription = Js.isTripleEqual(child._description, value);
                 try {
-                    if (!matchesSlot(child, value, position)) {
+                    if (!sameDescription && !matchesElement(child, value)) {
                         break;
                     }
                 } catch (Throwable error) {
@@ -923,7 +924,7 @@ final class Renderer {
                     break;
                 }
                 position++;
-                if (child.canReuse(value, scope)) {
+                if (sameDescription && child.canReuseInScope(scope)) {
                     child.queuePlacement();
                 } else {
                     child.update(value, scope, root._saveResult);
@@ -992,8 +993,7 @@ final class Renderer {
                     }
                     var next = _next;
                     if (null == next && (_position >= _previous.length || _previous[_position] != child)) {
-                        next = new Fiber[_values.length];
-                        System.arraycopy(_previous, 0, next, 0, _position);
+                        next = 0 == _position ? new Fiber[_values.length] : Arrays.copyOf(_previous, _values.length);
                         _next = next;
                     }
                     if (null != next) {
@@ -1138,11 +1138,15 @@ final class Renderer {
             if (null == fiber.key && fiber._index != index) {
                 return false;
             }
-            if (ReactElement.isElement(value)) {
-                final var element = Js.<ReactElement>uncheckedCast(value);
-                return Js.isTripleEqual(fiber.type, element.type()) && sameKey(fiber.key, element.key());
+            return matchesElement(fiber, value);
+        }
+
+        private static boolean matchesElement(Fiber fiber, Object value) {
+            if (!ReactElement.isElement(value)) {
+                return false;
             }
-            return false;
+            final var element = Js.<ReactElement>uncheckedCast(value);
+            return Js.isTripleEqual(fiber.type, element.type()) && sameKey(fiber.key, element.key());
         }
 
         private static boolean sameKey(@Nullable String a, @Nullable String b) {
@@ -1263,11 +1267,11 @@ final class Renderer {
         }
 
         private boolean canReuse(@Nullable Object next, @Nullable Scope scope) {
-            return _initialized
-                    && !_dirty
-                    && !_retrySuspendedView
-                    && _scope == scope
-                    && Js.isTripleEqual(_description, next);
+            return _initialized && canReuseInScope(scope) && Js.isTripleEqual(_description, next);
+        }
+
+        private boolean canReuseInScope(@Nullable Scope scope) {
+            return !_dirty && !_retrySuspendedView && _scope == scope;
         }
 
         private void visitCommittedChildren(@Nullable Scope scope) {
@@ -1453,6 +1457,10 @@ final class Renderer {
             if (Kind.HOST != kind) {
                 queuePlacement();
             }
+            finishReady(complete);
+        }
+
+        private void finishReady(Completion complete) {
             _initialized = true;
             updateDurations(_selfDuration);
             complete.finish(null);
@@ -1672,8 +1680,7 @@ final class Renderer {
                     && clean
                     && (oldNode == element || null != predicate && !predicate.shouldComponentUpdate(inputs))) {
                 existing.updateInputs(inputs);
-                reconcileRef(element.ref(), existing);
-                finishUpdate(null, scope, complete);
+                finishSkippedView(element, existing, complete);
                 return;
             }
             final var component = null == existing ? NativeView.construct(type, inputs) : existing;
@@ -1719,11 +1726,7 @@ final class Renderer {
                     return;
                 }
             } else if (_captured || !refreshChildren) {
-                reconcileRef(element.ref(), component);
-                queuePlacement();
-                _initialized = true;
-                updateDurations(0);
-                complete.finish(null);
+                finishSkippedView(element, component, complete);
                 return;
             }
             finishView(
@@ -1737,6 +1740,12 @@ final class Renderer {
                     scope,
                     mounting,
                     complete);
+        }
+
+        private void finishSkippedView(ReactElement element, NativeView component, Completion complete) {
+            reconcileRef(element.ref(), component);
+            queuePlacement();
+            finishReady(complete);
         }
 
         private void replayFailedView(NativeView component, Runnable checkpoint) {
@@ -2248,7 +2257,7 @@ final class Renderer {
         }
 
         private void queuePlacement() {
-            if (Kind.PORTAL != kind && _placementCommit == root._commitSequence) {
+            if (_placementCommit == root._commitSequence && Kind.PORTAL != kind) {
                 root._mutations.add(new Placement(this));
             }
         }
