@@ -42,6 +42,7 @@ def additional_specs():
         "react-dom": ["ReactDOMserverIntegrationProgress-test.js", "ReactTestUtils-test.js", "findDOMNode-test.js",
                       "multiple-copies-of-react-test.js", "renderSubtreeIntoContainer-test.js"],
         "react-cache": ["ReactCache-test.internal.js"],
+        "react-is": ["ReactIs-test.js"],
         "create-subscription": ["createSubscription-test.internal.js"],
         "react-test-renderer": ["ReactTestRenderer-test.internal.js", "ReactTestRenderer-test.js", "ReactTestRendererAsync-test.js",
                                 "ReactTestRendererTraversal-test.js"],
@@ -49,7 +50,8 @@ def additional_specs():
     for package, names in groups.items():
         for name in names:
             yield Path("packages", package, "src", "__tests__", name)
-    yield Path("packages/shared/__tests__/describeComponentFrame-test.js")
+    for name in ("describeComponentFrame-test.js", "ReactDOMFrameScheduling-test.js", "ReactSymbols-test.internal.js"):
+        yield Path("packages/shared/__tests__", name)
 
 
 def requires_reconciler_parity(spec):
@@ -106,6 +108,31 @@ def run_suite(checkout, config, bundle, output, spec, runtime, mode, node):
         raise RuntimeError(f"Suite failed outside a test in {spec} ({runtime}); see {log}")
     return str(spec), runtime, finished
 
+
+def verify_class_equivalence(pairs):
+    variants = {
+        "ES6": "ReactES6Class-test.js",
+        "CoffeeScript": "ReactCoffeeScriptClass-test.coffee",
+        "TypeScript": "ReactTypeScriptClass-test.ts",
+    }
+    selected = {Path(spec).name: results for spec, results in pairs.items()}
+    if not all(name in selected for name in variants.values()):
+        return
+    for runtime in ("stock", "java"):
+        signatures = {
+            language: sorted(
+                (result["name"].partition(" ")[2], result["status"], result["assertions"])
+                for result in selected[name][runtime].values()
+            )
+            for language, name in variants.items()
+        }
+        baseline = signatures["ES6"]
+        if not baseline or any(status != "passed" for _, status, _ in baseline):
+            raise SystemExit(f"{runtime}: ES6 class equivalence baseline did not pass")
+        for language in ("CoffeeScript", "TypeScript"):
+            if signatures[language] != baseline:
+                raise SystemExit(f"{runtime}: {language} and ES6 class spec lists differ")
+            print(f"{runtime}: {language} and ES6 class equivalence matched {len(baseline)} specs")
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -181,6 +208,7 @@ def main():
                              calls=java.get("calls", 0), assertions=java.get("assertions", 0),
                              adaptations=java.get("adaptations", []), failure=java.get("failure", "")))
     (output / "cases.json").write_text(json.dumps(rows, indent=2) + "\n")
+    verify_class_equivalence(pairs)
     if args.foreign_root and (len(rows) != 2 or any(
             row["stock"] != "passed" or row["java"] != "passed" or not row["calls"] or not row["assertions"]
             for row in rows)):
