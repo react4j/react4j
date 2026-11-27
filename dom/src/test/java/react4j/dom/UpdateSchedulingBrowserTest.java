@@ -102,6 +102,15 @@ public final class UpdateSchedulingBrowserTest {
         driver.drain();
         equal("", host.getTextContent());
 
+        root.render(batch(new BatchView[1])
+                .input("draw", (Draw) view -> ReactNode.of(0 == view.value("x") ? "Bye" : "Hi"))
+                .input("onMount", (Probe) view -> view.setState(JsPropertyMap.of("x", 1))));
+        equal("", host.getTextContent());
+        driver.runNext();
+        equal("Hi", host.getTextContent());
+        root.unmount();
+        driver.drain();
+
         final var foreign = driver.root(host, true);
         host.setTextContent("ab");
         foreign.render(host("div", ReactNode.of(host("span", ReactNode.of("c")), host("span", ReactNode.of("d")))));
@@ -1189,9 +1198,13 @@ public final class UpdateSchedulingBrowserTest {
         void drain() {
             for (var step = 0; !_tasks.isEmpty(); step++) {
                 check(100 > step, "Scheduled work must settle");
-                final var id = _tasks.keySet().iterator().next();
-                Objects.requireNonNull(_tasks.remove(id)).run();
+                runNext();
             }
+        }
+
+        void runNext() {
+            final var id = _tasks.keySet().iterator().next();
+            Objects.requireNonNull(_tasks.remove(id)).run();
         }
 
         @Override

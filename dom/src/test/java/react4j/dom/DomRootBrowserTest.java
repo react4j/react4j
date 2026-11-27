@@ -34,6 +34,7 @@ import react4j.webtesting.BrowserPromise;
 @NullMarked
 public final class DomRootBrowserTest {
     private static final ViewConstructorFunction OUTPUT = Output::new;
+    private static final ViewConstructorFunction ALTERNATE_OUTPUT = AlternateOutput::new;
     private static final ViewConstructorFunction PORTAL_TRACE = PortalTrace::new;
     private static final ViewConstructorFunction REFS = Refs::new;
     private static final ViewConstructorFunction FLIP = Flip::new;
@@ -297,19 +298,35 @@ public final class DomRootBrowserTest {
                     () -> ReactDOM.render(text("div", "parsnip"), container));
             equal("parsnip", container.getTextContent());
             check(0 == textWarnings.length, "Replacing unmanaged text does not warn");
-            final var app =
-                    output(tree("html", tree("head", text("title", "Hello World")), text("body", "Hello world")));
+            final var app = output(documentContents("Hello world"));
             final var warnings = OriginalHostCasesBrowserTest.captureWarnings(() -> ReactDOM.render(app, document));
             for (final var name : new String[] {"html", "head", "body"}) {
                 final var element = Browser.query(document, name);
                 equal(name.toUpperCase(Locale.ROOT), Browser.string(Browser.property(element, "tagName")));
                 check(1 == Js.asInt(Browser.property(element, "nodeType")), "The document host is a DOM element");
             }
-            markup(Browser.query(document, "body"), "Hello world");
+            final var body = Browser.query(document, "body");
+            markup(body, "Hello world");
             check(0 == warnings.length, "Mounting a fresh document does not warn");
+            ReactDOM.render(output(documentContents("Hello moon")), document);
+            markup(Browser.query(document, "body"), "Hello moon");
+            check(body == Browser.query(document, "body"), "Updating a document preserves its mounted body");
+
+            ReactDOM.render(
+                    ReactElement.createViewElement(ALTERNATE_OUTPUT).input("value", documentContents("Goodbye world")),
+                    document);
+            markup(Browser.query(document, "body"), "Goodbye world");
+            check(body != Browser.query(document, "body"), "Changing the root view replaces the document body");
+            check(ReactDOM.unmountComponentAtNode(document), "A mounted document root can be unmounted");
+            check(null == Browser.property(document, "firstChild"), "Unmount removes the document tree");
         } finally {
             ReactDOM.unmountComponentAtNode(container);
+            ReactDOM.unmountComponentAtNode(document);
         }
+    }
+
+    private static ReactElement documentContents(String body) {
+        return tree("html", tree("head", text("title", "Hello World")), text("body", body));
     }
 
     @JsMethod
@@ -748,6 +765,12 @@ public final class DomRootBrowserTest {
     public static void mixedTextChildren() {
         final var root = Browser.append("div");
         try {
+            ReactDOM.render(host("div").input("children", new Object[] {"foo", "bar", "baz"}), root);
+            equal("foobarbaz", root.getTextContent());
+            ReactDOM.unmountComponentAtNode(root);
+            ReactDOM.render(host("div").input("children", new Object[] {"", "", ""}), root);
+            equal("", root.getTextContent());
+            ReactDOM.unmountComponentAtNode(root);
             final TextCase[] cases = {
                 new TextCase(Js.undefined(), new Object[] {}),
                 new TextCase(null, new Object[] {}),
@@ -1387,6 +1410,18 @@ public final class DomRootBrowserTest {
         public @Nullable ReactNode render() {
             final var value = requireInputs().get("value");
             return null == value ? null : Js.uncheckedCast(value);
+        }
+    }
+
+    private static final class AlternateOutput extends NativeView {
+        @JsConstructor
+        private AlternateOutput(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+        }
+
+        @Override
+        public ReactNode render() {
+            return Js.uncheckedCast(requireInputs().get("value"));
         }
     }
 
