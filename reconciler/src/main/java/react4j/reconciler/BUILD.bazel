@@ -2,7 +2,10 @@ load("//third_party/java:rules.bzl", "j2cl_library", "java_library")
 
 package(default_visibility = ["//:__subpackages__"])
 
-exports_files(["Reconciler.native.js"], visibility = ["//tools/release:__pkg__"])
+exports_files(
+    ["Reconciler.native.js"],
+    visibility = ["//tools/release:__pkg__"],
+)
 
 _SOURCES = [
     "ClassComponent.java",
