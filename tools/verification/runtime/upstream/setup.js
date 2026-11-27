@@ -45,28 +45,7 @@ function unsupported(operation) {
   throw new Error('Outside the React4j test adapter: ' + operation);
 }
 
-function reconcilerTimers() {
-  // Jest 23's fake timers do not update performance.now(). Capture the
-  // environment's timer instance without advancing or clearing its queue.
-  const nativeRequire = require('module').createRequire(path.join(process.cwd(), 'package.json'));
-  const prototype = nativeRequire('jest-util').FakeTimers.prototype;
-  const useFakeTimers = prototype.useFakeTimers;
-  let clock;
-  prototype.useFakeTimers = function() {
-    clock = this;
-    return useFakeTimers.call(this);
-  };
-  try {
-    jest.useFakeTimers();
-  } finally {
-    prototype.useFakeTimers = useFakeTimers;
-  }
-  if (!clock || typeof clock._now !== 'number') unsupported('Jest virtual clock');
-  return clock;
-}
-
 function installJavaRenderer() {
-  const timers = process.env.REACT4J_RECONCILER_CASE ? reconcilerTimers() : null;
   global.globalThis = global;
   global.CLOSURE_DEFINES = {'react4j.environment':process.env.NODE_ENV, 'react4j.check_invariants':'false'};
   const bundle = fs.readFileSync(process.env.REACT4J_BUNDLE, 'utf8');
@@ -89,33 +68,66 @@ function installJavaRenderer() {
       };
     }
     scope.goog = {};
-    return createRenderer(load(scope).call(scope, scope.goog), require.requireActual('react'), timers);
+    return createRenderer(load(scope).call(scope, scope.goog), require.requireActual('react'));
   }, {virtual: true});
   jest.doMock('react', () => fixture().react);
-  jest.doMock('react-dom', () => fixture().adapter);
-  jest.doMock('react-dom/src/client/ReactDOM', () => fixture().adapter);
-  jest.doMock('react-dom/test-utils', () => ({
-    renderIntoDocument: element => fixture().adapter.render(element, document.createElement('div')),
-    SimulateNative: {click: node => dispatchNative(node, 'click')},
-    Simulate: {change(node) {
-      if (node.tagName !== 'SELECT') unsupported('synthetic-only change outside a select');
-      return dispatchNative(node, 'change');
-    }},
-  }));
-  if (process.env.REACT4J_RECONCILER_CASE) {
-    if (process.env.REACT4J_RECONCILER_CASE === 'ReactTracing-test.internal.js') {
-      jest.doMock('scheduler/tracing', () => unsupported('upstream Scheduler tracing bundle compatibility'));
+  jest.doMock('react-dom', () => {
+    if (require('shared/ReactFeatureFlags').enableSchedulerTracing &&
+        require('scheduler/tracing').__interactionsRef?.current == null) {
+      adaptations.add('external scheduler tracing build compatibility');
+      throw new Error('The profiling renderer requires a profiling scheduler/tracing module. Learn more at http://fb.me/react-profiling');
     }
+    return fixture().adapter;
+  });
+  jest.doMock('react-dom/src/client/ReactDOM', () => fixture().adapter);
+  jest.doMock('react-dom/test-utils', () => createTestUtils(fixture().adapter));
+  if (process.env.REACT4J_RECONCILER_CASE) {
     jest.doMock('react-reconciler', () => fixture().createHostFixture);
     jest.doMock('react-noop-renderer', () => require('./noop')(fixture().noop));
     jest.doMock('react-test-renderer', () => require('./noop')(fixture().noop).testRenderer());
-    jest.doMock('react-noop-renderer/persistent', () => new Proxy({}, {
-      get(target, key) {
-        if (key === '__esModule') return false;
-        return () => unsupported('ReactNoop persistent host operation ' + String(key));
-      },
-    }));
+    jest.doMock('react-noop-renderer/persistent', () => require('./noop')(fixture().noop, true));
   }
+}
+
+function createTestUtils(adapter) {
+  const isDOMComponent = instance => Boolean(instance && instance.nodeType === 1 && instance.tagName);
+
+  function scryRenderedDOMComponentsWithClass(instance, classNames) {
+    const required = Array.isArray(classNames) ? classNames : classNames.split(/\s+/);
+    return adapter.findRenderedHosts(instance, node => {
+      if (!isDOMComponent(node)) return false;
+      const classes = (node.getAttribute('class') || '').split(/\s+/);
+      return required.every(name => classes.includes(name));
+    });
+  }
+
+  return {
+    renderIntoDocument: element => adapter.render(element, document.createElement('div')),
+    isDOMComponent,
+    scryRenderedDOMComponentsWithClass,
+    findRenderedDOMComponentWithClass(instance, className) {
+      const matches = scryRenderedDOMComponentsWithClass(instance, className);
+      if (matches.length !== 1) {
+        throw new Error('Did not find exactly one match (found: ' + matches.length + ') for class:' + className);
+      }
+      return matches[0];
+    },
+    SimulateNative: {click: node => dispatchNative(node, 'click')},
+    Simulate: {
+      click(node, eventData) {
+        if (eventData != null) unsupported('synthetic click event data');
+        return dispatchNative(node, 'click');
+      },
+      mouseEnter(node, eventData) {
+        if (eventData != null) unsupported('synthetic mouseEnter event data');
+        return dispatchNative(node, 'mouseover');
+      },
+      change(node) {
+        if (node.tagName !== 'SELECT') unsupported('synthetic-only change outside a select');
+        return dispatchNative(node, 'change');
+      },
+    },
+  };
 }
 
 // ReactTestUtils exposes dispatch errors synchronously. DOM dispatch reports them to Window.
@@ -129,7 +141,7 @@ function dispatchNative(node, type) {
   }
   win.addEventListener('error', onError);
   try {
-    const EventType = type === 'click' ? win.MouseEvent : win.Event;
+    const EventType = type === 'click' || type === 'mouseover' ? win.MouseEvent : win.Event;
     node.dispatchEvent(new EventType(type, {bubbles: true, cancelable: true}));
     if (failure) throw failure;
   } finally {
@@ -137,7 +149,7 @@ function dispatchNative(node, type) {
   }
 }
 
-function createRenderer(moduleFor, sourceReact, timers) {
+function createRenderer(moduleFor, sourceReact) {
   const View = moduleFor('react4j.internal.NativeView');
   // Only BUNDLE is used here. Reject changed or ambiguous J2CL signatures.
   function member(object, prefix) {
@@ -148,59 +160,126 @@ function createRenderer(moduleFor, sourceReact, timers) {
 
   // The historical Babel class transform calls its superclass as a function.
   // Construct the Java instance with the original fixture subclass's prototype.
-  function Component(props) {
-    return Reflect.construct(View, [props], this.constructor);
+  const emptyRefs = Object.freeze({});
+  function Component(props, context) {
+    const view = Reflect.construct(View, [props], this.constructor);
+    view.context = context;
+    view.refs = emptyRefs;
+    return view;
   }
   Object.setPrototypeOf(Component.prototype, View.prototype);
   Component.prototype.isReactComponent = {};
+  let isMounted = () => false;
+  function updateCallback(component, callback) {
+    if (callback == null) return null;
+    if (typeof callback !== 'function') {
+      throw new Error('Invalid argument passed as callback. Expected a function. Instead received: ' + String(callback));
+    }
+    return () => callback.call(component);
+  }
   Component.prototype.setState = function(patch, callback) {
-    if (typeof patch === 'function' || callback != null) unsupported('functional setState or update callback');
-    return View.prototype.setState.call(this, patch);
+    const done = updateCallback(this, callback);
+    const update = typeof patch === 'function' ? (state, props) => patch.call(this, state, props) : patch;
+    View.prototype.setStateWithCallback.call(this, update, done);
   };
   Component.prototype.forceUpdate = function(callback) {
-    if (callback != null) unsupported('forceUpdate callback');
-    return View.prototype.forceUpdate.call(this);
+    View.prototype.forceUpdateWithCallback.call(this, updateCallback(this, callback));
+  };
+  Component.prototype.updater = {
+    isMounted: component => isMounted(component),
+    enqueueReplaceState(instance, patch, callback) {
+      const update = typeof patch === 'function' ? (state, props) => patch.call(instance, state, props) : patch;
+      View.prototype.replaceStateWithCallback.call(instance, update, updateCallback(instance, callback));
+    },
   };
 
   const constructors = new WeakMap();
-  let owner;
-  const namedRefs = new WeakMap();
-  const contexts = new WeakMap();
-  const current = sourceReact.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactCurrentOwner;
+  const internals = sourceReact.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+  const current = internals.ReactCurrentOwner;
+  const JavaReact = moduleFor('react4j.React');
+  const currentOwner = JavaReact[member(JavaReact, 'm_currentOwner__')].bind(JavaReact);
+  const Fiber = moduleFor('react4j.dom.Reconciler.Fiber');
+  const Failure = moduleFor('react4j.dom.Reconciler.RenderFailure');
+  if (internals.ReactDebugCurrentFrame) {
+    const stack = member(Failure, 'm_stackFrom__');
+    internals.ReactDebugCurrentFrame.getCurrentStack = () => {
+      const fiber = currentOwner();
+      return fiber ? Failure[stack](fiber) : '';
+    };
+  }
   const dispatcher = {
     readContext(context, observedBits) {
-      if (observedBits != null) unsupported('context change bitmasks');
-      const java = contexts.get(context);
-      if (!java) unsupported('private context read outside the Java fixture');
+      const fiber = currentOwner();
+      if (!fiber) throw new Error('Context can only be read while React is rendering.');
       adaptations.add('private context read from active Java render scope');
-      const api = moduleFor('react4j.React');
-      const fiber = api[member(api, 'm_currentOwner__')]();
-      const scope = moduleFor('react4j.dom.Reconciler.Scope');
-      return scope[member(scope, 'm_lookup__')](fiber[member(fiber, 'f__scope__')], java);
+      return fiber[member(Fiber.prototype, 'm_readContext__')](context, observedBits);
     },
   };
-  function renderFixture(receiver, render, args) {
-    const parent = owner;
+  function PureComponent(props, context) {
+    return Component.call(this, props, context);
+  }
+  PureComponent.prototype = Object.create(Component.prototype);
+  PureComponent.prototype.constructor = PureComponent;
+  PureComponent.prototype.shouldComponentUpdate = function(props, state) {
+    const runtime = moduleFor('react4j.dom.Reconciler');
+    return !runtime.shallowEqual(this.props, props) || !runtime.shallowEqual(this.state, state);
+  };
+  function renderFixture(receiver, render, args, constructing = false) {
     const previous = current.currentDispatcher;
-    owner = receiver;
+    const parent = current.current;
+    const fiber = currentOwner();
     current.currentDispatcher = dispatcher;
+    if (!constructing && fiber && (receiver || internals.ReactDebugCurrentFrame)) {
+      current.current = {type: fiber[member(fiber, 'f_type__')], tag: receiver ? 1 : 0, stateNode: receiver};
+    } else {
+      current.current = null;
+    }
     try { return render.apply(receiver, args); } finally {
+      current.current = parent;
       current.currentDispatcher = previous;
-      owner = parent;
     }
   }
   const hooks = ['componentDidMount', 'componentDidUpdate', 'componentWillUnmount',
     'getSnapshotBeforeUpdate', 'shouldComponentUpdate', 'componentDidCatch'];
   const lazyType = typeof Symbol === 'function' && Symbol.for ? Symbol.for('react.lazy') : 0xead4;
+  const memoType = typeof Symbol === 'function' && Symbol.for ? Symbol.for('react.memo') : 0xead3;
+  const forwardRefType = typeof Symbol === 'function' && Symbol.for ? Symbol.for('react.forward_ref') : 0xead0;
   function factory(type) {
+    if (constructors.has(type)) return constructors.get(type);
     if (type?.$$typeof === lazyType) {
-      throw new Error('Unsupported React4j runtime feature: React.lazy');
+      const wrapper = Object.assign({}, type, {_resolveType: factory});
+      constructors.set(type, wrapper);
+      return wrapper;
+    }
+    if (type?.$$typeof === memoType) {
+      const wrapper = Object.assign({}, type, {type: factory(type.type)});
+      constructors.set(type, wrapper);
+      return wrapper;
+    }
+    if (type?.$$typeof === forwardRefType) {
+      const render = (props, ref) => renderFixture(undefined, type.render, [props, ref]);
+      Object.defineProperty(render, 'name', {value: type.render.name});
+      render.displayName = type.render.displayName;
+      const wrapper = Object.assign({}, type, {render});
+      constructors.set(type, wrapper);
+      return wrapper;
     }
     if (typeof type !== 'function') return type;
-    if (constructors.has(type)) return constructors.get(type);
-    function create(inputs) {
-      if (type.prototype instanceof Component) {
-        const instance = new type(inputs);
+    const legacyClass = type.prototype && Object.hasOwn(type.prototype, '__reactAutoBindPairs');
+    if (legacyClass && !(type.prototype instanceof Component)) {
+      // create-react-class copies Component methods onto a shared, detached mixin prototype.
+      let base = type.prototype;
+      while (Object.getPrototypeOf(base) !== Object.prototype) base = Object.getPrototypeOf(base);
+      Object.setPrototypeOf(base, Component.prototype);
+    }
+    function create(inputs, context) {
+      if (type.prototype?.isReactComponent) {
+        const instance = renderFixture(undefined, () => {
+          if (!legacyClass) return new type(inputs, context);
+          const view = Reflect.construct(View, [inputs], type);
+          type.call(view, inputs, context, Component.prototype.updater);
+          return view;
+        }, [], true);
         const render = instance.render;
         instance.render = function() { return renderFixture(this, render, []); };
         for (const hook of hooks) {
@@ -212,63 +291,84 @@ function createRenderer(moduleFor, sourceReact, timers) {
         }
         return instance;
       }
-      if (type.prototype && type.prototype.render) unsupported('legacy class factory');
       const view = new View(inputs);
-      view.render = function() { return renderFixture(undefined, type, [this.props]); };
+      view.context = context;
+      view.render = function() {
+        const result = renderFixture(undefined, type, [this.props, this.context]);
+        if (result && typeof result.render === 'function') {
+          Object.assign(this, result);
+          this.moduleComponent = true;
+          this.render = () => renderFixture(this, result.render, []);
+          return this.render();
+        }
+        return result;
+      };
       return view;
     }
+    create.componentClass = type;
+    create.functionComponent = !type.prototype?.isReactComponent;
     create.displayName = type.displayName || type.name;
-    create.defaultProps = type.defaultProps;
+    Object.defineProperty(create, 'defaultProps', {get: () => type.defaultProps});
     constructors.set(type, create);
     return create;
   }
-  function refFor(instance, name) {
-    adaptations.add('string ref fixture');
-    let refs = namedRefs.get(instance);
-    if (!refs) {
-      refs = new Map();
-      namedRefs.set(instance, refs);
-      instance.refs = {};
-    }
-    if (!refs.has(name)) refs.set(name, value => {
-      if (value == null) delete instance.refs[name];
-      else instance.refs[name] = value;
-    });
-    return refs.get(name);
-  }
   const react = Object.assign({}, sourceReact, {
-    Component,
+    Component, PureComponent,
     createElement(type, props, ...children) {
-      if (props && props.ref != null && (typeof props.ref === 'string' || typeof props.ref === 'number')) {
-        if (!owner) unsupported('ownerless string ref');
-        props = Object.assign({}, props, {ref:refFor(owner, props.ref)});
+      if (type?.$$typeof === Symbol.for('react.context') && typeof children[0] === 'function') {
+        const render = children[0];
+        children[0] = value => renderFixture(undefined, render, [value]);
       }
       return sourceReact.createElement(factory(type), props, ...children);
     },
     createContext(initial, changedBits) {
-      if (changedBits) unsupported('context change bitmasks');
-      const api = moduleFor('react4j.React');
-      const context = api[member(api, 'm_createContext__')](initial);
+      const context = JavaReact[member(JavaReact, 'm_createContext__')](initial);
       const provider = context[member(Object.getPrototypeOf(context), 'm_provide__')](initial, []);
       const builder = context[member(Object.getPrototypeOf(context), 'm_consumer__')]();
       const consumer = builder[member(Object.getPrototypeOf(builder), 'm_render__')](() => null);
-      const fixture = {Provider:provider.type, Consumer:consumer.type};
-      contexts.set(fixture, context);
-      return fixture;
+      context._calculateChangedBits = changedBits;
+      context.Provider = provider.type;
+      if (internals.ReactDebugCurrentFrame) {
+        context.Consumer = consumer.type;
+        for (const name of ['Consumer', 'Provider']) {
+          let warned = false;
+          Object.defineProperty(consumer.type, name, {get() {
+            if (!warned) {
+              warned = true;
+              console.error('Warning: Rendering <Context.Consumer.' + name + '> is not supported and will be removed in a future major release. Did you mean to render <Context.' + name + '> instead?' + internals.ReactDebugCurrentFrame.getStackAddendum());
+            }
+            return context[name];
+          }});
+        }
+      } else {
+        context.Consumer = context;
+      }
+      return context;
     },
   });
 
-  const noop = timers && {
+  const noop = process.env.REACT4J_RECONCILER_CASE && {
     MemoryRenderer: moduleFor('react4j.testing.MemoryRenderer'),
     react,
     unsupported,
-    clock: () => timers._now,
+    userTimingEnabled: () => require('shared/ReactFeatureFlags').enableUserTimingAPI === true,
+    registerReflection: lookup => { isMounted = lookup; },
     strictReplay() {
       if (process.env.NODE_ENV === 'production') return false;
       const flags = require('shared/ReactFeatureFlags');
       if (flags.debugRenderPhaseSideEffectsForStrictMode !== false) return true;
       adaptations.add('upstream flag disables strict render replay');
       return false;
+    },
+    replayFailedRender() {
+      return require('shared/ReactFeatureFlags').replayFailedUnitOfWorkWithInvokeGuardedCallback !== false;
+    },
+    profilerEnabled() {
+      return Boolean(require('shared/ReactFeatureFlags').enableProfilerTimer);
+    },
+    profilerInteractions() {
+      return require('shared/ReactFeatureFlags').enableSchedulerTracing
+        ? require('scheduler/tracing').unstable_getCurrent() : null;
     },
     observe() { calls++; },
   };
@@ -306,6 +406,15 @@ function createDOMAdapter(moduleFor, member) {
       if (found !== undefined) return found;
     }
   }
+  function findView(instance) {
+    for (const container of containers) {
+      const root = committedRoot(container);
+      if (!root) continue;
+      const view = walk(rootFiber(root),
+        fiber => fiberView(fiber) === instance ? fiber : undefined);
+      if (view) return view;
+    }
+  }
   const render = member(dom, 'm_render__react4j_Renderable__java_lang_Object__react4j_dom_ReactDOM_RenderCallbackFn');
   const unmount = member(dom, 'm_unmountComponentAtNode__');
   const batch = member(dom, 'm_batchedUpdates__');
@@ -323,7 +432,22 @@ function createDOMAdapter(moduleFor, member) {
       return instance;
     },
     unmountComponentAtNode(container) { calls++; return dom[unmount](container); },
-    unstable_batchedUpdates(action, ...args) { calls++; return dom[batch](() => action(...args)); },
+    unstable_batchedUpdates(action, ...args) {
+      calls++;
+      let result;
+      dom[batch](() => { result = action(...args); });
+      return result;
+    },
+    flushSync(action, ...args) {
+      calls++;
+      let result;
+      dom[member(dom, 'm_flushSync__')](() => { result = action(...args); });
+      return result;
+    },
+    unstable_flushControlled(action, ...args) {
+      calls++;
+      dom[member(dom, 'm_flushControlled__')](() => action(...args));
+    },
     createPortal(children, container, key) {
       if (key != null) unsupported('keyed portal');
       calls++;
@@ -350,13 +474,8 @@ function createDOMAdapter(moduleFor, member) {
     findDOMNode(instance) {
       if (instance == null || instance.nodeType) return instance;
       adaptations.add('findDOMNode fixture');
-      for (const container of containers) {
-        const root = committedRoot(container);
-        if (!root) continue;
-        const view = walk(rootFiber(root),
-          fiber => fiberView(fiber) === instance ? fiber : undefined);
-        if (view) return walk(view, fiberHost) || null;
-      }
+      const view = findView(instance);
+      if (view) return walk(view, fiberHost) || null;
       // During unmount the parent can already have removed the child from its list.
       // Read the actual fiber until dispose clears its view and host children.
       const previous = mountedViews.get(instance);
@@ -364,6 +483,18 @@ function createDOMAdapter(moduleFor, member) {
         return walk(previous, fiberHost) || null;
       }
       unsupported('findDOMNode outside a committed tree');
+    },
+    findRenderedHosts(instance, match) {
+      if (instance == null) return [];
+      const view = findView(instance);
+      if (!view) unsupported('rendered host query outside a committed view');
+      adaptations.add('committed host class query');
+      const matches = [];
+      walk(view, fiber => {
+        const host = fiberHost(fiber);
+        if (host && match(host)) matches.push(host);
+      });
+      return matches;
     },
   };
 }

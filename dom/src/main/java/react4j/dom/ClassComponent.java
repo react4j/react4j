@@ -1,0 +1,168 @@
+package react4j.dom;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
+import react4j.internal.NativeView;
+
+/** Class lifecycle methods exposed by JavaScript component constructors. */
+final class ClassComponent {
+    static final Object LEGACY_CONTEXT = new Object();
+    static final JsPropertyMap<@Nullable Object> EMPTY_CONTEXT = JsPropertyMap.of();
+
+    private ClassComponent() {}
+
+    static JsPropertyMap<@Nullable Object> properties(Object object) {
+        return Js.uncheckedCast(object);
+    }
+
+    static @Nullable Object classType(Object factory) {
+        final var descriptor = properties(factory);
+        final var constructor = descriptor.get("componentClass");
+        if (null != constructor) {
+            return constructor;
+        }
+        return null != descriptor.get("contextTypes")
+                        || null != descriptor.get("childContextTypes")
+                        || null != descriptor.get("getDerivedStateFromProps")
+                        || null != descriptor.get("getDerivedStateFromError")
+                ? factory
+                : null;
+    }
+
+    static @Nullable Object method(Object receiver, String name) {
+        final var value = properties(receiver).get(name);
+        return "function".equals(Js.typeof(value)) ? value : null;
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Function")
+    private static final class NativeMethod {
+        native @Nullable Object apply(Object receiver, @Nullable Object[] args);
+    }
+
+    static @Nullable Object apply(Object method, Object receiver, @Nullable Object[] args) {
+        return Js.<NativeMethod>uncheckedCast(method).apply(receiver, args);
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.assign")
+    private static native JsPropertyMap<@Nullable Object> assign(
+            JsPropertyMap<@Nullable Object> target,
+            @Nullable JsPropertyMap<@Nullable Object> first,
+            @Nullable JsPropertyMap<@Nullable Object> second);
+
+    static JsPropertyMap<@Nullable Object> merge(
+            JsPropertyMap<@Nullable Object> target, @Nullable Object first, @Nullable Object second) {
+        return assign(target, Js.uncheckedCast(first), Js.uncheckedCast(second));
+    }
+
+    static JsPropertyMap<@Nullable Object> mask(Object type, Object context) {
+        final var keys = properties(type).get("contextTypes");
+        if (null == keys) {
+            return EMPTY_CONTEXT;
+        }
+        final var masked = JsPropertyMap.<@Nullable Object>of();
+        properties(keys).forEach(key -> masked.set(key, properties(context).get(key)));
+        return masked;
+    }
+
+    static void before(Reconciler.Fiber fiber, NativeView instance, String name, @Nullable Object... args) {
+        final var old = method(instance, name);
+        final var unsafe = method(instance, "UNSAFE_" + name);
+        if (null != old || null != unsafe) {
+            final var phase = fiber.startPhase(name);
+            try {
+                if (null != old) {
+                    apply(old, instance, args);
+                }
+                if (null != unsafe) {
+                    apply(unsafe, instance, args);
+                }
+            } finally {
+                fiber.finishPhase(phase);
+            }
+        }
+    }
+
+    static @Nullable JsPropertyMap<@Nullable Object> derive(
+            Object fn,
+            Object type,
+            @Nullable Object first,
+            @Nullable JsPropertyMap<@Nullable Object> previous,
+            boolean error) {
+        final var result = apply(fn, type, error ? new Object[] {first} : new Object[] {first, previous});
+        return null == result ? previous : merge(JsPropertyMap.of(), previous, result);
+    }
+
+    static final class Warnings {
+        private static final Reconciler.WeakKeys<Object, Boolean> WARNED = new Reconciler.WeakKeys<>();
+        private final LinkedHashSet<Object> _types = new LinkedHashSet<>();
+        private final ArrayList<String> _context = new ArrayList<>();
+        private final ArrayList<String> _mount = new ArrayList<>();
+        private final ArrayList<String> _receive = new ArrayList<>();
+        private final ArrayList<String> _update = new ArrayList<>();
+
+        void record(Object type, NativeView view, String name) {
+            if (null != WARNED.get(type) || !_types.add(type)) {
+                return;
+            }
+            if (null != properties(type).get("contextTypes")
+                    || null != properties(type).get("childContextTypes")) {
+                _context.add(name);
+            }
+            recordLifecycle(view, name, "componentWillMount", _mount);
+            recordLifecycle(view, name, "componentWillReceiveProps", _receive);
+            recordLifecycle(view, name, "componentWillUpdate", _update);
+        }
+
+        private static void recordLifecycle(NativeView view, String name, String hook, ArrayList<String> names) {
+            final var legacy = method(view, hook);
+            if ((null != legacy && !Boolean.TRUE.equals(properties(legacy).get("__suppressDeprecationWarning")))
+                    || null != method(view, "UNSAFE_" + hook)) {
+                names.add(name);
+            }
+        }
+
+        private static String names(ArrayList<String> list) {
+            Collections.sort(list);
+            return String.join(", ", new LinkedHashSet<>(list));
+        }
+
+        void flush() {
+            _types.forEach(type -> WARNED.set(type, true));
+            final var warnings = new ArrayList<String>();
+            if (!_mount.isEmpty()) {
+                warnings.add(
+                        "componentWillMount: Please update the following components to use componentDidMount instead: "
+                                + names(_mount));
+            }
+            if (!_receive.isEmpty()) {
+                warnings.add("componentWillReceiveProps: Please update the following components to use static"
+                        + " getDerivedStateFromProps instead: "
+                        + names(_receive));
+            }
+            if (!_update.isEmpty()) {
+                warnings.add("componentWillUpdate: Please update the following components to use componentDidUpdate"
+                        + " instead: "
+                        + names(_update));
+            }
+            if (!warnings.isEmpty()) {
+                warn("Warning: Unsafe lifecycle methods were found within a strict-mode tree:\n\n"
+                        + String.join("\n\n", warnings));
+            }
+            if (!_context.isEmpty()) {
+                warn("Warning: Legacy context API has been detected within a strict-mode tree: \n\n"
+                        + "Please update the following components: "
+                        + names(_context));
+            }
+        }
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "console.error")
+    private static native void warn(String message);
+}

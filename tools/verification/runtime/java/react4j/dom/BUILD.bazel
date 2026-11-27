@@ -1,13 +1,14 @@
 load("//third_party/java:rules.bzl", "j2cl_library")
 
+_MEMORY_HOST_SOURCES = [
+    "MemoryRenderer.java",
+    "TestHostPlan.java",
+]
+
 j2cl_library(
     name = "memory_renderer",
     testonly = True,
-    srcs = [
-        "HostFixture.java",
-        "MemoryRenderer.java",
-        "TestHostPlan.java",
-    ],
+    srcs = _MEMORY_HOST_SOURCES + ["HostFixture.java"],
     visibility = [
         "//:__pkg__",
         "//tools/verification/runtime:__pkg__",
@@ -15,6 +16,19 @@ j2cl_library(
     deps = [
         "//:core",
         "//dom/src/main/java/react4j/dom:reconciler",
+        "//third_party:jsinterop_annotations-j2cl",
+        "//third_party:jsinterop_base-j2cl",
+    ],
+)
+
+j2cl_library(
+    name = "browser_memory_renderer",
+    testonly = True,
+    srcs = _MEMORY_HOST_SOURCES,
+    visibility = ["//dom/src/test/java/react4j/dom:__pkg__"],
+    deps = [
+        "//:core",
+        "//:dom",
         "//third_party:jsinterop_annotations-j2cl",
         "//third_party:jsinterop_base-j2cl",
     ],

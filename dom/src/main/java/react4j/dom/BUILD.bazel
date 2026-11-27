@@ -11,12 +11,14 @@ exports_files(
 )
 
 _RECONCILER_SOURCES = [
+    "ClassComponent.java",
     "NativeReactRoot.java",
     "ReactPortal.java",
     "ReactRoot.java",
     "Reconciler.java",
     "ReconcilerHost.java",
     "ReconcilerScheduler.java",
+    "UserTiming.java",
     "package-info.java",
 ]
 

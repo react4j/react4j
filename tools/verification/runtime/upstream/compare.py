@@ -17,7 +17,7 @@ def specs(checkout):
                 "multiple-copies-of-react-test.js", "ReactDOMServerIntegrationRefs-test.js",
                 "ReactDOMServerIntegrationReconnecting-test.js"}
     for path in sorted((checkout / "packages/react/src/__tests__").glob("*-test*")):
-        if path.is_file() and "require('react-dom')" in path.read_text():
+        if path.is_file() and ("require('react-dom')" in path.read_text() or path.name == "forwardRef-test.internal.js"):
             yield path.relative_to(checkout)
     for folder in ("packages/react-dom/src/__tests__", "packages/react-dom/src/events/__tests__",
                    "packages/react-dom/src/client/__tests__"):
@@ -34,7 +34,8 @@ def specs(checkout):
 
 
 def is_reconciler_spec(spec):
-    return spec.parts[:2] == ("packages", "react-reconciler")
+    return spec.parts[:2] == ("packages", "react-reconciler") or spec.name in {
+        "forwardRef-test.internal.js", "ReactProfiler-test.internal.js"}
 
 
 def run_suite(checkout, config, bundle, output, spec, runtime, mode):
@@ -127,6 +128,12 @@ def main():
                              calls=java.get("calls", 0), assertions=java.get("assertions", 0),
                              adaptations=java.get("adaptations", []), failure=java.get("failure", "")))
     (output / "cases.json").write_text(json.dumps(rows, indent=2) + "\n")
+    mismatches = [row for row in rows if is_reconciler_spec(Path(row["suite"]))
+                  and (row["stock"] not in ("passed", "pending") or row["java"] != row["stock"])]
+    if mismatches:
+        for row in mismatches:
+            print(f'{row["suite"]} {row["id"]}: {row["case"]}: stock {row["stock"]}, Java {row["java"]}')
+        raise SystemExit(f"{len(mismatches)} reconciler case outcomes differ; see {output / 'cases.json'}")
 
 
 if __name__ == "__main__":

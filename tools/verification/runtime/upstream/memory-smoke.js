@@ -20,6 +20,10 @@ let stop = false;
 const api = new MemoryRenderer({
   now: () => 0, shouldYield: () => stop,
   strictReplay: () => false,
+  userTimingEnabled: () => false,
+  replayFailedRender: () => false,
+  profilerEnabled: () => false,
+  profilerInteractions: () => null,
   schedule(task, delay) { assert.equal(delay, 0); tasks.set(++lastId, task); return lastId; },
   cancel(id) { tasks.delete(id); },
 });
@@ -119,4 +123,34 @@ fixture.updateContainer(el('outer', null, {children: el('inner', null, {})}), ho
 assert.deepEqual(hostEvents, [
   [undefined, null], ['prepare', rootContainer], [rootContainer, undefined], ['reset', rootContainer],
 ]);
+
+const persistent = api.createPersistentRoot(false);
+const NativeView = moduleFor('react4j.internal.NativeView');
+const pending = new Promise(() => {});
+const SuspendingView = inputs => {
+  const view = new NativeView(inputs);
+  view.render = () => {
+    if (view.props.wait) throw pending;
+    return el('word', null, {children: 'world'});
+  };
+  return view;
+};
+const stableLabel = el('label', 'label', {children: 'hello'});
+const suspenseTree = wait => el('surface', null, {
+  children: el(Symbol.for('react.suspense'), null, {
+    fallback: el('spinner', null, {}),
+    children: [stableLabel, el(SuspendingView, 'child', {wait})],
+  }),
+});
+persistent.render(suspenseTree(false), null);
+const visible = persistent.getChildren()[0].children[0];
+persistent.render(suspenseTree(true), null);
+const fallback = persistent.getChildren()[0].children;
+assert.equal(fallback.at(-1).type, 'spinner');
+assert.equal(fallback[0].hidden, true);
+assert.equal(visible.hidden, false);
+persistent.render(suspenseTree(false), null);
+assert.equal(persistent.getChildren()[0].children[0], visible);
+assert.equal(fallback[0].hidden, true);
+
 console.log('MemoryRenderer smoke passed without a browser DOM');

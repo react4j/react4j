@@ -1,18 +1,26 @@
 'use strict';
 
-module.exports = function createNoop({MemoryRenderer, clock, strictReplay, observe, unsupported, react}) {
+module.exports = function createNoop(
+  {MemoryRenderer, strictReplay, replayFailedRender, userTimingEnabled, registerReflection,
+    profilerEnabled, profilerInteractions, observe, unsupported, react},
+  persistent = false,
+) {
   const defaultRoot = '<default>';
   const roots = new Map();
   const scheduled = new Map();
   const timers = new Map();
   let nextTask = 0;
   let timeOffset = 0;
-  let now = () => clock() + timeOffset;
+  let now = () => timeOffset;
   let yielded = null;
   let shouldYield = () => false;
   const memory = new MemoryRenderer({
     now: () => now(),
     strictReplay,
+    replayFailedRender,
+    userTimingEnabled,
+    profilerEnabled,
+    profilerInteractions,
     shouldYield: () => shouldYield(),
     schedule(task, delay) {
       const id = ++nextTask;
@@ -33,10 +41,11 @@ module.exports = function createNoop({MemoryRenderer, clock, strictReplay, obser
       }
     },
   });
+  registerReflection(component => memory.isMounted(component, persistent));
 
   function targetFor(id, concurrent) {
     if (!roots.has(id)) {
-      const root = memory.createRoot(concurrent);
+      const root = persistent ? memory.createPersistentRoot(concurrent) : memory.createRoot(concurrent);
       const fixture = root.getContainer();
       fixture.rootID = id;
       roots.set(id, root);
@@ -90,9 +99,9 @@ module.exports = function createNoop({MemoryRenderer, clock, strictReplay, obser
     let count = 0;
     let stopped = false;
     let firstFailure;
+    let remaining = units;
     while (!stopped && scheduled.size) {
       if (++count > 1000) unsupported('ReactNoop flush did not settle');
-      let remaining = units;
       try {
         runNext(() => {
           if (yielded !== null) return true;
@@ -159,13 +168,21 @@ module.exports = function createNoop({MemoryRenderer, clock, strictReplay, obser
       observe();
       return memory.createPortal(children, root, key == null ? null : String(key));
     },
+    findInstance(value) {
+      observe();
+      return memory.findInstance(value, persistent) ?? null;
+    },
     batchedUpdates(action, ...args) {
       observe();
-      return memory.batchedUpdates(() => action(...args));
+      let result;
+      memory.batchedUpdates(() => { result = action(...args); });
+      return result;
     },
     interactiveUpdates(action, ...args) {
       observe();
-      return memory.interactiveUpdates(() => action(...args));
+      let result;
+      memory.interactiveUpdates(() => { result = action(...args); });
+      return result;
     },
     hasScheduledCallback: () => scheduled.size !== 0,
     flush,
@@ -187,11 +204,42 @@ module.exports = function createNoop({MemoryRenderer, clock, strictReplay, obser
       memory.resetCounters();
       try {
         flush();
+        if (persistent) {
+          const {hostDiffCounter, hostCloneCounter} = memory.getPersistentCounters();
+          return {hostDiffCounter, hostCloneCounter};
+        }
         const {hostDiffCounter, hostUpdateCounter} = memory.getCounters();
         return {hostDiffCounter, hostUpdateCounter};
       } finally {
         memory.resetCounters();
       }
+    },
+    flushSync(action, ...args) {
+      observe();
+      yielded = [];
+      memory.flushSync(() => action(...args));
+      return yielded;
+    },
+    deferredUpdates(action, ...args) {
+      observe();
+      let result;
+      memory.deferredUpdates(() => { result = action(...args); });
+      return result;
+    },
+    unbatchedUpdates(action, ...args) {
+      observe();
+      let result;
+      memory.unbatchedUpdates(() => { result = action(...args); });
+      return result;
+    },
+    flushExpired() {
+      observe();
+      memory.flushExpired();
+      return clearYields() || [];
+    },
+    expire(ms) {
+      api.advanceTime(ms);
+      return api.flushExpired();
     },
     advanceTime(ms) { timeOffset += ms; },
     yield(value) {
@@ -206,7 +254,8 @@ module.exports = function createNoop({MemoryRenderer, clock, strictReplay, obser
         if (!node.children) return node.text;
         const {children, ...props} = node.props;
         const rendered = node.children.map(toJSON).filter(child => child !== null);
-        return {type: node.type, props, children: rendered.length ? rendered : null};
+        return Object.defineProperty({type: node.type, props, children: rendered.length ? rendered : null},
+          '$$typeof', {value: Symbol.for('react.test.json')});
       }
       const clear = () => clearYields() || [];
       return {
@@ -220,6 +269,12 @@ module.exports = function createNoop({MemoryRenderer, clock, strictReplay, obser
           update(element);
           return {update, unstable_flushAll: () => flushTestRenderer(Infinity), unstable_clearYields: clear,
             unstable_flushNumberOfYields: flushTestRenderer,
+            unstable_flushSync(action) {
+              clearYields();
+              let result;
+              memory.flushSync(() => { result = action(); });
+              return result;
+            },
             toJSON() {
               const children = root.getChildren().map(toJSON).filter(child => child !== null);
               return children.length > 1 ? children : children[0] ?? null;
@@ -229,9 +284,6 @@ module.exports = function createNoop({MemoryRenderer, clock, strictReplay, obser
       };
     },
   };
-  for (const operation of ['expire', 'flushExpired', 'deferredUpdates',
-    'unbatchedUpdates', 'flushSync', 'dumpTree', 'findInstance']) {
-    api[operation] = () => unsupported('ReactNoop.' + operation);
-  }
+  api.dumpTree = () => unsupported('ReactNoop.dumpTree');
   return api;
 };

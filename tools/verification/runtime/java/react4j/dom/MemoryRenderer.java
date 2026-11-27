@@ -1,5 +1,6 @@
 package react4j.dom;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
@@ -11,17 +12,20 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 import react4j.ReactNode;
+import react4j.internal.NativeView;
 
 @NullMarked
 @JsType(namespace = "react4j.testing", name = "MemoryRenderer")
 public final class MemoryRenderer {
     private final MemoryHost _host;
     private final MemoryHost _testHost;
+    private final MemoryHost _persistentHost;
     private final ReconcilerScheduler _scheduler;
 
     public MemoryRenderer(SchedulerCallbacks callbacks) {
-        _host = new MemoryHost(true, callbacks);
-        _testHost = new MemoryHost(false, callbacks);
+        _host = new MemoryHost(true, false, callbacks);
+        _testHost = new MemoryHost(false, false, callbacks);
+        _persistentHost = new MemoryHost(true, true, callbacks);
         _scheduler = new ControlledScheduler(callbacks);
     }
 
@@ -31,6 +35,10 @@ public final class MemoryRenderer {
 
     public Root createTestRoot(boolean concurrent) {
         return new Root(concurrent, _testHost, _scheduler);
+    }
+
+    public Root createPersistentRoot(boolean concurrent) {
+        return new Root(concurrent, _persistentHost, _scheduler);
     }
 
     public ReactPortal createPortal(@Nullable ReactNode children, Root target, @Nullable String key) {
@@ -47,6 +55,22 @@ public final class MemoryRenderer {
         Reconciler.interactiveUpdates(action::run);
     }
 
+    public void flushSync(Reconciler.Batch action) {
+        Reconciler.flushSync(action);
+    }
+
+    public void deferredUpdates(Reconciler.Batch action) {
+        Reconciler.deferredUpdates(action);
+    }
+
+    public void unbatchedUpdates(Reconciler.Batch action) {
+        Reconciler.unbatchedUpdates(action);
+    }
+
+    public void flushExpired() {
+        Reconciler.flushExpired(_scheduler);
+    }
+
     public Object getCounters() {
         return JsPropertyMap.of("hostDiffCounter", _host._diffs, "hostUpdateCounter", _host._updates);
     }
@@ -54,6 +78,26 @@ public final class MemoryRenderer {
     public void resetCounters() {
         _host._diffs = 0;
         _host._updates = 0;
+        _persistentHost._diffs = 0;
+        _persistentHost._clones = 0;
+    }
+
+    public Object getPersistentCounters() {
+        return JsPropertyMap.of("hostDiffCounter", _persistentHost._diffs, "hostCloneCounter", _persistentHost._clones);
+    }
+
+    public @Nullable Object findInstance(@Nullable Object value, boolean persistent) {
+        if (null == value) {
+            return null;
+        }
+        if ("number".equals(Js.typeof(properties(value).get("id")))) {
+            return value;
+        }
+        return (persistent ? _persistentHost : _host).findInstance(value);
+    }
+
+    public boolean isMounted(Object value, boolean persistent) {
+        return (persistent ? _persistentHost : _host)._instances.has(value);
     }
 
     @JsType(namespace = "react4j.testing", name = "MemoryRoot")
@@ -82,11 +126,19 @@ public final class MemoryRenderer {
         }
     }
 
-    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    @JsType(namespace = "react4j.testing", name = "MemorySchedulerCallbacks")
     public interface SchedulerCallbacks {
         double now();
 
         boolean strictReplay();
+
+        boolean userTimingEnabled();
+
+        boolean replayFailedRender();
+
+        boolean profilerEnabled();
+
+        Reconciler.@Nullable ProfilerInteractions profilerInteractions();
 
         boolean shouldYield(double deadline);
 
@@ -117,21 +169,142 @@ public final class MemoryRenderer {
         }
     }
 
-    private static final class MemoryHost implements ReconcilerHost {
+    private static final class MemoryHost implements ReconcilerHost, ReconcilerHost.Persistence {
         private final boolean _directText;
+        private final boolean _persistent;
         private final SchedulerCallbacks _callbacks;
         private int _nextId;
         private int _diffs;
         private int _updates;
+        private int _clones;
+        private final CommittedInstances _instances = new CommittedInstances();
+        private final ArrayList<NativeView> _unmounted = new ArrayList<>();
 
-        private MemoryHost(boolean directText, SchedulerCallbacks callbacks) {
+        private MemoryHost(boolean directText, boolean persistent, SchedulerCallbacks callbacks) {
             _directText = directText;
+            _persistent = persistent;
             _callbacks = callbacks;
+        }
+
+        @Override
+        public @Nullable Persistence persistence() {
+            return _persistent ? this : null;
+        }
+
+        @Override
+        public boolean childrenMatch(Object parent, Object[] candidates) {
+            final var previous = Js.<Object[]>uncheckedCast(children(parent));
+            if (previous.length != candidates.length) {
+                return false;
+            }
+            for (int i = 0; i < previous.length; i++) {
+                if (previous[i] != candidates[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public Object cloneElement(Object instance, ReactElement element, Object[] children, boolean keepChildren) {
+            final var node = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(JsPropertyMap.of());
+            defineHiddenProperty(node, "id", properties(instance).get("id"));
+            node.set("type", element.type());
+            node.set(
+                    "children",
+                    keepChildren
+                            ? children(instance)
+                            : Js.<Children>uncheckedCast(children).slice());
+            defineHiddenProperty(node, "props", null);
+            final var content = element.inputs().get("children");
+            defineHiddenProperty(node, "text", isDirectText(content) ? stringValue(content) : null);
+            writeProps(node, element);
+            _clones++;
+            return node;
+        }
+
+        @Override
+        public Object cloneHidden(Object instance, @Nullable ReactElement element) {
+            final JsPropertyMap<@Nullable Object> clone;
+            if (null == element) {
+                clone = JsPropertyMap.of("text", properties(instance).get("text"));
+                defineHiddenProperty(clone, "id", properties(instance).get("id"));
+            } else {
+                clone = properties(cloneElement(instance, element, new Object[0], true));
+            }
+            defineHiddenProperty(clone, "suspended", true);
+            clone.set("hidden", true);
+            return clone;
+        }
+
+        @Override
+        public void replaceChildren(Object container, Object[] children) {
+            properties(container)
+                    .set("children", Js.<Children>uncheckedCast(children).slice());
+        }
+
+        private @Nullable Object findInstance(Object value) {
+            return _instances.get(value);
+        }
+
+        @Override
+        public void onCommitUnmount(Reconciler.Fiber fiber) {
+            if (null != fiber.view) {
+                _unmounted.add(fiber.view);
+            }
+        }
+
+        @Override
+        public void onHostTreeCommitted(Reconciler.Root root) {
+            for (final var instance : _unmounted) {
+                _instances.delete(instance);
+            }
+            _unmounted.clear();
+            cacheHostInstances(root.fiber);
+        }
+
+        private @Nullable Object cacheHostInstances(Reconciler.Fiber fiber) {
+            var host = fiber.hostInstance;
+            for (final var child : fiber.children) {
+                final var first = cacheHostInstances(child);
+                if (null == host) {
+                    host = first;
+                }
+            }
+            if (null != fiber.view) {
+                _instances.set(fiber.view, host);
+            }
+            return host;
         }
 
         @Override
         public boolean strictReplay() {
             return _callbacks.strictReplay();
+        }
+
+        @Override
+        public boolean userTimingEnabled() {
+            return _callbacks.userTimingEnabled();
+        }
+
+        @Override
+        public boolean deferHiddenChildren(ReactElement element) {
+            return _directText && Js.isTruthy(element.inputs().get("hidden"));
+        }
+
+        @Override
+        public boolean replayFailedRender() {
+            return _callbacks.replayFailedRender();
+        }
+
+        @Override
+        public boolean profilerEnabled() {
+            return _callbacks.profilerEnabled();
+        }
+
+        @Override
+        public Reconciler.@Nullable ProfilerInteractions profilerInteractions() {
+            return _callbacks.profilerInteractions();
         }
 
         @Override
@@ -304,6 +477,19 @@ public final class MemoryRenderer {
 
         native int indexOf(Object value);
 
+        native Children slice();
+
         native void splice(int start, int count, Object... values);
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "WeakMap")
+    private static final class CommittedInstances {
+        native @Nullable Object get(Object value);
+
+        native boolean has(Object value);
+
+        native void set(Object value, @Nullable Object host);
+
+        native void delete(Object value);
     }
 }

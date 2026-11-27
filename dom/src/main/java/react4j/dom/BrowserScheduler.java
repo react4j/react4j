@@ -2,11 +2,27 @@ package react4j.dom;
 
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 
 final class BrowserScheduler implements ReconcilerScheduler {
     static final BrowserScheduler INSTANCE = new BrowserScheduler();
 
+    private static final boolean HAS_PERFORMANCE_CLOCK = hasPerformanceClock();
+
+    private static boolean hasPerformanceClock() {
+        final var performance = Js.global().get("performance");
+        return null != performance
+                && "function"
+                        .equals(Js.typeof(Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(performance)
+                                .get("now")));
+    }
+
     private BrowserScheduler() {}
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Date.now")
+    private static native double wallTime();
 
     @JsMethod(namespace = JsPackage.GLOBAL, name = "performance.now")
     private static native double currentTime();
@@ -19,12 +35,12 @@ final class BrowserScheduler implements ReconcilerScheduler {
 
     @Override
     public double now() {
-        return currentTime();
+        return HAS_PERFORMANCE_CLOCK ? currentTime() : wallTime();
     }
 
     @Override
     public boolean shouldYield(double deadline) {
-        return currentTime() >= deadline;
+        return now() >= deadline;
     }
 
     @Override

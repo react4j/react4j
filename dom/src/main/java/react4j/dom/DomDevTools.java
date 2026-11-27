@@ -99,6 +99,21 @@ final class DomDevTools {
         }
     }
 
+    private static int viewTag(Reconciler.Fiber fiber) {
+        final var descriptor = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(fiber.type);
+        final var marker = descriptor.get("$$typeof");
+        if (React.ForwardRef == marker) {
+            return 11;
+        }
+        if (React.Memo == marker) {
+            return 14;
+        }
+        if (React.Lazy == marker) {
+            return 16;
+        }
+        return Boolean.TRUE.equals(descriptor.get("functionComponent")) ? 0 : 1;
+    }
+
     private JsPropertyMap<@Nullable Object> snapshot(
             Reconciler.Fiber fiber, @Nullable Object parent, JsPropertyMap<@Nullable Object> root) {
         final var old = _fibers.get(fiber);
@@ -107,12 +122,17 @@ final class DomDevTools {
         next.set("return", parent);
         final int tag =
                 switch (fiber.kind) {
-                    case VIEW -> 1;
+                    case VIEW -> viewTag(fiber);
                     case ROOT -> 3;
                     case PORTAL -> 4;
                     case HOST -> 5;
                     case TEXT -> 6;
-                    case FRAGMENT -> React.Suspense == fiber.type ? 13 : React.StrictMode == fiber.type ? 8 : 7;
+                    case FRAGMENT ->
+                        React.Suspense == fiber.type
+                                ? 13
+                                : React.Profiler == fiber.type
+                                        ? 12
+                                        : React.StrictMode == fiber.type || React.ConcurrentMode == fiber.type ? 8 : 7;
                     case CONSUMER -> 9;
                     case PROVIDER -> 10;
                 };
@@ -133,7 +153,7 @@ final class DomDevTools {
         } else {
             next.set("memoizedState", null == fiber.view ? null : fiber.view.state());
         }
-        final int mode = 4 | (fiber.strict ? 2 : 0) | (fiber.root.concurrent ? 1 : 0);
+        final int mode = 4 | (fiber.strict ? 2 : 0) | (fiber.concurrentUpdates ? 1 : 0);
         next.set("mode", mode);
         next.set("effectTag", fiber.performedWork() ? 1 : 0);
         next.set("actualStartTime", fiber.actualStartTime());

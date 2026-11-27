@@ -121,6 +121,24 @@ public final class ReactDOM {
     }
 
     /**
+     * Batch updates within the action and commit synchronous work before returning.
+     *
+     * @param action the action that schedules updates.
+     */
+    public static void flushSync(final BatchedUpdatesFn action) {
+        Reconciler.flushSync(action::call);
+    }
+
+    /**
+     * Schedule updates within the action at synchronous priority and flush them at the end of the outermost batch.
+     *
+     * @param action the action that schedules updates.
+     */
+    public static void flushControlled(final BatchedUpdatesFn action) {
+        Reconciler.flushControlled(action::call);
+    }
+
+    /**
      * Register an task interceptor on the current Arez context that ensures any view updates are batched.
      */
     public static void registerBatchedArezTaskInterceptor() {

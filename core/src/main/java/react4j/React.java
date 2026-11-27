@@ -60,7 +60,12 @@ public final class React {
 
     public static final Object Fragment = symbol("react.fragment");
     public static final Object StrictMode = symbol("react.strict_mode");
+    public static final Object ConcurrentMode = symbol("react.concurrent_mode");
     public static final Object Suspense = symbol("react.suspense");
+    public static final Object Lazy = symbol("react.lazy");
+    public static final Object Memo = symbol("react.memo");
+    public static final Object ForwardRef = symbol("react.forward_ref");
+    public static final Object Profiler = symbol("react.profiler");
     static final Object Element = symbol("react.element");
 
     private static @Nullable Object c_currentOwner = null;

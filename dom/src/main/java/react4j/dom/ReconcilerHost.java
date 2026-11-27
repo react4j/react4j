@@ -4,6 +4,20 @@ import org.jspecify.annotations.Nullable;
 import react4j.ReactElement;
 
 interface ReconcilerHost {
+    interface Persistence {
+        boolean childrenMatch(Object parent, Object[] children);
+
+        Object cloneElement(Object instance, ReactElement element, Object[] children, boolean keepChildren);
+
+        Object cloneHidden(Object instance, @Nullable ReactElement element);
+
+        void replaceChildren(Object container, Object[] children);
+    }
+
+    default @Nullable Persistence persistence() {
+        return null;
+    }
+
     interface HostPlan {
         boolean reconcileChildren();
 
@@ -72,7 +86,27 @@ interface ReconcilerHost {
         return "development".equals(System.getProperty("react4j.environment"));
     }
 
+    default boolean replayFailedRender() {
+        return true;
+    }
+
     default boolean isProfiling() {
+        return false;
+    }
+
+    default boolean profilerEnabled() {
+        return "development".equals(System.getProperty("react4j.environment"));
+    }
+
+    default Reconciler.@Nullable ProfilerInteractions profilerInteractions() {
+        return null;
+    }
+
+    default boolean userTimingEnabled() {
+        return false;
+    }
+
+    default boolean deferHiddenChildren(ReactElement element) {
         return false;
     }
 
@@ -81,6 +115,8 @@ interface ReconcilerHost {
     }
 
     default void resetAfterCommit(@Nullable Object state) {}
+
+    default void onHostTreeCommitted(Reconciler.Root root) {}
 
     default void onCommitRoot(Reconciler.Root root) {}
 

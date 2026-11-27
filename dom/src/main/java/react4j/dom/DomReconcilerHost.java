@@ -17,6 +17,16 @@ final class DomReconcilerHost implements ReconcilerHost {
     private DomReconcilerHost() {}
 
     @Override
+    public boolean userTimingEnabled() {
+        return DEVELOPMENT;
+    }
+
+    @Override
+    public boolean deferHiddenChildren(ReactElement element) {
+        return Js.isTruthy(element.inputs().get("hidden"));
+    }
+
+    @Override
     public HostPlan planHost(
             Reconciler.Fiber fiber, ReactElement element, @Nullable ReactElement previousElement, boolean mounting) {
         final var inputs = element.inputs();
