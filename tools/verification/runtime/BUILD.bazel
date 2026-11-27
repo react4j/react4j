@@ -32,6 +32,7 @@ closure_js_binary(
     dependency_mode = "SORT_ONLY",
     deps = [
         "//:dom",
+        "//tools/verification/runtime/java/react4j/dom:browser_memory_renderer",
         "//tools/verification/runtime/java/react4j/dom:foreign_root_assertions",
     ],
 )

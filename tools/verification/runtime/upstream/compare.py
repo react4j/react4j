@@ -43,7 +43,7 @@ def additional_specs():
                       "multiple-copies-of-react-test.js", "renderSubtreeIntoContainer-test.js"],
         "react-cache": ["ReactCache-test.internal.js"],
         "create-subscription": ["createSubscription-test.internal.js"],
-        "react-test-renderer": ["ReactTestRenderer-test.internal.js", "ReactTestRendererAsync-test.js",
+        "react-test-renderer": ["ReactTestRenderer-test.internal.js", "ReactTestRenderer-test.js", "ReactTestRendererAsync-test.js",
                                 "ReactTestRendererTraversal-test.js"],
     }
     for package, names in groups.items():
@@ -64,6 +64,11 @@ def is_reconciler_spec(spec):
                              "forwardRef-test.js"})
 
 
+def uses_isolated_host(spec):
+    # The portal interoperability fixture imports both renderers and constructs a real DOM container.
+    return is_reconciler_spec(spec) and spec.name != "ReactTestRenderer-test.js"
+
+
 def uses_server_integration_variants(spec):
     return spec.name.lower().startswith("reactdomserverintegration")
 
@@ -80,7 +85,7 @@ def run_suite(checkout, config, bundle, output, spec, runtime, mode, node):
         env["REACT4J_RECONCILER_CASE"] = spec.name
     command = [node, "node_modules/jest/bin/jest.js", "--config", str(config), "--runInBand",
                "--runTestsByPath", str(spec)]
-    if memory_case and runtime == "java":
+    if uses_isolated_host(spec) and runtime == "java":
         command += ["--env", "node"]
     if uses_server_integration_variants(spec):
         command += ["--testNamePattern", "with clean client render"]
@@ -125,7 +130,7 @@ def main():
     selected = [] if args.foreign_root else args.suite or list(
         additional_specs() if args.additional else specs(checkout))
     reconciler_bundle = None
-    if any(map(is_reconciler_spec, selected)):
+    if any(map(uses_isolated_host, selected)):
         if args.reconciler_bundle is None:
             parser.error("reconciler suites require --reconciler-bundle")
         reconciler_bundle = args.reconciler_bundle.resolve(strict=True)
@@ -153,7 +158,7 @@ def main():
             configs[runtime] = config
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
             jobs = [pool.submit(run_suite, checkout, configs[runtime],
-                                reconciler_bundle if is_reconciler_spec(spec) else bundle,
+                                reconciler_bundle if uses_isolated_host(spec) else bundle,
                                 output, spec, runtime, args.mode, args.stock_node if runtime == "stock" else "node")
                     for spec in selected for runtime in ("stock", "java")]
             for job in concurrent.futures.as_completed(jobs):

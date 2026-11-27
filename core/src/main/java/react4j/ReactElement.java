@@ -42,6 +42,7 @@ public class ReactElement implements ReactNode {
         final var element = createRawNode(typeof, type);
         element.key = key;
         element.ref = ref;
+        element._owner = _owner;
         element.inputs = Js.uncheckedCast(JsPropertyMap.of());
         inputs.forEach(key -> element.inputs.set(key, inputs.get(key)));
         return element;

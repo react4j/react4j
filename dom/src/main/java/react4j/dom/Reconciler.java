@@ -3915,6 +3915,11 @@ final class Reconciler {
                 root._effects.add(new Effect(this, () -> {
                     if (ref == next) {
                         _attachedRef = next;
+                        if (DEVELOPMENT && "object".equals(Js.typeof(next)) && !ownsProperty(next, "current")) {
+                            consoleError("Warning: Unexpected ref object provided for " + RenderFailure.frameName(type)
+                                    + ". Use either a ref-setter function or React.createRef()."
+                                    + RenderFailure.stackFrom(this));
+                        }
                         applyRef(next, Kind.HOST == kind ? root.host.publicHostInstance(value) : value);
                     }
                 }));

@@ -100,6 +100,25 @@ public final class IsolatedProfilerDevToolsTest {
         });
     }
 
+    public static void foreignPortal(boolean production) {
+        final var root = new Clock(new ArrayList<>()).memory.createTestRoot(false);
+        final var container = JsPropertyMap.of("children", JsPropertyMap.of("length", 0));
+        final var portal = ReactPortal.create(host("div", null, null), container);
+        final var warnings = captureWarnings(() -> {
+            try {
+                root.render(portal, null);
+                throw new AssertionError("Expected the test renderer to reject the foreign portal container");
+            } catch (RuntimeException expected) {
+                check(
+                        Objects.requireNonNull(expected.getMessage())
+                                .contains("An invalid container has been provided."),
+                        "The commit failed on the foreign container");
+            }
+        });
+        equal(!production, warnings.contains("Warning: An invalid container has been provided."));
+        equal(!production, warnings.contains("ReactDOM.createPortal inside of a ReactTestRenderer tree"));
+    }
+
     public static void nativeRefDefault() {
         final var root = new Clock(new ArrayList<>()).memory.createTestRoot(false);
         final var refs = new ArrayList<@Nullable Object>();

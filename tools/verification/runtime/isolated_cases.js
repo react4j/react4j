@@ -1,4 +1,5 @@
 goog.module('react4j.testing.IsolatedCases');
+const ChildDiagnostics = goog.require('react4j.testing.IsolatedChildDiagnosticsTest');
 const Context = goog.require('react4j.testing.IsolatedContextTest');
 const ErrorHandling = goog.require('react4j.testing.IsolatedErrorHandlingTest');
 const ErrorLogging = goog.require('react4j.testing.IsolatedErrorLoggingTest');
@@ -94,6 +95,15 @@ exports.run = function(mode) {
   run('ReactProfiler DevTools recovery timing', () => ProfilerDevTools.recoverTimingAfterError());
   run('ReactProfiler DevTools committed interactions', () => ProfilerDevTools.committedInteractions());
   run('ReactProfiler interleaved automatic root profiling', () => ProfilerDevTools.interleavedRootTiming());
+  for (let i = 0; i < 5; i++) {
+    run('ReactChildReconciler spec' + i, () => ChildDiagnostics.childReconciler(i, mode === 'development'));
+  }
+  for (let i = 0; i < 3; i++) {
+    run('ReactChildren spec' + (29 + i), () => ChildDiagnostics.arrayKeys(i, mode === 'development'));
+  }
+  run('ReactElement captures its creating component instance', () => SideEffects.elementOwner());
+  run('ReactCreateRef rejects invalid ref objects in development', () => SideEffects.invalidRefObjects(mode === 'development'));
+  run('ReactTestRenderer foreign portal container', () => ProfilerDevTools.foreignPortal(mode === 'production'));
   run('ReactTestRenderer default host refs', () => ProfilerDevTools.nativeRefDefault());
   run('ReactTestRenderer host mocks', () => ProfilerDevTools.nodeMocks());
   run('ReactTestRenderer mocked root instance', () => ProfilerDevTools.mockedRootInstance());
