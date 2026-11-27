@@ -1308,7 +1308,7 @@ public final class EventsBrowserTest {
     }
 
     @JsMethod
-    private static native void movement(Browser.Element element, String type, Browser.@Nullable Element related);
+    static native void movement(Browser.Element element, String type, Browser.@Nullable Element related);
 
     @JsMethod
     public static void runStockBeforeInput() {
@@ -3217,7 +3217,7 @@ public final class EventsBrowserTest {
     private static native Object[] nonTextValues();
 
     @JsMethod
-    private static native void withoutReportedErrors(Probe probe);
+    static native void withoutReportedErrors(Probe probe);
 
     @JsMethod
     private static native String observeDocumentListeners(Browser.Element root, Probe probe);

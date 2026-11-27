@@ -16,6 +16,8 @@ import react4j.ReactNode;
 /** Component instance used by generated views. */
 public abstract class NativeView {
     private static final boolean DEVELOPMENT = "development".equals(System.getProperty("react4j.environment"));
+    private static final String EMPTY_REFS_MARKER = "react4j.emptyRefs";
+    private static final Object EMPTY_REFS = emptyRefs();
     private static @Nullable NativeView c_processingUpdate;
     private static boolean c_warnedAboutNestedUpdate;
 
@@ -37,7 +39,24 @@ public abstract class NativeView {
     @JsConstructor
     protected NativeView(@Nullable final JsPropertyMap<@Nullable Object> inputs) {
         _inputs = inputs;
+        Js.<JsPropertyMap<Object>>uncheckedCast(this).set("refs", EMPTY_REFS);
     }
+
+    private static Object emptyRefs() {
+        final var refs = JsPropertyMap.of();
+        defineProperty(refs, EMPTY_REFS_MARKER, JsPropertyMap.of("value", refs));
+        return DEVELOPMENT ? freeze(refs) : refs;
+    }
+
+    public static boolean isSharedEmptyRefs(Object refs) {
+        return refs == Js.<JsPropertyMap<Object>>uncheckedCast(refs).get(EMPTY_REFS_MARKER);
+    }
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.freeze")
+    private static native Object freeze(Object value);
+
+    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.defineProperty")
+    private static native void defineProperty(Object target, String name, Object descriptor);
 
     public static NativeView construct(final Object type, final JsPropertyMap<@Nullable Object> inputs) {
         return Js.<ViewConstructorFunction>uncheckedCast(type).construct(inputs);

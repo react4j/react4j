@@ -1,5 +1,8 @@
 goog.module('react4j.dom.BrowserTest');
 const Children = goog.require('react4j.dom.ChildReconciliationTest');
+const DomPortal = goog.require('react4j.dom.DomPortalBrowserTest');
+const DomRefs = goog.require('react4j.dom.DomRefsBrowserTest');
+const DomRoot = goog.require('react4j.dom.DomRootBrowserTest');
 const Events = goog.require('react4j.dom.EventsBrowserTest');
 const Mode = goog.require('react4j.browser.Mode');
 const OriginalHost = goog.require('react4j.dom.OriginalHostCasesBrowserTest');
@@ -8,6 +11,28 @@ const Runtime = goog.require('react4j.dom.RuntimeBrowserTest');
 const TestCase = goog.require('goog.testing.TestCase');
 const testSuite = goog.require('goog.testing.testSuite');
 testSuite({
+  testRootValuesAndCallbacks() { DomRoot.valuesAndCallbacks(); },
+  testFragmentFirstHosts() { DomRoot.fragmentFirstHosts(); },
+  testCleanFragments() { DomRoot.cleanFragments(); },
+  testPortalCommits() { DomRoot.portalCommits(); },
+  testPortalEventsAndContext() { DomPortal.run(); },
+  testPortalNamespaces() { DomRoot.portalNamespaces(); },
+  testReconcileComponentIdentity() { DomRoot.reconcileComponents(); },
+  testEmptyFragmentsAndRoots() { DomRoot.emptyFragmentsAndRoots(); },
+  testDestroyRoots() { DomRoot.destroyRoots('production' === Mode.environment); },
+  testMountPoints() { DomRoot.mountPoints('production' === Mode.environment); },
+  testCommentAndFragmentContainers() { DomRoot.commentAndFragmentContainers(); },
+  testRenderDocument() { DomRoot.renderDocument(); },
+  testIframeTextDocument() { DomRoot.iframeTextDocument(); },
+  testDestroyRefs() { DomRoot.destroyRefs(); },
+  testRootRefs() { DomRefs.run(); },
+  testConstructorRef() { DomRefs.constructorRef(); },
+  testAsyncRefs() { return DomRefs.destroyAsynchronously(); },
+  testDomChildIdentity() { DomRoot.childIdentity(); },
+  testKeyRefsAndUpdates() { DomRoot.keyRefsAndUpdates(); },
+  testIterables() { DomRoot.iterables('production' === Mode.environment); },
+  testRemountIterableChild() { DomRoot.remountIterableChild(); },
+  testMixedTextChildren() { DomRoot.mixedTextChildren(); },
   testANestingDiagnostics() { Events.runNestingDiagnostics('production' === Mode.environment); },
   testAFormDiagnostics() { Events.runFormDiagnostics('production' === Mode.environment); },
   testControlsAndEvents() { Events.runControlsAndEvents(); },

@@ -16,6 +16,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import react4j.Context;
 import react4j.JsError;
 import react4j.React;
 import react4j.ReactElement;
@@ -406,8 +407,9 @@ public final class IsolatedSuspenseVariantsTest {
 
     private static void constructor(Scenario s) {
         final ViewConstructorFunction type = ConstructorText::new;
-        s.render(s.boundary(
-                5000, "Loading...", ReactElement.createViewElement(type).input("scenario", s)));
+        final var context = new Context<String>();
+        final var text = ReactElement.createViewElement(type).input("scenario", s).input("context", context);
+        s.render(s.boundary(5000, "Loading...", context.provide("Hi", text)));
         s.yields("constructor", "Suspend! [Hi]", "Loading...");
         s.output("Loading...");
         s.time(1000);
@@ -548,7 +550,8 @@ public final class IsolatedSuspenseVariantsTest {
             super(inputs);
             scenario = Js.uncheckedCast(inputs.get("scenario"));
             scenario.lines.add("constructor");
-            text = scenario.readValue("Hi", 100);
+            final var context = Objects.requireNonNull(inputs.get("context"));
+            text = scenario.readValue(Js.asString(Reconciler.readCurrentContext(context, null)), 100);
         }
 
         @Override

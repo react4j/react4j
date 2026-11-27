@@ -63,9 +63,6 @@ final class Reconciler {
     @JsMethod
     private static native boolean supportsNonExtensibleKeys();
 
-    @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.isFrozen")
-    private static native boolean isFrozen(Object value);
-
     @JsMethod(namespace = JsPackage.GLOBAL, name = "Object.preventExtensions")
     private static native void preventExtensions(Object object);
 
@@ -87,13 +84,19 @@ final class Reconciler {
     private static final WeakKeys<ReconcilerScheduler, Double> EVENT_TIMES = new WeakKeys<>();
     private static boolean _committing;
     private static @Nullable Root _lastCommittedRoot;
+    private static @Nullable Fiber _constructingFiber;
     private static int _nestedUpdateCount;
 
     private Reconciler() {}
 
-    static @Nullable Object readCurrentContext(Object context, @Nullable Object observedBits) {
+    static @Nullable Fiber currentFiber() {
         final var owner = CurrentOwner.get();
-        if (!(owner instanceof Fiber fiber)) {
+        return owner instanceof Fiber fiber ? fiber : _constructingFiber;
+    }
+
+    static @Nullable Object readCurrentContext(Object context, @Nullable Object observedBits) {
+        final var fiber = currentFiber();
+        if (null == fiber) {
             throw new IllegalStateException("Context can only be read while React is rendering.");
         }
         return fiber.readContext(context, observedBits);
@@ -2797,12 +2800,15 @@ final class Reconciler {
             }
             final NativeView component;
             if (null == existing) {
-                final var owner = CurrentOwner.swap(this);
+                final var owner = CurrentOwner.swap(null);
+                final var constructing = _constructingFiber;
+                _constructingFiber = this;
                 try {
                     component = null == classType
                             ? NativeView.construct(type, inputs)
                             : Js.<ContextConstructor>uncheckedCast(type).construct(inputs, _maskedContext);
                 } finally {
+                    _constructingFiber = constructing;
                     CurrentOwner.swap(owner);
                 }
             } else {
@@ -3774,7 +3780,7 @@ final class Reconciler {
             final Ref assign = value -> {
                 final var component = ClassComponent.properties(instance);
                 var refs = Js.<JsPropertyMap<@Nullable Object>>uncheckedCast(component.get("refs"));
-                if (null == refs || isFrozen(refs)) {
+                if (null == refs || NativeView.isSharedEmptyRefs(refs)) {
                     refs = JsPropertyMap.of();
                     component.set("refs", refs);
                 }

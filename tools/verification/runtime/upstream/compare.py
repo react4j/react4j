@@ -176,7 +176,7 @@ def main():
                              calls=java.get("calls", 0), assertions=java.get("assertions", 0),
                              adaptations=java.get("adaptations", []), failure=java.get("failure", "")))
     (output / "cases.json").write_text(json.dumps(rows, indent=2) + "\n")
-    if args.foreign_root and (len(rows) != 1 or any(
+    if args.foreign_root and (len(rows) != 2 or any(
             row["stock"] != "passed" or row["java"] != "passed" or not row["calls"] or not row["assertions"]
             for row in rows)):
         raise SystemExit(f"Foreign root ownership comparison failed; see {output / 'cases.json'}")

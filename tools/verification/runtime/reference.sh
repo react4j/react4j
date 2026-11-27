@@ -9,7 +9,7 @@ git -C "$root" archive 18e896de70f9e7ebae0ac6be8e9f5506a1949997 -- . ':!etc/secr
 
 tests=dom/src/test/java/react4j/dom
 suite=dom/src/test/js/react4j/dom/browser_test.js
-cp "$root/$tests"/{ChildReconciliationTest.java,OriginalHostCasesBrowserTest.java,OriginalHostCasesBrowserTest.native.js,RuntimeBrowserTest.java,RuntimeParityBrowserTest.java,RuntimeParityBrowserTest.native.js,EventsBrowserTest.java,EventsBrowserTest.native.js,FormsBrowserTest.java,FormsBrowserTest.native.js} "$destination/$tests/"
+cp "$root/$tests"/{ChildReconciliationTest.java,DomPortalBrowserTest.java,DomPortalBrowserTest.native.js,DomRefsBrowserTest.java,DomRootBrowserTest.java,DomRootBrowserTest.native.js,OriginalHostCasesBrowserTest.java,OriginalHostCasesBrowserTest.native.js,RuntimeBrowserTest.java,RuntimeParityBrowserTest.java,RuntimeParityBrowserTest.native.js,EventsBrowserTest.java,EventsBrowserTest.native.js,FormsBrowserTest.java,FormsBrowserTest.native.js} "$destination/$tests/"
 cp "$root/$suite" "$destination/$suite"
 cp "$root/$(dirname "$suite")/forms_test.js" "$destination/$(dirname "$suite")/"
 cd "$destination"
@@ -18,7 +18,7 @@ cp "$root/$core_tests/ElementBrowserTest.java" "$core_tests/"
 sed -i '/"RuntimeBrowserTest.java",/a\        "ElementBrowserTest.java",' "$core_tests/BUILD.bazel"
 sed -i '/ContextsTest.run(root);/a\            ElementBrowserTest.run(root, ElementBrowserTest::stockIsElement);' "$core_tests/RuntimeBrowserTest.java"
 sed -i '/^browser_test(/,/^)/s|deps = \["//dom/src/test/java/react4j/dom:runtime_coverage"\]|deps = ["//dom/src/test/java/react4j/dom:runtime_coverage", "//third_party:closure_testcase"]|' "$(dirname "$suite")/BUILD.bazel"
-sed -i '/"RuntimeBrowserTest.java",/a\        "RuntimeParityBrowserTest.java",\n        "RuntimeParityBrowserTest.native.js",\n        "ChildReconciliationTest.java",\n        "OriginalHostCasesBrowserTest.java",\n        "OriginalHostCasesBrowserTest.native.js",' "$tests/BUILD.bazel"
+sed -i '/"RuntimeBrowserTest.java",/a\        "RuntimeParityBrowserTest.java",\n        "RuntimeParityBrowserTest.native.js",\n        "ChildReconciliationTest.java",\n        "DomPortalBrowserTest.java",\n        "DomPortalBrowserTest.native.js",\n        "DomRefsBrowserTest.java",\n        "DomRootBrowserTest.java",\n        "DomRootBrowserTest.native.js",\n        "OriginalHostCasesBrowserTest.java",\n        "OriginalHostCasesBrowserTest.native.js",' "$tests/BUILD.bazel"
 sed -i '/"EventsBrowserTest.java",/a\        "FormsBrowserTest.java",\n        "FormsBrowserTest.native.js",' "$tests/BUILD.bazel"
 sed -i '/"\/\/third_party:jsinterop_annotations-j2cl",/a\        "//third_party:jsinterop_base-j2cl",' "$tests/BUILD.bazel"
 
@@ -30,6 +30,9 @@ printf '\n/** @type {string} */\nObject.prototype.componentStack;\n' >> "$extern
 # The UMD selects its before-input plugin when the script first loads. Run this
 # capability-dependent scenario in a fresh page with TextEvent absent at startup.
 sed -i '/testBeforeInputFallback() {/d' "$suite"
+# The older Java-to-React bridge invokes a NativeView constructor as a function
+# component. Its constructor ownership differs from the original JSX class case.
+sed -i '/testConstructorRef() {/d' "$suite"
 cat > "$(dirname "$suite")/fallback_test.js" <<'JS'
 goog.module('react4j.dom.BeforeInputFallback');
 const Events = goog.require('react4j.dom.EventsBrowserTest');

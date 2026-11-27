@@ -16,7 +16,6 @@ import org.jspecify.annotations.Nullable;
 import react4j.Context;
 import react4j.ReactElement;
 import react4j.ReactNode;
-import react4j.internal.CurrentOwner;
 import react4j.internal.NativeView;
 import react4j.internal.OnComponentDidMount;
 import react4j.internal.OnComponentDidUpdate;
@@ -46,6 +45,8 @@ public final class ComponentLifecycleBrowserTest {
             constructorUpdateIsIgnored(host);
             readsCommittedHostDuringRender(host);
             modulePatternEffects(host);
+            modulePatternRefs(host);
+            prepareBeforeRemovingChildren(host);
             modulePatternDeriveFailure(host, production);
             lifecycleOrder(host, false);
             lifecycleOrder(host, true);
@@ -267,6 +268,52 @@ public final class ComponentLifecycleBrowserTest {
         ReactDOM.unmountComponentAtNode(host);
     }
 
+    private static void modulePatternRefs(Browser.Element host) {
+        final ViewConstructorFunction factory = inputs -> new NativeView(inputs) {
+            private boolean _initialized;
+
+            @Override
+            public ReactNode render() {
+                if (!_initialized) {
+                    activeFiber().initializeModuleComponent(this);
+                    _initialized = true;
+                }
+                return ReactElement.createHostElement("div", null, "elemRef", JsPropertyMap.of());
+            }
+        };
+        classDescriptor(factory, "Factory").set("functionComponent", true);
+        final var instance = Objects.requireNonNull(render(ReactElement.createViewElement(factory), host));
+        final var refs = Objects.requireNonNull(ClassComponent.properties(instance).get("refs"));
+        final var element = Objects.requireNonNull(ClassComponent.properties(refs).get("elemRef"));
+        equal("DIV", Browser.string(Browser.property(element, "tagName")));
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
+    private static void prepareBeforeRemovingChildren(Browser.Element host) {
+        final var trace = new ArrayList<String>();
+        final ViewConstructorFunction first = inputs -> new PreparedChild(inputs);
+        final ViewConstructorFunction second = inputs -> new PreparedChild(inputs);
+        classDescriptor(first, "First");
+        classDescriptor(second, "Second");
+        for (final var type : new ViewConstructorFunction[] {first, second}) {
+            final var suffix = first == type ? "A" : "B";
+            final var children = new ReactElement[2];
+            for (int i = 0; i < children.length; i++) {
+                final var key = 0 == i ? "one" : "two";
+                final var child = ReactElement.createViewElement(type).input("trace", trace).input("name", key + suffix);
+                child.setKey(key);
+                children[i] = child;
+            }
+            render(ReactElement.createHostElement("div", null, null, JsPropertyMap.of("children", ReactNode.of(children))),
+                    host);
+        }
+        check(trace.equals(List.of("oneA componentWillMount", "oneA render", "twoA componentWillMount", "twoA render",
+                "oneA componentDidMount", "twoA componentDidMount", "oneB componentWillMount", "oneB render",
+                "twoB componentWillMount", "twoB render", "oneA componentWillUnmount", "twoA componentWillUnmount",
+                "oneB componentDidMount", "twoB componentDidMount")), trace.toString());
+        ReactDOM.unmountComponentAtNode(host);
+    }
+
     private static ReactElement viewWithRef(
             ViewConstructorFunction type, Ref ref, JsPropertyMap<@Nullable Object> inputs) {
         final var element = ReactElement.createViewElement(type);
@@ -277,8 +324,7 @@ public final class ComponentLifecycleBrowserTest {
     }
 
     private static Reconciler.Fiber activeFiber() {
-        final var owner = CurrentOwner.get();
-        return (Reconciler.Fiber) Objects.requireNonNull(owner);
+        return Objects.requireNonNull(Reconciler.currentFiber());
     }
 
     private static void lifecycleOrder(Browser.Element host, boolean modern) {
@@ -768,24 +814,28 @@ public final class ComponentLifecycleBrowserTest {
     }
 
     private static final class MountedView extends NativeView implements OnComponentDidMount, OnComponentWillUnmount {
-        private final Reconciler.Fiber _fiber;
+        private Reconciler.@Nullable Fiber _fiber;
         private final List<String> _phases;
 
         @JsConstructor
         MountedView(@Nullable JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
             _phases = Js.uncheckedCast(Objects.requireNonNull(requireInputs().get("phases")));
-            _fiber = activeFiber();
             mark("constructor");
             ClassComponent.properties(this).set("UNSAFE_componentWillMount", (Ref) ignored -> mark("willMount"));
         }
 
         private void mark(String phase) {
-            _phases.add(phase + ":" + _fiber.isMountedView(this));
+            _phases.add(phase + ":" + mounted());
+        }
+
+        private boolean mounted() {
+            return null != _fiber && _fiber.isMountedView(this);
         }
 
         @Override
         public @Nullable ReactNode render() {
+            _fiber = activeFiber();
             mark("render");
             return Boolean.TRUE.equals(requireInputs().get("nullOutput")) ? null : ReactNode.of("mounted");
         }
@@ -802,14 +852,13 @@ public final class ComponentLifecycleBrowserTest {
     }
 
     private static final class JournalView extends NativeView implements OnComponentDidMount, OnComponentWillUnmount {
-        private final Reconciler.Fiber _fiber;
+        private Reconciler.@Nullable Fiber _fiber;
         private final List<String> _log;
 
         @JsConstructor
         JournalView(@Nullable JsPropertyMap<@Nullable Object> inputs) {
             super(inputs);
             _log = Js.uncheckedCast(Objects.requireNonNull(requireInputs().get("log")));
-            _fiber = activeFiber();
             applyState(JsPropertyMap.of("flags", 0));
             mark("constructor");
             ClassComponent.properties(this).set("UNSAFE_componentWillMount", (Ref) ignored -> {
@@ -823,11 +872,16 @@ public final class ComponentLifecycleBrowserTest {
         }
 
         private void mark(String phase) {
-            _log.add(phase + ":" + _fiber.isMountedView(this) + ":" + flags());
+            _log.add(phase + ":" + mounted() + ":" + flags());
+        }
+
+        private boolean mounted() {
+            return null != _fiber && _fiber.isMountedView(this);
         }
 
         @Override
         public ReactNode render() {
+            _fiber = activeFiber();
             mark(0 == (flags() & 2) ? "initialRender" : "laterRender");
             Objects.requireNonNull(state()).set("flags", flags() | 2);
             return ReactNode.of("I am the inner DIV");
@@ -1018,6 +1072,35 @@ public final class ComponentLifecycleBrowserTest {
                     2 == Js.coerceToInt(ClassComponent.properties(context).get("x")),
                     "The child's legacy context is two");
             return ReactElement.createHostElement("div", null, null, JsPropertyMap.of());
+        }
+    }
+
+    private static final class PreparedChild extends NativeView implements OnComponentDidMount, OnComponentWillUnmount {
+        @JsConstructor
+        PreparedChild(JsPropertyMap<@Nullable Object> inputs) {
+            super(inputs);
+            ClassComponent.properties(this).set("UNSAFE_componentWillMount", (Ref) ignored -> mark("componentWillMount"));
+        }
+
+        private void mark(String phase) {
+            final var trace = Js.<List<String>>uncheckedCast(requireInputs().get("trace"));
+            trace.add(requireInputs().get("name") + " " + phase);
+        }
+
+        @Override
+        public ReactNode render() {
+            mark("render");
+            return ReactElement.createHostElement("div", null, null, JsPropertyMap.of());
+        }
+
+        @Override
+        public void componentDidMount() {
+            mark("componentDidMount");
+        }
+
+        @Override
+        public void componentWillUnmount() {
+            mark("componentWillUnmount");
         }
     }
 

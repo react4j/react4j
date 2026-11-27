@@ -154,12 +154,10 @@ function createRenderer(moduleFor, sourceReact) {
 
   // The historical Babel class transform calls its superclass as a function.
   // Older TypeScript constructors keep using their original receiver after calling super.
-  const emptyRefs = Object.freeze({});
   function Component(props, context) {
     const view = Object.assign(this, new View(props));
     view.context = context;
     view.state = undefined;
-    view.refs = emptyRefs;
     return view;
   }
   Object.setPrototypeOf(Component.prototype, View.prototype);
@@ -503,6 +501,9 @@ function createDOMAdapter(moduleFor, member, current, currentOwner, registerRefl
     unmountComponentAtNode(container) { counters.calls++; return dom[unmount](container); },
     verifyForeignRootOwnership(...operations) {
       moduleFor('react4j.dom.ForeignRootAssertions').verify(...operations);
+    },
+    verifyForeignRootRefs(...operations) {
+      moduleFor('react4j.dom.ForeignRootAssertions').verifyRefs(...operations);
     },
     unstable_batchedUpdates(action, ...args) {
       counters.calls++;

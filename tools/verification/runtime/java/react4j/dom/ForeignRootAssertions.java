@@ -29,6 +29,16 @@ public final class ForeignRootAssertions {
         check(!foreignUnmount.get(), "An ordinary unmount also clears the ownership marker");
     }
 
+    @JsMethod
+    public static void verifyRefs(Action mount, Action update, Check initialRef, Check foreignRef, Check foreignMissing) {
+        mount.run();
+        check(initialRef.get(), "The owner's first ref is its local host");
+        check(foreignMissing.get(), "The second ref is absent before rendering it");
+        update.run();
+        check(initialRef.get(), "The owner's update preserves the local ref");
+        check(foreignRef.get(), "The foreign renderer attaches the second ref to the same owner");
+    }
+
     private static void check(boolean actual, String message) {
         if (!actual) {
             throw new AssertionError(message);
