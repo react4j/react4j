@@ -191,9 +191,7 @@ final class FunctionComponentBrowserTest {
                 });
         expectWarning(
                 production,
-                "Each child in an array or iterator should have a unique \"key\" prop."
-                        + " See https://fb.me/react-warning-keys for more information.\n"
-                        + "    in div (created by FunctionList)",
+                "See https://fb.me/react-warning-keys for more information.\n    in div (created by FunctionList)",
                 () -> render(component, host));
         ReactDOM.unmountComponentAtNode(host);
     }

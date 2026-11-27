@@ -248,10 +248,7 @@ function createRenderer(moduleFor, sourceReact) {
   }
   PureComponent.prototype = Object.create(Component.prototype);
   PureComponent.prototype.constructor = PureComponent;
-  PureComponent.prototype.shouldComponentUpdate = function(props, state) {
-    const runtime = moduleFor('react4j.reconciler.Reconciler');
-    return !runtime.shallowEqual(this.props, props) || !runtime.shallowEqual(this.state, state);
-  };
+  PureComponent.prototype.isPureReactComponent = true;
   function renderFixture(receiver, render, args, constructing = false) {
     const previous = current.currentDispatcher;
     const parent = current.current;

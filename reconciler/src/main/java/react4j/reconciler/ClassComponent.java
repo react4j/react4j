@@ -155,6 +155,11 @@ final class ClassComponent {
                 : declaredName instanceof String value && !value.isEmpty() ? value : "Component";
     }
 
+    static boolean isPure(Object type) {
+        final var prototype = properties(type).get("prototype");
+        return null != prototype && Js.isTruthy(properties(prototype).get("isPureReactComponent"));
+    }
+
     static void warnUndefinedSnapshot(Object type) {
         if (firstWarning(UNDEFINED_SNAPSHOT, type)) {
             warn("Warning: " + name(type)
@@ -296,6 +301,11 @@ final class ClassComponent {
             warn("Warning: " + name + " has a method called componentShouldUpdate()."
                     + " Did you mean shouldComponentUpdate()? The name is phrased as a question"
                     + " because the function is expected to return a value.");
+        }
+        if (isPure(type) && null != method(view, "shouldComponentUpdate")) {
+            warn("Warning: " + name + " has a method called shouldComponentUpdate(). shouldComponentUpdate should"
+                    + " not be used when extending React.PureComponent. Please extend React.Component if"
+                    + " shouldComponentUpdate is used.");
         }
         if (null != method(view, "componentDidUnmount")) {
             warn("Warning: " + name + " has a method called componentDidUnmount(). But there is no such lifecycle"

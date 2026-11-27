@@ -3004,7 +3004,10 @@ public final class Reconciler {
                             || retry
                             || (null != shouldUpdate
                                     ? shouldUpdateClass(component, shouldUpdate, inputs, pendingState)
-                                    : clean || null == predicate || shouldUpdate(predicate, inputs)));
+                                    : null != classType && ClassComponent.isPure(classType)
+                                            ? !shallowEqual(previousInputs, inputs)
+                                                    || !shallowEqual(previousState, pendingState)
+                                            : clean || null == predicate || shouldUpdate(predicate, inputs)));
             if (render && oldHooks && null != existing) {
                 ClassComponent.before(this, component, "componentWillUpdate", inputs, pendingState, _maskedContext);
             }

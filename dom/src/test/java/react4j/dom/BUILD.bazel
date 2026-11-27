@@ -58,8 +58,10 @@ j2cl_library(
         "ComponentLifecycleBrowserTest.java",
         "ComponentLifecycleBrowserTest.native.js",
         "CompositeDiagnosticsBrowserTest.java",
+        "CompositeDiagnosticsBrowserTest.native.js",
         "FunctionComponentBrowserTest.java",
         "PropTypeValidatorBrowserTest.java",
+        "ReactComponentRecordsBrowserTest.java",
     ],
     deps = [
         "//:core",
